@@ -11,7 +11,7 @@ import { setTextTable, setArrayTable, setListTable, setLabelTableReactDom, setTe
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert, questionAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
-import { Nav, Tab, Col, Row, Card, Tabs } from 'react-bootstrap'
+import { Nav, Tab, Card, Tabs } from 'react-bootstrap'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { OneLead } from '../../../components/modal'
@@ -24,9 +24,9 @@ import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
 import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
-import { setFormHeader, setSingleHeaderJson } from '../../../functions/routers'
+import { setSingleHeaderJson } from '../../../functions/routers'
 const MySwal = withReactContent(Swal)
-const chunkSize = 1048576 * 5;
+const chunkSize = 1048576 * 3;
 class Proyectos extends Component {
     state = {
         proyectos: [],
@@ -476,24 +476,6 @@ class Proyectos extends Component {
         tipo: ''
     }
 
-    seleccionaradj(adjuntos) {
-        const { proyecto } = this.state;
-        let newdefaultactivekey = "";
-        for (var i = 0; i < adjuntos.length; i++) {
-            var adjunto = adjuntos[i];
-            if (proyecto[adjunto.id].length) {
-                newdefaultactivekey = adjunto.id
-                break;
-            }
-        }
-        this.setState({
-            ...this.state,
-            primeravista: false,
-            defaultactivekey: newdefaultactivekey,
-            subActiveKey: newdefaultactivekey,
-            showadjuntos: adjuntos
-        })
-    }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -519,33 +501,38 @@ class Proyectos extends Component {
             }
         }
     }
-    updateActiveTabContainer = active => {
+
+    seleccionaradj(adjuntos) {
+        const { proyecto } = this.state;
+        let newdefaultactivekey = "";
+        for (var i = 0; i < adjuntos.length; i++) {
+            var adjunto = adjuntos[i];
+            if (proyecto[adjunto.id].length) {
+                newdefaultactivekey = adjunto.id
+                break;
+            }
+        }
         this.setState({
             ...this.state,
-            subActiveKey: active
+            primeravista: false,
+            defaultactivekey: newdefaultactivekey,
+            subActiveKey: newdefaultactivekey,
+            showadjuntos: adjuntos
         })
     }
-    openModalDelete = proyecto => {
-        this.setState({
-            ...this.state,
-            proyecto: proyecto,
-            modalDelete: true
-        })
-    }
+
+    updateActiveTabContainer = active => { this.setState({ ...this.state, subActiveKey: active }) }
+
+    openModalDelete = proyecto => { this.setState({ ...this.state, proyecto: proyecto, modalDelete: true }) }
+
     changePageEdit = proyecto => {
         const { history } = this.props
-        history.push({
-            pathname: '/proyectos/proyectos/edit',
-            state: { proyecto: proyecto }
-        });
+        history.push({ pathname: '/proyectos/proyectos/edit', state: { proyecto: proyecto } });
     }
 
     changePageRelacionar = proyecto => {
         const { history } = this.props
-        history.push({
-            pathname: '/proyectos/proyectos/relacionar',
-            state: { proyecto: proyecto }
-        });
+        history.push({ pathname: '/proyectos/proyectos/relacionar', state: { proyecto: proyecto } });
     }
 
     openModalAvances = proyecto => {
@@ -559,30 +546,20 @@ class Proyectos extends Component {
         })
     }
     
-    openModalSee = proyecto => {
-        this.getOneProyectoAxios(proyecto.id)
-    }
-    handleCloseSee = () => {
-        this.setState({
-            ...this.state,
-            modalSee: false,
-            proyecto: ''
-        })
-    }
-    handleCloseLead = () => {
-        this.setState({
-            ...this.state,
-            modalLead: false,
-            lead: ''
-        })
-    }
-    handleCloseComentarios = () => {
-        this.setState({
-            ...this.state,
-            modalComentarios: false,
-            proyecto: ''
-        })
-    }
+    openModalSee = proyecto => { this.getOneProyectoAxios(proyecto.id) }
+
+    handleCloseSee = () => { this.setState({ ...this.state, modalSee: false, proyecto: '' }) }
+
+    handleCloseLead = () => { this.setState({ ...this.state, modalLead: false, lead: '' }) }
+
+    handleCloseComentarios = () => { this.setState({ ...this.state, modalComentarios: false, proyecto: '' }) }
+
+    handleCloseAvances = () => { this.setState({ ...this.state, modalAvances: false, form: this.clearForm(), proyecto: '' }) }
+    
+    handleCloseDelete = () => { this.setState({ ...this.state, modalDelete: false, proyecto: '', prospecto: '' }) }
+
+    handleCloseAdjuntos = () => { this.setState({ ...this.state, modalAdjuntos: false, proyecto: '', prospecto: '', form: this.clearForm() }) }
+
     setAdjuntosSlider = proyecto => {
         let auxheaders = []
         let aux = []
@@ -598,52 +575,21 @@ class Proyectos extends Component {
         })
         return aux
     }
-    handleCloseAvances = () => {
-        const { modalAvances } = this.state
-        this.setState({
-            ...this.state,
-            modalAvances: !modalAvances,
-            form: this.clearForm(),
-            proyecto: ''
-        })
-    }
-    handleCloseDelete = () => {
-        const { modalDelete } = this.state
-        this.setState({
-            ...this.state,
-            modalDelete: !modalDelete,
-            proyecto: '',
-            prospecto: ''
-        })
-    }
-    handleCloseAdjuntos = () => {
-        const { modalAdjuntos } = this.state
-        this.setState({
-            ...this.state,
-            modalAdjuntos: !modalAdjuntos,
-            proyecto: '',
-            prospecto: '',
-            form: this.clearForm()
-        })
-    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     onChangeAvance = (key, e, name) => {
         const { value } = e.target
         const { form } = this.state
         form['avances'][key][name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     onChangeAdjuntoAvance = (e, key, name) => {
         const { form } = this.state
         const { files, value } = e.target
@@ -660,11 +606,9 @@ class Proyectos extends Component {
         }
         form['avances'][key][name].value = value
         form['avances'][key][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -681,104 +625,34 @@ class Proyectos extends Component {
         }
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
-    onChangeAdjuntoGrupo = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let grupo = 0
-        let adjunto = 0
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
-            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
-                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
-                    grupo = i;
-                    adjunto = j;
-                }
-            }
-        }
-        form.adjuntos_grupo[grupo].adjuntos[adjunto].value = value
-        form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
+
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
         for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
-            if (counter !== key) {
-                aux.push(form['adjuntos'][name].files[counter])
-            }
+            if (counter !== key) { aux.push(form['adjuntos'][name].files[counter]) }
         }
-        if (aux.length < 1) {
-            form['adjuntos'][name].value = ''
-        }
+        if (aux.length < 1) { form['adjuntos'][name].value = '' }
         form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
-    clearFilesGrupo = (name, key) => {
-        const { form } = this.state
-        let aux = []
-        let grupo = 0
-        let adjunto = 0
-        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
-            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
-                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
-                    grupo = i;
-                    adjunto = j;
-                }
-            }
-        }
-        for (let counter = 0; counter < form.adjuntos_grupo[grupo].adjuntos[adjunto].files.length; counter++) {
-            if (counter !== key) {
-                aux.push(form.adjuntos_grupo[grupo].adjuntos[adjunto].files[counter])
-            }
-        }
-        if (aux.length < 1) {
-            form.adjuntos_grupo[grupo].adjuntos[adjunto].value = ''
-        }
-        form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
+
     clearFilesAvances = (name, key, _key) => {
         const { form } = this.state
         let aux = []
         for (let counter = 0; counter < form.avances[_key].adjuntos.files.length; counter++) {
-            if (counter !== key) {
-                aux.push(form.avances[_key].adjuntos.files[counter])
-            }
+            if (counter !== key) { aux.push(form.avances[_key].adjuntos.files[counter]) }
         }
         if (aux.length < 1) {
             form.avances[_key].adjuntos.files = []
             form.avances[_key].adjuntos.value = ''
         }
         form.avances[_key].adjuntos.files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     addRowAvance = () => {
         const { form } = this.state
         form.avances.push(
@@ -791,11 +665,9 @@ class Proyectos extends Component {
                 }
             }
         )
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -862,6 +734,7 @@ class Proyectos extends Component {
         })
         return form
     }
+
     deleteFile = element => {
         MySwal.fire({
             title: '¿DESEAS ELIMINAR EL ARCHIVO?',
@@ -877,38 +750,17 @@ class Proyectos extends Component {
             }
         }).then((result) => {
             if (result.value) {
+                waitAlert()
                 this.deleteAdjuntoAxios(element.id)
             }
         })
     }
 
-    handleChangeAvance = (files, item) => {
-        this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
-    }
-    
-    /* handleChange = (files, item) => {
-        this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
-        MySwal.fire({
-            title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "ACEPTAR",
-            cancelButtonText: "CANCELAR",
-            reverseButtons: true,
-            customClass: {
-                content: 'd-none',
-            }
-        }).then((result) => {
-            if (result.value) {
-                waitAlert()
-                this.addProyectoAdjuntoAxios(item)
-            }
-        })
-    } */
+    handleChangeAvance = (files, item) => { this.onChangeAdjunto({ target: { name: item, value: files, files: files } }) }
 
-/* -------------------------------------------------------------------------- */
-/*                            ANCHOR INICIA CHUNKS                            */
-/* -------------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------------- */
+    /*                            ANCHOR INICIA CHUNKS                            */
+    /* -------------------------------------------------------------------------- */
 
     handleChange = ( files, item ) => {
         let totalCount = 0
@@ -918,15 +770,13 @@ class Proyectos extends Component {
                 this.resetChunks(file)
                 totalCount = file.size % chunkSize === 0 ? file.size / chunkSize : Math.floor(file.size / chunkSize) + 1
                 fileID = uuidv4()
-                /* console.log(totalCount, 'TOTAL COUNT')
-                console.log(fileID, 'FILE ID') */
                 this.fileUpload(totalCount, fileID, file, item)
             })
         }
-        
     }
 
     fileUpload = (totalCount, fileID, file, item) => {
+        console.log(totalCount, fileID, file, item)
         waitAlert()
         const { chunked } = this.state
         chunked.totalCount = totalCount
@@ -968,15 +818,10 @@ class Proyectos extends Component {
                     this.setState({chunked})
                     let chunk = chunked.file.slice(chunked.begin, chunked.end)
                     this.uploadChunk(chunk)
-                    
                 }
                 console.log(chunked, 'chunked')
-            }else{
-                console.log("Error Occurred:", data.errorMessage);
-            }
-        } catch (error) {
-            console.log("error", error);
-        }
+            }else{ console.log("Error Occurred:", data.errorMessage); }
+        } catch (error) { console.log("error", error); }
     }
 
     resetChunks = (file) => {
@@ -1007,21 +852,7 @@ class Proyectos extends Component {
                 (response) => {
                     const { proyecto } = response.data
                     const { key } = this.state
-                    switch(key){
-                        case 'all':
-                            this.getProyectoAxios();
-                            break;
-                        case 'fase1':
-                            this.getProyectoFase1Axios();
-                            break;
-                        case 'fase2':
-                            this.getProyectoFase2Axios();
-                            break;
-                        case 'fase3':
-                            this.getProyectoFase3Axios();
-                        break;
-                        default: break;
-                    }
+                    this.getProyectoAxios(key)
                     doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                     this.setState({
                         ...this.state,
@@ -1104,21 +935,7 @@ class Proyectos extends Component {
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1209,21 +1026,7 @@ class Proyectos extends Component {
                 Swal.close()
                 doneAlert('Estado actualizado con éxito')
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -1284,21 +1087,7 @@ class Proyectos extends Component {
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1519,21 +1308,7 @@ class Proyectos extends Component {
         await axios.delete(URL_DEV + 'proyectos/' + proyecto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue eliminado con éxito.')
                 this.setState({
                     ...this.state,
@@ -1556,21 +1331,7 @@ class Proyectos extends Component {
             (response) => {
                 const { proyecto } = response.data
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 this.setState({
                     ...this.state,
@@ -1626,21 +1387,7 @@ class Proyectos extends Component {
             (response) => {
                 const { avance, proyecto } = response.data
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 var win = window.open(avance.pdf, '_blank');
                 win.focus();
@@ -1691,21 +1438,7 @@ class Proyectos extends Component {
             (response) => {
                 const { avance, proyecto } = response.data
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue adjuntado con éxito.')
                 var win = window.open(avance.pdf, '_blank');
                 win.focus();
@@ -1723,63 +1456,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-    async addProyectoAdjuntoAxios(name) {
-        const { access_token } = this.props.authUser
-        const { form, proyecto } = this.state
-        const data = new FormData();
-        data.append('tipo', name)
-        let grupo = 0
-        let adjunto = 0
-        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
-            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
-                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
-                    grupo = i;
-                    adjunto = j;
-                }
-            }
-        }
-        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file) => {
-            data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
-            data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
-            return false
-        })
-        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`}, 
-                maxContentLength: 100000000,
-                maxBodyLength: 1000000000
-            } ).then(
-            (response) => {
-                const { proyecto } = response.data
-                const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                    break;
-                    default: break;
-                }
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
-                this.setState({
-                    ...this.state,
-                    proyecto: proyecto,
-                    adjuntos: this.setAdjuntosSlider(proyecto),
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     sendMail = avance => {
         waitAlert();
         this.sendMailAvanceAxios(avance);
@@ -1800,36 +1477,15 @@ class Proyectos extends Component {
         })
     }
 
-    async getProyectoAxios() {
-        $('#proyecto').DataTable().ajax.reload();
-    }
-
-    async getProyectoFase1Axios() {
-        $('#proyecto_fase1').DataTable().ajax.reload();
-    }
-    async getProyectoFase2Axios() {
-        $('#proyecto_fase2').DataTable().ajax.reload();
-    }
-    async getProyectoFase3Axios() {
-        $('#proyecto_fase3').DataTable().ajax.reload();
-    }
-
-    controlledTab = value => {
+    async getProyectoAxios(value) {
+        let cadena = '#proyecto'
         switch(value){
-            case 'all':
-                this.getProyectoAxios();
+            case 'all': break;
+            default: 
+                cadena = `${cadena}_${value}`
                 break;
-            case 'fase1':
-                this.getProyectoFase1Axios();
-                break;
-            case 'fase2':
-                this.getProyectoFase2Axios();
-                break;
-            case 'fase3':
-                this.getProyectoFase3Axios();
-                break;
-            default: break;
         }
+        $(cadena).DataTable().ajax.reload();
         this.setState({
             ...this.state,
             key: value
@@ -2066,8 +1722,8 @@ class Proyectos extends Component {
                             <Card.Body className="pb-0">
                                 <Tab.Container id="left-tabs-example" activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
                                     onSelect={(select) => { this.updateActiveTabContainer(select) }}>
-                                    <Row>
-                                        <Col md={4} className="navi navi-accent navi-hover navi-bold border-nav p-4">
+                                    <div className = 'row mx-0'>
+                                        <div className=" col-12 col-lg-4 navi navi-accent navi-hover navi-bold border-nav p-4">
                                             <Nav variant="pills" className="flex-column navi navi-hover navi-active">
                                                 {
                                                     showadjuntos.map((adjunto, key) => {
@@ -2081,8 +1737,8 @@ class Proyectos extends Component {
                                                     })
                                                 }
                                             </Nav>
-                                        </Col>
-                                        <Col md={8} className="align-self-center gutter-t gutter-b">
+                                        </div>
+                                        <div className=" col-12 col-lg-8 align-self-center gutter-t gutter-b">
                                             <Tab.Content>
                                                 {
                                                     showadjuntos.map((adjunto, key) => {
@@ -2106,20 +1762,14 @@ class Proyectos extends Component {
                                                                         proyecto ?
                                                                             proyecto[adjunto.id] ?
                                                                             <>
-                                                                                <div className="d-flex align-items-center justify-content-center">
-                                                                                    <span>
+                                                                                <div className="d-flex align-items-center justify-content-center mt-2">
+                                                                                    <span className = 'my-2'>
                                                                                         <label htmlFor="file-upload" className="btn btn-sm btn-clean dz-clickable mb-0">
                                                                                             <i className="flaticon2-clip-symbol"></i> Adjuntar archivo
                                                                                         </label>
-                                                                                        <input 
-                                                                                            id="file-upload" 
-                                                                                            type="file"
-                                                                                            // onChange={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
-                                                                                            placeholder={form.adjuntos.adjunto_comentario.placeholder}
-                                                                                            value={form.adjuntos.adjunto_comentario.value}
-                                                                                            name='adjunto_comentario'
-                                                                                            accept="image/*, application/pdf"
-                                                                                        />
+                                                                                        <input id="file-upload" type="file" placeholder={form.adjuntos.adjunto_comentario.placeholder}
+                                                                                            onChange={ (e) => { e.preventDefault(); this.handleChange(e.target.files, adjunto.id) }}
+                                                                                            value={form.adjuntos.adjunto_comentario.value} name='adjunto_comentario' accept="image/*, application/pdf" />
                                                                                     </span>
                                                                                     <div>
                                                                                         {
@@ -2156,9 +1806,7 @@ class Proyectos extends Component {
                                                                                         }
                                                                                     </div>
                                                                                 </div>
-                                                                                <ItemSlider items={proyecto[adjunto.id]} handleChange={this.handleChange}
-                                                                                    item={adjunto.id} deleteFile={this.deleteFile}  />
-                                                                                    
+                                                                                <ItemSlider items={proyecto[adjunto.id]} item={adjunto.id} deleteFile={this.deleteFile}  /* handleChange = { this.handleChange } */ />
                                                                             </>
                                                                                 : ''
                                                                             : ''
@@ -2169,8 +1817,8 @@ class Proyectos extends Component {
                                                     })
                                                 }
                                             </Tab.Content>
-                                        </Col>
-                                    </Row>
+                                        </div>
+                                    </div>
                                 </Tab.Container>
                             </Card.Body>
                         </Card>
