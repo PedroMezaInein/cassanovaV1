@@ -11,7 +11,7 @@ import { setTextTable, setArrayTable, setListTable, setLabelTableReactDom, setTe
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert, questionAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
-import { Nav, Tab, Col, Row, Card, Tabs } from 'react-bootstrap'
+import { Nav, Tab, Card, Tabs } from 'react-bootstrap'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { OneLead } from '../../../components/modal'
@@ -24,7 +24,7 @@ import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
 import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
-import { setFormHeader, setSingleHeaderJson } from '../../../functions/routers'
+import { setSingleHeaderJson } from '../../../functions/routers'
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 5;
 class Proyectos extends Component {
