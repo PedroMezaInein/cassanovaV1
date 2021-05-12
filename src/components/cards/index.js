@@ -14,6 +14,8 @@ import comprasCard from './Proyectos/ComprasCard'
 import proyectosCard from './Proyectos/ProyectosCard'
 import ventasCard from './Proyectos/VentasCard'
 import herramientaCard from './Proyectos/HerramientaCard'
+import solicitudDevolucionCard from './Proyectos/SolicitudDevolucionCard'
+import devolucionCard from './Proyectos/DevolucionCard'
 
 //Administración
 import egresosCard from './Administracion/EgresosCard'
@@ -72,6 +74,8 @@ export const ComprasCard = comprasCard
 export const ProyectosCard = proyectosCard
 export const VentasCard = ventasCard
 export const HerramientaCard = herramientaCard
+export const SolicitudDevolucionCard = solicitudDevolucionCard
+export const DevolucionCard = devolucionCard
 
 //Administración
 export const EgresosCard = egresosCard

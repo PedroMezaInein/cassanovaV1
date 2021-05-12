@@ -258,7 +258,7 @@ class Contratos extends Component {
                     form[element] = {
                         adjunto: {
                             value: '',
-                            placeholder: 'Adjunto(s)',
+                            placeholder: 'Ingresa los adjuntos',
                             files: []
                         }
                     }
@@ -401,27 +401,6 @@ class Contratos extends Component {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
-    }
-    clearForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.forEach((element) => {
-            switch(element){
-                case 'adjuntos':
-                    form[element] = {
-                        adjunto: {
-                            value: '',
-                            placeholder: 'Ingresa los adjuntos',
-                            files: []
-                        }
-                    }
-                    break;
-                default:
-                    form[element] = ''
-                break;
-            }
-        })
-        return form
     }
     patchContrato = async( data,tipo ) => {
         const { access_token } = this.props.authUser
@@ -618,7 +597,8 @@ class Contratos extends Component {
                     ...this.state,
                     data,
                     modal,
-                    adjuntos: this.setAdjuntos(contrato.adjuntos)
+                    adjuntos: this.setAdjuntos(contrato.adjuntos),
+                    form: this.clearForm()
                 })
             }, (error) => {
                 printResponseErrorAlert(error)
@@ -755,32 +735,37 @@ class Contratos extends Component {
                             }
                         }
                     >
-                        <div className="form-group row form-group-marginless pt-4">
-                            <div className="col-md-12">
+                        <div className="form-group row form-group-marginless pt-5">
+                            <div className="col-md-12 text-center">
                                 <FileInput
                                     requirevalidation={0}
                                     onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
                                     placeholder={form.adjuntos.adjunto.placeholder}
                                     value={form.adjuntos.adjunto.value}
                                     name='adjunto'
-                                    id='adjunto'
+                                    id='adjunto-contrato'
                                     accept="image/*, application/pdf"
                                     files={form.adjuntos.adjunto.files}
                                     deleteAdjunto={this.clearFiles}
                                     multiple
+                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                    iconclass='flaticon2-clip-symbol text-primary'
                                 />
                             </div>
                         </div>
-                        <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto"
-                                onClick={
-                                    (e) => {
-                                        e.preventDefault();
-                                        validateAlert(this.onSubmitAdjuntos, e, 'form-adjuntos')
-                                    }
-                                }
-                                text="ENVIAR" />
-                        </div>
+                        {
+                            form.adjuntos.adjunto.value &&
+                                <div className="mt-3 text-center">
+                                    <Button icon='' className="mx-auto"
+                                        onClick={
+                                            (e) => {
+                                                e.preventDefault();
+                                                validateAlert(this.onSubmitAdjuntos, e, 'form-adjuntos')
+                                            }
+                                        }
+                                        text="ENVIAR" />
+                                </div>
+                        }
                     </Form>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
                     <TableForModals

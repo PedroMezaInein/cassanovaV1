@@ -161,7 +161,7 @@ class EgresosForm extends Component {
                                     </div>
                                     {
                                         form.factura === 'Con factura' && title !== 'Editar egreso' ?
-                                            <div className="col-md-4">
+                                            <div className="col-md-4 align-self-center text-center">
                                                 <FileInput
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
@@ -173,6 +173,8 @@ class EgresosForm extends Component {
                                                     deleteAdjunto={clearFiles} multiple
                                                     accept="text/xml, application/pdf"
                                                     messageinc="Incorrecto. Adjunta el documento."
+                                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                    iconclass='flaticon2-clip-symbol text-primary'
                                                 />
                                             </div>
                                             : ''
@@ -403,8 +405,8 @@ class EgresosForm extends Component {
                                     title !== 'Editar egreso' ?
                                         <>
                                             <div className="separator separator-dashed mt-1 mb-2"></div>
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-6">
+                                            <div className="form-group row form-group-marginless mt-8">
+                                                <div className="col-md-6 text-center">
                                                     <FileInput
                                                         requirevalidation={0}
                                                         formeditado={formeditado}
@@ -416,9 +418,11 @@ class EgresosForm extends Component {
                                                         deleteAdjunto={clearFiles}
                                                         messageinc="Incorrecto. Adjunta el documento."
                                                         multiple
+                                                        classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                        iconclass='flaticon2-clip-symbol text-primary'
                                                     />
                                                 </div>
-                                                <div className="col-md-6">
+                                                <div className="col-md-6 text-center">
                                                     <FileInput
                                                         requirevalidation={0}
                                                         formeditado={formeditado}
@@ -430,6 +434,8 @@ class EgresosForm extends Component {
                                                         deleteAdjunto={clearFiles}
                                                         messageinc="Incorrecto. Adjunta el documento."
                                                         multiple
+                                                        classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                        iconclass='flaticon2-clip-symbol text-primary'
                                                     />
                                                 </div>
                                             </div>

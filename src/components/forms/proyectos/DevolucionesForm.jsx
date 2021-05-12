@@ -4,7 +4,7 @@ import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
-class ComprasForm extends Component {
+class DevolucionesForm extends Component {
     
     updateProyecto = value => {
         const { onChange } = this.props
@@ -49,25 +49,19 @@ class ComprasForm extends Component {
     }
 
     updateProveedor = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange, /*setOptions*/ } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
-        onChange({ target: { value: '', name: 'contrato' } })
+        // onChange({ target: { value: '', name: 'contrato' } })
         const { data: { proveedores } } = this.props
         proveedores.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
-                setOptions('contratos', element.contratos)
+                // setOptions('contratos', element.contratos)
                 if(element.rfc !== ''){
                     onChange({ target: { value: element.rfc, name: 'rfc' } })
                 }
             }
             return false
         })
-    }
-
-    updateContrato = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value, name: 'contrato' } })
-        
     }
 
     updateSubarea = value => {
@@ -384,7 +378,7 @@ class ComprasForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     {
                                         options.tiposPagos.length > 0 ?
-                                            <div className="col-md-3">
+                                            <div className="col-md-4">
                                                 <Select 
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
@@ -400,7 +394,7 @@ class ComprasForm extends Component {
                                             </div>
                                             : ''
                                     }
-                                    <div className="col-md-3">
+                                    <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -412,7 +406,7 @@ class ComprasForm extends Component {
                                             iconclass={"fas fa-money-check-alt"}
                                         />
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={0}
                                             formeditado={formeditado}
@@ -422,18 +416,6 @@ class ComprasForm extends Component {
                                             name="comision" 
                                             onChange={onChange} 
                                             iconclass={"fas fa-money-bill-alt"} 
-                                        />
-                                    </div>
-                                    <div className="col-md-3">
-                                        <SelectSearchTrue 
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            options={options.contratos} 
-                                            placeholder="SELECCIONA EL CONTRATO"
-                                            name="contrato" 
-                                            value={form.contrato} 
-                                            onChange={this.updateContrato} 
-                                            iconclass={"fas fa-file-signature"}
                                         />
                                     </div>
                                 </div>
@@ -501,4 +483,4 @@ class ComprasForm extends Component {
     }
 }
 
-export default ComprasForm
+export default DevolucionesForm

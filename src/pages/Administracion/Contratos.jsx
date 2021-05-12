@@ -801,11 +801,13 @@ class Contratos extends Component {
                                     placeholder={form.adjuntos.adjunto.placeholder}
                                     value={form.adjuntos.adjunto.value}
                                     name='adjunto'
-                                    id='adjunto'
+                                    id='adjunto-contrato'
                                     accept="image/*, application/pdf"
                                     files={form.adjuntos.adjunto.files}
                                     deleteAdjunto={this.clearFiles}
                                     multiple
+                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                    iconclass='flaticon2-clip-symbol text-primary'
                                 />
                             </div>
                         </div>
