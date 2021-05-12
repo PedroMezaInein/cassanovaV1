@@ -58,10 +58,13 @@ class Empleados extends Component {
                     placeholder: 'Altas y bajas',
                     files: []
                 }
-            }
+            },
+            departamentos: [],
+            departamento: '',
         },
         options: {
-            empresas: []
+            empresas: [],
+            departamentos: [],
         }
     }
     componentDidMount() {
@@ -152,9 +155,10 @@ class Empleados extends Component {
         await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas } = response.data
+                const { empresas, departamentos } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['departamentos'] = setOptions(departamentos, 'nombre', 'id')
                 this.setState({
                     ...this.state,
                     options
@@ -284,6 +288,9 @@ class Empleados extends Component {
                     else
                         form[element] = 'Administrativo'
                     break;
+                case 'departamentos':
+                    form[element] = []
+                    break;
                 default:
                     form[element] = ''
                     break;
@@ -292,7 +299,7 @@ class Empleados extends Component {
         })
         return form;
     }
-    onChange = e => {
+    onChange = (e) => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
@@ -334,6 +341,51 @@ class Empleados extends Component {
             form
         })
     }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    deleteOption = (element, array) => {
+        let { form } = this.state
+        let auxForm = []
+        form[array].map((elemento, key) => {
+            if (element !== elemento) {
+                auxForm.push(elemento)
+            }
+            return false
+        })
+        form[array] = auxForm
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    onChangeOptions = (e, arreglo) => {
+        const { value } = e.target
+        const { form, options } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString()) {
+                auxArray.push(_aux)
+            } else {
+                aux.push(_aux)
+            }
+            return false
+        })
+        form[arreglo] = auxArray
+        this.setState({
+            ...this.state,
+            form,
+            options
+        })
+    }
     render() {
         const { options, title, form, formeditado} = this.state
         return (
@@ -354,6 +406,9 @@ class Empleados extends Component {
                             onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
                             clearFiles={this.clearFiles}
                             title={title}
+                            onChangeRange={this.onChangeRange}
+                            deleteOption = { this.deleteOption }
+                            onChangeOptions = { this.onChangeOptions }
                         />
                     </Card.Body>
                 </Card>
