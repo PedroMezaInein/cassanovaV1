@@ -85,6 +85,7 @@ class ContactoLeadForm extends Component {
                             value = {formContacto.fechaContacto} 
                             onChange = { onChangeContacto } 
                             name = 'fechaContacto'
+                            requirevalidation={1}
                         /> */}
                     </div>
                     <div className={newTipoContacto ? 'col-md-4' : 'col-md-8'}>

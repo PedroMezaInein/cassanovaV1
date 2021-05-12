@@ -66,7 +66,7 @@ class AgendarCitaForm extends Component {
                                 <label className="text-center font-weight-bolder text-dark-60">Fecha</label>
                             </div>
                             <div className="col-md-12 text-center">
-                                <CalendarDay date = { formAgenda.fecha } value={formAgenda.fecha} name='fecha' onChange={onChange} withformgroup={1}/>
+                                <CalendarDay date = { formAgenda.fecha } value={formAgenda.fecha} name='fecha' onChange={onChange} withformgroup={1} requirevalidation={1}/>
                                 <div className="d-flex justify-content-center">
                                     <div className="col-md-4">
                                         <label className="col-form-label text-center font-weight-bolder text-dark-60">Hora de inicio</label>

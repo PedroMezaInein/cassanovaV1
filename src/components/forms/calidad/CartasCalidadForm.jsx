@@ -33,7 +33,7 @@ class CartasCalidadForm extends Component{
                     </div>
                     <div className="col-md-6 text-center mt-4">
                         <label  className="col-form-label mt-2 font-weight-bolder">Selecciona la fecha</label>
-                        <CalendarDay value = { form.fecha } date = { form.fecha } onChange = { onChange } name = 'fecha' withformgroup={1} />
+                        <CalendarDay value = { form.fecha } date = { form.fecha } onChange = { onChange } name = 'fecha' withformgroup={1} requirevalidation={1}/>
                     </div>
                     <div className="col-md-6 text-center mt-4">
                         <label  className="col-form-label mt-2 font-weight-bolder">Adjuntos</label>

@@ -194,7 +194,8 @@ class ParrillaContenidoForm extends Component {
                                             <label className="text-center font-weight-bolder">Fecha de publicación</label>
                                         </div>
                                         <CalendarDay value={form.fecha} date={form.fecha} onChange={onChange} className='input-calendar'
-                                            name='fecha' withformgroup={1} />
+                                            name='fecha' withformgroup={1} requirevalidation={1}
+                                        />
                                         <div className="d-flex justify-content-center">
                                             <div className="col-md-12">
                                                 <label className="col-form-label text-center font-weight-bolder">Hora de publicación</label>
