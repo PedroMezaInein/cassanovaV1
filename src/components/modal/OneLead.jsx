@@ -66,9 +66,12 @@ class OneLead extends Component{
                                     </div>
                                 </div>
                                 { contacto.comentario }
+                                <span className="blockquote-footer font-weight-lighter ml-2 d-inline">
+                                    {contacto.user.name}
+                                </span>
                                 {
                                     contacto.adjunto ?
-                                        <div className="d-flex justify-content-end">
+                                        <div className="d-flex justify-content-end mt-1">
                                             <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
                                                 <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
@@ -92,6 +95,51 @@ class OneLead extends Component{
             ...this.state,
             activePage
         })
+    }
+
+    printContactCount = (contactos) => {
+        let sizeContactado = 0
+        let sizeNoContactado = 0
+        contactos.map((contacto) => {
+            if(contacto.success){
+                return sizeContactado++
+            }else{
+                return sizeNoContactado++
+            }
+        })
+        return(
+            <div className="w-auto d-flex flex-column mx-auto mb-8">
+                <div className="bg-light-warning p-4 rounded-xl flex-grow-1 align-self-center">
+                    <div className="d-flex align-items-center justify-content-center font-size-lg font-weight-light mb-2">
+                        TOTAL DE CONTACTOS:<span className="font-weight-boldest ml-2"><u>{contactos.length}</u></span>
+                    </div>
+                    <div id="symbol-total-contactos">
+                        <span>
+                            <span className="symbol symbol-circle symbol-white symbol-30 flex-shrink-0 mr-2">
+                                <span className="symbol-label">
+                                    <i className="fas fa-user-check text-success font-size-13px"></i>
+                                </span>
+                            </span>
+                            <span className="font-size-sm font-weight-bolder">
+                                <span className="font-size-lg">{sizeContactado}</span>
+                                <span className="ml-2 font-weight-light">{sizeContactado <= 1 ? 'Contacto' : 'Contactados'}</span>
+                            </span>
+                        </span>
+                        <span className="ml-4">
+                            <span className="symbol symbol-circle symbol-white symbol-30 flex-shrink-0 mr-2">
+                                <span className="symbol-label">
+                                    <i className="fas fa-user-times text-danger font-size-13px"></i>
+                                </span>
+                            </span>
+                            <span className="font-size-sm font-weight-bolder">
+                                <span className="font-size-lg">{sizeNoContactado}</span>
+                                <span className="ml-2 font-weight-light">Sin respuesta</span>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     render(){
@@ -266,13 +314,18 @@ class OneLead extends Component{
                                 <div className="col-md-7 pt-4">
                                     {
                                         this.hasContactos() ? 
-                                            lead.prospecto.contactos.map((contacto, key) => {
-                                                let limiteInferior = (activePage - 1) * itemsPerPage
-                                                let limiteSuperior = limiteInferior + (itemsPerPage - 1)
-                                                if(contacto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
-                                                    return this.printTimeLineContact(contacto, key)
-                                                return false
-                                            })
+                                        <>
+                                            { this.printContactCount(lead.prospecto.contactos) }
+                                            {
+                                                lead.prospecto.contactos.map((contacto, key) => {
+                                                    let limiteInferior = (activePage - 1) * itemsPerPage
+                                                    let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+                                                    if(contacto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
+                                                        return this.printTimeLineContact(contacto, key)
+                                                    return false
+                                                })
+                                            }
+                                        </>
                                         :
                                             <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
                                     }
