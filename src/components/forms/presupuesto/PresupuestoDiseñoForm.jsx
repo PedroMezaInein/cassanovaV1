@@ -132,7 +132,8 @@ class PresupuestoDiseñoForm extends Component {
                                         </div>
                                         <div className="col-md-12 text-center px-0">
                                             <CalendarDay value = { form.fecha } date = { form.fecha } onChange = { onChange }
-                                                name = 'fecha' withformgroup={1} />
+                                                name = 'fecha' withformgroup={1} requirevalidation={1}
+                                            />
                                         </div>
                                     </Col>
                                     <Col md={8} className="align-self-center">

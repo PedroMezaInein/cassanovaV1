@@ -86,7 +86,7 @@ class AgendaLlamada extends Component {
                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                             <label className="text-center font-weight-bolder">Fecha</label>
                         </div>
-                        <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } date = { form.fecha } withformgroup={1} />
+                        <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } date = { form.fecha } withformgroup={1} requirevalidation={1}/>
                     </Col>
                 </div>
                 <div className="card-footer pt-3 pr-1 pb-0">

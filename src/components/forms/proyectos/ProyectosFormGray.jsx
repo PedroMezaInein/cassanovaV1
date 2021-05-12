@@ -404,7 +404,7 @@ class ProyectosForm extends Component {
                                             </div>
                                             {/* <div className="col-md-12 text-center">
                                                 <label className="col-form-label my-2 font-weight-bolder">Fecha de Reunión</label><br />
-                                                <CalendarDay value = { form.fechaReunion } name = 'fechaReunion' onChange = { onChange } date = { form.fechaReunion } withformgroup={1}/>
+                                                <CalendarDay value = { form.fechaReunion } name = 'fechaReunion' onChange = { onChange } date = { form.fechaReunion } withformgroup={1} requirevalidation={1}/>
                                             </div> */}
                                         </div>
                                     </Col>

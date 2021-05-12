@@ -281,6 +281,7 @@ class PagosForm extends Component {
                                             onChange={onChange}
                                             name='fecha'
                                             withformgroup={0}
+                                            requirevalidation={1}
                                         />
                                     </div>
                                 </div>

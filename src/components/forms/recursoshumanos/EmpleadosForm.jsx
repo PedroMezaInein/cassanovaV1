@@ -420,6 +420,7 @@ class EmpleadosForm extends Component {
                                                 name='fecha_alta_imss'
                                                 withformgroup={0}
                                                 requirevalidation={0}
+                                                requirevalidation={1}
                                             />
                                         </div>
                                     <div className="align-self-center col-md-8">
