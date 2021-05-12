@@ -130,6 +130,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 onChange={onChange}
                                                 name='fecha'
                                                 withformgroup={1}
+                                                requirevalidation={1}
                                             />
                                         </div>
                                     </Col>

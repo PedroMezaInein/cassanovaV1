@@ -173,6 +173,7 @@ class HistorialContactoForm extends Component {
                                             onChange={onChangeHistorial}
                                             name='fechaContacto'
                                             withformgroup={1}
+                                            requirevalidation={1}
                                         />
                                         <div className="d-flex justify-content-center">
                                             <div className="col-md-5">

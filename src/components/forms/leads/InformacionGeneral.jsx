@@ -36,7 +36,7 @@ class InformacionGeneral extends Component {
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                 <label className="text-center font-weight-bold text-dark-60">Fecha de ingreso</label>
                             </div>
-                            <CalendarDay value={form.fecha} date={form.fecha} onChange={onChange} name='fecha' withformgroup={0} />
+                            <CalendarDay value={form.fecha} date={form.fecha} onChange={onChange} name='fecha' withformgroup={0} requirevalidation={1}/>
                         </div>
                     </Col>
                     <Col md="8" className="align-self-center">
