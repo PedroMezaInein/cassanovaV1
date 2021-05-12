@@ -2127,7 +2127,7 @@ span.font-weight-bolder.text-hover-error:hover{
     }
 }
 
-input[type="file"]#file-upload {
+input[type="file"]#file-upload, #datosGenerales, #recibosNomina, #altasBajas, #factura, #presupuesto, #pago {
     display: none!important;
 }
 .tagify{
@@ -2269,4 +2269,15 @@ div#responsable-notify{
 }
 .text-color-8080{
     color: #80808f;
+}
+div#symbol-total-contactos{
+    @include down-screen($md) {
+        text-align: center;
+        margin-top: 11px;
+        span.ml-4{
+            margin-left: 0px!important;
+            display: block;
+            margin-top: 8px;
+        }
+    }
 }

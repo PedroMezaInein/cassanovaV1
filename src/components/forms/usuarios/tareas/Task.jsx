@@ -167,6 +167,7 @@ class Task extends Component {
                                 }
                                 {
                                     // this.canEdit(tarea) &&
+                                    tarea.terminada === 0 &&
                                         <span className="btn btn-default btn-icon btn-sm mr-2 btn-hover-bg-success mr-2 text-hover-white" onClick={(e) => { openModalEdit(tarea) }}>
                                             <i className="flaticon2-pen text-hover-success"></i>
                                         </span>

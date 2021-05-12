@@ -39,7 +39,7 @@ export default class CalendarDay extends Component {
     }
 
     render() {
-        const { date, withformgroup, disabledWeekends, className } = this.props
+        const { date, withformgroup, disabledWeekends, className, requirevalidation } = this.props
         /* let { currentDate } = this.state */
         return (
             <>
@@ -57,7 +57,9 @@ export default class CalendarDay extends Component {
                                 } return false
                             }
                         } />
-                    <span className={ date ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }>Incorrecto. Selecciona la fecha.</span>
+                    {
+                        requirevalidation ? <span className={ date ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }>Incorrecto. Selecciona la fecha.</span> : ''
+                    }
                 </div>
             </>
         )
