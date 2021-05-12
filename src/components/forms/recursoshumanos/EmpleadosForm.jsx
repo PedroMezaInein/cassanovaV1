@@ -1,20 +1,12 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { SelectSearch, Button, RadioGroup, Input, Calendar, InputNumber,InputPhone, FileInput} from '../../form-components'
+import { SelectSearch, Button, RadioGroup, Input, InputNumber,InputPhone, FileInput, RangeCalendar, TagSelectSearch, CalendarDay} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { RFC, DATE, NSS, CURP, TEL } from '../../../constants'
-import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard' 
+import { RFC, NSS, CURP, TEL } from '../../../constants'
+import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
+import $ from "jquery";
 
 class EmpleadosForm extends Component {
-
-    handleChangeDateInicio = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaInicio' } })
-    }
-    handleChangeDateFin = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaFin' } })
-    }
 
     handleChangeDate = date => {
         const { onChange } = this.props
@@ -26,9 +18,49 @@ class EmpleadosForm extends Component {
         onChange({ target: { value: value, name: 'empresa' } })
     }
 
+    nuevoUpdateDepartamento = seleccionados =>{
+        const { form,deleteOption } = this.props
+        seleccionados = seleccionados?seleccionados:[];
+        if(seleccionados.length>form.departamentos.length){
+            let diferencia = $(seleccionados).not(form.departamentos).get();
+            let val_diferencia = diferencia[0].value
+            this.updateDepartamento(val_diferencia)
+        }
+        else {
+            let diferencia = $(form.departamentos ).not(seleccionados).get(); 
+            diferencia.forEach(borrar=>{
+                deleteOption(borrar,"departamentos")
+            })
+        }
+    }
 
+    updateDepartamento = value => { 
+        const { onChange, options, onChangeOptions, form } = this.props
+        options.departamentos.map((departamento) => {
+            if (departamento.value === value) {
+                let aux = false;
+                form.departamentos.map((element) => {
+                    if (element.value === value)
+                        aux = true
+                    return false
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: departamento.value, name: 'departamento' } }, 'departamentos')
+            }
+            return false
+        })
+        onChange({ target: { value: value, name: 'departamento' } })
+    }
+    transformarOptions = options => {  
+        options = options ? options : []
+        options.map( (value) => {
+            value.label = value.name 
+            return ''
+        });
+        return options
+    }
     render() {
-        const { options, onChange, form, onSubmit, formeditado, onChangeAdjunto, clearFiles, title} = this.props
+        const { options, onChange, form, onSubmit, formeditado, onChangeAdjunto, clearFiles, title, onChangeRange} = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -67,7 +99,7 @@ class EmpleadosForm extends Component {
                             } 
                         >
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
-                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos generales e información bancaria</h5>
+                                {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos generales e información bancaria</h5> */}
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Input
@@ -211,7 +243,7 @@ class EmpleadosForm extends Component {
                                         : <>
                                             <div className="separator separator-dashed mt-1 mb-2"></div>
                                             <div className="form-group row form-group-marginless">
-                                                <div className="col-md-12">
+                                                <div className="col-md-12 mt-5 text-center">
                                                     <FileInput
                                                         requirevalidation={0}
                                                         formeditado={formeditado}
@@ -224,6 +256,8 @@ class EmpleadosForm extends Component {
                                                         files={form.adjuntos.datosGenerales.files}
                                                         deleteAdjunto={clearFiles}
                                                         multiple
+                                                        classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50'
+                                                        iconclass='flaticon2-clip-symbol text-primary'
                                                     />
                                                 </div>
                                             </div>
@@ -237,133 +271,132 @@ class EmpleadosForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa la información bancaria</h5>
-                                <div className="form-group row form-group-marginless mb-0">
-                                    <div className="col-md-4">
-                                        <RadioGroup
-                                            name={'tipo_empleado'}
-                                            onChange={onChange}
-                                            options={
-                                                [
-                                                    {
-                                                        label: 'Administrativo',
-                                                        value: 'Administrativo'
-                                                    },
-                                                    {
-                                                        label: 'Obra',
-                                                        value: 'Obra'
+                                {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa la información bancaria</h5> */}
+                                <div className="mx-0 row">
+                                    <div className="align-self-center col-md-4">
+                                        <div className="col text-center">
+                                            <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                                            <RangeCalendar
+                                                onChange={onChangeRange}
+                                                start={form.fechaInicio}
+                                                end={form.fechaFin}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="align-self-center col-md-8">
+                                        <div className="form-group row form-group-marginless mb-0">
+                                            <div className="col-md-6">
+                                                <RadioGroup
+                                                    name={'tipo_empleado'}
+                                                    onChange={onChange}
+                                                    options={
+                                                        [
+                                                            {
+                                                                label: 'Administrativo',
+                                                                value: 'Administrativo'
+                                                            },
+                                                            {
+                                                                label: 'Obra',
+                                                                value: 'Obra'
+                                                            }
+                                                        ]
                                                     }
-                                                ]
-                                            }
-                                            placeholder={'SELECCIONA EL TIPO DE EMPLEADO'}
-                                            value={form.tipo_empleado}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <RadioGroup
-                                            name={'estatus_empleado'}
-                                            onChange={onChange}
-                                            options={
-                                                [
-                                                    {
-                                                        label: 'Activo',
-                                                        value: 'Activo'
-                                                    },
-                                                    {
-                                                        label: 'Inactivo',
-                                                        value: 'Inactivo'
-                                                    }
-                                                ]
-                                            }
-                                            value={form.estatus_empleado}
-                                            placeholder={'SELECCIONA EL ESTATUS DE EMPLEADO'}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <SelectSearch
-                                            formeditado={formeditado}
-                                            options={options.empresas}
-                                            placeholder="Selecciona la empresa"
-                                            name="empresa"
-                                            value={form.empresa}
-                                            onChange={this.updateEmpresa}
-                                            iconclass={"far fa-building"}
-                                            messageinc="Incorrecto. Selecciona la empresa"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <Calendar
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDateInicio}
-                                            placeholder="Fecha de inicio"
-                                            name="fechaInicio"
-                                            value={form.fechaInicio}
-                                            selectsStart
-                                            startDate={form.fechaInicio}
-                                            endDate={form.fechaFin}
-                                            iconclass={"far fa-calendar-alt"}
-                                            patterns={DATE}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Calendar
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDateFin}
-                                            placeholder="Fecha final"
-                                            name="fechaFin"
-                                            value={form.fechaFin}
-                                            selectsEnd
-                                            startDate={form.fechaInicio}
-                                            endDate={form.fechaFin}
-                                            minDate={form.fechaInicio}
-                                            iconclass={"far fa-calendar-alt"}
-                                            patterns={DATE}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="puesto"
-                                            type="text"
-                                            value={form.puesto}
-                                            placeholder="PUESTO"
-                                            iconclass={"fas fa-user-tie"}
-                                            messageinc="Incorrecto. Ingresa el puesto."
-                                        />
-                                    </div>
-                                </div>
-                                {
-                                    title === 'Editar empleado'
-                                        ? ''
-                                        :
-                                        <>
-                                            <div className="separator separator-dashed mt-1 mb-2"></div>
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-12">
-                                                    <FileInput
-                                                        requirevalidation={0}
-                                                        formeditado={formeditado}
-                                                        onChangeAdjunto={onChangeAdjunto}
-                                                        placeholder={form.adjuntos.recibosNomina.placeholder}
-                                                        value={form.adjuntos.recibosNomina.value}
-                                                        name='recibosNomina'
-                                                        id='recibosNomina'
-                                                        accept="image/*, application/pdf"
-                                                        files={form.adjuntos.recibosNomina.files}
-                                                        deleteAdjunto={clearFiles}
-                                                        multiple
-                                                    />
-                                                </div>
+                                                    placeholder={'SELECCIONA EL TIPO DE EMPLEADO'}
+                                                    value={form.tipo_empleado}
+                                                />
                                             </div>
-                                        </>
-                                }
+                                            <div className="col-md-6">
+                                                <RadioGroup
+                                                    name={'estatus_empleado'}
+                                                    onChange={onChange}
+                                                    options={
+                                                        [
+                                                            {
+                                                                label: 'Activo',
+                                                                value: 'Activo'
+                                                            },
+                                                            {
+                                                                label: 'Inactivo',
+                                                                value: 'Inactivo'
+                                                            }
+                                                        ]
+                                                    }
+                                                    value={form.estatus_empleado}
+                                                    placeholder={'SELECCIONA EL ESTATUS DEL EMPLEADO'}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-6">
+                                                <SelectSearch
+                                                    formeditado={formeditado}
+                                                    options={options.empresas}
+                                                    placeholder="Selecciona la empresa"
+                                                    name="empresa"
+                                                    value={form.empresa}
+                                                    onChange={this.updateEmpresa}
+                                                    iconclass={"far fa-building"}
+                                                    messageinc="Incorrecto. Selecciona la empresa"
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <Input
+                                                    requirevalidation={1}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="puesto"
+                                                    type="text"
+                                                    value={form.puesto}
+                                                    placeholder="PUESTO"
+                                                    iconclass={"fas fa-user-tie"}
+                                                    messageinc="Incorrecto. Ingresa el puesto."
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-12">
+                                                <TagSelectSearch
+                                                    placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
+                                                    options={this.transformarOptions(options.departamentos)}
+                                                    defaultvalue={this.transformarOptions(form.departamentos)}
+                                                    onChange={this.nuevoUpdateDepartamento}
+                                                    iconclass={"fas fa-layer-group"}
+                                                    requirevalidation={0}
+                                                    messageinc="Incorrecto. Selecciona el(los) departamento(s)"
+                                                />
+                                            </div>
+                                        </div>
+                                        {
+                                            title === 'Editar empleado'
+                                                ? ''
+                                                :
+                                                <>
+                                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                    <div className="form-group row form-group-marginless">
+                                                        <div className="col-md-12 mt-5 text-center">
+                                                            <FileInput
+                                                                requirevalidation={0}
+                                                                formeditado={formeditado}
+                                                                onChangeAdjunto={onChangeAdjunto}
+                                                                placeholder={form.adjuntos.recibosNomina.placeholder}
+                                                                value={form.adjuntos.recibosNomina.value}
+                                                                name='recibosNomina'
+                                                                id='recibosNomina'
+                                                                accept="image/*, application/pdf"
+                                                                files={form.adjuntos.recibosNomina.files}
+                                                                deleteAdjunto={clearFiles}
+                                                                multiple
+                                                                classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50'
+                                                                iconclass='flaticon2-clip-symbol text-primary'
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </>
+                                        }
+                                    </div>                            
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
@@ -374,162 +407,167 @@ class EmpleadosForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de las prestaciones</h5>
-                                <div className="form-group row form-group-marginless mb-0">
-                                    <div className="col-md-4">
-                                        <RadioGroup
-                                            name={'estatus_imss'}
-                                            onChange={onChange}
-                                            options={
-                                                [
-                                                    {
-                                                        label: 'Activo',
-                                                        value: 'Activo'
-                                                    },
-                                                    {
-                                                        label: 'Inactivo',
-                                                        value: 'Inactivo'
+                                {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de las prestaciones</h5> */}
+                                <div className="mx-0 row">
+                                    <div className="align-self-center col-md-4">
+                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                            <label className="text-center font-weight-bolder">FECHA DE ALTA AL IMSS</label>
+                                        </div>
+                                            <CalendarDay
+                                                date={form.fecha_alta_imss}
+                                                value={form.fecha_alta_imss}
+                                                onChange={onChange}
+                                                name='fecha_alta_imss'
+                                                withformgroup={0}
+                                                requirevalidation={0}
+                                            />
+                                        </div>
+                                    <div className="align-self-center col-md-8">
+                                        <div className="form-group row form-group-marginless mb-0">
+                                            <div className="col-md-4">
+                                                <RadioGroup
+                                                    name={'estatus_imss'}
+                                                    onChange={onChange}
+                                                    options={
+                                                        [
+                                                            {
+                                                                label: 'Activo',
+                                                                value: 'Activo'
+                                                            },
+                                                            {
+                                                                label: 'Inactivo',
+                                                                value: 'Inactivo'
+                                                            }
+                                                        ]
                                                     }
-                                                ]
-                                            }
-                                            value={form.estatus_imss}
-                                            placeholder={'IMSS ESTATUS'}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="vacaciones_disponibles"
-                                            type="text"
-                                            value={form.vacaciones_disponibles}
-                                            placeholder="VACACIONES DISPONIBLES AL AÑO"
-                                            iconclass={"far fa-calendar-alt"}
-                                            messageinc="Incorrecto. Ingresa loS días de vacaciones disponibles al año."
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Calendar
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="FECHA DE ALTA AL IMSS"
-                                            name="fecha_alta_imss"
-                                            value={form.fecha_alta_imss}
-                                            patterns={DATE}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless"> 
-                                    <div className="col-md-4">
-                                        <InputNumber
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="numero_alta_imss"
-                                            type="text"
-                                            value={form.numero_alta_imss}
-                                            placeholder="NÚMERO DE ALTA IMSS"
-                                            iconclass={"fas fa-hospital-user"}
-                                            patterns={NSS}
-                                            messageinc="Incorrecto. Ej. 01234567891"
-                                            typeformat ="###########"
-                                        />
-                                    </div>
-                                    {
-                                        title === 'Editar empleado'
-                                            ? ''
-                                            :
-                                            <div className="col-md-8">
-                                                <FileInput
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChangeAdjunto={onChangeAdjunto}
-                                                    placeholder={form.adjuntos.altasBajas.placeholder}
-                                                    value={form.adjuntos.altasBajas.value}
-                                                    name='altasBajas'
-                                                    id='altasBajas'
-                                                    accept="image/*, application/pdf"
-                                                    files={form.adjuntos.altasBajas.files}
-                                                    deleteAdjunto={clearFiles}
-                                                    multiple
+                                                    value={form.estatus_imss}
+                                                    placeholder={'IMSS ESTATUS'}
                                                 />
                                             </div>
-                                    }
-                                    
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless"> 
-                                    <div className="col-md-4">
-                                        <InputNumber
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="nomina_imss"
-                                            type="text"
-                                            value={form.nomina_imss}
-                                            placeholder="Nomina IMSS"
-                                            iconclass={"fas fa-money-check-alt"}
-                                            messageinc="Incorrecto. Ingresa la nomina imss."
-                                            thousandseparator={true} 
-                                            prefix={'$'}
-                                        />
+                                            <div className="col-md-4">
+                                                <InputNumber
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="numero_alta_imss"
+                                                    type="text"
+                                                    value={form.numero_alta_imss}
+                                                    placeholder="NÚMERO DE ALTA IMSS"
+                                                    iconclass={"fas fa-hospital-user"}
+                                                    patterns={NSS}
+                                                    messageinc="Incorrecto. Ej. 01234567891"
+                                                    typeformat="###########"
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <Input
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="vacaciones_disponibles"
+                                                    type="text"
+                                                    value={form.vacaciones_disponibles}
+                                                    placeholder="VACACIONES DISPONIBLES AL AÑO"
+                                                    iconclass={"far fa-calendar-alt"}
+                                                    messageinc="Incorrecto. Ingresa loS días de vacaciones disponibles al año."
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-4">
+                                                <InputNumber
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="nomina_imss"
+                                                    type="text"
+                                                    value={form.nomina_imss}
+                                                    placeholder="Nomina IMSS"
+                                                    iconclass={"fas fa-money-check-alt"}
+                                                    messageinc="Incorrecto. Ingresa la nomina imss."
+                                                    thousandseparator={true}
+                                                    prefix={'$'}
+                                                />
+                                            </div>
+                                            {
+                                                form.tipo_empleado === 'Obra' ?
+                                                    <>
+                                                        <div className="col-md-4">
+                                                            <InputNumber
+                                                                requirevalidation={0}
+                                                                formeditado={formeditado}
+                                                                onChange={onChange}
+                                                                name="salario_hr"
+                                                                type="text"
+                                                                value={form.salario_hr}
+                                                                placeholder="Salario por hora"
+                                                                iconclass={"fas fa-money-check-alt"}
+                                                                messageinc="Incorrecto. Ingresa el salario por hora."
+                                                                thousandseparator={true}
+                                                                prefix={'$'}
+                                                            />
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <InputNumber
+                                                                requirevalidation={0}
+                                                                formeditado={formeditado}
+                                                                onChange={onChange}
+                                                                name="salario_hr_extra"
+                                                                type="text"
+                                                                value={form.salario_hr_extra}
+                                                                placeholder="Salario por hora extra"
+                                                                iconclass={"fas fa-money-check-alt"}
+                                                                messageinc="Incorrecto. Ingresa el salario por hora extra."
+                                                                thousandseparator={true}
+                                                                prefix={'$'}
+                                                            />
+                                                        </div>
+                                                    </>
+                                                    :
+                                                    <div className="col-md-4">
+                                                        <InputNumber
+                                                            requirevalidation={0}
+                                                            formeditado={formeditado}
+                                                            onChange={onChange}
+                                                            name="nomina_extras"
+                                                            type="text"
+                                                            value={form.nomina_extras}
+                                                            placeholder="Restante de nómina"
+                                                            iconclass={"fas fa-money-check-alt"}
+                                                            messageinc="Incorrecto. Ingresa el restante de nómina."
+                                                            thousandseparator={true}
+                                                            prefix={'$'}
+                                                        />
+                                                    </div>
+                                            }
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            {
+                                                title === 'Editar empleado'
+                                                    ? ''
+                                                    :
+                                                    <div className="col-md-12 mt-5 text-center">
+                                                        <FileInput
+                                                            requirevalidation={1}
+                                                            formeditado={formeditado}
+                                                            onChangeAdjunto={onChangeAdjunto}
+                                                            placeholder={form.adjuntos.altasBajas.placeholder}
+                                                            value={form.adjuntos.altasBajas.value}
+                                                            name='altasBajas'
+                                                            id='altasBajas'
+                                                            accept="image/*, application/pdf"
+                                                            files={form.adjuntos.altasBajas.files}
+                                                            deleteAdjunto={clearFiles}
+                                                            multiple
+                                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50'
+                                                            iconclass='flaticon2-clip-symbol text-primary'
+                                                        />
+                                                    </div>
+                                            }
+                                        </div>
                                     </div>
-                                    {
-                                        form.tipo_empleado === 'Obra'
-                                            ?
-                                                <>
-                                                    <div className="col-md-4">
-                                                        <InputNumber
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            onChange={onChange}
-                                                            name="salario_hr"
-                                                            type="text"
-                                                            value={form.salario_hr}
-                                                            placeholder="Salario por hora"
-                                                            iconclass={"fas fa-money-check-alt"}
-                                                            messageinc="Incorrecto. Ingresa el salario por hora."
-                                                            thousandseparator={true} 
-                                                            prefix={'$'}
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <InputNumber
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            onChange={onChange}
-                                                            name="salario_hr_extra"
-                                                            type="text"
-                                                            value={form.salario_hr_extra}
-                                                            placeholder="Salario por hora extra"
-                                                            iconclass={"fas fa-money-check-alt"}
-                                                            messageinc="Incorrecto. Ingresa el salario por hora extra."
-                                                            thousandseparator={true} 
-                                                            prefix={'$'}
-                                                        />
-                                                    </div>
-                                                </>
-                                            :
-                                                <div className="col-md-4">
-                                                    <InputNumber
-                                                        requirevalidation={0}
-                                                        formeditado={formeditado}
-                                                        onChange={onChange}
-                                                        name="nomina_extras"
-                                                        type="text"
-                                                        value={form.nomina_extras}
-                                                        placeholder="Restante de nómina"
-                                                        iconclass={"fas fa-money-check-alt"}
-                                                        messageinc="Incorrecto. Ingresa el restante de nómina."
-                                                        thousandseparator={true} 
-                                                        prefix={'$'}
-                                                    />
-                                                </div>
-                                    }
-                                    
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">

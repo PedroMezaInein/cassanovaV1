@@ -2043,6 +2043,11 @@ export const EMPLEADOS_COLUMNS = [
         customRender: true
     },
     {
+        Header: 'Departamento',
+        accessor: 'departamento',
+        // customRender: true
+    },
+    {
         Header: 'Puesto',
         accessor: 'puesto',
         customRender: true
