@@ -13,7 +13,7 @@ class AgendarReunionGoogle extends Component {
                         <div className="d-flex justify-content-center mt-5" style={{ height: '1px' }}>
                             <label className="font-weight-bolder">Fecha del evento</label>
                         </div>
-                        <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } date = { form.fecha } withformgroup={0} />
+                        <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } date = { form.fecha } withformgroup={0} requirevalidation={1}/>
                         <div className="d-flex justify-content-center">
                             <div className="col-md-6">
                                 <label className="col-form-label font-weight-bolder">Hora de inicio</label>

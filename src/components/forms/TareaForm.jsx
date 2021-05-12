@@ -21,7 +21,7 @@ class TareaForm extends Component {
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                 <label className="text-center font-weight-bolder">Fecha de entrega</label>
                             </div>
-                            <CalendarDay date = { form.fecha_limite } onChange = { (e) => { onChange(e, true) } } name='fecha_limite' />
+                            <CalendarDay date = { form.fecha_limite } onChange = { (e) => { onChange(e, true) } } name='fecha_limite' requirevalidation={1}/>
                         </div>
                         <div className="col-lg-7 col-12 align-self-center">
                             <div className="col-md-12 px-0">

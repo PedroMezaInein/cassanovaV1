@@ -28,7 +28,7 @@ class FormProveedoresRRHH extends Component {
                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                             <label className="text-center font-weight-bolder">Fecha</label>
                         </div>
-                        <CalendarDay value={form.fecha} name='fecha' onChange={onChange} date={form.fecha} withformgroup={1} />
+                        <CalendarDay value={form.fecha} name='fecha' onChange={onChange} date={form.fecha} withformgroup={1} requirevalidation={1}/>
                     </Col>
                     <Col md="8" className="align-self-center">
                         <div className="form-group row form-group-marginless mt-4 mb-0">

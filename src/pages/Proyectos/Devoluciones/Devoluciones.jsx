@@ -18,7 +18,7 @@ import Select from '../../../components/form-components/Select'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import $ from "jquery";
-import { setSingleHeader } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 class Devoluciones extends Component {
     state = {
         // modal: false,
@@ -734,7 +734,7 @@ class Devoluciones extends Component {
     openModalSee = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v1/proyectos/devoluciones/${devolucion.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { devolucion } = response.data
                 Swal.close()
@@ -749,7 +749,7 @@ class Devoluciones extends Component {
     openFacturaExtranjera = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/adjuntos/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v1/proyectos/devoluciones/adjuntos/${devolucion.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { form } = this.state
                 const { devolucion } = response.data
@@ -766,7 +766,7 @@ class Devoluciones extends Component {
     openModalAdjuntos = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/adjuntos/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v1/proyectos/devoluciones/adjuntos/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { form } = this.state
                 const { devolucion } = response.data
@@ -784,7 +784,7 @@ class Devoluciones extends Component {
     openModalFacturas = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/facturas/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v1/proyectos/devoluciones/facturas/${devolucion.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 let { form } = this.state
                 const { devolucion } = response.data
@@ -878,7 +878,7 @@ class Devoluciones extends Component {
     deleteDevolucionAxios = async() => {
         const { access_token } = this.props.authUser
         const { devolucion } = this.state
-        await axios.delete(URL_DEV + 'devoluciones/' + devolucion.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/devoluciones/${devolucion.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 this.getDevolucionesAxios()
                 this.setState({ ...this.state, form: this.clearForm(), modalDelete: false, })
@@ -920,7 +920,7 @@ class Devoluciones extends Component {
             return false
         })
         data.append('id', devolucion.id)
-        await axios.post(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v1/proyectos/devoluciones/${devolucion.id}/factura`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 let { form } = this.state
                 const { devolucion } = response.data
@@ -941,7 +941,7 @@ class Devoluciones extends Component {
     deleteFacturaAxios = async(id) => {
         const { access_token } = this.props.authUser
         const { devolucion } = this.state
-        await axios.delete(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/devoluciones/${devolucion.id}/facturas/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 let { form } = this.state
                 const { devolucion } = response.data
@@ -1005,7 +1005,7 @@ class Devoluciones extends Component {
         })
         data.append('tipo', item)
         data.append('id', devolucion.id)
-        await axios.post(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v1/proyectos/devoluciones/${devolucion.id}/adjuntos`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 const { devolucion } = response.data
                 const { form } = this.state
@@ -1025,7 +1025,7 @@ class Devoluciones extends Component {
     deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { devolucion } = this.state
-        await axios.delete(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/devoluciones/${devolucion.id}/adjuntos/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { devolucion } = response.data
                 const { form } = this.state
