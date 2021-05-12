@@ -150,7 +150,7 @@ class LeadNoContratado extends Component {
                                                         : ''
                                                     }
                                                     <span>{lead.rechazado? 'Rechazo':'Cancelado'}: </span><span className="text-muted font-weight-bold font-size-sm">
-                                                        { setDateTableLG(lead.updated_at) }
+                                                        { setDateTableLG(lead.fecha_cancelacion_rechazo) }
                                                     </span>
                                                 </td>
                                                 <td>
