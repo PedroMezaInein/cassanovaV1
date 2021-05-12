@@ -18,6 +18,7 @@ import Select from '../../../components/form-components/Select'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import $ from "jquery";
+import { setSingleHeader } from '../../../functions/routers'
 class Devoluciones extends Component {
     state = {
         // modal: false,
@@ -835,7 +836,7 @@ class Devoluciones extends Component {
     getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(URL_DEV + 'devoluciones/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v1/proyectos/devoluciones`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
@@ -1109,7 +1110,7 @@ class Devoluciones extends Component {
                         'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
                     onClickExport = { () => this.exportDevolucionesAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setDevoluciones }
-                    urlRender = { `${URL_DEV}v2/proyectos/devoluciones`} validateFactura = { true } tipo_validacion = 'devoluciones' cardTable = 'cardTable'
+                    urlRender = { `${URL_DEV}v1/proyectos/devoluciones`} validateFactura = { true } tipo_validacion = 'devoluciones' cardTable = 'cardTable'
                     cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
                 <ModalDelete title = "¿Estás seguro que deseas eliminar la devolución?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteDevolucionAxios() }} />

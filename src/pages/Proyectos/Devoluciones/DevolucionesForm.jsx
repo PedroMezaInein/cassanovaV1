@@ -9,7 +9,7 @@ import Layout from '../../../components/layout/layout'
 import { DevolucionesForm as DevolucionesFormulario } from '../../../components/forms'
 import { SolicitudDevolucionCard } from '../../../components/cards'
 import { Card } from 'react-bootstrap'
-import { setFormHeader } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 class DevolucionesForm extends Component {
     state = {
         title: 'Nueva devolución',
@@ -434,7 +434,7 @@ class DevolucionesForm extends Component {
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(URL_DEV + 'devoluciones/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v1/proyectos/devoluciones`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
@@ -498,7 +498,7 @@ class DevolucionesForm extends Component {
             }
             return false
         })
-        await axios.post(`${URL_DEV}devoluciones`, data, { headers: setFormHeader(access_token) }).then(
+        await axios.post(`${URL_DEV}v1/proyectos/devoluciones`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 this.getOptionsAxios()
                 this.setState({ ...this.state, form: this.clearForm(), })
