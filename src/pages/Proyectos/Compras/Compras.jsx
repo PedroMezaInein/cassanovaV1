@@ -1117,17 +1117,6 @@ class Compras extends Component {
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0 pt-4">
                             <div className="col-md-6 px-2">
-                                <FileInput
-                                    onChangeAdjunto={this.onChangeAdjunto}
-                                    placeholder={form['adjuntos']['factura']['placeholder']}
-                                    value={form['adjuntos']['factura']['value']}
-                                    name={'factura'}
-                                    id={'factura'}
-                                    accept="text/xml, application/pdf"
-                                    files={form['adjuntos']['factura']['files']}
-                                    deleteAdjunto={this.clearFiles} multiple />
-                            </div>
-                            <div className="col-md-6 px-2">
                                 <Select
                                     requirevalidation={1}
                                     formeditado={1}
@@ -1140,11 +1129,29 @@ class Compras extends Component {
                                     messageinc="Incorrecto. Selecciona el estatus de compra."
                                 />
                             </div>
-                            <div className="col-md-12 px-2 align-items-center d-flex mt-4">
-                                <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                            <div className="col-md-6 px-2 text-center align-self-center">
+                                <FileInput
+                                    onChangeAdjunto={this.onChangeAdjunto}
+                                    placeholder={form['adjuntos']['factura']['placeholder']}
+                                    value={form['adjuntos']['factura']['value']}
+                                    name={'factura'}
+                                    id={'factura'}
+                                    accept="text/xml, application/pdf"
+                                    files={form['adjuntos']['factura']['files']}
+                                    deleteAdjunto={this.clearFiles} multiple
+                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                    iconclass='flaticon2-clip-symbol text-primary'
+                                />
                             </div>
+                            {
+                                form.adjuntos.factura.value &&
+                                <div className="col-md-12 px-2 align-items-center d-flex mt-4">
+                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                </div>
+                            }
                         </div>
                     </Form>
+                    <div className="separator separator-dashed separator-border-2 mb-6 mt-5"></div>
                     <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
                 </Modal>
                 <Modal size = "xl" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >

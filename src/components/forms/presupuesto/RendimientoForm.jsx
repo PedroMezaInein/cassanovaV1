@@ -106,24 +106,9 @@ class RendimientoForm extends Component {
                         />
                     </div>
                 </div>
-                {/* <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    
-                </div> */}
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless d-flex justify-content-center">
                     <div className="col-md-4 text-center">
-                        {/* <FileInput
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            onChangeAdjunto={onChangeAdjunto}
-                            placeholder='Adjunto'
-                            value={form['adjunto']['value']}
-                            name={'adjunto'} id={'adjunto'}
-                            accept="image/*, application/pdf"
-                            files={form['adjunto']['files']}
-                            deleteAdjunto={clearFiles}
-                        /> */}
                         <label className="col-form-label my-2 font-weight-bolder">{form.adjunto.placeholder}</label>
                         <ItemSlider
                             items={form.adjunto.files}

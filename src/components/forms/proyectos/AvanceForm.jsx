@@ -122,27 +122,22 @@ class AvanceForm extends Component {
                                         <table className="w-100">
                                             <tbody>
                                                 <tr>
-                                                    <td rowSpan="2" className="w-400px p-4">
+                                                    <td rowSpan="2" className="w-400px p-4 text-center">
                                                         <FileInput
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
                                                             onChangeAdjunto={e => onChangeAdjuntoAvance(e, key, 'adjuntos')}
                                                             placeholder={form['avances'][key]['adjuntos']['placeholder']}
                                                             value={form['avances'][key]['adjuntos']['value']}
-                                                            name={`${key}-avance`} id={`${key}-avance`}
+                                                            name={`${key}-avance`} id={'avance'}
                                                             accept="image/*"
                                                             files={form['avances'][key]['adjuntos']['files']}
                                                             _key={key}
                                                             deleteAdjuntoAvance={clearFilesAvances}
                                                             multiple
+                                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                            iconclass='flaticon2-clip-symbol text-primary'
                                                         />
-                                                        {/* <ItemSlider
-                                                            items={form['avances'][key]['adjuntos']['files']}
-                                                            item='adjuntos' 
-                                                            handleChange={handleChange}
-                                                            deleteFile={deleteFile}
-                                                            multiple={true} 
-                                                        /> */}
                                                     </td>
                                                     <td>
                                                         <div className="d-flex justify-content-end">

@@ -739,6 +739,7 @@ class Empleados extends Component {
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoEmpleadoAxios() }}
                         adjuntos={['datosGenerales', 'recibosNomina', 'altasBajas']}
                     />
+                    <div className="separator separator-dashed separator-border-2 mb-6 mt-7"></div>
                     <TableForModals
                         columns={ADJUNTOS_COLUMNS}
                         data={adjuntos}

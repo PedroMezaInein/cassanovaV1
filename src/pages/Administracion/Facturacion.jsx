@@ -46,7 +46,7 @@ class Facturacion extends Component {
             adjuntos: {
                 factura: {
                     value: '',
-                    placeholder: 'Factura',
+                    placeholder: 'Adjuntar factura',
                     files: []
                 }, adjuntos: {
                     value: '',
@@ -385,7 +385,7 @@ class Facturacion extends Component {
                             files: []
                         }, factura: {
                             value: '',
-                            placeholder: 'Factura',
+                            placeholder: 'Adjuntar factura',
                             files: []
                         }, relacionados:{
                             value: '',
@@ -995,10 +995,13 @@ class Facturacion extends Component {
 
                 <Modal title = "Agregar facturas" show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
                     <Form /*onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}} */ >
-                        <div className="mt-3 mb-4">
+                        <div className="mt-3 mb-4 text-center">
                             <FileInput onChangeAdjunto = { this.onChangeAdjuntoFacturas } placeholder = { form.adjuntos.factura.placeholder }
                                 value = { form.adjuntos.factura.value} name = 'factura' id = 'factura' accept = "text/xml, application/pdf"
-                                files = {form.adjuntos.factura.files } deleteAdjunto = { this.clearFiles } multiple />
+                                files = {form.adjuntos.factura.files } deleteAdjunto = { this.clearFiles } multiple
+                                classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                iconclass='flaticon2-clip-symbol text-primary'
+                                />
                         </div>
                         <div className="card-footer py-3 pr-1">
                             <div className="row">

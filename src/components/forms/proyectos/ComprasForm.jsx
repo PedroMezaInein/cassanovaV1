@@ -171,7 +171,7 @@ class ComprasForm extends Component {
                                     </div> 
                                     {
                                         form.factura === 'Con factura' && title !== 'Editar compra' ?
-                                            <div className="col-md-4">
+                                            <div className="col-md-4 align-self-center text-center">
                                                 <FileInput
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
@@ -181,7 +181,9 @@ class ComprasForm extends Component {
                                                     name={'factura'} id={'factura'}
                                                     accept="text/xml, application/pdf"
                                                     files={form['adjuntos']['factura']['files']}
-                                                    deleteAdjunto={clearFiles} multiple 
+                                                    deleteAdjunto={clearFiles} multiple
+                                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                    iconclass='flaticon2-clip-symbol text-primary'
                                                 />
                                             </div>
                                         : ''
@@ -439,8 +441,8 @@ class ComprasForm extends Component {
                                     title !== 'Editar compra' ?
                                         <>
                                             <div className="separator separator-dashed mt-1 mb-2"></div>
-                                            <div className="form-group row form-group-marginless">                                
-                                                <div className="col-md-6">
+                                            <div className="form-group row form-group-marginless mt-8">                                
+                                                <div className="col-md-6 text-center">
                                                     <FileInput
                                                         requirevalidation={0}
                                                         formeditado={formeditado}
@@ -451,16 +453,11 @@ class ComprasForm extends Component {
                                                         files={form['adjuntos']['presupuesto']['files']}
                                                         deleteAdjunto={clearFiles} 
                                                         multiple
+                                                        classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                        iconclass='flaticon2-clip-symbol text-primary'
                                                     />
-                                                    {/* <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.presupuesto.placeholder}</label>
-                                                    <ItemSlider
-                                                        items={form.adjuntos.presupuesto.files}
-                                                        item='adjunto'
-                                                        handleChange={handleChange}
-                                                        multiple={true}
-                                                    /> */}
                                                 </div>
-                                                <div className="col-md-6">
+                                                <div className="col-md-6 text-center">
                                                     <FileInput
                                                         requirevalidation={0}
                                                         formeditado={formeditado}
@@ -471,14 +468,9 @@ class ComprasForm extends Component {
                                                         files={form['adjuntos']['pago']['files']}
                                                         deleteAdjunto={clearFiles}
                                                         multiple
+                                                        classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                        iconclass='flaticon2-clip-symbol text-primary'
                                                     />
-                                                    {/* <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.pago.placeholder}</label>
-                                                    <ItemSlider
-                                                        items={form.adjuntos.pago.files}
-                                                        item='adjunto'
-                                                        handleChange={handleChange}
-                                                        multiple={true}
-                                                    /> */}
                                                 </div>
                                             </div>
                                         </>

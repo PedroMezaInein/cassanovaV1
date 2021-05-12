@@ -60,7 +60,7 @@ class SolicitudCompraForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, handleChange,  ...props } = this.props
+        const { title, options, form, onChange, children, clearFiles, onSubmit, formeditado, handleChange,  ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -265,17 +265,6 @@ class SolicitudCompraForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4 text-center">
-                                        {/* <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form.adjuntos.adjunto.placeholder}
-                                            value={form.adjuntos.adjunto.value}
-                                            name='adjunto' id='adjunto'
-                                            accept="image/*, application/pdf"
-                                            files={form.adjuntos.adjunto.files}
-                                            deleteAdjunto={clearFiles} multiple
-                                        /> */}
                                         <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
                                         <ItemSlider
                                             items={form.adjuntos.adjunto.files}

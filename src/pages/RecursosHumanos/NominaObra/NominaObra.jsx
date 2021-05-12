@@ -722,11 +722,11 @@ class NominaObra extends Component {
                 <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaObraAxios() }}>
                 </ModalDelete>
 
-                <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
+                <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoNominaAdminAxios() }} 
                         adjuntos = {['adjunto']}/>
-                    
+                    <div className="separator separator-dashed separator-border-2 mb-6 mt-5"></div>
                     <TableForModals
                         columns={ADJUNTOS_COLUMNS}
                         data={adjuntos}
