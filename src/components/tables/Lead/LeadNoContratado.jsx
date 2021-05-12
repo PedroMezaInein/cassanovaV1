@@ -96,7 +96,7 @@ class LeadNoContratado extends Component {
                                 <th style={{ minWidth: "100px" }}>
                                     <span>Nombre del cliente</span>
                                 </th>
-                                <th style={{ minWidth: "140px" }}>Fecha</th>
+                                <th style={{ minWidth: "140px" }} className="text-center">Fecha</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Motivo</th>
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
@@ -149,9 +149,15 @@ class LeadNoContratado extends Component {
                                                             : ''
                                                         : ''
                                                     }
-                                                    <span>{lead.rechazado? 'Rechazo':'Cancelado'}: </span><span className="text-muted font-weight-bold font-size-sm">
-                                                        { setDateTableLG(lead.fecha_cancelacion_rechazo) }
-                                                    </span>
+                                                    {
+                                                        lead.fecha_cancelacion_rechazo !== null &&
+                                                        <>
+                                                            <span>{lead.rechazado? 'Rechazo':'Cancelado'}: </span>
+                                                            <span className="text-muted font-weight-bold font-size-sm">
+                                                                { setDateTableLG(lead.fecha_cancelacion_rechazo) }
+                                                            </span>
+                                                        </>
+                                                    }
                                                 </td>
                                                 <td>
                                                     {
