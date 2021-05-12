@@ -43,7 +43,7 @@ class AdjuntosForm extends Component{
                                 :
                                     adjuntos.map( (adjunto, key) => {
                                         return(
-                                            <div className="col-md-12 px-2" key = { key } >
+                                            <div className="col-md-12 px-2 mt-5 text-center" key = { key } >
                                                 <FileInput 
                                                     onChangeAdjunto = { onChangeAdjunto } 
                                                     placeholder = { form['adjuntos'][adjunto]['placeholder'] }
@@ -54,6 +54,8 @@ class AdjuntosForm extends Component{
                                                     files = { form['adjuntos'][adjunto]['files'] }
                                                     deleteAdjunto = { clearFiles } 
                                                     multiple
+                                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                    iconclass='flaticon2-clip-symbol text-primary'
                                                 />
                                             </div>
                                         )

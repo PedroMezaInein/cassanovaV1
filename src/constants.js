@@ -1259,6 +1259,81 @@ export const COMPRAS_COLUMNS = [
     },
 ]
 
+export const DEVOLUCIONES_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'ID',
+        accessor: 'identificador'
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+        customRender: true
+    },    
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto',
+        customRender: true
+    },
+    {
+        Header: 'Factura',
+        accessor: 'factura'
+    },
+    {
+        Header: 'Área',
+        accessor: 'area',
+        customRender: true
+    },
+    {
+        Header: 'Sub-A',
+        accessor: 'subarea',
+        customRender: true
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Comisión',
+        accessor: 'comision'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
+    },
+    {
+        Header: 'Impuesto',
+        accessor: 'impuesto',
+        customRender: true
+    },
+    {
+        Header: 'Pago',
+        accessor: 'tipoPago',
+        customRender: true
+    },    
+    {
+        Header: 'Estatus',
+        accessor: 'estatusCompra',
+        customRender: true
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
+        customRender: true
+    },
+]
+
 export const SOLICITUD_COMPRA_COLUMNS = [
     {
         Header: 'OPCIONES',

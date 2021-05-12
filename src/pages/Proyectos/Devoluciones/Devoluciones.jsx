@@ -3,14 +3,14 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
-import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
+import { URL_DEV, DEVOLUCIONES_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput, SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
-import { ComprasCard } from '../../../components/cards'
+import { DevolucionCard } from '../../../components/cards'
 import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import {AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
@@ -18,7 +18,8 @@ import Select from '../../../components/form-components/Select'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import $ from "jquery";
-class Compras extends Component {
+import { setSingleHeader } from '../../../functions/routers'
+class Devoluciones extends Component {
     state = {
         // modal: false,
         modalDelete: false,
@@ -26,11 +27,11 @@ class Compras extends Component {
         modalAskFactura: false,
         modalSee: false,
         modalFacturaExtranjera: false,
-        title: 'Nueva compra',
+        title: 'Nueva devolución',
         form: {
             factura: 'Sin factura',
             facturaObject: '',
-            contrato: '',
+            // contrato: '',
             rfc: '',
             total: '',
             cliente: '',
@@ -89,7 +90,7 @@ class Compras extends Component {
             formasPago: [],
             metodosPago: [],
             estatusFacturas: [],
-            contratos: [],
+            // contratos: [],
         },
         data: {
             clientes: [],
@@ -97,13 +98,13 @@ class Compras extends Component {
             cuentas: [],
             proyectos: [],
             proveedores: [],
-            compras: [],
+            devoluciones: [],
             adjuntos: []
         },
         formeditado: 0,
         solicitud: '',
-        compras: [],
-        compra: '',
+        devoluciones: [],
+        devolucion: '',
         porcentaje: '',
         facturas: [],
         adjuntos: []
@@ -113,11 +114,11 @@ class Compras extends Component {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
-        const compras = permisos.find(function (element, index) {
+        const devoluciones = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
-        if (!compras)
+        if (!devoluciones)
             history.push('/')
         this.getOptionsAxios()
         let queryString = this.props.history.location.search
@@ -129,7 +130,7 @@ class Compras extends Component {
                     ...this.state,
                     modalSee: true
                 })
-                this.getCompraAxios(id)
+                this.getDevolucionesAxiosId(id)
             }
         }
     }
@@ -213,7 +214,7 @@ class Compras extends Component {
         createAlertSA2WithActionOnClose(
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
-            () => this.addAdjuntoCompraAxios(files, item),
+            () => this.addAdjuntoDevolucionAxios(files, item),
             () => this.cleanAdjuntos(item)
         )
     }
@@ -338,9 +339,9 @@ class Compras extends Component {
                         }
                         if (auxProveedor) {
                             form.proveedor = auxProveedor.id.toString()
-                            if (auxProveedor.contratos) {
-                                options['contratos'] = setOptions(auxProveedor.contratos, 'nombre', 'id')
-                            }
+                            // if (auxProveedor.contratos) {
+                            //     options['contratos'] = setOptions(auxProveedor.contratos, 'nombre', 'id')
+                            // }
                         } else {
                             if(obj.nombre_emisor === ''){
                                 const { history } = this.props
@@ -398,21 +399,21 @@ class Compras extends Component {
             form
         })
     }
-    setCompras = compras => {
+    setDevoluciones = devoluciones => {
         let aux = []
         let _aux = []
-        compras.map((compra) => {
+        devoluciones.map((devolucion) => {
             _aux = []
-            if (compra.presupuestos) {
-                compra.presupuestos.map((presupuesto) => {
+            if (devolucion.presupuestos) {
+                devolucion.presupuestos.map((presupuesto) => {
                     _aux.push({
                         name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
                     })
                     return false
                 })
             }
-            if (compra.pagos) {
-                compra.pagos.map((pago) => {
+            if (devolucion.pagos) {
+                devolucion.pagos.map((pago) => {
                     _aux.push({
                         name: 'Pago', text: pago.name, url: pago.url
                     })
@@ -421,30 +422,30 @@ class Compras extends Component {
             }
             aux.push(
                 {
-                    actions: this.setActions(compra),
-                    identificador: renderToString(setTextTableCenter(compra.id)),
+                    actions: this.setActions(devolucion),
+                    identificador: renderToString(setTextTableCenter(devolucion.id)),
                     cuenta: renderToString(setArrayTable(
                         [
-                            { name: 'Empresa', text: compra.empresa ? compra.empresa.name : '' },
-                            { name: 'Cuenta', text: compra.cuenta ? compra.cuenta.nombre : '' },
-                            { name: '# de cuenta', text: compra.cuenta ? compra.cuenta.numero : '' }
+                            { name: 'Empresa', text: devolucion.empresa ? devolucion.empresa.name : '' },
+                            { name: 'Cuenta', text: devolucion.cuenta ? devolucion.cuenta.nombre : '' },
+                            { name: '# de cuenta', text: devolucion.cuenta ? devolucion.cuenta.numero : '' }
                         ],'153px'
                     )),
-                    proyecto: setTextTableReactDom(compra.proyecto ? compra.proyecto.nombre : '', this.doubleClick, compra, 'proyecto', 'text-center'),
-                    proveedor: renderToString(setTextTableCenter(compra.proveedor ? compra.proveedor.razon_social : '')),
-                    factura: renderToString(setTextTable(compra.factura ? 'Con factura' : 'Sin factura')),
-                    monto: renderToString(setMoneyTable(compra.monto)),
-                    comision: renderToString(setMoneyTable(compra.comision ? compra.comision : 0.0)),
-                    impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 'text-center'),
-                    tipoPago: setTextTableReactDom(compra.tipo_pago.tipo, this.doubleClick, compra, 'tipoPago', 'text-center'),
-                    descripcion: setTextTableReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 'text-justify'),
-                    area: setTextTableReactDom(compra.area ? compra.area.nombre : '', this.doubleClick, compra, 'area', 'text-center'),
-                    subarea: setTextTableReactDom(compra.subarea ? compra.subarea.nombre : '', this.doubleClick, compra, 'subarea', 'text-center'),
-                    estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 'text-center'),
-                    total: renderToString(setMoneyTable(compra.total)),
-                    fecha: setDateTableReactDom(compra.created_at, this.doubleClick, compra, 'fecha', 'text-center'),
-                    id: compra.id,
-                    objeto: compra
+                    proyecto: setTextTableReactDom(devolucion.proyecto ? devolucion.proyecto.nombre : '', this.doubleClick, devolucion, 'proyecto', 'text-center'),
+                    proveedor: renderToString(setTextTableCenter(devolucion.proveedor ? devolucion.proveedor.razon_social : '')),
+                    factura: renderToString(setTextTable(devolucion.factura ? 'Con factura' : 'Sin factura')),
+                    monto: renderToString(setMoneyTable(devolucion.monto)),
+                    comision: renderToString(setMoneyTable(devolucion.comision ? devolucion.comision : 0.0)),
+                    impuesto: setTextTableReactDom(devolucion.tipo_impuesto ? devolucion.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, devolucion, 'tipoImpuesto', 'text-center'),
+                    tipoPago: setTextTableReactDom(devolucion.tipo_pago.tipo, this.doubleClick, devolucion, 'tipoPago', 'text-center'),
+                    descripcion: setTextTableReactDom(devolucion.descripcion !== null ? devolucion.descripcion :'', this.doubleClick, devolucion, 'descripcion', 'text-justify'),
+                    area: setTextTableReactDom(devolucion.area ? devolucion.area.nombre : '', this.doubleClick, devolucion, 'area', 'text-center'),
+                    subarea: setTextTableReactDom(devolucion.subarea ? devolucion.subarea.nombre : '', this.doubleClick, devolucion, 'subarea', 'text-center'),
+                    estatusCompra: setTextTableReactDom(devolucion.estatus_compra ? devolucion.estatus_compra.estatus : '', this.doubleClick, devolucion, 'estatusCompra', 'text-center'),
+                    total: renderToString(setMoneyTable(devolucion.total)),
+                    fecha: setDateTableReactDom(devolucion.created_at, this.doubleClick, devolucion, 'fecha', 'text-center'),
+                    id: devolucion.id,
+                    objeto: devolucion
                 }
             )
             return false
@@ -578,7 +579,7 @@ class Compras extends Component {
                 }
             </div>,
             <Update />,
-            () => { this.patchCompras(data, tipo, flag) },
+            () => { this.patchDevoluciones(data, tipo, flag) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -623,7 +624,7 @@ class Compras extends Component {
         }
     }
     
-    setActions = compra => {
+    setActions = devolucion => {
         let aux = []
         aux.push(
             {
@@ -662,7 +663,7 @@ class Compras extends Component {
                 tooltip: { id: 'facturaExtranjera', text: 'Factura extranjera'},
             }
         )
-        if (compra.factura) {
+        if (devolucion.factura) {
             aux.push(
                 {
                     text: 'Facturas',
@@ -676,19 +677,19 @@ class Compras extends Component {
         return aux
     }
     
-    changePageEdit = compra => {
+    changePageEdit = devolucion => {
         const { history } = this.props
         history.push({
-            pathname: '/proyectos/compras/edit',
-            state: { compra: compra },
+            pathname: '/proyectos/devoluciones/edit',
+            state: { devolucion: devolucion },
             formeditado: 1
         });
     }
-    openModalDelete = (compra) => {
+    openModalDelete = (devolucion) => {
         this.setState({
             ...this.state,
             modalDelete: true,
-            compra: compra
+            devolucion: devolucion
         })
     }
 
@@ -701,7 +702,7 @@ class Compras extends Component {
         this.setState({
             ...this.state,
             modalDelete: !modalDelete,
-            compra: ''
+            devolucion: ''
         })
     }
     handleCloseFacturas = () => {
@@ -727,17 +728,17 @@ class Compras extends Component {
         })
     }
 
-    handleCloseSee = () => { this.setState({ ...this.state, modalSee: false, compra: '' }) }
+    handleCloseSee = () => { this.setState({ ...this.state, modalSee: false, devolucion: '' }) }
     deleteFactura = id => { waitAlert(); this.deleteFacturaAxios(id) }
 
-    openModalSee = async(compra) => {
+    openModalSee = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { compra } = response.data
+                const { devolucion } = response.data
                 Swal.close()
-                this.setState({ ...this.state, modalSee: true, compra })
+                this.setState({ ...this.state, modalSee: true, devolucion })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -745,16 +746,16 @@ class Compras extends Component {
         })
     }
 
-    openFacturaExtranjera = async(compra) => {
+    openFacturaExtranjera = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/adjuntos/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/adjuntos/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { form } = this.state
-                const { compra } = response.data
-                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
+                const { devolucion } = response.data
+                form.adjuntos.facturas_pdf.files = devolucion.facturas_pdf
                 Swal.close()
-                this.setState({ ...this.state, form, modalFacturaExtranjera: true, compra })
+                this.setState({ ...this.state, form, modalFacturaExtranjera: true, devolucion })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -762,17 +763,17 @@ class Compras extends Component {
         })
     }
 
-    openModalAdjuntos = async(compra) => {
+    openModalAdjuntos = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/adjuntos/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/adjuntos/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { form } = this.state
-                const { compra } = response.data
-                form.adjuntos.presupuesto.files = compra.presupuestos
-                form.adjuntos.pago.files = compra.pagos
+                const { devolucion } = response.data
+                form.adjuntos.presupuesto.files = devolucion.presupuestos
+                form.adjuntos.pago.files = devolucion.pagos
                 Swal.close()
-                this.setState({ ...this.state, form, modalAdjuntos: true, compra })
+                this.setState({ ...this.state, form, modalAdjuntos: true, devolucion })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -780,19 +781,19 @@ class Compras extends Component {
         })
     }
     
-    openModalFacturas = async(compra) => {
+    openModalFacturas = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/facturas/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/facturas/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 let { form } = this.state
-                const { compra } = response.data
+                const { devolucion } = response.data
                 form = this.clearForm()
-                if(compra)
-                    if(compra.estatus_compra)
-                        form.estatusCompra = compra.estatus_compra.id
+                if(devolucion)
+                    if(devolucion.estatus_compra)
+                        form.estatusCompra = devolucion.estatus_compra.id
                 Swal.close()
-                this.setState({ ...this.state, form, modalFacturas: true, compra, facturas: compra.facturas })
+                this.setState({ ...this.state, form, modalFacturas: true, devolucion, facturas: devolucion.facturas })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -822,7 +823,7 @@ class Compras extends Component {
                     return false
                 })
                 this.setState({ ...this.state, form, data, options })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proveedor fue registrado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -830,12 +831,12 @@ class Compras extends Component {
         })
     }
 
-    getComprasAxios = async() => { $('#compras').DataTable().ajax.reload(); }
+    getDevolucionesAxios = async() => { $('#devoluciones').DataTable().ajax.reload(); }
     
     getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(URL_DEV + 'compras/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v1/proyectos/devoluciones`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
@@ -861,12 +862,12 @@ class Compras extends Component {
         })
     }
 
-    getCompraAxios = async (id) => {
+    getDevolucionesAxiosId = async (id) => {
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { compra } = response.data
-                this.setState({ ...this.state, compra: compra })
+                const { devolucion } = response.data
+                this.setState({ ...this.state, devolucion: devolucion })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -874,14 +875,14 @@ class Compras extends Component {
         })
     }
 
-    deleteCompraAxios = async() => {
+    deleteDevolucionAxios = async() => {
         const { access_token } = this.props.authUser
-        const { compra } = this.state
-        await axios.delete(URL_DEV + 'compras/' + compra.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { devolucion } = this.state
+        await axios.delete(URL_DEV + 'devoluciones/' + devolucion.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                this.getDevolucionesAxios()
                 this.setState({ ...this.state, form: this.clearForm(), modalDelete: false, })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La devolución fue eliminada con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -891,7 +892,7 @@ class Compras extends Component {
 
     sendFacturaAxios = async() => {
         const { access_token } = this.props.authUser
-        const { form, compra } = this.state
+        const { form, devolucion } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
@@ -918,18 +919,18 @@ class Compras extends Component {
             }
             return false
         })
-        data.append('id', compra.id)
-        await axios.post(`${URL_DEV}v2/proyectos/compras/${compra.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        data.append('id', devolucion.id)
+        await axios.post(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 let { form } = this.state
-                const { compra } = response.data
+                const { devolucion } = response.data
                 form = this.clearForm()
-                if(compra)
-                    if(compra.estatus_compra)
-                        form.estatusCompra = compra.estatus_compra.id
+                if(devolucion)
+                    if(devolucion.estatus_compra)
+                        form.estatusCompra = devolucion.estatus_compra.id
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.')
-                this.setState({ ...this.state, form, modalFacturas: true, compra, facturas: compra.facturas })
-                this.getComprasAxios()
+                this.setState({ ...this.state, form, modalFacturas: true, devolucion, facturas: devolucion.facturas })
+                this.getDevolucionesAxios()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -939,17 +940,17 @@ class Compras extends Component {
     
     deleteFacturaAxios = async(id) => {
         const { access_token } = this.props.authUser
-        const { compra } = this.state
-        await axios.delete(`${URL_DEV}v2/proyectos/compras/${compra.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { devolucion } = this.state
+        await axios.delete(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 let { form } = this.state
-                const { compra } = response.data
+                const { devolucion } = response.data
                 form = this.clearForm()
-                if(compra)
-                    if(compra.estatus_compra)
-                        form.estatusCompra = compra.estatus_compra.id
+                if(devolucion)
+                    if(devolucion.estatus_compra)
+                        form.estatusCompra = devolucion.estatus_compra.id
                 Swal.close()
-                this.setState({ ...this.state, form, compra, facturas: compra.facturas })
+                this.setState({ ...this.state, form, devolucion, facturas: devolucion.facturas })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -957,12 +958,12 @@ class Compras extends Component {
         })
     }
 
-    exportComprasAxios = async() =>{
+    exportDevolucionesAxios = async() =>{
         let headers = []
         let documento = ''
-        COMPRAS_COLUMNS.map((columna, key) => {
+        DEVOLUCIONES_COLUMNS.map((columna, key) => {
             if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(columna.accessor+'-compras')
+                documento = document.getElementById(columna.accessor+'-devoluciones')
                 if (documento) {
                     if (documento.value) {
                         headers.push({
@@ -976,15 +977,15 @@ class Compras extends Component {
         })
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.post(`${URL_DEV}v2/exportar/proyectos/compras`, { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/exportar/proyectos/devoluciones`, { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'compras.xlsx');
+                link.setAttribute('download', 'devoluciones.xlsx');
                 document.body.appendChild(link);
                 link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La devolución fue exportada con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -992,10 +993,10 @@ class Compras extends Component {
         })
     }
 
-    addAdjuntoCompraAxios = async(files, item)=>{
+    addAdjuntoDevolucionAxios = async(files, item)=>{
         waitAlert()
         const { access_token } = this.props.authUser
-        const { compra } = this.state
+        const { devolucion } = this.state
         const data = new FormData();
         files.map((file) => {
             data.append(`files_name_${item}[]`, file.name)
@@ -1003,15 +1004,15 @@ class Compras extends Component {
             return ''
         })
         data.append('tipo', item)
-        data.append('id', compra.id)
-        await axios.post(`${URL_DEV}v2/proyectos/compras/${compra.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        data.append('id', devolucion.id)
+        await axios.post(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { compra } = response.data
+                const { devolucion } = response.data
                 const { form } = this.state
-                form.adjuntos.pago.files = compra.pagos
-                form.adjuntos.presupuesto.files = compra.presupuestos
-                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
-                this.getComprasAxios()
+                form.adjuntos.pago.files = devolucion.pagos
+                form.adjuntos.presupuesto.files = devolucion.presupuestos
+                form.adjuntos.facturas_pdf.files = devolucion.facturas_pdf
+                this.getDevolucionesAxios()
                 this.setState({ ...this.state, form })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
@@ -1023,16 +1024,16 @@ class Compras extends Component {
 
     deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser
-        const { compra } = this.state
-        await axios.delete(`${URL_DEV}v2/proyectos/compras/${compra.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { devolucion } = this.state
+        await axios.delete(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { compra } = response.data
+                const { devolucion } = response.data
                 const { form } = this.state
-                form.adjuntos.presupuesto.files = compra.presupuestos
-                form.adjuntos.pago.files = compra.pagos
-                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
+                form.adjuntos.presupuesto.files = devolucion.presupuestos
+                form.adjuntos.pago.files = devolucion.pagos
+                form.adjuntos.facturas_pdf.files = devolucion.facturas_pdf
                 this.setState({...this.state, form })
-                this.getComprasAxios()
+                this.getDevolucionesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1050,7 +1051,7 @@ class Compras extends Component {
             data.append(`files_${item}[]`, file)
             return ''
         })
-        await axios.post(`${URL_DEV}compras/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}devoluciones/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({ ...this.state })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
@@ -1061,7 +1062,7 @@ class Compras extends Component {
         })
     }
     
-    patchCompras = async( data,tipo,flag ) => {
+    patchDevoluciones = async( data, tipo, flag ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = ''
@@ -1081,11 +1082,11 @@ class Compras extends Component {
                 break
         }
         waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/compras/${newType}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/proyectos/devoluciones/${newType}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                this.getDevolucionesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1095,11 +1096,11 @@ class Compras extends Component {
     }
 
     render() {
-        const {modalDelete, modalFacturas, modalAdjuntos, form, options, facturas, compra, modalSee, modalFacturaExtranjera } = this.state
+        const {modalDelete, modalFacturas, modalAdjuntos, form, options, facturas, devolucion, modalSee, modalFacturaExtranjera } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender columns = { COMPRAS_COLUMNS } title = 'Compras' subtitle = 'Listado de compras' url = '/proyectos/compras/add'
-                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'compras' exportar_boton = { true }
+                <NewTableServerRender columns = { DEVOLUCIONES_COLUMNS } title = 'Devoluciones' subtitle = 'Listado de devoluciones' url = '/proyectos/devoluciones/add'
+                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'devoluciones' exportar_boton = { true }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1108,11 +1109,11 @@ class Compras extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
-                    onClickExport = { () => this.exportComprasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setCompras }
-                    urlRender = { `${URL_DEV}v2/proyectos/compras`} validateFactura = { true } tipo_validacion = 'compras' cardTable = 'cardTable'
+                    onClickExport = { () => this.exportDevolucionesAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setDevoluciones }
+                    urlRender = { `${URL_DEV}v1/proyectos/devoluciones`} validateFactura = { true } tipo_validacion = 'devoluciones' cardTable = 'cardTable'
                     cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
-                <ModalDelete title = "¿Estás seguro que deseas eliminar la compra?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }} />
+                <ModalDelete title = "¿Estás seguro que deseas eliminar la devolución?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteDevolucionAxios() }} />
                 <Modal size = "xl" title = "Facturas" show = { modalFacturas } handleClose = { this.handleCloseFacturas } >
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0 pt-4">
@@ -1157,8 +1158,8 @@ class Compras extends Component {
                 <Modal size = "xl" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos } />
                 </Modal>
-                <Modal size="lg" title="Compra" show={modalSee} handleClose={this.handleCloseSee} >
-                    <ComprasCard compra={compra} />
+                <Modal size="lg" title="Devolución" show={modalSee} handleClose={this.handleCloseSee} >
+                    <DevolucionCard devolucion={devolucion} />
                 </Modal>
                 <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseAdjuntos} >
                     <FacturaExtranjera form={form}  onChangeAdjunto = { this.handleChange }  deleteFile = { this.openModalDeleteAdjuntos }/>
@@ -1171,4 +1172,4 @@ class Compras extends Component {
 const mapStateToProps = state => { return { authUser: state.authUser } }
 const mapDispatchToProps = dispatch => ({ })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Compras);
+export default connect(mapStateToProps, mapDispatchToProps)(Devoluciones);

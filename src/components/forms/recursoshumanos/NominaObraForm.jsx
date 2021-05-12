@@ -146,19 +146,6 @@ class NominaObraForm extends Component {
                                 title !== 'Editar nómina obra' ?
                                     <>
                                         <div className="col-md-4 text-center">
-                                            {/* <FileInput
-                                                requirevalidation={0}
-                                                formeditado={formeditado}
-                                                onChangeAdjunto={onChangeAdjunto}
-                                                placeholder={form.adjuntos.adjunto.placeholder}
-                                                value={form.adjuntos.adjunto.value}
-                                                name='adjunto'
-                                                id='adjunto'
-                                                accept="image/*, application/pdf"
-                                                files={form.adjuntos.adjunto.files}
-                                                deleteAdjunto={clearFiles}
-                                                multiple
-                                            /> */}
                                             <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
                                             <ItemSlider
                                                 items={form.adjuntos.adjunto.files}

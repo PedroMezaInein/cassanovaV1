@@ -34,6 +34,7 @@ import rendimientoForm from './presupuesto/RendimientoForm'
 import presupuestoForm from './presupuesto/PresupuestoForm'
 import actualizarPresupuestoForm from './presupuesto/ActualizarPresupuestoForm'
 import remisionForm from './proyectos/RemisionForm'
+import devolucionesForm from './proyectos/DevolucionesForm'
 import contabilidadForm from './reportes/ContabilidadForm'
 import flujosForm from './administracion/FlujosForm'
 import clienteUserForm from './usuarios/ClienteUserForm'
@@ -141,6 +142,7 @@ export const RendimientoForm = rendimientoForm
 export const PresupuestoForm = presupuestoForm
 export const ActualizarPresupuestoForm = actualizarPresupuestoForm
 export const RemisionForm = remisionForm
+export const DevolucionesForm = devolucionesForm
 export const ContabilidadForm = contabilidadForm
 export const FlujosForm = flujosForm
 export const ClienteUserForm = clienteUserForm
