@@ -864,7 +864,7 @@ class Devoluciones extends Component {
 
     getDevolucionesAxiosId = async (id) => {
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v1/proyectos/devoluciones/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { devolucion } = response.data
                 this.setState({ ...this.state, devolucion: devolucion })
