@@ -3463,7 +3463,7 @@
         
     }
     .bg-notify{
-        background: #F77817;
+        background: #DF6781;
         border-top-left-radius: 10px;
         border-bottom-left-radius: 10px;
         // width: 10%;
@@ -3477,7 +3477,7 @@
     .tipo-user{
         padding-bottom: 1rem;
         text-align: right;
-        color: #F77817;
+        color: #DF6781;
         font-weight: 600;
         font-size: 1rem;
     }
@@ -3493,7 +3493,7 @@
         position: absolute;
         border-radius: 50%;
         border: 6px solid white;
-        background-image: linear-gradient( -60deg, #f77817 0%, #f79c56 100%);
+        background-image: linear-gradient( -60deg, #DF6781 0%, #F9859E 100%);
         top: 50%;
         transform: translate(0, -50%);
         left: 40px;
@@ -3673,7 +3673,7 @@ $width-compressed: 20%;
     .bg-notify{
         width: 40%;
         transition: width 2s;
-        background: #F77817;
+        background: #DF6781;
         border-top-left-radius: 10px;
         border-bottom-left-radius: 10px;
     }
@@ -3683,7 +3683,7 @@ $width-compressed: 20%;
     // }
     .tipo-user{
         text-align: center;
-        color: #F77817;
+        color: #DF6781;
         font-weight: 600;
         font-size: 12px;
     }
@@ -3713,7 +3713,7 @@ $width-compressed: 20%;
             }
     }
     .img-avatar {
-        background-image: linear-gradient( -60deg, #f77817 0%, #f79c56 100%);
+        background-image: linear-gradient( -60deg, #DF6781 0%, #F9859E 100%);
         z-index: 1;
         top: 50%;
         transform: translate(0, -50%);

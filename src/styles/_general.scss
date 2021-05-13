@@ -2247,10 +2247,10 @@ div#task{
     }
     .switch.switch-outline.switch-info input:checked ~ span:after{
         color: #ffffff;
-        background-color: #F77817;
+        background-color: #8950FC;
     }
     .switch.switch-outline.switch-info input:checked ~ span:before{
-        border: 1.8px solid #F77817;
+        border: 1.8px solid #8950FC;
         background-color: transparent;
     }
     .switch.switch-sm input:checked ~ span:after{
@@ -2279,5 +2279,15 @@ div#symbol-total-contactos{
             display: block;
             margin-top: 8px;
         }
+    }
+}
+.svg-color-nofify{
+    path, rect {
+        fill: #8950FC;
+    }
+}
+.svg-color-nofify.disable-bg{
+    path, rect {
+        fill: #80808F;
     }
 }
