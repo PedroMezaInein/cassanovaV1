@@ -350,17 +350,6 @@ class DevolucionesForm extends Component {
                 } else
                     history.push('/proyectos/devoluciones')
                 break;
-            case 'convert': 
-                if (state) {
-                    if (state.solicitud) {
-                        this.getSolicitudDevolucionAxios(state.solicitud.id)
-                    }
-                }
-                this.setState({
-                    ...this.state,
-                    formeditado: 1
-                })
-                break;
             default:
                 break;
         }
@@ -379,7 +368,7 @@ class DevolucionesForm extends Component {
     getDevolucion = async(devolucion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/${devolucion.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v1/proyectos/devoluciones/${devolucion.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { devolucion } = response.data
                 Swal.close()
@@ -539,27 +528,18 @@ class DevolucionesForm extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(URL_DEV + 'devoluciones/update/' + devolucion.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v1/proyectos/devoluciones/${devolucion.id}?_method=PUT`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
-                this.getOptionsAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La devolución fue editado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/devoluciones'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La devolución fue editado con éxito.')
+                history.push({ pathname: '/proyectos/devoluciones' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     async addProveedorAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
@@ -598,82 +578,7 @@ class DevolucionesForm extends Component {
             console.log(error, 'error')
         })
     }
-    async getSolicitudDevolucionAxios(id) {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'solicitud-devolucion/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { solicitud } = response.data
-                const { options, form } = this.state
-                form.solicitud = solicitud.id
-                form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
-                form.fecha = new Date(solicitud.created_at)
-                if (solicitud.factura) {
-                    let aux = ''
-                    options.tiposImpuestos.find(function (element, index) {
-                        if (element.text === 'IVA')
-                            aux = element.value
-                        return false
-                    });
-                    form.tipoImpuesto = aux
-                }
-                if (solicitud.proveedor) {
-                    form.proveedor = solicitud.proveedor.id.toString()
-                    form.rfc = solicitud.proveedor.rfc
-                    // if (solicitud.proveedor.contratos) {
-                    //     options['contratos'] = setOptions(solicitud.proveedor.contratos, 'nombre', 'id')
-                    // }
-                }
-                if (solicitud.proyecto) {
-                    form.proyecto = solicitud.proyecto.id.toString()
-                    /* if (solicitud.proyecto.clientes) {
-                        if (solicitud.proyecto.clientes.proyectos) {
-                            options['proyectos'] = setOptions(solicitud.proyecto.clientes.proyectos, 'nombre', 'id')
-                            form.proyecto = solicitud.proyecto.id.toString()
-                        }
-                    } */
-                }
-                if (solicitud.empresa) {
-                    if (solicitud.empresa.cuentas) {
-                        options['cuentas'] = setOptions(solicitud.empresa.cuentas, 'nombre', 'id')
-                        form.empresa = solicitud.empresa.id.toString()
-                    }
-                }
-                if (solicitud.subarea) {
-                    if (solicitud.subarea.area) {
-                        if (solicitud.subarea.area.subareas) {
-                            options['subareas'] = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
-                            form.area = solicitud.subarea.area.id.toString()
-                            form.subarea = solicitud.subarea.id.toString()
-                        }
-                    }
-                }
-                if (solicitud.tipo_pago) {
-                    form.tipoPago = solicitud.tipo_pago.id
-                }
-                if (solicitud.monto) {
-                    form.total = solicitud.monto
-                }
-                if (solicitud.descripcion) {
-                    form.descripcion = solicitud.descripcion
-                }
-                this.setState({
-                    ...this.state,
-                    title: 'Convierte la solicitud de devolución',
-                    solicitud: solicitud,
-                    modal: true,
-                    form,
-                    options,
-                    formeditado: 1
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     render() {
         const { title, form, options, solicitud, data, formeditado } = this.state
         return (

@@ -413,15 +413,8 @@ class EmpleadosForm extends Component {
                                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                             <label className="text-center font-weight-bolder">FECHA DE ALTA AL IMSS</label>
                                         </div>
-                                            <CalendarDay
-                                                date={form.fecha_alta_imss}
-                                                value={form.fecha_alta_imss}
-                                                onChange={onChange}
-                                                name='fecha_alta_imss'
-                                                withformgroup={0}
-                                                requirevalidation={0}
-                                                requirevalidation={1}
-                                            />
+                                            <CalendarDay date = { form.fecha_alta_imss } value = { form.fecha_alta_imss } onChange = { onChange } 
+                                                name = 'fecha_alta_imss' withformgroup = { 0 } requirevalidation = { 0 } />
                                         </div>
                                     <div className="align-self-center col-md-8">
                                         <div className="form-group row form-group-marginless mb-0">
