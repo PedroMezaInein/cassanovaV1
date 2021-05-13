@@ -695,7 +695,7 @@ class Empleados extends Component {
                             }
                             accessToken={this.props.authUser.access_token}
                             setter={this.setEmpleado}
-                            urlRender={URL_DEV + 'rh/empleado/admin'}
+                            urlRender={`${URL_DEV}v2/rh/empleados?type=admin`}
                             idTable='empleados_admin_table'
                             cardTable='cardTable_admin'
                             cardTableHeader='cardTableHeader_admin'
@@ -720,7 +720,7 @@ class Empleados extends Component {
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setEmpleado}
-                            urlRender={URL_DEV + 'rh/empleado/obra'}
+                            urlRender={`${URL_DEV}v2/rh/empleados?type=obra`}
                             idTable='empleados_obra_table'
                             cardTable='cardTable_obra'
                             cardTableHeader='cardTableHeader_obra'
