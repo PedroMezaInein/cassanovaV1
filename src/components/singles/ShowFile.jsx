@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { Small} from '../texts'
 import FileXMLViewer from '../form-components/FileXMLViewer'
+import axios from 'axios'
+import { setSingleHeader } from '../../functions/routers'
+import { errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 export class ShowFile extends Component {
 
     downloadFile = item => {
@@ -11,7 +14,15 @@ export class ShowFile extends Component {
         document.body.appendChild(link);
         link.click();
     }
-    xml(url) {
+    xml = async(url)  => {
+        /* await axios.get(url, { headers: setSingleHeader(null)}).then(
+            (response) => {
+                waitAlert()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        }) */
         var req = new XMLHttpRequest();
         req.open('GET', url, false);
         req.overrideMimeType('text/plain; charset=x-user-defined');

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney, SelectSearchTrue } from '../../form-components'
+import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
