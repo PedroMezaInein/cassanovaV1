@@ -38,7 +38,7 @@ class LeadNoContratado extends Component {
         if(lead.prospecto)
             if(lead.prospecto.tipo_proyecto)
                 return 'En proceso'
-        return 'En proceso'
+        return 'En espera'
     }
 
     hasContactos = (lead) => {

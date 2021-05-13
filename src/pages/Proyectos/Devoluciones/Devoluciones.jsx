@@ -864,7 +864,7 @@ class Devoluciones extends Component {
 
     getDevolucionesAxiosId = async (id) => {
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/devoluciones/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v1/proyectos/devoluciones/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { devolucion } = response.data
                 this.setState({ ...this.state, devolucion: devolucion })
@@ -1082,9 +1082,7 @@ class Devoluciones extends Component {
                 break
         }
         waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/devoluciones/${newType}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v1/proyectos/devoluciones/${newType}/${data.id}`, { value: value },  { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 this.getDevolucionesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
