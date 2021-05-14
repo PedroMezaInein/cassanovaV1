@@ -279,6 +279,7 @@ class NotificacionesCorreos extends Component {
         )
     }
     openModalEditar = notificacion => {
+        console.log(notificacion, 'notificacion')
         const { form } = this.state
         let auxResponsables = []
         let auxDepartamentos= []
@@ -294,7 +295,7 @@ class NotificacionesCorreos extends Component {
         }
         if (notificacion.departamentos) {
             notificacion.departamentos.forEach(departamento => {
-                auxResponsables.push({
+                auxDepartamentos.push({
                     value: departamento.id.toString(),
                     name: departamento.nombre,
                     label: departamento.nombre
@@ -339,7 +340,7 @@ class NotificacionesCorreos extends Component {
         await axios.put(`${URL_DEV}v1/plataforma/notificaciones/${notificacion.id}`, form , { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close();
-                this.setState({...this.state, notificacion: ''})
+                this.setState({...this.state, notificacion: '', modal_editar: false})
                 this.getPanelNotificaciones()
             },
             (error) => { printResponseErrorAlert(error) }
