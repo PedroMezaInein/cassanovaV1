@@ -11,8 +11,9 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import Swal from 'sweetalert2'
 import { Update } from '../../components/Lottie'
 import { printSwalHeader } from '../../functions/printers'
-import { InputGray, CircleColor } from '../../components/form-components'
+import { InputGray } from '../../components/form-components'
 import $ from "jquery";
+import { CirclePicker } from 'react-color';
 class RolesMercadotecnia extends Component {
     state = {
         form: {
@@ -67,7 +68,11 @@ class RolesMercadotecnia extends Component {
     }
     doubleClick = (data, tipo) => {
         const { form } = this.state
+        let { color } = this.state
         switch(tipo){
+            case 'color':
+                color = data.color
+                break
             default:
                 form[tipo] = data[tipo]
                 break
@@ -85,8 +90,15 @@ class RolesMercadotecnia extends Component {
                 }
                 {
                     tipo === 'color' &&
-                        <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
-                        colors = { COLORS } classlabel="d-none" value = { data.color } classdiv='ml-2' swal = { true }/>
+                    <div className="p-2 ml-2">
+                        <CirclePicker
+                            circleSize={23} 
+                            width= {"auto"}
+                            colors={COLORS}
+                            onChange = { this.handleChangeColor }
+                            color = { color }
+                        />
+                    </div>
                 }
             </div>,
             <Update />,
@@ -95,6 +107,19 @@ class RolesMercadotecnia extends Component {
         )
     }
     handleChangeColor = (color) => {
+        let span = $('.circle-picker').find('span>div>span>div')
+        for(let i = 0; i<span.length; i++){
+            let boxString = $(span[i]).css('box-shadow')
+            if(boxString.includes("3px")){
+                boxString = boxString.replace("3px","12.5px");
+                $(span[i]).css('box-shadow', boxString)
+            }
+            let newRgb = "rgb("+color.rgb.r+", "+color.rgb.g+", "+color.rgb.b+")"
+            if(boxString.includes(newRgb)){
+                boxString = boxString.replace("12.5px","3px");
+                $(span[i]).css('box-shadow', boxString)
+            }
+        }
         this.onChange({ target: { value: color.hex, name: 'color' } })
         this.setState({...this.state,color:color});
     }
