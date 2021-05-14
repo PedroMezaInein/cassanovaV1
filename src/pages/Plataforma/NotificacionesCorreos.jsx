@@ -6,7 +6,7 @@ import { TagSelectSearchGray, Button } from '../../components/form-components'
 import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../../functions/routers"
 import { Menu, MenuItem, MenuButton, SubMenu, MenuHeader } from '@szhsin/react-menu';
-import { printResponseErrorAlert, waitAlert, errorAlert } from '../../functions/alert'
+import { printResponseErrorAlert, waitAlert, errorAlert, deleteAlert } from '../../functions/alert'
 import axios from 'axios'
 import { URL_DEV, PUSHER_OBJECT } from '../../constants'
 import Swal from 'sweetalert2'
@@ -350,6 +350,19 @@ class NotificacionesCorreos extends Component {
         })
         
     }
+    deleteNotificacionesAxios = async (id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v1/plataforma/notificaciones/${id}`, { headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getPanelNotificaciones()
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { options, form, modulos, list, notificaciones, modal_editar } = this.state
         return (
@@ -426,6 +439,7 @@ class NotificacionesCorreos extends Component {
                                                 <tbody>
                                                     {
                                                         notificaciones.map((element) => {
+                                                            console.log(element)
                                                             return (
                                                                 <tr key={element.id}>
                                                                     <td className="text-center">
@@ -468,12 +482,27 @@ class NotificacionesCorreos extends Component {
                                                                         </div>
                                                                     </td>
                                                                     <td className="text-center font-size-sm">
-                                                                        Departamento
+                                                                        {
+                                                                            element.departamentos.map((departamento, index) => {
+                                                                                return (
+                                                                                    <div className="text-center font-size-sm" key={index}>
+                                                                                        {departamento.nombre}<br/>
+                                                                                    </div>
+                                                                                )
+                                                                            })
+                                                                        }
                                                                     </td>
-                                                                    <td className="text-center">
-                                                                        <a className={`btn btn-icon btn-light btn-sm mx-3 ${!element.enable ? 'btn-hover-dark-75' : 'btn-hover-info '}`} onClick={(e) => { this.openModalEditar(element) }}>
+                                                                    <td className="text-right px-0">
+                                                                        <a className={`btn btn-icon btn-light btn-sm ${!element.enable ? 'btn-hover-dark-75' : 'btn-hover-info '}`} onClick={(e) => { this.openModalEditar(element) }}>
                                                                             <span className={`svg-icon svg-icon-md ${!element.enable ? 'svg-icon-dark-75' : 'svg-icon-info '}`}>
                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} />
+                                                                            </span>
+                                                                        </a>
+                                                                        <a className={`btn btn-icon btn-light btn-sm ml-3 ${!element.enable ? 'btn-hover-dark-75' : 'btn-hover-info '}`} 
+                                                                            onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA NOTIFICACIÓN?', '¡NO PODRÁS REVERTIR ESTO!', () => this.deleteNotificacionesAxios(element.id)) }}
+                                                                        >
+                                                                            <span className={`svg-icon svg-icon-md ${!element.enable ? 'svg-icon-dark-75' : 'svg-icon-info '}`}>
+                                                                                <SVG src={toAbsoluteUrl('/images/svg/Trash.svg')} />
                                                                             </span>
                                                                         </a>
                                                                     </td>
