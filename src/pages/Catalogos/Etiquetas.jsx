@@ -11,9 +11,10 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import Swal from 'sweetalert2'
 import { Update } from '../../components/Lottie'
 import { printSwalHeader } from '../../functions/printers'
-import { InputGray, CircleColor } from '../../components/form-components'
+import { InputGray } from '../../components/form-components'
 import $ from "jquery";
 import { setSingleHeader } from '../../functions/routers'
+import { CirclePicker } from 'react-color';
 class Etiquetas extends Component {
     state = {
         form: {
@@ -90,16 +91,36 @@ class Etiquetas extends Component {
                 }
                 {
                     tipo === 'color' &&
-                        <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
-                        colors = { COLORS } classlabel="d-none" value = { color }  classdiv='ml-2' swal = { true }/>
+                        <div className="p-2 ml-2">
+                            <CirclePicker
+                                circleSize={23} 
+                                width= {"auto"}
+                                colors={COLORS}
+                                onChange = { this.handleChangeColor }
+                                color = { color }
+                            />
+                        </div>
                 }
             </div>,
             <Update />,
             () => { this.patchEtiquetas(data, tipo) },
-            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+            () => { this.setState({...this.state, form: this.clearForm()}); Swal.close(); },
         )
     }
     handleChangeColor = (color) => {
+        let span = $('.circle-picker').find('span>div>span>div')
+        for(let i = 0; i<span.length; i++){
+            let boxString = $(span[i]).css('box-shadow')
+            if(boxString.includes("3px")){
+                boxString = boxString.replace("3px","12.5px");
+                $(span[i]).css('box-shadow', boxString)
+            }
+            let newRgb = "rgb("+color.rgb.r+", "+color.rgb.g+", "+color.rgb.b+")"
+            if(boxString.includes(newRgb)){
+                boxString = boxString.replace("12.5px","3px");
+                $(span[i]).css('box-shadow', boxString)
+            }
+        }
         this.onChange({ target: { value: color.hex, name: 'color' } })
         this.setState({...this.state,color:color});
     }
