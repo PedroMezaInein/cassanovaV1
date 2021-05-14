@@ -20,10 +20,16 @@ export function checkIsActive(location, url) {
 }
 
 const setSingleHeader = (access_token) => {
-    return{
-        Authorization: `Bearer ${access_token}`,
-        'Access-Control-Allow-Origin' : '*',
-        'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    if(access_token)
+        return{
+            Authorization: `Bearer ${access_token}`,
+            'Access-Control-Allow-Origin' : '*',
+            'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        }
+    else{
+        return {
+            'Access-Control-Allow-Origin' : '*',
+        }
     }
 }
 

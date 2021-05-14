@@ -10,6 +10,7 @@ import { Tab, Tabs } from 'react-bootstrap'
 import { errorAlert, waitAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { Small } from '../../../components/texts'
 import Swal from 'sweetalert2'
+import { setSingleHeader } from '../../../functions/routers'
 class CuentaDetails extends Component {
     state = {
         key: 'traspasos_destino',
@@ -32,7 +33,8 @@ class CuentaDetails extends Component {
             ingresos: true,
             traspasos_destino: true,
             traspasos_origen: true,
-            ventas: true
+            ventas: true,
+            devoluciones: false,
         }
     }
 
@@ -55,43 +57,27 @@ class CuentaDetails extends Component {
     async getCuentaAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'cuentas/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/bancos/cuentas/${id}/detalles`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { cuenta } = response.data
                 const { data } = this.state
                 data.compras = this.setCompras(cuenta.compras)
+                data.devoluciones = this.setDevoluciones(cuenta.devoluciones)
                 data.egresos = this.setEgresos(cuenta.egresos)
                 data.ingresos = this.setIngresos(cuenta.ingresos)
                 data.traspasos_destino = this.setTraspasosDestino(cuenta.traspasos_destino)
                 data.traspasos_origen = this.setTraspasosOrigen(cuenta.traspasos_origen)
                 data.ventas = this.setVentas(cuenta.ventas)
-                this.setState({
-                    ...this.state,
-                    data,
-                    cuenta: cuenta
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, data, cuenta: cuenta })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    setLinks = value => {
-        return (
-            <a href={value.url}>
-                <Small>
-                    {
-                        value.name
-                    }
-                </Small>
-            </a>
-        )
-    }
+    setLinks = value => { return ( <a href={value.url}> <Small> { value.name } </Small> </a> ) }
 
     setCompras = compras => {
         let aux = []
@@ -100,8 +86,24 @@ class CuentaDetails extends Component {
                 {
                     idTraspaso: renderToString(this.setLinks({name: compra.id, url: '/proyectos/compras?id='+compra.id})),
                     fecha: renderToString(setDateTable(compra.created_at)),
-                    monto: renderToString(setMoneyTable(compra.monto)),
+                    monto: renderToString(setMoneyTable(compra.total)),
                     id: compra.id
+                }
+            )
+            return false
+        })
+        return aux
+    }
+
+    setDevoluciones = devoluciones => {
+        let aux = []
+        devoluciones.map((devolucion) => {
+            aux.push(
+                {
+                    idTraspaso: renderToString(this.setLinks({name: devolucion.id, url: '/proyectos/devoluciones?id='+devolucion.id})),
+                    fecha: renderToString(setDateTable(devolucion.created_at)),
+                    monto: renderToString(setMoneyTable(devolucion.total)),
+                    id: devolucion.id
                 }
             )
             return false
@@ -116,7 +118,7 @@ class CuentaDetails extends Component {
                 {
                     idTraspaso: renderToString(this.setLinks({name: egreso.id, url: '/administracion/egresos?id='+egreso.id})),
                     fecha: renderToString(setDateTable(egreso.created_at)),
-                    monto: renderToString(setMoneyTable(egreso.monto)),
+                    monto: renderToString(setMoneyTable(egreso.total)),
                     id: egreso.id
                 }
             )
@@ -194,7 +196,19 @@ class CuentaDetails extends Component {
             case 'compras':
                 auxiliar = {
                     compras: true,
-                    egresos: true,
+                    egresos: false,
+                    devoluciones: false,
+                    ingresos: false,
+                    traspasos_destino: false,
+                    traspasos_origen: false,
+                    ventas: false
+                };
+                break;
+            case 'devoluciones':
+                auxiliar = {
+                    compras: false,
+                    devoluciones: true,
+                    egresos: false,
                     ingresos: false,
                     traspasos_destino: false,
                     traspasos_origen: false,
@@ -204,6 +218,7 @@ class CuentaDetails extends Component {
             case 'egresos':
                 auxiliar = {
                     compras: false,
+                    devoluciones: false,
                     egresos: true,
                     ingresos: false,
                     traspasos_destino: false,
@@ -214,6 +229,7 @@ class CuentaDetails extends Component {
             case 'ingresos':
                 auxiliar = {
                     compras: false,
+                    devoluciones: false,
                     egresos: false,
                     ingresos: true,
                     traspasos_destino: false,
@@ -224,26 +240,29 @@ class CuentaDetails extends Component {
             case 'traspasos_destino':
                 auxiliar = {
                     compras: false,
+                    devoluciones: false,
                     egresos: false,
                     ingresos: false,
                     traspasos_destino: true,
                     traspasos_origen: false,
-                    ventas: true
+                    ventas: false
                 };
                 break;
             case 'traspasos_origen':
                 auxiliar = {
                     compras: false,
+                    devoluciones: false,
                     egresos: false,
                     ingresos: false,
                     traspasos_destino: false,
                     traspasos_origen: true,
-                    ventas: true
+                    ventas: false
                 };
                 break;
             case 'ventas':
                 auxiliar = {
                     compras: false,
+                    devoluciones: false,
                     egresos: false,
                     ingresos: false,
                     traspasos_destino: false,
@@ -325,6 +344,27 @@ class CuentaDetails extends Component {
                                     cardTable='cardTable_ingresos'
                                     cardTableHeader='cardTableHeader_ingresos'
                                     cardBody='cardBody_ingresos'
+                                    isTab={true}
+                                />
+                                : ''
+                        }
+                    </Tab>
+                    <Tab eventKey="devoluciones" title="Devoluciones">
+                        {
+                            key === 'devoluciones' ?
+                                <NewTable
+                                    columns={DETAILS_CUENTAS}
+                                    data={data.devoluciones}
+                                    title={"Devoluciones"}
+                                    subtitle={cuenta.nombre}
+                                    mostrar_boton={false}
+                                    abrir_modal={false}
+                                    mostrar_acciones={false}
+                                    elements={data.devoluciones}
+                                    idTable='kt_datatable_devoluciones'
+                                    cardTable='cardTable_devoluciones'
+                                    cardTableHeader='cardTableHeader_devoluciones'
+                                    cardBody='cardBody_devoluciones'
                                     isTab={true}
                                 />
                                 : ''
