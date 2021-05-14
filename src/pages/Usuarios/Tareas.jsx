@@ -227,8 +227,8 @@ class Tareas extends Component {
                 Swal.close()
                 const { tareas, num } = response.data
                 pagination.numTotal = num
-                if(pagination.page >= parseInt(num/pagination.limit))
-                    pagination.page = parseInt(num/pagination.limit) - 1
+                if(pagination.page > parseInt(num/pagination.limit))
+                    pagination.page = 0
                 this.setState({ ...this.state, tareas, pagination })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -452,7 +452,9 @@ class Tareas extends Component {
         const { name, value } = e.target
         const { form,pagination } = this.state
         form[name] = value
-        this.setState({ ...this.state, form })
+        if(name === 'filtrarTarea')
+            pagination.page = 0
+        this.setState({ ...this.state, form, pagination })
         if(name === 'filtrarTarea')
             this.getTasks(pagination)
     }
