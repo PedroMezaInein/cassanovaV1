@@ -9,6 +9,7 @@ import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../..
 import { EmpleadosForm as EmpleadosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import { onChangeAdjunto } from '../../../functions/onChanges'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -32,7 +33,7 @@ class Empleados extends Component {
             estatus_empleado: 'Activo',
             empresa: '',
             fechaInicio: new Date(),
-            fechaFin: '',
+            fechaFin: new Date(),
             estatus_imss: 'Activo',
             puesto: '',
             vacaciones_disponibles: 0,
@@ -104,9 +105,7 @@ class Empleados extends Component {
                         form.nomina_extras = empleado.nomina_extras
                         form.salario_hr = empleado.salario_hr
                         form.salario_hr_extra = empleado.salario_hr_extra
-                        if (empleado.empresa) {
-                            form.empresa = empleado.empresa.id.toString()
-                        }
+                        if (empleado.empresa) { form.empresa = empleado.empresa.id.toString() }
                         form.fechaInicio = new Date(empleado.fecha_inicio)
                         form.fechaFin = new Date(empleado.fecha_fin)
                         form.puesto = empleado.puesto
@@ -114,6 +113,14 @@ class Empleados extends Component {
                         form.vacaciones_disponibles = empleado.vacaciones_disponibles
                         form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
                         form.numero_alta_imss = empleado.numero_alta_imss
+                        form.departamentos = []
+                        empleado.departamentos.forEach((elemento) => {
+                            form.departamentos.push({
+                                value: elemento.id.toString(),
+                                name: elemento.nombre,
+                                label: elemento.nombre
+                            })
+                        })
                         this.setState({
                             ...this.state,
                             form,
@@ -192,6 +199,11 @@ class Empleados extends Component {
                     break;
                 case 'adjuntos':
                     break;
+                case 'departamentos':
+                    form.departamentos.forEach((elemento) => {
+                        data.append(`${element}[]`, elemento.value)
+                    }) 
+                    break;
                 default:
                     data.append(element, form[element])
                     break
@@ -209,17 +221,12 @@ class Empleados extends Component {
             }
             return false
         })
-        await axios.post(URL_DEV + 'rh/empleado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/rh/empleados`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue registrado con éxito.')
                 const { history } = this.props
-                    history.push({
-                    pathname: '/rh/empleados'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/rh/empleados' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -229,17 +236,12 @@ class Empleados extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, empleado } = this.state
-        await axios.put(URL_DEV + 'rh/empleado/' + empleado.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue modificado con éxito.')
                 const { history } = this.props
-                    history.push({
-                    pathname: '/rh/empleados'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/rh/empleados' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
