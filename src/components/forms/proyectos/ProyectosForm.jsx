@@ -292,7 +292,7 @@ class ProyectosForm extends Component {
                                     <Col md="8" className="align-self-center">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputNumber requirevalidation = { 0 } formeditado = { formeditado } placeholder = "M²"
+                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "M²"
                                                     value = { form.m2 } name = "m2" onChange = { onChange } iconclass = "fas fa-ruler-combined"
                                                     messageinc = "Ingresa los m²." />
                                             </div>
