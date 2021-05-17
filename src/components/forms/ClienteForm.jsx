@@ -59,9 +59,9 @@ class ClienteForm extends Component {
                             value={form.nombre}
                             onChange={onChange}
                             type="text"
-                            placeholder="NOMBRE DEL EMPLEADO"
+                            placeholder="NOMBRE DEL CONTACTO"
                             iconclass={"far fa-user"}
-                            messageinc="Incorrecto. Ingresa el nombre del empleado."
+                            messageinc="Incorrecto. Ingresa el nombre del contacto."
                         />
                     </div>
                 </div>
@@ -75,9 +75,9 @@ class ClienteForm extends Component {
                             value={form.puesto}
                             onChange={onChange}
                             type="text"
-                            placeholder="PUESTO DEL EMPLEADO"
+                            placeholder="PUESTO DEL CONTACTO"
                             iconclass={" fas fa-user-tie"}
-                            messageinc="Incorrecto. Ingresa el puesto del empleado."
+                            messageinc="Incorrecto. Ingresa el puesto del contacto."
                         />
                     </div>
                     <div className="col-md-4">
