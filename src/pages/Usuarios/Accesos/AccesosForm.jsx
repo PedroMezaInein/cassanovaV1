@@ -32,11 +32,13 @@ class AccesosForm extends Component {
                     value: '',
                     placeholder: 'Adjuntos'
                 }
-            }
+            },
+            departamentos: []
         },
         options: {
             usuarios: [],
             empresas: [],
+            departamentos: []
         },
         editables: {
             usuarios: [],
@@ -155,10 +157,18 @@ class AccesosForm extends Component {
         await axios.get(URL_DEV + 'accesos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { usuarios, empresas } = response.data
+                const { usuarios, empresas, departamentos } = response.data
                 const { options, editables, form } = this.state
                 options['usuarios'] = setSelectOptions(usuarios, 'name', 'id')
                 options['empresas'] = setSelectOptions(empresas, 'name', 'id')
+                // options.departamentos = []
+                // departamentos.forEach( ( element ) => {
+                //     options.departamentos.push({
+                //         name: element.nombre,
+                //         value: element.id.toString(),
+                //         label: element.nombre
+                //     })
+                // });
                 let auxArray = []
                 options.usuarios.map((element)=>{
                     let bandera = false

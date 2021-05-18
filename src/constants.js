@@ -1512,6 +1512,50 @@ export const CONCEPTOS_COLUMNS = [
     }
 ]
 
+export const ACCESOS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Plataforma',
+        accessor: 'plataforma',
+        customRender: true
+    },
+    {
+        Header: 'Usuario y Contraseña',
+        accessor: 'usuario',
+        customRender: true
+    },
+    {
+        Header: 'Correo y teléfono de alta',
+        accessor: 'correo',
+        customRender: true
+    },
+    {
+        Header: 'Empresas',
+        accessor: 'empresa',
+        customRender: true
+    },
+    {
+        Header: 'Departamento',
+        accessor: 'departamento',
+        customRender: true
+    },
+    {
+        Header: 'Responsables',
+        accessor: 'responsables',
+        customRender: true
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
+        class: 'desc-big',
+        customRender: true
+    }
+]
+
+
 export const HERRAMIENTAS_COLUMNS = [
     {
         Header: 'OPCIONES',
@@ -2120,7 +2164,7 @@ export const EMPLEADOS_COLUMNS = [
     {
         Header: 'Departamento',
         accessor: 'departamento',
-        // customRender: true
+        customRender: true
     },
     {
         Header: 'Puesto',
