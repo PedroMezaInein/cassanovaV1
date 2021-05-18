@@ -81,7 +81,7 @@ class InputGray extends Component {
                     }
                     
                     <Form.Control placeholder = { withplaceholder ? placeholder :'' } style = { customstyle }
-                        className = {`form-control text-dark-50 font-weight-bold ${customclass}` }
+                        className = {`form-control text-dark-50 font-weight-bold text-justify ${customclass}` }
                         onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}
                         value = { swal === true ? valor : value } {...props} />
                 </div>
