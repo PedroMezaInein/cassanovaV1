@@ -52994,7 +52994,7 @@ li.e-separator.e-menu-item.e-excel-separator {
 
 /*! Grid theme */
 .e-grid {
-    border-color: #ecf0f3
+    border-color: transparent
 }
 
 .e-grid .e-content {
@@ -53153,9 +53153,10 @@ li.e-separator.e-menu-item.e-excel-separator {
 .e-grid .e-summaryrow .e-templatecell,
 .e-grid .e-summarycontent .e-indentcell,
 .e-grid .e-indentcell.e-detailindentcelltop {
-    background-color: #f6f6f6;
-    border-color: #ecf0f3;
-    color: rgba(0, 0, 0, 0.54)
+    background-color: #E4F0FB;
+    border-color: #85AED2;
+    border-top-width: 2px;
+    color: #85AED2;
 }
 
 .e-grid .e-rowcell,
@@ -86455,3 +86456,57 @@ div>.e-pv-bookmark-icon.e-pv-icon.e-right {
 // .e-treegrid .e-altrow {
 //     background-color: #fafafa;
 //   }
+// .blue{
+//     color: #85AED2;
+// }
+
+div#costos_ventas_gridcontrol{
+    tr.e-row:nth-last-child(1){
+        // background-color: red!important;
+        td.e-rowcell.e-gridrowindex1level2{
+            text-align: right;
+            padding-right: 0px;
+            font-style: italic;
+        }
+    }
+    tr.e-row:nth-last-child(2){
+        // background-color: red!important;
+        td.e-rowcell.e-gridrowindex1level2{
+            text-align: right;
+            padding-right: 0px;
+            font-style: italic;
+        }
+    }
+    tr.e-row:nth-last-child(3){
+        // background-color: red!important;
+        td.e-rowcell.e-gridrowindex1level2{
+            text-align: right;
+            padding-right: 0px;
+            font-weight: 600;
+        }
+    }
+    tr.e-row:nth-last-child(4){
+        // background-color: red!important;
+        td.e-rowcell.e-gridrowindex1level2{
+            text-align: right;
+            padding-right: 0px;
+            font-weight: 600;
+        }
+    }
+    tr.e-row:nth-last-child(5){
+        // background-color: red!important;
+        td.e-rowcell.e-gridrowindex1level2{
+            text-align: right;
+            padding-right: 0px;
+            font-style: italic;
+        }
+    }
+    tr.e-row:nth-last-child(6){
+        // background-color: red!important;
+        td.e-rowcell.e-gridrowindex1level2{
+            text-align: right;
+            padding-right: 0px;
+            font-style: italic;
+        }
+    }
+}
