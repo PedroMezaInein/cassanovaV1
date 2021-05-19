@@ -80,7 +80,8 @@ export function setSelectOptions(arreglo, name) {
     arreglo.map((element) => {
         aux.push({
             value: element.id,
-            text: element[name]
+            text: element[name],
+            label: element[name]
         })
         return false
     })
@@ -209,7 +210,7 @@ export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, dat
 
 export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
     return (
-        <div className="tr-hover w-max-content">
+        <div className={ (tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'tr-hover text-center-webkit':'tr-hover w-max-content'}>
             {
                 arreglo.map((element, index) => {
                     let textAlert =''
@@ -220,6 +221,9 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
                         case 'departamento':
                             textAlert = `ELIMINARÁS ${element.nombre} DEL USUARIO ${data.name}`
                             break
+                        case 'departamento_empleado':
+                            textAlert = `ELIMINARÁS ${element.nombre} DEL EMPLEADO ${data.nombre}`
+                            break
                         case 'subareas':
                             textAlert = `ELIMINARÁS ${element.nombre} DEL ÁREA ${data.nombre}`
                             break
@@ -229,12 +233,21 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
                         case 'empresa':
                             textAlert = `ELIMINARÁS ${element.name} DE LA CUENTA ${data.nombre}`
                             break
+                        case 'empresa_acceso':
+                            textAlert = `ELIMINARÁS LA EMPRESA ${element.name} DE LA PLATAFORMA ${data.plataforma}`
+                            break
+                        case 'departamento_acceso':
+                            textAlert = `ELIMINARÁS EL DEPARTAMENTO ${element.nombre} DE LA PLATAFORMA ${data.plataforma}`
+                            break
+                        case 'responsables_acceso':
+                            textAlert = `ELIMINARÁS EL RESPONSABLE ${element.name} DE LA PLATAFORMA ${data.plataforma}`
+                            break
                         default:
                             textAlert =''
                             break
                     }
                     return(
-                        <div key = { index } className="d-table mb-2">
+                        <div key = { index } className={`d-table ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'mb-1' : 'mb-2'}`}>
                             <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
                                 onClick = { (e) => { 
                                     questionAlert(
@@ -373,6 +386,49 @@ export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElemen
                             </div>
                         </div>
                     )
+                })
+            }
+        </div>
+    )
+}
+export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, data, tipo) {
+    return (
+        <div className = {`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data, tipo)
+                }
+            } } > 
+            {
+                arreglo.map((element, key) => {
+                    if(element.text !== '-')
+                        return (
+                            <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
+                                {
+                                    element.name ?
+                                        <span className="mr-1 font-size-12px" >
+                                            <span className="font-weight-bold" onClick={() => { navigator.clipboard.writeText(element.name) }}>
+                                                { element.lista ? element.name + '.' : element.name + ':' }
+                                            </span>
+                                        </span>
+                                        : ''
+                                }
+                                {
+                                    element.url ?
+                                        <a href={element.url} target="_blank" rel="noopener noreferrer">
+                                            <span className="font-size-11px"  onClick={() => { navigator.clipboard.writeText(element.text) }}>
+                                                { element.text }
+                                            </span>
+                                        </a>
+                                    :
+                                        <span className="font-size-11px" onClick={() => { navigator.clipboard.writeText(element.text) }}>
+                                            { element.text }
+                                        </span>
+                                }
+                            </div>
+                        )
+                    else return <></>
                 })
             }
         </div>

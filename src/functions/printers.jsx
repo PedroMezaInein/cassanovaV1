@@ -103,6 +103,12 @@ export function printSwalHeader(tipo){
             return 'EDITAR CONTACTO DE EMERGENCIA'
         case 'color':
             return 'EDITAR EL COLOR'
+        case 'plataforma':
+            return 'EDITAR EL NOMBRE DE LA PLATAFORMA'
+        case 'usuario_contraseña':
+            return 'EDITAR EL USUARIO Y CONTRASEÑA'
+        case 'correo_telefono':
+            return 'EDITAR EL CORREO Y TELÉFONO'
         default:
             return ''
     }

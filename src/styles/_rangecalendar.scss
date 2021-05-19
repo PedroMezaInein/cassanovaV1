@@ -99,6 +99,13 @@
             width: 334px;
         }
     }
+    #estado-resultados{
+        .rdrCalendarWrapper {
+            &.rdrDateRangeWrapper {
+                width: 283px;
+            }
+        }
+    }
 }
 
 @include down-screen($xs) {

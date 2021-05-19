@@ -57,7 +57,10 @@ class AccesosForm extends Component {
             })
         }
     }
-
+    updateDepartamentos = value => {
+        const { onChange } = this.props
+        onChange({target: { value: value, name: 'departamentos'}}, true)
+    }
     render() {
         const { form, onChange, onSubmit, formeditado, options } = this.props
         return (
@@ -130,6 +133,15 @@ class AccesosForm extends Component {
                             placeholder = "TELÉFONO" onChange = { onChange } iconclass = "fas fa-mobile-alt"
                             messageinc="Incorrecto. Ingresa el número de teléfono." patterns = { TEL } 
                             formeditado = { formeditado } />
+                    </div>
+                    <div className="col-md-4">
+                        <TagSelectSearch
+                            placeholder='Selecciona el departamento '
+                            options={options.departamentos}
+                            iconclass='far fa-building'
+                            defaultvalue={form.departamentos}
+                            onChange={this.updateDepartamentos}
+                        />
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>

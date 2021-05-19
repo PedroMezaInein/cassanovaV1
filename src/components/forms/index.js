@@ -106,6 +106,7 @@ import addTaskForm from './usuarios/tareas/AddTaskForm'
 import TagColorForm from './usuarios/tareas/TagColorForm'
 import NewTag from './usuarios/tareas/NewTag'
 import EtiquetasForm from './catalogos/EtiquetasForm'
+import FormEstadoResultados from './reportes/FormEstadoResultados'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -211,4 +212,4 @@ export const Task = task
 export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
-export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm }
+export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados }

@@ -44,6 +44,7 @@ import radioGroupGray from './Gray/RadioGroupGray'
 import tagInputGray from './Gray/TagInputGray'
 import tagSelectSearchGray from './Gray/TagSelectSearchGray'
 import selectCreateGray from './Gray/SelectCreateGray'
+import inputPasswordGray from './Gray/InputPasswordGray'
 //TIempos
 import selectMinutos from './SelectMinutos'
 import selectHorasLaborales from './SelectHorasLaborales'
@@ -58,6 +59,7 @@ import inputLEmail from './Login/InputLEmail'
 import inputLPassword from './Login/InputLPassword'
 //XMLViewer
 import fileXMLViewer from './FileXMLViewer'
+import treeGrid from './TreeGrid'
 
 export const Button = button
 export const Input = input
@@ -105,6 +107,7 @@ export const RadioGroupGray = radioGroupGray
 export const TagInputGray = tagInputGray
 export const TagSelectSearchGray = tagSelectSearchGray
 export const SelectCreateGray = selectCreateGray
+export const InputPasswordGray = inputPasswordGray
 //Tiempos
 export const SelectMinutos = selectMinutos
 export const SelectHorasLaborales = selectHorasLaborales
@@ -119,3 +122,4 @@ export const InputLEmail = inputLEmail
 export const InputLPassword = inputLPassword
 //XMLViewerFile
 export const FileXMLViewer = fileXMLViewer
+export const TreeGrid = treeGrid

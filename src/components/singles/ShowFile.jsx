@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { Small} from '../texts'
 import FileXMLViewer from '../form-components/FileXMLViewer'
-import axios from 'axios'
-import { setSingleHeader } from '../../functions/routers'
-import { errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 export class ShowFile extends Component {
 
     downloadFile = item => {

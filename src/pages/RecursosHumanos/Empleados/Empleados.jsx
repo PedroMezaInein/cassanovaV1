@@ -8,7 +8,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, TEL } from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
-import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom } from '../../../functions/setters'
+import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -273,7 +273,8 @@ class Empleados extends Component {
                         actions: this.setActions(empleado),
                         nombre: setTextTableReactDom(empleado.nombre, this.doubleClick, empleado, 'nombre', 'text-center'),
                         empresa: setTextTableReactDom(empleado.empresa ? empleado.empresa.name : '', this.doubleClick, empleado, 'empresa', 'text-center '),
-                        departamento: renderToString(setTextTable('Departamento')),
+                        departamento: empleado.departamentos.length === 0 ? setTextTableCenter("Sin definir") 
+                        : setTagLabelReactDom(empleado, empleado.departamentos, 'departamento_empleado', this.deleteElementAxios),
                         puesto: setTextTableReactDom(empleado.puesto, this.doubleClick, empleado, 'puesto', 'text-center'),
                         rfc: setTextTableReactDom(empleado.rfc, this.doubleClick, empleado, 'rfc', 'text-center'),
                         nss: setTextTableReactDom(empleado.nss, this.doubleClick, empleado, 'nss', 'text-center'),
@@ -398,10 +399,10 @@ class Empleados extends Component {
             console.log(error, 'error')
         })
     }
-    deleteElementAxios = async(data, element, tipo) => {
+    deleteElementAxios = async(user, element) => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.delete(`${URL_DEV}v2/bancos/cuentas/${data.id}/${element.id}`, 
+        await axios.delete(`${URL_DEV}v2/rh/empleados/${user.id}/departamento/${element.id}`, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
@@ -411,7 +412,7 @@ class Empleados extends Component {
                 if (key === 'obra') {
                     this.getEmpleadosObraAxios()
                 }
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue editado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El departamento fue eliminado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
