@@ -216,7 +216,7 @@ class Accesos extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
                     (tipo === 'plataforma') ?
-                        <InputGray withtaglabel = { 0 }  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                        <InputGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                     :<></>
@@ -341,7 +341,7 @@ class Accesos extends Component {
         $('#kt_datatable_acceso').DataTable().ajax.reload();
     }
     render() {
-        const { accesos, modalDelete } = this.state
+        const { modalDelete } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <NewTableServerRender 

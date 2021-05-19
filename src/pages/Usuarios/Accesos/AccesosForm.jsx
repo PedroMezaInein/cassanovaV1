@@ -157,7 +157,7 @@ class AccesosForm extends Component {
         await axios.get(URL_DEV + 'accesos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { usuarios, empresas, departamentos } = response.data
+                const { usuarios, empresas } = response.data
                 const { options, editables, form } = this.state
                 options['usuarios'] = setSelectOptions(usuarios, 'name', 'id')
                 options['empresas'] = setSelectOptions(empresas, 'name', 'id')
