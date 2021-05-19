@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-class InputGray extends Component {
+
+class InputPasswordGray extends Component {
+
     state = {
+        inputValido: !this.props.requirevalidation,
+        showPassword: false,
         valor: '',
-        inputValido: !this.props.requirevalidation
-    }
+    }  
 
     validarInput(e) {
         const { value } = e.target 
@@ -25,16 +28,16 @@ class InputGray extends Component {
                 this.setState({ inputValido: true })
         }
     }
-    
-    componentDidUpdate(nextProps) {
-        if (nextProps.value !== this.props.value)
-            if (!nextProps.requirevalidation) {
+
+    componentDidUpdate(nextProps){
+        if(nextProps.value !== this.props.value)
+            if(!nextProps.requirevalidation) {
                 this.setState({
                     ...this.state,
                     inputValido: true
                 })
-            } else {
-                if (this.props.value !== '') {
+            }else{
+                if(this.props.value !== '') {
                     this.validarInput({ target: { value: this.props.value } })
                 }
             }
@@ -47,10 +50,11 @@ class InputGray extends Component {
             this.validarInput({ target: { value: value } })
         }
     }
-    
+
     render() {
-        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, withformgroup, swal, value, ...props } = this.props
-        const { inputValido, valor } =  this.state
+        const { error, onChange, placeholder, iconclass, messageinc, letterCase,customlabel,spellcheck, customicon, withformgroup, customdiv, withtextlabel, withplaceholder, customstyle, withtaglabel, withicon, customclass, swal, value, ...props } = this.props 
+        const { inputValido, showPassword, valor } =  this.state  
+        
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
             if(letterCase !== false)
@@ -62,6 +66,7 @@ class InputGray extends Component {
             this.setState({...this.state, valor: e.target.value})
             return e
         }
+
         return (
             <div className={withformgroup?`form-group ${customdiv}`:''}>
                 {
@@ -73,15 +78,19 @@ class InputGray extends Component {
                     {
                         withicon?
                         <div className="input-group-prepend">
-                            <span className="input-group-text">
-                                <i className={iconclass + " icon-lg text-dark-50"}></i>
+                            <span className="input-group-text" onClick = { (e) => { e.preventDefault(); this.setState({...this.state, showPassword: !showPassword })} }>
+                                {
+                                    !showPassword ?
+                                        <i className = "fas fa-eye m-0 icon-lg text-dark-50"></i>
+                                    : <i className = "fas fa-eye-slash m-0 icon-lg text-dark-50"></i>
+                                }
                             </span>
                         </div>
                         :''
                     }
                     
-                    <Form.Control placeholder = { withplaceholder ? placeholder :'' } style = { customstyle }
-                        className = {`form-control text-dark-50 font-weight-bold text-justify ${customclass}` }
+                    <Form.Control placeholder = { withplaceholder ? placeholder :'' } style = { customstyle } type = { showPassword ? 'text' : 'password' }
+                        className = {`form-control text-dark-50 font-weight-bold ${customclass}` }
                         onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}
                         value = { swal === true ? valor : value } {...props} />
                 </div>
@@ -90,4 +99,4 @@ class InputGray extends Component {
         )
     }
 }
-export default InputGray
+export default InputPasswordGray

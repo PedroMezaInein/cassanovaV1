@@ -493,18 +493,17 @@ class NotificacionesCorreos extends Component {
                                                                         }
                                                                     </td>
                                                                     <td className="text-right px-0">
-                                                                        <a className={`btn btn-icon btn-light btn-sm ${!element.enable ? 'btn-hover-dark-75' : 'btn-hover-info '}`} onClick={(e) => { this.openModalEditar(element) }}>
+                                                                        <span className={`btn btn-icon btn-light btn-sm ${!element.enable ? 'btn-hover-dark-75' : 'btn-hover-info '}`} onClick={(e) => { this.openModalEditar(element) }}>
                                                                             <span className={`svg-icon svg-icon-md ${!element.enable ? 'svg-icon-dark-75' : 'svg-icon-info '}`}>
                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} />
                                                                             </span>
-                                                                        </a>
-                                                                        <a className={`btn btn-icon btn-light btn-sm ml-3 ${!element.enable ? 'btn-hover-dark-75' : 'btn-hover-info '}`} 
-                                                                            onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA NOTIFICACIÓN?', '¡NO PODRÁS REVERTIR ESTO!', () => this.deleteNotificacionesAxios(element.id)) }}
-                                                                        >
+                                                                        </span>
+                                                                        <span className={`btn btn-icon btn-light btn-sm ml-3 ${!element.enable ? 'btn-hover-dark-75' : 'btn-hover-info '}`} 
+                                                                            onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA NOTIFICACIÓN?', '¡NO PODRÁS REVERTIR ESTO!', () => this.deleteNotificacionesAxios(element.id)) }} >
                                                                             <span className={`svg-icon svg-icon-md ${!element.enable ? 'svg-icon-dark-75' : 'svg-icon-info '}`}>
                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Trash.svg')} />
                                                                             </span>
-                                                                        </a>
+                                                                        </span>
                                                                     </td>
                                                                 </tr>
                                                             )
