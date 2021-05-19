@@ -622,7 +622,7 @@ class Tareas extends Component {
                     </div>
                 </div>
                 <Modal size="xl" title={title} show={modal_tarea} handleClose={this.handleCloseModal}>
-                    <AddTaskForm onSubmit = { this.onSubmit } form = { form } options = { options } onChange = { this.onChange }
+                    <AddTaskForm onSubmit = { this.onSubmit } form = { form } options = { options } onChange = { this.onChange } formeditado = { formeditado }
                         handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } sendTag = { this.sendTagAxios } />
                 </Modal>
                 <Modal title={title} show={modal_addTag} handleClose={this.handleCloseModalAddTag}>
