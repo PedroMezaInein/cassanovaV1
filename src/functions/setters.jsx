@@ -80,7 +80,8 @@ export function setSelectOptions(arreglo, name) {
     arreglo.map((element) => {
         aux.push({
             value: element.id,
-            text: element[name]
+            text: element[name],
+            label: element[name]
         })
         return false
     })
@@ -233,13 +234,13 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
                             textAlert = `ELIMINARÁS ${element.name} DE LA CUENTA ${data.nombre}`
                             break
                         case 'empresa_acceso':
-                            textAlert = `ELIMINARÁS ${element.nombre} DEL ACCESO ${data.plataforma}`
+                            textAlert = `ELIMINARÁS LA EMPRESA ${element.name} DE LA PLATAFORMA ${data.plataforma}`
                             break
                         case 'departamento_acceso':
-                            textAlert = `ELIMINARÁS ${element.nombre} DEL ACCESO ${data.plataforma}`
+                            textAlert = `ELIMINARÁS EL DEPARTAMENTO ${element.nombre} DE LA PLATAFORMA ${data.plataforma}`
                             break
                         case 'responsables_acceso':
-                            textAlert = `ELIMINARÁS ${element.nombre} DEL ACCESO ${data.plataforma}`
+                            textAlert = `ELIMINARÁS EL RESPONSABLE ${element.name} DE LA PLATAFORMA ${data.plataforma}`
                             break
                         default:
                             textAlert =''
@@ -401,39 +402,33 @@ export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, 
             } } > 
             {
                 arreglo.map((element, key) => {
-                    return (
-                        <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
-                            {
-                                element.name ?
-                                    <span className="mr-1 font-size-12px" >
-                                        <span className="font-weight-bold" onClick={() => { navigator.clipboard.writeText(element.name) }}>
-                                            {
-                                                element.lista ?
-                                                    element.name + '.'
-                                                : element.name + ':'
-                                            }
+                    if(element.text !== '-')
+                        return (
+                            <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
+                                {
+                                    element.name ?
+                                        <span className="mr-1 font-size-12px" >
+                                            <span className="font-weight-bold" onClick={() => { navigator.clipboard.writeText(element.name) }}>
+                                                { element.lista ? element.name + '.' : element.name + ':' }
+                                            </span>
                                         </span>
-                                    </span>
-                                    : ''
-                            }
-                            {
-                                element.url ?
-                                    <a href={element.url} target="_blank" rel="noopener noreferrer">
-                                        <span className="font-size-11px"  onClick={() => { navigator.clipboard.writeText(element.text) }}>
-                                            {
-                                                element.text
-                                            }
-                                        </span>
-                                    </a>
+                                        : ''
+                                }
+                                {
+                                    element.url ?
+                                        <a href={element.url} target="_blank" rel="noopener noreferrer">
+                                            <span className="font-size-11px"  onClick={() => { navigator.clipboard.writeText(element.text) }}>
+                                                { element.text }
+                                            </span>
+                                        </a>
                                     :
-                                    <span className="font-size-11px" onClick={() => { navigator.clipboard.writeText(element.text) }}>
-                                        {
-                                            element.text
-                                        }
-                                    </span>
-                            }
-                        </div>
-                    )
+                                        <span className="font-size-11px" onClick={() => { navigator.clipboard.writeText(element.text) }}>
+                                            { element.text }
+                                        </span>
+                                }
+                            </div>
+                        )
+                    else return <></>
                 })
             }
         </div>

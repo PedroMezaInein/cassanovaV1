@@ -1535,17 +1535,20 @@ export const ACCESOS_COLUMNS = [
     {
         Header: 'Empresas',
         accessor: 'empresa',
-        customRender: true
+        customRender: true,
+        orderable: false,
     },
     {
         Header: 'Departamento',
         accessor: 'departamento',
-        customRender: true
+        customRender: true,
+        orderable: false,
     },
     {
         Header: 'Responsables',
         accessor: 'responsables',
-        customRender: true
+        customRender: true,
+        orderable: false,
     },
     {
         Header: 'Descripción',
@@ -1554,7 +1557,6 @@ export const ACCESOS_COLUMNS = [
         customRender: true
     }
 ]
-
 
 export const HERRAMIENTAS_COLUMNS = [
     {
