@@ -210,7 +210,7 @@ export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, dat
 
 export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
     return (
-        <div className={ (tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'd-flex justify-content-center':'tr-hover w-max-content'}>
+        <div className={ (tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'tr-hover text-center-webkit':'tr-hover w-max-content'}>
             {
                 arreglo.map((element, index) => {
                     let textAlert =''
@@ -247,7 +247,7 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
                             break
                     }
                     return(
-                        <div key = { index } className="d-table mb-2">
+                        <div key = { index } className={`d-table ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'mb-1' : 'mb-2'}`}>
                             <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
                                 onClick = { (e) => { 
                                     questionAlert(
