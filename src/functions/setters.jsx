@@ -4,7 +4,7 @@ import NumberFormat from 'react-number-format';
 import { isMobile } from 'react-device-detect';
 import { questionAlert } from './alert';
 import { SingleTagify } from '../components/singles';
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 function compare( a, b ) {
     if ( a.name < b.name ){
         return -1;
@@ -22,6 +22,16 @@ export const transformarOptions = (options) => {
         return ''
     } );
     return options
+}
+function setHiddenPassword(pwd){
+    let aux = ''
+    for (let i = 0; i < pwd.length; i++)
+        aux += '*'
+    return(
+        <OverlayTrigger overlay={<Tooltip>{pwd}</Tooltip>}>
+            <span>{aux}</span>
+        </OverlayTrigger>
+    ) 
 }
 
 export function setOptions(arreglo, name, value) {
@@ -392,6 +402,8 @@ export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElemen
     )
 }
 export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, data, tipo) {
+    
+    
     return (
         <div className = {`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
@@ -423,7 +435,11 @@ export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, 
                                         </a>
                                     :
                                         <span className="font-size-11px" onClick={() => { navigator.clipboard.writeText(element.text) }}>
-                                            { element.text }
+                                            {
+                                                element.name === 'CONTRASEÑA'?
+                                                    setHiddenPassword(element.text)
+                                                : element.text
+                                            }
                                         </span>
                                 }
                             </div>
