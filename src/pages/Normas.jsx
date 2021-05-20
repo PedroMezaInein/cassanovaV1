@@ -141,7 +141,7 @@ class Normas extends Component {
         
     }
     render() {
-        const { form, options, ventas, ingresos, compras, egresos} = this.state
+        const { form, options } = this.state
         return (
             <Layout {...this.props}>
                 <div className="row">
@@ -170,10 +170,7 @@ class Normas extends Component {
                                 </div>
                                 </Card.Header>
                             <Card.Body>
-                                {/* {
-                                    form.empresa && */}
-                                    <TreeGrid/>
-                                {/* } */}
+                                <TreeGrid/>
                             </Card.Body>
                         </Card>
                     </div>
