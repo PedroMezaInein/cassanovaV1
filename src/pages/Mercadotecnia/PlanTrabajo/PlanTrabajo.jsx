@@ -351,6 +351,7 @@ class PlanTrabajo extends Component {
     }
 
     onSubmit = e => {
+        waitAlert()
         const { title } = this.state
         if(title === 'Agendar plan')
             this.addPlanAxios()
