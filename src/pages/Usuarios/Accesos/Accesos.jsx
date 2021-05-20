@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, customInputAlert } from '../../../functions/alert'
 import axios from 'axios'
 import { URL_DEV, ACCESOS_COLUMNS, TEL } from '../../../constants'
@@ -61,52 +60,7 @@ class Accesos extends Component {
             state: { acceso: acceso }
         });
     }
-
-    setHiddenPassword = pwd => {
-        let aux = ''
-        for (let i = 0; i < pwd.length; i++)
-            aux += '*'
-        return aux
-    }
-    substrCadena = cadena => {
-        let pantalla = $(window).width()
-        let aux = ''
-        if (pantalla < 1400) {
-            if (cadena.length > 15) {
-                aux = cadena.substr(0, 15) + "..."
-                return(
-                    <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
-                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{aux}</span>
-                    </OverlayTrigger>
-                )
-            } else {
-                aux = cadena
-                return(
-                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{aux}</span>
-                )
-            }
-        } else {
-            if (cadena.length > 20) {
-                aux = cadena.substr(0, 20) + "..."
-                return(
-                    <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
-                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{aux}</span>
-                    </OverlayTrigger>
-                )
-            } else {
-                aux = cadena
-                return(
-                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{aux}</span>
-                )
-            }
-        }
-    }
-
-    setUrl = ( url ) => {
-        if(!url.includes('http'))
-            return 'https://' + url
-        return url
-    }
+    
 
     setAccesos = accesos => {
         let aux = []
@@ -125,11 +79,11 @@ class Accesos extends Component {
                         [
                             { 'name': 'CORREO', 'text': acceso.correo ? acceso.correo : '-' },
                             { 'name': 'TELÉFONO', 'text': acceso.numero ? acceso.numero : '-' }
-                        ],'217px', this.doubleClick, acceso, 'correo_telefono'
+                        ],'170px', this.doubleClick, acceso, 'correo_telefono'
                     ),
-                    empresa: acceso.empresas.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.empresas, 'empresa_acceso', this.deleteElementAxios),
-                    responsables: acceso.usuarios.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.usuarios, 'responsables_acceso', this.deleteElementAxios),
-                    departamento: acceso.departamentos.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.departamentos, 'departamento_acceso', this.deleteElementAxios),
+                    empresa: acceso.empresas.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.empresas, 'empresa_acceso', this.deleteElementAxios, ''),
+                    responsables: acceso.usuarios.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.usuarios, 'responsables_acceso', this.deleteElementAxios, 'min-width-136px'),
+                    departamento: acceso.departamentos.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.departamentos, 'departamento_acceso', this.deleteElementAxios,''),
                     descripcion: setTextTableReactDom(acceso.descripcion, this.doubleClick, acceso, 'descripcion', 'text-justify'),
                     id: acceso.id
                 }
@@ -197,7 +151,6 @@ class Accesos extends Component {
     }
     
     async getAccesoTable() {
-        console.log('reload')
         $('#kt_datatable_acceso').DataTable().ajax.reload();
     }
 

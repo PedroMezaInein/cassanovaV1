@@ -5,6 +5,8 @@ import { isMobile } from 'react-device-detect';
 import { questionAlert } from './alert';
 import { SingleTagify } from '../components/singles';
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import $ from "jquery";
+
 function compare( a, b ) {
     if ( a.name < b.name ){
         return -1;
@@ -32,6 +34,39 @@ function setHiddenPassword(pwd){
             <span>{aux}</span>
         </OverlayTrigger>
     ) 
+}
+function substrCadena( cadena ) {
+    let pantalla = $(window).width()
+    let aux = ''
+    if (pantalla < 1400) {
+        if (cadena.length > 15) {
+            aux = cadena.substr(0, 15) + "..."
+            return(
+                <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
+                    <span>{aux}</span>
+                </OverlayTrigger>
+            )
+        } else {
+            aux = cadena
+            return(
+                <span>{aux}</span>
+            )
+        }
+    } else {
+        if (cadena.length > 29) {
+            aux = cadena.substr(0, 29) + "..."
+            return(
+                <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
+                    <span>{aux}</span>
+                </OverlayTrigger>
+            )
+        } else {
+            aux = cadena
+            return(
+                <span>{aux}</span>
+            )
+        }
+    }
 }
 
 export function setOptions(arreglo, name, value) {
@@ -218,9 +253,9 @@ export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, dat
     )
 }
 
-export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
+export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style){
     return (
-        <div className={ (tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'tr-hover text-center-webkit':'tr-hover w-max-content'}>
+        <div className={`${style} ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'tr-hover text-center-webkit':'tr-hover w-max-content'}`}>
             {
                 arreglo.map((element, index) => {
                     let textAlert =''
@@ -257,14 +292,14 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
                             break
                     }
                     return(
-                        <div key = { index } className={`d-table ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'mb-1' : 'mb-2'}`}>
+                        <div key = { index } className={`d-table ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'mb-1 ' : 'mb-2'}`}>
                             <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
                                 onClick = { (e) => { 
                                     questionAlert(
                                         '¿ESTÁS SEGURO?', 
                                         `${textAlert}`,
                                         () => deleteElement(data, element, tipo)
-                                    ) } }/>
+                                    ) } } tipo={tipo} />
                         </div>
                     )
                 })
@@ -434,10 +469,12 @@ export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, 
                                             </span>
                                         </a>
                                     :
-                                        <span className="font-size-11px" onClick={() => { navigator.clipboard.writeText(element.text) }}>
+                                        <span className={`font-size-11px  ${(element.name === 'CONTRASEÑA' || element.name === 'USUARIO' || element.name === 'CORREO' ? 'text-transform-none' : '')}`} onClick={() => { navigator.clipboard.writeText(element.text) }}>
                                             {
                                                 element.name === 'CONTRASEÑA'?
                                                     setHiddenPassword(element.text)
+                                                : element.name === 'CORREO' ?
+                                                    substrCadena(element.text)
                                                 : element.text
                                             }
                                         </span>
