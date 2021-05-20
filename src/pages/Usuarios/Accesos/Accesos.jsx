@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, customInputAlert } from '../../../functions/alert'
 import axios from 'axios'
 import { URL_DEV, ACCESOS_COLUMNS, TEL } from '../../../constants'
