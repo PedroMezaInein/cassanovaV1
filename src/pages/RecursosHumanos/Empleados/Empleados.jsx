@@ -274,7 +274,7 @@ class Empleados extends Component {
                         nombre: setTextTableReactDom(empleado.nombre, this.doubleClick, empleado, 'nombre', 'text-center'),
                         empresa: setTextTableReactDom(empleado.empresa ? empleado.empresa.name : '', this.doubleClick, empleado, 'empresa', 'text-center '),
                         departamento: empleado.departamentos.length === 0 ? setTextTableCenter("Sin definir") 
-                        : setTagLabelReactDom(empleado, empleado.departamentos, 'departamento_empleado', this.deleteElementAxios),
+                        : setTagLabelReactDom(empleado, empleado.departamentos, 'departamento_empleado', this.deleteElementAxios, ''),
                         puesto: setTextTableReactDom(empleado.puesto, this.doubleClick, empleado, 'puesto', 'text-center'),
                         rfc: setTextTableReactDom(empleado.rfc, this.doubleClick, empleado, 'rfc', 'text-center'),
                         nss: setTextTableReactDom(empleado.nss, this.doubleClick, empleado, 'nss', 'text-center'),

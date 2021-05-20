@@ -348,7 +348,7 @@ class Usuarios extends Component {
                             email: setTextTableReactDom(user.email, this.doubleClick, user, 'email', 'text-center'),
                             departamento: user.departamentos.length === 0 ? 
                                 setTextTableCenter("Sin definir") 
-                                : setTagLabelReactDom(user, user.departamentos, 'departamento', this.deleteElementAxios),
+                                : setTagLabelReactDom(user, user.departamentos, 'departamento', this.deleteElementAxios, ''),
                             id: user.id
                         }
                     )
@@ -361,7 +361,7 @@ class Usuarios extends Component {
                             email: setTextTableReactDom(user.email, this.doubleClick, user, 'email', 'text-center'),
                             proyecto: user.proyectos.length === 0 ?  
                                 setTextTableCenter("Sin definir") 
-                                : setTagLabelReactDom(user, user.proyectos, 'proyecto', this.deleteElementAxios),
+                                : setTagLabelReactDom(user, user.proyectos, 'proyecto', this.deleteElementAxios, ''),
                             id: user.id
                         }
                     )
