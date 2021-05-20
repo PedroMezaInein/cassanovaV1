@@ -120,7 +120,7 @@ class Partidas extends Component {
                 actions: this.setActions(partida),
                 clave: renderToString(setTextTableCenter(partida.id)),
                 partida: setTextTableReactDom(partida.nombre, this.doubleClick, partida, 'partida', 'text-center'),
-                subpartidas: setTagLabelReactDom(partida, partida.subpartidas, 'subpartidas', this.deleteElementAxios),
+                subpartidas: setTagLabelReactDom(partida, partida.subpartidas, 'subpartidas', this.deleteElementAxios, ''),
                 id: partida.id
             })
             return false
