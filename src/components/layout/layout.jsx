@@ -53,7 +53,7 @@ class Layout extends Component {
         this.setState({ ...this.state, title: texto })
         this.getUserChecador()
         const { user } = this.props.authUser
-        if(process.env.NODE_ENV === 'production'){
+        if(process.env.NODE_ENV === 'production' || true){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('Notificacion.User.'+user.id).listen('NuevaNotificacion', (e) => {
                 this.getNotificacionesAxios()
