@@ -187,7 +187,7 @@ class RegisterUserForm extends Component {
                         : ''
                 }
                 <div className="card-footer py-3 pr-1">
-                    <div className="row">
+                    <div className="row mx-0">
                         <div className="col-lg-12 text-right pr-0 pb-0">
                             <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon='' />
                         </div>

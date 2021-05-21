@@ -57,11 +57,11 @@ class LeadRhProveedor extends Component {
                                     </th>
                                 </tr>
                                 <tr className="text-uppercase bg-light-pink text-pink">
-                                    <th style={{ minWidth: "100px" }}>
+                                    <th style={{ minWidth: "206px" }}>
                                         <span>Nombre</span>
                                     </th>
-                                    <th style={{ minWidth: "111px" }} className="text-center">Fecha</th>
-                                    <th style={{ minWidth: "100px" }} className="text-center">Tipo</th>
+                                    <th style={{ minWidth: "180px" }} className="text-center">Fecha</th>
+                                    <th style={{ minWidth: "152px" }} className="text-center">Tipo</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Empresa</th>
                                     <th style={{ minWidth: "150px" }} className="text-center">Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Comentario</th>
