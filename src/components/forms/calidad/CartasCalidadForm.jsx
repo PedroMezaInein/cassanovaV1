@@ -45,9 +45,12 @@ class CartasCalidadForm extends Component{
                             deleteFile = { deleteFile } />
                     </div>
                 </div>
-                <div className="mt-3 text-right card-footer">
-                    <Button icon = '' className = "btn btn-primary" text = "ENVIAR" 
-                        onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-cartas-calidad') } } />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row mx-0">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button icon = '' className = "btn btn-primary" text = "ENVIAR" onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-cartas-calidad') } } />
+                        </div>
+                    </div>
                 </div>
             </Form>
         )

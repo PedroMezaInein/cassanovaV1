@@ -571,7 +571,7 @@ class SolicitudCompra extends Component {
                     {
                         form.adjuntos.adjunto.value ?
                             <div className="card-footer py-3 pr-1">
-                                <div className="row mx-0">
+                                <div className="row mx-0 mx-0">
                                     <div className="col-lg-12 text-right pr-0 pb-0">
                                         <Button icon='' text='ENVIAR'
                                             onClick={(e) => { e.preventDefault(); this.sendAdjuntoAxios() }} />
