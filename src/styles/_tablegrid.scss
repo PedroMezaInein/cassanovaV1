@@ -53068,8 +53068,8 @@ li.e-separator.e-menu-item.e-excel-separator {
     background-color: #fff;
     border-bottom-color: #ecf0f3;
     border-top-color: #ecf0f3;
-    color: rgba(0, 0, 0, 0.54)
-    // border-top:none;
+    color: rgba(0, 0, 0, 0.54);
+    border-top:none;
     // border-bottom-color: #948fd8;
     // border-bottom-width: 2px;
 }
@@ -53143,7 +53143,7 @@ li.e-separator.e-menu-item.e-excel-separator {
 .e-grid .e-gridcontent .e-rowdragdrop:not(.e-editedbatchcell),
 .e-grid .e-gridheader .e-rowdragdrop:not(.e-editedbatchcell),
 .e-grid .e-emptyrow:not(.e-editedbatchcell) {
-    color: rgba(0, 0, 0, 0.87)
+    color: #80808F;
 }
 
 .e-grid .e-summarycell {
@@ -53245,8 +53245,9 @@ li.e-separator.e-menu-item.e-excel-separator {
 }
 
 .e-grid td.e-active {
-    background: #ecf0f3;
-    color: #000
+    background: #e7eaec;
+    color: #000;
+    font-weight: 600;
 }
 
 .e-grid .e-columnselection {
@@ -55587,6 +55588,9 @@ ejs-filemanager {
     text-overflow: ellipsis;
 }
 
+span.e-treecell{
+    cursor: pointer;
+}
 // .e-treegrid .e-treegridexpand:hover::before,
 // .e-treegrid .e-treegridcollapse:hover::before {
 //     color: #000
@@ -55646,9 +55650,10 @@ ejs-filemanager {
 
 .e-treegrid .e-treegridexpand,
 .e-treegrid .e-treegridcollapse {
-    color: #000;
+    color: #80808F;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 14px;
+    font-family: auto;
     height: 16px;
     text-align: center;
     vertical-align: bottom;
@@ -86455,6 +86460,11 @@ div>.e-pv-bookmark-icon.e-pv-icon.e-right {
 
 .e-grid .customcss {
     background-color: #ecf0f3!important;
+}
+.header-table{
+    font-size: 14px;
+    font-weight: 600;
+    color: #80808F;
 }
 // div#costos_ventas_gridcontrol{
 //     border-left-width: 0px;
