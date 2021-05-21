@@ -1564,7 +1564,7 @@ class Proyectos extends Component {
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Tabs defaultActiveKey = 'all' activeKey = { key }
-                    onSelect={(value) => { this.controlledTab(value) }}>
+                    onSelect={(value) => { this.getProyectoAxios(value) }}>
                     <Tab eventKey = 'all' title = "Fases">
                         {
                             key === 'all' ?
