@@ -976,20 +976,7 @@ class Crm extends Component {
                 if(motivo !== '')
                     elemento = motivo
             data.motivo = elemento
-            await axios.put(`${URL_DEV}crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-                (response) => {
-                    this.getUltimosIngresados()
-                    this.getSinContactar()
-                    this.getUltimosContactos()
-                    const { activeTable } = this.state
-                    this.changeActiveTable(activeTable)
-                    doneAlert('El estatus fue actualizado con éxito.')
-                },
-                (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
+            this.changeEstatusAxios(data)
         }
     }
 
