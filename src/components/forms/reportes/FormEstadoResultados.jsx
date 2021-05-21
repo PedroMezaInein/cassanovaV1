@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { SelectSearch } from '../../form-components'
+import { SelectSearchGray } from '../../form-components'
 import RangeCalendar from '../../form-components/RangeCalendar';
 
 class FlujosReportes extends Component {
@@ -14,7 +14,7 @@ class FlujosReportes extends Component {
             <Form>
                 <div className="row mx-0" id="estado-resultados">
                     <div className="col-md-12">
-                        <SelectSearch
+                        <SelectSearchGray
                             name='empresa'
                             options={options.empresas}
                             placeholder='SELECCIONA LA EMPRESA'
@@ -22,9 +22,11 @@ class FlujosReportes extends Component {
                             onChange={this.updateEmpresa}
                             iconclass={"far fa-building"}
                             messageinc="Incorrecto. Selecciona la empresa."
+                            withtaglabel={0}
+                            withtextlabel={0}
                         />
                     </div>
-                    <div className="col-md-12 text-center mt-10">
+                    <div className="col-md-12 text-center mt-3">
                         <RangeCalendar
                             onChange={onChangeRange}
                             start={form.fechaInicio}
