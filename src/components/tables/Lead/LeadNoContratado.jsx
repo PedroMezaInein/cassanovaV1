@@ -96,7 +96,7 @@ class LeadNoContratado extends Component {
                                 <th style={{ minWidth: "100px" }}>
                                     <span>Nombre del cliente</span>
                                 </th>
-                                <th style={{ minWidth: "140px" }} className="text-center">Fecha</th>
+                                <th style={{ minWidth: "145px" }} className="text-center">Fecha</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Motivo</th>
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
