@@ -643,13 +643,11 @@ class LeadLlamadaSalida extends Component {
                 if(motivo !== '')
                     elemento = motivo
             data.motivo = elemento
-            await axios.put(`${URL_DEV}crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            await axios.put(`${URL_DEV}v2/leads/crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
                     const { history } = this.props
                     doneAlert('El estatus fue actualizado con éxito.')
-                    history.push({
-                        pathname: '/leads/crm'
-                    });
+                    history.push({ pathname: '/leads/crm' });
                 },
                 (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {

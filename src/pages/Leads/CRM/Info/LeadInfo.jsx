@@ -598,22 +598,7 @@ class LeadInfo extends Component {
                 if(motivo !== '')
                     elemento = motivo
             data.motivo = elemento
-            await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { activeNav } = this.state
-                this.changeActiveNav(activeNav)
-                const { history } = this.props
-                history.push('/leads/crm')
-                        
-                doneAlert('El estatus fue actualizado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-            ).catch((error) => {
-                    errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                    console.log(error, 'error')
-            })
+            this.changeEstatusAxios(data)
         }
     }
 
@@ -621,17 +606,12 @@ class LeadInfo extends Component {
     changeEstatusAxios = async (data) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/leads/crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { activeNav } = this.state
-                this.changeActiveNav(activeNav)
                 const { history } = this.props
                 history.push('/leads/crm')
                 doneAlert('El estatus fue actualizado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
