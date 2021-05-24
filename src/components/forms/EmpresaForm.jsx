@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Button, TagInput, InputPhone} from '../form-components' 
+import { Input, Button, TagInput, InputPhone, TagSelectSearch} from '../form-components' 
 import { validateAlert } from '../../functions/alert'
 import { RFC, TEL } from '../../constants'
 
@@ -36,9 +36,14 @@ class EmpresaForm extends Component {
         })
         onChange({target:{value:array, name: 'tipos'}})
         onChange({target:{value:'', name: 'tipoProyecto'}})
-    } 
+    }
+
+    updateDepartamentos = value => {
+        const { onChange } = this.props
+        onChange({target: { value: value, name: 'departamentos'}}, true)
+    }
     render() {
-        const { form, onChange, onSubmit, formeditado,tagInputChange, tagInputChangeTelefono, ...props } = this.props
+        const { form, onChange, onSubmit, formeditado,tagInputChange, tagInputChangeTelefono, options, ...props } = this.props
         return (
             <Form id="form-empresa"
                 onSubmit={
@@ -213,7 +218,7 @@ class EmpresaForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
+                    <div className="col-md-6">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -224,6 +229,15 @@ class EmpresaForm extends Component {
                             placeholder="DIRECCIÓN DE LA EMPRESA"
                             iconclass={"flaticon2-map"}
                             messageinc="Incorrecto. Ingresa la dirección de la empresa"
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <TagSelectSearch
+                            placeholder='Selecciona el departamento '
+                            options={options.departamentos}
+                            iconclass='las la-user-friends icon-xl'
+                            defaultvalue={form.departamentos}
+                            onChange={this.updateDepartamentos}
                         />
                     </div>
                 </div>

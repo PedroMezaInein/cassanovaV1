@@ -30,7 +30,8 @@ class EmpresasForm extends Component {
             pinterest: '',
             pagina_web:'',
             telefono:'',
-            blog:''
+            blog:'',
+            departamentos: []
         },
         data: {
             empresas: []
@@ -67,6 +68,7 @@ class EmpresasForm extends Component {
         ],
         adjuntos: [],
         defaultactivekey: "",
+        options: { departamentos: [] }
     }
     /* constructor(props) {
         super(props)
@@ -133,6 +135,7 @@ class EmpresasForm extends Component {
         }
         if (!empresas)
             history.push('/')
+            this.getOptionsAxios();
         if(process.env.NODE_ENV === 'production'){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (data) => {
@@ -146,7 +149,35 @@ class EmpresasForm extends Component {
             })
         }
     }
-
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { departamentos } = response.data
+                const { options } = this.state
+                options.departamentos = []
+                departamentos.forEach( ( element ) => {
+                    options.departamentos.push({
+                        name: element.nombre,
+                        value: element.id.toString(),
+                        label: element.nombre
+                    })
+                });
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     onSubmit = (e) => {
         e.preventDefault()
         const { title } = this.state
@@ -256,7 +287,7 @@ class EmpresasForm extends Component {
     }
 
     render() {
-        const { form, title, formeditado } = this.state
+        const { form, title, formeditado, options } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <Card className="card-custom">
@@ -274,6 +305,7 @@ class EmpresasForm extends Component {
                             formeditado={formeditado}
                             tagInputChange={(e) => this.tagInputChange(e)}
                             tagInputChangeTelefono={(e) => this.tagInputChangeTelefono(e)}
+                            options = { options } 
                         />
                     </Card.Body>
                 </Card>
