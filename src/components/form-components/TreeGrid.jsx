@@ -2,8 +2,11 @@
 
 import * as React from 'react';
 import { getObject } from '@syncfusion/ej2-grids';
+import { getValue } from '@syncfusion/ej2-base';
 import { ColumnDirective, ColumnsDirective, TreeGridComponent } from '@syncfusion/ej2-react-treegrid';
 import { ExcelExport, Inject, Toolbar } from '@syncfusion/ej2-react-treegrid';
+import $ from "jquery";
+
 function colorHeader (args, bgColor, color, hoverBgColor) {
   // Color de header
   args.row.bgColor = bgColor;
@@ -40,8 +43,53 @@ function rowTotal ( args, bgColor, color, fontSize ) {
   args.row.childNodes[1].style.fontSize = fontSize;
   args.row.children[0].children[0].children[2].style.fontSize = fontSize;
 }
+function colorHeaderExcel (args, bgColor, color){
+  args.style = {
+    backColor: bgColor,
+    fontColor: color,
+    bold: true,
+    border:true,
+    vAlign:'Center',
+    borders:{
+      color: bgColor,
+    }
+  };
+}
+function rowTotalExcel ( args, value, bgColor, color ) {
+  if(args.value === value){
+    args.style = {
+      backColor: bgColor,
+      fontColor: color,
+      bold: true,
+      border:true,
+      hAlign:'Right',
+      vAlign:'Center',
+      fontSize:9,
+      borders:{
+        color: bgColor,
+      }
+    }
+  }else{
+    args.style = {
+      backColor: bgColor,
+      fontColor: color,
+      bold: true,
+      border:true,
+      hAlign:'Center',
+      vAlign:'Center',
+      fontSize:9,
+      borders:{
+        color: bgColor,
+      }
+    }
+  }
+}
 export default class App extends React.Component {
-  
+  componentDidMount(){
+    $(".e-tbar-btn-text").html("EXPORTAR")
+    $(".e-toolbar-item").removeAttr("title");
+    $("#_gridcontrol_excelexport").removeAttr("aria-label");
+  }
   constructor() {
     super(...arguments);
     this.toolbarOptions = ['ExcelExport'];
@@ -122,50 +170,82 @@ export default class App extends React.Component {
     }
   }
   toolbarClick(args) {
-    console.log(args)
+    // args.item.text = 'hshs'
     if (this.treegrid && args.item.text === 'Excel Export') {
       const excelExportProperties = {
         header: {
             headerRows: 5,
             rows: [
-                { cells: [{ colSpan: 4, value: "" }] },
-                { cells: [{ colSpan: 4, value: "ESTADOS DE RESULTADOS", style: { fontColor: '#80808F', fontSize: 18, hAlign: 'Center', bold: true, } }] },
-                { cells: [{ colSpan: 4, value: "INFRAESTRUCTURA E INTERIORES", style: { fontColor: '#D8005A', fontSize: 12, hAlign: 'Center', bold: true, } }] },
-                { cells: [{ colSpan: 4, value: "10/05/2021 - 21/05/2021", style: { fontColor: '#80808F', fontSize: 12, hAlign: 'Center', bold: true, } }] },
-                { cells: [{ colSpan: 4, value: "" }] },
+                { cells: [{ colSpan: 3, value: "" }] },
+                { cells: [{ colSpan: 3, value: "ESTADOS DE RESULTADOS", style: { fontColor: '#80808F', fontSize: 14, hAlign: 'Center', bold: true, fontName: 'Nirmala UI' } }] },
+                { cells: [{ colSpan: 3, value: "INFRAESTRUCTURA E INTERIORES", style: { fontColor: '#D8005A', fontSize: 10, hAlign: 'Center', bold: true, fontName: 'Nirmala UI' } }] },
+                { cells: [{ colSpan: 3, value: "10/05/2021 - 21/05/2021", style: { fontColor: '#80808F', fontSize: 10, hAlign: 'Center', bold: true, fontName: 'Nirmala UI' } }] },
+                { cells: [{ colSpan: 3, value: "" }] },
             ]
         },
         fileName: "Estados de resultados.xlsx",
         isCollapsedStatePersist: true,
-        columns:[
+        // columns:[
           
-        ]
-    };
-    console.log(this.treegrid)
+        // ],
+        theme: {
+          header: { fontName: 'Nirmala UI', fontColor: '#80808F', fontSize:11, fontWeight:600 },
+          record: { fontName: 'Nirmala UI', fontColor: '#80808F', fontSize:10 }
+      }
+      };
     this.treegrid.excelExport(excelExportProperties);
     }
   }
   excelQueryCellInfo(args) {
-    // console.log(args)
-    // if (args.column.field === 'duration') {
-    //     if (getValue('data.duration', args) === 0) {
-    //         args.style = { backColor: '#336c12' };
-    //     }
-    //     else if (getValue('data.duration', args) < 3) {
-    //         args.style = { backColor: '#7b2b1d' };
-    //     }
-    // }
-}
-queryCellInfo(args) {
-    if (args.column.field === 'header') {
-      console.log(args)
-      // console.log(args.column.field)
-    //     if (getValue('data.duration', args) === 0) {
-    //         args.cell.style.background = '#336c12';
-    //     }
-    //     else if (getValue('data.duration', args) < 3) {
-    //         args.cell.style.background = '#7b2b1d';
-    //     }
+    let value = getValue('data.header', args)
+    switch (value) {
+      case 'INGRESOS':
+        colorHeaderExcel(args, '#E8E6FC', '#948FD8')
+        break;
+      case 'COSTOS DE VENTAS':
+        colorHeaderExcel(args, '#E4EFFB', '#86AAD3')
+        break;
+      case 'GANANCIA / PERDIDA BRUTA':
+        colorHeaderExcel(args, '#FEE4ED', '#F091B1')
+        // args.row.childNodes[2].style.color='#F091B1'
+        break;
+      case 'GASTOS':
+        colorHeaderExcel(args, '#E2FBF7', '#7ED0C5')
+        break;
+      case 'OTROS INGRESOS':
+        colorHeaderExcel(args, '#fbeadf', '#f9b180')
+        break;
+      case 'FLUJO DE EFECTIVO':
+      case 'SIN FACTURA':
+      case 'CON FACTURA':        
+        rowTotalExcel(args, value, '#F3F6F9', '#80808F')
+        break;
+      case 'TOTAL INGRESOS':
+      case 'TOTAL DEVOLUCIONES':
+        rowTotalExcel(args, value, '#F3F6F9', '#948FD8')
+        break;
+      case 'TOTAL VENTAS':
+      case 'TOTAL COSTOS DE VENTAS':
+        rowTotalExcel(args, value, '#F3F6F9', '#F091B1')
+        break;
+      case 'TOTAL DE GASTOS':
+        rowTotalExcel(args, value, '#F3F6F9', '#7ED0C5')
+        break;
+      case 'TOTAL DE INGRESOS':
+        rowTotalExcel(args, value, '#F3F6F9', '#f9b180')
+        break;
+      case 'VENTAS':
+      case 'DEVOLUCIONES':
+      case 'VENTAS NETAS':
+      case 'PROYECTOS':
+      case 'COSTOS NETOS':
+      case 'DEPARTAMENTOS':
+        args.style = {
+          fontColor: '#80808F',
+          bold: true
+        };
+        default:
+        break;
     }
 }
   render() {
@@ -179,80 +259,80 @@ queryCellInfo(args) {
             subtasks: [
               {
                 header: 'FASE 1',
-                total: '$3',
-                // porcentaje: '11%',
+                total: 3,
+                // porcentaje: 0.11,
                 subtasks: [
                   {
                     header: 'PROYECTO "FASE 1"',
-                    porcentaje: '11%',
-                    total: '$3',
+                    porcentaje: 0.11,
+                    total: 3,
                     subtasks: [
-                      { header: 'SUBÁREA 1', porcentaje: '3%', total: '$3'},
-                      { header: 'SUBÁREA 2', porcentaje: '3%', total: '$3'},
+                      { header: 'SUBÁREA 1', porcentaje: 0.03, total: 3},
+                      { header: 'SUBÁREA 2', porcentaje: 0.03, total: 3},
                     ]
                   }
                 ]
               },
               {
                 header: 'FASE 2',
-                total: '$3',
-                // porcentaje: '11%',
+                total: 3,
+                // porcentaje: 0.11,
                 subtasks: [
                   {
                     header: 'PROYECTO "FASE 2"',
-                    porcentaje: '11%',
-                    total: '$3',
+                    porcentaje: 0.11,
+                    total: 3,
                     subtasks: [
-                      { header: 'SUBÁREA 1', porcentaje: '3%', total: '$3'},
-                      { header: 'SUBÁREA 2', porcentaje: '3%', total: '$3'},
+                      { header: 'SUBÁREA 1', porcentaje: 0.03, total: 3},
+                      { header: 'SUBÁREA 2', porcentaje: 0.03, total: 3},
                     ]
                   }
                 ]
               },
               {
                 header: 'FASE 3',
-                total: '$3',
-                // porcentaje: '11%',
+                total: 3,
+                // porcentaje: 0.11,
                 subtasks: [
                   {
                     header: 'PROYECTO "FASE 3"',
-                    porcentaje: '11%',
-                    total: '$3',
+                    porcentaje: 0.11,
+                    total: 3,
                     subtasks: [
-                      { header: 'SUBÁREA 1', porcentaje: '3%', total: '$3'},
-                      { header: 'SUBÁREA 2', porcentaje: '3%', total: '$3'},
+                      { header: 'SUBÁREA 1', porcentaje: 0.03, total: 3},
+                      { header: 'SUBÁREA 2', porcentaje: 0.03, total: 3},
                     ]
                   }
                 ]
               },
-              { header: 'TOTAL INGRESOS', total: '$3'},
+              { header: 'TOTAL INGRESOS', total: 3},
             ]
           },
           {
             header: 'DEVOLUCIONES',
-            total: '$3',
-            // porcentaje: '11%',
+            total: 3,
+            // porcentaje: 0.11,
             subtasks: [
               {
                 header: 'PROYECTOS ',
-                total: '$3',
-                // porcentaje: '11%',
+                total: 3,
+                // porcentaje: 0.11,
                 subtasks: [
-                  { header: 'PROYECTO "1"', total: '$3'},
-                  { header: 'PROYECTO "2"', total: '$3'},
-                  { header: 'PROYECTO "3"', total: '$3'}
+                  { header: 'PROYECTO "1"', total: 3},
+                  { header: 'PROYECTO "2"', total: 3},
+                  { header: 'PROYECTO "3"', total: 3}
                 ]
               },
-              { header: 'TOTAL DEVOLUCIONES', total: '$3'},
+              { header: 'TOTAL DEVOLUCIONES', total: 3},
             ]
           },
           {
             header: 'VENTAS NETAS',
-            total: '$3',
-            // porcentaje: '11%',
+            total: 3,
+            // porcentaje: 0.11,
             subtasks: [
-              { header: 'SIN FACTURA', porcentaje: '3%', total: '$3'},
-              { header: 'CON FACTURA', porcentaje: '3%', total: '$3'},
+              { header: 'SIN FACTURA', porcentaje: 0.03, total: 3},
+              { header: 'CON FACTURA', porcentaje: 0.03, total: 3},
             ]
           }
         ]
@@ -260,50 +340,50 @@ queryCellInfo(args) {
 
       {
         header: 'COSTOS DE VENTAS',
-        // porcentaje: 11,
+        // porcentaje: 0.11,
         // total: 66,
         subtasks: [
           {
             header: 'PROYECTOS',
-            total: '$3',
-            // porcentaje: '11%',
+            total: 3,
+            // porcentaje: 0.11,
             subtasks: [
               {
                 header: 'PROYECTO "1"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'ÁREA 1', total: '$3'},
-                  { header: 'ÁREA 2', total: '$3'},
+                  { header: 'ÁREA 1', total: 3},
+                  { header: 'ÁREA 2', total: 3},
                 ]
               },
               {
                 header: 'PROYECTO "2"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'ÁREA 1', total: '$3'},
-                  { header: 'ÁREA 2', total: '$3'},
+                  { header: 'ÁREA 1', total: 3},
+                  { header: 'ÁREA 2', total: 3},
                 ]
               },
               {
                 header: 'PROYECTO "3"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'ÁREA 1', total: '$3'},
-                  { header: 'ÁREA 2', total: '$3'},
+                  { header: 'ÁREA 1', total: 3},
+                  { header: 'ÁREA 2', total: 3},
                 ]
               },
             ]
           },
           {
             header: 'COSTOS NETOS',
-            total: '$3',
-            // porcentaje: '11%',
+            total: 3,
+            // porcentaje: 0.11,
             subtasks: [
-              { header: 'SIN FACTURA', porcentaje: '3%', total: '$3'},
-              { header: 'CON FACTURA', porcentaje: '3%', total: '$3'},
+              { header: 'SIN FACTURA', porcentaje: 0.03, total: 3},
+              { header: 'CON FACTURA', porcentaje: 0.03, total: 3},
             ]
           }
         ]
@@ -311,113 +391,113 @@ queryCellInfo(args) {
 
       {
         header: 'GANANCIA / PERDIDA BRUTA',
-        porcentaje: '11%',
+        porcentaje: 0.10,
         // total: 66,
         subtasks: [
-          { header: 'TOTAL VENTAS', total: '$3'},
-          { header: 'TOTAL COSTOS DE VENTAS', total: '$3'}
+          { header: 'TOTAL VENTAS', total: 3},
+          { header: 'TOTAL COSTOS DE VENTAS', total: 3}
         ]
       },
 
       {
         header: 'GASTOS',
-        // porcentaje: '11%',
+        // porcentaje: 0.11,
         // total: 66,
         subtasks: [
           {
             header: 'DEPARTAMENTOS',
-            total: '$3',
-            // porcentaje: '11%',
+            total: 3,
+            // porcentaje: 0.11,
             subtasks: [
               {
                 header: 'DEPARTAMENTO "1"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'SUB-AREA 1', total: '$3'},
-                  { header: 'SUB-AREA 2', total: '$3'},
+                  { header: 'SUB-AREA 1', total: 3},
+                  { header: 'SUB-AREA 2', total: 3},
                 ]
               },
               {
                 header: 'DEPARTAMENTO "2"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'SUB-AREA 1', total: '$3'},
-                  { header: 'SUB-AREA 2', total: '$3'},
+                  { header: 'SUB-AREA 1', total: 3},
+                  { header: 'SUB-AREA 2', total: 3},
                 ]
               },
               {
                 header: 'DEPARTAMENTO "3"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'SUB-AREA 1', total: '$3'},
-                  { header: 'SUB-AREA 2', total: '$3'},
+                  { header: 'SUB-AREA 1', total: 3},
+                  { header: 'SUB-AREA 2', total: 3},
                 ]
               },
 
             ]
           },
-          { header: 'TOTAL DE GASTOS', total: '$3'}
+          { header: 'TOTAL DE GASTOS', total: 3}
         ]
       },
 
       {
         header: 'OTROS INGRESOS',
-        // porcentaje: '11%',
+        // porcentaje: 0.11,
         // total: 66,
         subtasks: [
           {
             header: 'DEPARTAMENTOS',
-            total: '$3',
-            // porcentaje: '11%',
+            total: 3,
+            // porcentaje: 0.11,
             subtasks: [
               {
                 header: 'DEPARTAMENTO "1"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'SUB-AREA 1', total: '$3'},
-                  { header: 'SUB-AREA 2', total: '$3'},
+                  { header: 'SUB-AREA 1', total: 3},
+                  { header: 'SUB-AREA 2', total: 3},
                 ]
               },
               {
                 header: 'DEPARTAMENTO "2"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'SUB-AREA 1', total: '$3'},
-                  { header: 'SUB-AREA 2', total: '$3'},
+                  { header: 'SUB-AREA 1', total: 3},
+                  { header: 'SUB-AREA 2', total: 3},
                 ]
               },
               {
                 header: 'DEPARTAMENTO "3"',
-                porcentaje: '11%',
-                total: '$3',
+                porcentaje: 0.11,
+                total: 3,
                 subtasks: [
-                  { header: 'SUB-AREA 1', total: '$3'},
-                  { header: 'SUB-AREA 2', total: '$3'},
+                  { header: 'SUB-AREA 1', total: 3},
+                  { header: 'SUB-AREA 2', total: 3},
                 ]
               },
             ]
           },
-          { header: 'TOTAL DE INGRESOS', total: '$3'}
+          { header: 'TOTAL DE INGRESOS', total: 3}
         ]
       },
 
-      { header: 'FLUJO DE EFECTIVO', total: '$3'}
+      { header: 'FLUJO DE EFECTIVO', total: 3}
     ];
     return(
       <div className='control-pane'>
           <div className='control-section'>
-              <TreeGridComponent id="costos_ventas" dataSource={sampleData} treeColumnIndex={0} childMapping='subtasks' enableHover='false' gridLines='Horizontal' rowDataBound={this.rowDataBound} enableCollapseAll={true} 
-                allowExcelExport='true'toolbarClick={this.toolbarClick} ref={treegrid => this.treegrid = treegrid} toolbar={this.toolbarOptions} queryCellInfo={this.queryCellInfo} excelQueryCellInfo={this.excelQueryCellInfo}
+              <TreeGridComponent dataSource={sampleData} treeColumnIndex={0} childMapping='subtasks' enableHover='false' gridLines='Horizontal' rowDataBound={this.rowDataBound} enableCollapseAll={true} 
+                allowExcelExport='true'toolbarClick={this.toolbarClick} ref={treegrid => this.treegrid = treegrid} toolbar={this.toolbarOptions}  excelQueryCellInfo={this.excelQueryCellInfo}
               >
                   <ColumnsDirective>
                       <ColumnDirective field='header' width='200' headerText='' />
-                      <ColumnDirective field='total' width='40' textAlign='Center' headerText='TOTAL' />
-                      <ColumnDirective field='porcentaje' width='40' textAlign='Center' headerText='PORCENTAJE' />
+                      <ColumnDirective field='total' width='40' textAlign='Center' headerText='TOTAL' type='number' format='C0'/>
+                      <ColumnDirective field='porcentaje' width='40' textAlign='Center' headerText='PORCENTAJE' type='number' format='P0'/>
                   </ColumnsDirective>
                   <Inject services={[Toolbar, ExcelExport]}/>
               </TreeGridComponent>
