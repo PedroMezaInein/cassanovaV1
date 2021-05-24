@@ -497,7 +497,7 @@ export default class App extends React.Component {
                   <ColumnsDirective>
                       <ColumnDirective field='header' width='200' headerText='' />
                       <ColumnDirective field='total' width='40' textAlign='Center' headerText='TOTAL' type='number' format='C0'/>
-                      <ColumnDirective field='porcentaje' width='40' textAlign='Center' headerText='PORCENTAJE' type='number' format='P0'/>
+                      <ColumnDirective field='porcentaje' width='40' textAlign='Center' headerText='PORCENTAJE' type='number' format='P2'/>
                   </ColumnsDirective>
                   <Inject services={[Toolbar, ExcelExport]}/>
               </TreeGridComponent>
