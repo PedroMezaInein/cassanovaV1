@@ -10,6 +10,7 @@ import { FormEstadoResultados } from '../components/forms'
 import { waitAlert, errorAlert, printResponseErrorAlert } from '../functions/alert'
 import { setOptions } from '../functions/setters'
 import { setSingleHeader } from '../functions/routers'
+import { MoneyTransaction } from '../components/Lottie'
 class Normas extends Component {
 
     state = {
@@ -96,6 +97,7 @@ class Normas extends Component {
         datos = [
 			{
 				header: 'INGRESOS',
+                total: 0,
 				subtasks: [
 					{
 						header: 'VENTAS',
@@ -237,6 +239,7 @@ class Normas extends Component {
         datos[0].subtasks[2].subtasks[0].porcentaje = (old.ingresos.ventas_netas.datos.sin_factura * 100 / old.ingresos.ventas_netas.total) / 100
         datos[0].subtasks[2].subtasks[1].total = old.ingresos.ventas_netas.datos.con_factura
         datos[0].subtasks[2].subtasks[1].porcentaje = (old.ingresos.ventas_netas.datos.con_factura * 100 / old.ingresos.ventas_netas.total) /100
+        datos[0].total = old.ingresos.ventas_netas.total
         aux = []
         total = 0
         for (const index in old.costos_ventas.compras.datos) {
@@ -267,6 +270,7 @@ class Normas extends Component {
         datos[1].subtasks[1].subtasks[0].porcentaje = (old.costos_ventas.costos_netos.datos.sin_factura * 100 / old.costos_ventas.costos_netos.total) / 100
         datos[1].subtasks[1].subtasks[1].total = old.costos_ventas.costos_netos.datos.con_factura
         datos[1].subtasks[1].subtasks[1].porcentaje = (old.costos_ventas.costos_netos.datos.con_factura * 100 / old.costos_ventas.costos_netos.total)/100
+        datos[1].total = old.costos_ventas.costos_netos.total
         datos[2].total = old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total
         datos[2].porcentaje = ( (old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total) * 100 / old.ingresos.ventas_netas.total ) /100
         datos[2].subtasks = [
@@ -279,6 +283,64 @@ class Normas extends Component {
                 'total': old.costos_ventas.costos_netos.total
             }
         ]
+        aux = []
+        total = 0
+        for (const index in old.gastos.datos) {
+            aux2 = []
+            for (const index2 in old.gastos.datos[index].subareas) {
+                aux3 = []
+                total = 0
+                old.gastos.datos[index].subareas[index2].egresos.forEach((egreso) => {
+                    total = total + egreso.total
+                })
+                aux2.push({
+                    'header': old.gastos.datos[index].subareas[index2].nombre,
+                    'total': total
+                })
+            }
+            total = old.gastos.datos[index].total
+            aux.push({
+                'header': old.gastos.datos[index].nombre,
+                'total': total,
+                'subtasks': aux2
+            })
+        }
+        total = old.gastos.total
+        datos[3].subtasks[0].subtasks = aux
+        datos[3].subtasks[0].total = total
+        datos[3].subtasks[1].total = old.gastos.total
+        datos[3].total = old.gastos.total
+
+        aux = []
+        total = 0
+        for (const index in old.otros_ingresos.datos) {
+            aux2 = []
+            for (const index2 in old.otros_ingresos.datos[index].subareas) {
+                aux3 = []
+                total = 0
+                old.otros_ingresos.datos[index].subareas[index2].ingresos.forEach((egreso) => {
+                    total = total + egreso.total
+                })
+                aux2.push({
+                    'header': old.otros_ingresos.datos[index].subareas[index2].nombre,
+                    'total': total
+                })
+            }
+            total = old.otros_ingresos.datos[index].total
+            aux.push({
+                'header': old.otros_ingresos.datos[index].nombre,
+                'total': total,
+                'subtasks': aux2
+            })
+        }
+        total = old.otros_ingresos.total
+        datos[4].subtasks[0].subtasks = aux
+        datos[4].subtasks[0].total = total
+        datos[4].subtasks[1].total = old.otros_ingresos.total
+        datos[4].total = old.otros_ingresos.total
+
+        datos[5].total = old.otros_ingresos.total - old.gastos.total + old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total
+
         this.setState({...this.state, datos: datos})
     }
 
@@ -332,7 +394,7 @@ class Normas extends Component {
                                 {
                                     datos !== null ?
                                         <TreeGrid datos = { datos } />
-                                    : <></>
+                                    : <MoneyTransaction />
                                 }
                             </Card.Body>
                         </Card>
