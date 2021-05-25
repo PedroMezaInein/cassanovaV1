@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, EMPRESA_COLUMNS, PUSHER_OBJECT} from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { setTextTableReactDom } from '../../../functions/setters'
+import { setTextTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
 import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlertY, customInputAlert } from '../../../functions/alert'
@@ -126,11 +126,26 @@ class Empresas extends Component {
                 name: setTextTableReactDom(empresa.name, this.doubleClick, empresa, 'name', 'text-center'),
                 razonSocial: setTextTableReactDom(empresa.razon_social, this.doubleClick, empresa, 'razon_social', 'text-center'),
                 rfc: setTextTableReactDom(empresa.rfc, this.doubleClick, empresa, 'rfc', 'text-center'),
+                // departamento: empresa.departamentos.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(empresa, empresa.departamentos, 'departamento_empresa', this.deleteElementAxios, ''),
                 id: empresa.id
             })
             return false
         })
         return aux
+    }
+    deleteElementAxios = async(empresa, element) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/usuarios/empresas/${empresa.id}/departamento/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getEmpresas()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El departamento fue eliminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     doubleClick = (data, tipo) => {
         const { form } = this.state

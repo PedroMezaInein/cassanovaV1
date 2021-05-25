@@ -57,9 +57,7 @@ class BuscarLead extends Component {
                                                 </span>
                                             </td>
                                         </tr>
-                                    : ''
-                                }
-                                {
+                                    :
                                     leads.map((lead, key) => {
                                         let limiteInferior = (active - 1) * itemsPerPage
                                         let limiteSuperior = limiteInferior + (itemsPerPage - 1)
