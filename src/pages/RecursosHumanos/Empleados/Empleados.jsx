@@ -18,6 +18,7 @@ import { Update } from '../../../components/Lottie'
 import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray } from '../../../components/form-components'
 import moment from 'moment'
 import $ from "jquery";
+import { setSingleHeader } from '../../../functions/routers'
 
 class Empleados extends Component {
     state = {
@@ -652,7 +653,7 @@ class Empleados extends Component {
     exportRHAxios = async() =>{
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'exportar/rh/empleados', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(`${URL_DEV}v2/exportar/rh/empleados`, { responseType:'blob', headers: setSingleHeader(access_token)}).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -661,9 +662,7 @@ class Empleados extends Component {
                 document.body.appendChild(link);
                 link.click();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El documento fue generado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

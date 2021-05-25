@@ -390,10 +390,10 @@ class Normas extends Component {
                                     <h3 className="card-label">Resultados</h3>
                                 </div>
                                 </Card.Header>
-                            <Card.Body>
+                            <Card.Body className={datos !== null ?'':"d-flex align-items-center"}>
                                 {
                                     datos !== null ?
-                                        <TreeGrid datos = { datos } />
+                                        <TreeGrid datos = { datos } form = { form } options = { options }/>
                                     : <MoneyTransaction />
                                 }
                             </Card.Body>

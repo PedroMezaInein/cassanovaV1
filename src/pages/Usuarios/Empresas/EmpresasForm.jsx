@@ -8,7 +8,7 @@ import { Card } from 'react-bootstrap'
 import Echo from 'laravel-echo';
 import Swal from 'sweetalert2'
 import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert, userWarningAlert } from '../../../functions/alert'
-
+import { setSingleHeader } from "../../../functions/routers"
 class EmpresasForm extends Component {
 
     state = {
@@ -149,14 +149,13 @@ class EmpresasForm extends Component {
             })
         }
     }
-    async getOptionsAxios() {
+    getOptionsAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/usuarios/empresas`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
-                const { departamentos } = response.data
                 const { options } = this.state
+                const { departamentos } = response.data
                 options.departamentos = []
                 departamentos.forEach( ( element ) => {
                     options.departamentos.push({
@@ -165,14 +164,8 @@ class EmpresasForm extends Component {
                         label: element.nombre
                     })
                 });
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({...this.state, options})
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
