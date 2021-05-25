@@ -240,26 +240,45 @@ class Normas extends Component {
         aux = []
         total = 0
         for (const index in old.costos_ventas.compras.datos) {
+            aux2 = []
+            for (const index2 in old.costos_ventas.compras.datos[index].subareas) {
+                aux3 = []
+                total = 0
+                old.costos_ventas.compras.datos[index].subareas[index2].compras.forEach((compra) => {
+                    total = total + compra.total
+                })
+                aux2.push({
+                    'header': old.costos_ventas.compras.datos[index].subareas[index2].nombre,
+                    'total': total
+                })
+            }
             total = old.costos_ventas.compras.datos[index].total
             aux.push({
                 'header': old.costos_ventas.compras.datos[index].nombre,
-                'total': total
+                'total': total,
+                'subtasks': aux2
             })
         }
         total = old.costos_ventas.costos_netos.total
-        datos[1].subtasks[0].subtasks = [
-            {
-                header: 'Proyectos',
-                total: total,
-                subtasks: aux
-            }
-        ]
+        datos[1].subtasks[0].subtasks = aux
+        datos[1].subtasks[0].total = total
         datos[1].subtasks[1].total = old.costos_ventas.costos_netos.total
         datos[1].subtasks[1].subtasks[0].total = old.costos_ventas.costos_netos.datos.sin_factura
         datos[1].subtasks[1].subtasks[0].porcentaje = (old.costos_ventas.costos_netos.datos.sin_factura * 100 / old.costos_ventas.costos_netos.total) / 100
         datos[1].subtasks[1].subtasks[1].total = old.costos_ventas.costos_netos.datos.con_factura
         datos[1].subtasks[1].subtasks[1].porcentaje = (old.costos_ventas.costos_netos.datos.con_factura * 100 / old.costos_ventas.costos_netos.total)/100
-        console.log('DATOS', datos)
+        datos[2].total = old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total
+        datos[2].porcentaje = ( (old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total) * 100 / old.ingresos.ventas_netas.total ) /100
+        datos[2].subtasks = [
+            {
+                'header': 'TOTAL VENTAS',
+                'total': old.ingresos.ventas_netas.total
+            },
+            {
+                'header': 'TOTAL COSTOS DE VENTAS',
+                'total': old.costos_ventas.costos_netos.total
+            }
+        ]
         this.setState({...this.state, datos: datos})
     }
 
