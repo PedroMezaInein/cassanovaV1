@@ -279,7 +279,6 @@ class NotificacionesCorreos extends Component {
         )
     }
     openModalEditar = notificacion => {
-        console.log(notificacion, 'notificacion')
         const { form } = this.state
         let auxResponsables = []
         let auxDepartamentos= []
