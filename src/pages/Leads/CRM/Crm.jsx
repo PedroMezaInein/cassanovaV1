@@ -957,7 +957,6 @@ class Crm extends Component {
     /* --------- ANCHOR CRM PUT CAMBIO DE ESTATUS CANCELADO Y RECHAZADO --------- */
     changeEstatusCanceladoRechazadoAxios = async (data) => {
         const { estatus } = data
-        const { access_token } = this.props.authUser
         let elemento = ''
         let motivo = ''
         if(estatus === 'Rechazado'){
