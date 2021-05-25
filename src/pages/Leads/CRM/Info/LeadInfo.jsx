@@ -583,7 +583,6 @@ class LeadInfo extends Component {
     /* --------------------- ASYNC CALL TO RECHAZAR ESTATUS --------------------- */    
     changeEstatusCanceladoRechazadoAxios = async (data) => {
         const { estatus } = data
-        const { access_token } = this.props.authUser
         let elemento = ''
         let motivo = ''
         if(estatus === 'Cancelado'){
