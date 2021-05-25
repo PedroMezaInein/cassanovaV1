@@ -1,17 +1,20 @@
 import * as React from 'react';
-import { getObject } from '@syncfusion/ej2-grids';
-import { getValue } from '@syncfusion/ej2-base';
-import { ColumnDirective, ColumnsDirective, TreeGridComponent } from '@syncfusion/ej2-react-treegrid';
-import { ExcelExport, Inject, Toolbar } from '@syncfusion/ej2-react-treegrid';
 import $ from "jquery";
+import moment from 'moment'
+import { getValue } from '@syncfusion/ej2-base';
+import { getObject } from '@syncfusion/ej2-grids';
+import { INEIN_RED, IM_AZUL } from '../../constants'
+import { ExcelExport, Inject, Toolbar } from '@syncfusion/ej2-react-treegrid';
+import { ColumnDirective, ColumnsDirective, TreeGridComponent } from '@syncfusion/ej2-react-treegrid';
 
 function colorHeader (args, bgColor, color, hoverBgColor) {
   	// Color de header
-  	args.row.bgColor = bgColor;
+	args.row.bgColor = bgColor;
 	args.row.style.fontWeight = 600;
 	args.row.children[0].style.color = color;
+	args.row.children[1].style.color = color;
+	args.row.children[2].style.color = color;
 	args.row.children[0].children[0].children[2].style.fontSize = '14px';
-  
 	// Normal
 	args.row.onmouseout = function(){ 
 		this.style.backgroundColor = bgColor;
@@ -80,18 +83,15 @@ function rowTotalExcel ( args, value, bgColor, color ) {
 	}
 }
 export default class App extends React.Component {
-
 	componentDidMount(){
 		$(".e-tbar-btn-text").html("EXPORTAR")
 		$(".e-toolbar-item").removeAttr("title");
 		$("#_gridcontrol_excelexport").removeAttr("aria-label");
 	}
-
 	constructor() {
 		super(...arguments);
 		this.toolbarOptions = ['ExcelExport'];
 	}
-
 	rowDataBound(args) {
 		let header = getObject('header', args.data)
 		switch (header) {
@@ -160,9 +160,39 @@ export default class App extends React.Component {
 				break;
 		}
 	}
-
+	setColor = (empresa) => {
+        switch (empresa) {
+            case 'INFRAESTRUCTURA E INTERIORES':
+                return INEIN_RED;
+            case 'INFRAESTRUCTURA MÉDICA':
+                return IM_AZUL;
+            default:
+				return '#80808F';
+        }
+    }
+	printDates = form => {
+        let fechaInicio = moment(form.fechaInicio)
+        let fechaFin = moment(form.fechaFin)
+        let diffFechas = fechaFin.diff(fechaInicio, 'days')
+        let showDate = ''
+        if(diffFechas === 0){
+			return showDate = `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')}`
+        }else{
+			return showDate = `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')} - ${fechaFin.format('DD')}/${fechaFin.format('MM')}/${fechaFin.format('YYYY')}`
+		}
+    }
 	toolbarClick(args) {
-		// args.item.text = 'hshs'
+		const { form, options } = this.props
+		let auxName = ''
+		options.empresas.forEach((empresa) => {
+			if(empresa.value.toString() === form.empresa){
+				if(empresa.name === 'INEIN'){
+					auxName ='INFRAESTRUCTURA E INTERIORES'
+				}else{
+					auxName = empresa.name
+				}
+			}
+		})
 		if (this.treegrid && args.item.text === 'Excel Export') {
 			const excelExportProperties = {
 				header: {
@@ -170,8 +200,8 @@ export default class App extends React.Component {
 					rows: [
 						{ cells: [{ colSpan: 3, value: "" }] },
 						{ cells: [{ colSpan: 3, value: "ESTADOS DE RESULTADOS", style: { fontColor: '#80808F', fontSize: 14, hAlign: 'Center', bold: true, fontName: 'Nirmala UI' } }] },
-						{ cells: [{ colSpan: 3, value: "INFRAESTRUCTURA E INTERIORES", style: { fontColor: '#D8005A', fontSize: 10, hAlign: 'Center', bold: true, fontName: 'Nirmala UI' } }] },
-						{ cells: [{ colSpan: 3, value: "10/05/2021 - 21/05/2021", style: { fontColor: '#80808F', fontSize: 10, hAlign: 'Center', bold: true, fontName: 'Nirmala UI' } }] },
+						{ cells: [{ colSpan: 3, value: auxName , style: { fontColor: this.setColor(auxName), fontSize: 10, hAlign: 'Center', bold: true, fontName: 'Nirmala UI' } }] },
+						{ cells: [{ colSpan: 3, value: this.printDates(form), style: { fontColor: '#80808F', fontSize: 10, hAlign: 'Center', bold: true, fontName: 'Nirmala UI' } }] },
 						{ cells: [{ colSpan: 3, value: "" }] },
 					]
 				},
@@ -185,7 +215,6 @@ export default class App extends React.Component {
 			this.treegrid.excelExport(excelExportProperties);
 		}
 	}
-  
 	excelQueryCellInfo(args) {
 		let value = getValue('data.header', args)
 		switch (value) {
@@ -197,7 +226,6 @@ export default class App extends React.Component {
 				break;
 			case 'GANANCIA / PERDIDA BRUTA':
 				colorHeaderExcel(args, '#FEE4ED', '#F091B1')
-				// args.row.childNodes[2].style.color='#F091B1'
 				break;
 			case 'GASTOS':
 				colorHeaderExcel(args, '#E2FBF7', '#7ED0C5')
@@ -236,257 +264,24 @@ export default class App extends React.Component {
 				break;
 		}
 	}
-
-  	render() {
-    	this.toolbarClick = this.toolbarClick.bind(this);
-    	const sampleData = [
-      		{
-        		header: 'INGRESOS',
-        		subtasks: [
-          			{
-            			header: 'VENTAS',
-            			subtasks: [
-              				{
-                				header: 'FASE 1',
-                				total: 3,
-                				// porcentaje: 0.11,
-                				subtasks: [
-                  					{
-                    					header: 'PROYECTO "FASE 1"',
-                    					porcentaje: 0.11,
-                    					total: 3,
-                    					subtasks: [
-                      						{ header: 'SUBÁREA 1', porcentaje: 0.03, total: 3},
-                      						{ header: 'SUBÁREA 2', porcentaje: 0.03, total: 3},
-                    					]
-                  					}
-                				]
-              				},
-              				{
-                				header: 'FASE 2',
-                				total: 3,
-                				// porcentaje: 0.11,
-                				subtasks: [
-                  					{
-                    					header: 'PROYECTO "FASE 2"',
-                    					porcentaje: 0.11,
-                    					total: 3,
-                    					subtasks: [
-                      						{ header: 'SUBÁREA 1', porcentaje: 0.03, total: 3},
-                      						{ header: 'SUBÁREA 2', porcentaje: 0.03, total: 3},
-                    					]
-                  					}
-                				]
-              				},
-              				{
-                				header: 'FASE 3',
-                				total: 3,
-                				// porcentaje: 0.11,
-                				subtasks: [
-                  					{
-                    					header: 'PROYECTO "FASE 3"',
-                    					porcentaje: 0.11,
-                    					total: 3,
-                    					subtasks: [
-                      						{ header: 'SUBÁREA 1', porcentaje: 0.03, total: 3},
-                      						{ header: 'SUBÁREA 2', porcentaje: 0.03, total: 3},
-                    					]
-                  					}
-                				]
-              				},
-              				{ header: 'TOTAL INGRESOS', total: 3},
-            			]
-          			},
-          			{
-            			header: 'DEVOLUCIONES',
-            			total: 3,
-            			// porcentaje: 0.11,
-            			subtasks: [
-              				{
-                				header: 'PROYECTOS ',
-                				total: 3,
-                				// porcentaje: 0.11,
-                				subtasks: [
-                  					{ header: 'PROYECTO "1"', total: 3},
-                  					{ header: 'PROYECTO "2"', total: 3},
-                  					{ header: 'PROYECTO "3"', total: 3}
-                				]
-              				},
-              				{ header: 'TOTAL DEVOLUCIONES', total: 3},
-            			]
-          			},
-          			{
-            			header: 'VENTAS NETAS',
-            			total: 3,
-            			// porcentaje: 0.11,
-            			subtasks: [
-              				{ header: 'SIN FACTURA', porcentaje: 0.03, total: 3},
-              				{ header: 'CON FACTURA', porcentaje: 0.03, total: 3},
-            			]
-          			}
-        		]
-      		},
-      		{
-        		header: 'COSTOS DE VENTAS',
-        		// porcentaje: 0.11,
-        		// total: 66,
-        		subtasks: [
-          			{
-            			header: 'PROYECTOS',
-            			total: 3,
-            			// porcentaje: 0.11,
-						subtasks: [
-							{
-								header: 'PROYECTO "1"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'ÁREA 1', total: 3},
-									{ header: 'ÁREA 2', total: 3},
-								]
-							},
-							{
-								header: 'PROYECTO "2"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'ÁREA 1', total: 3},
-									{ header: 'ÁREA 2', total: 3},
-								]
-							},
-							{
-								header: 'PROYECTO "3"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'ÁREA 1', total: 3},
-									{ header: 'ÁREA 2', total: 3},
-								]
-							},
-						]
-          			},
-					{
-						header: 'COSTOS NETOS',
-						total: 3,
-						// porcentaje: 0.11,
-						subtasks: [
-							{ header: 'SIN FACTURA', porcentaje: 0.03, total: 3},
-							{ header: 'CON FACTURA', porcentaje: 0.03, total: 3},
-						]
-					}
-        ]
-      		},
-      		{
-        		header: 'GANANCIA / PERDIDA BRUTA',
-        		porcentaje: 0.10,
-        		// total: 66,
-        		subtasks: [
-          			{ header: 'TOTAL VENTAS', total: 3},
-          			{ header: 'TOTAL COSTOS DE VENTAS', total: 3}
-        		]
-      		},
-      		{
-        		header: 'GASTOS',
-				// porcentaje: 0.11,
-				// total: 66,
-				subtasks: [
-					{
-						header: 'DEPARTAMENTOS',
-						total: 3,
-						// porcentaje: 0.11,
-						subtasks: [
-							{
-								header: 'DEPARTAMENTO "1"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'SUB-AREA 1', total: 3},
-									{ header: 'SUB-AREA 2', total: 3},
-								]
-							},
-							{
-								header: 'DEPARTAMENTO "2"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'SUB-AREA 1', total: 3},
-									{ header: 'SUB-AREA 2', total: 3},
-								]
-							},
-							{
-								header: 'DEPARTAMENTO "3"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'SUB-AREA 1', total: 3},
-									{ header: 'SUB-AREA 2', total: 3},
-								]
-							},
-						]
-					},
-					{ header: 'TOTAL DE GASTOS', total: 3}
-        		]
-      		},
-      		{
-        		header: 'OTROS INGRESOS',
-				// porcentaje: 0.11,
-				// total: 66,
-				subtasks: [
-					{
-						header: 'DEPARTAMENTOS',
-						total: 3,
-						// porcentaje: 0.11,
-						subtasks: [
-							{
-								header: 'DEPARTAMENTO "1"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'SUB-AREA 1', total: 3},
-									{ header: 'SUB-AREA 2', total: 3},
-								]
-							},
-							{
-								header: 'DEPARTAMENTO "2"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'SUB-AREA 1', total: 3},
-									{ header: 'SUB-AREA 2', total: 3},
-								]
-							},
-							{
-								header: 'DEPARTAMENTO "3"',
-								porcentaje: 0.11,
-								total: 3,
-								subtasks: [
-									{ header: 'SUB-AREA 1', total: 3},
-									{ header: 'SUB-AREA 2', total: 3},
-								]
-							},
-						]
-					},
-					{ header: 'TOTAL DE INGRESOS', total: 3}
-				]
-      		},
-      		{ header: 'FLUJO DE EFECTIVO', total: 3}
-    	];
-    	const { datos } = this.props
-    	return(
-      		<div className='control-pane'>
-          		<div className='control-section'>
-              		<TreeGridComponent id="costos_ventas" dataSource={datos} treeColumnIndex={0} childMapping='subtasks' enableHover='false'
-					  	gridLines='Horizontal' rowDataBound={this.rowDataBound} enableCollapseAll={true} allowExcelExport='true' 
+	render() {
+		this.toolbarClick = this.toolbarClick.bind(this);
+		const { datos } = this.props
+		return (
+			<div className='control-pane'>
+				<div className='control-section'>
+					<TreeGridComponent id="costos_ventas" dataSource={datos} treeColumnIndex={0} childMapping='subtasks' enableHover='false'
+						gridLines='Horizontal' rowDataBound={this.rowDataBound} enableCollapseAll={true} allowExcelExport='true'
 						toolbarClick={this.toolbarClick} ref={treegrid => this.treegrid = treegrid} toolbar={this.toolbarOptions} excelQueryCellInfo={this.excelQueryCellInfo}>
-                  		<ColumnsDirective>
-                      		<ColumnDirective field = 'header' width = '200' headerText = '' />
-                      		<ColumnDirective field = 'total' width = '40' textAlign = 'Center' headerText = 'TOTAL' type = 'number' format = 'C0'/>
-                      		<ColumnDirective field = 'porcentaje' width = '40' textAlign = 'Center' headerText = 'PORCENTAJE' type = 'number' format = 'P2'/>
-                  		</ColumnsDirective>
-                  		<Inject services = { [ Toolbar, ExcelExport ] }/>
-              		</TreeGridComponent>
-          		</div>
-      		</div>
-    	)
-  	}
+						<ColumnsDirective>
+							<ColumnDirective field='header' width='200' headerText='' />
+							<ColumnDirective field='total' width='40' textAlign='Center' headerText='TOTAL' type='number' format='C0' />
+							<ColumnDirective field='porcentaje' width='40' textAlign='Center' headerText='PORCENTAJE' type='number' format='P2' />
+						</ColumnsDirective>
+						<Inject services={[Toolbar, ExcelExport]} />
+					</TreeGridComponent>
+				</div>
+			</div>
+		)
+	}
 }
