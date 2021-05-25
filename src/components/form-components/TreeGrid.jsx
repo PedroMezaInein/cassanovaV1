@@ -264,6 +264,7 @@ export default class App extends React.Component {
 				break;
 		}
 	}
+
 	render() {
 		this.toolbarClick = this.toolbarClick.bind(this);
 		const { datos } = this.props
@@ -271,8 +272,8 @@ export default class App extends React.Component {
 			<div className='control-pane'>
 				<div className='control-section'>
 					<TreeGridComponent id="costos_ventas" dataSource={datos} treeColumnIndex={0} childMapping='subtasks' enableHover='false'
-						gridLines='Horizontal' rowDataBound={this.rowDataBound} enableCollapseAll={true} allowExcelExport='true'
-						toolbarClick={this.toolbarClick} ref={treegrid => this.treegrid = treegrid} toolbar={this.toolbarOptions} excelQueryCellInfo={this.excelQueryCellInfo}>
+						gridLines='Horizontal' rowDataBound={this.rowDataBound} enableCollapseAll={true} allowExcelExport='true' toolbar={this.toolbarOptions}
+						toolbarClick={this.toolbarClick} ref={treegrid => this.treegrid = treegrid} excelQueryCellInfo={this.excelQueryCellInfo}>
 						<ColumnsDirective>
 							<ColumnDirective field='header' width='200' headerText='' />
 							<ColumnDirective field='total' width='40' textAlign='Center' headerText='TOTAL' type='number' format='C0' />
