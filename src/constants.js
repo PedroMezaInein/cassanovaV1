@@ -1804,6 +1804,11 @@ export const EMPRESA_COLUMNS = [
         accessor: 'rfc',
         customRender: true
     },
+    {
+        Header: 'Departamentos',
+        accessor: 'departamento',
+        customRender: true
+    },
 ]
 
 export const CONTRATOS_CLIENTES_COLUMNS = [

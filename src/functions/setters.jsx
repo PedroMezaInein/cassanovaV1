@@ -287,6 +287,9 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style){
                         case 'responsables_acceso':
                             textAlert = `ELIMINARÁS EL RESPONSABLE ${element.name} DE LA PLATAFORMA ${data.plataforma}`
                             break
+                        case 'departamento_empresa':
+                            textAlert = `ELIMINARÁS EL DEPARTAMENTO ${element.name} DE LA EMPRESA ${data.name}`
+                            break
                         default:
                             textAlert =''
                             break

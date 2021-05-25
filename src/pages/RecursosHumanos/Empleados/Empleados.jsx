@@ -649,7 +649,26 @@ class Empleados extends Component {
         form.adjuntos[name].files = aux
         this.setState({ ...this.state, form })
     }
-
+    exportRHAxios = async() =>{
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'exportar/rh/empleados', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'empleados.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El documento fue generado con éxito.')
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { modal, form, key, adjuntos, data, empleado } = this.state
         return (
@@ -658,7 +677,8 @@ class Empleados extends Component {
                     <Tab eventKey="administrativo" title="Administrativo">
                         <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Empleados administrativos'
                             subtitle = 'Listado de empleados' mostrar_boton = { true } abrir_modal = { false }
-                            url = '/rh/empleados/add' mostrar_acciones = { true }
+                            url = '/rh/empleados/add' mostrar_acciones = { true } exportar_boton = { true }
+                            onClickExport = { () => this.exportRHAxios() }
                             actions = {
                                 {
                                     'edit': { function: this.changePageEdit },
@@ -674,7 +694,8 @@ class Empleados extends Component {
                     </Tab>
                     <Tab eventKey="obra" title="Obra">
                         <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Empleados de obra' subtitle = 'Listado de empleados' 
-                            mostrar_boton = { true } abrir_modal = { false } url = '/rh/empleados/add' mostrar_acciones = { true }
+                            mostrar_boton = { true } abrir_modal = { false } url = '/rh/empleados/add' mostrar_acciones = { true } exportar_boton = { true }
+                            onClickExport = { () => this.exportRHAxios() }
                             actions={{
                                 'edit': { function: this.changePageEdit },
                                 'delete': { function: this.openModalDelete },

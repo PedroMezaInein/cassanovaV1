@@ -1619,9 +1619,13 @@ class LeadInfo extends Component {
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     {contacto.comentario}
-                                                                                                    <span className="blockquote-footer font-weight-lighter ml-2 d-inline">
-                                                                                                        {contacto.user.name}
-                                                                                                    </span>
+                                                                                                    {
+                                                                                                        contacto.user ?
+                                                                                                            <span className="blockquote-footer font-weight-lighter ml-2 d-inline">
+                                                                                                                {contacto.user.name}
+                                                                                                            </span>    
+                                                                                                        : <></>
+                                                                                                    }
                                                                                                     {
                                                                                                         contacto.adjunto ?
                                                                                                             <div className="d-flex justify-content-end mt-1">
