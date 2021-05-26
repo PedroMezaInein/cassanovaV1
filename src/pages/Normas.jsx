@@ -225,7 +225,7 @@ class Normas extends Component {
         total = old.ingresos.devoluciones.total
         datos[0].subtasks[1].subtasks = [
             {
-                header: 'Proyectos',
+                header: 'PROYECTOS',
                 total: total,
                 subtasks: aux
             },
@@ -300,7 +300,7 @@ class Normas extends Component {
             }
             total = old.gastos.datos[index].total
             aux.push({
-                'header': old.gastos.datos[index].nombre,
+                'header': old.gastos.datos[index].nombre+" ",
                 'total': total,
                 'subtasks': aux2
             })
@@ -328,7 +328,7 @@ class Normas extends Component {
             }
             total = old.otros_ingresos.datos[index].total
             aux.push({
-                'header': old.otros_ingresos.datos[index].nombre,
+                'header': old.otros_ingresos.datos[index].nombre+" ",
                 'total': total,
                 'subtasks': aux2
             })
