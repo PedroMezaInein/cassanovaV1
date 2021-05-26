@@ -1807,7 +1807,8 @@ export const EMPRESA_COLUMNS = [
     {
         Header: 'Departamentos',
         accessor: 'departamento',
-        customRender: true
+        customRender: true,
+        orderable: false
     },
 ]
 
@@ -2171,7 +2172,8 @@ export const EMPLEADOS_COLUMNS = [
     {
         Header: 'Departamento',
         accessor: 'departamento',
-        customRender: true
+        customRender: true,
+        orderable: false
     },
     {
         Header: 'Puesto',
