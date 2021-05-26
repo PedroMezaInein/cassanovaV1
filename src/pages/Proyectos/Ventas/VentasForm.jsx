@@ -8,6 +8,7 @@ import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, doneAlert,
 import Layout from '../../../components/layout/layout'
 import { VentasForm as VentasFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
+import { setSingleHeader } from '../../../functions/routers'
 class Ventas extends Component {
     state = {
         solicitud: '',
@@ -428,7 +429,7 @@ class Ventas extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ventas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/proyectos/ventas`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras,
                     clientes, metodosPago, formasPago, estatusFacturas } = response.data

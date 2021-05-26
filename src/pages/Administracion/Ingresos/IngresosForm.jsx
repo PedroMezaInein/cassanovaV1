@@ -8,6 +8,7 @@ import { errorAlert, waitAlert, printResponseErrorAlert, createAlert, doneAlert,
 import Layout from '../../../components/layout/layout'
 import { IngresosForm as IngresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
+import { setSingleHeader } from '../../../functions/routers'
 class IngresosForm extends Component {
     state = {
         ingresos: [],
@@ -372,7 +373,7 @@ class IngresosForm extends Component {
     }
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/administracion/ingresos`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { clientes, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
                 const { options, data } = this.state
