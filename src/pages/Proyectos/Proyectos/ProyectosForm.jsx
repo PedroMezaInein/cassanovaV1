@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Card, Accordion, Dropdown } from 'react-bootstrap'
+import { Card, Accordion, Dropdown, Form } from 'react-bootstrap'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
@@ -11,6 +11,7 @@ import { Button } from '../../../components/form-components'
 import { ProyectoCard, ProyectosCard } from '../../../components/cards'
 import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlert, createAlertSA2WithClose } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
+import { Modal } from '../../../components/singles'
 class ProyectosForm extends Component {
     state = {
         prevPath: '',
@@ -64,8 +65,10 @@ class ProyectosForm extends Component {
                     placeholder: 'Imagen',
                     files: []
                 }
-            }
-        }
+            },
+            ubicacion_cliente: false,
+        },
+        modalCP: false,
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -198,9 +201,30 @@ class ProyectosForm extends Component {
         this.getOptionsAxios()
     }
     onChange = e => {
-        const { name, value } = e.target
+        const { name, value, type } = e.target
         const { form } = this.state
         form[name] = value
+        console.log( form )
+        if(type === 'radio'){
+            if(name === 'ubicacion_cliente')
+                form[name] = value === "true" ? true : false
+        }
+        if(form.ubicacion_cliente){
+            form.clientes.map((cliente) => {
+                form.cp = cliente.cp !== null ? cliente.cp :''
+                if(cliente.cp !== ''){
+                    this.cpAxios(cliente.cp)
+                }
+                form.colonia = cliente.colonia !== null? cliente.colonia.toUpperCase() :''
+                form.calle = cliente.calle !== null ? cliente.calle :''
+            })
+        }else{
+            form.cp = ''
+            form.estado = ''
+            form.municipio = ''
+            form.colonia = ''
+            form.calle = ''
+        }
         this.setState({
             ...this.state,
             form
@@ -501,9 +525,23 @@ class ProyectosForm extends Component {
                 Swal.close()
                 const { clientes, empresas, estatus } = response.data
                 const { options } = this.state
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['estatus'] = setOptions(estatus, 'estatus', 'id')
+                let aux = [];
+                clientes.forEach((element) => {
+                    aux.push({
+                        name: element.empresa,
+                        value: element.id.toString(),
+                        label: element.empresa,
+                        cp: element.cp,
+                        estado: element.estado,
+                        municipio: element.municipio,
+                        colonia: element.colonia,
+                        calle: element.calle
+                    })
+                    return false
+                })
+                options.clientes = aux.sort(this.compare)
                 this.setState({
                     ...this.state,
                     options
@@ -517,7 +555,15 @@ class ProyectosForm extends Component {
             console.log(error, 'error')
         })
     }
-
+    compare( a, b ) {
+        if ( a.name < b.name ){
+            return -1;
+        }
+        if ( a.name > b.name ){
+            return 1;
+        }
+        return 0;
+    }
     async addProyectoAxios() {
         const { access_token } = this.props.authUser
         const { form, prospecto } = this.state
@@ -765,8 +811,40 @@ class ProyectosForm extends Component {
             options
         })
     }
+    openModalCP = () => {
+        this.setState({
+            ...this.state,
+            modalCP:true
+        })
+    }
+    handleCloseCP = () => { 
+        this.setState({
+            ...this.state,
+            modalCP: false
+        })
+    }
+    setClientes = form => {
+        let aux = [];
+        form.clientes.map((cliente) => {
+            if(cliente.cp !== null){
+                console.log('soy')
+                aux.push({
+                    name: cliente.name,
+                    value: cliente.value,
+                    label: cliente.name,
+                    cp: cliente.cp,
+                    estado: cliente.estado,
+                    municipio: cliente.municipio,
+                    colonia: cliente.colonia,
+                    calle: cliente.calle
+                })
+            }
+        })
+        console.log(aux,'aux')
+        return aux
+    }
     render() {
-        const { title, form, options, formeditado, prospecto, action, proyecto } = this.state
+        const { title, form, options, formeditado, prospecto, action, proyecto, modalCP } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">
@@ -830,7 +908,7 @@ class ProyectosForm extends Component {
                             onChangeOptions = { this.onChangeOptions } clearFiles = { this.clearFiles } onChangeCP = { this.onChangeCP }
                             onSubmit = { this.onSubmit } onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } clearFilesGrupo = { this.clearFilesGrupo }
                             removeCorreo = { this.removeCorreo } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange }
-                            className = "px-3" tagInputChange = { (e) => this.tagInputChange(e) } setOptions = { this.setOptions } >
+                            className = "px-3" tagInputChange = { (e) => this.tagInputChange(e) } setOptions = { this.setOptions } openModalCP={this.openModalCP}>
                             <Accordion>
                                 {
                                     (prospecto !== '' || proyecto !== '') && title !== 'Editar proyecto' ? 
@@ -862,6 +940,67 @@ class ProyectosForm extends Component {
                         </ProyectoFormulario>
                     </Card.Body>
                 </Card>
+                <Modal size="lg" show = { modalCP } title = 'ACTUALIZAR DATOS DEL CLIENTE' handleClose = { this.handleCloseCP } >
+                {/* onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendForm(); }} */}
+                    <Form>
+                        <div className="row py-0 mx-0 mt-6 align-items-center d-flex justify-content-center">
+                            <label className="w-auto mr-4 py-0 col-form-label text-dark-75 font-weight-bold font-size-lg">¿Quieres utilizar la ubicación del cliente?</label>
+                            <div className="w-auto px-3">
+                                <div className="radio-inline mt-0 ">
+                                    <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                        <input
+                                            type="radio"
+                                            name='ubicacion_cliente'
+                                            value={true}
+                                            onChange={this.onChange}
+                                            checked={form.ubicacion_cliente === true ? true : false}
+                                        />Si
+										<span></span>
+                                    </label>
+                                    <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                        <input
+                                            type="radio"
+                                            name='ubicacion_cliente'
+                                            value={false}
+                                            onChange={this.onChange}
+                                            checked={form.ubicacion_cliente === false ? true : false}
+                                        />No
+										<span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {
+                            form.ubicacion_cliente ?
+                                    <div className="mt-5 text-center">
+                                        <Form.Label className="col-form-label font-weight-bolder">¿DE CUÁL CLIENTE DESEA UTILIZAR SU UBICACIÓN?</Form.Label>
+                                        <div className="mb-2 d-flex place-content-center">
+                                            <div className="radio-list">
+                                                {
+                                                    this.setClientes(form).map((option, key) => {
+                                                        console.log(option)
+                                                        return (
+                                                            <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
+                                                                <input
+                                                                    type='radio'
+                                                                    name='ubicacion_seleccionada'
+                                                                    value={option.value}
+                                                                    onChange={this.onChange}
+                                                                    checked={option.value}
+                                                                />
+                                                                {option.label}
+                                                                <span></span>
+                                                            </label>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                : ''
+                        }
+                    </Form>
+                </Modal>
             </Layout>
         );
     }
