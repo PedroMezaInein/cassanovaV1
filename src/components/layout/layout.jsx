@@ -8,7 +8,7 @@ import { PUSHER_OBJECT, URL_DEV } from '../../constants'
 import UrlLocation from './urlLocation'
 import MobileHeader from './mobileHeader'
 import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
-import { Notificacion } from '../singles'
+import { ChecadorButton, Notificacion } from '../singles'
 import { Zoom, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
@@ -104,6 +104,10 @@ class Layout extends Component {
     }
 
     printChecador = () => {
+        /* const { checador } = this.state
+        return(
+            <ChecadorButton checador = { checador }  actualizarChecadorAxios = { this.actualizarChecadorAxios } />
+        ) */
 		const { checador } = this.state
 		if(checador.length){
 			if(checador[0].fecha_fin === null)

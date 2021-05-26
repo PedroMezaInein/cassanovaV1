@@ -140,6 +140,8 @@ export default class App extends React.Component {
 			case 'DEPARTAMENTOS':
 				args.row.childNodes[0].childNodes[0].style.color='#80808F'
 				args.row.childNodes[0].childNodes[0].style.fontWeight=600
+				args.row.children[1].style.fontWeight=600
+				args.row.children[2].style.fontWeight=600
 				// args.row.childNodes[0].childNodes[0].childNodes[1].style.color='#80808F'
 				// Normal
 				args.row.onmouseout = function () {
@@ -152,6 +154,29 @@ export default class App extends React.Component {
 					this.style.fontWeight = 700;
 				};
 				break;
+			case 'FASE 1':
+			case 'FASE 2':
+			case 'FASE 3':
+				
+				console.log(args)
+				args.row.childNodes[0].childNodes[0].style.color = '#85AED2'
+				args.row.childNodes[0].childNodes[0].style.fontWeight = 600
+				args.row.children[0].children[0].children[2].style.color = '#85AED2'
+				args.row.children[1].style.fontWeight = 600
+				args.row.children[2].style.fontWeight = 600
+				args.row.children[1].style.color='#85AED2'
+				args.row.children[2].style.color='#85AED2'
+				// Normal
+				args.row.onmouseout = function () {
+					this.style.backgroundColor = 'white';
+					this.style.fontWeight = 600;
+				};
+				//Hover 
+				args.row.onmouseover = function () {
+					this.style.backgroundColor = '#ecf0f3';
+					this.style.fontWeight = 700;
+				};
+						break;
 			default:
 				// Normal
 				args.row.onmouseout = function () { this.style.backgroundColor = 'white'; };
@@ -174,11 +199,10 @@ export default class App extends React.Component {
         let fechaInicio = moment(form.fechaInicio)
         let fechaFin = moment(form.fechaFin)
         let diffFechas = fechaFin.diff(fechaInicio, 'days')
-        let showDate = ''
         if(diffFechas === 0){
-			return showDate = `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')}`
+			return `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')}`
         }else{
-			return showDate = `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')} - ${fechaFin.format('DD')}/${fechaFin.format('MM')}/${fechaFin.format('YYYY')}`
+			return `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')} - ${fechaFin.format('DD')}/${fechaFin.format('MM')}/${fechaFin.format('YYYY')}`
 		}
     }
 	toolbarClick(args) {
@@ -259,7 +283,12 @@ export default class App extends React.Component {
 			case 'COSTOS NETOS':
 			case 'DEPARTAMENTOS':
 				args.style = { fontColor: '#80808F', bold: true };
-				break
+				break;
+			case 'FASE 1':
+			case 'FASE 2':
+			case 'FASE 3':
+				args.style = { fontColor: '#85AED2', bold: true };
+				break;
 			default:
 				break;
 		}

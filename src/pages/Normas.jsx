@@ -15,19 +15,11 @@ class Normas extends Component {
 
     state = {
         title: '',
-        form: {
-            fechaInicio: new Date(),
-            fechaFin: new Date(),
-            empresas: [],
-            empresa: '',
-        },
-        options: {
-            empresas: [],
-        },
+        form: { fechaInicio: new Date(), fechaFin: new Date(), empresas: [], empresa: '' },
+        options: { empresas: [], },
         accordion: [
             {
                 nombre: 'Acordeón 1',
-                // icono: 'flaticon2-paper',
                 tipo: 1,
                 isActive: false,
             },
@@ -219,22 +211,12 @@ class Normas extends Component {
         total = 0
         for (const index in old.ingresos.devoluciones.datos) {
             total = old.ingresos.devoluciones.datos[index].total
-            aux.push({
-                'header': old.ingresos.devoluciones.datos[index].nombre,
-                'total': total
-            })
+            aux.push({ 'header': old.ingresos.devoluciones.datos[index].nombre, 'total': total })
         }
         total = old.ingresos.devoluciones.total
         datos[0].subtasks[1].subtasks = [
-            {
-                header: 'PROYECTOS',
-                total: total,
-                subtasks: aux
-            },
-            {
-                header: 'TOTAL DEVOLUCIONES',
-                total: total,
-            }
+            { header: 'PROYECTOS', total: total, subtasks: aux },
+            { header: 'TOTAL DEVOLUCIONES', total: total, }
         ]
         datos[0].subtasks[2].total = old.ingresos.ventas_netas.total
         datos[0].subtasks[2].subtasks[0].total = old.ingresos.ventas_netas.datos.sin_factura
@@ -249,20 +231,13 @@ class Normas extends Component {
             for (const index2 in old.costos_ventas.compras.datos[index].subareas) {
                 aux3 = []
                 total = 0
-                old.costos_ventas.compras.datos[index].subareas[index2].compras.forEach((compra) => {
-                    total = total + compra.total
-                })
-                aux2.push({
-                    'header': old.costos_ventas.compras.datos[index].subareas[index2].nombre,
-                    'total': total
-                })
+                for(let i = 0; i < old.costos_ventas.compras.datos[index].subareas[index2].compras.length; i++){
+                    total += old.costos_ventas.compras.datos[index].subareas[index2].compras[i].total
+                }
+                aux2.push({ 'header': old.costos_ventas.compras.datos[index].subareas[index2].nombre, 'total': total })
             }
             total = old.costos_ventas.compras.datos[index].total
-            aux.push({
-                'header': old.costos_ventas.compras.datos[index].nombre,
-                'total': total,
-                'subtasks': aux2
-            })
+            aux.push({ 'header': old.costos_ventas.compras.datos[index].nombre, 'total': total, 'subtasks': aux2 })
         }
         total = old.costos_ventas.costos_netos.total
         datos[1].subtasks[0].subtasks = aux
@@ -276,14 +251,8 @@ class Normas extends Component {
         datos[2].total = old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total
         datos[2].porcentaje = ( (old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total) * 100 / old.ingresos.ventas_netas.total ) /100
         datos[2].subtasks = [
-            {
-                'header': 'TOTAL VENTAS',
-                'total': old.ingresos.ventas_netas.total
-            },
-            {
-                'header': 'TOTAL COSTOS DE VENTAS',
-                'total': old.costos_ventas.costos_netos.total
-            }
+            { 'header': 'TOTAL VENTAS', 'total': old.ingresos.ventas_netas.total },
+            { 'header': 'TOTAL COSTOS DE VENTAS', 'total': old.costos_ventas.costos_netos.total }
         ]
         aux = []
         total = 0
@@ -292,20 +261,13 @@ class Normas extends Component {
             for (const index2 in old.gastos.datos[index].subareas) {
                 aux3 = []
                 total = 0
-                old.gastos.datos[index].subareas[index2].egresos.forEach((egreso) => {
-                    total = total + egreso.total
-                })
-                aux2.push({
-                    'header': old.gastos.datos[index].subareas[index2].nombre,
-                    'total': total
-                })
+                for(let i = 0; i < old.gastos.datos[index].subareas[index2].egresos.length; i++){
+                    total += old.gastos.datos[index].subareas[index2].egresos[i].total
+                }
+                aux2.push({ 'header': old.gastos.datos[index].subareas[index2].nombre, 'total': total })
             }
             total = old.gastos.datos[index].total
-            aux.push({
-                'header': old.gastos.datos[index].nombre+" ",
-                'total': total,
-                'subtasks': aux2
-            })
+            aux.push({ 'header': old.gastos.datos[index].nombre+" ", 'total': total, 'subtasks': aux2 })
         }
         total = old.gastos.total
         datos[3].subtasks[0].subtasks = aux
@@ -320,20 +282,13 @@ class Normas extends Component {
             for (const index2 in old.otros_ingresos.datos[index].subareas) {
                 aux3 = []
                 total = 0
-                old.otros_ingresos.datos[index].subareas[index2].ingresos.forEach((egreso) => {
-                    total = total + egreso.total
-                })
-                aux2.push({
-                    'header': old.otros_ingresos.datos[index].subareas[index2].nombre,
-                    'total': total
-                })
+                for(let i = 0; i < old.otros_ingresos.datos[index].subareas[index2].ingresos.length; i++){
+                    total += old.otros_ingresos.datos[index].subareas[index2].ingresos[i].total
+                }
+                aux2.push({ 'header': old.otros_ingresos.datos[index].subareas[index2].nombre, 'total': total })
             }
             total = old.otros_ingresos.datos[index].total
-            aux.push({
-                'header': old.otros_ingresos.datos[index].nombre+" ",
-                'total': total,
-                'subtasks': aux2
-            })
+            aux.push({ 'header': old.otros_ingresos.datos[index].nombre+" ", 'total': total, 'subtasks': aux2 })
         }
         total = old.otros_ingresos.total
         datos[4].subtasks[0].subtasks = aux
