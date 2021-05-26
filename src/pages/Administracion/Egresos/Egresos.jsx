@@ -18,6 +18,7 @@ import Swal from 'sweetalert2'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import $ from "jquery";
+import { setSingleHeader } from '../../../functions/routers'
 class egresos extends Component {
     state = {
         egresos: [],
@@ -883,11 +884,10 @@ class egresos extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/administracion/egresos`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { data, options } = this.state
                 const { proveedores, empresas, estatusCompras, areas, tiposPagos, tiposImpuestos } = response.data
-                
                 data.proveedores = proveedores
                 data.empresas = empresas
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
@@ -897,13 +897,8 @@ class egresos extends Component {
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
                 Swal.close()
-                this.setState({
-                    ...this.state,
-                    data, options
-                })
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, data, options })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

@@ -9,7 +9,7 @@ import Layout from '../../../components/layout/layout'
 import { ComprasForm as ComprasFormulario } from '../../../components/forms'
 import { SolicitudCompraCard } from '../../../components/cards'
 import { Card } from 'react-bootstrap'
-import { setFormHeader } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 class ComprasForm extends Component {
     state = {
         title: 'Nueva compra',
@@ -486,7 +486,7 @@ class ComprasForm extends Component {
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(URL_DEV + 'compras/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/proyectos/compras`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,

@@ -8,7 +8,7 @@ import { errorAlert, waitAlert, createAlert, doneAlert, errorAlertRedirectOnDiss
 import Layout from '../../../components/layout/layout'
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { setFormHeader } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 class EgresosForm extends Component {
     
     state = {
@@ -422,7 +422,7 @@ class EgresosForm extends Component {
     async getEgresosAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/administracion/egresos`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { proveedores, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
                 const { options, data } = this.state
