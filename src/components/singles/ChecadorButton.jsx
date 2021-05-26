@@ -40,4 +40,4 @@ class ChecadorButton extends React.Component{
     }
 }
 
-export default geolocated({ positionOptions: { enableHighAccuracy: false, }, watchPosition: true })(ChecadorButton);
+export default geolocated({ positionOptions: { enableHighAccuracy: true, }, watchPosition: true, suppressLocationOnMount: true })(ChecadorButton);
