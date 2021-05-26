@@ -154,6 +154,7 @@ class EmpresasForm extends Component {
         const { access_token } = this.props.authUser
         await axios.options(`${URL_DEV}v2/usuarios/empresas`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                Swal.close()
                 const { options } = this.state
                 const { departamentos } = response.data
                 options.departamentos = []
@@ -184,7 +185,7 @@ class EmpresasForm extends Component {
     updateEmpresaAxios = async() => {
         const { access_token } = this.props.authUser
         const { form, empresa } = this.state
-        await axios.post(URL_DEV + 'empresa/' + empresa.id, form, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.put(`${URL_DEV}v2/usuarios/empresas/${empresa.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.')
                 const { history } = this.props
@@ -199,7 +200,7 @@ class EmpresasForm extends Component {
     addEmpresaAxios = async () => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'empresa', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.post(`${URL_DEV}v2/usuarios/empresas`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
                 const { history } = this.props
@@ -232,11 +233,13 @@ class EmpresasForm extends Component {
                 form.telefono = empresa.telefono
                 form.blog = empresa.blog
                 let aux = []
-                empresa.tipos.map((tipo) => {
-                    aux.push(tipo.tipo)
-                    return false
-                })
+                empresa.tipos.forEach((tipo) => { aux.push(tipo.tipo) })
                 form.tipos = aux
+                aux = []
+                empresa.departamentos.forEach((depto) => { 
+                    aux.push({ name: depto.nombre, label: depto.nombre, value: depto.id.toString() }) 
+                })
+                form.departamentos = aux
                 this.setState({...this.state, form, empresa:empresa})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
