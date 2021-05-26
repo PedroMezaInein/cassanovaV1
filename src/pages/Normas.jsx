@@ -225,7 +225,7 @@ class Normas extends Component {
         total = old.ingresos.devoluciones.total
         datos[0].subtasks[1].subtasks = [
             {
-                header: 'Proyectos',
+                header: 'PROYECTOS',
                 total: total,
                 subtasks: aux
             },
