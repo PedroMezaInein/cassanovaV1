@@ -140,6 +140,8 @@ export default class App extends React.Component {
 			case 'DEPARTAMENTOS':
 				args.row.childNodes[0].childNodes[0].style.color='#80808F'
 				args.row.childNodes[0].childNodes[0].style.fontWeight=600
+				args.row.children[1].style.fontWeight=600
+				args.row.children[2].style.fontWeight=600
 				// args.row.childNodes[0].childNodes[0].childNodes[1].style.color='#80808F'
 				// Normal
 				args.row.onmouseout = function () {
@@ -152,6 +154,25 @@ export default class App extends React.Component {
 					this.style.fontWeight = 700;
 				};
 				break;
+			case 'FASE 1':
+			case 'FASE 2':
+			case 'FASE 3':
+				args.row.childNodes[0].childNodes[0].style.color = '#948FD8'
+				args.row.childNodes[0].childNodes[0].style.fontWeight = 600
+				args.row.children[1].style.fontWeight = 600
+				args.row.children[2].style.fontWeight = 600
+				// args.row.childNodes[0].childNodes[0].childNodes[1].style.color='#80808F'
+				// Normal
+				args.row.onmouseout = function () {
+					this.style.backgroundColor = 'white';
+					this.style.fontWeight = 600;
+				};
+				//Hover 
+				args.row.onmouseover = function () {
+					this.style.backgroundColor = '#ecf0f3';
+					this.style.fontWeight = 700;
+				};
+						break;
 			default:
 				// Normal
 				args.row.onmouseout = function () { this.style.backgroundColor = 'white'; };
@@ -259,7 +280,12 @@ export default class App extends React.Component {
 			case 'COSTOS NETOS':
 			case 'DEPARTAMENTOS':
 				args.style = { fontColor: '#80808F', bold: true };
-				break
+				break;
+			case 'FASE 1':
+			case 'FASE 2':
+			case 'FASE 3':
+				args.style = { fontColor: '#948FD8', bold: true };
+				break;
 			default:
 				break;
 		}

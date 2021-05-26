@@ -81,10 +81,14 @@ class Normas extends Component {
 				subtasks: [
 					{
 						header: 'VENTAS',
+                        total: 0,
+                        porcentaje: 0,
 						subtasks: []
 					},
 					{
 						header: 'DEVOLUCIONES',
+                        total: 0,
+                        porcentaje: 0,
 						subtasks: [
 							{
 								header: 'PROYECTOS',
@@ -95,6 +99,7 @@ class Normas extends Component {
 					{
 						header: 'VENTAS NETAS',
 						total: 0,
+                        porcentaje: 0,
 						subtasks: [
 							{ header: 'SIN FACTURA', porcentaje: 0, total: 0},
 							{ header: 'CON FACTURA', porcentaje: 0, total: 0},
@@ -171,6 +176,7 @@ class Normas extends Component {
                     total = element.proyectos[index].subareas[index2].total
                     aux3.push({
                         'header': element.proyectos[index].subareas[index2].nombre,
+                        'porcentaje': ((total * 100) / element.proyectos[index].total)/100,
                         'total': total
                     })
                 }
@@ -202,6 +208,7 @@ class Normas extends Component {
             total = old.ingresos.devoluciones.datos[index].total
             aux.push({
                 'header': old.ingresos.devoluciones.datos[index].nombre,
+                'porcentaje': ((total * 100) /old.ingresos.devoluciones.total)/100,
                 'total': total
             })
         }
@@ -217,12 +224,18 @@ class Normas extends Component {
                 total: total,
             }
         ]
-        datos[0].subtasks[2].total = old.ingresos.ventas_netas.total
+        let total_ventas_netas = old.ingresos.ventas_netas.total
+        datos[0].subtasks[0].total = old.ingresos.ventas.total
+        datos[0].subtasks[0].porcentaje = ((old.ingresos.ventas.total * 100) /total_ventas_netas)/100
+        datos[0].subtasks[1].total = old.ingresos.devoluciones.total
+        datos[0].subtasks[1].porcentaje = ((old.ingresos.devoluciones.total * 100) /total_ventas_netas)/100
+        datos[0].subtasks[2].total = total_ventas_netas
+        datos[0].subtasks[2].porcentaje=  ((total_ventas_netas * 100) /total_ventas_netas)/100
         datos[0].subtasks[2].subtasks[0].total = old.ingresos.ventas_netas.datos.sin_factura
-        datos[0].subtasks[2].subtasks[0].porcentaje = (old.ingresos.ventas_netas.datos.sin_factura * 100 / old.ingresos.ventas_netas.total) / 100
+        datos[0].subtasks[2].subtasks[0].porcentaje = (old.ingresos.ventas_netas.datos.sin_factura * 100 / total_ventas_netas) / 100
         datos[0].subtasks[2].subtasks[1].total = old.ingresos.ventas_netas.datos.con_factura
-        datos[0].subtasks[2].subtasks[1].porcentaje = (old.ingresos.ventas_netas.datos.con_factura * 100 / old.ingresos.ventas_netas.total) /100
-        datos[0].total = old.ingresos.ventas_netas.total
+        datos[0].subtasks[2].subtasks[1].porcentaje = (old.ingresos.ventas_netas.datos.con_factura * 100 / total_ventas_netas) /100
+        datos[0].total = total_ventas_netas
         aux = []
         total = 0
         for (const index in old.costos_ventas.compras.datos) {
@@ -235,6 +248,7 @@ class Normas extends Component {
                 })
                 aux2.push({
                     'header': old.costos_ventas.compras.datos[index].subareas[index2].nombre,
+                    'porcentaje': ((total * 100) / old.costos_ventas.compras.datos[index].total)/100,
                     'total': total
                 })
             }
@@ -260,7 +274,7 @@ class Normas extends Component {
         datos[2].subtasks = [
             {
                 'header': 'TOTAL VENTAS',
-                'total': old.ingresos.ventas_netas.total
+                'total': old.ingresos.ventas_netas.total,
             },
             {
                 'header': 'TOTAL COSTOS DE VENTAS',
@@ -279,6 +293,7 @@ class Normas extends Component {
                 })
                 aux2.push({
                     'header': old.gastos.datos[index].subareas[index2].nombre,
+                    'porcentaje': ((total * 100) / old.gastos.datos[index].total)/100,
                     'total': total
                 })
             }
@@ -308,6 +323,7 @@ class Normas extends Component {
                 })
                 aux2.push({
                     'header': old.otros_ingresos.datos[index].subareas[index2].nombre,
+                    'porcentaje': ((total * 100) / old.otros_ingresos.datos[index].total)/100,
                     'total': total
                 })
             }
