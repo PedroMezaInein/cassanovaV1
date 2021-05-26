@@ -157,11 +157,15 @@ export default class App extends React.Component {
 			case 'FASE 1':
 			case 'FASE 2':
 			case 'FASE 3':
-				args.row.childNodes[0].childNodes[0].style.color = '#948FD8'
+				
+				console.log(args)
+				args.row.childNodes[0].childNodes[0].style.color = '#85AED2'
 				args.row.childNodes[0].childNodes[0].style.fontWeight = 600
+				args.row.children[0].children[0].children[2].style.color = '#85AED2'
 				args.row.children[1].style.fontWeight = 600
 				args.row.children[2].style.fontWeight = 600
-				// args.row.childNodes[0].childNodes[0].childNodes[1].style.color='#80808F'
+				args.row.children[1].style.color='#85AED2'
+				args.row.children[2].style.color='#85AED2'
 				// Normal
 				args.row.onmouseout = function () {
 					this.style.backgroundColor = 'white';
@@ -284,7 +288,7 @@ export default class App extends React.Component {
 			case 'FASE 1':
 			case 'FASE 2':
 			case 'FASE 3':
-				args.style = { fontColor: '#948FD8', bold: true };
+				args.style = { fontColor: '#85AED2', bold: true };
 				break;
 			default:
 				break;
