@@ -288,7 +288,7 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style){
                             textAlert = `ELIMINARÁS EL RESPONSABLE ${element.name} DE LA PLATAFORMA ${data.plataforma}`
                             break
                         case 'departamento_empresa':
-                            textAlert = `ELIMINARÁS EL DEPARTAMENTO ${element.name} DE LA EMPRESA ${data.name}`
+                            textAlert = `ELIMINARÁS EL DEPARTAMENTO ${element.nombre} DE LA EMPRESA ${data.name}`
                             break
                         default:
                             textAlert =''
@@ -440,7 +440,6 @@ export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElemen
     )
 }
 export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, data, tipo) {
-    
     
     return (
         <div className = {`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
