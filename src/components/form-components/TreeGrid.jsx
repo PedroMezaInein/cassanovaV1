@@ -275,9 +275,9 @@ export default class App extends React.Component {
 						gridLines='Horizontal' rowDataBound={this.rowDataBound} enableCollapseAll={true} allowExcelExport='true' toolbar={this.toolbarOptions}
 						toolbarClick={this.toolbarClick} ref={treegrid => this.treegrid = treegrid} excelQueryCellInfo={this.excelQueryCellInfo}>
 						<ColumnsDirective>
-							<ColumnDirective field='header' width='200' headerText='' />
-							<ColumnDirective field='total' width='40' textAlign='Center' headerText='TOTAL' type='number' format='C0' />
-							<ColumnDirective field='porcentaje' width='40' textAlign='Center' headerText='PORCENTAJE' type='number' format='P2' />
+							<ColumnDirective field='header' width='280' headerText='' />
+							<ColumnDirective field='total' width='120' textAlign='Center' headerText='TOTAL' type='number' format='C0' />
+							<ColumnDirective field='porcentaje' width='100' textAlign='Center' headerText='PORCENTAJE' type='number' format='P2' />
 						</ColumnsDirective>
 						<Inject services={[Toolbar, ExcelExport]} />
 					</TreeGridComponent>
