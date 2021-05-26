@@ -921,7 +921,7 @@ class Ingresos extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/administracion/ingresos`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { data, options } = this.state
                 const { clientes, empresas, formasPago, metodosPago, estatusFacturas, estatusCompras, tiposPagos, tiposImpuestos, areas } = response.data
