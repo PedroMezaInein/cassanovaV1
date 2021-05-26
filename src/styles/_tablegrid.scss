@@ -55543,9 +55543,16 @@ ejs-filemanager {
 
 .e-treegrid .e-treegridexpand::before,
 .e-treegrid .e-treegridcollapse::before {
-    content: "\2B9A"
-
-
+    line-height: 0;
+    font-family: Ki;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-rendering: optimizeLegibility;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    content: "";
+    font-size: 0.6rem;
 }
 
 .e-treegrid .e-toolbar-item .e-expand::before {
