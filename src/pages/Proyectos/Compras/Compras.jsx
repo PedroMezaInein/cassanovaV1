@@ -18,6 +18,7 @@ import Select from '../../../components/form-components/Select'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import $ from "jquery";
+import { setSingleHeader } from '../../../functions/routers'
 class Compras extends Component {
     state = {
         // modal: false,
@@ -835,7 +836,7 @@ class Compras extends Component {
     getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(URL_DEV + 'compras/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/proyectos/compras`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
