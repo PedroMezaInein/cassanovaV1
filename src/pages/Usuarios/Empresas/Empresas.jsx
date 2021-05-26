@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, EMPRESA_COLUMNS, PUSHER_OBJECT} from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { setTextTableReactDom } from '../../../functions/setters'
+import { setTextTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
 import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlertY, customInputAlert } from '../../../functions/alert'
@@ -126,7 +126,7 @@ class Empresas extends Component {
                 name: setTextTableReactDom(empresa.name, this.doubleClick, empresa, 'name', 'text-center'),
                 razonSocial: setTextTableReactDom(empresa.razon_social, this.doubleClick, empresa, 'razon_social', 'text-center'),
                 rfc: setTextTableReactDom(empresa.rfc, this.doubleClick, empresa, 'rfc', 'text-center'),
-                // departamento: empresa.departamentos.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(empresa, empresa.departamentos, 'departamento_empresa', this.deleteElementAxios, ''),
+                departamento: empresa.departamentos.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(empresa, empresa.departamentos, 'departamento_empresa', this.deleteElementAxios, ''),
                 id: empresa.id
             })
             return false
