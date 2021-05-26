@@ -198,13 +198,15 @@ class Normas extends Component {
                 aux2.push({
                     'header': element.proyectos[index].nombre,
                     'total': total,
+                    'porcentaje': ((total * 100) /element.total)/100,
                     'subtasks': aux3
                 })
             }
             total = element.total
             aux.push({
-                'header': element.nombre,
+                'header': element.nombre+'-',
                 'total': total,
+                'porcentaje': 0.5,
                 'subtasks': aux2
             })
         });
