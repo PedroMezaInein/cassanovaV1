@@ -104,11 +104,11 @@ class Layout extends Component {
     }
 
     printChecador = () => {
-        const { checador } = this.state
+        /* const { checador } = this.state
         return(
             <ChecadorButton checador = { checador }  actualizarChecadorAxios = { this.actualizarChecadorAxios } />
-        )
-		/* const { checador } = this.state
+        ) */
+		const { checador } = this.state
 		if(checador.length){
 			if(checador[0].fecha_fin === null)
 				return(
@@ -122,7 +122,7 @@ class Layout extends Component {
                     <i className="fas fa-sign-in-alt text-success px-0"></i><span className="pl-2 ocultar-checador">CHECAR ENTRADA</span>
                 </span>
 			)
-		} */
+		}
 	}
 
     async getNotificacionesAxios() {
