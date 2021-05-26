@@ -12591,6 +12591,13 @@ react-from-dom@^0.3.0:
   resolved "https://registry.npmjs.org/react-from-dom/-/react-from-dom-0.3.1.tgz"
   integrity sha512-PeNBa8iuzoD7qHA9O7YpGnXFvC+XFFwStmFh2/r2zJAvEIaRg6EwOj+EPcDIFwyYBhqPIItxIx/dGdeWiFivjQ==
 
+react-geolocated@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-geolocated/-/react-geolocated-3.2.0.tgz#13caabaed7f35b899b542526d50058650d2b4c25"
+  integrity sha512-jfuCTK3XD/PE2yDVIq4j2fTQOSJOhb79LLrf8cQRQcyv3FhFarlfvAyqCHND1BcbXm0Zj305ZLQBEI5+8PVNwA==
+  dependencies:
+    prop-types "^15.5.8"
+
 react-helmet@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-6.1.0.tgz#a750d5165cb13cf213e44747502652e794468726"
