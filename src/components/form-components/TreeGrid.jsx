@@ -195,11 +195,10 @@ export default class App extends React.Component {
         let fechaInicio = moment(form.fechaInicio)
         let fechaFin = moment(form.fechaFin)
         let diffFechas = fechaFin.diff(fechaInicio, 'days')
-        let showDate = ''
         if(diffFechas === 0){
-			return showDate = `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')}`
+			return `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')}`
         }else{
-			return showDate = `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')} - ${fechaFin.format('DD')}/${fechaFin.format('MM')}/${fechaFin.format('YYYY')}`
+			return `${fechaInicio.format('DD')}/${fechaInicio.format('MM')}/${fechaInicio.format('YYYY')} - ${fechaFin.format('DD')}/${fechaFin.format('MM')}/${fechaFin.format('YYYY')}`
 		}
     }
 	toolbarClick(args) {
