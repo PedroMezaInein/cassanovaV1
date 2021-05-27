@@ -105,11 +105,11 @@ class Layout extends Component {
     }
 
     printChecador = (getInnerRef) => {
-        const { checador } = this.state
+        /* const { checador } = this.state
         return(
             <ChecadorButton ref = { getInnerRef } checador = { checador }  actualizarChecadorAxios = { this.actualizarChecadorAxios } />
-        )
-		/* const { checador } = this.state
+        ) */
+		const { checador } = this.state
 		if(checador.length){
 			if(checador[0].fecha_fin === null)
 				return(
@@ -123,7 +123,7 @@ class Layout extends Component {
                     <i className="fas fa-sign-in-alt text-success px-0"></i><span className="pl-2 ocultar-checador">CHECAR ENTRADA</span>
                 </span>
 			)
-		} */
+		}
 	}
 
     async getNotificacionesAxios() {
@@ -171,16 +171,8 @@ class Layout extends Component {
         })
     }
 
-    actualizarChecadorAxios = async(tipo, coords) => {
-        this.getLocation()
-        if(coords){
-            const { latitude, longitude } = coords
-            alert(`${latitude}, ${longitude}`)
-        }
-        console.log(coords)
-
-        /* this.getLocation() */
-        /* const { access_token } = this.props.authUser
+    actualizarChecadorAxios = async(tipo) => {
+        const { access_token } = this.props.authUser
         const { json } = this.state
         waitAlert()
         await axios.put(`${URL_DEV}v2/usuarios/usuarios/checador/${tipo}`, {ip: json}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -197,7 +189,7 @@ class Layout extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-        }) */
+        })
     }
 
     cerrarSesionesAxios = async() => {
