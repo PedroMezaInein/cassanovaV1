@@ -107,7 +107,7 @@ class ProyectosForm extends Component {
     
     render() {
         const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, 
-            removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange, setOptions, ...props } = this.props
+            removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange, setOptions, openModalCP, showModal, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -119,7 +119,7 @@ class ProyectosForm extends Component {
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
-                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard2() }}>
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={(e) => { e.preventDefault(e); openWizard2(); if(showModal){ openModalCP(); } }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                     <span>2.</span> Ubicación</h3>
@@ -227,7 +227,15 @@ class ProyectosForm extends Component {
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase"
+                                            onClick={(e) => { 
+                                                e.preventDefault(e); 
+                                                openWizard2();
+                                                if(showModal){
+                                                    openModalCP();
+                                                }
+                                            }}
+                                        data-wizard-type="action-next">Siguiente</button>
                                     </div>
                                 </div>
                             </div>
@@ -239,20 +247,20 @@ class ProyectosForm extends Component {
                                             value = { form.cp } type = "text" placeholder = "CÓDIGO POSTAL" iconclass = "far fa-envelope"
                                             maxLength = "5" messageinc = "Ingresa el código postal." />
                                     </div>
-                                    <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
+                                    <div className="col-md-4" hidden={ form.cp === '' ? true : false}>
                                         <Input requirevalidation = { 0 } formeditado = { formeditado } name = "estado" type = "text"
-                                            readOnly = { options.colonias.length <= 0 ? true : false } value = { form.estado } 
+                                            readOnly = { form.cp === '' ? true : false } value = { form.estado } 
                                             iconclass = "fas fa-map-marked-alt" disabled placeholder = "ESTADO" />
                                     </div>
-                                    <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
+                                    <div className="col-md-4" hidden={form.cp === '' ? true : false}>
                                         <Input requirevalidation = { 0 } formeditado = { formeditado } value = { form.municipio }
-                                            readOnly = { options.colonias.length <= 0 ? true : false } name = "municipio" type = "text"
+                                            readOnly = { form.cp === '' ? true : false } name = "municipio" type = "text"
                                             placeholder = "MUNICIPIO/DELEGACIÓN" iconclass = "fas fa-map-marker-alt" disabled />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2" hidden={options.colonias.length <= 0 ? true : false}></div>
+                                <div className="separator separator-dashed mt-1 mb-2" hidden={form.cp === '' ? true : false}></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-5" hidden={options.colonias.length <= 0 ? true : false}>
+                                    <div className="col-md-5" hidden={form.cp === '' ? true : false}>
                                         {
                                             options.colonias.length > 0 &&
                                                 <SelectSearch formeditado = { formeditado } options = { options.colonias }
@@ -261,13 +269,13 @@ class ProyectosForm extends Component {
                                                     messageinc = "Selecciona la colonia" />
                                         }
                                         {
-                                            options.colonias.length <= 0 &&
+                                            form.cp === '' &&
                                                 <Input requirevalidation = { 1 } formeditado = { formeditado } readOnly
                                                     value = { form.colonia } name = "colonia" type = "text"
                                                     placeholder = "SELECCIONA LA COLONIA" iconclass = "fas fa-map-pin" />
                                         }
                                     </div>
-                                    <div className="col-md-7" hidden={options.colonias.length <= 0 ? true : false}>
+                                    <div className="col-md-7" hidden={form.cp === '' ? true : false}>
                                         <Input requirevalidation = { 1 } formeditado = { formeditado } name = "calle"
                                             value = { form.calle } onChange = { onChange } type = "text" placeholder = "CALLE Y NÚMERO"
                                             iconclass = "fas fa-map-signs" messageinc = "Ingresa la calle y número." />
