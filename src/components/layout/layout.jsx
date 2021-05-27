@@ -103,12 +103,12 @@ class Layout extends Component {
         return false
     }
 
-    printChecador = () => {
-        /* const { checador } = this.state
+    printChecador = (getInnerRef) => {
+        const { checador } = this.state
         return(
-            <ChecadorButton checador = { checador }  actualizarChecadorAxios = { this.actualizarChecadorAxios } />
-        ) */
-		const { checador } = this.state
+            <ChecadorButton ref = { getInnerRef } checador = { checador }  actualizarChecadorAxios = { this.actualizarChecadorAxios } />
+        )
+		/* const { checador } = this.state
 		if(checador.length){
 			if(checador[0].fecha_fin === null)
 				return(
@@ -122,7 +122,7 @@ class Layout extends Component {
                     <i className="fas fa-sign-in-alt text-success px-0"></i><span className="pl-2 ocultar-checador">CHECAR ENTRADA</span>
                 </span>
 			)
-		}
+		} */
 	}
 
     async getNotificacionesAxios() {
@@ -171,7 +171,9 @@ class Layout extends Component {
     }
 
     actualizarChecadorAxios = async(tipo) => {
-        const { access_token } = this.props.authUser
+        console.log(tipo)
+        this.getLocation()
+        /* const { access_token } = this.props.authUser
         const { json } = this.state
         waitAlert()
         await axios.put(`${URL_DEV}v2/usuarios/usuarios/checador/${tipo}`, {ip: json}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -188,7 +190,7 @@ class Layout extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-        })
+        }) */
     }
 
     cerrarSesionesAxios = async() => {
@@ -210,10 +212,20 @@ class Layout extends Component {
         return false
     }
 
+    constructor(props) {
+        super(props);
+        this.getInnerRef = this.getInnerRef.bind(this);
+        this.getLocation = this.getLocation.bind(this);
+    }
+    innerRef;
+    getInnerRef(ref) { this.innerRef = ref; }
+    getLocation() { this.innerRef && this.innerRef.getLocation(); }
+
     render() {
         const { children, authUser } = this.props
         const { checador, title } = this.state
         let tipo_usuario = this.hasUser() ? authUser.user.tipo ? authUser.user.tipo.tipo : '' : ''
+        const { getInnerRef, getLocation } = this;
 
         return (
             <div>
@@ -263,7 +275,8 @@ class Layout extends Component {
                                 {
                                     tipo_usuario === 'Cliente' ?
                                         '' :
-                                        <UrlLocation {...this.props} props={this.props} checador = { checador } actualizarChecador = { this.actualizarChecadorAxios } isCliente={this.isCliente} printChecador={this.printChecador}/>
+                                        <UrlLocation { ...this.props } props = { this.props } checador = { checador } actualizarChecador = { this.actualizarChecadorAxios } 
+                                            isCliente = { this.isCliente } printChecador = { this.printChecador } getInnerRef = { getInnerRef } />
                                 }
                                 <div className="d-flex flex-column-fluid">
                                     <div className="container-fluid">
