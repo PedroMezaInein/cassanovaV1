@@ -199,7 +199,19 @@ class Normas extends Component {
         });
         aux.push({
             'header': 'TOTAL INGRESOS',
-            'total': old.ingresos.ventas.total
+            'total': old.ingresos.ventas.total,
+            'subtasks': [
+                {
+                    'header': 'CON FACTURA',
+                    'total': old.ingresos.ventas.conFactura,
+                    'porcentaje': old.ingresos.ventas.conFactura / old.ingresos.ventas.total
+                },
+                {
+                    'header': 'SIN FACTURA',
+                    'total': old.ingresos.ventas.sinFactura,
+                    'porcentaje': old.ingresos.ventas.sinFactura / old.ingresos.ventas.total
+                }
+            ]
         })
         datos[0].subtasks[0].subtasks = aux
         aux = []
@@ -222,6 +234,18 @@ class Normas extends Component {
             {
                 header: 'TOTAL DEVOLUCIONES',
                 total: total,
+                subtasks: [
+                    {
+                        'header': 'CON FACTURA',
+                        'total': old.ingresos.devoluciones.conFactura,
+                        'porcentaje': old.ingresos.devoluciones.conFactura / old.ingresos.devoluciones.total
+                    },
+                    {
+                        'header': 'SIN FACTURA',
+                        'total': old.ingresos.devoluciones.sinFactura,
+                        'porcentaje': old.ingresos.devoluciones.sinFactura / old.ingresos.devoluciones.total
+                    }
+                ]
             }
         ]
         let total_ventas_netas = old.ingresos.ventas_netas.total
@@ -274,12 +298,36 @@ class Normas extends Component {
         datos[2].porcentaje = ( (old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total) * 100 / old.ingresos.ventas_netas.total ) /100
         datos[2].subtasks = [
             {
-                'header': 'TOTAL VENTAS',
-                'total': old.ingresos.ventas_netas.total,
+                header: 'TOTAL VENTAS',
+                total: old.ingresos.ventas_netas.total,
+                subtasks: [
+                    {
+                        'header': 'CON FACTURA',
+                        'total': old.ingresos.ventas_netas.datos.con_factura,
+                        'porcentaje': (old.ingresos.ventas_netas.datos.con_factura) / old.ingresos.ventas_netas.total
+                    },
+                    {
+                        'header': 'SIN FACTURA',
+                        'total': old.ingresos.ventas_netas.datos.sin_factura,
+                        'porcentaje': (old.ingresos.ventas_netas.datos.sin_factura) / old.ingresos.ventas_netas.total
+                    }
+                ]
             },
             {
                 'header': 'TOTAL COSTOS DE VENTAS',
-                'total': old.costos_ventas.costos_netos.total
+                'total': old.costos_ventas.costos_netos.total,
+                subtasks: [
+                    {
+                        'header': 'CON FACTURA',
+                        'total': old.costos_ventas.costos_netos.datos.con_factura,
+                        'porcentaje': (old.costos_ventas.costos_netos.datos.con_factura) / old.costos_ventas.costos_netos.total
+                    },
+                    {
+                        'header': 'SIN FACTURA',
+                        'total': old.costos_ventas.costos_netos.datos.sin_factura,
+                        'porcentaje': (old.costos_ventas.costos_netos.datos.sin_factura) / old.costos_ventas.costos_netos.total
+                    }
+                ]
             }
         ]
         aux = []
@@ -311,6 +359,18 @@ class Normas extends Component {
         datos[3].subtasks[0].subtasks = aux
         datos[3].subtasks[0].total = total
         datos[3].subtasks[1].total = old.gastos.total
+        datos[3].subtasks[1].subtasks = [
+            {
+                'header': 'CON FACTURA',
+                'total': old.gastos.conFactura,
+                'porcentaje': (old.gastos.conFactura) / old.gastos.total
+            },
+            {
+                'header': 'SIN FACTURA',
+                'total': old.gastos.sinFactura,
+                'porcentaje': (old.gastos.sinFactura) / old.gastos.total
+            }
+        ]
         datos[3].total = old.gastos.total
 
         aux = []
@@ -342,9 +402,33 @@ class Normas extends Component {
         datos[4].subtasks[0].subtasks = aux
         datos[4].subtasks[0].total = total
         datos[4].subtasks[1].total = old.otros_ingresos.total
+        datos[4].subtasks[1].subtasks = [
+            {
+                'header': 'CON FACTURA',
+                'total': old.otros_ingresos.conFactura,
+                'porcentaje': (old.otros_ingresos.conFactura) / old.otros_ingresos.total
+            },
+            {
+                'header': 'SIN FACTURA',
+                'total': old.otros_ingresos.sinFactura,
+                'porcentaje': (old.otros_ingresos.sinFactura) / old.otros_ingresos.total
+            }
+        ]
         datos[4].total = old.otros_ingresos.total
 
         datos[5].total = old.otros_ingresos.total - old.gastos.total + old.ingresos.ventas_netas.total - old.costos_ventas.costos_netos.total
+        datos[5].subtasks = [
+            {
+                'header': 'CON FACTURA',
+                'total': old.ingresos.ventas_netas.datos.con_factura - old.costos_ventas.costos_netos.datos.con_factura - old.gastos.conFactura + old.otros_ingresos.conFactura,
+                'porcentaje': (old.ingresos.ventas_netas.datos.con_factura - old.costos_ventas.costos_netos.datos.con_factura - old.gastos.conFactura + old.otros_ingresos.conFactura) / datos[5].total
+            },
+            {
+                'header': 'SIN FACTURA',
+                'total': old.ingresos.ventas_netas.datos.sin_factura - old.costos_ventas.costos_netos.datos.sin_factura - old.gastos.sinFactura + old.otros_ingresos.sinFactura,
+                'porcentaje': (old.ingresos.ventas_netas.datos.sin_factura - old.costos_ventas.costos_netos.datos.sin_factura - old.gastos.sinFactura + old.otros_ingresos.sinFactura) / datos[5].total
+            }
+        ]
 
         this.setState({...this.state, datos: datos})
     }
