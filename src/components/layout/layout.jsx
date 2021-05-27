@@ -60,6 +60,7 @@ class Layout extends Component {
             })
         }
         /* this.getNotificacionesAxios() */
+        this.getLocation()
     }
 
     logoutUser = () => { this.logoutUserAxios(); }
@@ -170,9 +171,15 @@ class Layout extends Component {
         })
     }
 
-    actualizarChecadorAxios = async(tipo) => {
-        console.log(tipo)
+    actualizarChecadorAxios = async(tipo, coords) => {
         this.getLocation()
+        if(coords){
+            const { latitude, longitude } = coords
+            alert(`${latitude}, ${longitude}`)
+        }
+        console.log(coords)
+
+        /* this.getLocation() */
         /* const { access_token } = this.props.authUser
         const { json } = this.state
         waitAlert()
