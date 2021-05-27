@@ -893,7 +893,6 @@ class ProyectosForm extends Component {
     sendForm = async() => {
         let { form } = this.state
         const { options } = this.state
-        if(form.ubicacion_cliente){
             options.cp_clientes.map((cliente) => {
                 if(form.cp_ubicacion === cliente.value){
                     let coloniaM = cliente.colonia.toUpperCase()
@@ -901,9 +900,14 @@ class ProyectosForm extends Component {
                     this.cpAxios(cliente.cp)
                     form.colonia = coloniaM
                     form.calle = cliente.calle
+                }else if(options.cp_clientes.length === 1){
+                    let coloniaM = cliente.colonia.toUpperCase()
+                    form.cp = cliente.cp
+                    this.cpAxios(cliente.cp)
+                    form.colonia = coloniaM
+                    form.calle = cliente.calle
                 }
             })
-        }
         Swal.close()
         // form.ubicacion_cliente = ''
         // form.cp_ubicacion = ''
@@ -1130,8 +1134,8 @@ class ProyectosForm extends Component {
                                 : ''
                         }
                         {
-                            ( form.cp_ubicacion || ( form.ubicacion_cliente === true && options.cp_clientes.length === 1 )) ?
-                            <div className="table-responsive-lg mt-7 mb-10">
+                            form.cp_ubicacion || options.cp_clientes.length === 1 ?
+                            <div className={form.ubicacion_cliente === false?'d-none':'table-responsive-lg mt-7 mb-10'}>
                                 <table className="table table-vertical-center w-65 mx-auto table-borderless" id="tcalendar_p_info">
                                     {
                                         options.cp_clientes.map((cliente, key) => {
@@ -1153,7 +1157,7 @@ class ProyectosForm extends Component {
                         <div className="card-footer p-0 mt-4 pt-3">
                             <div className="row mx-0">
                                 <div className="col-lg-12 text-center p-0">
-                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                    <Button icon='' className="mx-auto" type="submit" text="CONFIRMAR" />
                                 </div>
                             </div>
                         </div>
