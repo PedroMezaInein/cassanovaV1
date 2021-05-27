@@ -116,13 +116,15 @@ class UrlLocation extends Component {
             state: { lead: lead, tipo: lead.prospecto.estatus_prospecto.estatus }
         });
     }
+
     render() {
         const { paths, url, modal, form, modal_buscar, leads } = this.state
-        const { authUser: { modulos }, active, user: usuario, printChecador, isCliente } = this.props
+        const { authUser: { modulos }, active, user: usuario, printChecador, isCliente, getInnerRef } = this.props
         let icon;
         let modulo_name;
         let submodulo_name;
         let submodulo;
+
         if (modulos) {
             if (paths.length === 1) {
                 for (let i = 0; i < modulos.length; i++) {
@@ -168,7 +170,8 @@ class UrlLocation extends Component {
                     </Form>
                 </Modal>
                 <Modal show = { modal_buscar } size ="lg" title = 'Buscar lead' handleClose = { this.handleCloseBuscar } >
-                    <BuscarLead form = { form } onSubmit = { this.onSubmitSearch } onChange = { this.onChangeBuscar } leads = { leads } changePageDetails={this.changePageDetailsContacto}/>
+                    <BuscarLead form = { form } onSubmit = { this.onSubmitSearch } onChange = { this.onChangeBuscar } leads = { leads } 
+                        changePageDetails = { this.changePageDetailsContacto } />
                 </Modal>
                 {
                     paths.length > 0 ?
@@ -176,11 +179,7 @@ class UrlLocation extends Component {
                             <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
                                 <div className="d-flex align-items-center flex-wrap">
                                     <div className="d-flex align-items-baseline">
-                                        <h5 className="text-dark font-weight-bold my-2 mr-3">
-                                            {
-                                                modulo_name
-                                            }
-                                        </h5>
+                                        <h5 className="text-dark font-weight-bold my-2 mr-3"> { modulo_name } </h5>
                                         <div>
                                             <span className="svg-icon menu-icon svg-icon-primary">
                                                 <SVG src={toAbsoluteUrl(icon)} />
@@ -190,37 +189,18 @@ class UrlLocation extends Component {
                                             paths.length > 1 ?
                                                 <ul className="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
                                                     <li className="breadcrumb-item">
-                                                        <a href={`/${paths[0]}/${paths[1]}`} className="text-muted ml-3">
-                                                            {
-                                                                submodulo_name
-                                                            }
-                                                        </a>
+                                                        <a href={`/${paths[0]}/${paths[1]}`} className="text-muted ml-3"> { submodulo_name } </a>
                                                     </li>
                                                 </ul>
-                                                : ""
+                                            : ""
                                         }
                                     </div>
                                 </div>
                                 <div className="text-align-last-center">
+                                    { !isCliente(usuario) && printChecador(getInnerRef) }
                                     {
-                                        !isCliente(usuario) && printChecador()
-                                    }
-                                    {
-                                        url === "leads/crm" ?
+                                        url === "leads/crm" &&
                                             <>
-                                                {/* <Button
-                                                    // icon=''
-                                                    // onClick={() => { this.changePageAdd('telefono') }}
-                                                    // className="btn btn-light-primary mr-2 rounded-0"
-                                                    // only_icon="fas fa-phone icon-md mr-2"
-                                                    // // tooltip={{ text: 'TELÉFONO' }}
-                                                    // text='TELÉFONO'
-                                                    icon=''
-                                                    onClick={() => { this.changePageAdd('telefono') }}
-                                                    className="btn btn-light-primary mr-2 rounded-0 btn-sm"
-                                                    only_icon="fas fa-phone pr-0"
-                                                    tooltip={{ text: 'TELÉFONO' }}
-                                                /> */}
                                                 <span onClick = { (e) => { e.preventDefault(); this.openModalBuscar() }} 
                                                     className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mx-2">
                                                     <i className="fas fa-search text-cyan"></i> Buscar Lead
@@ -235,14 +215,12 @@ class UrlLocation extends Component {
                                                     </i> Nuevo lead
                                                 </span>
                                             </>
-                                        : ''
                                     }
                                 </div>
                             </div>
                         </div>
-                        : ""
+                    : ""
                 }
-
             </>
         );
     }

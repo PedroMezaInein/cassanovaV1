@@ -243,6 +243,7 @@ class Normas extends Component {
             for (const index2 in old.costos_ventas.compras.datos[index].subareas) {
                 aux3 = []
                 total = 0
+                // eslint-disable-next-line
                 old.costos_ventas.compras.datos[index].subareas[index2].compras.forEach((compra) => {
                     total = total + compra.total
                 })
@@ -288,6 +289,7 @@ class Normas extends Component {
             for (const index2 in old.gastos.datos[index].subareas) {
                 aux3 = []
                 total = 0
+                // eslint-disable-next-line
                 old.gastos.datos[index].subareas[index2].egresos.forEach((egreso) => {
                     total = total + egreso.total
                 })
@@ -318,6 +320,7 @@ class Normas extends Component {
             for (const index2 in old.otros_ingresos.datos[index].subareas) {
                 aux3 = []
                 total = 0
+                // eslint-disable-next-line
                 old.otros_ingresos.datos[index].subareas[index2].ingresos.forEach((egreso) => {
                     total = total + egreso.total
                 })
