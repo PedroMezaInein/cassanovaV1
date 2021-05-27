@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Card, Accordion, Dropdown } from 'react-bootstrap'
+import { Card, Accordion, Dropdown, Form } from 'react-bootstrap'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
@@ -11,6 +11,8 @@ import { Button } from '../../../components/form-components'
 import { ProyectoCard, ProyectosCard } from '../../../components/cards'
 import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlert, createAlertSA2WithClose } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
+import { Modal } from '../../../components/singles'
+import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
 class ProyectosForm extends Component {
     state = {
         prevPath: '',
@@ -24,7 +26,8 @@ class ProyectosForm extends Component {
             clientes: [],
             colonias: [],
             estatus: [],
-            tipos:[]
+            tipos:[],
+            cp_clientes: []
         },
         data: {
             proyectos: []
@@ -64,8 +67,11 @@ class ProyectosForm extends Component {
                     placeholder: 'Imagen',
                     files: []
                 }
-            }
-        }
+            },
+            ubicacion_cliente: '',
+        },
+        modalCP: false,
+        showModal:false
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -198,12 +204,58 @@ class ProyectosForm extends Component {
         this.getOptionsAxios()
     }
     onChange = e => {
-        const { name, value } = e.target
-        const { form } = this.state
+        const { name, value, type } = e.target
+        const { form, options } = this.state
+        let { showModal } = this.state
         form[name] = value
+        if(type === 'radio'){
+            if(name === 'ubicacion_cliente')
+                form[name] = value === "true" ? true : false
+        }
+        switch (name) {
+            case 'cliente':
+                let aux = [];
+                form.clientes.map((cliente) => {
+                    if(cliente.cp !== null){
+                        aux.push({
+                            name: cliente.name,
+                            value: cliente.value,
+                            label: cliente.name,
+                            cp: cliente.cp,
+                            estado: cliente.estado,
+                            municipio: cliente.municipio,
+                            colonia: cliente.colonia,
+                            calle: cliente.calle
+                        })
+                    }
+                })
+                options.cp_clientes = aux
+                if(options.cp_clientes.length > 1 || options.cp_clientes.length === 1){
+                    showModal = true
+                }
+                else if(options.cp_clientes.length === 0 ){
+                    form.cp = ''
+                    form.estado = ''
+                    form.municipio = ''
+                    form.colonia = ''
+                    form.calle = ''
+                    showModal = false
+                }
+                this.setState({
+                    ...this.state,
+                    form,
+                    showModal,
+                    options
+                })
+                break;
+            default:
+                break;
+        }
         this.setState({
             ...this.state,
-            form
+            form,
+            showModal,
+            options
         })
     }
     onChangeOptions = (e, arreglo) => {
@@ -227,7 +279,9 @@ class ProyectosForm extends Component {
         })
     }
     deleteOption = (element, array) => {
-        let { form } = this.state
+        let { form, showModal } = this.state
+        const { options } = this.state
+
         let auxForm = []
         form[array].map((elemento, key) => {
             if (element !== elemento) {
@@ -236,9 +290,39 @@ class ProyectosForm extends Component {
             return false
         })
         form[array] = auxForm
+
+        let aux = [];
+        form[array].map((cliente) => {
+            if(cliente.cp !== null){
+                aux.push({
+                    name: cliente.name,
+                    value: cliente.value,
+                    label: cliente.name,
+                    cp: cliente.cp,
+                    estado: cliente.estado,
+                    municipio: cliente.municipio,
+                    colonia: cliente.colonia,
+                    calle: cliente.calle
+                })
+            }
+        })
+        options.cp_clientes = aux
+
+        if(options.cp_clientes.length > 1 || options.cp_clientes.length === 1){
+            showModal = true
+        }else if(options.cp_clientes.length === 0 ){
+            form.cp = ''
+            form.estado = ''
+            form.municipio = ''
+            form.colonia = ''
+            form.calle = ''
+            showModal = false
+        }
         this.setState({
             ...this.state,
-            form
+            form,
+            options,
+            showModal,
         })
     }
     removeCorreo = value => {
@@ -501,9 +585,23 @@ class ProyectosForm extends Component {
                 Swal.close()
                 const { clientes, empresas, estatus } = response.data
                 const { options } = this.state
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['estatus'] = setOptions(estatus, 'estatus', 'id')
+                let aux = [];
+                clientes.forEach((element) => {
+                    aux.push({
+                        name: element.empresa,
+                        value: element.id.toString(),
+                        label: element.empresa,
+                        cp: element.cp,
+                        estado: element.estado,
+                        municipio: element.municipio,
+                        colonia: element.colonia,
+                        calle: element.calle
+                    })
+                    return false
+                })
+                options.clientes = aux.sort(this.compare)
                 this.setState({
                     ...this.state,
                     options
@@ -517,7 +615,15 @@ class ProyectosForm extends Component {
             console.log(error, 'error')
         })
     }
-
+    compare( a, b ) {
+        if ( a.name < b.name ){
+            return -1;
+        }
+        if ( a.name > b.name ){
+            return 1;
+        }
+        return 0;
+    }
     async addProyectoAxios() {
         const { access_token } = this.props.authUser
         const { form, prospecto } = this.state
@@ -765,8 +871,120 @@ class ProyectosForm extends Component {
             options
         })
     }
+    openModalCP = () => {
+        this.setState({
+            ...this.state,
+            modalCP:true
+        })
+    }
+    handleCloseCP = () => { 
+        let { form } = this.state
+        form.ubicacion_cliente = ''
+        form.cp_ubicacion = ''
+        this.setState({
+            ...this.state,
+            modalCP: false,
+            form
+        })
+    }
+    updateSelectCP = value => {
+        this.onChange({ target: { name: 'cp_ubicacion', value: value.toString() } })
+    }
+    sendForm = async() => {
+        let { form } = this.state
+        const { options } = this.state
+        if(form.ubicacion_cliente){
+            options.cp_clientes.map((cliente) => {
+                if(form.cp_ubicacion === cliente.value){
+                    let coloniaM = cliente.colonia.toUpperCase()
+                    form.cp = cliente.cp
+                    this.cpAxios(cliente.cp)
+                    form.colonia = coloniaM
+                    form.calle = cliente.calle
+                }
+            })
+        }
+        Swal.close()
+        // form.ubicacion_cliente = ''
+        // form.cp_ubicacion = ''
+        this.setState({
+            ...this.state,
+            modalCP: false,
+            form
+        })
+    }
+    printTable = (key, cliente) => {
+        return (
+            <tbody key={key}>
+                <tr className="border-top-2px">
+                    <td className="text-center w-5">
+                        <i className="las la-user-alt icon-2x text-dark-50"></i>
+                    </td>
+                    <td className="w-33 font-weight-bolder text-dark-50">
+                        NOMBRE DE CLIENTE
+                    </td>
+                    <td className="font-weight-light">
+                        <span>{cliente.name}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td className="text-center">
+                        <i className="las la-map-pin icon-2x text-dark-50"></i>
+                    </td>
+                    <td className="font-weight-bolder text-dark-50">
+                        CÓDIGO POSTAL
+                    </td>
+                    <td className="font-weight-light">
+                        <span>{cliente.cp}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td className="text-center">
+                        <i className="las la-globe icon-2x text-dark-50"></i>
+                    </td>
+                    <td className="font-weight-bolder text-dark-50">ESTADO</td>
+                    <td className="font-weight-light">
+                        <span>{cliente.estado}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td className="text-center">
+                        <i className="las la-map icon-2x text-dark-50"></i>
+                    </td>
+                    <td className="font-weight-bolder text-dark-50">
+                        MUNICIPIO/DELEGACIÓN
+                    </td>
+                    <td className="font-weight-light">
+                        <span>{cliente.municipio}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td className="text-center">
+                        <i className="las la-map-marker icon-2x text-dark-50"></i>
+                    </td>
+                    <td className="font-weight-bolder text-dark-50">
+                        COLONIA
+                    </td>
+                    <td className="font-weight-light text-justify">
+                        <span>{cliente.colonia}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td className="text-center">
+                        <i class="las la-map-marked-alt icon-2x text-dark-50"></i>
+                    </td>
+                    <td className="font-weight-bolder text-dark-50">
+                        CALLE Y NÚMERO
+                    </td>
+                    <td className="font-weight-light text-justify">
+                        <span>{cliente.calle}</span>
+                    </td>
+                </tr>
+            </tbody>
+        )
+    }
     render() {
-        const { title, form, options, formeditado, prospecto, action, proyecto } = this.state
+        const { title, form, options, formeditado, prospecto, action, proyecto, modalCP, showModal } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">
@@ -830,7 +1048,7 @@ class ProyectosForm extends Component {
                             onChangeOptions = { this.onChangeOptions } clearFiles = { this.clearFiles } onChangeCP = { this.onChangeCP }
                             onSubmit = { this.onSubmit } onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } clearFilesGrupo = { this.clearFilesGrupo }
                             removeCorreo = { this.removeCorreo } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange }
-                            className = "px-3" tagInputChange = { (e) => this.tagInputChange(e) } setOptions = { this.setOptions } >
+                            className = "px-3" tagInputChange = { (e) => this.tagInputChange(e) } setOptions = { this.setOptions } openModalCP={this.openModalCP} showModal={showModal}>
                             <Accordion>
                                 {
                                     (prospecto !== '' || proyecto !== '') && title !== 'Editar proyecto' ? 
@@ -862,6 +1080,85 @@ class ProyectosForm extends Component {
                         </ProyectoFormulario>
                     </Card.Body>
                 </Card>
+                <Modal size="lg" show = { modalCP } title = 'ACTUALIZAR DATOS DEL CLIENTE' handleClose = { this.handleCloseCP } >
+                    <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendForm(); }}>
+                        <div className="row py-0 mx-0 mt-6 align-items-center d-flex justify-content-center">
+                            <label className="w-auto mr-4 py-0 col-form-label text-dark-75 font-weight-bold font-size-lg">¿Quieres utilizar la ubicación del cliente?</label>
+                            <div className="w-auto px-3">
+                                <div className="radio-inline mt-0 ">
+                                    <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                        <input
+                                            type="radio"
+                                            name='ubicacion_cliente'
+                                            value={true}
+                                            onChange={this.onChange}
+                                            checked={form.ubicacion_cliente === true ? true : false}
+                                        />Si
+										<span></span>
+                                    </label>
+                                    <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                        <input
+                                            type="radio"
+                                            name='ubicacion_cliente'
+                                            value={false}
+                                            onChange={this.onChange}
+                                            checked={form.ubicacion_cliente === false ? true : false}
+                                        />No
+										<span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {
+                            form.ubicacion_cliente && options.cp_clientes.length !== 1?
+                                    <div className="row mx-0 mt-5 text-center d-flex justify-content-center">
+                                        <Form.Label className="col-md-12 col-form-label font-weight-bolder">¿DE CUÁL CLIENTE DESEA UTILIZAR SU UBICACIÓN?</Form.Label>
+                                        <div className="col-md-4">
+                                            <SelectSearchGray
+                                                formeditado={formeditado}
+                                                options={options.cp_clientes} 
+                                                placeholder="SELECCIONA EL CLIENTE"
+                                                name="cp_ubicacion" 
+                                                value={form.cp_ubicacion} 
+                                                onChange={this.updateSelectCP}
+                                                withtaglabel={0}
+                                                withtextlabel={0}
+                                                customdiv={'mb-0'}
+                                            />
+                                        </div>
+                                    </div>
+                                : ''
+                        }
+                        {
+                            ( form.cp_ubicacion || ( form.ubicacion_cliente === true && options.cp_clientes.length === 1 )) ?
+                            <div className="table-responsive-lg mt-7 mb-10">
+                                <table className="table table-vertical-center w-65 mx-auto table-borderless" id="tcalendar_p_info">
+                                    {
+                                        options.cp_clientes.map((cliente, key) => {
+                                            if (form.cp_ubicacion === cliente.value) {
+                                                return (
+                                                    this.printTable(key, cliente)
+                                                )
+                                            }else if(options.cp_clientes.length === 1){
+                                                return (
+                                                    this.printTable(key, cliente)
+                                                )
+                                            }
+                                        })
+                                    }
+                                </table>
+                            </div>
+                            :''
+                        }
+                        <div className="card-footer p-0 mt-4 pt-3">
+                            <div className="row mx-0">
+                                <div className="col-lg-12 text-center p-0">
+                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                </div>
+                            </div>
+                        </div>
+                    </Form>
+                </Modal>
             </Layout>
         );
     }

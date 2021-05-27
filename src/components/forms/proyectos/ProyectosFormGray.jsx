@@ -131,7 +131,8 @@ class ProyectosForm extends Component {
         onChange({ target: { name: 'tipoProyecto', value: value } })
     }
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action, handleChange, onChangeRange, tagInputChange, ...props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action, handleChange, onChangeRange, tagInputChange,
+            openModalCP, showModal,  ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -143,7 +144,7 @@ class ProyectosForm extends Component {
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
-                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard2() }}>
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={(e) => { e.preventDefault(e); openWizard2(); if(showModal){ openModalCP(); } }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                     <span>2.</span> Ubicación</h3>
@@ -262,7 +263,14 @@ class ProyectosForm extends Component {
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={(e) => { 
+                                                e.preventDefault(e); 
+                                                openWizard2();
+                                                if(showModal){
+                                                    openModalCP();
+                                                }
+                                            }}
+                                            data-wizard-type="action-next">Siguiente</button>
                                     </div>
                                 </div>
                             </div>
@@ -283,7 +291,7 @@ class ProyectosForm extends Component {
                                             messageinc="Incorrecto. Ingresa el código postal."
                                         />
                                     </div>
-                                    <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
+                                    <div className="col-md-4" hidden={form.cp === '' ? true : false}>
                                         <InputGray
                                             letterCase={true}
                                             withtaglabel={1}
@@ -293,7 +301,7 @@ class ProyectosForm extends Component {
                                             requirevalidation={0}
                                             withformgroup={1}
                                             formeditado={formeditado}
-                                            readOnly={options.colonias.length <= 0 ? true : false}
+                                            readOnly={form.cp === '' ? true : false}
                                             value={form.estado}
                                             name="estado"
                                             type="text"
@@ -302,7 +310,7 @@ class ProyectosForm extends Component {
                                             disabled
                                         />
                                     </div>
-                                    <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
+                                    <div className="col-md-4" hidden={form.cp === '' ? true : false}>
                                         <InputGray
                                             letterCase={false}
                                             withtaglabel={1}
@@ -312,7 +320,7 @@ class ProyectosForm extends Component {
                                             requirevalidation={0}
                                             withformgroup={1}
                                             formeditado={formeditado}
-                                            readOnly={options.colonias.length <= 0 ? true : false}
+                                            readOnly={form.cp === '' ? true : false}
                                             value={form.municipio}
                                             name="municipio"
                                             type="text"
@@ -322,9 +330,9 @@ class ProyectosForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2" hidden={options.colonias.length <= 0 ? true : false}></div>
+                                <div className="separator separator-dashed mt-1 mb-2" hidden={form.cp === '' ? true : false}></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-5" hidden={options.colonias.length <= 0 ? true : false}>
+                                    <div className="col-md-5" hidden={form.cp === '' ? true : false}>
                                         {
                                             options.colonias.length > 0 &&
                                             <SelectSearchGray
@@ -342,7 +350,7 @@ class ProyectosForm extends Component {
                                             />
                                         }
                                         {
-                                            options.colonias.length <= 0 &&
+                                            form.cp === '' &&
                                             <InputGray
                                                 letterCase={true}
                                                 withtaglabel={1}
@@ -360,7 +368,7 @@ class ProyectosForm extends Component {
                                             />
                                         }
                                     </div>
-                                    <div className="col-md-7" hidden={options.colonias.length <= 0 ? true : false}>
+                                    <div className="col-md-7" hidden={form.cp === '' ? true : false}>
                                         <InputGray
                                             letterCase={true}
                                             withtaglabel={1}
