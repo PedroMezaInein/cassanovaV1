@@ -581,17 +581,21 @@ class Contratar extends Component {
     sendForm = async() => {
         let { formProyecto } = this.state
         const { options } = this.state
-        if(formProyecto.ubicacion_cliente){
-            options.cp_clientes.map((cliente) => {
-                if(formProyecto.cp_ubicacion === cliente.value){
-                    let coloniaM = cliente.colonia.toUpperCase()
-                    formProyecto.cp = cliente.cp
-                    this.cpProyectosAxios(cliente.cp)
-                    formProyecto.colonia = coloniaM
-                    formProyecto.calle = cliente.calle
-                }
-            })
-        }
+        options.cp_clientes.map((cliente) => {
+            if (formProyecto.cp_ubicacion === cliente.value) {
+                let coloniaM = cliente.colonia.toUpperCase()
+                formProyecto.cp = cliente.cp
+                this.cpProyectosAxios(cliente.cp)
+                formProyecto.colonia = coloniaM
+                formProyecto.calle = cliente.calle
+            }else if(options.cp_clientes.length === 1){
+                let coloniaM = cliente.colonia.toUpperCase()
+                formProyecto.cp = cliente.cp
+                this.cpAxios(cliente.cp)
+                formProyecto.colonia = coloniaM
+                formProyecto.calle = cliente.calle
+            }
+        })
         Swal.close()
         // formProyecto.ubicacion_cliente = ''
         // formProyecto.cp_ubicacion = ''
@@ -790,8 +794,8 @@ class Contratar extends Component {
                                 : ''
                         }
                         {
-                            ( formProyecto.cp_ubicacion || ( formProyecto.ubicacion_cliente === true && options.cp_clientes.length === 1 )) ?
-                            <div className="table-responsive-lg mt-7 mb-10">
+                            form.cp_ubicacion || options.cp_clientes.length === 1 ?
+                            <div className={form.ubicacion_cliente === false?'d-none':'table-responsive-lg mt-7 mb-10'}>
                                 <table className="table table-vertical-center w-65 mx-auto table-borderless" id="tcalendar_p_info">
                                     {
                                         options.cp_clientes.map((cliente, key) => {
@@ -813,7 +817,7 @@ class Contratar extends Component {
                         <div className="card-footer p-0 mt-4 pt-3">
                             <div className="row mx-0">
                                 <div className="col-lg-12 text-center p-0">
-                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                    <Button icon='' className="mx-auto" type="submit" text="CONFIRMAR" />
                                 </div>
                             </div>
                         </div>
