@@ -215,7 +215,7 @@ class ProyectosForm extends Component {
         switch (name) {
             case 'cliente':
                 let aux = [];
-                form.clientes.map((cliente) => {
+                form.clientes.forEach((cliente) => {
                     if(cliente.cp !== null){
                         aux.push({
                             name: cliente.name,
@@ -292,7 +292,7 @@ class ProyectosForm extends Component {
         form[array] = auxForm
 
         let aux = [];
-        form[array].map((cliente) => {
+        form[array].forEach((cliente) => {
             if(cliente.cp !== null){
                 aux.push({
                     name: cliente.name,
@@ -893,7 +893,7 @@ class ProyectosForm extends Component {
     sendForm = async() => {
         let { form } = this.state
         const { options } = this.state
-            options.cp_clientes.map((cliente) => {
+            options.cp_clientes.forEach((cliente) => {
                 if(form.cp_ubicacion === cliente.value){
                     let coloniaM = cliente.colonia.toUpperCase()
                     form.cp = cliente.cp
@@ -1148,6 +1148,7 @@ class ProyectosForm extends Component {
                                                     this.printTable(key, cliente)
                                                 )
                                             }
+                                            return <></>
                                         })
                                     }
                                 </table>
