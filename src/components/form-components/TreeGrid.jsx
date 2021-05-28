@@ -7,8 +7,6 @@ import { INEIN_RED, IM_AZUL } from '../../constants'
 import { ExcelExport, Inject, Toolbar } from '@syncfusion/ej2-react-treegrid';
 import { ColumnDirective, ColumnsDirective, TreeGridComponent } from '@syncfusion/ej2-react-treegrid';
 
-let prueba = [];
-
 function colorHeader (args, bgColor, color, hoverBgColor) {
   	// Color de header
 	args.row.bgColor = bgColor;
@@ -43,6 +41,7 @@ function rowTotal ( args, bgColor, color, fontSize ) {
 	args.row.style.fontWeight = 600;
 	args.row.style.textAlign ='right';
 	args.row.children[0].style.color = color;
+	args.row.children[0].style.paddingRight = '0px';
 	args.row.childNodes[1].style.color = color;
 	args.row.childNodes[1].style.fontSize = fontSize;
 	args.row.children[0].children[0].children[2].style.fontSize = fontSize;
@@ -55,7 +54,8 @@ function colorHeaderExcel (args, bgColor, color){
 		bold: true,
 		border:true,
 		vAlign:'Center',
-		borders:{ color: bgColor, }
+		fontSize:12,
+		borders:{ color: bgColor }
 	};
 }
 
@@ -68,8 +68,8 @@ function rowTotalExcel ( args, value, bgColor, color ) {
 			border:true,
 			hAlign:'Right',
 			vAlign:'Center',
-			fontSize:9,
-			borders:{ color: bgColor, }
+			fontSize: 10.5,
+			borders:{ color: bgColor },
 		}
 	}else{
 		args.style = {
@@ -79,8 +79,8 @@ function rowTotalExcel ( args, value, bgColor, color ) {
 			border:true,
 			hAlign:'Center',
 			vAlign:'Center',
-			fontSize:9,
-			borders:{ color: bgColor, }
+			fontSize: 10.5,
+			borders:{ color: bgColor },
 		}
 	}
 }
@@ -96,8 +96,6 @@ export default class App extends React.Component {
 		this.toolbarOptions = ['ExcelExport'];
 	}
 	rowDataBound(args) {
-		console.log(prueba.toString())
-		
 		let header = getObject('header', args.data)
 		switch (header) {
 			case 'INGRESOS':
@@ -117,25 +115,37 @@ export default class App extends React.Component {
 				colorHeader(args, '#fbeadf', '#f9b180', '#fde1ce')
 				break;
 			case 'FLUJO DE EFECTIVO':
-				rowTotal(args, '#F3F6F9', '#80808F', '14px')
+				args.row.bgColor = '#e6e8ef';
+				args.row.style.fontWeight = 600;
+				args.row.children[0].style.color = '#6e6e7b';
+				args.row.children[0].style.paddingRight = '0px';
+				args.row.childNodes[1].style.color = '#6e6e7b';
+				args.row.childNodes[1].style.fontSize = '14px';
+				args.row.children[0].children[0].children[2].style.fontSize = '14px';
 				break;
 			case 'TOTAL DE INGRESOS':
 				rowTotal(args, '#F3F6F9', '#f9b180', '13.5px')
+				args.row.children[0].children[0].children[1].style.color = '#f9b180';
 				break;
 			case 'TOTAL DE GASTOS':
 				rowTotal(args, '#F3F6F9', '#7ED0C5', '13.5px')
+				args.row.children[0].children[0].children[1].style.color = '#7ED0C5'
 				break;
 			case 'TOTAL VENTAS':
 			case 'TOTAL COSTOS DE VENTAS':
 				rowTotal(args, '#F3F6F9', '#F091B1', '13.5px')
+				args.row.children[0].children[0].children[1].style.color = '#F091B1'
 				break;
 			case 'TOTAL INGRESOS':
 			case 'TOTAL DEVOLUCIONES':
 				rowTotal(args, '#F3F6F9', '#948FD8', '13.5px')
+				args.row.children[0].children[0].children[2].style.color = '#948FD8';
 				break;
 			case 'SIN FACTURA':
 			case 'CON FACTURA':
-				rowTotal(args, '#F3F6F9', '#80808F', '13.5px')
+				rowTotal(args, '#F3F6F9', '#80808F', '12px')
+				args.row.children[0].style.fontSize='12px'
+				args.row.children[2].style.fontSize='12px'
 				break;
 			case 'VENTAS':
 			case 'DEVOLUCIONES':
@@ -162,6 +172,7 @@ export default class App extends React.Component {
 			case 'FASE 1':
 			case 'FASE 2':
 			case 'FASE 3':
+			case 'PROYECTOS ':
 				args.row.childNodes[0].childNodes[0].style.color = '#85AED2'
 				args.row.childNodes[0].childNodes[0].style.fontWeight = 600
 				args.row.children[0].children[0].children[2].style.color = '#85AED2'
@@ -180,11 +191,39 @@ export default class App extends React.Component {
 					this.style.fontWeight = 700;
 				};
 			break;
-			case prueba.toString():
-				console.log(args)
-				console.log('soy')
-				break;
 			default:
+				if (!args.data.hasChildRecords) {
+					args.row.style.fontStyle = 'italic'
+					args.row.onmouseout = function () {
+						this.style.fontStyle = 'italic';
+						this.style.backgroundColor = 'white'; 
+						this.style.fontWeight = 'normal';
+					};
+					args.row.onmouseover = function () {
+						this.style.fontStyle = 'italic';
+						this.style.backgroundColor = '#ecf0f3';
+						this.style.fontWeight = 700;
+					};
+				}else{
+					args.row.children[0].children[0].children[3].style.color = '#80808fad'
+					args.row.childNodes[0].childNodes[0].style.color = '#80808fad'
+					args.row.childNodes[0].childNodes[0].style.fontWeight = 500
+					args.row.children[0].children[0].children[2].style.color = '#80808fad'
+					args.row.children[1].style.fontWeight = 500
+					args.row.children[2].style.fontWeight = 500
+					args.row.children[1].style.color='#80808fad'
+					args.row.children[2].style.color='#80808fad'
+					// Normal
+					args.row.onmouseout = function () {
+						this.style.backgroundColor = 'white';
+						this.style.fontWeight = 500;
+					};
+					//Hover 
+					args.row.onmouseover = function () {
+						this.style.backgroundColor = '#ecf0f3';
+						this.style.fontWeight = 600;
+					};
+				}
 				// Normal
 				args.row.onmouseout = function () { this.style.backgroundColor = 'white'; };
 				//Hover 
@@ -265,9 +304,33 @@ export default class App extends React.Component {
 				colorHeaderExcel(args, '#fbeadf', '#f9b180')
 				break;
 			case 'FLUJO DE EFECTIVO':
+				colorHeaderExcel(args, '#E6E8EF', '#6E6E7B')
+				break;
 			case 'SIN FACTURA':
-			case 'CON FACTURA':        
-				rowTotalExcel(args, value, '#F3F6F9', '#80808F')
+			case 'CON FACTURA':
+				if (args.column.field === 'total' || args.column.field === 'porcentaje') {
+					args.style = {
+						backColor:  '#F3F6F9',
+						fontColor: '#80808F',
+						bold: true,
+						border:true,
+						hAlign:'Center',
+						vAlign:'Center',
+						fontSize: 9,
+						borders:{ color: '#F3F6F9' }
+					}
+				}else{
+					args.style = {
+						backColor: '#F3F6F9',
+						fontColor: '#80808F',
+						bold: true,
+						border:true,
+						hAlign:'Right',
+						vAlign:'Center',
+						fontSize: 9,
+						borders:{ color: '#F3F6F9' }
+					}
+				}
 				break;
 			case 'TOTAL INGRESOS':
 			case 'TOTAL DEVOLUCIONES':
@@ -289,22 +352,42 @@ export default class App extends React.Component {
 			case 'PROYECTOS':
 			case 'COSTOS NETOS':
 			case 'DEPARTAMENTOS':
-				args.style = { fontColor: '#80808F', bold: true };
+				if (args.column.field === 'total' || args.column.field === 'porcentaje') {
+					args.style = { hAlign:'Center', vAlign:'Center', fontColor: '#80808F', bold: true, fontSize: 11.5 };
+				}else{
+					args.style = { fontColor: '#80808F', bold: true, indent: 1, fontSize: 11.5 }
+				}
 				break;
 			case 'FASE 1':
 			case 'FASE 2':
 			case 'FASE 3':
-				args.style = { fontColor: '#85AED2', bold: true };
+				if(args.column.field === 'total' || args.column.field === 'porcentaje'){
+					args.style = { hAlign:'Center', vAlign:'Center', fontColor: '#85AED2', bold: true, fontSize: 11 };
+				}else{
+					args.style = { fontColor: '#85AED2', bold: true, indent: 2, fontSize: 11 };
+				}
 				break;
 			default:
+				if (!args.data.hasChildRecords) {
+					if (args.column.field === 'total' || args.column.field === 'porcentaje') {
+						args.style = { hAlign:'Center', vAlign:'Center', fontColor: '#B2B2B2', fontSize: 10 };
+					}else{
+						args.style = { italic: true, indent: 5, fontSize: 10 };
+					}
+				}else{
+					if (args.column.field === 'total' || args.column.field === 'porcentaje') {
+						args.style = { hAlign:'Center', vAlign:'Center', fontColor: '#5F5F5F',  fontSize: 10.5 };
+					}else{
+						args.style = { fontColor: '#5F5F5F', indent: 3,  fontSize: 10.5 };
+					}
+				}
 				break;
 		}
+		
 	}
-
 	render() {
 		this.toolbarClick = this.toolbarClick.bind(this);
-		const { datos, arrayProyects } = this.props
-		prueba = arrayProyects
+		const { datos } = this.props
 		return (
 			<div className='control-pane'>
 				<div className='control-section'>
@@ -312,9 +395,9 @@ export default class App extends React.Component {
 						gridLines='Horizontal' rowDataBound={this.rowDataBound} enableCollapseAll={true} allowExcelExport='true' toolbar={this.toolbarOptions}
 						toolbarClick={this.toolbarClick} ref={treegrid => this.treegrid = treegrid} excelQueryCellInfo={this.excelQueryCellInfo}>
 						<ColumnsDirective>
-							<ColumnDirective field='header' width='280' headerText='' />
-							<ColumnDirective field='total' width='120' textAlign='Center' headerText='TOTAL' type='number' format='C2' />
-							<ColumnDirective field='porcentaje' width='100' textAlign='Center' headerText='PORCENTAJE' type='number' format='P2' />
+							<ColumnDirective field='header' width='335' headerText='' />
+							<ColumnDirective field='total' width='151' textAlign='Center' headerText='TOTAL' type='number' format='C2' />
+							<ColumnDirective field='porcentaje' width='130' textAlign='Center' headerText='PORCENTAJE' type='number' format='P2' />
 						</ColumnsDirective>
 						<Inject services={[Toolbar, ExcelExport]} />
 					</TreeGridComponent>
