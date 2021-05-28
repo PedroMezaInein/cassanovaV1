@@ -86,7 +86,7 @@ class NominaAdminForm extends Component {
         options.usuarios.forEach((element) => {
             array.push(element)
         })
-        if(array)
+        if(aux)
             array.push({'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString()})
         return array
     }
