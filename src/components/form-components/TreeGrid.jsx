@@ -7,6 +7,8 @@ import { INEIN_RED, IM_AZUL } from '../../constants'
 import { ExcelExport, Inject, Toolbar } from '@syncfusion/ej2-react-treegrid';
 import { ColumnDirective, ColumnsDirective, TreeGridComponent } from '@syncfusion/ej2-react-treegrid';
 
+let prueba = [];
+
 function colorHeader (args, bgColor, color, hoverBgColor) {
   	// Color de header
 	args.row.bgColor = bgColor;
@@ -83,6 +85,7 @@ function rowTotalExcel ( args, value, bgColor, color ) {
 	}
 }
 export default class App extends React.Component {
+	
 	componentDidMount(){
 		$(".e-tbar-btn-text").html("EXPORTAR")
 		$(".e-toolbar-item").removeAttr("title");
@@ -93,6 +96,8 @@ export default class App extends React.Component {
 		this.toolbarOptions = ['ExcelExport'];
 	}
 	rowDataBound(args) {
+		console.log(prueba.toString())
+		
 		let header = getObject('header', args.data)
 		switch (header) {
 			case 'INGRESOS':
@@ -157,8 +162,6 @@ export default class App extends React.Component {
 			case 'FASE 1':
 			case 'FASE 2':
 			case 'FASE 3':
-				
-				console.log(args)
 				args.row.childNodes[0].childNodes[0].style.color = '#85AED2'
 				args.row.childNodes[0].childNodes[0].style.fontWeight = 600
 				args.row.children[0].children[0].children[2].style.color = '#85AED2'
@@ -176,7 +179,11 @@ export default class App extends React.Component {
 					this.style.backgroundColor = '#ecf0f3';
 					this.style.fontWeight = 700;
 				};
-						break;
+			break;
+			case prueba.toString():
+				console.log(args)
+				console.log('soy')
+				break;
 			default:
 				// Normal
 				args.row.onmouseout = function () { this.style.backgroundColor = 'white'; };
@@ -296,7 +303,8 @@ export default class App extends React.Component {
 
 	render() {
 		this.toolbarClick = this.toolbarClick.bind(this);
-		const { datos } = this.props
+		const { datos, arrayProyects } = this.props
+		prueba = arrayProyects
 		return (
 			<div className='control-pane'>
 				<div className='control-section'>
