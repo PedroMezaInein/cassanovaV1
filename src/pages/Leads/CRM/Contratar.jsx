@@ -122,7 +122,7 @@ class Contratar extends Component {
         switch (name) {
             case 'cliente':
                 let aux = [];
-                formProyecto.clientes.map((cliente) => {
+                formProyecto.clientes.forEach((cliente) => {
                     if(cliente.cp !== null){
                         aux.push({
                             name: cliente.name,
@@ -214,7 +214,7 @@ class Contratar extends Component {
         formProyecto[array] = auxForm
 
         let aux = [];
-        formProyecto[array].map((cliente) => {
+        formProyecto[array].forEach((cliente) => {
             if(cliente.cp !== null){
                 aux.push({
                     name: cliente.name,
@@ -581,7 +581,7 @@ class Contratar extends Component {
     sendForm = async() => {
         let { formProyecto } = this.state
         const { options } = this.state
-        options.cp_clientes.map((cliente) => {
+        options.cp_clientes.forEach((cliente) => {
             if (formProyecto.cp_ubicacion === cliente.value) {
                 let coloniaM = cliente.colonia.toUpperCase()
                 formProyecto.cp = cliente.cp
@@ -591,7 +591,7 @@ class Contratar extends Component {
             }else if(options.cp_clientes.length === 1){
                 let coloniaM = cliente.colonia.toUpperCase()
                 formProyecto.cp = cliente.cp
-                this.cpAxios(cliente.cp)
+                this.cpProyectosAxios(cliente.cp)
                 formProyecto.colonia = coloniaM
                 formProyecto.calle = cliente.calle
             }
@@ -794,8 +794,8 @@ class Contratar extends Component {
                                 : ''
                         }
                         {
-                            form.cp_ubicacion || options.cp_clientes.length === 1 ?
-                            <div className={form.ubicacion_cliente === false?'d-none':'table-responsive-lg mt-7 mb-10'}>
+                            formProyecto.cp_ubicacion || options.cp_clientes.length === 1 ?
+                            <div className={formProyecto.ubicacion_cliente === false?'d-none':'table-responsive-lg mt-7 mb-10'}>
                                 <table className="table table-vertical-center w-65 mx-auto table-borderless" id="tcalendar_p_info">
                                     {
                                         options.cp_clientes.map((cliente, key) => {
@@ -808,6 +808,7 @@ class Contratar extends Component {
                                                     this.printTable(key, cliente)
                                                 )
                                             }
+                                            return <></>
                                         })
                                     }
                                 </table>

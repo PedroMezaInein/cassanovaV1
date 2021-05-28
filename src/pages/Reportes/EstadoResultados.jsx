@@ -24,7 +24,8 @@ class Normas extends Component {
         options: {
             empresas: [],
         },
-        datos: null
+        datos: null,
+        arrayProyects: []
     };
 
     componentDidMount() {
@@ -73,7 +74,7 @@ class Normas extends Component {
     }
 
     setDatos = (old) => {
-        let { datos } = this.state
+        let { datos, arrayProyects } = this.state
         datos = [
 			{
 				header: 'INGRESOS',
@@ -187,6 +188,7 @@ class Normas extends Component {
                     'porcentaje': ((total * 100) /element.total)/100,
                     'subtasks': aux3
                 })
+                arrayProyects.push(element.proyectos[index].nombre)
             }
             
             total = element.total
@@ -429,7 +431,6 @@ class Normas extends Component {
                 'porcentaje': (old.ingresos.ventas_netas.datos.con_factura - old.costos_ventas.costos_netos.datos.con_factura - old.gastos.conFactura + old.otros_ingresos.conFactura) / datos[5].total
             }
         ]
-
         this.setState({...this.state, datos: datos})
     }
 
@@ -451,7 +452,7 @@ class Normas extends Component {
     }
 
     render() {
-        const { form, options, datos } = this.state
+        const { form, options, datos, arrayProyects } = this.state
         return (
             <Layout {...this.props}>
                 <div className="row">
@@ -482,7 +483,7 @@ class Normas extends Component {
                             <Card.Body className={datos !== null ?'':"d-flex align-items-center"}>
                                 {
                                     datos !== null ?
-                                        <TreeGrid datos = { datos } form = { form } options = { options }/>
+                                        <TreeGrid datos = { datos } form = { form } options = { options } arrayProyects={arrayProyects}/>
                                     : <MoneyTransaction />
                                 }
                             </Card.Body>
