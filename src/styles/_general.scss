@@ -123,7 +123,7 @@ a.text-hover-danger2:hover,
 
 .pdfview-img {
     @include down-screen($xs) {
-        width: 18rem;
+        width: 80%;
         height: auto;
     }
 

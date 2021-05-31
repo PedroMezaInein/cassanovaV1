@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, RangeCalendar, SelectSearch, Button, InputMoneySinText, SelectSearchSinText } from '../../form-components'
+import { RangeCalendar, Button, InputGray, SelectSearchGray, InputMoneyGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
-import { ItemSlider } from '../../../components/singles';
+import { ItemSlider, Modal } from '../../../components/singles';
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 class NominaAdminForm extends Component {
-
+    state = {
+        modalForm: false,
+        formeditado: 0
+    }
     updateEmpresa = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
@@ -90,63 +95,68 @@ class NominaAdminForm extends Component {
             array.push({'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString()})
         return array
     }
-    
+    openModal = () => {
+        this.setState({
+            ...this.state,
+            modalForm: true,
+            formeditado: 0
+        })
+    }
+    onSubmitForm = () => {
+        this.setState({
+            ...this.state,
+            modalForm: false,
+        })
+    }
+    handleCloseModal = () => {
+        const { form } = this.props
+        form.periodo = ''
+        form.empresa = ''
+        form.adjuntos.adjunto.value = ''
+        form.adjuntos.adjunto.files = []
+        form.fechaInicio = new Date()
+        form.fechaFin = new Date()
+        this.setState({
+            ...this.state,
+            modalForm: false,
+            form
+        })
+    }
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange } = this.props
-
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title,  handleChange, onChangeRange } = this.props
+        const { modalForm } = this.state
+        console.log(form)
         return (
+            <Form id="form-nominaadmin"
+                onSubmit={
+                    (e) => {
+                        e.preventDefault();
+                        validateAlert(onSubmit, e, 'form-nominaadmin')
+                    }
+                }
+            >
             <Card className="card card-custom gutter-b example example-compact">
                 <Card.Header>
                     <Card.Title>
                         <h3 className="card-label">{title}</h3>
                     </Card.Title>
+                        <div className="card-toolbar">
+                            <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mx-2" onClick={(e) => { this.openModal() }}>
+                                <i className="flaticon2-calendar-6 icon-lg text-primary mr-1"></i>
+                                Agregar periodo de nómina
+                            </a>
+                        </div>
                 </Card.Header>
-                <Form id="form-nominaadmin"
-                    onSubmit={
-                        (e) => {
-                            e.preventDefault();
-                            validateAlert(onSubmit, e, 'form-nominaadmin')
-                        }
-                    }
-                >
                     <Card.Body>
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-6">
-                                <Input requirevalidation = { 1 } formeditado = { formeditado } name = "periodo" value = { form.periodo }
-                                    placeholder = "PERIODO DE NÓMINA ADMINISTRATIVA" onChange = { onChange } iconclass = "far fa-window-maximize"
-                                    messageinc = "Incorrecto. Ingresa el periodo de nómina Administrativa." />
-                            </div>
-                            <div className="col-md-6">
-                                <SelectSearch formeditado = { formeditado } options = { options.empresas } placeholder = "Selecciona la empresa"
-                                    name = "empresa" value = { form.empresa }  onChange = { this.updateEmpresa } 
-                                    messageinc = "Incorrecto. Selecciona la empresa" />
-                            </div>
-                        </div>
-                        <div className="separator separator-dashed mt-1 mb-2" />
-                        <div className="form-group row form-group-marginless d-flex justify-content-center">
-                            <div className="col-md-6 text-center">
-                                <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
-                                <RangeCalendar onChange = { onChangeRange } start = { form.fechaInicio } end = { form.fechaFin } />
-                            </div>
-                            {
-                                title !== 'Editar nómina administrativa' ?
-                                    <div className="col-md-6 text-center">
-                                        <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
-                                        <ItemSlider items = { form.adjuntos.adjunto.files } item = 'adjunto' handleChange = { handleChange }
-                                            multiple = { true } />
-                                    </div>
-                                : ''
-                            }
-                        </div>
                         <table className="table table-separate table-responsive-sm table_nominas_obras" id="tabla_obra">
                             <thead>
                                 <tr>
                                     <th className = 'border-bottom-0'></th>
                                     <th rowSpan="3"><div className="mt-2 pb-3">Empleado</div></th>
-                                    <th className="pb-0 border-bottom-0">Nómina IMSS</th>
-                                    <th className="pb-0 border-bottom-0">Restante Nómina</th>
-                                    <th className="pb-0 border-bottom-0">Extras</th>
-                                    <th className="pb-0 border-bottom-0">Total</th>
+                                    <th className="pb-0 border-bottom-0 text-center">Nómina IMSS</th>
+                                    <th className="pb-0 border-bottom-0 text-center">Restante Nómina</th>
+                                    <th className="pb-0 border-bottom-0 text-center">Extras</th>
+                                    <th className="pb-0 border-bottom-0 text-center">Total</th>
                                 </tr>
                                 <tr>
                                     <th className = 'border-bottom-0'></th>
@@ -154,9 +164,11 @@ class NominaAdminForm extends Component {
                                         this.getTotalNominaImss("nominImss") > 0 ?
                                             <th className="py-2 border-bottom-0">
                                                 <div className="py-1 my-0 font-weight-bolder">
-                                                    <SelectSearchSinText formeditado = { formeditado } options = { options.cuentas } name = "cuentaImss"
-                                                        placeholder = "Selecciona la cuenta" value = { form.cuentaImss } messageinc = "Incorrecto. Selecciona la cuenta"
-                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaImss') } } />
+                                                    <SelectSearchGray formeditado = { formeditado } options = { options.cuentas } name = "cuentaImss"
+                                                        placeholder = "SELECCIONA LA CUENTA" value = { form.cuentaImss } messageinc = "SELECCIONA LA CUENTA"
+                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaImss') } } withtaglabel={0} withtextlabel={0}
+                                                        withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}
+                                                    />
                                                 </div>
                                             </th>
                                         : <th className="border-bottom-0"></th>    
@@ -165,9 +177,10 @@ class NominaAdminForm extends Component {
                                         this.getTotalExtra("restanteNomina") > 0 ?
                                             <th className="py-2 border-bottom-0">
                                                 <div className="py-1 my-0 font-weight-bolder">
-                                                    <SelectSearchSinText formeditado = { formeditado } options = { options.cuentas } name = "cuentaRestante"
-                                                        placeholder = "Selecciona la cuenta" value = { form.cuentaRestante } messageinc = "Incorrecto. Selecciona la cuenta"
-                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaRestante') } } />
+                                                    <SelectSearchGray formeditado = { formeditado } options = { options.cuentas } name = "cuentaRestante"
+                                                        placeholder = "SELECCIONA LA CUENTA" value = { form.cuentaRestante } messageinc = "SELECCIONA LA CUENTA"
+                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaRestante') } } withtaglabel={0} withtextlabel={0}
+                                                        withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}/>
                                                 </div>
                                             </th>
                                         : <th className="border-bottom-0"></th>
@@ -176,9 +189,10 @@ class NominaAdminForm extends Component {
                                         this.getTotalExtra("extras") > 0 ?
                                             <th className="py-2 border-bottom-0">
                                                 <div className="py-1 my-0 font-weight-bolder">
-                                                    <SelectSearchSinText formeditado = { formeditado } options = { options.cuentas } name = "cuentaExtras"
-                                                        placeholder = "Selecciona la cuenta" value = { form.cuentaExtras } messageinc = "Incorrecto. Selecciona la cuenta"
-                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaExtras') } } />
+                                                    <SelectSearchGray formeditado = { formeditado } options = { options.cuentas } name = "cuentaExtras"
+                                                        placeholder = "SELECCIONA LA CUENTA" value = { form.cuentaExtras } messageinc = "SELECCIONA LA CUENTA" 
+                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaExtras') } } withtaglabel={0} withtextlabel={0}
+                                                        withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}/>
                                                 </div>
                                             </th>
                                         : <th className="border-bottom-0"></th>
@@ -187,41 +201,47 @@ class NominaAdminForm extends Component {
                                 </tr>
                                 <tr>
                                     <th className = ''></th>
-                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
-                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
-                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
-                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotales())}</div></th>
+                                    <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
+                                    <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
+                                    <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
+                                    <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotales())}</div></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                { console.log( 'FORM NOMINAS ADMIN', form.nominasAdmin ) }
+                                {/* { console.log( 'FORM NOMINAS ADMIN', form.nominasAdmin ) } */}
                                 {
                                     form.nominasAdmin.map((nominaAdmin, key) => {
                                         return (
                                             <tr key={key}>
-                                                <td className = 'text-center'>
-                                                    <Button icon = '' onClick = { () => { deleteRowNominaAdmin(nominaAdmin, key) } } tooltip = { { text: 'ELIMINAR' } }
-                                                        className = "btn btn-icon btn-light-danger btn-sm pulse pulse-danger" only_icon = "flaticon2-cross icon-sm" />
+                                                <td className = 'text-center' style={{minWidth:"60px"}}>
+                                                    <Button icon = '' onClick = { () => { deleteRowNominaAdmin(nominaAdmin, key) } }
+                                                        className = "btn btn-sm btn-icon btn-bg-white btn-icon-danger btn-hover-danger" only_icon = "far fa-trash-alt icon-md text-danger" />
                                                 </td>
                                                 <td>
-                                                    <SelectSearchSinText formeditado = { formeditado } options = { this.setOptions(key) } placeholder = "Selecciona el empleado"
+                                                    <SelectSearchGray formeditado = { formeditado } options = { this.setOptions(key) } placeholder = "SELECCIONA EL EMPLEADO"
                                                         name = "usuario" value = { nominaAdmin.usuario } onChange = { (value) => this.updateUsuario(value, key) }
-                                                        customstyle={{ minWidth: "300px" }} />
+                                                        customstyle={{ minWidth: "300px" }}  withtaglabel={0} withtextlabel={0} withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}/>
                                                 </td>
                                                 <td>
-                                                    <InputMoneySinText requirevalidation = { 1 } formeditado = { 1 } name = "nominImss" thousandseparator = { true }
+                                                    <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
+                                                        withformgroup = { 0 } customclass="form-control-sm text-center" 
+                                                        requirevalidation = { 1 } formeditado = { 1 } name = "nominImss" thousandseparator = { true }
                                                         value = { nominaAdmin.nominImss } onChange = { e => onChangeNominasAdmin(key, e, 'nominImss') }
-                                                        prefix = '$' customstyle = { { minWidth: "160px" } } />
+                                                        prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm" iconvalid={1}/>
                                                 </td>
                                                 <td>
-                                                    <InputMoneySinText requirevalidation = { 1 }  formeditado = { 1 } name = "restanteNomina"
+                                                    <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
+                                                        withformgroup = { 0 } customclass="form-control-sm text-center" 
+                                                        requirevalidation = { 1 }  formeditado = { 1 } name = "restanteNomina"
                                                         value = { nominaAdmin.restanteNomina } onChange = { e => onChangeNominasAdmin(key, e, 'restanteNomina') }
-                                                        thousandseparator = { true } prefix = '$' customstyle = { { minWidth: "160px" } } />
+                                                        thousandseparator = { true } prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm" iconvalid={1}/>
                                                 </td>
                                                 <td>
-                                                    <InputMoneySinText requirevalidation = { 1 } formeditado = { 1 } name = "extras" thousandseparator = { true }
+                                                    <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
+                                                        withformgroup = { 0 } customclass="form-control-sm text-center"
+                                                        requirevalidation = { 1 } formeditado = { 1 } name = "extras" thousandseparator = { true }
                                                         value = { nominaAdmin.extras } onChange = { e => onChangeNominasAdmin(key, e, 'extras') }
-                                                        prefix = '$' customstyle = { { minWidth: "160px" } } />
+                                                        prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm"  iconvalid={1}/>
                                                 </td>
                                                 <td className="text-center">
                                                     <div className="font-size-lg font-weight-bolder"> { setMoneyTableForNominas(this.getTotal(key)) } </div>
@@ -232,21 +252,71 @@ class NominaAdminForm extends Component {
                                 }
                             </tbody>
                         </table>
-                        <div className="form-group d-flex justify-content-center">
-                            <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={addRowNominaAdmin} >Agregar Fila</button>
-                            {/* <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick={deleteRowNominaAdmin} >Eliminar Fila</button> */}
-                        </div>
-
+                        {
+                            options.usuarios.length > 0 &&
+                            <div className="d-flex justify-content-center">
+                                <button type="button" className="btn btn-light-primary font-weight-bolder mr-2" onClick={addRowNominaAdmin}>AGREGAR FILA</button>
+                            </div>
+                        }
                     </Card.Body>
-                    <Card.Footer>
+                    {
+                        form.periodo !== '' && form.empresa !== ''? <Card.Footer>
                         <div className="row">
                             <div className="col-lg-12 text-right">
                                 <Button icon='' text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
                             </div>
                         </div>
-                    </Card.Footer>
-                </Form>
-            </Card>
+                    </Card.Footer> : ''
+                        
+                    }
+                </Card>
+                
+                <Modal size="lg" title="NÓMINA ADMINISTRATIVA" show={modalForm} handleClose={this.handleCloseModal} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                    <div style={{ display: 'flex', maxHeight: '500px'}} >
+                        <Scrollbar>
+                            <div className="form-group row form-group-marginless mx-0">
+                                <div className="col-md-12 row mx-0">
+                                    <div className="col-md-6 mx-auto mb-5">
+                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}
+                                            requirevalidation={1} formeditado={1} name="periodo" value={form.periodo}
+                                            placeholder="PERIODO DE NÓMINA" onChange={onChange} iconclass="far fa-window-maximize"
+                                            messageinc="Ingresa el periodo de nómina." />
+                                    </div>
+                                    <div className="col-md-6 mx-auto mb-5">
+                                        <SelectSearchGray formeditado={formeditado} options={options.empresas} placeholder="Selecciona la empresa"
+                                            name="empresa" value={form.empresa} onChange={this.updateEmpresa} withtaglabel={1} withtextlabel={1}
+                                            messageinc="Selecciona la empresa" withicon={1} />
+                                    </div>
+                                </div>
+                                <div className="col-md-12 d-flex justify-content-center align-self-center">
+                                    <div className="text-center">
+                                        <label className="col-form-label my-2 font-weight-bold text-dark-60 pt-0 mt-0">Fecha de inicio - Fecha final</label><br />
+                                        <RangeCalendar onChange={onChangeRange} start={form.fechaInicio} end={form.fechaFin} />
+                                    </div>
+                                </div>
+                                {
+                                    title !== 'Editar nómina administrativa' ?
+                                    <div className="col-md-12 text-center">
+                                        <label className="col-form-label my-2 font-weight-bold text-dark-60">{form.adjuntos.adjunto.placeholder}</label>
+                                        <ItemSlider items={form.adjuntos.adjunto.files} item='adjunto' handleChange={handleChange} multiple={true} />
+                                    </div>
+                                    :''
+                                }
+                            </div>
+                        </Scrollbar>
+                    </div>
+                    <div className="card-footer py-3 pr-1">
+                            <div className="row mx-0">
+                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                    <Button icon='' className="btn btn-primary mr-2"
+                                        onClick={ (e) => { e.preventDefault();this.onSubmitForm() }}
+                                        text="CONFIRMAR"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                </Modal>
+            </Form>
         )
     }
 }
