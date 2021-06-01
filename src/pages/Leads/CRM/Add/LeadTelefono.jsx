@@ -360,19 +360,19 @@ class LeadTelefono extends Component {
                                         placeholder = "SELECCIONA EL ORIGEN PARA EL LEAD" name = "origen"
                                         value = { form.origen } onChange = { this.updateOrigen } withtaglabel = { 1 }
                                         iconclass = "fas fa-mail-bulk" withtextlabel = { 1 }
-                                        messageinc="Incorrecto. Selecciona el origen para el lead." />
+                                        messageinc="Incorrecto. Selecciona el origen para el lead." withicon={1}/>
                                 </div>
                                 <div className="col-md-3">
                                     <SelectSearchGray options = { getEstados() } placeholder = "SELECCIONA EL ESTADO" name = "estado"
                                         value = { form.estado } onChange = {  (value) => { this.onChange({ target: { value: value, name: 'estado' } }) } } 
                                         requirevalidation = { 1 } messageinc = "Selecciona el estado." customdiv = "mb-0" withtaglabel = { 1 } 
-                                        withtextlabel = { 1 } />
+                                        withtextlabel = { 1 } withicon={1} />
                                 </div>
                                 <div className="col-md-3">
                                     <SelectSearchGray options = { options.empresas } name = "empresa_dirigida"
                                         placeholder = "¿A QUÉ EMPRESA VA DIRIGIDA EL LEAD?" value = { form.empresa_dirigida }
                                         onChange = { this.updateEmpresa } iconclass = "fas fa-building" withtaglabel = { 1 }
-                                        withtextlabel = { 1 } />
+                                        withtextlabel = { 1 } withicon={1}/>
                                 </div>
                                 {
                                     form.empresa_dirigida !== '' &&
@@ -382,7 +382,7 @@ class LeadTelefono extends Component {
                                                     placeholder = "SELECCIONA EL SERVICIO" name = "servicio" value = { form.servicio }
                                                     onChange = { this.updateServicio } iconclass = "fas fa-mail-bulk"
                                                     messageinc = "Incorrecto. Selecciona el servicio." withtaglabel = { 1 }
-                                                    withtextlabel = { 1 } />
+                                                    withtextlabel = { 1 } withicon={1} />
                                             </div>
                                             <div className="col-md-3">
                                                 <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
@@ -397,7 +397,7 @@ class LeadTelefono extends Component {
                                         <div className="col-md-3">
                                             <SelectSearchGray options = { options.tipos } placeholder = "SELECCIONA EL TIPO DE PROYECTO"
                                                 onChange = { this.updateTipoProyecto } name = "tipoProyecto" value = { form.tipoProyecto }
-                                                withtaglabel = { 1 } withtextlabel = { 1 } />
+                                                withtaglabel = { 1 } withtextlabel = { 1 } withicon={1}/>
                                         </div>
                                 }
                                 {

@@ -150,7 +150,7 @@ class Proveedor extends Component {
                     (tipo === 'subarea')  ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv="mb-2 mt-7"
                             onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } requirevalidation={1} 
-                            placeholder={this.setSwalPlaceholder(tipo)}
+                            placeholder={this.setSwalPlaceholder(tipo)} withicon={1}
                         />
                     :<></>
                 }

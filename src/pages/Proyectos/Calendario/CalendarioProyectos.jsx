@@ -426,12 +426,12 @@ class CalendarioProyectos extends Component {
                             <div className="col-md-4 mr-4">
                                 <SelectSearchGray name='mes' options={getMeses()} value={mes} customdiv='mb-0'
                                     onChange={this.updateMes} iconclass="fas fa-calendar-day"
-                                    messageinc="Incorrecto. Selecciona el mes." requirevalidation={1} />
+                                    messageinc="Incorrecto. Selecciona el mes." requirevalidation={1} withicon={1}/>
                             </div>
                             <div className="col-md-3">
                                 <SelectSearchGray name='año' options={getAños()} customdiv='mb-0'
                                     value={año} onChange={this.updateAño}
-                                    iconclass="fas fa-calendar-day" />
+                                    iconclass="fas fa-calendar-day" withicon={1}/>
                             </div>
                         </div>
                     </Card.Header>

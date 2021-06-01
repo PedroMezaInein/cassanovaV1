@@ -42,6 +42,7 @@ class FormWhatsapp extends Component {
                                 value={form.tipoProyecto}
                                 withtaglabel={1}
                                 withtextlabel={1}
+                                withicon={1}
                             />
                         </div>
                         <div className="form-group col-md-12">

@@ -417,7 +417,7 @@ class CartasGarantia extends Component{
                 {
                     tipo === 'proyecto' ?
                         <SelectSearchGray options = { options.proyectos } value = { form.proyecto } customdiv = 'mb-2 mt-7' requirevalidation = { 1 }
-                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } placeholder = 'SELECCIONA EL PROYECTO'/>
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } placeholder = 'SELECCIONA EL PROYECTO' withicon={1}/>
                     : <></>
                 }
                 {
@@ -429,7 +429,7 @@ class CartasGarantia extends Component{
                         :
                             <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
                                 onChange = { (value) => { this.onChangeSwal(value, tipo) } } withtaglabel = { 1 } 
-                                name = { tipo } customdiv = "mb-3"/>
+                                name = { tipo } customdiv = "mb-3" withicon={1}/>
                     : ''
                 }
                 {
