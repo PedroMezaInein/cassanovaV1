@@ -62,6 +62,7 @@ class Empleados extends Component {
             },
             departamentos: [],
             departamento: '',
+            nacionalidad:''
         },
         options: {
             empresas: [],
@@ -114,6 +115,7 @@ class Empleados extends Component {
                         form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
                         form.numero_alta_imss = empleado.numero_alta_imss
                         form.departamentos = []
+                        form.nacionalidad = empleado.nacionalidad
                         empleado.departamentos.forEach((elemento) => {
                             form.departamentos.push({
                                 value: elemento.id.toString(),

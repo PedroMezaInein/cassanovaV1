@@ -363,7 +363,7 @@ class Empleados extends Component {
                     (tipo === 'nss') || (tipo ==='vacaciones_disponibles') ?
                         <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } type="text"
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } customlabel="d-none"
                         />
                     :<></>
                 }

@@ -149,18 +149,16 @@ class EmpleadosForm extends Component {
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <InputNumber
+                                        <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
-                                            name="nss"
+                                            name="nacionalidad"
                                             type="text"
-                                            value={form.nss}
-                                            placeholder="NSS"
-                                            iconclass={"fas fa-hospital-user"}
-                                            patterns={NSS}
-                                            messageinc="Incorrecto. Ej. 01234567891"
-                                            typeformat ="###########"
+                                            value={form.nacionalidad}
+                                            placeholder="NACIONALIDAD"
+                                            iconclass={"far fa-flag"}
+                                            messageinc="Incorrecto. Ingresa la nacionalidad."
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -195,6 +193,7 @@ class EmpleadosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
+                                    
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={0}
@@ -275,7 +274,7 @@ class EmpleadosForm extends Component {
                                 <div className="mx-0 row">
                                     <div className="align-self-center col-md-4">
                                         <div className="col text-center">
-                                            <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                                            <label className="col-form-label mb-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
                                             <RangeCalendar
                                                 onChange={onChangeRange}
                                                 start={form.fechaInicio}
@@ -443,6 +442,21 @@ class EmpleadosForm extends Component {
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     onChange={onChange}
+                                                    name="nss"
+                                                    type="text"
+                                                    value={form.nss}
+                                                    placeholder="NSS"
+                                                    iconclass={"fas fa-hospital-user"}
+                                                    patterns={NSS}
+                                                    messageinc="Incorrecto. Ej. 01234567891"
+                                                    typeformat ="###########"
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputNumber
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
                                                     name="numero_alta_imss"
                                                     type="text"
                                                     value={form.numero_alta_imss}
@@ -453,6 +467,10 @@ class EmpleadosForm extends Component {
                                                     typeformat="###########"
                                                 />
                                             </div>
+                                            
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
                                                 <Input
                                                     requirevalidation={0}
@@ -461,14 +479,11 @@ class EmpleadosForm extends Component {
                                                     name="vacaciones_disponibles"
                                                     type="text"
                                                     value={form.vacaciones_disponibles}
-                                                    placeholder="VACACIONES DISPONIBLES AL AÑO"
+                                                    placeholder="VACACIONES DISPONIBLES"
                                                     iconclass={"far fa-calendar-alt"}
                                                     messageinc="Incorrecto. Ingresa loS días de vacaciones disponibles al año."
                                                 />
                                             </div>
-                                        </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
                                                 <InputNumber
                                                     requirevalidation={0}
@@ -486,39 +501,22 @@ class EmpleadosForm extends Component {
                                             </div>
                                             {
                                                 form.tipo_empleado === 'Obra' ?
-                                                    <>
-                                                        <div className="col-md-4">
-                                                            <InputNumber
-                                                                requirevalidation={0}
-                                                                formeditado={formeditado}
-                                                                onChange={onChange}
-                                                                name="salario_hr"
-                                                                type="text"
-                                                                value={form.salario_hr}
-                                                                placeholder="Salario por hora"
-                                                                iconclass={"fas fa-money-check-alt"}
-                                                                messageinc="Incorrecto. Ingresa el salario por hora."
-                                                                thousandseparator={true}
-                                                                prefix={'$'}
-                                                            />
-                                                        </div>
-                                                        <div className="col-md-4">
-                                                            <InputNumber
-                                                                requirevalidation={0}
-                                                                formeditado={formeditado}
-                                                                onChange={onChange}
-                                                                name="salario_hr_extra"
-                                                                type="text"
-                                                                value={form.salario_hr_extra}
-                                                                placeholder="Salario por hora extra"
-                                                                iconclass={"fas fa-money-check-alt"}
-                                                                messageinc="Incorrecto. Ingresa el salario por hora extra."
-                                                                thousandseparator={true}
-                                                                prefix={'$'}
-                                                            />
-                                                        </div>
-                                                    </>
-                                                    :
+                                                    <div className="col-md-4">
+                                                        <InputNumber
+                                                            requirevalidation={0}
+                                                            formeditado={formeditado}
+                                                            onChange={onChange}
+                                                            name="salario_hr"
+                                                            type="text"
+                                                            value={form.salario_hr}
+                                                            placeholder="Salario por hora"
+                                                            iconclass={"fas fa-money-check-alt"}
+                                                            messageinc="Incorrecto. Ingresa el salario por hora."
+                                                            thousandseparator={true}
+                                                            prefix={'$'}
+                                                        />
+                                                    </div>
+                                                :
                                                     <div className="col-md-4">
                                                         <InputNumber
                                                             requirevalidation={0}
@@ -536,6 +534,29 @@ class EmpleadosForm extends Component {
                                                     </div>
                                             }
                                         </div>
+                                        {
+                                            form.tipo_empleado === 'Obra' &&
+                                                <>
+                                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                    <div className="form-group row form-group-marginless">
+                                                        <div className="col-md-4">
+                                                            <InputNumber
+                                                                requirevalidation={0}
+                                                                formeditado={formeditado}
+                                                                onChange={onChange}
+                                                                name="salario_hr_extra"
+                                                                type="text"
+                                                                value={form.salario_hr_extra}
+                                                                placeholder="Salario por hora extra"
+                                                                iconclass={"fas fa-money-check-alt"}
+                                                                messageinc="Incorrecto. Ingresa el salario por hora extra."
+                                                                thousandseparator={true}
+                                                                prefix={'$'}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </>
+                                        }
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             {
