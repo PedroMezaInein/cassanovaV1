@@ -43,7 +43,8 @@ class NominaAdminForm extends Component {
             usuarios: [],
             empresas: [],
             cuentas: []
-        }
+        },
+        action: '',
     }
 
     componentDidMount() {
@@ -61,7 +62,8 @@ class NominaAdminForm extends Component {
                 this.setState({
                     ...this.state,
                     title: 'Nueva nómina administrativa',
-                    formeditado: 0
+                    formeditado: 0,
+                    action: 'add'
                 })
                 break;
             case 'edit':
@@ -98,14 +100,14 @@ class NominaAdminForm extends Component {
                                 extras: ''
                             }]
                         }
-                        
                         this.setState({
                             ...this.state,
                             title: 'Editar nómina administrativa',
                             nomina: nomina,
                             form,
                             options,
-                            formeditado: 1
+                            formeditado: 1,
+                            action: 'edit'
                         })
                     }
                     else
@@ -389,14 +391,14 @@ class NominaAdminForm extends Component {
     }
 
     render() {
-        const { options, title, form, formeditado, data } = this.state
+        const { options, title, form, formeditado, data, action } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <NominaAdminFormulario title = { title } formeditado = { formeditado } className = "px-3" options = { options } form = { form }
                     addRowNominaAdmin = { this.addRowNominaAdmin } deleteRowNominaAdmin = { this.deleteRowNominaAdmin } 
                     onChangeNominasAdmin = { this.onChangeNominasAdmin } onChange = { this.onChange } clearFiles = { this.clearFiles } 
                     onSubmit = { this.onSubmit } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange } 
-                    usuarios = { data.usuarios } />
+                    usuarios = { data.usuarios } action = { action }/>
             </Layout>
         )
     }
