@@ -10,6 +10,7 @@ import { EmpleadosForm as EmpleadosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import { onChangeAdjunto } from '../../../functions/onChanges'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import moment from 'moment'
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -62,7 +63,8 @@ class Empleados extends Component {
             },
             departamentos: [],
             departamento: '',
-            nacionalidad:''
+            nacionalidad:'',
+            fecha_nacimiento:''
         },
         options: {
             empresas: [],
@@ -91,6 +93,7 @@ class Empleados extends Component {
                     if (state.empleado) {
                         const { form, options} = this.state
                         const { empleado } = state
+                        console.log(empleado)
                         form.nombre = empleado.nombre
                         form.curp = empleado.curp
                         form.rfc = empleado.rfc
@@ -107,15 +110,16 @@ class Empleados extends Component {
                         form.salario_hr = empleado.salario_hr
                         form.salario_hr_extra = empleado.salario_hr_extra
                         if (empleado.empresa) { form.empresa = empleado.empresa.id.toString() }
-                        form.fechaInicio = new Date(empleado.fecha_inicio)
-                        form.fechaFin = new Date(empleado.fecha_fin)
+                        form.fechaInicio =  new Date(moment(empleado.fecha_inicio))
+                        form.fechaFin =  new Date(moment(empleado.fecha_fin))
                         form.puesto = empleado.puesto
                         form.estatus_imss = this.showStatusImss(empleado.estatus_imss);
                         form.vacaciones_disponibles = empleado.vacaciones_disponibles
-                        form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
+                        form.fecha_alta_imss =  empleado.fecha_alta_imss !== null ? new Date(moment(empleado.fecha_alta_imss)): ''
                         form.numero_alta_imss = empleado.numero_alta_imss
                         form.departamentos = []
                         form.nacionalidad = empleado.nacionalidad
+                        form.fecha_nacimiento =  new Date(moment(empleado.fecha_nacimiento))
                         empleado.departamentos.forEach((elemento) => {
                             form.departamentos.push({
                                 value: elemento.id.toString(),
@@ -194,6 +198,7 @@ class Empleados extends Component {
                     break;
                 case 'fechaFin':
                 case 'fecha_alta_imss':
+                case 'fecha_nacimiento':
                     if (form[element])
                         data.append(element, (new Date(form[element])).toDateString())
                     else
@@ -400,7 +405,7 @@ class Empleados extends Component {
                             <h3 className="card-label">{title}</h3>
                         </div>
                     </Card.Header>
-                    <Card.Body>
+                    <Card.Body className="pt-0">
                         <EmpleadosFormulario
                             formeditado={formeditado}
                             options={options}

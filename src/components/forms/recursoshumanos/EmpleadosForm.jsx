@@ -99,169 +99,178 @@ class EmpleadosForm extends Component {
                             } 
                         >
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
-                                {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos generales e información bancaria</h5> */}
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <Input
-                                            onChange={onChange}
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="nombre"
-                                            type="text"
-                                            value={form.nombre}
-                                            placeholder="NOMBRE DEL EMPLEADO"
-                                            iconclass={"fas fa-user"}
-                                            messageinc="Incorrecto. Ingresa el nombre."
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="curp"
-                                            type="text"
-                                            value={form.curp}
-                                            placeholder="CURP"
-                                            iconclass={"far fa-address-card"}
-                                            patterns={CURP}
-                                            messageinc="Incorrecto. Ej. SIHC400128HDFLLR01"
-                                            maxLength="18"
-                                        />
-                                        <pre id="resultado"></pre>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="rfc"
-                                            type="text"
-                                            value={form.rfc}
-                                            placeholder="RFC"
-                                            iconclass={"far fa-file-alt"}
-                                            patterns={RFC}
-                                            messageinc="Incorrecto. Ej. ABCD001122ABC"
-                                            maxLength="13"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="nacionalidad"
-                                            type="text"
-                                            value={form.nacionalidad}
-                                            placeholder="NACIONALIDAD"
-                                            iconclass={"far fa-flag"}
-                                            messageinc="Incorrecto. Ingresa la nacionalidad."
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="nombre_emergencia"
-                                            type="text"
-                                            value={form.nombre_emergencia}
-                                            placeholder="NOMBRE DEL CONTACTO DE EMERGENCIA"
-                                            iconclass={"fas fa-user-circle"}
-                                            messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputPhone
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            placeholder="TELÉFONO DE EMERGENCIA"
-                                            name="telefono_emergencia"
-                                            value={form.telefono_emergencia}
-                                            onChange={onChange}
-                                            iconclass={"fas fa-mobile-alt"}
-                                            patterns={TEL}
-                                            messageinc="Incorrecto. Ingresa el número de teléfono."
-                                            thousandseparator={false}
-                                            prefix={''}
-                                        />
-                                    </div>
-                                    
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    
-                                    <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="banco"
-                                            type="text"
-                                            value={form.banco}
-                                            placeholder="BANCO"
-                                            iconclass={" fab fa-cc-discover "}
-                                            messageinc="Incorrecto. Ingresa el banco."
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputNumber
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="cuenta"
-                                            type="text"
-                                            value={form.cuenta}
-                                            placeholder="CUENTA"
-                                            iconclass={" fas fa-id-card "}
-                                            messageinc="Incorrecto. Ingresa el número de cuenta."
-                                            typeformat ="##################"
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputNumber
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="clabe"
-                                            type="text"
-                                            value={form.clabe}
-                                            placeholder="CLABE"
-                                            iconclass={"fas fa-money-check-alt"}
-                                            messageinc="Incorrecto. Ingresa la clabe."
-                                            typeformat ="##################"
-                                        />
-                                    </div>
-                                </div>
-                                {
-                                    title === 'Editar empleado'
-                                        ? ''
-                                        : <>
-                                            <div className="separator separator-dashed mt-1 mb-2"></div>
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-12 mt-5 text-center">
-                                                    <FileInput
-                                                        requirevalidation={0}
-                                                        formeditado={formeditado}
-                                                        onChangeAdjunto={onChangeAdjunto}
-                                                        placeholder={form.adjuntos.datosGenerales.placeholder}
-                                                        value={form.adjuntos.datosGenerales.value}
-                                                        name='datosGenerales'
-                                                        id='datosGenerales'
-                                                        accept="image/*, application/pdf"
-                                                        files={form.adjuntos.datosGenerales.files}
-                                                        deleteAdjunto={clearFiles}
-                                                        multiple
-                                                        classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
-                                                        iconclass='flaticon2-clip-symbol text-primary'
-                                                    />
-                                                </div>
+                                <div className="row mx-0">
+                                    <div className="col-md-4 text-center align-self-center">
+                                        <div>
+                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                <label className="text-center font-weight-bolder">Fecha de nacimiento</label>
                                             </div>
-                                        </>
-                                }
+                                            <CalendarDay value={form.fecha_nacimiento} name='fecha_nacimiento' onChange={onChange} date={form.fecha_nacimiento} withformgroup={0} requirevalidation={1}/>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-8">
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-5">
+                                                <Input
+                                                    onChange={onChange}
+                                                    requirevalidation={1}
+                                                    formeditado={formeditado}
+                                                    name="nombre"
+                                                    type="text"
+                                                    value={form.nombre}
+                                                    placeholder="NOMBRE DEL EMPLEADO"
+                                                    iconclass={"fas fa-user"}
+                                                    messageinc="Incorrecto. Ingresa el nombre."
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <Input
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="curp"
+                                                    type="text"
+                                                    value={form.curp}
+                                                    placeholder="CURP"
+                                                    iconclass={"far fa-address-card"}
+                                                    patterns={CURP}
+                                                    messageinc="Incorrecto. Ej. SIHC400128HDFLLR01"
+                                                    maxLength="18"
+                                                />
+                                                <pre id="resultado"></pre>
+                                            </div>
+                                            <div className="col-md-3">
+                                                <Input
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="rfc"
+                                                    type="text"
+                                                    value={form.rfc}
+                                                    placeholder="RFC"
+                                                    iconclass={"far fa-file-alt"}
+                                                    patterns={RFC}
+                                                    messageinc="Incorrecto. Ej. ABCD001122ABC"
+                                                    maxLength="13"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-4">
+                                                <Input
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="nacionalidad"
+                                                    type="text"
+                                                    value={form.nacionalidad}
+                                                    placeholder="NACIONALIDAD"
+                                                    iconclass={"far fa-flag"}
+                                                    messageinc="Incorrecto. Ingresa la nacionalidad."
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <Input
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="nombre_emergencia"
+                                                    type="text"
+                                                    value={form.nombre_emergencia}
+                                                    placeholder="CONTACTO DE EMERGENCIA"
+                                                    iconclass={"fas fa-user-circle"}
+                                                    messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputPhone
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    placeholder="TELÉFONO DE EMERGENCIA"
+                                                    name="telefono_emergencia"
+                                                    value={form.telefono_emergencia}
+                                                    onChange={onChange}
+                                                    iconclass={"fas fa-mobile-alt"}
+                                                    patterns={TEL}
+                                                    messageinc="Incorrecto. Ingresa el número de teléfono."
+                                                    thousandseparator={false}
+                                                    prefix={''}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-4">
+                                                <Input
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="banco"
+                                                    type="text"
+                                                    value={form.banco}
+                                                    placeholder="BANCO"
+                                                    iconclass={" fab fa-cc-discover "}
+                                                    messageinc="Incorrecto. Ingresa el banco."
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputNumber
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="cuenta"
+                                                    type="text"
+                                                    value={form.cuenta}
+                                                    placeholder="CUENTA"
+                                                    iconclass={" fas fa-id-card "}
+                                                    messageinc="Incorrecto. Ingresa el número de cuenta."
+                                                    typeformat ="##################"
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputNumber
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="clabe"
+                                                    type="text"
+                                                    value={form.clabe}
+                                                    placeholder="CLABE"
+                                                    iconclass={"fas fa-money-check-alt"}
+                                                    messageinc="Incorrecto. Ingresa la clabe."
+                                                    typeformat ="##################"
+                                                />
+                                            </div>
+                                        </div>
+                                        {
+                                            title === 'Editar empleado'
+                                                ? ''
+                                                : <>
+                                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                    <div className="form-group row form-group-marginless">
+                                                        <div className="col-md-12 mt-5 text-center">
+                                                            <FileInput
+                                                                requirevalidation={0}
+                                                                formeditado={formeditado}
+                                                                onChangeAdjunto={onChangeAdjunto}
+                                                                placeholder={form.adjuntos.datosGenerales.placeholder}
+                                                                value={form.adjuntos.datosGenerales.value}
+                                                                name='datosGenerales'
+                                                                id='datosGenerales'
+                                                                accept="image/*, application/pdf"
+                                                                files={form.adjuntos.datosGenerales.files}
+                                                                deleteAdjunto={clearFiles}
+                                                                multiple
+                                                                classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                                iconclass='flaticon2-clip-symbol text-primary'
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </>
+                                        }
+                                    </div>
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
@@ -408,13 +417,15 @@ class EmpleadosForm extends Component {
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de las prestaciones</h5> */}
                                 <div className="mx-0 row">
-                                    <div className="align-self-center col-md-4">
-                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                            <label className="text-center font-weight-bolder">FECHA DE ALTA AL IMSS</label>
-                                        </div>
+                                    <div className="col-md-4">
+                                        <div className="text-center">
+                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                <label className="text-center font-weight-bolder">FECHA DE ALTA AL IMSS</label>
+                                            </div>
                                             <CalendarDay date = { form.fecha_alta_imss } value = { form.fecha_alta_imss } onChange = { onChange } 
                                                 name = 'fecha_alta_imss' withformgroup = { 0 } requirevalidation = { 0 } />
                                         </div>
+                                    </div>
                                     <div className="align-self-center col-md-8">
                                         <div className="form-group row form-group-marginless mb-0">
                                             <div className="col-md-4">

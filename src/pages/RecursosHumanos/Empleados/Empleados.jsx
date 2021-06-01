@@ -19,6 +19,8 @@ import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPho
 import moment from 'moment'
 import $ from "jquery";
 import { setSingleHeader } from '../../../functions/routers'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
 
 class Empleados extends Component {
     state = {
@@ -32,6 +34,7 @@ class Empleados extends Component {
             delete: false,
             adjuntos: false,
             see: false,
+            contrato: false
         },
         title: 'Nuevo empleado',
         form: {
@@ -133,6 +136,15 @@ class Empleados extends Component {
             empleado: empleado
         })
     }
+    openModalContrato = empleado => {
+        const { modal } = this.state
+        modal.contrato = true
+        this.setState({
+            ...this.state,
+            modal,
+            empleado: empleado
+        })
+    }
     handleCloseModalDelete = () => {
         const { modal } = this.state
         modal.delete = false
@@ -156,6 +168,15 @@ class Empleados extends Component {
     handleCloseSee = () => {
         const { modal } = this.state
         modal.see = false
+        this.setState({
+            ...this.state,
+            modal,
+            empleado: ''
+        })
+    }
+    handleCloseContrato = () => {
+        const { modal } = this.state
+        modal.contrato = false
         this.setState({
             ...this.state,
             modal,
@@ -434,6 +455,13 @@ class Empleados extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            },
+            {
+                text: 'Contrato',
+                btnclass: 'warning',
+                iconclass: 'flaticon2-file-1',
+                action: 'contrato',
+                tooltip: { id: 'adjuntos', text: 'Contrato' }
             }
         )
         return aux
@@ -684,6 +712,7 @@ class Empleados extends Component {
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
                                     'see': { function: this.openModalSee },
+                                    'contrato' : { function: this.openModalContrato }
                                 }
                             }
                             accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
@@ -719,6 +748,25 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Empleados" show={modal.see} handleClose={this.handleCloseSee} >
                     <EmpleadosCard empleado={empleado} />
+                </Modal>
+                <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
+                    <div className="d-flex justify-content-end align-items-center py-lg-5">
+                        <a className="btn btn-light h-40px px-3 mr-2 text-success font-weight-bolder">
+                            <span className="svg-icon svg-icon-lg svg-icon-success">
+                                <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
+                            </span>GENERAR
+                        </a>
+                        <a href="#" className="btn btn-light h-40px px-3 mr-2 text-info font-weight-bolder">
+                            <span className="svg-icon svg-icon-lg svg-icon-info">
+                                <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                            </span>Renovar
+                        </a>
+                        <a href="#" className="btn btn-light h-40px px-3 text-danger font-weight-bolder">
+                            <span className="svg-icon svg-icon-lg svg-icon-danger">
+                                <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
+                            </span>Cancelar
+                        </a>
+                    </div>
                 </Modal>
             </Layout>
         )
