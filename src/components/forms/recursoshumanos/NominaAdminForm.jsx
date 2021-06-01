@@ -194,7 +194,6 @@ class NominaAdminForm extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                { console.log( 'FORM NOMINAS ADMIN', form.nominasAdmin ) }
                                 {
                                     form.nominasAdmin.map((nominaAdmin, key) => {
                                         return (
