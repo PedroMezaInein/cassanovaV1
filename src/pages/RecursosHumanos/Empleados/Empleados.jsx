@@ -731,6 +731,22 @@ class Empleados extends Component {
         waitAlert()
         
     }
+
+    generar = async() => {
+        waitAlert()
+        const { empleado } = this.state
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar`, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                console.log(response)
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
         return (
@@ -786,9 +802,8 @@ class Empleados extends Component {
                     <EmpleadosCard empleado={empleado} />
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
-                    {console.log(empleado)}
                     <FormularioContrato empleado={empleado} formContrato={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
-                        onSubmit={this.generarContrato}/>
+                        generarContrato={this.generar}/>
                 </Modal>
             </Layout>
         )
