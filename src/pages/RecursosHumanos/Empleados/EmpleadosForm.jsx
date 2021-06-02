@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setOptions} from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import { EmpleadosForm as EmpleadosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import { onChangeAdjunto } from '../../../functions/onChanges'
@@ -63,12 +63,35 @@ class Empleados extends Component {
             },
             departamentos: [],
             departamento: '',
-            nacionalidad:'',
-            fecha_nacimiento:''
+            nacionalidad: '',
+            fecha_nacimiento: '',
+            estado_civil: '',
+            domicilio: '',
+            telefono_movil: '',
+            telefono_particular: '',
+            salario_imss: '',
+            salario_bruto:''
         },
         options: {
             empresas: [],
             departamentos: [],
+            estado_civil:[
+                {
+                    name: "SOLTERO", value: "soltero", label: "SOLTERO"
+                },
+                {
+                    name: "CASADO", value: "casado", label: "CASADO"
+                },
+                {
+                    name: "SEPARADO", value: "separado", label: "SEPARADO"
+                },
+                {
+                    name: "DIVORCIADO", value: "divorciado", label: "DIVORCIADO"
+                },
+                {
+                    name: "VIUDO", value: "viudo", label: "VIUDO"
+                }
+            ],
         }
     }
     componentDidMount() {
@@ -110,16 +133,23 @@ class Empleados extends Component {
                         form.salario_hr = empleado.salario_hr
                         form.salario_hr_extra = empleado.salario_hr_extra
                         if (empleado.empresa) { form.empresa = empleado.empresa.id.toString() }
-                        form.fechaInicio =  new Date(moment(empleado.fecha_inicio))
-                        form.fechaFin =  new Date(moment(empleado.fecha_fin))
+                        form.fechaInicio = empleado.fecha_inicio !== null ? new Date(moment(empleado.fecha_inicio)):''
+                        form.fechaFin = empleado.fecha_fin !== null ? new Date(moment(empleado.fecha_fin)):''
                         form.puesto = empleado.puesto
                         form.estatus_imss = this.showStatusImss(empleado.estatus_imss);
                         form.vacaciones_disponibles = empleado.vacaciones_disponibles
-                        form.fecha_alta_imss =  empleado.fecha_alta_imss !== null ? new Date(moment(empleado.fecha_alta_imss)): ''
+                        form.fecha_alta_imss =  new Date(empleado.fecha_alta_imss)
                         form.numero_alta_imss = empleado.numero_alta_imss
                         form.departamentos = []
                         form.nacionalidad = empleado.nacionalidad
-                        form.fecha_nacimiento =  new Date(moment(empleado.fecha_nacimiento))
+                        form.fecha_nacimiento = empleado.fecha_nacimiento !== null ? new Date(moment(empleado.fecha_nacimiento)):''
+                        form.estado_civil = empleado.estado_civil
+                        form.domicilio = empleado.domicilio
+                        form.telefono_movil = empleado.telefono_movil
+                        form.telefono_particular = empleado.telefono_particular
+                        form.salario_imss = empleado.salario_imss
+                        form.salario_bruto = empleado.salario_bruto
+
                         empleado.departamentos.forEach((elemento) => {
                             form.departamentos.push({
                                 value: elemento.id.toString(),
@@ -194,11 +224,11 @@ class Empleados extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'fechaInicio':
+                case 'fecha_nacimiento':
                     data.append(element, (new Date(form[element])).toDateString())
                     break;
                 case 'fechaFin':
                 case 'fecha_alta_imss':
-                case 'fecha_nacimiento':
                     if (form[element])
                         data.append(element, (new Date(form[element])).toDateString())
                     else
@@ -395,6 +425,26 @@ class Empleados extends Component {
             options
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
         const { options, title, form, formeditado} = this.state
         return (
@@ -418,6 +468,7 @@ class Empleados extends Component {
                             onChangeRange={this.onChangeRange}
                             deleteOption = { this.deleteOption }
                             onChangeOptions = { this.onChangeOptions }
+                            handleChange = { this.handleChange }
                         />
                     </Card.Body>
                 </Card>

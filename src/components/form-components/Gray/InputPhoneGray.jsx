@@ -64,10 +64,10 @@ class InputPhoneGray extends Component {
         onChange({ target: { value: values.value, name: name } })
     }
     render() {
-        const { error, onChange, messageinc, placeholder, iconclass, value, thousandseparator, customlabel, customstyle, customclass, swal,...props } = this.props
+        const { error, onChange, messageinc, placeholder, iconclass, value, thousandseparator, customlabel, customstyle, customclass, swal, withformgroup, customdiv, ...props } = this.props
         const { inputPhone, valor } = this.state
         return (
-            <div className="form-group">
+            <div className={withformgroup?`form-group ${customdiv}`:''}>
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
                 <div className="input-group input-group-solid rounded-0">
                     <div className="input-group-prepend">
@@ -81,7 +81,7 @@ class InputPhoneGray extends Component {
                         thousandSeparator={thousandseparator ? thousandseparator : false}
                         renderText={value => <div> {value} </div>}
                         onValueChange={(values) => this.onChange(values)}
-                        format="+52 1 ##### - #####"
+                        format="(##) #### - ####"
                         allowEmptyFormatting
                         mask="_"
                         placeholder={placeholder}
