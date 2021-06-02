@@ -178,6 +178,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     messageinc="Ingresa selecciona el esquema."
                                                     withtaglabel={1}
                                                     withtextlabel={1}
+                                                    withicon={1}
                                                 />
                                             </div>
                                         </div>
@@ -208,6 +209,11 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputMoneyGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
+                                                    withicon = { 1 } 
+                                                    withformgroup = { 1 }
                                                     requirevalidation={0}
                                                     type="text"
                                                     placeholder="DESCUENTO"

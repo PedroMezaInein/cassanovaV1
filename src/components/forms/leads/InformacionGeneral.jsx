@@ -66,7 +66,7 @@ class InformacionGeneral extends Component {
                             <div className={lead.relaciones_publicas === 1 || this.estatus() === "En espera" ? "col-md-6" : "col-md-4"}>
                                 <SelectSearchGray options = { getEstados() } placeholder = "SELECCIONA EL ESTADO" name = "estado"
                                     value = { form.estado } onChange = { this.updateEstados } requirevalidation = { 1 }
-                                    messageinc = "Selecciona el estado." customdiv = "mb-0" withtaglabel = { 1 } withtextlabel = { 1 } />
+                                    messageinc = "Selecciona el estado." customdiv = "mb-0" withtaglabel = { 1 } withtextlabel = { 1 } withicon={1} />
                             </div>
                             {
                             lead.relaciones_publicas === 1 || this.estatus() === "En espera" ? ""
@@ -80,7 +80,7 @@ class InformacionGeneral extends Component {
                                                             <SelectSearchGray options={options.tipos} placeholder="TIPO DE PROYECTO"
                                                                 name="tipoProyecto" value={form.tipoProyecto} onChange={this.updateTipoProyecto}
                                                                 requirevalidation={1} messageinc="Seleccione el proyecto."
-                                                                customdiv="mb-0" withtaglabel={1} withtextlabel={1} />
+                                                                customdiv="mb-0" withtaglabel={1} withtextlabel={1} withicon={1}/>
                                                         </div>
                                                     </>
                                                     : ''

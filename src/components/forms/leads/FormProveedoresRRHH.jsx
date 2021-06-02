@@ -61,6 +61,7 @@ class FormProveedoresRRHH extends Component {
                                     onChange={this.updateEmpresa}
                                     iconclass="far fa-building"
                                     messageinc="Selecciona la empresa."
+                                    withicon={1}
                                 />
                             </div>
                             <div className="col-md-4">
@@ -75,6 +76,7 @@ class FormProveedoresRRHH extends Component {
                                     onChange={this.updateOrigen}
                                     iconclass={" fas fa-mail-bulk"}
                                     messageinc="Selecciona el origen."
+                                    withicon={1}
                                 />
                             </div>
                         </div>

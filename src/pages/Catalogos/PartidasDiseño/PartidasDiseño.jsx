@@ -90,7 +90,7 @@ class PartidasDiseño extends Component {
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                             onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
                             value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
-                            placeholder={`SELECCIONA EL TIPO DE RUBRO `}
+                            placeholder={`SELECCIONA EL TIPO DE RUBRO `} withicon={1}
                         />
                 }
             </div>,

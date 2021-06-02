@@ -123,9 +123,8 @@ class NominaAdminForm extends Component {
         })
     }
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title,  handleChange, onChangeRange } = this.props
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title,  handleChange, onChangeRange, action } = this.props
         const { modalForm } = this.state
-        console.log(form)
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -143,7 +142,7 @@ class NominaAdminForm extends Component {
                         <div className="card-toolbar">
                             <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mx-2" onClick={(e) => { this.openModal() }}>
                                 <i className="flaticon2-calendar-6 icon-lg text-primary mr-1"></i>
-                                Agregar periodo de nómina
+                                Periodo de nómina
                             </a>
                         </div>
                 </Card.Header>
@@ -180,7 +179,7 @@ class NominaAdminForm extends Component {
                                                     <SelectSearchGray formeditado = { formeditado } options = { options.cuentas } name = "cuentaRestante"
                                                         placeholder = "SELECCIONA LA CUENTA" value = { form.cuentaRestante } messageinc = "SELECCIONA LA CUENTA"
                                                         onChange = { (value) => { this.updateCuenta(value, 'cuentaRestante') } } withtaglabel={0} withtextlabel={0}
-                                                        withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}/>
+                                                        withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1} />
                                                 </div>
                                             </th>
                                         : <th className="border-bottom-0"></th>
@@ -220,25 +219,26 @@ class NominaAdminForm extends Component {
                                                 <td>
                                                     <SelectSearchGray formeditado = { formeditado } options = { this.setOptions(key) } placeholder = "SELECCIONA EL EMPLEADO"
                                                         name = "usuario" value = { nominaAdmin.usuario } onChange = { (value) => this.updateUsuario(value, key) }
-                                                        customstyle={{ minWidth: "300px" }}  withtaglabel={0} withtextlabel={0} withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}/>
+                                                        customstyle={{ minWidth: "300px" }}  withtaglabel={0} withtextlabel={0} withicon={0} 
+                                                        customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : '' }`} customdiv="mb-0" iconvalid={1} />
                                                 </td>
                                                 <td>
                                                     <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
-                                                        withformgroup = { 0 } customclass="form-control-sm text-center" 
+                                                        withformgroup = { 0 } customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : '' }`}
                                                         requirevalidation = { 1 } formeditado = { 1 } name = "nominImss" thousandseparator = { true }
                                                         value = { nominaAdmin.nominImss } onChange = { e => onChangeNominasAdmin(key, e, 'nominImss') }
                                                         prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm" iconvalid={1}/>
                                                 </td>
                                                 <td>
                                                     <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
-                                                        withformgroup = { 0 } customclass="form-control-sm text-center" 
+                                                        withformgroup = { 0 } customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : '' }`}
                                                         requirevalidation = { 1 }  formeditado = { 1 } name = "restanteNomina"
                                                         value = { nominaAdmin.restanteNomina } onChange = { e => onChangeNominasAdmin(key, e, 'restanteNomina') }
                                                         thousandseparator = { true } prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm" iconvalid={1}/>
                                                 </td>
                                                 <td>
                                                     <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
-                                                        withformgroup = { 0 } customclass="form-control-sm text-center"
+                                                        withformgroup = { 0 } customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : '' }`}
                                                         requirevalidation = { 1 } formeditado = { 1 } name = "extras" thousandseparator = { true }
                                                         value = { nominaAdmin.extras } onChange = { e => onChangeNominasAdmin(key, e, 'extras') }
                                                         prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm"  iconvalid={1}/>
@@ -271,7 +271,7 @@ class NominaAdminForm extends Component {
                     }
                 </Card>
                 
-                <Modal size="lg" title="NÓMINA ADMINISTRATIVA" show={modalForm} handleClose={this.handleCloseModal} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                <Modal size="lg" title="Periodo de nómina" show={modalForm} handleClose={this.handleCloseModal} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <div style={{ display: 'flex', maxHeight: '500px'}} >
                         <Scrollbar>
                             <div className="form-group row form-group-marginless mx-0">
@@ -295,12 +295,11 @@ class NominaAdminForm extends Component {
                                     </div>
                                 </div>
                                 {
-                                    title !== 'Editar nómina administrativa' ?
+                                    action !== 'edit' &&
                                     <div className="col-md-12 text-center">
                                         <label className="col-form-label my-2 font-weight-bold text-dark-60">{form.adjuntos.adjunto.placeholder}</label>
                                         <ItemSlider items={form.adjuntos.adjunto.files} item='adjunto' handleChange={handleChange} multiple={true} />
                                     </div>
-                                    :''
                                 }
                             </div>
                         </Scrollbar>
