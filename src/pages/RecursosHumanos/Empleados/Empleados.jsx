@@ -15,13 +15,11 @@ import TableForModals from '../../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../../components/cards'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
-import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray } from '../../../components/form-components'
+import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray, RangeCalendar } from '../../../components/form-components'
 import moment from 'moment'
 import $ from "jquery";
 import { setSingleHeader } from '../../../functions/routers'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
-
+import FormularioContrato from "../../../components/forms/recursoshumanos/FormularioContrato"
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -81,7 +79,16 @@ class Empleados extends Component {
         },
         options: {
             empresas: []
-        }
+        },
+        formContrato: {
+            fechaInicio: new Date(),
+            fechaFinal:'',
+            periodo: '',
+            dias: '',
+            periodo_pago:'',
+            ubicacion_obra:'',
+            pagos_hr_extra:''
+        },
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -180,7 +187,8 @@ class Empleados extends Component {
         this.setState({
             ...this.state,
             modal,
-            empleado: ''
+            empleado: '',
+            formContrato: this.clearForm()
         })
     }
     async getOptionsAxios() {
@@ -696,8 +704,35 @@ class Empleados extends Component {
             console.log(error, 'error')
         })
     }
+    onChangeContrato= e => {
+        const { name, value, type } = e.target
+        const { formContrato } = this.state
+        formContrato[name] = value
+
+        if(type === 'radio'){
+            formContrato.periodo = value === "true" ? true : false
+        }
+        this.setState({ 
+            ...this.state,
+            formContrato
+        })
+    }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { formContrato } = this.state
+        formContrato.fechaInicio = startDate
+        formContrato.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            formContrato
+        })
+    }
+    async generarContrato() {
+        waitAlert()
+        
+    }
     render() {
-        const { modal, form, key, adjuntos, data, empleado } = this.state
+        const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -729,6 +764,7 @@ class Empleados extends Component {
                                 'delete': { function: this.openModalDelete },
                                 'adjuntos': { function: this.openModalAdjuntos },
                                 'see': { function: this.openModalSee },
+                                'contrato' : { function: this.openModalContrato }
                             }}
                             accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado } cardTable = 'cardTable_obra'
                             urlRender = { `${URL_DEV}v2/rh/empleados?type=obra` } idTable = 'empleados_obra_table'
@@ -750,23 +786,9 @@ class Empleados extends Component {
                     <EmpleadosCard empleado={empleado} />
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
-                    <div className="d-flex justify-content-end align-items-center py-lg-5">
-                        <a className="btn btn-light h-40px px-3 mr-2 text-success font-weight-bolder">
-                            <span className="svg-icon svg-icon-lg svg-icon-success">
-                                <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
-                            </span>GENERAR
-                        </a>
-                        <a href="#" className="btn btn-light h-40px px-3 mr-2 text-info font-weight-bolder">
-                            <span className="svg-icon svg-icon-lg svg-icon-info">
-                                <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
-                            </span>Renovar
-                        </a>
-                        <a href="#" className="btn btn-light h-40px px-3 text-danger font-weight-bolder">
-                            <span className="svg-icon svg-icon-lg svg-icon-danger">
-                                <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
-                            </span>Cancelar
-                        </a>
-                    </div>
+                    {console.log(empleado)}
+                    <FormularioContrato empleado={empleado} formContrato={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
+                        onSubmit={this.generarContrato}/>
                 </Modal>
             </Layout>
         )
