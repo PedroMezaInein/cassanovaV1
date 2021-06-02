@@ -696,6 +696,22 @@ class Empleados extends Component {
             console.log(error, 'error')
         })
     }
+
+    generar = async() => {
+        waitAlert()
+        const { empleado } = this.state
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar`, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                console.log(response)
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { modal, form, key, adjuntos, data, empleado } = this.state
         return (
@@ -751,21 +767,31 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <div className="d-flex justify-content-end align-items-center py-lg-5">
-                        <a className="btn btn-light h-40px px-3 mr-2 text-success font-weight-bolder">
-                            <span className="svg-icon svg-icon-lg svg-icon-success">
-                                <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
-                            </span>GENERAR
-                        </a>
-                        <a href="#" className="btn btn-light h-40px px-3 mr-2 text-info font-weight-bolder">
-                            <span className="svg-icon svg-icon-lg svg-icon-info">
-                                <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
-                            </span>Renovar
-                        </a>
-                        <a href="#" className="btn btn-light h-40px px-3 text-danger font-weight-bolder">
+                        {
+                            empleado ?
+                                <>
+                                    {
+                                        empleado.contratos.length === 0 ?
+                                            <span onClick = { this.generar } className="btn btn-light h-40px px-3 mr-2 text-success font-weight-bolder">
+                                                <span className="svg-icon svg-icon-lg svg-icon-success">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
+                                                </span>GENERAR
+                                            </span>
+                                        : 
+                                            <span className="btn btn-light h-40px px-3 mr-2 text-info font-weight-bolder">
+                                                <span className="svg-icon svg-icon-lg svg-icon-info">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                </span>Renovar
+                                            </span>
+                                    }
+                                </>
+                            : ''
+                        }
+                        <span href="#" className="btn btn-light h-40px px-3 text-danger font-weight-bolder">
                             <span className="svg-icon svg-icon-lg svg-icon-danger">
                                 <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                             </span>Cancelar
-                        </a>
+                        </span>
                     </div>
                 </Modal>
             </Layout>
