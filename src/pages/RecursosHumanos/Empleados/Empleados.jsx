@@ -727,10 +727,6 @@ class Empleados extends Component {
             formContrato
         })
     }
-    async generarContrato() {
-        waitAlert()
-        
-    }
 
     generar = async() => {
         waitAlert()

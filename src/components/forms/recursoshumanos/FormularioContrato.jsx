@@ -7,8 +7,9 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 class FormularioContrato extends Component {
 
     render() {
-        const { onSubmit, empleado, formContrato, onChangeContrato, onChangeRange } = this.props
+        const { onSubmit, empleado, formContrato, onChangeContrato, onChangeRange, generarContrato } = this.props
         console.log(formContrato,'formContrato-contrato')
+        console.log(empleado,'empleado')
         return (
             <Form id="formContrato-empleados-contrato"
                 onSubmit={
@@ -138,11 +139,7 @@ class FormularioContrato extends Component {
                             </div>
                         </div>
                 }
-                {/* <a className="btn btn-light h-40px px-3 mr-2 text-info font-weight-bolder">
-                    <span className="svg-icon svg-icon-lg svg-icon-info">
-                        <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
-                    </span>Renovar
-                </a>
+                {/* 
                 <a className="btn btn-light h-40px px-3 text-danger font-weight-bolder">
                     <span className="svg-icon svg-icon-lg svg-icon-danger">
                         <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
@@ -151,17 +148,27 @@ class FormularioContrato extends Component {
                 <div className="card-footer pt-3 pr-1 mt-5 pb-0">
                     <div className="row mx-0">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-                            <a className="btn btn-light h-40px px-3 text-success font-weight-bolder"
-                                onClick={
-                                    (e) => {
-                                        e.preventDefault();
-                                        validateAlert(onSubmit, e, 'formContrato-empleados-contrato')
-                                    }
-                                }>
-                                <span className="svg-icon svg-icon-lg svg-icon-success">
-                                    <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
-                                </span>GENERAR CONTRATO
-                            </a>
+                            {
+                                empleado &&
+                                    empleado.contratos.length === 0 ?
+                                    <a className="btn btn-light h-40px px-3 text-success font-weight-bolder"
+                                        onClick={
+                                            (e) => {
+                                                e.preventDefault();
+                                                validateAlert(generarContrato, e, 'formContrato-empleados-contrato')
+                                            }
+                                        }>
+                                        <span className="svg-icon svg-icon-lg svg-icon-success">
+                                            <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
+                                        </span>GENERAR CONTRATO
+                                    </a>
+                                    :
+                                    <a className="btn btn-light h-40px px-3 mr-2 text-info font-weight-bolder">
+                                        <span className="svg-icon svg-icon-lg svg-icon-info">
+                                            <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                        </span>Renovar
+                                    </a>
+                            }
                         </div>
                     </div>
                 </div>
