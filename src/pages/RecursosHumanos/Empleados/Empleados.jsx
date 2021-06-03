@@ -88,7 +88,16 @@ class Empleados extends Component {
             dias: '',
             periodo_pago:'',
             ubicacion_obra:'',
-            pagos_hr_extra:''
+            pagos_hr_extra:'',
+            total_obra:'',
+            dias_laborables:'',
+            adjuntos: {
+                contrato: {
+                    value: '',
+                    placeholder: 'Contrato',
+                    files: []
+                }
+            }
         },
     }
     componentDidMount() {
@@ -201,6 +210,15 @@ class Empleados extends Component {
                 case 'fechaFin':
                     formContrato[element] = new Date()
                     break;
+                case 'adjuntos':
+                    formContrato[element] = {
+                        contrato: {
+                            value: '',
+                            placeholder: 'Contrato',
+                            files: []
+                        }
+                    }
+                break;
                 default:
                     formContrato[element] = ''
                     break;
@@ -773,7 +791,6 @@ class Empleados extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
         return (
@@ -830,7 +847,7 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
-                        generarContrato={this.generar}/>
+                        generarContrato={this.generar} clearFiles = { this.clearFiles }/>
                 </Modal>
             </Layout>
         )

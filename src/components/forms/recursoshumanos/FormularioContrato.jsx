@@ -1,178 +1,304 @@
 import React, { Component } from 'react'
-import { validateAlert } from '../../../functions/alert'
-import { Form } from 'react-bootstrap'
-import { InputGray, RangeCalendar, InputNumberGray } from '../../form-components'
+import { validateAlert, sendFile } from '../../../functions/alert'
+import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { InputGray, RangeCalendar, InputNumberGray, FileInput } from '../../form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
+import Moment from 'react-moment'
+import { onChangeAdjunto } from '../../../functions/onChanges'
 class FormularioContrato extends Component {
-
+    state = {
+        renovar: false
+    }
+    clearFiles = (name, key) => {
+        const { form } = this.props
+        let aux = []
+        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form.adjuntos[name].files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form.adjuntos[name].value = ''
+        }
+        form.adjuntos[name].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
-        const { onSubmit, empleado, form, onChangeContrato, onChangeRange, generarContrato } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato } = this.props
+        const { renovar } = this.state
         return (
-            <Form id="form-empleados-contrato"
-                onSubmit={
-                    (e) => {
-                        e.preventDefault();
-                        validateAlert(onSubmit, e, 'form-empleados-contrato')
-                    }
-                }
-            >
+            <>
                 {
-                    empleado &&
-                        empleado.tipo_empleado === 'Administrativo' ?
-                        <div className="form-group row form-group-marginless mt-8">
-                            <div className={form.periodo === true ? 'col-md-6' : 'col-md-12'}>
-                                <div className="mx-auto w-fit-content">
-                                    <label className="font-weight-bolder">Periodo del contrato</label>
-                                    <div className="radio-list">
-                                        <label className="radio radio-outline radio-success">
-                                            <input
-                                                type="radio"
-                                                name='periodo'
-                                                value={true}
-                                                onChange={onChangeContrato}
-                                                checked={form.periodo === true ? true : false}
-                                            />
-                                            <span></span>DÍAS</label>
-                                        <label className="radio radio-outline radio-success">
-                                            <input
-                                                type="radio"
-                                                name='periodo'
-                                                value={false}
-                                                onChange={onChangeContrato}
-                                                checked={form.periodo === false ? true : false}
-                                            />
-                                            <span></span>INDEFINIDO</label>
+                    empleado ?
+                        empleado.contratos.length > 0 &&
+                        <div className="table-responsive-lg mt-8">
+                            <table className="table table-responsive-lg table-head-custom table-head-bg table-borderless table-vertical-center w-100">
+                                <thead>
+                                    <tr>
+                                        <th className="text-center" style={{ minWidth: '155px' }}>Tipo de contrato</th>
+                                        <th style={{ minWidth: '160px' }}>Fecha</th>
+                                        <th style={{ minWidth: '115px' }}>Estatus</th>
+                                        <th style={{ minWidth: '120px' }}>Contrato</th>
+                                        <th style={{ minWidth: '90px' }}></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        empleado.contratos.map((contrato, key) => {
+                                            return (
+                                                <tr key={key}>
+                                                    <td className="text-center">
+                                                        <a className="text-dark-75 font-weight-bolder font-size-lg">
+                                                            { 
+                                                                contrato.tipo_contrato === 'obra' ? 
+                                                                    'OBRA DETERMINADA' 
+                                                                :  contrato.indefinido === 1 ? 'TIEMPO DETERMINADO' : 'INDEFINIDO'
+                                                            }
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div className="w-fit-content mx-auto">
+                                                            <div>
+                                                                <span className="text-dark-75 font-weight-bolder font-size-lg">Inicio:</span>
+                                                                <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
+                                                            </div>
+                                                            {
+                                                                contrato.indefinido !== 0 &&
+                                                                <div>
+                                                                    <span className="text-dark-75 font-weight-bolder font-size-lg">Final:</span>
+                                                                    <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    {/* `icon-${item.isCollapsed ? 'expander' : 'collapser'} */}
+                                                    <td className="text-center">
+                                                        <span className={`label label-light-${contrato.terminado === 0 ? 'success' : 'danger'} label-pill label-inline font-weight-bolder`}>{contrato.terminado === 0 ? 'ACTIVO' : 'TERMINADO'}</span>
+                                                    </td>
+                                                    <td>
+                                                        <FileInput requirevalidation = { 0 } onChangeAdjunto = { ( e ) => { sendFile(e) }}
+                                                            placeholder = 'Adjuntar' value = { form.adjuntos.contrato.value } name = 'contrato' id = 'adjunto-contrato'
+                                                            accept = "application/pdf" files = { form.adjuntos.contrato.files } deleteAdjunto = { this.clearFiles }
+                                                            classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
+                                                            iconclass = 'flaticon-attachment text-primary' />
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <OverlayTrigger overlay={<Tooltip>RENOVAR</Tooltip>}>
+                                                            <a className="btn btn-light btn-icon h-35px mr-2 font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.setState({...this.state, renovar: true })} }>
+                                                                <span className="svg-icon svg-icon-lg svg-icon-info">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                                </span>
+                                                            </a>
+                                                        </OverlayTrigger>
+                                                        <OverlayTrigger overlay={<Tooltip>CANCELAR</Tooltip>}>
+                                                            <a className="btn btn-light btn-icon h-35px font-weight-bolder">
+                                                                <span className="svg-icon svg-icon-lg svg-icon-danger">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
+                                                                </span>
+                                                            </a>
+                                                        </OverlayTrigger>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        : ''
+                }
+                {
+                    empleado ?
+                        (empleado.contratos.length === 0 || renovar) ?
+                            <Form id="form-empleados-contrato"
+                                onSubmit={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(generarContrato, e, 'form-empleados-contrato')
+                                    }
+                                }
+                            >
+                                {
+                                    empleado.tipo_empleado === 'Administrativo' ?
+                                        <div className="form-group row form-group-marginless mt-8">
+                                            <div className={form.periodo === true ? 'col-md-6' : 'col-md-12'}>
+                                                <div className="mx-auto w-fit-content">
+                                                    <label className="font-weight-bolder">Periodo del contrato</label>
+                                                    <div className="radio-list">
+                                                        <label className="radio radio-outline radio-success">
+                                                            <input
+                                                                type="radio"
+                                                                name='periodo'
+                                                                value={true}
+                                                                onChange={onChangeContrato}
+                                                                checked={form.periodo === true ? true : false}
+                                                            />
+                                                            <span></span>DÍAS</label>
+                                                        <label className="radio radio-outline radio-success">
+                                                            <input
+                                                                type="radio"
+                                                                name='periodo'
+                                                                value={false}
+                                                                onChange={onChangeContrato}
+                                                                checked={form.periodo === false ? true : false}
+                                                            />
+                                                            <span></span>INDEFINIDO</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {
+                                                form.periodo === true &&
+                                                <div className="col-md-6">
+                                                    <InputNumberGray
+                                                        formgroup="mb-0"
+                                                        requirevalidation={1}
+                                                        onChange={onChangeContrato}
+                                                        name="dias"
+                                                        type="text"
+                                                        value={form.dias}
+                                                        placeholder="DÍAS"
+                                                        iconclass="flaticon2-calendar-6"
+                                                        messageinc="Incorrecto. Ingresa el número de días."
+                                                    />
+                                                </div>
+                                            }
+                                        </div>
+                                        :
+                                        <div className="form-group row form-group-marginless mt-8">
+                                            <div className="col-md-6 text-align-last-center align-self-center">
+                                                <label className="text-center font-weight-bolder text-bodymb-2">Fecha de inicio - Fecha final</label><br />
+                                                <RangeCalendar
+                                                    onChange={onChangeRange}
+                                                    start={form.fechaInicio}
+                                                    end={form.fechaFin}
+                                                />
+                                            </div>
+                                            <div className="col-md-6 align-self-center">
+                                                <div className="col-md-12 mb-4">
+                                                    <InputGray
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={1}
+                                                        withformgroup={0}
+                                                        requirevalidation={1}
+                                                        onChange={onChangeContrato}
+                                                        name="periodo_pago"
+                                                        type="text"
+                                                        value={form.periodo_pago}
+                                                        placeholder="PERIODO DE PAGO"
+                                                        iconclass="flaticon2-calendar-4"
+                                                        messageinc="Incorrecto. Ingresa el periodo de pago."
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-12 mb-4">
+                                                    <InputNumberGray
+                                                        formgroup="mb-0"
+                                                        requirevalidation={1}
+                                                        onChange={onChangeContrato}
+                                                        name="pagos_hr_extra"
+                                                        type="text"
+                                                        value={form.pagos_hr_extra}
+                                                        placeholder="PAGOS DE HORA EXTRA "
+                                                        iconclass="far fa-money-bill-alt"
+                                                        messageinc="Incorrecto. Ingresa el pago de hora extra."
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-12 mb-4">
+                                                    <InputNumberGray
+                                                        formgroup="mb-0"
+                                                        requirevalidation={1}
+                                                        onChange={onChangeContrato}
+                                                        name="total_obra"
+                                                        type="text"
+                                                        value={form.total_obra}
+                                                        placeholder="TOTAL DE LA OBRA"
+                                                        iconclass="fas fa-dollar-sign"
+                                                        messageinc="Incorrecto. Ingresa el total de la obra."
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-12">
+                                                    <InputNumberGray
+                                                        formgroup="mb-0"
+                                                        requirevalidation={1}
+                                                        onChange={onChangeContrato}
+                                                        name="dias"
+                                                        type="text"
+                                                        value={form.dias}
+                                                        placeholder="DÍAS DEL CONTRATO"
+                                                        iconclass="flaticon2-calendar-6"
+                                                        messageinc="Incorrecto. Ingresa el número de días del contrato."
+                                                    />
+                                                </div>
+                                                <div className="form-group col-md-12">
+                                                    <InputGray
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={1}
+                                                        withformgroup={0}
+                                                        requirevalidation={1}
+                                                        requirevalidation={1}
+                                                        onChange={onChangeContrato}
+                                                        name="dias_laborables"
+                                                        type="text"
+                                                        value={form.dias_laborables}
+                                                        placeholder="DÍAS LABORABLES"
+                                                        iconclass="flaticon2-calendar-9"
+                                                        messageinc="Incorrecto. Ingresa el número de días laborables."
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 mb-4">
+                                                <div className="col-md-12">
+                                                    <InputGray
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={1}
+                                                        withformgroup={0}
+                                                        requirevalidation={1}
+                                                        onChange={onChangeContrato}
+                                                        name="ubicacion_obra"
+                                                        type="text"
+                                                        value={form.ubicacion_obra}
+                                                        placeholder="UBICACIÓN DE LA OBRA"
+                                                        iconclass="flaticon2-map"
+                                                        messageinc="Incorrecto. Ingresa la ubicación de la obra."
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                }
+                                <div className="card-footer pt-3 pr-1 mt-5 pb-0">
+                                    <div className="row mx-0">
+                                        <div className="col-lg-12 text-right pr-0 pb-0">
+                                            {
+                                                empleado.contratos.length === 0 &&
+                                                <a className="btn btn-light h-40px px-3 text-success font-weight-bolder"
+                                                    onClick={
+                                                        (e) => {
+                                                            e.preventDefault();
+                                                            validateAlert(generarContrato, e, 'form-empleados-contrato')
+                                                        }
+                                                    }>
+                                                    <span className="svg-icon svg-icon-lg svg-icon-success">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
+                                                    </span>GENERAR CONTRATO
+                                        </a>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            {
-                                form.periodo === true &&
-                                <div className="col-md-6">
-                                    <InputNumberGray
-                                        formgroup="mb-0"
-                                        requirevalidation={1}
-                                        onChange={onChangeContrato}
-                                        name="dias"
-                                        type="text"
-                                        value={form.dias}
-                                        placeholder="DÍAS"
-                                        iconclass="flaticon2-calendar-6"
-                                        messageinc="Incorrecto. Ingresa el número de días."
-                                    />
-                                </div>
-                            }
-                        </div>
-                        :
-                        <div className="form-group row form-group-marginless mt-8">
-                            <div className="col-md-6 text-align-last-center">
-                                <label className="text-center font-weight-bolder text-bodymb-2">Fecha de inicio - Fecha final</label><br />
-                                <RangeCalendar
-                                    onChange={onChangeRange}
-                                    start={form.fechaInicio}
-                                    end={form.fechaFin}
-                                />
-                            </div>
-                            <div className="col-md-6 align-self-center">
-                                <div className="col-md-12 mb-4">
-                                    <InputGray
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                        withplaceholder={1}
-                                        withicon={1}
-                                        withformgroup={0}
-                                        requirevalidation={1}
-                                        onChange={onChangeContrato}
-                                        name="periodo_pago"
-                                        type="text"
-                                        value={form.periodo_pago}
-                                        placeholder="PERIODO DE PAGO"
-                                        iconclass="flaticon2-calendar-4"
-                                        messageinc="Incorrecto. Ingresa el periodo de pago."
-                                    />
-                                </div>
-                                <div className="form-group col-md-12 mb-4">
-                                    <InputNumberGray
-                                        formgroup="mb-0"
-                                        requirevalidation={1}
-                                        onChange={onChangeContrato}
-                                        name="pagos_hr_extra"
-                                        type="text"
-                                        value={form.pagos_hr_extra}
-                                        placeholder="PAGOS DE HORA EXTRA "
-                                        iconclass="far fa-money-bill-alt"
-                                        messageinc="Incorrecto. Ingresa el pago de hora extra."
-                                    />
-                                </div>
-                                <div className="form-group col-md-12">
-                                    <InputNumberGray
-                                        formgroup="mb-0"
-                                        requirevalidation={1}
-                                        onChange={onChangeContrato}
-                                        name="dias"
-                                        type="text"
-                                        value={form.dias}
-                                        placeholder="DÍAS"
-                                        iconclass="flaticon2-calendar-6"
-                                        messageinc="Incorrecto. Ingresa el número de días."
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-md-12 mb-4">
-                                <div  className="col-md-12">
-                                    <InputGray
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                        withplaceholder={1}
-                                        withicon={1}
-                                        withformgroup={0}
-                                        requirevalidation={1}
-                                        onChange={onChangeContrato}
-                                        name="ubicacion_obra"
-                                        type="text"
-                                        value={form.ubicacion_obra}
-                                        placeholder="UBICACIÓN DE LA OBRA"
-                                        iconclass="flaticon2-map"
-                                        messageinc="Incorrecto. Ingresa la ubicación de la obra."
-                                    />
-                                </div>        
-                            </div>
-                        </div>
+                            </Form>
+                            : ''
+                        : ''
                 }
-                {/* 
-                <a className="btn btn-light h-40px px-3 text-danger font-weight-bolder">
-                    <span className="svg-icon svg-icon-lg svg-icon-danger">
-                        <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
-                    </span>Cancelar
-                </a> */}
-                <div className="card-footer pt-3 pr-1 mt-5 pb-0">
-                    <div className="row mx-0">
-                        <div className="col-lg-12 text-right pr-0 pb-0">
-                            {
-                                empleado &&
-                                    empleado.contratos.length === 0 ?
-                                    <a className="btn btn-light h-40px px-3 text-success font-weight-bolder"
-                                        onClick={
-                                            (e) => {
-                                                e.preventDefault();
-                                                validateAlert(generarContrato, e, 'form-empleados-contrato')
-                                            }
-                                        }>
-                                        <span className="svg-icon svg-icon-lg svg-icon-success">
-                                            <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
-                                        </span>GENERAR CONTRATO
-                                    </a>
-                                    :
-                                    <a className="btn btn-light h-40px px-3 mr-2 text-info font-weight-bolder">
-                                        <span className="svg-icon svg-icon-lg svg-icon-info">
-                                            <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
-                                        </span>Renovar
-                                    </a>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </Form>
+            </>
         )
     }
 }
