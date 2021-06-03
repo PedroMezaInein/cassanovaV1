@@ -1,29 +1,27 @@
 import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
 import { Form } from 'react-bootstrap'
-import { Button, InputGray, RangeCalendar, InputNumberGray } from '../../form-components'
+import { InputGray, RangeCalendar, InputNumberGray } from '../../form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 class FormularioContrato extends Component {
 
     render() {
-        const { onSubmit, empleado, formContrato, onChangeContrato, onChangeRange, generarContrato } = this.props
-        console.log(formContrato,'formContrato-contrato')
-        console.log(empleado,'empleado')
+        const { onSubmit, empleado, form, onChangeContrato, onChangeRange, generarContrato } = this.props
         return (
-            <Form id="formContrato-empleados-contrato"
+            <Form id="form-empleados-contrato"
                 onSubmit={
                     (e) => {
                         e.preventDefault();
-                        validateAlert(onSubmit, e, 'formContrato-empleados-contrato')
+                        validateAlert(onSubmit, e, 'form-empleados-contrato')
                     }
                 }
             >
                 {
                     empleado &&
                         empleado.tipo_empleado === 'Administrativo' ?
-                        <div className="formContrato-group row formContrato-group-marginless mt-8">
-                            <div className={formContrato.periodo === true ? 'col-md-6' : 'col-md-12'}>
+                        <div className="form-group row form-group-marginless mt-8">
+                            <div className={form.periodo === true ? 'col-md-6' : 'col-md-12'}>
                                 <div className="mx-auto w-fit-content">
                                     <label className="font-weight-bolder">Periodo del contrato</label>
                                     <div className="radio-list">
@@ -33,7 +31,7 @@ class FormularioContrato extends Component {
                                                 name='periodo'
                                                 value={true}
                                                 onChange={onChangeContrato}
-                                                checked={formContrato.periodo === true ? true : false}
+                                                checked={form.periodo === true ? true : false}
                                             />
                                             <span></span>DÍAS</label>
                                         <label className="radio radio-outline radio-success">
@@ -42,14 +40,14 @@ class FormularioContrato extends Component {
                                                 name='periodo'
                                                 value={false}
                                                 onChange={onChangeContrato}
-                                                checked={formContrato.periodo === false ? true : false}
+                                                checked={form.periodo === false ? true : false}
                                             />
                                             <span></span>INDEFINIDO</label>
                                     </div>
                                 </div>
                             </div>
                             {
-                                formContrato.periodo === true &&
+                                form.periodo === true &&
                                 <div className="col-md-6">
                                     <InputNumberGray
                                         formgroup="mb-0"
@@ -57,7 +55,7 @@ class FormularioContrato extends Component {
                                         onChange={onChangeContrato}
                                         name="dias"
                                         type="text"
-                                        value={formContrato.dias}
+                                        value={form.dias}
                                         placeholder="DÍAS"
                                         iconclass="flaticon2-calendar-6"
                                         messageinc="Incorrecto. Ingresa el número de días."
@@ -66,13 +64,13 @@ class FormularioContrato extends Component {
                             }
                         </div>
                         :
-                        <div className="formContrato-group row formContrato-group-marginless mt-8">
+                        <div className="form-group row form-group-marginless mt-8">
                             <div className="col-md-6 text-align-last-center">
                                 <label className="text-center font-weight-bolder text-bodymb-2">Fecha de inicio - Fecha final</label><br />
                                 <RangeCalendar
                                     onChange={onChangeRange}
-                                    start={formContrato.fechaInicio}
-                                    end={formContrato.fechaFin}
+                                    start={form.fechaInicio}
+                                    end={form.fechaFin}
                                 />
                             </div>
                             <div className="col-md-6 align-self-center">
@@ -87,13 +85,41 @@ class FormularioContrato extends Component {
                                         onChange={onChangeContrato}
                                         name="periodo_pago"
                                         type="text"
-                                        value={formContrato.periodo_pago}
+                                        value={form.periodo_pago}
                                         placeholder="PERIODO DE PAGO"
                                         iconclass="flaticon2-calendar-4"
                                         messageinc="Incorrecto. Ingresa el periodo de pago."
                                     />
                                 </div>
-                                <div className="col-md-12 mb-4">
+                                <div className="form-group col-md-12 mb-4">
+                                    <InputNumberGray
+                                        formgroup="mb-0"
+                                        requirevalidation={1}
+                                        onChange={onChangeContrato}
+                                        name="pagos_hr_extra"
+                                        type="text"
+                                        value={form.pagos_hr_extra}
+                                        placeholder="PAGOS DE HORA EXTRA "
+                                        iconclass="far fa-money-bill-alt"
+                                        messageinc="Incorrecto. Ingresa el pago de hora extra."
+                                    />
+                                </div>
+                                <div className="form-group col-md-12">
+                                    <InputNumberGray
+                                        formgroup="mb-0"
+                                        requirevalidation={1}
+                                        onChange={onChangeContrato}
+                                        name="dias"
+                                        type="text"
+                                        value={form.dias}
+                                        placeholder="DÍAS"
+                                        iconclass="flaticon2-calendar-6"
+                                        messageinc="Incorrecto. Ingresa el número de días."
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-12 mb-4">
+                                <div  className="col-md-12">
                                     <InputGray
                                         withtaglabel={1}
                                         withtextlabel={1}
@@ -104,38 +130,12 @@ class FormularioContrato extends Component {
                                         onChange={onChangeContrato}
                                         name="ubicacion_obra"
                                         type="text"
-                                        value={formContrato.ubicacion_obra}
+                                        value={form.ubicacion_obra}
                                         placeholder="UBICACIÓN DE LA OBRA"
                                         iconclass="flaticon2-map"
                                         messageinc="Incorrecto. Ingresa la ubicación de la obra."
                                     />
-                                </div>
-                                <div className="formContrato-group col-md-12 mb-4">
-                                    <InputNumberGray
-                                        formgroup="mb-0"
-                                        requirevalidation={1}
-                                        onChange={onChangeContrato}
-                                        name="pagos_hr_extra"
-                                        type="text"
-                                        value={formContrato.pagos_hr_extra}
-                                        placeholder="PAGOS DE HORA EXTRA "
-                                        iconclass="far fa-money-bill-alt"
-                                        messageinc="Incorrecto. Ingresa el pago de hora extra."
-                                    />
-                                </div>
-                                <div className="formContrato-group col-md-12">
-                                    <InputNumberGray
-                                        formgroup="mb-0"
-                                        requirevalidation={1}
-                                        onChange={onChangeContrato}
-                                        name="dias"
-                                        type="text"
-                                        value={formContrato.dias}
-                                        placeholder="DÍAS"
-                                        iconclass="flaticon2-calendar-6"
-                                        messageinc="Incorrecto. Ingresa el número de días."
-                                    />
-                                </div>
+                                </div>        
                             </div>
                         </div>
                 }
@@ -155,7 +155,7 @@ class FormularioContrato extends Component {
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();
-                                                validateAlert(generarContrato, e, 'formContrato-empleados-contrato')
+                                                validateAlert(generarContrato, e, 'form-empleados-contrato')
                                             }
                                         }>
                                         <span className="svg-icon svg-icon-lg svg-icon-success">
