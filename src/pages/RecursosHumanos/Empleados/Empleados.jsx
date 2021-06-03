@@ -20,6 +20,7 @@ import moment from 'moment'
 import $ from "jquery";
 import { setSingleHeader } from '../../../functions/routers'
 import FormularioContrato from "../../../components/forms/recursoshumanos/FormularioContrato"
+import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript'
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -82,7 +83,7 @@ class Empleados extends Component {
         },
         formContrato: {
             fechaInicio: new Date(),
-            fechaFinal:'',
+            fechaFin: new Date(),
             periodo: '',
             dias: '',
             periodo_pago:'',
@@ -188,9 +189,27 @@ class Empleados extends Component {
             ...this.state,
             modal,
             empleado: '',
-            formContrato: this.clearForm()
+            formContrato: this.clearFormContrato()
         })
     }
+    clearFormContrato = () => {
+        const { formContrato } = this.state
+        let aux = Object.keys(formContrato)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    formContrato[element] = new Date()
+                    break;
+                default:
+                    formContrato[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formContrato;
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -711,7 +730,11 @@ class Empleados extends Component {
 
         if(type === 'radio'){
             formContrato.periodo = value === "true" ? true : false
+            if(formContrato.periodo === false){
+                formContrato.dias = ''
+            }
         }
+        
         this.setState({ 
             ...this.state,
             formContrato
@@ -722,6 +745,8 @@ class Empleados extends Component {
         const { formContrato } = this.state
         formContrato.fechaInicio = startDate
         formContrato.fechaFin = endDate
+        let dias = moment(endDate).diff(moment(startDate), 'days') + 1
+        formContrato.dias = dias
         this.setState({
             ...this.state,
             formContrato
@@ -798,7 +823,7 @@ class Empleados extends Component {
                     <EmpleadosCard empleado={empleado} />
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
-                    <FormularioContrato empleado={empleado} formContrato={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
+                    <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
                         generarContrato={this.generar}/>
                 </Modal>
             </Layout>
