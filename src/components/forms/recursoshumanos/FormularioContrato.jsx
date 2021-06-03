@@ -86,7 +86,7 @@ class FormularioContrato extends Component {
                                 //     <i className="flaticon2-writing"></i> FORMULARIO DE CONTRATO
                                 // </button>
                                 <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 ${showForm  ? 'active' : ''}`} onClick={() => { this.mostrarFormulario() }}>
-                                    <span className="text-dark-50 font-weight-bolder font-size-base mr-2">HISTORIAL DE CONTRATOS</span>
+                                    <span className="text-dark-50 font-weight-bolder font-size-base mr-2">FORMULARIO DE CONTRATO</span>
                                     <span className="symbol symbol-35 symbol-light-info">
                                         <span className="symbol-label font-size-h5 font-weight-bold"><i className="flaticon2-writing text-info"></i></span>
                                     </span>
