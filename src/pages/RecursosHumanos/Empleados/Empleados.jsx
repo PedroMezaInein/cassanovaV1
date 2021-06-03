@@ -755,12 +755,18 @@ class Empleados extends Component {
 
     generar = async() => {
         waitAlert()
-        const { empleado, formContrato } = this.state
+        const { empleado, formContrato, key } = this.state
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar`, formContrato, { headers: setSingleHeader(access_token)}).then(
+        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar?tipo_contrato=${key}`, formContrato, { headers: setSingleHeader(access_token)}).then(
             (response) => {
-                console.log(response)
-                Swal.close()
+                const { contrato, empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                var win = window.open(contrato.contrato, '_blank');
+                win.focus();
+                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato() })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
