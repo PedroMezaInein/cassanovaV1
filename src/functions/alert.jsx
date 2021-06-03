@@ -1,7 +1,9 @@
-import { Message, Done, Sending, Robot404, UserWarning } from '../components/Lottie/'
+import { Message, Done, Sending, Robot404, UserWarning, CommonLottie } from '../components/Lottie/'
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { UploadingFile } from '../assets/animate'
+
 const MySwal = withReactContent(Swal)
 
 const userWarningAlert = async(texto, confirmFunction, deniedFunction) => {
@@ -42,7 +44,21 @@ async function waitAlert() {
     })
 }
 
-export{ userWarningAlert, waitAlert }
+const sendFile = ( e ) => {
+    console.log(e, 'e')
+    MySwal.fire({
+        title: '¿Deseas confirmar el envío de archivos?',
+        html: 
+            <div className = 'row mx-0 justify-content-center'>
+                <div className = 'col-8'>
+                    <CommonLottie animationData = { UploadingFile } />
+                </div>
+            </div>
+        
+    })
+}
+
+export{ userWarningAlert, waitAlert, sendFile }
 
 export async function commentAlert() {
     MySwal.fire({
@@ -535,9 +551,6 @@ export function steps(action) {
             break
             }
         }
-        // if (currentStep === steps.length) {
-        //     Swal.fire(JSON.stringify(values))
-        // }
         if (currentStep === steps.length) {
             Swal.fire({
                 title: '¿ESTÁS SEGURO DE TUS RESPUESTAS?',
