@@ -7,8 +7,8 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import Moment from 'react-moment'
 import { onChangeAdjunto } from '../../../functions/onChanges'
 class FormularioContrato extends Component {
-    state ={
-        renovar:false
+    state = {
+        renovar: false
     }
     clearFiles = (name, key) => {
         const { form } = this.props
@@ -27,16 +27,14 @@ class FormularioContrato extends Component {
             form
         })
     }
-
     render() {
         const { empleado, form, onChangeContrato, onChangeRange, generarContrato } = this.props
         const { renovar } = this.state
-        console.log(empleado)
         return (
             <>
                 {
                     empleado ?
-                        empleado.contratos.length > 0 ?
+                        empleado.contratos.length > 0 &&
                         <div className="table-responsive-lg mt-8">
                             <table className="table table-responsive-lg table-head-custom table-head-bg table-borderless table-vertical-center w-100">
                                 <thead>
@@ -113,7 +111,11 @@ class FormularioContrato extends Component {
                                 </tbody>
                             </table>
                         </div>
-                        : (empleado.contratos.length === 0 || renovar ) ?
+                        : ''
+                }
+                {
+                    empleado ?
+                        (empleado.contratos.length === 0 || renovar) ?
                             <Form id="form-empleados-contrato"
                                 onSubmit={
                                     (e) => {
@@ -123,8 +125,7 @@ class FormularioContrato extends Component {
                                 }
                             >
                                 {
-                                    
-                                        empleado.tipo_empleado === 'Administrativo' ?
+                                    empleado.tipo_empleado === 'Administrativo' ?
                                         <div className="form-group row form-group-marginless mt-8">
                                             <div className={form.periodo === true ? 'col-md-6' : 'col-md-12'}>
                                                 <div className="mx-auto w-fit-content">
@@ -290,14 +291,14 @@ class FormularioContrato extends Component {
                                                     <span className="svg-icon svg-icon-lg svg-icon-success">
                                                         <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
                                                     </span>GENERAR CONTRATO
-                                                </a>
+                                        </a>
                                             }
                                         </div>
                                     </div>
                                 </div>
                             </Form>
                             : ''
-                        :''
+                        : ''
                 }
             </>
         )
