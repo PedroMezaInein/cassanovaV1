@@ -730,9 +730,9 @@ class Empleados extends Component {
 
     generar = async() => {
         waitAlert()
-        const { empleado } = this.state
+        const { empleado, formContrato } = this.state
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar`, { headers: setSingleHeader(access_token)}).then(
+        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar`, formContrato, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 console.log(response)
                 Swal.close()
