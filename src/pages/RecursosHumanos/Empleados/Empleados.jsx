@@ -88,7 +88,16 @@ class Empleados extends Component {
             dias: '',
             periodo_pago:'',
             ubicacion_obra:'',
-            pagos_hr_extra:''
+            pagos_hr_extra:'',
+            total_obra:'',
+            dias_laborables:'',
+            adjuntos: {
+                contrato: {
+                    value: '',
+                    placeholder: 'Contrato',
+                    files: []
+                }
+            }
         },
     }
     componentDidMount() {
@@ -201,6 +210,15 @@ class Empleados extends Component {
                 case 'fechaFin':
                     formContrato[element] = new Date()
                     break;
+                case 'adjuntos':
+                    formContrato[element] = {
+                        contrato: {
+                            value: '',
+                            placeholder: 'Contrato',
+                            files: []
+                        }
+                    }
+                break;
                 default:
                     formContrato[element] = ''
                     break;
@@ -755,19 +773,23 @@ class Empleados extends Component {
 
     generar = async() => {
         waitAlert()
-        const { empleado, formContrato } = this.state
+        const { empleado, formContrato, modal } = this.state
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar`, formContrato, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 console.log(response)
                 Swal.close()
+                modal.contrato = false
+                this.setState({
+                    ...this.state,
+                    modal
+                })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
         return (
@@ -824,7 +846,7 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
-                        generarContrato={this.generar}/>
+                        generarContrato={this.generar} clearFiles = { this.clearFiles }/>
                 </Modal>
             </Layout>
         )
