@@ -452,7 +452,7 @@ class Normas extends Component {
     render() {
         const { form, options, datos } = this.state
         return (
-            <Layout {...this.props}>
+            <Layout active='reportes' {...this.props}>
                 <div className="row">
                     <div className="col-lg-4">
                         <Card className="card-custom card-stretch gutter-b">

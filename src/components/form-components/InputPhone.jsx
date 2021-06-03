@@ -78,7 +78,7 @@ class InputPhone extends Component {
         const { inputPhone } = this.state
 
         return (
-            <div >
+            <div>
                 <label className="col-form-label">{placeholder}</label>
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
@@ -91,7 +91,7 @@ class InputPhone extends Component {
                         renderText={value => <div> {value} </div>}
                         onValueChange={(values) => this.onChange(values)}
 
-                        format="+52 1 (##) #### - ####"
+                        format="(##) #### - ####"
                         allowEmptyFormatting
                         mask="_"
                         placeholder={placeholder}

@@ -885,7 +885,7 @@ div#asideMenuScroll {
 }
 
 .timeline.timeline-6 .timeline-items .timeline-item .timeline-desc.timeline-desc-success::before {
-    background-color: #1BC5BD;
+    background-color: #388E3C;
 }
 
 .timeline.timeline-6 .timeline-items .timeline-item .timeline-desc.timeline-desc-light-success::before {
@@ -2306,4 +2306,23 @@ div#symbol-total-contactos{
 
 .w-65{
     width: 65%;
+}
+
+.w-fit-content{
+    width: fit-content;
+}
+
+.border-rh-info{
+    border-top: 2px solid #f3f6f9;
+    padding: 1.75rem 1.5rem;
+    border-top-left-radius: .42rem;
+    border-top-right-radius: .42rem;
+    padding-top: 46px;
+}
+.top-12px{
+    top: 12px
+}
+.ribbon-rh{
+    top: -2px;
+    left: 1px;
 }
