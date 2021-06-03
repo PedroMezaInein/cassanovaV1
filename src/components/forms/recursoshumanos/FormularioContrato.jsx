@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { validateAlert } from '../../../functions/alert'
+import { validateAlert, sendFile } from '../../../functions/alert'
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { InputGray, RangeCalendar, InputNumberGray, FileInput } from '../../form-components'
 import SVG from "react-inlinesvg";
@@ -54,7 +54,13 @@ class FormularioContrato extends Component {
                                             return (
                                                 <tr key={key}>
                                                     <td className="text-center">
-                                                        <a className="text-dark-75 font-weight-bolder font-size-lg">{contrato.indefinido === 1 ? 'PERIODO' : 'INDEFINIDO'}</a>
+                                                        <a className="text-dark-75 font-weight-bolder font-size-lg">
+                                                            { 
+                                                                contrato.tipo_contrato === 'obra' ? 
+                                                                    'OBRA DETERMINADA' 
+                                                                :  contrato.indefinido === 1 ? 'TIEMPO DETERMINADO' : 'INDEFINIDO'
+                                                            }
+                                                        </a>
                                                     </td>
                                                     <td>
                                                         <div className="w-fit-content mx-auto">
@@ -76,19 +82,11 @@ class FormularioContrato extends Component {
                                                         <span className={`label label-light-${contrato.terminado === 0 ? 'success' : 'danger'} label-pill label-inline font-weight-bolder`}>{contrato.terminado === 0 ? 'ACTIVO' : 'TERMINADO'}</span>
                                                     </td>
                                                     <td>
-                                                        <FileInput
-                                                            requirevalidation={0}
-                                                            onChangeAdjunto={(e) => { this.setState({ ...this.state, form: onChangeAdjunto(e, form) }); }}
-                                                            placeholder={'Adjuntar'}
-                                                            value={form.adjuntos.contrato.value}
-                                                            name='contrato'
-                                                            id='adjunto-contrato'
-                                                            accept="application/pdf"
-                                                            files={form.adjuntos.contrato.files}
-                                                            deleteAdjunto={this.clearFiles}
-                                                            classbtn='btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
-                                                            iconclass='flaticon-attachment text-primary'
-                                                        />
+                                                        <FileInput requirevalidation = { 0 } onChangeAdjunto = { ( e ) => { sendFile(e) }}
+                                                            placeholder = 'Adjuntar' value = { form.adjuntos.contrato.value } name = 'contrato' id = 'adjunto-contrato'
+                                                            accept = "application/pdf" files = { form.adjuntos.contrato.files } deleteAdjunto = { this.clearFiles }
+                                                            classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
+                                                            iconclass = 'flaticon-attachment text-primary' />
                                                     </td>
                                                     <td className="text-center">
                                                         <OverlayTrigger overlay={<Tooltip>RENOVAR</Tooltip>}>
