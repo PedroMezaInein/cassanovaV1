@@ -44,12 +44,21 @@ async function waitAlert() {
     })
 }
 
-const sendFile = ( e ) => {
-    console.log(e, 'e')
+const sendFileAlert = ( e ) => {
+    const { files, name, value } = e.target
+    let element = files[0]
+    const url = window.URL.createObjectURL(new Blob([e.target.files[0]]));
     MySwal.fire({
-        title: '¿Deseas confirmar el envío de archivos?',
+        title: '¿DESEAS CONFIRMAR EL ENVÍO DE ARCHIVOS?',
         html: 
             <div className = 'row mx-0 justify-content-center'>
+                <div className="col-md-12 text-center py-2">
+                    <div>
+                        <a target= '_blank' href = {URL.createObjectURL(element)}>
+                            {element.name}
+                        </a>
+                    </div>
+                </div>
                 <div className = 'col-8'>
                     <CommonLottie animationData = { UploadingFile } />
                 </div>
@@ -58,7 +67,7 @@ const sendFile = ( e ) => {
     })
 }
 
-export{ userWarningAlert, waitAlert, sendFile }
+export{ userWarningAlert, waitAlert, sendFileAlert }
 
 export async function commentAlert() {
     MySwal.fire({
