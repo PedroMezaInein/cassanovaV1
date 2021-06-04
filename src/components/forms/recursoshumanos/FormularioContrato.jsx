@@ -58,7 +58,7 @@ class FormularioContrato extends Component {
         })
     }
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato } = this.props
         const { renovar, showForm, showHistorial } = this.state
         return (
             <>
@@ -157,7 +157,7 @@ class FormularioContrato extends Component {
                                                             </a>
                                                         </OverlayTrigger>
                                                         <OverlayTrigger overlay={<Tooltip>CANCELAR</Tooltip>}>
-                                                            <a className="btn btn-light btn-icon h-35px font-weight-bolder">
+                                                            <a className="btn btn-light btn-icon h-35px font-weight-bolder" onClick={() => { cancelarContrato(contrato) }} >
                                                                 <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                                                                 </span>

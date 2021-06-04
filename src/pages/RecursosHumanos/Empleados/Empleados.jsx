@@ -814,6 +814,26 @@ class Empleados extends Component {
         //     console.log(error, 'error')
         // })
     }
+    cancelarContrato = element => {
+        deleteAlert('¿DESEAS CANCELAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element.id))
+    }
+    async cancelarContratoAxios(element) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + '' + element.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                doneAlert('El contrato fue cancelado con éxito.')
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
         return (
@@ -870,7 +890,7 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
-                        generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} />
+                        generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} cancelarContrato={this.cancelarContrato}/>
                 </Modal>
             </Layout>
         )
