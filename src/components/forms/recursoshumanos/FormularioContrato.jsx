@@ -343,16 +343,21 @@ class FormularioContrato extends Component {
                                         <div className="col-lg-12 text-right pr-0 pb-0">
                                             {
                                                 (empleado.contratos.length === 0 || renovar) ?
-                                                <a className="btn btn-light h-40px px-3 text-success font-weight-bolder"
+                                                <a className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
                                                             validateAlert(generarContrato, e, 'form-empleados-contrato')
                                                         }
                                                     }>
-                                                    <span className="svg-icon svg-icon-lg svg-icon-success">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
-                                                    </span>GENERAR CONTRATO
+                                                    <span className={`svg-icon svg-icon-lg svg-icon-${renovar ? 'info' : 'success'}`}>
+                                                        {
+                                                            renovar?
+                                                            <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                            :
+                                                            <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
+                                                        }
+                                                    </span>{renovar?'Renovar':'Generar'}
                                                 </a>
                                                 :''
                                             }
