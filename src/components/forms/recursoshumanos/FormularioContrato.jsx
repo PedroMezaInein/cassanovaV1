@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { validateAlert, sendFile } from '../../../functions/alert'
+import { validateAlert, sendFileAlert } from '../../../functions/alert'
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { InputGray, RangeCalendar, InputNumberGray, FileInput } from '../../form-components'
 import SVG from "react-inlinesvg";
@@ -143,7 +143,7 @@ class FormularioContrato extends Component {
                                                         <span className={`label label-light-${contrato.terminado === 0 ? 'success' : 'danger'} label-pill label-inline font-weight-bolder`}>{contrato.terminado === 0 ? 'ACTIVO' : 'TERMINADO'}</span>
                                                     </td>
                                                     <td>
-                                                        <FileInput requirevalidation = { 0 } onChangeAdjunto = { ( e ) => { sendFile(e) }}
+                                                        <FileInput requirevalidation = { 0 } onChangeAdjunto = { sendFileAlert }
                                                             placeholder = 'Adjuntar' value = { form.adjuntos.contrato.value } name = 'contrato' id = 'adjunto-contrato'
                                                             accept = "application/pdf" files = { form.adjuntos.contrato.files } deleteAdjunto = { this.clearFiles }
                                                             classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
@@ -157,13 +157,18 @@ class FormularioContrato extends Component {
                                                                 </span>
                                                             </a>
                                                         </OverlayTrigger>
-                                                        <OverlayTrigger overlay={<Tooltip>CANCELAR</Tooltip>}>
-                                                            <a className="btn btn-light btn-icon h-35px font-weight-bolder">
-                                                                <span className="svg-icon svg-icon-lg svg-icon-danger">
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
-                                                                </span>
-                                                            </a>
-                                                        </OverlayTrigger>
+                                                        {
+                                                            contrato.terminado === 0 ?
+                                                                <OverlayTrigger overlay={<Tooltip>TERMINAR</Tooltip>}>
+                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder">
+                                                                        <span className="svg-icon svg-icon-lg svg-icon-danger">
+                                                                            <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
+                                                                        </span>
+                                                                    </a>
+                                                                </OverlayTrigger>
+                                                            : <></>
+                                                        }
+                                                        
                                                     </td>
                                                 </tr>
                                             )
