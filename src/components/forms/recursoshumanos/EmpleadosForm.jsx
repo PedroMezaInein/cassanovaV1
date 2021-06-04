@@ -342,6 +342,27 @@ class EmpleadosForm extends Component {
                                                 />
                                             </div>
                                         </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-12">
+                                                <InputGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
+                                                    withicon={1}
+                                                    withformgroup={0}
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="domicilio"
+                                                    type="text"
+                                                    value={form.domicilio}
+                                                    placeholder="DOMICILIO"
+                                                    iconclass="fas fa-map-marker-alt"
+                                                    messageinc="Incorrecto. Ingresa el domicilio."
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
