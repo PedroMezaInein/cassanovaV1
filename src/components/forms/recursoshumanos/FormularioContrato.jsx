@@ -124,7 +124,7 @@ class FormularioContrato extends Component {
                                                             }
                                                         </a>
                                                     </td>
-                                                    <td>
+                                                    <td className="text-center">
                                                         <div className="w-fit-content mx-auto">
                                                             <div>
                                                                 <span className="text-dark-75 font-weight-bolder font-size-lg">Inicio:</span>
@@ -160,7 +160,7 @@ class FormularioContrato extends Component {
                                                     </td>
                                                     <td className="text-center">
                                                         <OverlayTrigger overlay={<Tooltip>RENOVAR</Tooltip>}>
-                                                            <a className="btn btn-light btn-icon h-35px mr-2 font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
+                                                            <a className="btn btn-light btn-icon h-35px font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
                                                                 <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
                                                                 </span>
@@ -169,7 +169,7 @@ class FormularioContrato extends Component {
                                                         {
                                                             contrato.terminado === 0 ?
                                                                 <OverlayTrigger overlay={<Tooltip>TERMINAR</Tooltip>}>
-                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder"  onClick={() => { cancelarContrato(contrato) }} >
+                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder ml-2"  onClick={() => { cancelarContrato(contrato) }} >
                                                                         <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                                                                         </span>
