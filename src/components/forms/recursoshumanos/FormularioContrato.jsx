@@ -30,11 +30,10 @@ class FormularioContrato extends Component {
         })
     }
     mostrarFormulario() {
-        const { showForm } = this.state
         $("#show_buttons").removeClass("d-none").addClass("d-flex");
         this.setState({
             ...this.state,
-            showForm: !showForm,
+            showForm: true,
             showHistorial: false
         })
     }
@@ -49,21 +48,19 @@ class FormularioContrato extends Component {
     }
     
     mostrarHistorial() {
-        const { showHistorial } = this.state
         $("#show_buttons").removeClass("d-none").addClass("d-flex");
         this.setState({
             ...this.state,
-            showHistorial: !showHistorial,
+            showHistorial: true,
             showForm: false
         })
     }
     render() {
         const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato } = this.props
         const { renovar, showForm, showHistorial } = this.state
-        console.log(empleado, 'empleado')
         return (
             <>
-                <div id='show_buttons' className="justify-content-end mb-10 mt-5 d-none">
+                <div id='show_buttons' className="justify-content-center mb-10 mt-5 d-none">
                     
                     {
                         empleado ?
@@ -71,8 +68,8 @@ class FormularioContrato extends Component {
                             // <button className={`btn font-weight-bolder ${showHistorial  ? 'btn-success' : 'btn-light-success'}`} onClick={() => { this.mostrarHistorial() }}>
                             //     <i className="flaticon2-list-2"></i> HISTORIAL DE CONTRATOS
                             // </button>
-                            <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 mr-5 ${showHistorial  ? 'active' : ''}`} onClick={() => { this.mostrarHistorial() }}>
-                                <span className="text-dark-50 font-weight-bolder font-size-base mr-2">HISTORIAL DE CONTRATOS</span>
+                            <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 mr-5 border ${showHistorial  ? 'active border-0' : ''}`} onClick={() => { this.mostrarHistorial() }}>
+                                <span className="text-dark-50 font-weight-bolder font-size-base mr-2">HISTORIAL</span>
                                 <span className="symbol symbol-35 symbol-light-primary">
                                     <span className="symbol-label font-size-h5 font-weight-bold"><i className="flaticon2-list-3 text-primary"></i></span>
                                 </span>
@@ -85,8 +82,8 @@ class FormularioContrato extends Component {
                                 // <button className={`btn font-weight-bolder ml-2 ${showForm  ? 'btn-primary' : 'btn-light-primary'}`} onClick={() => { this.mostrarFormulario() }}>
                                 //     <i className="flaticon2-writing"></i> FORMULARIO DE CONTRATO
                                 // </button>
-                                <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 ${showForm  ? 'active' : ''}`} onClick={() => { this.mostrarFormulario() }}>
-                                    <span className="text-dark-50 font-weight-bolder font-size-base mr-2">FORMULARIO DE CONTRATO</span>
+                                <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 border ${showForm  ? 'active border-0' : ''}`} onClick={() => { this.mostrarFormulario() }}>
+                                    <span className="text-dark-50 font-weight-bolder font-size-base mr-2">RENOVAR</span>
                                     <span className="symbol symbol-35 symbol-light-info">
                                         <span className="symbol-label font-size-h5 font-weight-bold"><i className="flaticon2-writing text-info"></i></span>
                                     </span>
@@ -131,7 +128,7 @@ class FormularioContrato extends Component {
                                                                 <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
                                                             </div>
                                                             {
-                                                                contrato.indefinido !== 1 || contrato.fecha_fin !== null &&
+                                                                contrato.fecha_fin !== null &&
                                                                 <div>
                                                                     <span className="text-dark-75 font-weight-bolder font-size-lg">Final:</span>
                                                                     <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
@@ -296,6 +293,7 @@ class FormularioContrato extends Component {
                                                         placeholder="PAGOS DE HORA EXTRA "
                                                         iconclass="far fa-money-bill-alt"
                                                         messageinc="Incorrecto. Ingresa el pago de hora extra."
+                                                        thousandseparator = { true }
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-12 mb-4">
@@ -309,6 +307,7 @@ class FormularioContrato extends Component {
                                                         placeholder="TOTAL DE LA OBRA"
                                                         iconclass="fas fa-dollar-sign"
                                                         messageinc="Incorrecto. Ingresa el total de la obra."
+                                                        thousandseparator = { true }
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-12">
@@ -363,36 +362,40 @@ class FormularioContrato extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                }
-                                <div className="card-footer pt-3 pr-1 mt-5 pb-0">
-                                    <div className="row mx-0">
-                                        <div className="col-lg-12 text-right pr-0 pb-0">
-                                            {
-                                                (empleado.contratos.length === 0 || renovar) ?
-                                                <a className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
-                                                    onClick={
-                                                        (e) => {
-                                                            e.preventDefault();
-                                                            if(empleado.contratos.length === 0)
-                                                                validateAlert(generarContrato, e, 'form-empleados-contrato')
-                                                            else
-                                                                validateAlert(renovarContrato, e, 'form-empleados-contrato')
-                                                        }
-                                                    }>
-                                                    <span className={`svg-icon svg-icon-lg svg-icon-${renovar ? 'info' : 'success'}`}>
-                                                        {
-                                                            renovar?
-                                                            <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
-                                                            :
-                                                            <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
-                                                        }
-                                                    </span>{renovar?'Renovar':'Generar'}
-                                                </a>
-                                                :''
-                                            }
+                                }      
+                                {
+                                    ( (form.periodo === false)  || (form.periodo === true && form.dias !== '' ) || (form.periodo_pago !== '' && form.pagos_hr_extra !== '' && form.total_obra !== '' && form.dias !== '' && form.dias_laborables !== '' && form.ubicacion_obra !== '')) ?
+                                    <div className="card-footer pt-3 pr-1 mt-5 pb-0">
+                                        <div className="row mx-0">
+                                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                                {
+                                                    (empleado.contratos.length === 0 || renovar) ?
+                                                    <a className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
+                                                        onClick={
+                                                            (e) => {
+                                                                e.preventDefault();
+                                                                if(empleado.contratos.length === 0)
+                                                                    validateAlert(generarContrato, e, 'form-empleados-contrato')
+                                                                else
+                                                                    validateAlert(renovarContrato, e, 'form-empleados-contrato')
+                                                            }
+                                                        }>
+                                                        <span className={`svg-icon svg-icon-lg svg-icon-${renovar ? 'info' : 'success'}`}>
+                                                            {
+                                                                renovar?
+                                                                <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                                :
+                                                                <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
+                                                            }
+                                                        </span>{renovar?'Renovar':'Generar'}
+                                                    </a>
+                                                    :''
+                                                }
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    :''
+                                }
                             </Form>
                             </div>
                             : ''

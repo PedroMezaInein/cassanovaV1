@@ -74,24 +74,7 @@ class Empleados extends Component {
         },
         options: {
             empresas: [],
-            departamentos: [],
-            estado_civil:[
-                {
-                    name: "SOLTERO", value: "soltero", label: "SOLTERO"
-                },
-                {
-                    name: "CASADO", value: "casado", label: "CASADO"
-                },
-                {
-                    name: "SEPARADO", value: "separado", label: "SEPARADO"
-                },
-                {
-                    name: "DIVORCIADO", value: "divorciado", label: "DIVORCIADO"
-                },
-                {
-                    name: "VIUDO", value: "viudo", label: "VIUDO"
-                }
-            ],
+            departamentos: []
         }
     }
     componentDidMount() {
@@ -116,7 +99,6 @@ class Empleados extends Component {
                     if (state.empleado) {
                         const { form, options} = this.state
                         const { empleado } = state
-                        console.log(empleado)
                         form.nombre = empleado.nombre
                         form.curp = empleado.curp
                         form.rfc = empleado.rfc
@@ -143,13 +125,12 @@ class Empleados extends Component {
                         form.departamentos = []
                         form.nacionalidad = empleado.nacionalidad
                         form.fecha_nacimiento = empleado.fecha_nacimiento !== null ? new Date(moment(empleado.fecha_nacimiento)):''
-                        form.estado_civil = empleado.estado_civil
                         form.domicilio = empleado.domicilio
                         form.telefono_movil = empleado.telefono_movil
                         form.telefono_particular = empleado.telefono_particular
                         form.salario_imss = empleado.salario_imss
                         form.salario_bruto = empleado.salario_bruto
-
+                        form.estado_civil = empleado.estado_civil
                         empleado.departamentos.forEach((elemento) => {
                             form.departamentos.push({
                                 value: elemento.id.toString(),
