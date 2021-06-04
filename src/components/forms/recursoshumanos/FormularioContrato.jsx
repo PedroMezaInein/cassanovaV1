@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { validateAlert, sendFileAlert } from '../../../functions/alert'
+import { validateAlert } from '../../../functions/alert'
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { InputGray, RangeCalendar, InputNumberGray, FileInput } from '../../form-components'
+import { InputGray, RangeCalendar, InputNumberGray, FileInput, CalendarDay } from '../../form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Moment from 'react-moment'
@@ -201,7 +201,7 @@ class FormularioContrato extends Component {
                             >
                                 {
                                     empleado.tipo_empleado === 'Administrativo' ?
-                                        <div className="form-group row form-group-marginless mt-8">
+                                        <div className="form-group row form-group-marginless mt-8 align-items-center">
                                             <div className={form.periodo === true ? 'col-md-6' : 'col-md-12'}>
                                                 <div className="mx-auto w-fit-content">
                                                     <label className="font-weight-bolder">Periodo del contrato</label>
@@ -241,6 +241,17 @@ class FormularioContrato extends Component {
                                                         iconclass="flaticon2-calendar-6"
                                                         messageinc="Incorrecto. Ingresa el número de días."
                                                     />
+                                                </div>
+                                            }
+                                            {
+                                                renovar &&
+                                                <div className="col-md-12 text-center align-self-center mt-10">
+                                                    <div className="text-center">
+                                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                            <label className="text-center font-weight-bolder">Fecha de contrato</label>
+                                                        </div>
+                                                        <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fecha_inicio' requirevalidation={1} withformgroup={0} />
+                                                    </div>
                                                 </div>
                                             }
                                         </div>
