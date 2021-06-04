@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { validateAlert, sendFileAlert } from '../../../functions/alert'
+import { validateAlert } from '../../../functions/alert'
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { InputGray, RangeCalendar, InputNumberGray, FileInput } from '../../form-components'
+import { InputGray, RangeCalendar, InputNumberGray, FileInput, CalendarDay } from '../../form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Moment from 'react-moment'
@@ -58,8 +58,9 @@ class FormularioContrato extends Component {
         })
     }
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato } = this.props
         const { renovar, showForm, showHistorial } = this.state
+        console.log(empleado, 'empleado')
         return (
             <>
                 <div id='show_buttons' className="justify-content-end mb-10 mt-5 d-none">
@@ -119,18 +120,18 @@ class FormularioContrato extends Component {
                                                             { 
                                                                 contrato.tipo_contrato === 'obra' ? 
                                                                     'OBRA DETERMINADA' 
-                                                                :  contrato.indefinido === 1 ? 'TIEMPO DETERMINADO' : 'INDEFINIDO'
+                                                                :  contrato.indefinido === 1 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
                                                             }
                                                         </a>
                                                     </td>
-                                                    <td>
+                                                    <td className="text-center">
                                                         <div className="w-fit-content mx-auto">
                                                             <div>
                                                                 <span className="text-dark-75 font-weight-bolder font-size-lg">Inicio:</span>
                                                                 <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
                                                             </div>
                                                             {
-                                                                contrato.indefinido !== 0 &&
+                                                                contrato.indefinido !== 1 || contrato.fecha_fin !== null &&
                                                                 <div>
                                                                     <span className="text-dark-75 font-weight-bolder font-size-lg">Final:</span>
                                                                     <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
@@ -159,7 +160,7 @@ class FormularioContrato extends Component {
                                                     </td>
                                                     <td className="text-center">
                                                         <OverlayTrigger overlay={<Tooltip>RENOVAR</Tooltip>}>
-                                                            <a className="btn btn-light btn-icon h-35px mr-2 font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
+                                                            <a className="btn btn-light btn-icon h-35px font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
                                                                 <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
                                                                 </span>
@@ -168,7 +169,7 @@ class FormularioContrato extends Component {
                                                         {
                                                             contrato.terminado === 0 ?
                                                                 <OverlayTrigger overlay={<Tooltip>TERMINAR</Tooltip>}>
-                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder">
+                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder ml-2"  onClick={() => { cancelarContrato(contrato) }} >
                                                                         <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                                                                         </span>
@@ -201,7 +202,7 @@ class FormularioContrato extends Component {
                             >
                                 {
                                     empleado.tipo_empleado === 'Administrativo' ?
-                                        <div className="form-group row form-group-marginless mt-8">
+                                        <div className="form-group row form-group-marginless mt-8 align-items-center">
                                             <div className={form.periodo === true ? 'col-md-6' : 'col-md-12'}>
                                                 <div className="mx-auto w-fit-content">
                                                     <label className="font-weight-bolder">Periodo del contrato</label>
@@ -241,6 +242,17 @@ class FormularioContrato extends Component {
                                                         iconclass="flaticon2-calendar-6"
                                                         messageinc="Incorrecto. Ingresa el número de días."
                                                     />
+                                                </div>
+                                            }
+                                            {
+                                                renovar &&
+                                                <div className="col-md-12 text-center align-self-center mt-10">
+                                                    <div className="text-center">
+                                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                            <label className="text-center font-weight-bolder">Fecha de contrato</label>
+                                                        </div>
+                                                        <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
+                                                    </div>
                                                 </div>
                                             }
                                         </div>
@@ -360,7 +372,10 @@ class FormularioContrato extends Component {
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
-                                                            validateAlert(generarContrato, e, 'form-empleados-contrato')
+                                                            if(empleado.contratos.length === 0)
+                                                                validateAlert(generarContrato, e, 'form-empleados-contrato')
+                                                            else
+                                                                validateAlert(renovarContrato, e, 'form-empleados-contrato')
                                                         }
                                                     }>
                                                     <span className={`svg-icon svg-icon-lg svg-icon-${renovar ? 'info' : 'success'}`}>
