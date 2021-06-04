@@ -826,15 +826,16 @@ class Empleados extends Component {
     async cancelarContratoAxios(element) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + '' + element.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { empleado } = this.state
+        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${element}/terminar`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                const { empleado } = response.data
                 const { key } = this.state
                 if (key === 'administrativo') { this.getEmpleadosAxios() }
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
-                doneAlert('El contrato fue cancelado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({...this.state, empleado: empleado})
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

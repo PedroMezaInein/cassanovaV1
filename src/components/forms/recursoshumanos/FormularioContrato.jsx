@@ -60,6 +60,7 @@ class FormularioContrato extends Component {
     render() {
         const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato } = this.props
         const { renovar, showForm, showHistorial } = this.state
+        console.log(empleado, 'empleado')
         return (
             <>
                 <div id='show_buttons' className="justify-content-end mb-10 mt-5 d-none">
@@ -130,7 +131,7 @@ class FormularioContrato extends Component {
                                                                 <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
                                                             </div>
                                                             {
-                                                                contrato.indefinido !== 1 &&
+                                                                contrato.indefinido !== 1 || contrato.fecha_fin !== null &&
                                                                 <div>
                                                                     <span className="text-dark-75 font-weight-bolder font-size-lg">Final:</span>
                                                                     <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
