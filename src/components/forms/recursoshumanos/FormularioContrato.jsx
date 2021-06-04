@@ -58,7 +58,7 @@ class FormularioContrato extends Component {
         })
     }
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato } = this.props
         const { renovar, showForm, showHistorial } = this.state
         console.log(empleado, 'empleado')
         return (
@@ -361,7 +361,10 @@ class FormularioContrato extends Component {
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
-                                                            validateAlert(generarContrato, e, 'form-empleados-contrato')
+                                                            if(empleado.contratos.length === 0 || renovar)
+                                                                validateAlert(generarContrato, e, 'form-empleados-contrato')
+                                                            else
+                                                                validateAlert(renovarContrato, e, 'form-empleados-contrato')
                                                         }
                                                     }>
                                                     <span className={`svg-icon svg-icon-lg svg-icon-${renovar ? 'info' : 'success'}`}>
