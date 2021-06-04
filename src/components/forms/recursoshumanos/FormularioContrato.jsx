@@ -102,10 +102,11 @@ class FormularioContrato extends Component {
                                 <thead>
                                     <tr>
                                         <th className="text-center" style={{ minWidth: '155px' }}>Tipo de contrato</th>
-                                        <th style={{ minWidth: '160px' }}>Fecha</th>
-                                        <th style={{ minWidth: '115px' }}>Estatus</th>
-                                        <th style={{ minWidth: '120px' }}>Contrato</th>
-                                        <th style={{ minWidth: '90px' }}></th>
+                                        <th style={{ minWidth: '140px' }}>Fecha</th>
+                                        <th style={{ minWidth: '100px' }}>Estatus</th>
+                                        <th style={{ minWidth: '125px' }}>Adjuntar</th>
+                                        <th style={{ minWidth: '102px' }}>Contrato</th>
+                                        <th style={{ minWidth: '103px' }}></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -137,16 +138,24 @@ class FormularioContrato extends Component {
                                                             }
                                                         </div>
                                                     </td>
-                                                    {/* `icon-${item.isCollapsed ? 'expander' : 'collapser'} */}
                                                     <td className="text-center">
                                                         <span className={`label label-light-${contrato.terminado === 0 ? 'success' : 'danger'} label-pill label-inline font-weight-bolder`}>{contrato.terminado === 0 ? 'ACTIVO' : 'TERMINADO'}</span>
                                                     </td>
-                                                    <td>
+                                                    <td className="text-center">
                                                         <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos }
-                                                            placeholder = 'Adjuntar' value = { form.adjuntos.contrato.value } name = 'contrato' id = 'adjunto-contrato'
+                                                            placeholder = 'CONTRATO' value = { form.adjuntos.contrato.value } name = 'contrato' id = 'adjunto-contrato'
                                                             accept = "application/pdf" files = { form.adjuntos.contrato.files } deleteAdjunto = { this.clearFiles }
                                                             classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
                                                             iconclass = 'flaticon-attachment text-primary' />
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <div className="w-fit-content mx-auto">
+                                                            <a className="text-primary font-weight-bolder text-hover-success d-block" rel="noopener noreferrer" href={contrato.contrato} target="_blank">GENERADO</a>
+                                                            {
+                                                                contrato.contrato_firmado !== null &&
+                                                                <a className="text-primary font-weight-bolder  mt-1 text-hover-success" rel="noopener noreferrer" href={contrato.contrato_firmado} target="_blank">FIRMADO</a>
+                                                            }
+                                                        </div>
                                                     </td>
                                                     <td className="text-center">
                                                         <OverlayTrigger overlay={<Tooltip>RENOVAR</Tooltip>}>
