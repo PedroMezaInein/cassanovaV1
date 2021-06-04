@@ -123,7 +123,7 @@ class FormularioContrato extends Component {
                                                             }
                                                         </a>
                                                     </td>
-                                                    <td>
+                                                    <td className="text-center">
                                                         <div className="w-fit-content mx-auto">
                                                             <div>
                                                                 <span className="text-dark-75 font-weight-bolder font-size-lg">Inicio:</span>
