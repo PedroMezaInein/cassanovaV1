@@ -52,8 +52,11 @@ const sendFileAlert = ( elemento, action ) => {
         html: 
             <div className = 'row mx-0 justify-content-center'>
                 <div className="col-md-12 text-center py-2">
+                    <div className="text-dark-75 font-weight-bolder font-size-lg">
+                        Documento Adjuntado:
+                    </div>
                     <div>
-                        <a target= '_blank' href = {URL.createObjectURL(element)}>
+                        <a className="text-muted font-weight-bold text-hover-primary" target= '_blank' href = {URL.createObjectURL(element)}>
                             {element.name}
                         </a>
                     </div>
@@ -158,13 +161,13 @@ export function errorAlertRedirectOnDissmis(text, history, ruta) {
     })
 }
 
-export function deleteAlert(title,text,action) {
+export function deleteAlert(title,text,action, text_button) {
     MySwal.fire({
         title: title,
         text:text,
         showConfirmButton: true,
         showCancelButton: true,
-        confirmButtonText: 'ELIMINAR',
+        confirmButtonText: text_button? text_button: 'ELIMINAR',
         cancelButtonText: 'CANCELAR',
         reverseButtons: true,
         customClass: {

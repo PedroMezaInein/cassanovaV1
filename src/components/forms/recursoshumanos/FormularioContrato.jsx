@@ -131,7 +131,7 @@ class FormularioContrato extends Component {
                                                                 <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
                                                             </div>
                                                             {
-                                                                contrato.indefinido !== 1 || contrato.fecha_fin !== null &&
+                                                                contrato.fecha_fin !== null &&
                                                                 <div>
                                                                     <span className="text-dark-75 font-weight-bolder font-size-lg">Final:</span>
                                                                     <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
@@ -296,6 +296,7 @@ class FormularioContrato extends Component {
                                                         placeholder="PAGOS DE HORA EXTRA "
                                                         iconclass="far fa-money-bill-alt"
                                                         messageinc="Incorrecto. Ingresa el pago de hora extra."
+                                                        thousandseparator = { true }
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-12 mb-4">
@@ -309,6 +310,7 @@ class FormularioContrato extends Component {
                                                         placeholder="TOTAL DE LA OBRA"
                                                         iconclass="fas fa-dollar-sign"
                                                         messageinc="Incorrecto. Ingresa el total de la obra."
+                                                        thousandseparator = { true }
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-12">
@@ -364,35 +366,40 @@ class FormularioContrato extends Component {
                                             </div>
                                         </div>
                                 }
-                                <div className="card-footer pt-3 pr-1 mt-5 pb-0">
-                                    <div className="row mx-0">
-                                        <div className="col-lg-12 text-right pr-0 pb-0">
-                                            {
-                                                (empleado.contratos.length === 0 || renovar) ?
-                                                <a className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
-                                                    onClick={
-                                                        (e) => {
-                                                            e.preventDefault();
-                                                            if(empleado.contratos.length === 0)
-                                                                validateAlert(generarContrato, e, 'form-empleados-contrato')
-                                                            else
-                                                                validateAlert(renovarContrato, e, 'form-empleados-contrato')
-                                                        }
-                                                    }>
-                                                    <span className={`svg-icon svg-icon-lg svg-icon-${renovar ? 'info' : 'success'}`}>
-                                                        {
-                                                            renovar?
-                                                            <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
-                                                            :
-                                                            <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
-                                                        }
-                                                    </span>{renovar?'Renovar':'Generar'}
-                                                </a>
-                                                :''
-                                            }
+                                {console.log(form)}       
+                                {
+                                    ( (form.periodo === false)  || (form.periodo === true && form.dias !== '' ) || (form.periodo_pago !== '' && form.pagos_hr_extra !== '' && form.total_obra !== '' && form.dias !== '' && form.dias_laborables !== '' && form.ubicacion_obra !== '')) ?
+                                    <div className="card-footer pt-3 pr-1 mt-5 pb-0">
+                                        <div className="row mx-0">
+                                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                                {
+                                                    (empleado.contratos.length === 0 || renovar) ?
+                                                    <a className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
+                                                        onClick={
+                                                            (e) => {
+                                                                e.preventDefault();
+                                                                if(empleado.contratos.length === 0)
+                                                                    validateAlert(generarContrato, e, 'form-empleados-contrato')
+                                                                else
+                                                                    validateAlert(renovarContrato, e, 'form-empleados-contrato')
+                                                            }
+                                                        }>
+                                                        <span className={`svg-icon svg-icon-lg svg-icon-${renovar ? 'info' : 'success'}`}>
+                                                            {
+                                                                renovar?
+                                                                <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                                :
+                                                                <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
+                                                            }
+                                                        </span>{renovar?'Renovar':'Generar'}
+                                                    </a>
+                                                    :''
+                                                }
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    :''
+                                }
                             </Form>
                             </div>
                             : ''

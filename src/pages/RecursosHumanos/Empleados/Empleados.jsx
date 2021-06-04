@@ -844,7 +844,7 @@ class Empleados extends Component {
         
     }
     cancelarContrato = element => {
-        deleteAlert('¿DESEAS CANCELAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element.id))
+        deleteAlert('¿DESEAS TERMINAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element.id), 'SI, TERMINAR')
     }
     async cancelarContratoAxios(element) {
         waitAlert()
