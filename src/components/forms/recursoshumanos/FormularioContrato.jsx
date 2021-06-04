@@ -139,6 +139,7 @@ class FormularioContrato extends Component {
                                                             }
                                                         </div>
                                                     </td>
+                                                    
                                                     <td className="text-center">
                                                         <span className={`label label-light-${contrato.terminado === 0 ? 'success' : 'danger'} label-pill label-inline font-weight-bolder`}>{contrato.terminado === 0 ? 'ACTIVO' : 'TERMINADO'}</span>
                                                     </td>
