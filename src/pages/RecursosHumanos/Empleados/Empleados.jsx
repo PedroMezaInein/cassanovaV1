@@ -9,7 +9,7 @@ import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, TEL } from '../../../cons
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert, sendFileAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../../components/cards'
@@ -18,9 +18,8 @@ import { Update } from '../../../components/Lottie'
 import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray, RangeCalendar } from '../../../components/form-components'
 import moment from 'moment'
 import $ from "jquery";
-import { setSingleHeader } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 import FormularioContrato from "../../../components/forms/recursoshumanos/FormularioContrato"
-import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript'
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -773,7 +772,7 @@ class Empleados extends Component {
 
     generar = async() => {
         waitAlert()
-        const { empleado, formContrato, key } = this.state
+        const { empleado, formContrato, key, modal } = this.state
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar?tipo_contrato=${key}`, formContrato, { headers: setSingleHeader(access_token)}).then(
             (response) => {
@@ -781,10 +780,84 @@ class Empleados extends Component {
                 const { key } = this.state
                 if (key === 'administrativo') { this.getEmpleadosAxios() }
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
+                modal.contrato = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
                 var win = window.open(contrato.contrato, '_blank');
                 win.focus();
-                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato() })
+                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    renovarContrato = async() => {
+        waitAlert()
+        const { empleado, formContrato, key, modal } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/renovar?tipo_contrato=${key}`, formContrato, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const { contrato, empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                modal.contrato = false
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                var win = window.open(contrato.contrato, '_blank');
+                win.focus();
+                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onChangeAdjuntos = valor => {
+        const { name, files } = valor.target
+        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success);})
+    }
+
+    async addAdjuntoAxios(valor) {
+        waitAlert()
+        const { name, file } = valor.target
+        const { access_token } = this.props.authUser
+        const { empleado } = this.state
+        let data = new FormData();
+        if(file){
+            data.append(`file`, file)
+            await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar`, data, { headers: setFormHeader(access_token) }).then(
+                (response) => {
+                    const { empleado } = this.state
+                    const { key } = this.state
+                    if (key === 'administrativo') { this.getEmpleadosAxios() }
+                    if (key === 'obra') { this.getEmpleadosObraAxios() }
+                    this.setState({...this.state, empleado: empleado})
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{ errorAlert('Adjunta solo un archivo') }
+        
+    }
+    cancelarContrato = element => {
+        deleteAlert('¿DESEAS CANCELAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element.id))
+    }
+    async cancelarContratoAxios(element) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { empleado } = this.state
+        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${element}/terminar`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                this.setState({...this.state, empleado: empleado})
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -847,7 +920,8 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
-                        generarContrato={this.generar} clearFiles = { this.clearFiles }/>
+                        generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
+                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } />
                 </Modal>
             </Layout>
         )
