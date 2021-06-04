@@ -792,6 +792,28 @@ class Empleados extends Component {
         })
     }
 
+    renovarContrato = async() => {
+        waitAlert()
+        const { empleado, formContrato, key, modal } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/renovar?tipo_contrato=${key}`, formContrato, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const { contrato, empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                modal.contrato = false
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                var win = window.open(contrato.contrato, '_blank');
+                win.focus();
+                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onChangeAdjuntos = valor => {
         const { name, files } = valor.target
         sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success);})
@@ -827,15 +849,16 @@ class Empleados extends Component {
     async cancelarContratoAxios(element) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + '' + element.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { empleado } = this.state
+        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${element}/terminar`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                const { empleado } = response.data
                 const { key } = this.state
                 if (key === 'administrativo') { this.getEmpleadosAxios() }
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
-                doneAlert('El contrato fue cancelado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({...this.state, empleado: empleado})
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -897,7 +920,8 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
-                        generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} cancelarContrato={this.cancelarContrato}/>
+                        generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
+                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } />
                 </Modal>
             </Layout>
         )
