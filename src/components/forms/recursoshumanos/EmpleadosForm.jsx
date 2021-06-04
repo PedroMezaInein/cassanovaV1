@@ -242,18 +242,21 @@ class EmpleadosForm extends Component {
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <SelectSearchGray
+                                                <InputGray
                                                     withtaglabel={1}
                                                     withtextlabel={1}
-                                                    customdiv="mb-0"
+                                                    withplaceholder={1}
+                                                    withicon={1}
+                                                    withformgroup={0}
+                                                    requirevalidation={0}
                                                     formeditado={formeditado}
-                                                    options={options.estado_civil}
-                                                    placeholder="Selecciona el estado civil"
+                                                    onChange={onChange}
                                                     name="estado_civil"
+                                                    type="text"
                                                     value={form.estado_civil}
-                                                    onChange={this.updateEstadoCivil}
-                                                    iconclass={"far fa-building"}
-                                                    messageinc="Incorrecto. Selecciona el estado civil"
+                                                    placeholder="Estado civil"
+                                                    iconclass={"far fa-heart"}
+                                                    messageinc="Incorrecto. Ingresa el estado civil"
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -267,7 +270,6 @@ class EmpleadosForm extends Component {
                                                     formeditado={formeditado}
                                                     onChange={onChange}
                                                     name="nombre_emergencia"
-                                                    type="text"
                                                     value={form.nombre_emergencia}
                                                     placeholder="CONTACTO DE EMERGENCIA"
                                                     iconclass={"fas fa-user-circle"}
@@ -339,6 +341,27 @@ class EmpleadosForm extends Component {
                                                     iconclass={"fas fa-money-check-alt"}
                                                     messageinc="Incorrecto. Ingresa la clabe."
                                                     typeformat ="##################"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-12">
+                                                <InputGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
+                                                    withicon={1}
+                                                    withformgroup={0}
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChange={onChange}
+                                                    name="domicilio"
+                                                    type="text"
+                                                    value={form.domicilio}
+                                                    placeholder="DOMICILIO"
+                                                    iconclass="fas fa-map-marker-alt"
+                                                    messageinc="Incorrecto. Ingresa el domicilio."
                                                 />
                                             </div>
                                         </div>
