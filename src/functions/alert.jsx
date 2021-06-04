@@ -44,21 +44,27 @@ async function waitAlert() {
     })
 }
 
-const sendFile = ( e ) => {
-    console.log(e, 'e')
+export function sendFile ( action ) {
     MySwal.fire({
-        title: '¿Deseas confirmar el envío de archivos?',
+        title: '¿DESEAS CONFIRMAR EL ENVÍO DE ARCHIVOS?',
         html: 
             <div className = 'row mx-0 justify-content-center'>
                 <div className = 'col-8'>
                     <CommonLottie animationData = { UploadingFile } />
                 </div>
-            </div>
-        
+            </div>,
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: "SI, ENVIAR",
+        cancelButtonText: 'CANCELAR',
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
     })
 }
 
-export{ userWarningAlert, waitAlert, sendFile }
+export{ userWarningAlert, waitAlert }
 
 export async function commentAlert() {
     MySwal.fire({
