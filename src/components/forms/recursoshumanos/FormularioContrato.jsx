@@ -120,7 +120,7 @@ class FormularioContrato extends Component {
                                                             { 
                                                                 contrato.tipo_contrato === 'obra' ? 
                                                                     'OBRA DETERMINADA' 
-                                                                :  contrato.indefinido === 1 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
+                                                                :  contrato.indefinido === 0 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
                                                             }
                                                         </a>
                                                     </td>
