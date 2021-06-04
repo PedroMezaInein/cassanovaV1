@@ -12,7 +12,6 @@ class CommonLottie extends Component{
                 preserveAspectRatio: 'xMidYMid slice'
             }
         };
-        console.log(animationData)
         return(
             <div className="mx-auto">
                 <Lottie  options = { defaultOptions } isStopped = { false } isPaused = { false } />
