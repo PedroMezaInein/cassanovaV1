@@ -251,7 +251,7 @@ class FormularioContrato extends Component {
                                                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                                             <label className="text-center font-weight-bolder">Fecha de contrato</label>
                                                         </div>
-                                                        <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fecha_inicio' requirevalidation={1} withformgroup={0} />
+                                                        <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
                                                     </div>
                                                 </div>
                                             }
@@ -372,7 +372,7 @@ class FormularioContrato extends Component {
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
-                                                            if(empleado.contratos.length === 0 || renovar)
+                                                            if(empleado.contratos.length === 0)
                                                                 validateAlert(generarContrato, e, 'form-empleados-contrato')
                                                             else
                                                                 validateAlert(renovarContrato, e, 'form-empleados-contrato')
