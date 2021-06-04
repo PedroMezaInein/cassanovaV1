@@ -119,7 +119,7 @@ class FormularioContrato extends Component {
                                                             { 
                                                                 contrato.tipo_contrato === 'obra' ? 
                                                                     'OBRA DETERMINADA' 
-                                                                :  contrato.indefinido === 1 ? 'TIEMPO DETERMINADO' : 'INDEFINIDO'
+                                                                :  contrato.indefinido === 1 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
                                                             }
                                                         </a>
                                                     </td>
@@ -130,7 +130,7 @@ class FormularioContrato extends Component {
                                                                 <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
                                                             </div>
                                                             {
-                                                                contrato.indefinido !== 0 &&
+                                                                contrato.indefinido !== 1 &&
                                                                 <div>
                                                                     <span className="text-dark-75 font-weight-bolder font-size-lg">Final:</span>
                                                                     <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
