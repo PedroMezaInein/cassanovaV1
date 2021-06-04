@@ -168,7 +168,7 @@ class FormularioContrato extends Component {
                                                         {
                                                             contrato.terminado === 0 ?
                                                                 <OverlayTrigger overlay={<Tooltip>TERMINAR</Tooltip>}>
-                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder">
+                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder"  onClick={() => { cancelarContrato(contrato) }} >
                                                                         <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                                                                         </span>
