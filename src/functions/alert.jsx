@@ -44,10 +44,9 @@ async function waitAlert() {
     })
 }
 
-const sendFileAlert = ( e, action ) => {
-    const { files } = e.target
+const sendFileAlert = ( elemento, action ) => {
+    const { files, name } = elemento.target
     let element = files[0]
-    const url = window.URL.createObjectURL(new Blob([e.target.files[0]]));
     MySwal.fire({
         title: '¿DESEAS CONFIRMAR EL ENVÍO DE ARCHIVOS?',
         html: 
@@ -69,7 +68,9 @@ const sendFileAlert = ( e, action ) => {
         cancelButtonText: 'CANCELAR',
     }).then((result) => {
         if (result.value) {
-            action(e)
+            action({
+                target: { name: name, file: element}
+            });
         }
     })
 }

@@ -142,8 +142,8 @@ class FormularioContrato extends Component {
                                                         <span className={`label label-light-${contrato.terminado === 0 ? 'success' : 'danger'} label-pill label-inline font-weight-bolder`}>{contrato.terminado === 0 ? 'ACTIVO' : 'TERMINADO'}</span>
                                                     </td>
                                                     <td>
-                                                        <FileInput requirevalidation = { 0 } onChangeAdjunto = { sendFileAlert }
-                                                            placeholder = 'Adjuntar' value = { form.adjuntos.contrato.value } name = 'contrato' id = 'adjunto-contrato'
+                                                        <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos }
+                                                            placeholder = 'Adjuntar' value = { form.adjuntos.contrato.value } name = {contrato.id} id = 'adjunto-contrato'
                                                             accept = "application/pdf" files = { form.adjuntos.contrato.files } deleteAdjunto = { this.clearFiles }
                                                             classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
                                                             iconclass = 'flaticon-attachment text-primary' />

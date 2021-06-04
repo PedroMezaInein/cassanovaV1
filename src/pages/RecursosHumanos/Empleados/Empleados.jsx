@@ -9,7 +9,7 @@ import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, TEL } from '../../../cons
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert, sendFile } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert, sendFileAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../../components/cards'
@@ -18,9 +18,8 @@ import { Update } from '../../../components/Lottie'
 import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray, RangeCalendar } from '../../../components/form-components'
 import moment from 'moment'
 import $ from "jquery";
-import { setSingleHeader } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 import FormularioContrato from "../../../components/forms/recursoshumanos/FormularioContrato"
-import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript'
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -792,27 +791,34 @@ class Empleados extends Component {
         })
     }
 
-    onChangeAdjuntos = e => {
-        sendFile( () => { waitAlert(); this.addAdjuntoAxios() })
+    onChangeAdjuntos = valor => {
+        const { name, files } = valor.target
+        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success);})
     }
-    async addAdjuntoAxios() {
-        console.log('entre')
-        // const { access_token } = this.props.authUser
-        // const { formContrato } = this.state
-        // await axios.post(URL_DEV + 'adjuntos', formContrato, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-        //     (response) => {
-        //         const { key } = this.state
-        //         if (key === 'administrativo') { this.getEmpleadosAxios() }
-        //         if (key === 'obra') { this.getEmpleadosObraAxios() }
-        //         doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
-        //     },
-        //     (error) => {
-        //         printResponseErrorAlert(error)
-        //     }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.log(error, 'error')
-        // })
+
+    async addAdjuntoAxios(valor) {
+        waitAlert()
+        const { name, file } = valor.target
+        const { access_token } = this.props.authUser
+        const { empleado } = this.state
+        let data = new FormData();
+        if(file){
+            data.append(`file`, file)
+            await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar`, data, { headers: setFormHeader(access_token) }).then(
+                (response) => {
+                    const { empleado } = this.state
+                    const { key } = this.state
+                    if (key === 'administrativo') { this.getEmpleadosAxios() }
+                    if (key === 'obra') { this.getEmpleadosObraAxios() }
+                    this.setState({...this.state, empleado: empleado})
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{ errorAlert('Adjunta solo un archivo') }
+        
     }
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
