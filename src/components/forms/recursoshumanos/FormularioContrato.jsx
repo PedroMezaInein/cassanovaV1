@@ -5,7 +5,6 @@ import { InputGray, RangeCalendar, InputNumberGray, FileInput } from '../../form
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Moment from 'react-moment'
-import { onChangeAdjunto } from '../../../functions/onChanges'
 import $ from "jquery";
 class FormularioContrato extends Component {
     state = {
@@ -59,7 +58,7 @@ class FormularioContrato extends Component {
         })
     }
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, generarContrato } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos } = this.props
         const { renovar, showForm, showHistorial } = this.state
         return (
             <>

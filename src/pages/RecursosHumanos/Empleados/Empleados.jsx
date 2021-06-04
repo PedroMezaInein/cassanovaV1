@@ -9,7 +9,7 @@ import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, TEL } from '../../../cons
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert, sendFile } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../../components/cards'
@@ -791,6 +791,29 @@ class Empleados extends Component {
             console.log(error, 'error')
         })
     }
+
+    onChangeAdjuntos = e => {
+        sendFile( () => { waitAlert(); this.addAdjuntoAxios() })
+    }
+    async addAdjuntoAxios() {
+        console.log('entre')
+        // const { access_token } = this.props.authUser
+        // const { formContrato } = this.state
+        // await axios.post(URL_DEV + 'adjuntos', formContrato, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        //     (response) => {
+        //         const { key } = this.state
+        //         if (key === 'administrativo') { this.getEmpleadosAxios() }
+        //         if (key === 'obra') { this.getEmpleadosObraAxios() }
+        //         doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
+        //     },
+        //     (error) => {
+        //         printResponseErrorAlert(error)
+        //     }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.log(error, 'error')
+        // })
+    }
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
         return (
@@ -847,7 +870,7 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
-                        generarContrato={this.generar} clearFiles = { this.clearFiles }/>
+                        generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} />
                 </Modal>
             </Layout>
         )

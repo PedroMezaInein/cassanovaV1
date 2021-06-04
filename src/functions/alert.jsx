@@ -44,8 +44,8 @@ async function waitAlert() {
     })
 }
 
-const sendFileAlert = ( e ) => {
-    const { files, name, value } = e.target
+const sendFileAlert = ( e, action ) => {
+    const { files } = e.target
     let element = files[0]
     const url = window.URL.createObjectURL(new Blob([e.target.files[0]]));
     MySwal.fire({
@@ -62,8 +62,15 @@ const sendFileAlert = ( e ) => {
                 <div className = 'col-8'>
                     <CommonLottie animationData = { UploadingFile } />
                 </div>
-            </div>
-        
+            </div>,
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: "SI, ENVIAR",
+        cancelButtonText: 'CANCELAR',
+    }).then((result) => {
+        if (result.value) {
+            action(e)
+        }
     })
 }
 
