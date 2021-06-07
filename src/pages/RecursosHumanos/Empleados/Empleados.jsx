@@ -15,7 +15,7 @@ import TableForModals from '../../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../../components/cards'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
-import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray, RangeCalendar } from '../../../components/form-components'
+import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray } from '../../../components/form-components'
 import moment from 'moment'
 import $ from "jquery";
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
@@ -815,7 +815,6 @@ class Empleados extends Component {
     }
 
     onChangeAdjuntos = valor => {
-        const { name, files } = valor.target
         sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success);})
     }
 
