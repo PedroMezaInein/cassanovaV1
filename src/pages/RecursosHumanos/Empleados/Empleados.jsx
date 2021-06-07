@@ -838,7 +838,7 @@ class Empleados extends Component {
             data.append(`file`, file)
             await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    const { empleado } = this.state
+                    const { empleado } = response.data
                     const { key } = this.state
                     if (key === 'administrativo') { this.getEmpleadosAxios() }
                     if (key === 'obra') { this.getEmpleadosObraAxios() }
