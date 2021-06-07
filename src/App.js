@@ -118,7 +118,6 @@ const CalendarioProyectos = React.lazy(() => import('./pages/Proyectos/Calendari
 const Devoluciones = React.lazy(() => import('./pages/Proyectos/Devoluciones/Devoluciones') )
 const DevolucionesForm = React.lazy(() => import('./pages/Proyectos/Devoluciones/DevolucionesForm') )
 
-
 const Areas = React.lazy( () => import('./pages/Catalogos/Areas') )
 const Partidas = React.lazy( () => import('./pages/Catalogos/Partidas') )
 const Unidades = React.lazy( () => import('./pages/Catalogos/Unidades') )
@@ -155,6 +154,7 @@ const NominaAdmin = React.lazy(() => import('./pages/RecursosHumanos/NominaAdmin
 const NominaAdminForm = React.lazy(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminForm') )
 const NominaAdminSingle = React.lazy(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminSingle') )
 const Checador = React.lazy(() => import('./pages/RecursosHumanos/Checador/Checador') )
+const ContratosRh = React.lazy(() => import('./pages/RecursosHumanos/ContratosRh/ContratosRh') )
 
 // const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados') )
 const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados/Empleados') )
@@ -187,7 +187,6 @@ const SolicitudEgresosForm = React.lazy(() => import('./pages/Mercadotecnia/Soli
 const Pagos = React.lazy(() => import('./pages/Mercadotecnia/Pagos/Pagos') )
 const PagosForm = React.lazy(() => import('./pages/Mercadotecnia/Pagos/PagosForm') )
 const NotificacionesCorreos = React.lazy(() => import('./pages/Plataforma/NotificacionesCorreos') )
-
 
 const Etiquetas = React.lazy( () => import('./pages/Catalogos/Etiquetas') )
 class App extends Component{
@@ -461,6 +460,8 @@ class App extends Component{
 
                     <Route path = "/rh/prestamos" exact component ={ Prestamos } />
                     <Route path = "/rh/prestamos/:action" exact component = { PrestamosForm } />
+                    
+                    <Route path = "/rh/contratos-rrhh" exact component ={ ContratosRh } />
 
                     {/* ANCHOR Routes for calidad */}
 
