@@ -56,7 +56,7 @@ const sendFileAlert = ( elemento, action ) => {
                         Documento Adjuntado:
                     </div>
                     <div>
-                        <a className="text-muted font-weight-bold text-hover-primary" target= '_blank' href = {URL.createObjectURL(element)}>
+                        <a className="text-muted font-weight-bold text-hover-primary" target= '_blank' rel="noreferrer" href = {URL.createObjectURL(element)}>
                             {element.name}
                         </a>
                     </div>
