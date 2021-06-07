@@ -753,6 +753,14 @@ class Empleados extends Component {
                 formContrato.dias = ''
             }
         }
+        switch (name) {
+            case 'pagos_hr_extra':
+            case 'total_obra':
+                formContrato[name] = value.replace(/[,]/gi, '')
+                break
+            default:
+                break;
+        }
         
         this.setState({ 
             ...this.state,
