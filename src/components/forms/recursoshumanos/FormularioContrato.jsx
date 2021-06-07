@@ -60,33 +60,23 @@ class FormularioContrato extends Component {
         const { renovar, showForm, showHistorial } = this.state
         return (
             <>
-                <div id='show_buttons' className="justify-content-center mb-10 mt-5 d-none">
+                <div id='show_buttons' className="justify-content-end mb-10 mt-5 d-none">
                     
                     {
                         empleado ?
                             empleado.contratos.length > 0 &&
-                            // <button className={`btn font-weight-bolder ${showHistorial  ? 'btn-success' : 'btn-light-success'}`} onClick={() => { this.mostrarHistorial() }}>
-                            //     <i className="flaticon2-list-2"></i> HISTORIAL DE CONTRATOS
-                            // </button>
-                            <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 mr-5 border ${showHistorial  ? 'active border-0' : ''}`} onClick={() => { this.mostrarHistorial() }}>
-                                <span className="text-dark-50 font-weight-bolder font-size-base mr-2">HISTORIAL</span>
-                                <span className="symbol symbol-35 symbol-light-primary">
-                                    <span className="symbol-label font-size-h5 font-weight-bold"><i className="flaticon2-list-3 text-primary"></i></span>
-                                </span>
-                            </div>
+                            <a className={`btn btn-light btn-hover-bg-primary btn-text-primary btn-hover-text-white px-2 mr-2 font-weight-bolder text-primary ${showHistorial  ? 'active' : ''}`} onClick={() => { this.mostrarHistorial() }}>
+                                HISTORIAL
+                                <i className="flaticon2-list-3 text-primary px-0 ml-2 icon-lg"></i> 
+                            </a>
                             :''
                     }
                     {
                         empleado ?
                             (empleado.contratos.length === 0 || renovar) ?
-                                // <button className={`btn font-weight-bolder ml-2 ${showForm  ? 'btn-primary' : 'btn-light-primary'}`} onClick={() => { this.mostrarFormulario() }}>
-                                //     <i className="flaticon2-writing"></i> FORMULARIO DE CONTRATO
-                                // </button>
-                                <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 border ${showForm  ? 'active border-0' : ''}`} onClick={() => { this.mostrarFormulario() }}>
-                                    <span className="text-dark-50 font-weight-bolder font-size-base mr-2">RENOVAR</span>
-                                    <span className="symbol symbol-35 symbol-light-info">
-                                        <span className="symbol-label font-size-h5 font-weight-bold"><i className="flaticon2-writing text-info"></i></span>
-                                    </span>
+                                <div className={`btn btn-light btn-hover-bg-info btn-text-info btn-hover-text-white px-2 font-weight-bolder text-info ${showForm  ? 'active' : ''}`} onClick={() => { this.mostrarFormulario() }}>
+                                    RENOVAR
+                                    <i className="flaticon2-writing text-info px-0 ml-2 icon-lg"></i>
                                 </div>
                             :''
                         :''
