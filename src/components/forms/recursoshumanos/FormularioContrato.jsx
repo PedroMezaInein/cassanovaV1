@@ -60,33 +60,23 @@ class FormularioContrato extends Component {
         const { renovar, showForm, showHistorial } = this.state
         return (
             <>
-                <div id='show_buttons' className="justify-content-center mb-10 mt-5 d-none">
+                <div id='show_buttons' className="justify-content-end mb-10 mt-5 d-none">
                     
                     {
                         empleado ?
                             empleado.contratos.length > 0 &&
-                            // <button className={`btn font-weight-bolder ${showHistorial  ? 'btn-success' : 'btn-light-success'}`} onClick={() => { this.mostrarHistorial() }}>
-                            //     <i className="flaticon2-list-2"></i> HISTORIAL DE CONTRATOS
-                            // </button>
-                            <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 mr-5 border ${showHistorial  ? 'active border-0' : ''}`} onClick={() => { this.mostrarHistorial() }}>
-                                <span className="text-dark-50 font-weight-bolder font-size-base mr-2">HISTORIAL</span>
-                                <span className="symbol symbol-35 symbol-light-primary">
-                                    <span className="symbol-label font-size-h5 font-weight-bold"><i className="flaticon2-list-3 text-primary"></i></span>
-                                </span>
-                            </div>
+                            <a className={`btn btn-light btn-hover-bg-primary btn-text-primary btn-hover-text-white px-2 mr-2 font-weight-bolder text-primary ${showHistorial  ? 'active' : ''}`} onClick={() => { this.mostrarHistorial() }}>
+                                HISTORIAL
+                                <i className="flaticon2-list-3 text-primary px-0 ml-2 icon-lg"></i> 
+                            </a>
                             :''
                     }
                     {
                         empleado ?
                             (empleado.contratos.length === 0 || renovar) ?
-                                // <button className={`btn font-weight-bolder ml-2 ${showForm  ? 'btn-primary' : 'btn-light-primary'}`} onClick={() => { this.mostrarFormulario() }}>
-                                //     <i className="flaticon2-writing"></i> FORMULARIO DE CONTRATO
-                                // </button>
-                                <div className={`btn btn-icon btn-clean w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 border ${showForm  ? 'active border-0' : ''}`} onClick={() => { this.mostrarFormulario() }}>
-                                    <span className="text-dark-50 font-weight-bolder font-size-base mr-2">RENOVAR</span>
-                                    <span className="symbol symbol-35 symbol-light-info">
-                                        <span className="symbol-label font-size-h5 font-weight-bold"><i className="flaticon2-writing text-info"></i></span>
-                                    </span>
+                                <div className={`btn btn-light btn-hover-bg-info btn-text-info btn-hover-text-white px-2 font-weight-bolder text-info ${showForm  ? 'active' : ''}`} onClick={() => { this.mostrarFormulario() }}>
+                                    RENOVAR
+                                    <i className="flaticon2-writing text-info px-0 ml-2 icon-lg"></i>
                                 </div>
                             :''
                         :''
@@ -113,13 +103,13 @@ class FormularioContrato extends Component {
                                             return (
                                                 <tr key={key}>
                                                     <td className="text-center">
-                                                        <a className="text-dark-75 font-weight-bolder font-size-lg">
+                                                        <span className="text-dark-75 font-weight-bolder font-size-lg">
                                                             { 
                                                                 contrato.tipo_contrato === 'obra' ? 
                                                                     'OBRA DETERMINADA' 
                                                                 :  contrato.indefinido === 0 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
                                                             }
-                                                        </a>
+                                                        </span>
                                                     </td>
                                                     <td className="text-center">
                                                         <div className="w-fit-content mx-auto">
@@ -158,20 +148,20 @@ class FormularioContrato extends Component {
                                                     </td>
                                                     <td className="text-center">
                                                         <OverlayTrigger overlay={<Tooltip>RENOVAR</Tooltip>}>
-                                                            <a className="btn btn-light btn-icon h-35px font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
+                                                            <span className="btn btn-light btn-icon h-35px font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
                                                                 <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
                                                                 </span>
-                                                            </a>
+                                                            </span>
                                                         </OverlayTrigger>
                                                         {
                                                             contrato.terminado === 0 ?
                                                                 <OverlayTrigger overlay={<Tooltip>TERMINAR</Tooltip>}>
-                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder ml-2"  onClick={() => { cancelarContrato(contrato) }} >
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2"  onClick={() => { cancelarContrato(contrato) }} >
                                                                         <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                                                                         </span>
-                                                                    </a>
+                                                                    </span>
                                                                 </OverlayTrigger>
                                                             : <></>
                                                         }
@@ -331,7 +321,6 @@ class FormularioContrato extends Component {
                                                         withicon={1}
                                                         withformgroup={0}
                                                         requirevalidation={1}
-                                                        requirevalidation={1}
                                                         onChange={onChangeContrato}
                                                         name="dias_laborables"
                                                         type="text"
@@ -370,7 +359,7 @@ class FormularioContrato extends Component {
                                             <div className="col-lg-12 text-right pr-0 pb-0">
                                                 {
                                                     (empleado.contratos.length === 0 || renovar) ?
-                                                    <a className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
+                                                    <span className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
                                                         onClick={
                                                             (e) => {
                                                                 e.preventDefault();
@@ -388,7 +377,7 @@ class FormularioContrato extends Component {
                                                                 <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
                                                             }
                                                         </span>{renovar?'Renovar':'Generar'}
-                                                    </a>
+                                                    </span>
                                                     :''
                                                 }
                                             </div>
