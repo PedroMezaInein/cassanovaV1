@@ -469,7 +469,7 @@ class Empleados extends Component {
         }
     }
 
-    setActions = () => {
+    setActions = empleado => {
         let aux = []
         aux.push(
             {
@@ -499,15 +499,17 @@ class Empleados extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
+            }
+        )
+        if (empleado.estatus_empleado === 'Activo') {
+            aux.push({
                 text: 'Contrato',
                 btnclass: 'warning',
                 iconclass: 'flaticon2-file-1',
                 action: 'contrato',
                 tooltip: { id: 'adjuntos', text: 'Contrato' }
-            }
-        )
+            })
+        }
         return aux
     }
 
