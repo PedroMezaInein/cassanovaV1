@@ -254,7 +254,7 @@ class EmpleadosForm extends Component {
                                                     name="estado_civil"
                                                     type="text"
                                                     value={form.estado_civil}
-                                                    placeholder="Estado civil"
+                                                    placeholder="ESTADO CIVIL"
                                                     iconclass={"far fa-heart"}
                                                     messageinc="Incorrecto. Ingresa el estado civil"
                                                 />
