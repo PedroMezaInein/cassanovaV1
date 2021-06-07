@@ -103,13 +103,13 @@ class FormularioContrato extends Component {
                                             return (
                                                 <tr key={key}>
                                                     <td className="text-center">
-                                                        <a className="text-dark-75 font-weight-bolder font-size-lg">
+                                                        <span className="text-dark-75 font-weight-bolder font-size-lg">
                                                             { 
                                                                 contrato.tipo_contrato === 'obra' ? 
                                                                     'OBRA DETERMINADA' 
                                                                 :  contrato.indefinido === 0 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
                                                             }
-                                                        </a>
+                                                        </span>
                                                     </td>
                                                     <td className="text-center">
                                                         <div className="w-fit-content mx-auto">
@@ -148,20 +148,20 @@ class FormularioContrato extends Component {
                                                     </td>
                                                     <td className="text-center">
                                                         <OverlayTrigger overlay={<Tooltip>RENOVAR</Tooltip>}>
-                                                            <a className="btn btn-light btn-icon h-35px font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
+                                                            <span className="btn btn-light btn-icon h-35px font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
                                                                 <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
                                                                 </span>
-                                                            </a>
+                                                            </span>
                                                         </OverlayTrigger>
                                                         {
                                                             contrato.terminado === 0 ?
                                                                 <OverlayTrigger overlay={<Tooltip>TERMINAR</Tooltip>}>
-                                                                    <a className="btn btn-light btn-icon h-35px font-weight-bolder ml-2"  onClick={() => { cancelarContrato(contrato) }} >
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2"  onClick={() => { cancelarContrato(contrato) }} >
                                                                         <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                                                                         </span>
-                                                                    </a>
+                                                                    </span>
                                                                 </OverlayTrigger>
                                                             : <></>
                                                         }
@@ -321,7 +321,6 @@ class FormularioContrato extends Component {
                                                         withicon={1}
                                                         withformgroup={0}
                                                         requirevalidation={1}
-                                                        requirevalidation={1}
                                                         onChange={onChangeContrato}
                                                         name="dias_laborables"
                                                         type="text"
@@ -360,7 +359,7 @@ class FormularioContrato extends Component {
                                             <div className="col-lg-12 text-right pr-0 pb-0">
                                                 {
                                                     (empleado.contratos.length === 0 || renovar) ?
-                                                    <a className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
+                                                    <span className={`btn btn-light h-40px px-3 font-weight-bolder text-${renovar ? 'info' : 'success'}`}
                                                         onClick={
                                                             (e) => {
                                                                 e.preventDefault();
@@ -378,7 +377,7 @@ class FormularioContrato extends Component {
                                                                 <SVG src={toAbsoluteUrl('/images/svg/File-plus.svg')} />
                                                             }
                                                         </span>{renovar?'Renovar':'Generar'}
-                                                    </a>
+                                                    </span>
                                                     :''
                                                 }
                                             </div>
