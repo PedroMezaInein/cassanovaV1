@@ -65,10 +65,10 @@ class FormularioContrato extends Component {
                     {
                         empleado ?
                             empleado.contratos.length > 0 &&
-                            <a className={`btn btn-light btn-hover-bg-primary btn-text-primary btn-hover-text-white px-2 mr-2 font-weight-bolder text-primary ${showHistorial  ? 'active' : ''}`} onClick={() => { this.mostrarHistorial() }}>
+                            <span className={`btn btn-light btn-hover-bg-primary btn-text-primary btn-hover-text-white px-2 mr-2 font-weight-bolder text-primary ${showHistorial  ? 'active' : ''}`} onClick={() => { this.mostrarHistorial() }}>
                                 HISTORIAL
                                 <i className="flaticon2-list-3 text-primary px-0 ml-2 icon-lg"></i> 
-                            </a>
+                            </span>
                             :''
                     }
                     {
@@ -107,7 +107,7 @@ class FormularioContrato extends Component {
                                                             { 
                                                                 contrato.tipo_contrato === 'obra' ? 
                                                                     'OBRA DETERMINADA' 
-                                                                :  contrato.indefinido === 0 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
+                                                                :  contrato.indefinido === 1 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
                                                             }
                                                         </span>
                                                     </td>
