@@ -155,6 +155,7 @@ const NominaAdminForm = React.lazy(() => import('./pages/RecursosHumanos/NominaA
 const NominaAdminSingle = React.lazy(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminSingle') )
 const Checador = React.lazy(() => import('./pages/RecursosHumanos/Checador/Checador') )
 const ContratosRh = React.lazy(() => import('./pages/RecursosHumanos/ContratosRh/ContratosRh') )
+const ContratosRhForm = React.lazy(() => import('./pages/RecursosHumanos/ContratosRh/ContratosRhForm') )
 
 // const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados') )
 const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados/Empleados') )
@@ -462,6 +463,7 @@ class App extends Component{
                     <Route path = "/rh/prestamos/:action" exact component = { PrestamosForm } />
                     
                     <Route path = "/rh/contratos-rrhh" exact component ={ ContratosRh } />
+                    <Route path = "/rh/contratos-rrhh/:action" exact component ={ ContratosRhForm } />
 
                     {/* ANCHOR Routes for calidad */}
 
