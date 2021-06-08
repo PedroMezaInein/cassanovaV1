@@ -1963,6 +1963,12 @@ export const ADJUNTOS_COLUMNS = [
         accessor: 'tipo'
     }
 ]
+export const ADJUNTOS_COLUMNS_URL = [
+    {
+        Header: 'Adjuntos',
+        accessor: 'url'
+    },
+]
 
 export const ADJUNTOS_PRESUPUESTOS_COLUMNS = [
     {

@@ -1,30 +1,17 @@
 import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
 import { Form } from 'react-bootstrap'
-import { InputGray, RangeCalendar, InputNumberGray, Button, CalendarDay } from '../../form-components'
+import { InputGray, RangeCalendar, InputNumberGray, Button, CalendarDay, SelectSearch } from '../../form-components'
 class ContratoFormRH extends Component {
     state = {
         renovar: false,
     }
-    clearFiles = (name, key) => {
-        const { form } = this.props
-        let aux = []
-        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
-            if (counter !== key) {
-                aux.push(form.adjuntos[name].files[counter])
-            }
-        }
-        if (aux.length < 1) {
-            form.adjuntos[name].value = ''
-        }
-        form.adjuntos[name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+    updateEmpleado = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'empleado' } })
     }
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, onSubmit, tipo, cancelarContrato, renovarContrato } = this.props
+        const { options, form, onChangeContrato, onChangeRange, onSubmit, tipo, formeditado, cancelarContrato, renovarContrato } = this.props
         const { renovar } = this.state
         return (
             <Form
@@ -38,7 +25,19 @@ class ContratoFormRH extends Component {
                 {
                     tipo === 'Administrativo' ?
                         <div className="form-group row form-group-marginless mt-8 align-items-center">
-                            <div className={form.periodo === true ? 'col-md-6' : 'col-md-12'}>
+                            <div className="col-md-4">
+                                <SelectSearch
+                                    options={options.empleados}
+                                    placeholder="SELECCIONA EL EMPLEADO"
+                                    name="empleado"
+                                    value={form.empleado}
+                                    onChange={this.updateEmpleado}
+                                    iconclass={"fas fa-user"}
+                                    formeditado={formeditado}
+                                    messageinc="Incorrecto. Selecciona el empleado"
+                                />
+                            </div>
+                            <div className="col-md-4">
                                 <div className="mx-auto w-fit-content">
                                     <label className="font-weight-bolder">Periodo del contrato</label>
                                     <div className="radio-list">
@@ -65,7 +64,7 @@ class ContratoFormRH extends Component {
                             </div>
                             {
                                 form.periodo === true &&
-                                <div className="col-md-6">
+                                <div className="col-md-4">
                                     <InputNumberGray
                                         formgroup="mb-0"
                                         requirevalidation={1}

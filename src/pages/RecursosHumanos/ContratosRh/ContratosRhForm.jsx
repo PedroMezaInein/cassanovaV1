@@ -5,10 +5,10 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setOptions} from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { ContratoFormRH } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { onChangeAdjunto } from '../../../functions/onChanges'
+import { setSingleHeader } from '../../../functions/routers'
 import moment from 'moment'
 
 class Empleados extends Component {
@@ -52,9 +52,6 @@ class Empleados extends Component {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
-        if (!contratos)
-            history.push('/')
-        // this.getOptionsAxios()
         let aux =action
         aux = aux.split('?')
         switch (aux[0]) {
@@ -90,29 +87,28 @@ class Empleados extends Component {
             default:
                 break;
         }
+        if (!contratos)
+            history.push('/')
+        this.getOptionsAxios()
     }
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v1/rh/contratos-rrhh/`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
-                const { empresas, departamentos } = response.data
+                const { empleados } = response.data
+                console.log(empleados)
                 const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                options.empleados = setOptions(empleados, 'nombre', 'id')
+                Swal.close()
+                this.setState({ ...this.state, options })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     onChange = (e) => {
         const { name, value } = e.target
         const { form } = this.state
