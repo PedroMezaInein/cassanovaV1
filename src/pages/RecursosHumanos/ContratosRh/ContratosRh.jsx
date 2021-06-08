@@ -47,7 +47,7 @@ class ContratosRh extends Component {
         data: {
             adjuntos: []
         },
-        tipo: 'Administrativo',
+        tipo: 'administrativo',
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -290,7 +290,7 @@ class ContratosRh extends Component {
         const { history } = this.props
         history.push({
             pathname: '/rh/contratos-rrhh/renovar',
-            state: { contrato: contrato, tipo:'Administrativo'}
+            state: { contrato: contrato, tipo:'administrativo'}
 
         });
     }
@@ -298,7 +298,7 @@ class ContratosRh extends Component {
         const { history } = this.props
         history.push({
             pathname: '/rh/contratos-rrhh/renovar',
-            state: { contrato: contrato, tipo:'Obra'}
+            state: { contrato: contrato, tipo:'obra'}
         });
     }
     onChangeAdjunto = e => {
@@ -327,7 +327,7 @@ class ContratosRh extends Component {
             <Layout active = 'rh' { ...this.props } >
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="administrativo" title="Administrativo">
-                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=Administrativo'
+                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=administrativo'
                             abrir_modal = { false } mostrar_acciones = { true } urlRender = { `${URL_DEV}v1/rh/contratos-rrhh` } accessToken = { access_token }
                             actions = {{ 
                                 'terminar': { function: this.cancelarContrato },
@@ -341,7 +341,7 @@ class ContratosRh extends Component {
                         />
                     </Tab>
                     <Tab eventKey="obra" title="Obra">
-                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=Obra'
+                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=obra'
                             abrir_modal = { false } mostrar_acciones = { true } urlRender = { `${URL_DEV}v1/rh/contratos-rrhh` } accessToken = { access_token }
                             actions = {{
                                 'terminar': { function: this.cancelarContrato },
