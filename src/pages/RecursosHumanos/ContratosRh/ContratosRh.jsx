@@ -95,13 +95,6 @@ class ContratosRh extends Component {
                 tooltip: { id: 'renovar', text: 'Renovar' },
             },
             {
-                text: 'Regenerar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-refresh-button',
-                action: 'regenerar',
-                tooltip: { id: 'regenerar', text: 'Regenerar' },
-            },
-            {
                 text: 'Adjuntos',
                 btnclass: 'warning',
                 iconclass: 'flaticon-attachment',
@@ -332,7 +325,6 @@ class ContratosRh extends Component {
                             actions = {{ 
                                 'terminar': { function: this.cancelarContrato },
                                 'renovar': { function: this.changePageRenovar },
-                                'regenerar': { function: this.openModalSee },
                                 'adjuntos': { function: this.openModalAdjuntos }
                             }}
                             setter = { this.setContratos } 
@@ -346,7 +338,6 @@ class ContratosRh extends Component {
                             actions = {{
                                 'terminar': { function: this.cancelarContrato },
                                 'renovar': { function: this.changePageEditObra },
-                                'regenerar': { function: this.openModalSee },
                                 'adjuntos': { function: this.openModalAdjuntos }
                             }}
                             setter = { this.setContratos } 

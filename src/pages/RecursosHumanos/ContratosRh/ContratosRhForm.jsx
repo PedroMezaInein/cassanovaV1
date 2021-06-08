@@ -180,7 +180,7 @@ class Empleados extends Component {
         console.log(form, 'form')
         console.log(tipo, 'tipo')
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/empleados/${contrato.id}/contratos/renovar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
+        await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/renovar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 const { contrato } = response.data
                 
@@ -203,7 +203,7 @@ class Empleados extends Component {
         waitAlert()
         const { contrato, form, tipo } = this.state
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/empleados/${contrato.id}/contratos/generar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
+        await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/generar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 const { contrato } = response.data
 
