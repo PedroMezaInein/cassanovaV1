@@ -793,6 +793,8 @@ class Empleados extends Component {
                 modal.contrato = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
                 var win = window.open(contrato.contrato, '_blank');
+                if(contrato.carta)
+                    window.open(contrato.carta, '_blank');
                 win.focus();
                 this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
             }, (error) => { printResponseErrorAlert(error) }
@@ -815,6 +817,8 @@ class Empleados extends Component {
                 modal.contrato = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
                 var win = window.open(contrato.contrato, '_blank');
+                if(contrato.carta)
+                    window.open(contrato.carta, '_blank');
                 win.focus();
                 this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
             }, (error) => { printResponseErrorAlert(error) }
