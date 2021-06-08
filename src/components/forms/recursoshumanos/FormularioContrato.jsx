@@ -12,23 +12,6 @@ class FormularioContrato extends Component {
         showForm: true,
         showHistorial: true
     }
-    clearFiles = (name, key) => {
-        const { form } = this.props
-        let aux = []
-        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
-            if (counter !== key) {
-                aux.push(form.adjuntos[name].files[counter])
-            }
-        }
-        if (aux.length < 1) {
-            form.adjuntos[name].value = ''
-        }
-        form.adjuntos[name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
     mostrarFormulario() {
         $("#show_buttons").removeClass("d-none").addClass("d-flex");
         this.setState({
@@ -92,14 +75,15 @@ class FormularioContrato extends Component {
                                         <th className="text-center" style={{ minWidth: '155px' }}>Tipo de contrato</th>
                                         <th style={{ minWidth: '140px' }}>Fecha</th>
                                         <th style={{ minWidth: '100px' }}>Estatus</th>
-                                        <th style={{ minWidth: '125px' }}>Adjuntar</th>
-                                        <th style={{ minWidth: '102px' }}>Contrato</th>
+                                        <th>Adjuntar</th>
+                                        <th style={{ minWidth: '166px' }}>ADJ. AGREGADOS</th>
                                         <th style={{ minWidth: '103px' }}></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         empleado.contratos.map((contrato, key) => {
+                                            // console.log(contrato)
                                             return (
                                                 <tr key={key}>
                                                     <td className="text-center">
@@ -114,14 +98,14 @@ class FormularioContrato extends Component {
                                                     <td className="text-center">
                                                         <div className="w-fit-content mx-auto">
                                                             <div>
-                                                                <span className="text-dark-75 font-weight-bolder font-size-lg">Inicio:</span>
-                                                                <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
+                                                                <span className="text-dark-75 font-weight-bold font-size-lg">Inicio:</span>
+                                                                <span className="text-dark-50 font-weight-normal ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
                                                             </div>
                                                             {
                                                                 contrato.fecha_fin !== null &&
                                                                 <div>
-                                                                    <span className="text-dark-75 font-weight-bolder font-size-lg">Final:</span>
-                                                                    <span className="text-muted font-weight-bold ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
+                                                                    <span className="text-dark-75 font-weight-bold font-size-lg">Final:</span>
+                                                                    <span className="text-dark-50 font-weight-normal ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
                                                                 </div>
                                                             }
                                                         </div>
@@ -130,19 +114,45 @@ class FormularioContrato extends Component {
                                                     <td className="text-center">
                                                         <span className={`label label-light-${contrato.terminado === 0 ? 'success' : 'danger'} label-pill label-inline font-weight-bolder`}>{contrato.terminado === 0 ? 'ACTIVO' : 'TERMINADO'}</span>
                                                     </td>
-                                                    <td className="text-center">
-                                                        <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos }
-                                                            placeholder = 'CONTRATO' value = { form.adjuntos.contrato.value } name = {contrato.id} id = 'adjunto-contrato'
-                                                            accept = "application/pdf" files = { form.adjuntos.contrato.files } deleteAdjunto = { this.clearFiles }
-                                                            classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
-                                                            iconclass = 'flaticon-attachment text-primary' />
+                                                    <td>
+                                                        <div className="text-center d-flex justify-content-center">
+                                                            <OverlayTrigger overlay={<Tooltip>ADJUNTAR CONTRATO FIRMADO</Tooltip>}>
+                                                                <div>
+                                                                    <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos } 
+                                                                        value = { form.adjuntos.contrato.value } name = {contrato.id} id = 'adjunto-contrato'
+                                                                        accept = "application/pdf" files = { form.adjuntos.contrato.files }
+                                                                        classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
+                                                                        iconclass = 'la la-file-signature text-dark-50 icon-2x' />
+                                                                </div>
+                                                            </OverlayTrigger>
+                                                            <OverlayTrigger overlay={<Tooltip>ADJUNTAR CARTA FIRMADA</Tooltip>}>
+                                                                <div>
+                                                                    <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos }
+                                                                        value = { form.adjuntos.carta.value } name = {contrato.id} id = 'adjunto-carta'
+                                                                        accept = "application/pdf" files = { form.adjuntos.carta.files }
+                                                                        classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
+                                                                        iconclass = 'la la-file-alt text-dark-50 icon-2x' />
+                                                                </div>
+                                                            </OverlayTrigger>
+                                                        </div>
                                                     </td>
-                                                    <td className="text-center">
+                                                    <td>
                                                         <div className="w-fit-content mx-auto">
-                                                            <a className="text-primary font-weight-bolder text-hover-success d-block" rel="noopener noreferrer" href={contrato.contrato} target="_blank">GENERADO</a>
+                                                            {
+                                                                contrato.contrato !== null &&
+                                                                <a className="text-dark-50 font-weight-normal text-hover-primary d-block" rel="noopener noreferrer" href={contrato.contrato} target="_blank">CONTRATO GENERADO</a>
+                                                            }
                                                             {
                                                                 contrato.contrato_firmado !== null &&
-                                                                <a className="text-primary font-weight-bolder  mt-1 text-hover-success" rel="noopener noreferrer" href={contrato.contrato_firmado} target="_blank">FIRMADO</a>
+                                                                <a className="text-dark-50 font-weight-normal  mt-1 text-hover-primary" rel="noopener noreferrer" href={contrato.contrato_firmado} target="_blank">CONTRATO FIRMADO</a>
+                                                            }
+                                                            {
+                                                                contrato.carta !== null &&
+                                                                <a className="text-dark-50 font-weight-normal text-hover-primary d-block" rel="noopener noreferrer" href={contrato.carta} target="_blank">CARTA GENERADA</a>
+                                                            }
+                                                            {
+                                                                contrato.carta_firmada !== null &&
+                                                                <a className="text-dark-50 font-weight-normal  mt-1 text-hover-primary" rel="noopener noreferrer" href={contrato.carta_firmada} target="_blank">CARTA FIRMADA</a>
                                                             }
                                                         </div>
                                                     </td>

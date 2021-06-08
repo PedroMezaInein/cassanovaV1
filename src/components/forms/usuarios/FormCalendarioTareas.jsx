@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ComentarioFormTarea from "../../forms/ComentarioFormTarea"
 import TimelineComments from '../../forms/TimelineComments'
 import { Tag } from '../../singles';
+import Linkify from 'react-linkify';
 
 class FormCalendarioTareas extends Component {
     state = {
@@ -31,11 +32,16 @@ class FormCalendarioTareas extends Component {
     }
     render() {
         const { tarea, addComentario, form, onChange, handleChange, users, proyectos } = this.props
+        const componentDecorator = (href, text, key) => (
+            <a href={href} key={key} target="_blank" rel="noopener noreferrer" className="font-weight-bold">
+                {text}
+            </a>
+        );
         return (
             tarea&&
                 <div className="mt-6 mx-4">
                     <div className="text-dark-50 font-weight-bold mr-2 mb-3">
-                        <span className="text-dark-75 font-weight-bolder font-size-lg mr-3">Responsables:</span>
+                        <span className="text-dark-75 font-weight-bolder font-size-lg mr-3">{tarea.responsables.length>1?'Responsables':'Responsable'}:</span>
                         <i className="fas fa-user-friends font-size-lg text-primary mr-2"></i>
                         {this.responsables(tarea.responsables)}
                     </div>
@@ -50,8 +56,10 @@ class FormCalendarioTareas extends Component {
                             })
                         }
                     </div>
-                    <div className="text-muted-50 text-justify font-weight-light white-space-pre-wrap">
-                        {tarea.descripcion}
+                    <div className="text-muted-50 text-justify font-weight-light white-space-pre-wrap text-transform-none">
+                        <Linkify componentDecorator={componentDecorator}>
+                            {tarea.descripcion}
+                        </Linkify>
                     </div>
                     <div className="separator separator-dashed separator-border-2 my-8"></div>
                     <div className="d-flex justify-content-end">

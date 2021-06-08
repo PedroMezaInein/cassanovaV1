@@ -95,6 +95,11 @@ class Empleados extends Component {
                     value: '',
                     placeholder: 'Contrato',
                     files: []
+                },
+                carta: {
+                    value: '',
+                    placeholder: 'Carta',
+                    files: []
                 }
             }
         },
@@ -214,6 +219,11 @@ class Empleados extends Component {
                         contrato: {
                             value: '',
                             placeholder: 'Contrato',
+                            files: []
+                        },
+                        carta: {
+                            value: '',
+                            placeholder: 'Carta',
                             files: []
                         }
                     }
@@ -829,10 +839,11 @@ class Empleados extends Component {
     }
 
     onChangeAdjuntos = valor => {
-        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success);})
+        let tipo = valor.target.id
+        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success, tipo);})
     }
 
-    async addAdjuntoAxios(valor) {
+    async addAdjuntoAxios(valor, tipo) {
         waitAlert()
         const { name, file } = valor.target
         const { access_token } = this.props.authUser
@@ -840,7 +851,7 @@ class Empleados extends Component {
         let data = new FormData();
         if(file){
             data.append(`file`, file)
-            await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar`, data, { headers: setFormHeader(access_token) }).then(
+            await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
                     const { empleado } = response.data
                     const { key } = this.state

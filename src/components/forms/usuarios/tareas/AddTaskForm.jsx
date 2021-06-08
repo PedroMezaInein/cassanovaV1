@@ -88,7 +88,7 @@ class AddTaskForm extends Component {
                                     <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
                                         withformgroup = { 0 } formeditado = { formeditado } placeholder = 'DESCRIPCIÓN' value = { form.descripcion } 
                                         name = 'descripcion' as = "textarea" rows = "7" messageinc = "Incorrecto. Ingresa una descripción."
-                                        onChange = {(e) => { e.preventDefault(); onChange(e, false) } } />
+                                        onChange = {(e) => { e.preventDefault(); onChange(e, false) } } letterCase = { false }/>
                                 </div>
                                 <div className="col-md-12 px-0 mb-3">
                                     <TagSelectSearchGray placeholder = 'Selecciona el tag' options = { options.tags } 
