@@ -128,6 +128,7 @@
       "react-is": "16.12.0",
       "react-js-pagination": "^3.0.3",
       "react-lifecycles-compat": "^3.0.4",
+      "react-linkify": "^1.0.0-alpha",
       "react-loader": "^2.4.7",
       "react-lottie": "^1.2.3",
       "react-mentions": "^4.1.1",
