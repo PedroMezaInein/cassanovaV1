@@ -2,18 +2,16 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { renderToString } from 'react-dom/server'
-import { Tabs, Tab, Form } from 'react-bootstrap'
+import { Tabs, Tab } from 'react-bootstrap'
 import Layout from '../../../components/layout/layout'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { CONTRATOS_RRHH_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
-import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, validateAlert } from '../../../functions/alert'
-import { setArrayTable } from '../../../functions/setters'
-import { setSingleHeader } from '../../../functions/routers'
-import FileInput from '../../../components/form-components/FileInput'
-import { onChangeAdjunto } from '../../../functions/onChanges'
-import { Button } from '../../../components/form-components'
+import { CONTRATOS_RRHH_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS_URL } from '../../../constants'
+import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, sendFileAlert } from '../../../functions/alert'
+import { setDateTable, setAdjuntoTable, setTextTableCenter } from '../../../functions/setters'
+import { setSingleHeader, setFormHeader } from '../../../functions/routers'
 import TableForModals from '../../../components/tables/TableForModals'
 import { Modal } from '../../../components/singles'
+import FileInput from '../../../components/form-components/FileInput'
 
 import $ from "jquery";
 class ContratosRh extends Component {
@@ -36,7 +34,12 @@ class ContratosRh extends Component {
             adjuntos: {
                 contrato: {
                     value: '',
-                    placeholder: 'Contrato',
+                    placeholder: 'Adjuntar contrato firmado',
+                    files: []
+                },
+                carta: {
+                    value: '',
+                    placeholder: 'Adjuntar carta firmada',
                     files: []
                 }
             }
@@ -45,7 +48,7 @@ class ContratosRh extends Component {
         data: {
             adjuntos: []
         },
-        tipo: 'Administrativo',
+        tipo: 'administrativo',
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -61,14 +64,14 @@ class ContratosRh extends Component {
 
     setContratos = contratos => {
         let aux = []
-        contratos.forEach((contrato, key) => {
+        contratos.forEach((contrato) => {
             aux.push({
                 actions: this.setActions(contrato),
-                empleado: contrato.empleado.nombre,
-                periodo: contrato.indefinido === 1 ? 'Tiempo indefinido' : `${contrato.dias} días`,
-                fecha_inicio: '-',
-                fecha_fin: '-',
-                estatus: contrato.terminado ? 'Terminado' : 'En curso',
+                empleado:renderToString(setTextTableCenter(contrato.empleado.nombre)),
+                periodo: renderToString(setTextTableCenter(contrato.indefinido === 1 ? 'Tiempo indefinido' : `${contrato.dias} días`)),
+                fecha_inicio: renderToString(setDateTable(contrato.fecha_inicio)),
+                fecha_fin: renderToString(setDateTable(contrato.fecha_fin)),
+                estatus: renderToString(setTextTableCenter(contrato.terminado ? 'Terminado' : 'En curso')),
                 id: contrato.id
             })
         })
@@ -91,13 +94,6 @@ class ContratosRh extends Component {
                 iconclass: 'fas fa-check',
                 action: 'renovar',
                 tooltip: { id: 'renovar', text: 'Renovar' },
-            },
-            {
-                text: 'Regenerar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-refresh-button',
-                action: 'regenerar',
-                tooltip: { id: 'regenerar', text: 'Regenerar' },
             },
             {
                 text: 'Adjuntos',
@@ -143,14 +139,42 @@ class ContratosRh extends Component {
     openModalAdjuntos = contrato => {
         const { modal, data } = this.state
         modal.adjuntos = true
+        let aux = [];
+        if (contrato.contrato) {
+            aux.push({
+                name: 'CONTRATO GENERADO',
+                url: contrato.contrato
+            })
+        }
+        if (contrato.contrato_firmado) {
+            aux.push({
+                name: 'CONTRATO FIRMADO',
+                url: contrato.contrato_firmado
+            })
+        }
+        if (contrato.carta) {
+            aux.push({
+                name: 'CARTA GENERADA',
+                url: contrato.carta
+            })
+        }
+        if (contrato.carta_firmada) {
+            aux.push({
+                name: 'CARTA FIRMADA',
+                url: contrato.carta_firmada
+            })
+        }
+        data.adjuntos = aux
         this.setState({
             ...this.state,
             modal,
+            contrato: contrato,
             data,
-            // adjuntos: this.setAdjuntos(contrato),
-            contrato: contrato
+            form: this.clearForm(),
+            adjuntos: this.setAdjuntosTable(data.adjuntos)
         })
     }
+
     handleCloseModalAdjuntos = () => {
         const { modal } = this.state
         modal.adjuntos = false
@@ -158,84 +182,49 @@ class ContratosRh extends Component {
             ...this.state,
             form: this.clearForm(),
             modal,
-            tipo: 'Cliente',
-            adjuntos: [],
             contrato: ''
         })
     }
-    setAdjuntos = contrato => {
-        console.log(contrato)
+    setAdjuntosTable = adjuntos => {
         let aux = []
-        contrato.map((documento) => {
+        adjuntos.map((adjunto) => {
             aux.push({
-                actions: this.setActionsAdjuntos(documento),
-                // adjunto: renderToString(setArrayTable([{ text: documento.name, url: documento.contrato }])),
-                adjunto: renderToString(setArrayTable(
-                    [
-                        { name: 'GENERADO', text: documento.contrato ? documento.contrato : '' },
-                        { name: 'FIRMADO', text: documento.contrato_firmado ? documento.contrato_firmado : '' }
-                    ],'200px'
-                )),
-                id: documento.id
+                url: renderToString(setAdjuntoTable(adjunto))
             })
             return false
         })
         return aux
     }
-    setActionsAdjuntos = () => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'deleteAdjunto',
-                tooltip: { id: 'deleteAdjunto', text: 'Eliminar', type: 'error' }
-            }
-        )
-        return aux
-    }
-    onSubmitAdjuntos = e => {
-        e.preventDefault()
-        waitAlert()
-        this.addAdjuntoContratoAxios()
-    }
-    async addAdjuntoContratoAxios() {
-        const { access_token } = this.props.authUser
-        const { form, contrato } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form.adjuntos)
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
         aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    form[element] = new Date()
+                    break;
+                case 'adjuntos':
+                    form[element] = {
+                        contrato: {
+                            value: '',
+                            placeholder: 'Adjuntar contrato firmado',
+                            files: []
+                        },
+                        carta: {
+                            value: '',
+                            placeholder: 'Adjuntar carta firmada',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
             }
+            return false
         })
-        await axios.post(URL_DEV + 'contratos/' + contrato.id + '/adjunto/', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                // const { contrato } = response.data
-                const { data, modal, key } = this.state
-                if (key === 'administrativo') { this.getContratosAdminAxios() }
-                if (key === 'obra') { this.getContratosObraAxios() }
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
-                // data.adjuntos = contrato.adjuntos
-                modal.form = false
-                this.setState({
-                    ...this.state,
-                    data,
-                    modal,
-                    // adjuntos: this.setAdjuntos(contrato.adjuntos)
-                })
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        return form;
     }
     clearFiles = (name, key) => {
         const { form } = this.state
@@ -259,7 +248,7 @@ class ContratosRh extends Component {
         const { history } = this.props
         history.push({
             pathname: '/rh/contratos-rrhh/renovar',
-            state: { contrato: contrato, tipo:'Administrativo'}
+            state: { contrato: contrato, tipo:'administrativo'}
 
         });
     }
@@ -267,23 +256,98 @@ class ContratosRh extends Component {
         const { history } = this.props
         history.push({
             pathname: '/rh/contratos-rrhh/renovar',
-            state: { contrato: contrato, tipo:'Obra'}
+            state: { contrato: contrato, tipo:'obra'}
         });
+    }
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        this.setState({ ...this.state, form })
+    }
+    onChangeAdjuntos = valor => {
+        let tipo = valor.target.id
+        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success, tipo);})
+    }
+    async addAdjuntoAxios(valor, tipo) {
+        waitAlert()
+        const { name, file } = valor.target
+        const { access_token } = this.props.authUser
+        const { contrato } = this.state
+        let data = new FormData();
+        if(file){
+            data.append(`file`, file)
+            await axios.post(`${URL_DEV}v2/rh/empleados/${contrato.empleado.id}/contratos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
+                (response) => {
+                    const { contrato } = response.data
+                    const { data, key } = this.state
+                    if (key === 'administrativo') { this.getContratosAdminAxios() }
+                    if (key === 'obra') { this.getContratosObraAxios() }
+                    let aux = [];
+                    if (contrato.contrato) {
+                        aux.push({
+                            name: 'CONTRATO GENERADO',
+                            url: contrato.contrato
+                        })
+                    }
+                    if (contrato.contrato_firmado) {
+                        aux.push({
+                            name: 'CONTRATO FIRMADO',
+                            url: contrato.contrato_firmado
+                        })
+                    }
+                    if (contrato.carta) {
+                        aux.push({
+                            name: 'CARTA GENERADA',
+                            url: contrato.carta
+                        })
+                    }
+                    if (contrato.carta_firmada) {
+                        aux.push({
+                            name: 'CARTA FIRMADA',
+                            url: contrato.carta_firmada
+                        })
+                    }
+                    data.adjuntos = aux
+                    this.setState({
+                        ...this.state,
+                        contrato: contrato,
+                        adjuntos: this.setAdjuntosTable(data.adjuntos),
+                        form: this.clearForm(),
+                    })
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{ errorAlert('Adjunta solo un archivo') }
+        
     }
     render() {
         const { access_token } = this.props.authUser
-        const { key, modal, form, adjuntos, data } = this.state
-
+        const { key, modal, form, adjuntos, data, contrato } = this.state
         return (
             <Layout active = 'rh' { ...this.props } >
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="administrativo" title="Administrativo">
-                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=Administrativo'
+                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=administrativo'
                             abrir_modal = { false } mostrar_acciones = { true } urlRender = { `${URL_DEV}v1/rh/contratos-rrhh` } accessToken = { access_token }
                             actions = {{ 
                                 'terminar': { function: this.cancelarContrato },
                                 'renovar': { function: this.changePageRenovar },
-                                'regenerar': { function: this.openModalSee },
                                 'adjuntos': { function: this.openModalAdjuntos }
                             }}
                             setter = { this.setContratos } 
@@ -292,12 +356,11 @@ class ContratosRh extends Component {
                         />
                     </Tab>
                     <Tab eventKey="obra" title="Obra">
-                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=Obra'
+                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=obra'
                             abrir_modal = { false } mostrar_acciones = { true } urlRender = { `${URL_DEV}v1/rh/contratos-rrhh` } accessToken = { access_token }
                             actions = {{
                                 'terminar': { function: this.cancelarContrato },
                                 'renovar': { function: this.changePageEditObra },
-                                'regenerar': { function: this.openModalSee },
                                 'adjuntos': { function: this.openModalAdjuntos }
                             }}
                             setter = { this.setContratos } 
@@ -306,54 +369,20 @@ class ContratosRh extends Component {
                     </Tab>
                 </Tabs>
                 <Modal size="lg" title='Adjuntos del contrato' show={modal.adjuntos} handleClose={this.handleCloseModalAdjuntos}>
-                    <Form id="form-adjuntos"
-                        onSubmit={
-                            (e) => {
-                                e.preventDefault();
-                                validateAlert(this.onSubmitAdjuntos, e, 'form-adjuntos')
-                            }
-                        }
-                    >
-                        <div className="form-group row form-group-marginless pt-4">
-                            <div className="col-md-12 text-center">
-                                <FileInput
-                                    requirevalidation={0}
-                                    onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
-                                    placeholder={form.adjuntos.contrato.placeholder}
-                                    value={form.adjuntos.contrato.value}
-                                    name='contrato'
-                                    id='adjunto-contrato'
-                                    accept="application/pdf"
-                                    files={form.adjuntos.contrato.files}
-                                    deleteAdjunto={this.clearFiles}
-                                    multiple
-                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
-                                    iconclass='flaticon2-clip-symbol text-primary'
-                                />
-                            </div>
-                        </div>
-                        <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto"
-                                onClick={
-                                    (e) => {
-                                        e.preventDefault();
-                                        validateAlert(this.onSubmitAdjuntos, e, 'form-adjuntos')
-                                    }
-                                }
-                                text="ENVIAR" />
-                        </div>
-                    </Form>
-                    {/* <div className="separator separator-dashed mt-1 mb-2"></div>
-                    <TableForModals
-                        columns={ADJ_CONTRATOS_COLUMNS}
-                        data={adjuntos}
-                        mostrar_acciones={true}
-                        actions={{
-                            'deleteAdjunto': { function: this.openModalDeleteAdjunto }
-                        }}
-                        elements={data.adjuntos}
-                        idTable='kt_datatable_estado'
-                    /> */}
+                    <div className="d-flex justify-content-center mt-8">
+                        <FileInput requirevalidation={0} onChangeAdjunto={this.onChangeAdjuntos}
+                            value={form.adjuntos.contrato.value} name={contrato.id} id='adjunto-contrato'
+                            accept="application/pdf" files={form.adjuntos.contrato.files}
+                            classbtn='btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0 mr-5'
+                            iconclass='la la-file-signature text-dark-50 icon-2x' placeholder={form.adjuntos.contrato.placeholder}/>
+                    
+                        <FileInput requirevalidation={0} onChangeAdjunto={this.onChangeAdjuntos}
+                            value={form.adjuntos.carta.value} name={contrato.id} id='adjunto-carta'
+                            accept="application/pdf" files={form.adjuntos.carta.files} placeholder={form.adjuntos.carta.placeholder}
+                            classbtn='btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
+                            iconclass='la la-file-alt text-dark-50 icon-2x' />
+                    </div>
+                    <TableForModals columns = { ADJUNTOS_COLUMNS_URL } data = { adjuntos } hideSelector = { true } mostrar_acciones = { false } dataID = 'adjuntos' elements = { data.adjuntos }/>
                 </Modal>
             </Layout>
         )

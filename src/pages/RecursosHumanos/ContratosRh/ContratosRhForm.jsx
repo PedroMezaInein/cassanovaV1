@@ -8,10 +8,10 @@ import { setOptions} from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { ContratoFormRH } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { onChangeAdjunto } from '../../../functions/onChanges'
+import { setSingleHeader } from '../../../functions/routers'
 import moment from 'moment'
 
-class Empleados extends Component {
+class ContratosRhForm extends Component {
     state = {
         formeditado: 0,
         title: 'Nuevo contrato',
@@ -28,10 +28,11 @@ class Empleados extends Component {
             dias_laborables:''
         },
         options: {
-            empleados: []
+            empleados: [],
+            empleadosObra:[]
         },
-        
-        tipo: 'Administrativo',
+        tipo: 'administrativo',
+        contrato:''
     }
     componentDidMount() {
         let queryString = this.props.history.location.search
@@ -52,9 +53,6 @@ class Empleados extends Component {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
-        if (!contratos)
-            history.push('/')
-        // this.getOptionsAxios()
         let aux =action
         aux = aux.split('?')
         switch (aux[0]) {
@@ -68,18 +66,27 @@ class Empleados extends Component {
                 break;
             case 'renovar':
                 if (state) {
-                    console.log(state)
                     if (state.contrato) {
                         const { form, options} = this.state
                         const { contrato, tipo } = state
-                        
+                        form.empleado = contrato.empleado.id.toString()
+                        form.fechaInicio = contrato.fecha_inicio !== null ? new Date(moment(contrato.fecha_inicio)):''
+                        form.fechaFin = contrato.fecha_fin !== null ? new Date(moment(contrato.fecha_fin)):''
+                        form.periodo = contrato.indefinido === 1?false:true
+                        form.dias = contrato.dias
+                        form.periodo_pago = contrato.periodo_pago
+                        form.ubicacion_obra = contrato.ubicacion_obra
+                        form.pagos_hr_extra = contrato.pagos_hr_extra
+                        form.total_obra = contrato.total_obra
+                        form.dias_laborables = contrato.dias_laborables
                         this.setState({
                             ...this.state,
                             form,
                             options,
                             tipo: tipo,
                             title: 'Renovar contrato '+tipo,
-                            formeditado: 1
+                            formeditado: 1,
+                            contrato:contrato
                         })
                     }
                     else
@@ -90,29 +97,28 @@ class Empleados extends Component {
             default:
                 break;
         }
+        if (!contratos)
+            history.push('/')
+        this.getOptionsAxios()
     }
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v1/rh/contratos-rrhh/`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
-                const { empresas, departamentos } = response.data
+                const { empleados, empleadosObra } = response.data
                 const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                options.empleados = setOptions(empleados, 'nombre', 'id')
+                options.empleadosObra = setOptions(empleadosObra, 'nombre', 'id')
+                Swal.close()
+                this.setState({ ...this.state, options })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     onChange = (e) => {
         const { name, value } = e.target
         const { form } = this.state
@@ -125,10 +131,10 @@ class Empleados extends Component {
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        if (title === 'Renovar contrato')
-            this.updateEmpleadoAxios()
+        if (title === 'Renovar contrato administrativo' || title === "Renovar contrato obra")
+            this.renovarContratoAxios()
         else
-            this.addEmpleadoAxios()
+            this.generarContratoAxios()
     }
     onChangeContrato= e => {
         const { name, value, type } = e.target
@@ -167,6 +173,55 @@ class Empleados extends Component {
             form
         })
     }
+    renovarContratoAxios = async() => {
+        waitAlert()
+        const { contrato, form, tipo } = this.state
+        console.log(contrato, 'contrato')
+        console.log(form, 'form')
+        console.log(tipo, 'tipo')
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/renovar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const { contrato } = response.data
+                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                const { history } = this.props
+                history.push({ pathname: '/rh/contratos-rrhh' });
+                
+                var win = window.open(contrato.contrato, '_blank');
+                if(contrato.carta)
+                    window.open(contrato.carta, '_blank');
+                win.focus();
+                this.setState({ ...this.state, contrato: contrato,})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    generarContratoAxios = async() => {
+        waitAlert()
+        const { contrato, form, tipo } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/generar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const { contrato } = response.data
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                const { history } = this.props
+                history.push({ pathname: '/rh/contratos-rrhh' });
+
+                var win = window.open(contrato.contrato, '_blank');
+                if(contrato.carta)
+                    window.open(contrato.carta, '_blank');
+                win.focus();
+                this.setState({ ...this.state, contrato: contrato })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { options, title, form, formeditado, tipo} = this.state
         return (
@@ -183,8 +238,10 @@ class Empleados extends Component {
                             options={options}
                             formeditado={formeditado}
                             tipo={tipo}
+                            title={title}
                             onChangeContrato={this.onChangeContrato}
                             onChangeRange={this.onChangeRange}
+                            onSubmit={this.onSubmit}
                         />
                     </Card.Body>
                 </Card>
@@ -193,13 +250,7 @@ class Empleados extends Component {
     }
 
 }
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
-const mapDispatchToProps = dispatch => ({
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Empleados);
+export default connect(mapStateToProps, mapDispatchToProps)(ContratosRhForm);

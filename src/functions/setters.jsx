@@ -677,19 +677,25 @@ export function setDateTable(date) {
     seconds = seconds.getTime() / 1000;
     return (
         <div className="font-size-11px text-center">
-            <span className="d-none">
-                {
-                    seconds
-                }
-            </span>
-            <span className="d-none">
-                <Moment format="YYYY/MM/DD">
-                    {date}
-                </Moment>
-            </span>
-            <Moment format="DD/MM/YYYY">
-                {date}
-            </Moment>
+            {
+                date !== null?
+                <>
+                    <span className="d-none">
+                        {
+                            seconds
+                        }
+                    </span>
+                    <span className="d-none">
+                        <Moment format="YYYY/MM/DD">
+                            {date}
+                        </Moment>
+                    </span>
+                    <Moment format="DD/MM/YYYY">
+                        {date}
+                    </Moment>
+                </>
+                :'-'
+            }
         </div>
     )
 }
