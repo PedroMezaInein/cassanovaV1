@@ -157,37 +157,31 @@ class ClientesForm extends Component {
             this.cpAxios(value)
     }
     async cpAxios(value) {
-        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
+        await axios.get(`${CP_URL}${TOKEN_CP}/${value}`).then(
             (response) => {
-                const { municipio, estado, asentamiento } = response.data.response
-                const { cliente, form } = this.state
-                let aux = [];
-                asentamiento.map((colonia, key) => {
-                    aux.push({ value: colonia, name: colonia.toUpperCase() })
-                    return false
-                })
-                form.municipio = municipio
-                form.estado = estado
-                form.colonias = aux
-                this.setState({
-                    ...this.state,
-                    form
-                })
-                if (cliente.colonia) {
-                    aux.find(function (element, index) {
-                        if (element.name === cliente.colonia) {
-                            this.updateColonia(element)
-                        }
-                        return false
+                const { estatus } = response.data
+                const { form, options } = this.state
+                if (estatus  === 'si') {
+                    const { municipio, estado, asentamientos } = response.data.data
+                    console.log(response.data.data, 'DATA')
+                    form['municipio'] = municipio.toUpperCase()
+                    form['estado'] = estado.toUpperCase()
+                    let aux = []
+                    asentamientos.forEach((element) => {
+                        aux.push({ name: element.nombre.toString().toUpperCase(), value: element.nombre.toString().toUpperCase() })
+                    })
+                    options['colonias'] = aux
+                    this.setState({
+                        ...this.state,
+                        form,
+                        options
                     })
                 }
-                this.onChange({ target: { name: 'cp', value: value } })
-                this.onChange({ target: { name: 'municipio', value: municipio.toUpperCase() } })
-                this.onChange({ target: { name: 'estado', value: estado.toUpperCase() } })
             },
             (error) => {
             }
         ).catch((error) => {
+            console.log('error catch', error)
         })
     }
     render() {
