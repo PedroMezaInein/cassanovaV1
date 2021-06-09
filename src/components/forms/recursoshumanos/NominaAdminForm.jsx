@@ -322,8 +322,6 @@ class NominaAdminForm extends Component {
                                     <button type="button" className="btn btn-light-primary font-weight-bolder mr-2" onClick={addRowNominaAdmin}>AGREGAR FILA</button>
                                 </div>
                             }
-
-                               
                         </div>
                     </Card.Body>
                     {

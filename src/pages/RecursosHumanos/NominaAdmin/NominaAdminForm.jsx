@@ -84,7 +84,7 @@ class NominaAdminForm extends Component {
                         form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
 
                         let aux = []
-                        nomina.nominas_administrativas.map((nom, key) => {
+                        nomina.nominas_administrativas.forEach((nom, key) => {
                             aux.push(
                                 {
                                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
@@ -94,18 +94,17 @@ class NominaAdminForm extends Component {
                                     id: nom.id
                                 }
                             )
-                            return false
                         })
 
-                        if (aux.length) {
-                            form.nominasAdmin = aux
-                        } else {
-                            form.nominasAdmin = [{
-                                usuario: '',
-                                nominImss: '',
-                                restanteNomina: '',
-                                extras: ''
-                            }]
+                        if (aux.length) { form.nominasAdmin = aux } 
+                        else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+
+                        if(nomina.egresos){
+                            if(nomina.egresos.length){
+                                if(nomina.cuentaImss){ form.cuentaImss = nomina.cuentaImss.id.toString() }
+                                if(nomina.cuentaRestante){ form.cuentaRestante = nomina.cuentaRestante.id.toString() }
+                                if(nomina.cuentaExtras){ form.cuentaExtras = nomina.cuentaExtras.id.toString() }
+                            }
                         }
                         this.setState({
                             ...this.state,
@@ -216,16 +215,79 @@ class NominaAdminForm extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, nomina } = this.state
-        await axios.put(URL_DEV + 'rh/nomina-administrativa/' + nomina.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { history } = this.props
+                const { nom } = response.data
+                const { options } = this.state
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
-                history.push({ pathname: '/rh/nomina-admin' });
+                let aux = []
+                nom.nominas_administrativas.forEach((element, key) => {
+                    aux.push(
+                        {
+                            usuario: element.empleado ? element.empleado.id.toString() : '',
+                            nominImss: element.nomina_imss,
+                            restanteNomina: element.restante_nomina,
+                            extras: element.extras,
+                            id: element.id
+                        }
+                    )
+                })
+                if (aux.length) { form.nominasAdmin = aux } 
+                else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
+                window.history.replaceState(nom, 'nomina')
+                this.setState({...this.state, nomina: nom, options, form })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+
+    deleteRowNominaAdmin = async(nominaAdmin, key) => {
+        if(nominaAdmin.id){
+            waitAlert()
+            const { access_token } = this.props.authUser
+            const { nomina } = this.state
+            await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}/${nominaAdmin.id}`, { headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    Swal.close()
+                    const { form, options } = this.state
+                    const { nom } = response.data
+                    let aux = []
+                    nom.nominas_administrativas.forEach((element, key) => {
+                        aux.push(
+                            {
+                                usuario: element.empleado ? element.empleado.id.toString() : '',
+                                nominImss: element.nomina_imss,
+                                restanteNomina: element.restante_nomina,
+                                extras: element.extras,
+                                id: element.id
+                            }
+                        )
+                    })
+                    if (aux.length) { form.nominasAdmin = aux } 
+                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                    options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
+                    window.history.replaceState(nom, 'nomina')
+                    this.setState({...this.state, nomina: nom, options, form })
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{
+            let aux = []
+            const { form, options } = this.state
+            form.nominasAdmin.forEach((element, index) => {
+                if(index !== key)
+                    aux.push(element)
+            })
+            if (aux.length) { form.nominasAdmin = aux } 
+            else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+            options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
+            this.setState({...this.state, form, options})
+        }
     }
 
     clearForm = () => {
@@ -321,50 +383,6 @@ class NominaAdminForm extends Component {
         const { form } = this.state
         form.nominasAdmin.push( {  usuario: '', nominImss: '', restanteNomina: '', extras: '' } )
         this.setState({ ...this.state, form })
-    }
-
-    deleteRowNominaAdmin = async(nominaAdmin, key) => {
-        if(nominaAdmin.id){
-            waitAlert()
-            const { access_token } = this.props.authUser
-            const { nomina } = this.state
-            await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}/${nominaAdmin.id}`, { headers: setSingleHeader(access_token) }).then(
-                (response) => {
-                    const { form, options } = this.state
-                    const { nom } = response.data
-                    let aux = []
-                    nom.nominas_administrativas.forEach((element, key) => {
-                        aux.push(
-                            {
-                                usuario: element.empleado ? element.empleado.id.toString() : '',
-                                nominImss: element.nomina_imss,
-                                restanteNomina: element.restante_nomina,
-                                extras: element.extras,
-                                id: element.id
-                            }
-                        )
-                    })
-                    if (aux.length) { form.nominasAdmin = aux } 
-                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
-                    options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
-                    this.setState({...this.state, nomina: nom, options, form })
-                }, (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-        }else{
-            let aux = []
-            const { form, options } = this.state
-            form.nominasAdmin.forEach((element, index) => {
-                if(index !== key)
-                    aux.push(element)
-            })
-            if (aux.length) { form.nominasAdmin = aux } 
-            else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
-            options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
-            this.setState({...this.state, form, options})
-        }
     }
 
     handleChange = (files, item) => {

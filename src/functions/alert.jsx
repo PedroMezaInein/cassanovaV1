@@ -1,7 +1,9 @@
-import { Message, Done, Sending, Robot404, UserWarning } from '../components/Lottie/'
+import { Message, Done, Sending, Robot404, UserWarning, CommonLottie } from '../components/Lottie/'
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { UploadingFile } from '../assets/animate'
+
 const MySwal = withReactContent(Swal)
 
 const userWarningAlert = async(texto, confirmFunction, deniedFunction) => {
@@ -42,7 +44,41 @@ async function waitAlert() {
     })
 }
 
-export{ userWarningAlert, waitAlert }
+const sendFileAlert = ( elemento, action ) => {
+    const { files, name } = elemento.target
+    let element = files[0]
+    MySwal.fire({
+        title: '¿DESEAS CONFIRMAR EL ENVÍO DE ARCHIVOS?',
+        html: 
+            <div className = 'row mx-0 justify-content-center'>
+                <div className="col-md-12 text-center py-2">
+                    <div className="text-dark-75 font-weight-bolder font-size-lg">
+                        Documento Adjuntado:
+                    </div>
+                    <div>
+                        <a className="text-muted font-weight-bold text-hover-primary" target= '_blank' rel="noreferrer" href = {URL.createObjectURL(element)}>
+                            {element.name}
+                        </a>
+                    </div>
+                </div>
+                <div className = 'col-8'>
+                    <CommonLottie animationData = { UploadingFile } />
+                </div>
+            </div>,
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: "SI, ENVIAR",
+        cancelButtonText: 'CANCELAR',
+    }).then((result) => {
+        if (result.value) {
+            action({
+                target: { name: name, file: element}
+            });
+        }
+    })
+}
+
+export{ userWarningAlert, waitAlert, sendFileAlert }
 
 export async function commentAlert() {
     MySwal.fire({
@@ -125,13 +161,13 @@ export function errorAlertRedirectOnDissmis(text, history, ruta) {
     })
 }
 
-export function deleteAlert(title,text,action) {
+export function deleteAlert(title,text,action, text_button) {
     MySwal.fire({
         title: title,
         text:text,
         showConfirmButton: true,
         showCancelButton: true,
-        confirmButtonText: 'ELIMINAR',
+        confirmButtonText: text_button? text_button: 'ELIMINAR',
         cancelButtonText: 'CANCELAR',
         reverseButtons: true,
         customClass: {
@@ -535,9 +571,6 @@ export function steps(action) {
             break
             }
         }
-        // if (currentStep === steps.length) {
-        //     Swal.fire(JSON.stringify(values))
-        // }
         if (currentStep === steps.length) {
             Swal.fire({
                 title: '¿ESTÁS SEGURO DE TUS RESPUESTAS?',

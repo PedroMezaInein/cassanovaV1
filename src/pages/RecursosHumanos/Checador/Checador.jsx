@@ -12,7 +12,7 @@ import Echo from 'laravel-echo';
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 const horasPorTrabajar = 8
-class Empleados extends Component {
+class Checador extends Component {
     state = {
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
@@ -463,4 +463,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Empleados);
+export default connect(mapStateToProps, mapDispatchToProps)(Checador);

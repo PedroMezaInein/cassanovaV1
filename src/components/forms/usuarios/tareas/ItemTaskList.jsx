@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { printDateMes } from '../../../../functions/printers'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
 import moment from 'moment'
+import Linkify from 'react-linkify';
 class ItemTaskList extends Component {
 
     isImportant = (tarea) => {
@@ -108,6 +109,11 @@ class ItemTaskList extends Component {
     }
     render() {
         const { mostrarTarea, tareas, updateFav, addLabel, options, updateTagInTask } = this.props
+        const componentDecorator = (href, text, key) => (
+            <a href={href} key={key} target="_blank" rel="noopener noreferrer" className="font-weight-bold">
+                {text}
+            </a>
+        );
         return (
             <>
                 {
@@ -141,7 +147,9 @@ class ItemTaskList extends Component {
                                             </div>
                                         }
                                         <div className="text-justify font-weight-light">
-                                            {tarea.descripcion}
+                                            <Linkify componentDecorator={componentDecorator}>
+                                                {tarea.descripcion}
+                                            </Linkify>
                                         </div>
                                     </div>
                                 </div>

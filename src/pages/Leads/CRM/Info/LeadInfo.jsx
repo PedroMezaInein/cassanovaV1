@@ -1087,7 +1087,7 @@ class LeadInfo extends Component {
     setOptionsCheckboxes = (partidas, value) => {
         let checkBoxPartida = []
         partidas.map((partida, key) => {
-            if(partida.nombre === 'PLANO DE LEVANTAMIENTO TOPOGRÁFICO'){
+            if((partida.nombre === 'PLANO DE LEVANTAMIENTO TOPOGRÁFICO') || (partida.nombre === 'PLANO CUADRO DE CARGAS') || (partida.nombre === 'PLANO DE DIAGRAMA UNIFILAR')){
                 checkBoxPartida.push({ checked: false, text: partida.nombre, id: partida.id, tipo: partida.tipo })
             }else{
                 checkBoxPartida.push({ checked: value, text: partida.nombre, id: partida.id, tipo: partida.tipo })

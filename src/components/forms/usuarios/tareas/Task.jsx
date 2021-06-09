@@ -3,6 +3,7 @@ import { WriteComment, CommentsPanel } from '../../../../components/forms'
 import { printDateMes } from '../../../../functions/printers'
 import moment from 'moment'
 import { Dropdown, DropdownButton } from 'react-bootstrap'
+import Linkify from 'react-linkify';
 class Task extends Component {
 
     colorDate(){
@@ -63,6 +64,12 @@ class Task extends Component {
 
     render() {
         const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, mentions, onSubmit, options, updateTagInTask, deleteTask, reactivarTask } = this.props
+        
+        const componentDecorator = (href, text, key) => (
+            <a href={href} key={key} target="_blank" rel="noopener noreferrer" className="font-weight-bold">
+                {text}
+            </a>
+        );
         if(tarea)
             return (
                 <div id="task" className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
@@ -205,8 +212,10 @@ class Task extends Component {
                                         </div>
                                     </div>
                                     <div className="card-spacer-x pt-2 pb-5 toggle-off-item">
-                                        <div className="mb-1 text-justify font-weight-light mb-5">
-                                            {tarea.descripcion}
+                                        <div className="mb-1 text-justify font-weight-light mb-5 white-space-pre-wrap text-transform-none">
+                                            <Linkify componentDecorator={componentDecorator}>
+                                                {tarea.descripcion}
+                                            </Linkify>
                                         </div>
                                     </div>
                                 </div>
