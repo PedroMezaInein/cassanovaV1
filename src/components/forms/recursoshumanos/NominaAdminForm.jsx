@@ -140,7 +140,7 @@ class NominaAdminForm extends Component {
         onChange({ target: { value: value, name: 'quincena' } })
     }
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange, action, clearFiles, onChangeAdjunto } = this.props
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, form, onSubmit, formeditado, title, action, clearFiles, onChangeAdjunto } = this.props
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -284,25 +284,25 @@ class NominaAdminForm extends Component {
                                                         <SelectSearchGray formeditado={formeditado} options={this.setOptions(key)} placeholder="SELECCIONA EL EMPLEADO"
                                                             name="usuario" value={nominaAdmin.usuario} onChange={(value) => this.updateUsuario(value, key)}
                                                             customstyle={{ minWidth: "300px" }} withtaglabel={0} withtextlabel={0} withicon={0}
-                                                            customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : ''}`} customdiv="mb-0" iconvalid={1} />
+                                                            customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`} customdiv="mb-0" iconvalid={1} />
                                                     </td>
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
-                                                            withformgroup={0} customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : ''}`}
+                                                            withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
                                                             requirevalidation={1} formeditado={1} name="nominImss" thousandseparator={true}
                                                             value={nominaAdmin.nominImss} onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
                                                             prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
                                                     </td>
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
-                                                            withformgroup={0} customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : ''}`}
+                                                            withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
                                                             requirevalidation={1} formeditado={1} name="restanteNomina"
                                                             value={nominaAdmin.restanteNomina} onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
                                                             thousandseparator={true} prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
                                                     </td>
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
-                                                            withformgroup={0} customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : ''}`}
+                                                            withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
                                                             requirevalidation={1} formeditado={1} name="extras" thousandseparator={true}
                                                             value={nominaAdmin.extras} onChange={e => onChangeNominasAdmin(key, e, 'extras')}
                                                             prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
