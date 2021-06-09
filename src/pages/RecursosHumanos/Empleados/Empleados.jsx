@@ -802,8 +802,8 @@ class Empleados extends Component {
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
                 modal.contrato = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
-                var win = window.open(contrato.contrato, '_blank');
-                win.focus();
+                if(contrato.contrato)
+                    window.open(contrato.contrato, '_blank');
                 if(contrato.carta)
                     window.open(contrato.carta, '_blank');
                 this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
@@ -826,8 +826,8 @@ class Empleados extends Component {
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
                 modal.contrato = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
-                var win = window.open(contrato.contrato, '_blank');
-                win.focus();
+                if(contrato.contrato)
+                    window.open(contrato.contrato, '_blank');
                 if(contrato.carta)
                     window.open(contrato.carta, '_blank');
                 this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })

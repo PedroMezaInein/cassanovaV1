@@ -201,7 +201,7 @@ class ContratosRhForm extends Component {
     }
     generarContratoAxios = async() => {
         waitAlert()
-        const { contrato, form, tipo } = this.state
+        const { form, tipo } = this.state
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/generar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
             (response) => {
