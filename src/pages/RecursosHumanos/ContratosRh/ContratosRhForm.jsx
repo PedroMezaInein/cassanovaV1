@@ -11,7 +11,7 @@ import { Card } from 'react-bootstrap'
 import { setSingleHeader } from '../../../functions/routers'
 import moment from 'moment'
 
-class Empleados extends Component {
+class ContratosRhForm extends Component {
     state = {
         formeditado: 0,
         title: 'Nuevo contrato',
@@ -248,7 +248,7 @@ class Empleados extends Component {
     }
     generarContratoAxios = async() => {
         waitAlert()
-        const { contrato, form, tipo } = this.state
+        const { form, tipo } = this.state
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/generar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
             (response) => {
@@ -297,13 +297,7 @@ class Empleados extends Component {
     }
 
 }
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
-const mapDispatchToProps = dispatch => ({
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Empleados);
+export default connect(mapStateToProps, mapDispatchToProps)(ContratosRhForm);
