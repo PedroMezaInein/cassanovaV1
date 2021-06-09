@@ -8,6 +8,9 @@ import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { NominaAdminForm as NominaAdminFormulario } from '../../../components/forms'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { onChangeAdjunto } from '../../../functions/onChanges'
+import moment from 'moment'
+const meses = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
 class NominaAdminForm extends Component {
     state = {
@@ -19,6 +22,7 @@ class NominaAdminForm extends Component {
         title: 'Nueva nómina administrativa',
         form: {
             periodo: '',
+            empresa:'',
             empresas: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -31,6 +35,9 @@ class NominaAdminForm extends Component {
                 restanteNomina: '',
                 extras: ''
             }],
+            quincena:new Date().getDate() < 15 ? '1Q' : '2Q',
+            mes: meses[new Date().getMonth()],
+            año: new Date().getFullYear(),
             adjuntos: {
                 adjunto: {
                     value: '',
@@ -264,8 +271,19 @@ class NominaAdminForm extends Component {
 
     onChange = e => {
         const { name, value } = e.target
-        const { form } = this.state
+        let { form } = this.state
         form[name] = value
+        if(form.empresa !== ''){
+            form.periodo = form.año+form.mes+form.quincena
+            if(form.quincena === '1Q'){
+                form.fechaInicio= moment(`${form.año}-${form.mes}-01`).format("DD/MM/YYYY");
+                form.fechaFin= moment(`${form.año}-${form.mes}-15`).format("DD/MM/YYYY");
+            }else{
+                var diasMes = new Date(form.año, form.mes, 0).getDate();
+                form.fechaInicio= moment(`${form.año}-${form.mes}-16`).format("DD/MM/YYYY");
+                form.fechaFin= moment(`${form.año}-${form.mes}-${diasMes}`).format("DD/MM/YYYY");
+            }
+        }
         this.setState({ ...this.state, form })
     }
     
@@ -398,7 +416,7 @@ class NominaAdminForm extends Component {
                     addRowNominaAdmin = { this.addRowNominaAdmin } deleteRowNominaAdmin = { this.deleteRowNominaAdmin } 
                     onChangeNominasAdmin = { this.onChangeNominasAdmin } onChange = { this.onChange } clearFiles = { this.clearFiles } 
                     onSubmit = { this.onSubmit } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange } 
-                    usuarios = { data.usuarios } action = { action }/>
+                    usuarios = { data.usuarios } action = { action } onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}/>
             </Layout>
         )
     }

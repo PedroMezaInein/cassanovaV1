@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { RangeCalendar, Button, InputGray, SelectSearchGray, InputMoneyGray } from '../../form-components'
+import { Button, SelectSearchGray, InputMoneyGray, FileInput } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
-import { ItemSlider, Modal } from '../../../components/singles';
-import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
 class NominaAdminForm extends Component {
     state = {
-        modalForm: false,
         formeditado: 0
     }
     updateEmpresa = value => {
@@ -83,7 +80,7 @@ class NominaAdminForm extends Component {
     setOptions = key => {
         const { options, form, usuarios } = this.props
         let array = []
-        if(form.nominasAdmin[key].usuario === '')
+        if (form.nominasAdmin[key].usuario === '')
             return options.usuarios
         let aux = usuarios.find((element) => {
             return element.id.toString() === form.nominasAdmin[key].usuario
@@ -91,40 +88,59 @@ class NominaAdminForm extends Component {
         options.usuarios.forEach((element) => {
             array.push(element)
         })
-        if(aux)
-            array.push({'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString()})
+        if (aux)
+            array.push({ 'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString() })
         return array
     }
-    openModal = () => {
-        this.setState({
-            ...this.state,
-            modalForm: true,
-            formeditado: 0
-        })
+    getMeses = () => {
+        return [
+            { name: 'Enero', value: '01' },
+            { name: 'Febrero', value: '02' },
+            { name: 'Marzo', value: '03' },
+            { name: 'Abril', value: '04' },
+            { name: 'Mayo', value: '05' },
+            { name: 'Junio', value: '06' },
+            { name: 'Julio', value: '07' },
+            { name: 'Agosto', value: '08' },
+            { name: 'Septiembre', value: '09' },
+            { name: 'Octubre', value: '10' },
+            { name: 'Noviembre', value: '11' },
+            { name: 'Diciembre', value: '12' }
+        ]
     }
-    onSubmitForm = () => {
-        this.setState({
-            ...this.state,
-            modalForm: false,
-        })
+    getAños = () => {
+        var fecha = new Date().getFullYear()
+        var arreglo = [];
+        for (let i = 0; i < 10; i++)
+            arreglo.push(
+                {
+                    name: fecha - i,
+                    value: fecha - i
+                }
+            );
+        return arreglo
     }
-    handleCloseModal = () => {
-        const { form } = this.props
-        form.periodo = ''
-        form.empresa = ''
-        form.adjuntos.adjunto.value = ''
-        form.adjuntos.adjunto.files = []
-        form.fechaInicio = new Date()
-        form.fechaFin = new Date()
-        this.setState({
-            ...this.state,
-            modalForm: false,
-            form
-        })
+    getQuincena = () => {
+        return [
+            { name: 'Quincena 1', value: '1Q' },
+            { name: 'Quincena 2', value: '2Q' }
+        ]
+    }
+    updateMes = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'mes' } })
+    }
+
+    updateAño = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'año' } })
+    }
+    updateQuincena = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'quincena' } })
     }
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title,  handleChange, onChangeRange, action } = this.props
-        const { modalForm } = this.state
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange, action, clearFiles, onChangeAdjunto } = this.props
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -134,187 +150,193 @@ class NominaAdminForm extends Component {
                     }
                 }
             >
-            <Card className="card card-custom gutter-b example example-compact">
-                <Card.Header>
-                    <Card.Title>
-                        <h3 className="card-label">{title}</h3>
-                    </Card.Title>
-                        <div className="card-toolbar">
-                            <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mx-2" onClick={(e) => { this.openModal() }}>
-                                <i className="flaticon2-calendar-6 icon-lg text-primary mr-1"></i>
-                                Periodo de nómina
-                            </a>
-                        </div>
-                </Card.Header>
+                <Card className="card card-custom gutter-b example example-compact">
+                    <Card.Header>
+                        <Card.Title>
+                            <h3 className="card-label">{title}</h3>
+                        </Card.Title>
+                    </Card.Header>
                     <Card.Body>
-                        <table className="table table-separate table-responsive-sm table_nominas_obras" id="tabla_obra">
-                            <thead>
-                                <tr>
-                                    <th className = 'border-bottom-0'></th>
-                                    <th rowSpan="3"><div className="mt-2 pb-3">Empleado</div></th>
-                                    <th className="pb-0 border-bottom-0 text-center">Nómina IMSS</th>
-                                    <th className="pb-0 border-bottom-0 text-center">Restante Nómina</th>
-                                    <th className="pb-0 border-bottom-0 text-center">Extras</th>
-                                    <th className="pb-0 border-bottom-0 text-center">Total</th>
-                                </tr>
-                                <tr>
-                                    <th className = 'border-bottom-0'></th>
-                                    {
-                                        this.getTotalNominaImss("nominImss") > 0 ?
-                                            <th className="py-2 border-bottom-0">
-                                                <div className="py-1 my-0 font-weight-bolder">
-                                                    <SelectSearchGray formeditado = { formeditado } options = { options.cuentas } name = "cuentaImss"
-                                                        placeholder = "SELECCIONA LA CUENTA" value = { form.cuentaImss } messageinc = "SELECCIONA LA CUENTA"
-                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaImss') } } withtaglabel={0} withtextlabel={0}
-                                                        withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}
-                                                    />
-                                                </div>
-                                            </th>
-                                        : <th className="border-bottom-0"></th>    
-                                    }
-                                    {
-                                        this.getTotalExtra("restanteNomina") > 0 ?
-                                            <th className="py-2 border-bottom-0">
-                                                <div className="py-1 my-0 font-weight-bolder">
-                                                    <SelectSearchGray formeditado = { formeditado } options = { options.cuentas } name = "cuentaRestante"
-                                                        placeholder = "SELECCIONA LA CUENTA" value = { form.cuentaRestante } messageinc = "SELECCIONA LA CUENTA"
-                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaRestante') } } withtaglabel={0} withtextlabel={0}
-                                                        withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1} />
-                                                </div>
-                                            </th>
-                                        : <th className="border-bottom-0"></th>
-                                    }
-                                    {
-                                        this.getTotalExtra("extras") > 0 ?
-                                            <th className="py-2 border-bottom-0">
-                                                <div className="py-1 my-0 font-weight-bolder">
-                                                    <SelectSearchGray formeditado = { formeditado } options = { options.cuentas } name = "cuentaExtras"
-                                                        placeholder = "SELECCIONA LA CUENTA" value = { form.cuentaExtras } messageinc = "SELECCIONA LA CUENTA" 
-                                                        onChange = { (value) => { this.updateCuenta(value, 'cuentaExtras') } } withtaglabel={0} withtextlabel={0}
-                                                        withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}/>
-                                                </div>
-                                            </th>
-                                        : <th className="border-bottom-0"></th>
-                                    }
-                                    <th className="border-bottom-0"></th>
-                                </tr>
-                                <tr>
-                                    <th className = ''></th>
-                                    <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
-                                    <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
-                                    <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
-                                    <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotales())}</div></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* { console.log( 'FORM NOMINAS ADMIN', form.nominasAdmin ) } */}
-                                {
-                                    form.nominasAdmin.map((nominaAdmin, key) => {
-                                        return (
-                                            <tr key={key}>
-                                                <td className = 'text-center' style={{minWidth:"60px"}}>
-                                                    <Button icon = '' onClick = { () => { deleteRowNominaAdmin(nominaAdmin, key) } }
-                                                        className = "btn btn-sm btn-icon btn-bg-white btn-icon-danger btn-hover-danger" only_icon = "far fa-trash-alt icon-md text-danger" />
-                                                </td>
-                                                <td>
-                                                    <SelectSearchGray formeditado = { formeditado } options = { this.setOptions(key) } placeholder = "SELECCIONA EL EMPLEADO"
-                                                        name = "usuario" value = { nominaAdmin.usuario } onChange = { (value) => this.updateUsuario(value, key) }
-                                                        customstyle={{ minWidth: "300px" }}  withtaglabel={0} withtextlabel={0} withicon={0} 
-                                                        customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : '' }`} customdiv="mb-0" iconvalid={1} />
-                                                </td>
-                                                <td>
-                                                    <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
-                                                        withformgroup = { 0 } customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : '' }`}
-                                                        requirevalidation = { 1 } formeditado = { 1 } name = "nominImss" thousandseparator = { true }
-                                                        value = { nominaAdmin.nominImss } onChange = { e => onChangeNominasAdmin(key, e, 'nominImss') }
-                                                        prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm" iconvalid={1}/>
-                                                </td>
-                                                <td>
-                                                    <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
-                                                        withformgroup = { 0 } customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : '' }`}
-                                                        requirevalidation = { 1 }  formeditado = { 1 } name = "restanteNomina"
-                                                        value = { nominaAdmin.restanteNomina } onChange = { e => onChangeNominasAdmin(key, e, 'restanteNomina') }
-                                                        thousandseparator = { true } prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm" iconvalid={1}/>
-                                                </td>
-                                                <td>
-                                                    <InputMoneyGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
-                                                        withformgroup = { 0 } customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : '' }`}
-                                                        requirevalidation = { 1 } formeditado = { 1 } name = "extras" thousandseparator = { true }
-                                                        value = { nominaAdmin.extras } onChange = { e => onChangeNominasAdmin(key, e, 'extras') }
-                                                        prefix = '$' customstyle = { { minWidth: "160px" } } classlabel="font-size-sm"  iconvalid={1}/>
-                                                </td>
-                                                <td className="text-center">
-                                                    <div className="font-size-lg font-weight-bolder"> { setMoneyTableForNominas(this.getTotal(key)) } </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                        {
-                            options.usuarios.length > 0 &&
-                            <div className="d-flex justify-content-center">
-                                <button type="button" className="btn btn-light-primary font-weight-bolder mr-2" onClick={addRowNominaAdmin}>AGREGAR FILA</button>
+                        <div>
+                            <div className="row form-group-marginless mx-0">
+                                <div className="col-md-3">
+                                    <SelectSearchGray formeditado={formeditado} options={options.empresas} placeholder="SELECCIONA LA EMPRESA"
+                                        name="empresa" value={form.empresa} onChange={this.updateEmpresa} withtaglabel={1} withtextlabel={1}
+                                        messageinc="Selecciona la empresa" withicon={1} customdiv="mb-0" />
+                                </div>
+                                <div className="col-md-3">
+                                    <SelectSearchGray withtaglabel={1} withtextlabel={1} name='quincena' options={this.getQuincena()}
+                                        placeholder='SELECCIONA LA QUINCENA' value={form.quincena} onChange={this.updateQuincena}
+                                        iconclass="fas fa-calendar-day" messageinc="Selecciona el quincena." withicon={1} customdiv="mb-0"/>
+                                </div>
+                                <div className="col-md-3">
+                                    <SelectSearchGray withtaglabel={1} withtextlabel={1} name='mes' options={this.getMeses()}
+                                        placeholder='SELECCIONA EL MES' value={form.mes} onChange={this.updateMes}
+                                        iconclass="fas fa-calendar-day" messageinc="Selecciona el mes." withicon={1} customdiv="mb-0"/>
+                                </div>
+                                <div className="col-md-3">
+                                    <SelectSearchGray withtaglabel={1} withtextlabel={1} name='año' options={this.getAños()}
+                                        placeholder='SELECCIONA EL AÑO' value={form.año} onChange={this.updateAño}
+                                        iconclass="fas fa-calendar-day" messageinc="Selecciona el año." withicon={1} customdiv="mb-0"/>
+                                </div>
                             </div>
-                        }
+                            <div className="separator separator-dashed mt-10 mb-2"></div>
+                            {
+                                action !== 'edit' &&
+                                <>
+                                    <div className="align-self-center col-md-12 mt-8">
+                                        <div className="row form-group-marginless mx-0">
+                                            <div className="col-md-12 text-center align-self-center">
+                                                {/* <label className="col-form-label my-2 font-weight-bold text-dark-60">{form.adjuntos.adjunto.placeholder}</label>
+                                                <ItemSlider items={form.adjuntos.adjunto.files} item='adjunto' handleChange={handleChange} multiple={true} /> */}
+                                                <FileInput
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChangeAdjunto={onChangeAdjunto}
+                                                    placeholder={form.adjuntos.adjunto.placeholder}
+                                                    value={form.adjuntos.adjunto.value}
+                                                    name='adjunto'
+                                                    id='adjunto'
+                                                    accept="image/*, application/pdf"
+                                                    files={form.adjuntos.adjunto.files}
+                                                    deleteAdjunto={clearFiles}
+                                                    multiple
+                                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                                    iconclass='flaticon2-clip-symbol text-primary'
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="separator separator-dashed mt-10 mb-2"></div>
+                                </>
+                            }
+
+                            <table className="table table-separate table-responsive-sm table_nominas_obras" id="tabla_obra">
+                                <thead>
+                                    <tr>
+                                        <th className='border-bottom-0'></th>
+                                        <th rowSpan="3"><div className="mt-2 pb-3">Empleado</div></th>
+                                        <th className="pb-0 border-bottom-0 text-center">Nómina IMSS</th>
+                                        <th className="pb-0 border-bottom-0 text-center">Restante Nómina</th>
+                                        <th className="pb-0 border-bottom-0 text-center">Extras</th>
+                                        <th className="pb-0 border-bottom-0 text-center">Total</th>
+                                    </tr>
+                                    <tr>
+                                        <th className='border-bottom-0'></th>
+                                        {
+                                            this.getTotalNominaImss("nominImss") > 0 ?
+                                                <th className="py-2 border-bottom-0">
+                                                    <div className="py-1 my-0 font-weight-bolder">
+                                                        <SelectSearchGray formeditado={formeditado} options={options.cuentas} name="cuentaImss"
+                                                            placeholder="SELECCIONA LA CUENTA" value={form.cuentaImss} messageinc="SELECCIONA LA CUENTA"
+                                                            onChange={(value) => { this.updateCuenta(value, 'cuentaImss') }} withtaglabel={0} withtextlabel={0}
+                                                            withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}
+                                                        />
+                                                    </div>
+                                                </th>
+                                                : <th className="border-bottom-0"></th>
+                                        }
+                                        {
+                                            this.getTotalExtra("restanteNomina") > 0 ?
+                                                <th className="py-2 border-bottom-0">
+                                                    <div className="py-1 my-0 font-weight-bolder">
+                                                        <SelectSearchGray formeditado={formeditado} options={options.cuentas} name="cuentaRestante"
+                                                            placeholder="SELECCIONA LA CUENTA" value={form.cuentaRestante} messageinc="SELECCIONA LA CUENTA"
+                                                            onChange={(value) => { this.updateCuenta(value, 'cuentaRestante') }} withtaglabel={0} withtextlabel={0}
+                                                            withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1} />
+                                                    </div>
+                                                </th>
+                                                : <th className="border-bottom-0"></th>
+                                        }
+                                        {
+                                            this.getTotalExtra("extras") > 0 ?
+                                                <th className="py-2 border-bottom-0">
+                                                    <div className="py-1 my-0 font-weight-bolder">
+                                                        <SelectSearchGray formeditado={formeditado} options={options.cuentas} name="cuentaExtras"
+                                                            placeholder="SELECCIONA LA CUENTA" value={form.cuentaExtras} messageinc="SELECCIONA LA CUENTA"
+                                                            onChange={(value) => { this.updateCuenta(value, 'cuentaExtras') }} withtaglabel={0} withtextlabel={0}
+                                                            withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1} />
+                                                    </div>
+                                                </th>
+                                                : <th className="border-bottom-0"></th>
+                                        }
+                                        <th className="border-bottom-0"></th>
+                                    </tr>
+                                    <tr>
+                                        <th className=''></th>
+                                        <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
+                                        <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
+                                        <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
+                                        <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotales())}</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* { console.log( 'FORM NOMINAS ADMIN', form.nominasAdmin ) } */}
+                                    {
+                                        form.nominasAdmin.map((nominaAdmin, key) => {
+                                            return (
+                                                <tr key={key}>
+                                                    <td className='text-center' style={{ minWidth: "60px" }}>
+                                                        <Button icon='' onClick={() => { deleteRowNominaAdmin(nominaAdmin, key) }}
+                                                            className="btn btn-sm btn-icon btn-bg-white btn-icon-danger btn-hover-danger" only_icon="far fa-trash-alt icon-md text-danger" />
+                                                    </td>
+                                                    <td>
+                                                        <SelectSearchGray formeditado={formeditado} options={this.setOptions(key)} placeholder="SELECCIONA EL EMPLEADO"
+                                                            name="usuario" value={nominaAdmin.usuario} onChange={(value) => this.updateUsuario(value, key)}
+                                                            customstyle={{ minWidth: "300px" }} withtaglabel={0} withtextlabel={0} withicon={0}
+                                                            customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : ''}`} customdiv="mb-0" iconvalid={1} />
+                                                    </td>
+                                                    <td>
+                                                        <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
+                                                            withformgroup={0} customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : ''}`}
+                                                            requirevalidation={1} formeditado={1} name="nominImss" thousandseparator={true}
+                                                            value={nominaAdmin.nominImss} onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
+                                                            prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
+                                                    </td>
+                                                    <td>
+                                                        <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
+                                                            withformgroup={0} customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : ''}`}
+                                                            requirevalidation={1} formeditado={1} name="restanteNomina"
+                                                            value={nominaAdmin.restanteNomina} onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
+                                                            thousandseparator={true} prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
+                                                    </td>
+                                                    <td>
+                                                        <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
+                                                            withformgroup={0} customclass={`form-control-sm text-center ${action == 'edit' ? 'pointer-events-none' : ''}`}
+                                                            requirevalidation={1} formeditado={1} name="extras" thousandseparator={true}
+                                                            value={nominaAdmin.extras} onChange={e => onChangeNominasAdmin(key, e, 'extras')}
+                                                            prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <div className="font-size-lg font-weight-bolder"> {setMoneyTableForNominas(this.getTotal(key))} </div>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                            {
+                                options.usuarios.length > 0 &&
+                                <div className="d-flex justify-content-center">
+                                    <button type="button" className="btn btn-light-primary font-weight-bolder mr-2" onClick={addRowNominaAdmin}>AGREGAR FILA</button>
+                                </div>
+                            }
+
+                               
+                        </div>
                     </Card.Body>
                     {
-                        form.periodo !== '' && form.empresa !== ''? <Card.Footer>
-                        <div className="row">
-                            <div className="col-lg-12 text-right">
-                                <Button icon='' text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                        form.periodo !== '' && form.empresa !== '' ? <Card.Footer>
+                            <div className="row">
+                                <div className="col-lg-12 text-right">
+                                    <Button icon='' text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                                </div>
                             </div>
-                        </div>
-                    </Card.Footer> : ''
-                        
+                        </Card.Footer> : ''
+
                     }
                 </Card>
-                
-                <Modal size="lg" title="Periodo de nómina" show={modalForm} handleClose={this.handleCloseModal} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
-                    <div style={{ display: 'flex', maxHeight: '500px'}} >
-                        <Scrollbar>
-                            <div className="form-group row form-group-marginless mx-0">
-                                <div className="col-md-12 row mx-0">
-                                    <div className="col-md-6 mx-auto mb-5">
-                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}
-                                            requirevalidation={1} formeditado={1} name="periodo" value={form.periodo}
-                                            placeholder="PERIODO DE NÓMINA" onChange={onChange} iconclass="far fa-window-maximize"
-                                            messageinc="Ingresa el periodo de nómina." />
-                                    </div>
-                                    <div className="col-md-6 mx-auto mb-5">
-                                        <SelectSearchGray formeditado={formeditado} options={options.empresas} placeholder="Selecciona la empresa"
-                                            name="empresa" value={form.empresa} onChange={this.updateEmpresa} withtaglabel={1} withtextlabel={1}
-                                            messageinc="Selecciona la empresa" withicon={1} />
-                                    </div>
-                                </div>
-                                <div className="col-md-12 d-flex justify-content-center align-self-center">
-                                    <div className="text-center">
-                                        <label className="col-form-label my-2 font-weight-bold text-dark-60 pt-0 mt-0">Fecha de inicio - Fecha final</label><br />
-                                        <RangeCalendar onChange={onChangeRange} start={form.fechaInicio} end={form.fechaFin} />
-                                    </div>
-                                </div>
-                                {
-                                    action !== 'edit' &&
-                                    <div className="col-md-12 text-center">
-                                        <label className="col-form-label my-2 font-weight-bold text-dark-60">{form.adjuntos.adjunto.placeholder}</label>
-                                        <ItemSlider items={form.adjuntos.adjunto.files} item='adjunto' handleChange={handleChange} multiple={true} />
-                                    </div>
-                                }
-                            </div>
-                        </Scrollbar>
-                    </div>
-                    <div className="card-footer py-3 pr-1">
-                            <div className="row mx-0">
-                                <div className="col-lg-12 text-right pr-0 pb-0">
-                                    <Button icon='' className="btn btn-primary mr-2"
-                                        onClick={ (e) => { e.preventDefault();this.onSubmitForm() }}
-                                        text="CONFIRMAR"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                </Modal>
             </Form>
         )
     }
