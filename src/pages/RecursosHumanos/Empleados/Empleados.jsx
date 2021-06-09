@@ -754,7 +754,7 @@ class Empleados extends Component {
     }
     onChangeContrato= e => {
         const { name, value, type } = e.target
-        const { formContrato } = this.state
+        let { formContrato, empleado } = this.state
         formContrato[name] = value
 
         if(type === 'radio'){
@@ -767,7 +767,24 @@ class Empleados extends Component {
             case 'pagos_hr_extra':
             case 'total_obra':
                 formContrato[name] = value.replace(/[,]/gi, '')
-                break
+                break;
+            case 'periodo':
+                if(empleado.contratos.length === 0){
+                    formContrato.fechaInicio = new Date(moment(empleado.fecha_inicio))
+                }else{
+                    let aux = []
+                    empleado.contratos.map((contrato) => {
+                        if (contrato.fecha_fin) {
+                            aux.push(contrato.fecha_fin)
+                        }
+                        return false
+                    })
+                    aux.sort(function(a,b){
+                        return new Date(b) - new Date(a);
+                    });
+                    formContrato.fechaInicio = new Date(moment(aux[0]))
+                }
+                break;
             default:
                 break;
         }

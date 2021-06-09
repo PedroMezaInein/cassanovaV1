@@ -228,30 +228,29 @@ class FormularioContrato extends Component {
                                             </div>
                                             {
                                                 form.periodo === true &&
-                                                <div className="col-md-6">
-                                                    <InputNumberGray
-                                                        formgroup="mb-0"
-                                                        requirevalidation={1}
-                                                        onChange={onChangeContrato}
-                                                        name="dias"
-                                                        type="text"
-                                                        value={form.dias}
-                                                        placeholder="DÍAS"
-                                                        iconclass="flaticon2-calendar-6"
-                                                        messageinc="Incorrecto. Ingresa el número de días."
-                                                    />
-                                                </div>
-                                            }
-                                            {
-                                                renovar &&
-                                                <div className="col-md-12 text-center align-self-center mt-10">
-                                                    <div className="text-center">
-                                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                                            <label className="text-center font-weight-bolder">Fecha de contrato</label>
-                                                        </div>
-                                                        <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
+                                                <>
+                                                    <div className="col-md-6">
+                                                        <InputNumberGray
+                                                            formgroup="mb-0"
+                                                            requirevalidation={1}
+                                                            onChange={onChangeContrato}
+                                                            name="dias"
+                                                            type="text"
+                                                            value={form.dias}
+                                                            placeholder="DÍAS"
+                                                            iconclass="flaticon2-calendar-6"
+                                                            messageinc="Incorrecto. Ingresa el número de días."
+                                                        />
                                                     </div>
-                                                </div>
+                                                    <div className="col-md-12 text-center align-self-center mt-10">
+                                                        <div className="text-center">
+                                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                                <label className="text-center font-weight-bolder">Fecha de contrato</label>
+                                                            </div>
+                                                            <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
+                                                        </div>
+                                                    </div>
+                                                </>
                                             }
                                         </div>
                                         :
