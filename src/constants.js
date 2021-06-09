@@ -31,8 +31,10 @@ export const PUSHER_OBJECT = { broadcaster: 'pusher', key: '112ff49dfbf7dccb6934
 /* export const URL_DEV = 'https://demo.proyectosadmin.com/api/';
 export const URL_ASSETS = 'https://demo.proyectosadmin.com'; */
 
-export const CP_URL = 'https://api-sepomex.hckdrk.mx/query/info_cp/'
-export const TOKEN_CP = '83a1950f-71a7-4f10-8243-213c904e2949'
+//export const CP_URL = 'https://api.copomex.com/query/info_cp/'
+export const CP_URL = 'https://apis.forcsec.com/api/codigos-postales/'
+// export const TOKEN_CP = '83a1950f-71a7-4f10-8243-213c904e2949'
+export const TOKEN_CP = '20210609-0f2497fd7ef2563a'
 //Paleta de colores
 // export const COLORS = ["#20ACE9", "#EE4C9E", "#62D270", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "#737373"];
 export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1","#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C"];
