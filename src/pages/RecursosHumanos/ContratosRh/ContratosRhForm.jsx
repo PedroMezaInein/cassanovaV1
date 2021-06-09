@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setOptions} from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { ContratoFormRH } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import { setSingleHeader } from '../../../functions/routers'
@@ -28,10 +28,11 @@ class ContratosRhForm extends Component {
             dias_laborables:''
         },
         options: {
-            empleados: []
+            empleados: [],
+            empleadosObra:[]
         },
-        
-        tipo: 'Administrativo',
+        tipo: 'administrativo',
+        contrato:''
     }
     componentDidMount() {
         let queryString = this.props.history.location.search
@@ -65,18 +66,27 @@ class ContratosRhForm extends Component {
                 break;
             case 'renovar':
                 if (state) {
-                    console.log(state)
                     if (state.contrato) {
                         const { form, options} = this.state
                         const { contrato, tipo } = state
-                        
+                        form.empleado = contrato.empleado.id.toString()
+                        form.fechaInicio = contrato.fecha_inicio !== null ? new Date(moment(contrato.fecha_inicio)):''
+                        form.fechaFin = contrato.fecha_fin !== null ? new Date(moment(contrato.fecha_fin)):''
+                        form.periodo = contrato.indefinido === 1?false:true
+                        form.dias = contrato.dias
+                        form.periodo_pago = contrato.periodo_pago
+                        form.ubicacion_obra = contrato.ubicacion_obra
+                        form.pagos_hr_extra = contrato.pagos_hr_extra
+                        form.total_obra = contrato.total_obra
+                        form.dias_laborables = contrato.dias_laborables
                         this.setState({
                             ...this.state,
                             form,
                             options,
                             tipo: tipo,
                             title: 'Renovar contrato '+tipo,
-                            formeditado: 1
+                            formeditado: 1,
+                            contrato:contrato
                         })
                     }
                     else
@@ -96,10 +106,10 @@ class ContratosRhForm extends Component {
         const { access_token } = this.props.authUser
         await axios.options(`${URL_DEV}v1/rh/contratos-rrhh/`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { empleados } = response.data
-                console.log(empleados)
+                const { empleados, empleadosObra } = response.data
                 const { options } = this.state
                 options.empleados = setOptions(empleados, 'nombre', 'id')
+                options.empleadosObra = setOptions(empleadosObra, 'nombre', 'id')
                 Swal.close()
                 this.setState({ ...this.state, options })
             }, (error) => { printResponseErrorAlert(error) }
@@ -121,10 +131,10 @@ class ContratosRhForm extends Component {
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        if (title === 'Renovar contrato')
-            this.updateEmpleadoAxios()
+        if (title === 'Renovar contrato administrativo' || title === "Renovar contrato obra")
+            this.renovarContratoAxios()
         else
-            this.addEmpleadoAxios()
+            this.generarContratoAxios()
     }
     onChangeContrato= e => {
         const { name, value, type } = e.target
@@ -163,6 +173,55 @@ class ContratosRhForm extends Component {
             form
         })
     }
+    renovarContratoAxios = async() => {
+        waitAlert()
+        const { contrato, form, tipo } = this.state
+        console.log(contrato, 'contrato')
+        console.log(form, 'form')
+        console.log(tipo, 'tipo')
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/renovar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const { contrato } = response.data
+                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                const { history } = this.props
+                history.push({ pathname: '/rh/contratos-rrhh' });
+                
+                var win = window.open(contrato.contrato, '_blank');
+                if(contrato.carta)
+                    window.open(contrato.carta, '_blank');
+                win.focus();
+                this.setState({ ...this.state, contrato: contrato,})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    generarContratoAxios = async() => {
+        waitAlert()
+        const { contrato, form, tipo } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/generar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const { contrato } = response.data
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                const { history } = this.props
+                history.push({ pathname: '/rh/contratos-rrhh' });
+
+                var win = window.open(contrato.contrato, '_blank');
+                if(contrato.carta)
+                    window.open(contrato.carta, '_blank');
+                win.focus();
+                this.setState({ ...this.state, contrato: contrato })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { options, title, form, formeditado, tipo} = this.state
         return (
@@ -179,8 +238,10 @@ class ContratosRhForm extends Component {
                             options={options}
                             formeditado={formeditado}
                             tipo={tipo}
+                            title={title}
                             onChangeContrato={this.onChangeContrato}
                             onChangeRange={this.onChangeRange}
+                            onSubmit={this.onSubmit}
                         />
                     </Card.Body>
                 </Card>
