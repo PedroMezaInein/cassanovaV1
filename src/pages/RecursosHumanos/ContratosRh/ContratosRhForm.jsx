@@ -11,7 +11,7 @@ import { Card } from 'react-bootstrap'
 import { setSingleHeader } from '../../../functions/routers'
 import moment from 'moment'
 
-class Empleados extends Component {
+class ContratosRhForm extends Component {
     state = {
         formeditado: 0,
         title: 'Nuevo contrato',
@@ -189,13 +189,7 @@ class Empleados extends Component {
     }
 
 }
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
-const mapDispatchToProps = dispatch => ({
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Empleados);
+export default connect(mapStateToProps, mapDispatchToProps)(ContratosRhForm);
