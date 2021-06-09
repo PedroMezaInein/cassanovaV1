@@ -39,7 +39,7 @@ class FormularioContrato extends Component {
         })
     }
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato, regeneratePdf } = this.props
         const { renovar, showForm, showHistorial } = this.state
         return (
             <>
@@ -174,6 +174,17 @@ class FormularioContrato extends Component {
                                                                     </span>
                                                                 </OverlayTrigger>
                                                             : <></>
+                                                        }
+                                                        {
+                                                            contrato.contrato_firmado === null ? 
+                                                                <OverlayTrigger overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder mt-2" onClick = { (e) => { e.preventDefault(); regeneratePdf(contrato)   }}>
+                                                                        <span className="svg-icon svg-icon-lg svg-icon-info">
+                                                                            <i className="far fa-file-pdf svg-icon-info"></i>
+                                                                        </span>
+                                                                    </span>
+                                                                </OverlayTrigger>
+                                                            : ''
                                                         }
                                                         
                                                     </td>
