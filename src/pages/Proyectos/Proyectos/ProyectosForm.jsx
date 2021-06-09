@@ -975,7 +975,7 @@ class ProyectosForm extends Component {
                 </tr>
                 <tr>
                     <td className="text-center">
-                        <i class="las la-map-marked-alt icon-2x text-dark-50"></i>
+                        <i className="las la-map-marked-alt icon-2x text-dark-50"></i>
                     </td>
                     <td className="font-weight-bolder text-dark-50">
                         CALLE Y NÚMERO

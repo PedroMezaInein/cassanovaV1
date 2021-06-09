@@ -10,6 +10,7 @@ import { EmpleadosForm as EmpleadosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import { onChangeAdjunto } from '../../../functions/onChanges'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import moment from 'moment'
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -62,10 +63,18 @@ class Empleados extends Component {
             },
             departamentos: [],
             departamento: '',
+            nacionalidad: '',
+            fecha_nacimiento: '',
+            estado_civil: '',
+            domicilio: '',
+            telefono_movil: '',
+            telefono_particular: '',
+            salario_imss: '',
+            salario_bruto:''
         },
         options: {
             empresas: [],
-            departamentos: [],
+            departamentos: []
         }
     }
     componentDidMount() {
@@ -106,14 +115,22 @@ class Empleados extends Component {
                         form.salario_hr = empleado.salario_hr
                         form.salario_hr_extra = empleado.salario_hr_extra
                         if (empleado.empresa) { form.empresa = empleado.empresa.id.toString() }
-                        form.fechaInicio = new Date(empleado.fecha_inicio)
-                        form.fechaFin = new Date(empleado.fecha_fin)
+                        form.fechaInicio = empleado.fecha_inicio !== null ? new Date(moment(empleado.fecha_inicio)):''
+                        form.fechaFin = empleado.fecha_fin !== null ? new Date(moment(empleado.fecha_fin)):''
                         form.puesto = empleado.puesto
                         form.estatus_imss = this.showStatusImss(empleado.estatus_imss);
                         form.vacaciones_disponibles = empleado.vacaciones_disponibles
-                        form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
+                        form.fecha_alta_imss =  new Date(empleado.fecha_alta_imss)
                         form.numero_alta_imss = empleado.numero_alta_imss
                         form.departamentos = []
+                        form.nacionalidad = empleado.nacionalidad
+                        form.fecha_nacimiento = empleado.fecha_nacimiento !== null ? new Date(moment(empleado.fecha_nacimiento)):''
+                        form.domicilio = empleado.domicilio
+                        form.telefono_movil = empleado.telefono_movil
+                        form.telefono_particular = empleado.telefono_particular
+                        form.salario_imss = empleado.salario_imss
+                        form.salario_bruto = empleado.salario_bruto
+                        form.estado_civil = empleado.estado_civil
                         empleado.departamentos.forEach((elemento) => {
                             form.departamentos.push({
                                 value: elemento.id.toString(),
@@ -188,6 +205,7 @@ class Empleados extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'fechaInicio':
+                case 'fecha_nacimiento':
                     data.append(element, (new Date(form[element])).toDateString())
                     break;
                 case 'fechaFin':
@@ -388,6 +406,26 @@ class Empleados extends Component {
             options
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
         const { options, title, form, formeditado} = this.state
         return (
@@ -398,7 +436,7 @@ class Empleados extends Component {
                             <h3 className="card-label">{title}</h3>
                         </div>
                     </Card.Header>
-                    <Card.Body>
+                    <Card.Body className="pt-0">
                         <EmpleadosFormulario
                             formeditado={formeditado}
                             options={options}
@@ -411,6 +449,7 @@ class Empleados extends Component {
                             onChangeRange={this.onChangeRange}
                             deleteOption = { this.deleteOption }
                             onChangeOptions = { this.onChangeOptions }
+                            handleChange = { this.handleChange }
                         />
                     </Card.Body>
                 </Card>

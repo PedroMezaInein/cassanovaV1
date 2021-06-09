@@ -109,6 +109,8 @@ export function printSwalHeader(tipo){
             return 'EDITAR EL USUARIO Y CONTRASEÑA'
         case 'correo_telefono':
             return 'EDITAR EL CORREO Y TELÉFONO'
+        case 'nss':
+            return 'EDITAR NSS'
         default:
             return ''
     }

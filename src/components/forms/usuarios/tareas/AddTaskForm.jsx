@@ -40,7 +40,14 @@ class AddTaskForm extends Component {
         onChange({target: { value: '', name: 'nuevo_tag'}}, true)
         this.setState({...this.state, newTag: false})
     }
-
+    transformarOptions = options => {  
+        options = options ? options : []
+        options.map( (value) => {
+            value.label = value.name 
+            return ''
+        });
+        return options
+    }
     render() {
         const { form, tarea, onChange, formeditado, options, handleCreateOption, handleChangeCreate, onSubmit, sendTag, ...props } = this.props
         const { newTag } = this.state
@@ -72,15 +79,16 @@ class AddTaskForm extends Component {
                                         messageinc = "Incorrecto. Ingresa el título de la tarea." />
                                 </div>
                                 <div className="col-md-12 px-0 mb-3">
-                                    <TagSelectSearchGray placeholder = 'Selecciona los responsables' options = { options.responsables } 
-                                        iconclass = 'las la-user-friends icon-xl' defaultvalue = { form.responsables } onChange = { this.updateResponsable }
-                                        requirevalidation={1} messageinc = "Incorrecto. Selecciona los responsables."  />
+                                    <TagSelectSearchGray placeholder = 'Selecciona los responsables' iconclass = 'las la-user-friends icon-xl'
+                                        onChange = { this.updateResponsable } requirevalidation={1} messageinc = "Incorrecto. Selecciona los responsables."  
+                                        options={this.transformarOptions(options.responsables)} defaultvalue={this.transformarOptions(form.responsables)}
+                                    />
                                 </div>
                                 <div className="col-md-12 px-0 mb-3">
                                     <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
                                         withformgroup = { 0 } formeditado = { formeditado } placeholder = 'DESCRIPCIÓN' value = { form.descripcion } 
                                         name = 'descripcion' as = "textarea" rows = "7" messageinc = "Incorrecto. Ingresa una descripción."
-                                        onChange = {(e) => { e.preventDefault(); onChange(e, false) } } />
+                                        onChange = {(e) => { e.preventDefault(); onChange(e, false) } } letterCase = { false }/>
                                 </div>
                                 <div className="col-md-12 px-0 mb-3">
                                     <TagSelectSearchGray placeholder = 'Selecciona el tag' options = { options.tags } 

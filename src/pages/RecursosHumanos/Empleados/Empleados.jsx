@@ -9,7 +9,7 @@ import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, TEL } from '../../../cons
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert, sendFileAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../../components/cards'
@@ -18,8 +18,8 @@ import { Update } from '../../../components/Lottie'
 import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray } from '../../../components/form-components'
 import moment from 'moment'
 import $ from "jquery";
-import { setSingleHeader } from '../../../functions/routers'
-
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import FormularioContrato from "../../../components/forms/recursoshumanos/FormularioContrato"
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -32,6 +32,7 @@ class Empleados extends Component {
             delete: false,
             adjuntos: false,
             see: false,
+            contrato: false
         },
         title: 'Nuevo empleado',
         form: {
@@ -78,7 +79,30 @@ class Empleados extends Component {
         },
         options: {
             empresas: []
-        }
+        },
+        formContrato: {
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
+            periodo: '',
+            dias: '',
+            periodo_pago:'',
+            ubicacion_obra:'',
+            pagos_hr_extra:'',
+            total_obra:'',
+            dias_laborables:'',
+            adjuntos: {
+                contrato: {
+                    value: '',
+                    placeholder: 'Contrato',
+                    files: []
+                },
+                carta: {
+                    value: '',
+                    placeholder: 'Carta',
+                    files: []
+                }
+            }
+        },
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -133,6 +157,15 @@ class Empleados extends Component {
             empleado: empleado
         })
     }
+    openModalContrato = empleado => {
+        const { modal } = this.state
+        modal.contrato = true
+        this.setState({
+            ...this.state,
+            modal,
+            empleado: empleado
+        })
+    }
     handleCloseModalDelete = () => {
         const { modal } = this.state
         modal.delete = false
@@ -162,6 +195,48 @@ class Empleados extends Component {
             empleado: ''
         })
     }
+    handleCloseContrato = () => {
+        const { modal } = this.state
+        modal.contrato = false
+        this.setState({
+            ...this.state,
+            modal,
+            empleado: '',
+            formContrato: this.clearFormContrato()
+        })
+    }
+    clearFormContrato = () => {
+        const { formContrato } = this.state
+        let aux = Object.keys(formContrato)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    formContrato[element] = new Date()
+                    break;
+                case 'adjuntos':
+                    formContrato[element] = {
+                        contrato: {
+                            value: '',
+                            placeholder: 'Contrato',
+                            files: []
+                        },
+                        carta: {
+                            value: '',
+                            placeholder: 'Carta',
+                            files: []
+                        }
+                    }
+                break;
+                default:
+                    formContrato[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formContrato;
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -363,7 +438,7 @@ class Empleados extends Component {
                     (tipo === 'nss') || (tipo ==='vacaciones_disponibles') ?
                         <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } type="text"
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } customlabel="d-none"
                         />
                     :<></>
                 }
@@ -404,7 +479,7 @@ class Empleados extends Component {
         }
     }
 
-    setActions = () => {
+    setActions = empleado => {
         let aux = []
         aux.push(
             {
@@ -436,6 +511,15 @@ class Empleados extends Component {
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             }
         )
+        if (empleado.estatus_empleado === 'Activo') {
+            aux.push({
+                text: 'Contrato',
+                btnclass: 'warning',
+                iconclass: 'flaticon2-file-1',
+                action: 'contrato',
+                tooltip: { id: 'adjuntos', text: 'Contrato' }
+            })
+        }
         return aux
     }
 
@@ -668,8 +752,144 @@ class Empleados extends Component {
             console.log(error, 'error')
         })
     }
+    onChangeContrato= e => {
+        const { name, value, type } = e.target
+        const { formContrato } = this.state
+        formContrato[name] = value
+
+        if(type === 'radio'){
+            formContrato.periodo = value === "true" ? true : false
+            if(formContrato.periodo === false){
+                formContrato.dias = ''
+            }
+        }
+        switch (name) {
+            case 'pagos_hr_extra':
+            case 'total_obra':
+                formContrato[name] = value.replace(/[,]/gi, '')
+                break
+            default:
+                break;
+        }
+        
+        this.setState({ 
+            ...this.state,
+            formContrato
+        })
+    }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { formContrato } = this.state
+        formContrato.fechaInicio = startDate
+        formContrato.fechaFin = endDate
+        let dias = moment(endDate).diff(moment(startDate), 'days') + 1
+        formContrato.dias = dias
+        this.setState({
+            ...this.state,
+            formContrato
+        })
+    }
+
+    generar = async() => {
+        waitAlert()
+        const { empleado, formContrato, key, modal } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar?tipo_contrato=${key}`, formContrato, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const { contrato, empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                modal.contrato = false
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                var win = window.open(contrato.contrato, '_blank');
+                if(contrato.carta)
+                    window.open(contrato.carta, '_blank');
+                win.focus();
+                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    renovarContrato = async() => {
+        waitAlert()
+        const { empleado, formContrato, key, modal } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/renovar?tipo_contrato=${key}`, formContrato, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const { contrato, empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                modal.contrato = false
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
+                var win = window.open(contrato.contrato, '_blank');
+                if(contrato.carta)
+                    window.open(contrato.carta, '_blank');
+                win.focus();
+                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onChangeAdjuntos = valor => {
+        let tipo = valor.target.id
+        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success, tipo);})
+    }
+
+    async addAdjuntoAxios(valor, tipo) {
+        waitAlert()
+        const { name, file } = valor.target
+        const { access_token } = this.props.authUser
+        const { empleado } = this.state
+        let data = new FormData();
+        if(file){
+            data.append(`file`, file)
+            await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
+                (response) => {
+                    const { empleado } = response.data
+                    const { key } = this.state
+                    if (key === 'administrativo') { this.getEmpleadosAxios() }
+                    if (key === 'obra') { this.getEmpleadosObraAxios() }
+                    this.setState({...this.state, empleado: empleado})
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{ errorAlert('Adjunta solo un archivo') }
+        
+    }
+    cancelarContrato = element => {
+        deleteAlert('¿DESEAS TERMINAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element.id), 'SI, TERMINAR')
+    }
+    async cancelarContratoAxios(element) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { empleado } = this.state
+        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${element}/terminar`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                this.setState({...this.state, empleado: empleado})
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { modal, form, key, adjuntos, data, empleado } = this.state
+        const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -684,6 +904,7 @@ class Empleados extends Component {
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
                                     'see': { function: this.openModalSee },
+                                    'contrato' : { function: this.openModalContrato }
                                 }
                             }
                             accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
@@ -700,6 +921,7 @@ class Empleados extends Component {
                                 'delete': { function: this.openModalDelete },
                                 'adjuntos': { function: this.openModalAdjuntos },
                                 'see': { function: this.openModalSee },
+                                'contrato' : { function: this.openModalContrato }
                             }}
                             accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado } cardTable = 'cardTable_obra'
                             urlRender = { `${URL_DEV}v2/rh/empleados?type=obra` } idTable = 'empleados_obra_table'
@@ -719,6 +941,11 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Empleados" show={modal.see} handleClose={this.handleCloseSee} >
                     <EmpleadosCard empleado={empleado} />
+                </Modal>
+                <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
+                    <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
+                        generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
+                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } />
                 </Modal>
             </Layout>
         )
