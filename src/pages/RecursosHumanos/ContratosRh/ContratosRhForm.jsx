@@ -108,8 +108,19 @@ class Empleados extends Component {
             (response) => {
                 const { empleados, empleadosObra } = response.data
                 const { options } = this.state
-                options.empleados = setOptions(empleados, 'nombre', 'id')
                 options.empleadosObra = setOptions(empleadosObra, 'nombre', 'id')
+                empleados.map((empleado) => {
+                    options.empleados.push({
+                        name: empleado.nombre,
+                        value: empleado.id.toString(),
+                        fecha_inicio: empleado.fecha_inicio,
+                        fecha_fin: empleado.fecha_fin,
+                        contratos:empleado.contratos
+                    })
+                    return ''
+                })
+                options.empleados.sort(this.compare)
+
                 Swal.close()
                 this.setState({ ...this.state, options })
             }, (error) => { printResponseErrorAlert(error) }
@@ -119,6 +130,15 @@ class Empleados extends Component {
         })
     }
 
+    compare( a, b ) {
+        if ( a.name < b.name ){
+            return -1;
+        }
+        if ( a.name > b.name ){
+            return 1;
+        }
+        return 0;
+    }
     onChange = (e) => {
         const { name, value } = e.target
         const { form } = this.state
@@ -138,9 +158,8 @@ class Empleados extends Component {
     }
     onChangeContrato= e => {
         const { name, value, type } = e.target
-        const { form } = this.state
+        const { form, options } = this.state
         form[name] = value
-
         if(type === 'radio'){
             form.periodo = value === "true" ? true : false
             if(form.periodo === false){
@@ -151,11 +170,42 @@ class Empleados extends Component {
             case 'pagos_hr_extra':
             case 'total_obra':
                 form[name] = value.replace(/[,]/gi, '')
-                break
+                break;
+            case 'empleado':
+                options.empleados.map((empleado)=>{
+                    if(empleado.value === form.empleado){
+                        console.log(empleado)
+                        if (empleado.contratos.length === 0) {
+                            form.fechaInicio = new Date(moment(empleado.fecha_inicio))
+                        } else {
+                            let aux = []
+                            empleado.contratos.map((contrato) => {
+                                if (contrato.fecha_fin) {
+                                    aux.push(contrato.fecha_fin)
+                                }
+                                return false
+                            })
+                            aux.sort(function (a, b) {
+                                return new Date(b) - new Date(a);
+                            });
+                            form.fechaInicio = new Date(moment(aux[0]))
+                        }
+                    }
+                })
+                break;
             default:
                 break;
         }
-        
+        console.log(form)
+        this.setState({ 
+            ...this.state,
+            form
+        })
+    }
+    onChangeContratoDate= e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
         this.setState({ 
             ...this.state,
             form
@@ -176,9 +226,6 @@ class Empleados extends Component {
     renovarContratoAxios = async() => {
         waitAlert()
         const { contrato, form, tipo } = this.state
-        console.log(contrato, 'contrato')
-        console.log(form, 'form')
-        console.log(tipo, 'tipo')
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/empleados/${form.empleado}/contratos/renovar?tipo_contrato=${tipo}`, form, { headers: setSingleHeader(access_token)}).then(
             (response) => {
