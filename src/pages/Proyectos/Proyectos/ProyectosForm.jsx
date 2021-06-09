@@ -798,18 +798,18 @@ class ProyectosForm extends Component {
         })
     }
     async cpAxios(value) {
-        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
+        await axios.get(`${CP_URL}${TOKEN_CP}/${value}`).then(
             (response) => {
-                const { error } = response.data
+                const { estatus } = response.data
                 const { form, options } = this.state
-                if (!error) {
-                    const { municipio, estado, asentamiento } = response.data.response
+                if (estatus  === 'si') {
+                    const { municipio, estado, asentamientos } = response.data.data
+                    console.log(response.data.data, 'DATA')
                     form['municipio'] = municipio.toUpperCase()
                     form['estado'] = estado.toUpperCase()
                     let aux = []
-                    asentamiento.map((element) => {
-                        aux.push({ name: element.toString().toUpperCase(), value: element.toString().toUpperCase() })
-                        return false
+                    asentamientos.forEach((element) => {
+                        aux.push({ name: element.nombre.toString().toUpperCase(), value: element.nombre.toString().toUpperCase() })
                     })
                     options['colonias'] = aux
                     this.setState({
