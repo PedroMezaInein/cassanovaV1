@@ -167,10 +167,10 @@ class NominaAdminForm extends Component {
         let aux = Object.keys(form)
         aux.forEach((element) => {
             switch (element) {
-                case 'fechaInicio':
+                /* case 'fechaInicio':
                 case 'fechaFin':
                     data.append(element, (new Date(form[element])).toDateString())
-                    break;
+                    break; */
                 case 'nominasAdmin':
                     data.append(element, JSON.stringify(form[element]))
                     break;
