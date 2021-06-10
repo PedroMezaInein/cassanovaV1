@@ -272,9 +272,9 @@ class MaterialCliente extends Component {
             if(opciones_adjuntos.length >= menuactive + 1)
                 chunked.tipo = opciones_adjuntos[menuactive].slug
         }
-        console.log(chunked, 'chunked')
+        console.log(chunked, 'chunked', totalCount)
         this.setState({chunked})
-        if(chunked.counter < totalCount){
+        if(chunked.counter <= totalCount){
             let chunk = file.file.slice(chunked.begin, chunked.end)
             this.uploadChunk(chunk)
         }
