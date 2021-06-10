@@ -17,13 +17,8 @@ import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie'
 import { Button } from '../../components/form-components'
-import $ from "jquery";
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
-// import Moment from 'moment';
-// import { extendMoment } from 'moment-range';
-
-// const moment = extendMoment(Moment);
 class Calendario extends Component {
 
     state = {
