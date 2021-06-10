@@ -7,17 +7,29 @@ import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { waitAlert, questionAlert, errorAlert, printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
+import { setFormHeader, setSingleHeaderJson, toAbsoluteUrl } from "../../../functions/routers"
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
+import { v4 as uuidv4 } from "uuid";
+const chunkSize = 1048576 * 30;
 /* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
-        data: {
-            empresas: []
+        chunked: {
+            showProgress: false,
+            progress: 0,
+            counter: 1,
+            begin: 0,
+            end: chunkSize,
+            filesize: 0,
+            totalCount: 1,
+            fileID: '',
+            file: '',
+            type: ''
         },
+        data: { empresas: [] },
         empresa: '',
         submenuactive: '',
         menuactive: '',
@@ -218,39 +230,107 @@ class MaterialCliente extends Component {
         })
     }
 
-    /* ANCHOR ADD ADJUNTO SINGLE */
-    addAdjunto = async() => {
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        const { form, menuactive, opciones_adjuntos, empresa, submenuactive, levelName  } = this.state
+    resetChunks = (file) => {
+        const { chunked } = this.state
+        chunked.showProgress = false
+        chunked.progress = 0
+        chunked.counter = 1
+        chunked.begin = 0
+        chunked.end = chunkSize
+        chunked.filesize = file ? file.file.size : 0
+        chunked.totalCount = 1
+        chunked.fileID = ''
+        chunked.file = ''
+        chunked.tipo = ''
+        this.setState({chunked})
+    }
+
+    addAdjunto = () => {
+        const { form } = this.state
+        let totalCount = 0
+        let fileID = ''
+        if(form.adjuntos.adjuntos.files.length){
+            form.adjuntos.adjuntos.files.forEach((file) => {
+                this.resetChunks(file)
+                totalCount = file.file.size % chunkSize === 0 ? file.file.size / chunkSize : Math.floor(file.file.size / chunkSize) + 1
+                fileID = uuidv4()
+                this.fileUpload(totalCount, fileID, file)
+            })
+        }
+    }
+
+    fileUpload = (totalCount, fileID, file) => {
+        waitAlert()
+        const { chunked } = this.state
+        chunked.totalCount = totalCount
+        chunked.fileID = fileID
+        chunked.file = file.file
+        const { menuactive, opciones_adjuntos, levelName  } = this.state
         if(menuactive === 3){
-            data.append('proyecto', submenuactive)
-            data.append('tipo', levelName)
+            chunked.tipo = levelName
         }else{
             if(opciones_adjuntos.length >= menuactive + 1)
-                data.append('tipo', opciones_adjuntos[menuactive].slug)
+                chunked.tipo = opciones_adjuntos[menuactive].slug
         }
-        form.adjuntos.adjuntos.files.map((file)=>{
-            data.append(`files_name[]`, file.name)
-            data.append(`files[]`, file.file)
-            return '';
-        })
-        data.append('empresa', empresa.id)
-        await axios.post(`${URL_DEV}mercadotecnia/material-clientes`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                Swal.close()
-                const { empresa } = response.data
-                form.adjuntos.adjuntos.files = []
-                form.adjuntos.adjuntos.value = ''
-                this.setState({...this.state,form,empresa:empresa})
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        console.log(chunked, 'chunked')
+        this.setState({chunked})
+        if(chunked.counter < totalCount){
+            let chunk = file.file.slice(chunked.begin, chunked.end)
+            this.uploadChunk(chunk)
+        }
+    }
+
+    uploadChunk = async(chunk) => {
+        try{
+            const { chunked, menuactive, submenuactive } = this.state
+            const { access_token } = this.props.authUser
+            let parametros = { counter: chunked.counter, id: chunked.fileID, fileName: chunked.file.name }
+            if(menuactive === 3){ parametros.proyecto = submenuactive }
+            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/chunk`, chunk, 
+                { params: parametros, headers: setSingleHeaderJson(access_token) }).then((response) => {
+                    chunked.begin = chunked.end
+                    chunked.end = chunked.end + chunkSize
+                    if(chunked.counter === chunked.totalCount){
+                        console.log("Process is complete, counter", chunked.counter);
+                        this.setState({chunked});
+                        this.uploadCompleted();
+                    }else{
+                        chunked.porcentaje = ( chunked.counter / chunked.totalCount ) * 100;
+                        chunked.counter =  chunked.counter + 1;
+                        this.setState({chunked})
+                        let chunk = chunked.file.slice(chunked.begin, chunked.end)
+                        this.uploadChunk(chunk)
+                    }
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        } catch (error) { console.log("error", error); }
+    }
+
+    uploadCompleted = async() => {
+        const { access_token } = this.props.authUser
+        const { chunked, form, empresa } = this.state
+        waitAlert()
+        try{
+            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/complete`, { empresa: empresa.id }, 
+            { 
+                params: { tipo: chunked.tipo, total: chunked.totalCount, id: chunked.fileID, fileName: chunked.file.name }, 
+                headers: setSingleHeaderJson(access_token)
+            }).then(
+                (response) => {
+                    Swal.close()
+                    const { empresa } = response.data
+                    form.adjuntos.adjuntos.files = []
+                    form.adjuntos.adjuntos.value = ''
+                    this.setState({...this.state,form,empresa:empresa})
+            }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        } catch (error) { console.log("error", error); }   
     }
 
     /* ANCHOR ADD ADJUNTO RENDER */
