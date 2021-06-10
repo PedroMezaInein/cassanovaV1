@@ -36,8 +36,8 @@ const setSingleHeader = (access_token) => {
 const setSingleHeaderJson = (access_token) => {
     return{
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${access_token}`,
-        'Access-Control-Allow-Origin' : '*',
+        'Authorization': `Bearer ${access_token}`,
+        /* 'Access-Control-Allow-Origin' : '*', */
         'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
     }
 }
