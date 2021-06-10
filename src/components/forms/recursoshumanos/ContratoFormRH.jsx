@@ -21,18 +21,15 @@ class ContratoFormRH extends Component {
                 {
                     tipo === 'administrativo' ?
                         <div className="form-group row form-group-marginless mt-8">
-                            {
-                                title==='Renovar contrato administrativo'&&
-                                <div className="col-md-4 text-align-last-center align-self-center">
-                                    <div className="text-center">
-                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                            <label className="text-center font-weight-bolder">Fecha de contrato</label>
-                                        </div>
-                                        <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
+                            <div className="col-md-4 text-align-last-center align-self-center">
+                                <div className="text-center">
+                                    <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                        <label className="text-center font-weight-bolder">Fecha de contrato</label>
                                     </div>
+                                    <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
                                 </div>
-                            }
-                            <div className={`align-self-center ${title === 'Renovar contrato administrativo'? 'col-md-8 ' : 'col-md-12'}`}>
+                            </div>
+                            <div className={`align-self-center col-md-8 `}>
                                 <div className="form-group row form-group-marginless">
                                     <div className={`${form.periodo === true?'col-md-4':'col-md-6'}`}>
                                         <SelectSearchGray
