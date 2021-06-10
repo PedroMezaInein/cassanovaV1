@@ -72,12 +72,12 @@ class FormularioContrato extends Component {
                             <table className="table table-responsive-lg table-head-custom table-vertical-center w-100">
                                 <thead>
                                     <tr>
-                                        <th className="text-center" style={{ minWidth: '155px' }}>Tipo de contrato</th>
-                                        <th style={{ minWidth: '140px' }}>Fecha</th>
-                                        <th style={{ minWidth: '100px' }}>Estatus</th>
+                                        <th className="text-center">Tipo de contrato</th>
+                                        <th>Fecha</th>
+                                        <th>Estatus</th>
                                         <th>Adjuntar</th>
-                                        <th style={{ minWidth: '166px' }}>ADJ. AGREGADOS</th>
-                                        <th style={{ minWidth: '103px' }}></th>
+                                        <th style={{ minWidth: '163px' }}>ADJ. AGREGADOS</th>
+                                        <th style={{ minWidth: '148px' }}></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -178,7 +178,7 @@ class FormularioContrato extends Component {
                                                         {
                                                             contrato.contrato_firmado === null ? 
                                                                 <OverlayTrigger overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
-                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder mt-2" onClick = { (e) => { e.preventDefault(); regeneratePdf(contrato)   }}>
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2" onClick = { (e) => { e.preventDefault(); regeneratePdf(contrato)   }}>
                                                                         <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                             <i className="far fa-file-pdf svg-icon-info"></i>
                                                                         </span>
