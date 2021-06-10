@@ -7,13 +7,23 @@ import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { waitAlert, questionAlert, errorAlert, printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
-import { setFormHeader, setSingleHeaderJson, toAbsoluteUrl } from "../../../functions/routers"
+import { setFormHeader, setSingleHeader, setSingleHeaderJson, toAbsoluteUrl } from "../../../functions/routers"
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
 import { v4 as uuidv4 } from "uuid";
+import S3 from 'react-aws-s3';
 const chunkSize = 1048576 * 30;
+
+const config = {
+    bucketName: 'admin-proyectos',
+    region: 'us-east-2',
+    accessKeyId: 'AKIAJPBN556AJO7KB2RA',
+    secretAccessKey: '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'
+}
+
+const ReactS3Client = new S3(config);
 /* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
@@ -245,7 +255,7 @@ class MaterialCliente extends Component {
         this.setState({chunked})
     }
 
-    addAdjunto = () => {
+    /* addAdjunto = () => {
         const { form } = this.state
         let totalCount = 0
         let fileID = ''
@@ -257,6 +267,60 @@ class MaterialCliente extends Component {
                 this.fileUpload(totalCount, fileID, file)
             })
         }
+    } */
+
+    addAdjunto = async() => {
+        const { form, menuactive, submenuactive, empresa, levelName, opciones_adjuntos } = this.state
+        let filePath = ''
+        let tipo = ''
+        let proyecto = ''
+        if(menuactive === 3){
+            filePath = `empresas/${empresa.id}/tipo-proyecto/${submenuactive}/${levelName}/${Math.floor(Date.now() / 1000)}-`;
+            tipo = submenuactive
+            proyecto = levelName
+        }else{
+            filePath = `empresas/${empresa.id}/adjuntos/${opciones_adjuntos[menuactive].slug}/${Math.floor(Date.now() / 1000)}-`;
+            tipo = opciones_adjuntos[menuactive].slug
+        }
+        if(form.adjuntos.adjuntos.files.length){
+            form.adjuntos.adjuntos.files.forEach((file) => {
+                waitAlert()
+                ReactS3Client.uploadFile(file.file, `testing-react/${file.name}`)
+                    .then((data) =>{
+                        const { location } = data
+                        this.addS3FilesAxios([{ name: file.name, url: location }], tipo, proyecto);
+                    })
+                    .catch(err => console.error(err))
+            })
+        }   
+    }
+
+    addS3FilesAxios = async(arreglo, tipo, proyecto) => {
+        const { access_token } = this.props.authUser
+        const { empresa, form } = this.state
+        let parametros = {}
+        if(proyecto === ''){
+            parametros = { tipo: tipo }
+        }else{
+            parametros = { tipo: tipo, proyecto: proyecto }
+        }
+        waitAlert()
+        try{
+            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/s3`, { empresa: empresa.id, archivos: arreglo }, 
+            { 
+                params: parametros, 
+                headers: setSingleHeader(access_token)
+            }).then(
+                (response) => {
+                    Swal.close()
+                    const { empresa } = response.data
+                    this.setState({...this.state,empresa:empresa})
+            }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        } catch (error) { console.log("error", error); }   
     }
 
     fileUpload = (totalCount, fileID, file) => {
@@ -312,7 +376,7 @@ class MaterialCliente extends Component {
         const { access_token } = this.props.authUser
         const { chunked, form, empresa, menuactive, submenuactive } = this.state
         let parametros = { tipo: chunked.tipo, total: chunked.totalCount, id: chunked.fileID, fileName: chunked.file.name }
-            if(menuactive === 3){ parametros.proyecto = submenuactive }
+        if(menuactive === 3){ parametros.proyecto = submenuactive }
         waitAlert()
         try{
             await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/complete`, { empresa: empresa.id }, 
