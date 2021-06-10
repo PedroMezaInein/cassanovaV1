@@ -289,7 +289,7 @@ class ContratosRh extends Component {
         let data = new FormData();
         if(file){
             data.append(`file`, file)
-            await axios.post(`${URL_DEV}v2/rh/empleados/${contrato.empleado.id}/contratos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
+            await axios.post(`${URL_DEV}v2/rh/empleados/${contrato.empleado_id}/contratos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
                     const { contrato } = response.data
                     const { data, key } = this.state
