@@ -272,7 +272,6 @@ class MaterialCliente extends Component {
             if(opciones_adjuntos.length >= menuactive + 1)
                 chunked.tipo = opciones_adjuntos[menuactive].slug
         }
-        console.log(chunked, 'chunked', totalCount)
         this.setState({chunked})
         if(chunked.counter <= totalCount){
             let chunk = file.file.slice(chunked.begin, chunked.end)
@@ -311,12 +310,14 @@ class MaterialCliente extends Component {
 
     uploadCompleted = async() => {
         const { access_token } = this.props.authUser
-        const { chunked, form, empresa } = this.state
+        const { chunked, form, empresa, menuactive, submenuactive } = this.state
+        let parametros = { tipo: chunked.tipo, total: chunked.totalCount, id: chunked.fileID, fileName: chunked.file.name }
+            if(menuactive === 3){ parametros.proyecto = submenuactive }
         waitAlert()
         try{
             await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/complete`, { empresa: empresa.id }, 
             { 
-                params: { tipo: chunked.tipo, total: chunked.totalCount, id: chunked.fileID, fileName: chunked.file.name }, 
+                params: parametros, 
                 headers: setSingleHeaderJson(access_token)
             }).then(
                 (response) => {
@@ -324,7 +325,7 @@ class MaterialCliente extends Component {
                     const { empresa } = response.data
                     form.adjuntos.adjuntos.files = []
                     form.adjuntos.adjuntos.value = ''
-                    this.setState({...this.state,form,empresa:empresa})
+                    this.setState({...this.state,form,empresa:empresa, modal: false})
             }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
