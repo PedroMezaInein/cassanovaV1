@@ -117,12 +117,12 @@ class ContratosRh extends Component {
         $('#contratos_obra_table').DataTable().ajax.reload();
     }
     cancelarContrato = element => {
-        deleteAlert('¿DESEAS TERMINAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element.id), 'SI, TERMINAR')
+        deleteAlert('¿DESEAS TERMINAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element), 'SI, TERMINAR')
     }
     async cancelarContratoAxios(element) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/rh/empleados/${element.empleado.id}/contratos/${element}/terminar`, { headers: setSingleHeader(access_token) }).then(
+        await axios.get(`${URL_DEV}v2/rh/empleados/${element.empleado.id}/contratos/${element.id}/terminar`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { empleado } = response.data
                 const { key } = this.state
@@ -344,28 +344,23 @@ class ContratosRh extends Component {
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="administrativo" title="Administrativo">
                         <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=administrativo'
-                            abrir_modal = { false } mostrar_acciones = { true } urlRender = { `${URL_DEV}v1/rh/contratos-rrhh` } accessToken = { access_token }
-                            actions = {{ 
+                            abrir_modal = { false } mostrar_acciones = { true } accessToken = { access_token } setter = { this.setContratos } 
+                            urlRender = { `${URL_DEV}v1/rh/contratos-rrhh?type=admin` } cardBody = 'cardBody_admin'  isTab = { true } 
+                            actions = { { 
                                 'terminar': { function: this.cancelarContrato },
                                 'renovar': { function: this.changePageRenovar },
                                 'adjuntos': { function: this.openModalAdjuntos }
-                            }}
-                            setter = { this.setContratos } 
-                            idTable = 'contratos_admin_table'  cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin'
-                            cardBody = 'cardBody_admin'  isTab = { true } 
-                        />
+                            } } idTable = 'contratos_admin_table'  cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin' />
                     </Tab>
                     <Tab eventKey="obra" title="Obra">
                         <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=obra'
-                            abrir_modal = { false } mostrar_acciones = { true } urlRender = { `${URL_DEV}v1/rh/contratos-rrhh` } accessToken = { access_token }
-                            actions = {{
+                            abrir_modal = { false } mostrar_acciones = { true } urlRender = { `${URL_DEV}v1/rh/contratos-rrhh?type=obra` } 
+                            accessToken = { access_token } setter = { this.setContratos } idTable = 'contratos_obra_table' cardTable = 'cardTable_obra' 
+                            actions = { {
                                 'terminar': { function: this.cancelarContrato },
                                 'renovar': { function: this.changePageEditObra },
                                 'adjuntos': { function: this.openModalAdjuntos }
-                            }}
-                            setter = { this.setContratos } 
-                            idTable = 'contratos_obra_table' cardTable = 'cardTable_obra' cardTableHeader = 'cardTableHeader_obra' cardBody = 'cardBody_obra'  isTab = { true } 
-                        />
+                            } } cardTableHeader = 'cardTableHeader_obra' cardBody = 'cardBody_obra'  isTab = { true }  />
                     </Tab>
                 </Tabs>
                 <Modal size="lg" title='Adjuntos del contrato' show={modal.adjuntos} handleClose={this.handleCloseModalAdjuntos}>
