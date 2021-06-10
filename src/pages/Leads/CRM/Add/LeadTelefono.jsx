@@ -402,29 +402,23 @@ class LeadTelefono extends Component {
                                 }
                                 {
                                     form.tipoProyecto !== '' &&
-                                        <div className="col-md-4 d-flex align-items-center">
-                                            <div className="col-md-12">
-                                                <div className="row">
-                                                    <div className="col-md-7 px-0">
-                                                        <label className='col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de obra y/o diseño?</label>
-                                                    </div>
-                                                    <div className="col-md-5 px-0">
-                                                        <div className="checkbox-inline mt-2">
-                                                            <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary mr-3">
-                                                                <input type = "checkbox" onChange = { (e) => this.onChange(e) } name = 'diseño'
-                                                                    checked = { form.diseño } value = { form.diseño } /> DISEÑO
-                                                                    <span></span>
-                                                            </label>
-                                                            <label className = "checkbox checkbox-outline checkbox-outline-2x checkbox-secondary">
-                                                                <input type = "checkbox" onChange = { (e) => this.onChange(e) }
-                                                                    name = 'obra' checked = { form.obra } value = { form.obra } /> Obra
-                                                                    <span></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    <div className="col-md-3 d-flex align-items-center">
+                                        <div className="form-group">
+                                            <label className='col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de obra y/o diseño?</label>
+                                            <div className="radio-list mt-4">
+                                                <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary mr-3">
+                                                    <input type="checkbox" onChange={(e) => this.onChange(e)} name='diseño'
+                                                        checked={form.diseño} value={form.diseño} /> DISEÑO
+                                                    <span></span>
+                                                </label>
+                                                <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary">
+                                                    <input type="checkbox" onChange={(e) => this.onChange(e)}
+                                                        name='obra' checked={form.obra} value={form.obra} /> Obra
+                                                    <span></span>
+                                                </label>
                                             </div>
                                         </div>
+                                    </div>
                                 }
                                 {
                                     (form.diseño || form.obra !== '') &&
@@ -436,7 +430,7 @@ class LeadTelefono extends Component {
                                         </div>
                                 }
                             </div>
-                            <div className="card-footer px-0 pb-0 pt-5 text-right">
+                            <div className={form.name || form.email ? 'card-footer px-0 pb-0 pt-5 text-right' :''}>
                                 {
                                     form.name &&
                                         <>

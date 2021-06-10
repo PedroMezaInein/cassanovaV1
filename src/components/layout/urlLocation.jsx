@@ -3,7 +3,7 @@ import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
 import { connect } from 'react-redux'
 import { Modal } from '../singles'
-import { Form } from 'react-bootstrap'
+import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Button, RangeCalendar } from '../form-components'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import axios from 'axios'
@@ -201,19 +201,29 @@ class UrlLocation extends Component {
                                     {
                                         url === "leads/crm" &&
                                             <>
-                                                <span onClick = { (e) => { e.preventDefault(); this.openModalBuscar() }} 
-                                                    className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mx-2">
-                                                    <i className="fas fa-search text-cyan"></i> Buscar Lead
-                                                </span>
-                                                <span onClick = { (e) => { e.preventDefault(); this.openModal() }} 
-                                                    className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mr-2">
-                                                    <i className="fas fa-file-excel text-morado">
-                                                    </i> Decargar leads
-                                                </span>
-                                                <span onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
-                                                    <i className="fas fa-user-plus text-naranja">
-                                                    </i> Nuevo lead
-                                                </span>
+                                                <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
+                                                    <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">BUSCAR LEAD</span></Tooltip>}>
+                                                        <li className="nav-item mb-2" data-placement="right" onClick = { (e) => { e.preventDefault(); this.openModalBuscar() }}>
+                                                            <span className="btn btn-sm btn-icon btn-bg-light btn-text-success btn-hover-success" >
+                                                                <i className="la la-search icon-xl"></i>
+                                                            </span>
+                                                        </li>
+                                                    </OverlayTrigger>
+                                                    <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">DESCARGAR LEADS</span></Tooltip>}>
+                                                        <li className="nav-item mb-2" title="" data-placement="left"  onClick = { (e) => { e.preventDefault(); this.openModal() }} >
+                                                            <span className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary">
+                                                                <i className="la la-file-excel icon-xl"></i>
+                                                            </span>
+                                                        </li>
+                                                    </OverlayTrigger>
+                                                    <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">NUEVO LEAD</span></Tooltip>}>
+                                                        <li className="nav-item mb-2" data-placement="left" onClick={() => { this.changePageAdd('telefono') }}>
+                                                            <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info">
+                                                                <i className="la la-user-plus icon-xl"></i>
+                                                            </span>
+                                                        </li>
+                                                    </OverlayTrigger>
+                                                </ul>
                                             </>
                                     }
                                 </div>
