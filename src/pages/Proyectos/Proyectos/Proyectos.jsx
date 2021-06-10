@@ -969,7 +969,7 @@ class Proyectos extends Component {
                 porcentaje: renderToString(setTextTable(proyecto.porcentaje + '%')),
                 fechaInicio: setDateTableReactDom(proyecto.fecha_inicio, this.doubleClick, proyecto, 'fecha_inicio', 'text-center'),
                 fechaFin: proyecto.fecha_fin !== null ? setDateTableReactDom(proyecto.fecha_fin, this.doubleClick, proyecto, 'fecha_fin', 'text-center') : setTextTableCenter('Sin definir'),
-                descripcion: setTextTableReactDom(proyecto.descripcion !== null ? proyecto.descripcion :'', this.doubleClick, proyecto, 'descripcion', 'text-justify'),
+                descripcion: setTextTableReactDom(proyecto.descripcion !== null ? proyecto.descripcion :'', this.doubleClick, proyecto, 'descripcion', 'text-justify min-width-180px'),
                 adjuntos: renderToString(this.setAdjuntosTable(proyecto)),
                 fases: renderToString(setListTable(this.setFasesList(proyecto), 'text')),
                 id: proyecto.id

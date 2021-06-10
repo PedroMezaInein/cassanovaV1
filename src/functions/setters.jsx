@@ -135,7 +135,7 @@ export function setSelectOptions(arreglo, name) {
 
 export function setDireccion (cliente) {
     return (
-        <div className="font-size-11px text-justify">
+        <div className="font-size-11px text-justify min-width-180px">
             {cliente.calle ? cliente.calle + ', colonia ': ''}
             {cliente.colonia ? cliente.colonia + ', ' : ''}
             {cliente.municipio ? cliente.municipio + ', ' : ''}
