@@ -109,6 +109,7 @@ import EtiquetasForm from './catalogos/EtiquetasForm'
 import FormEstadoResultados from './reportes/FormEstadoResultados'
 import FormularioContrato from './recursoshumanos/FormularioContrato'
 import ContratoFormRH from './recursoshumanos/ContratoFormRH'
+import NotaBitacoraForm from './proyectos/NotaBitacoraForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -214,4 +215,4 @@ export const Task = task
 export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
-export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH }
+export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm }
