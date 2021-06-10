@@ -17,9 +17,13 @@ import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie'
 import { Button } from '../../components/form-components'
-
+import $ from "jquery";
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
+// import Moment from 'moment';
+// import { extendMoment } from 'moment-range';
+
+// const moment = extendMoment(Moment);
 class Calendario extends Component {
 
     state = {
@@ -417,6 +421,21 @@ class Calendario extends Component {
                     aux2.push(start)
                     return false
                 })
+                var now = moment();
+                var dias = moment().add(21, 'days');
+
+                const start = moment(now, 'YYYY-MM-DD');
+                const end = moment(dias, 'YYYY-MM-DD');
+
+                const current = start.clone();
+                const result = [];
+
+                while (current.isBefore(end)) {
+                    result.push(moment(current).toDate());
+                    current.add(1, "day");
+                }
+
+                let arr3 = [...aux2, ...result]
 
                 eventos.map((evento) => {
                     aux.push({
@@ -442,7 +461,7 @@ class Calendario extends Component {
                     inicio: diasDisponibles.inicio,
                     final: diasDisponibles.final,
                     estatus: this.getVacaciones(empleado, user_vacaciones),
-                    disabledDates: aux2,
+                    disabledDates: arr3,
                     data
                 })
             }, (error) => { printResponseErrorAlert(error) }
@@ -451,7 +470,6 @@ class Calendario extends Component {
             console.log(error, 'error')
         })
     }
-
     async getEventsOneDateAxios(date) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones/single/' + date, { headers: { Authorization: `Bearer ${access_token}` } }).then(
