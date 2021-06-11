@@ -333,28 +333,13 @@ export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElem
             {
                 arreglo.map((element, index) => {
                     return(
-                        <div key = { index } >
-                            <div className="container px-0 font-size-11px mb-3">
-                                <div className="container-fluid px-0">
-                                    <div className="row mx-0 row-paddingless w-100">
-                                        <div className="w-10 text-hover"  onClick = { (e) => { 
-                                            questionAlert(
-                                                '¿ESTÁS SEGURO?', 
-                                                `ELIMINARÁS ${element.nombre} DEL PROYECTO ${proyecto.nombre}`,
-                                                () => deleteElement(proyecto, element, tipo)
-                                            ) } }>
-                                            <div className="bg-gray-100 text-center py-1">
-                                                <i className="flaticon2-delete icon-xs text-dark-50 text-hover-danger"></i>
-                                            </div>
-                                        </div>
-                                        <div className="w-90">
-                                            <div className="text-truncate py-1">
-                                                <span className="bg-gray-100 pr-2 py-1 font-weight-bolder text-dark-50 letter-spacing-0-4 ">
-                                                    { nombre ? element[nombre] : element.nombre }
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div className="tagify align-items-center border-0 d-inline-block" key = { index } >
+                            <div className = {`d-flex flex-row-reverse align-items-center tagify__tag tagify__tag--${index % 2 ? 'primary' : 'dark-75'} tagify__tag__newtable px-3px border-radius-3px m-0`}>
+                                <div className="tagify__tag__removeBtn ml-0 px-0 mx-1" aria-label = 'remove tag' onClick = { (e) => { questionAlert( '¿ESTÁS SEGURO?', `ELIMINARÁS ${element.nombre} DEL PROYECTO ${proyecto.nombre}`, () => deleteElement(proyecto, element, tipo) ) } }/>
+                                <div style={{padding:'1px'}}>
+                                    <span className="tagify__tag-text p-1 white-space font-weight-bold letter-spacing-0-4 font-size-11px text-center">
+                                        { nombre ? element[nombre] : element.nombre }
+                                    </span>
                                 </div>
                             </div>
                         </div>
