@@ -286,9 +286,10 @@ class MaterialCliente extends Component {
                 headers: setSingleHeader(access_token)
             }).then(
                 (response) => {
-                    Swal.close()
+                    doneAlert('Adjunto generado con éxito')
                     const { empresa } = response.data
-                    this.setState({...this.state,empresa:empresa})
+                    form.adjuntos.adjuntos.files = []
+                    this.setState({...this.state,empresa:empresa, modal: false, form})
             }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
