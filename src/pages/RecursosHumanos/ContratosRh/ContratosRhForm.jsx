@@ -14,7 +14,7 @@ import moment from 'moment'
 class ContratosRhForm extends Component {
     state = {
         formeditado: 0,
-        title: 'Nuevo contrato',
+        title: 'Nuevo contrato administrativo',
         form: {
             empleado:'',
             fechaInicio: new Date(),

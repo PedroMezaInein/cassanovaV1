@@ -24,6 +24,7 @@ const config = {
 }
 
 const ReactS3Client = new S3(config);
+
 /* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
@@ -240,35 +241,6 @@ class MaterialCliente extends Component {
         })
     }
 
-    resetChunks = (file) => {
-        const { chunked } = this.state
-        chunked.showProgress = false
-        chunked.progress = 0
-        chunked.counter = 1
-        chunked.begin = 0
-        chunked.end = chunkSize
-        chunked.filesize = file ? file.file.size : 0
-        chunked.totalCount = 1
-        chunked.fileID = ''
-        chunked.file = ''
-        chunked.tipo = ''
-        this.setState({chunked})
-    }
-
-    /* addAdjunto = () => {
-        const { form } = this.state
-        let totalCount = 0
-        let fileID = ''
-        if(form.adjuntos.adjuntos.files.length){
-            form.adjuntos.adjuntos.files.forEach((file) => {
-                this.resetChunks(file)
-                totalCount = file.file.size % chunkSize === 0 ? file.file.size / chunkSize : Math.floor(file.file.size / chunkSize) + 1
-                fileID = uuidv4()
-                this.fileUpload(totalCount, fileID, file)
-            })
-        }
-    } */
-
     addAdjunto = async() => {
         const { form, menuactive, submenuactive, empresa, levelName, opciones_adjuntos } = this.state
         let filePath = ''
@@ -282,17 +254,19 @@ class MaterialCliente extends Component {
             filePath = `empresas/${empresa.id}/adjuntos/${opciones_adjuntos[menuactive].slug}/${Math.floor(Date.now() / 1000)}-`;
             tipo = opciones_adjuntos[menuactive].slug
         }
-        if(form.adjuntos.adjuntos.files.length){
-            form.adjuntos.adjuntos.files.forEach((file) => {
-                waitAlert()
-                ReactS3Client.uploadFile(file.file, `testing-react/${file.name}`)
+        let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+            return new Promise((resolve, reject) => {
+                ReactS3Client.uploadFile(file.file, `${filePath}${file.name}`)
                     .then((data) =>{
-                        const { location } = data
-                        this.addS3FilesAxios([{ name: file.name, url: location }], tipo, proyecto);
-                    })
-                    .catch(err => console.error(err))
+                        const { location,status } = data
+                        if(status === 204)
+                            resolve({ name: file.name, url: location })
+                        else
+                            reject(data)
+                    }).catch(err => reject(err))
             })
-        }   
+        })
+        Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, tipo, proyecto)}).catch(err => console.error(err))
     }
 
     addS3FilesAxios = async(arreglo, tipo, proyecto) => {
@@ -315,81 +289,6 @@ class MaterialCliente extends Component {
                     Swal.close()
                     const { empresa } = response.data
                     this.setState({...this.state,empresa:empresa})
-            }, (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-        } catch (error) { console.log("error", error); }   
-    }
-
-    fileUpload = (totalCount, fileID, file) => {
-        waitAlert()
-        const { chunked } = this.state
-        chunked.totalCount = totalCount
-        chunked.fileID = fileID
-        chunked.file = file.file
-        const { menuactive, opciones_adjuntos, levelName  } = this.state
-        if(menuactive === 3){
-            chunked.tipo = levelName
-        }else{
-            if(opciones_adjuntos.length >= menuactive + 1)
-                chunked.tipo = opciones_adjuntos[menuactive].slug
-        }
-        this.setState({chunked})
-        if(chunked.counter <= totalCount){
-            let chunk = file.file.slice(chunked.begin, chunked.end)
-            this.uploadChunk(chunk)
-        }
-    }
-
-    uploadChunk = async(chunk) => {
-        try{
-            const { chunked, menuactive, submenuactive } = this.state
-            const { access_token } = this.props.authUser
-            let parametros = { counter: chunked.counter, id: chunked.fileID, fileName: chunked.file.name }
-            if(menuactive === 3){ parametros.proyecto = submenuactive }
-            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/chunk`, chunk, 
-                { params: parametros, headers: setSingleHeaderJson(access_token) }).then((response) => {
-                    chunked.begin = chunked.end
-                    chunked.end = chunked.end + chunkSize
-                    if(chunked.counter === chunked.totalCount){
-                        console.log("Process is complete, counter", chunked.counter);
-                        this.setState({chunked});
-                        this.uploadCompleted();
-                    }else{
-                        chunked.porcentaje = ( chunked.counter / chunked.totalCount ) * 100;
-                        chunked.counter =  chunked.counter + 1;
-                        this.setState({chunked})
-                        let chunk = chunked.file.slice(chunked.begin, chunked.end)
-                        this.uploadChunk(chunk)
-                    }
-                }, (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-        } catch (error) { console.log("error", error); }
-    }
-
-    uploadCompleted = async() => {
-        const { access_token } = this.props.authUser
-        const { chunked, form, empresa, menuactive, submenuactive } = this.state
-        let parametros = { tipo: chunked.tipo, total: chunked.totalCount, id: chunked.fileID, fileName: chunked.file.name }
-        if(menuactive === 3){ parametros.proyecto = submenuactive }
-        waitAlert()
-        try{
-            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/complete`, { empresa: empresa.id }, 
-            { 
-                params: parametros, 
-                headers: setSingleHeaderJson(access_token)
-            }).then(
-                (response) => {
-                    Swal.close()
-                    const { empresa } = response.data
-                    form.adjuntos.adjuntos.files = []
-                    form.adjuntos.adjuntos.value = ''
-                    this.setState({...this.state,form,empresa:empresa, modal: false})
             }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
