@@ -646,14 +646,14 @@ export const ACCESOS_COLUMNS = [
     }
 ]
 
-export const HERRAMIENTAS_COLUMNS = [
+export const BODEGA_COLUMNS = [
     {
         Header: 'OPCIONES',
         accessor: 'actions'
     },
     {
-        Header: 'Empresa',
-        accessor: 'empresa',
+        Header: 'Nombre',
+        accessor: 'nombre',
         customRender: true
     },
     {
@@ -662,23 +662,23 @@ export const HERRAMIENTAS_COLUMNS = [
         customRender: true
     },
     {
-        Header: 'Nombre',
-        accessor: 'nombre',
+        Header: 'Partida',
+        accessor: 'partida',
         customRender: true
     },
     {
-        Header: 'Modelo',
-        accessor: 'modelo',
+        Header: 'Unidad',
+        accessor: 'unidad',
         customRender: true
     },
+    // {
+    //     Header: 'Serie',
+    //     accessor: 'serie',
+    //     customRender: true
+    // },
     {
-        Header: 'Serie',
-        accessor: 'serie',
-        customRender: true
-    },
-    {
-        Header: 'Fecha de compra',
-        accessor: 'fecha',
+        Header: 'Ubicación',
+        accessor: 'ubicacion',
         customRender: true
     },
     {
@@ -768,7 +768,7 @@ export const PRESTAMOS_COLUMNS = [
     }
 ]
 
-export const UBICACIONES_HERRAMIENTAS_COLUMNS = [
+export const UBICACIONES_BODEGA_COLUMNS = [
     {
         Header: 'OPCIONES',
         accessor: 'actions'

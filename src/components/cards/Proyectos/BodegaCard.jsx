@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
-import { ItemSlider } from '../../../components/singles'
-export default class HerramientaCard extends Component {
+import { ItemSlider } from '../../singles'
+export default class BodegaCard extends Component {
     render() {
-        const { herramienta } = this.props
+        const { bodega } = this.props
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
@@ -35,8 +35,8 @@ export default class HerramientaCard extends Component {
                                                     <label className="col-5 font-weight-bolder text-primary">NOMBRE DE LA HERRAMIENTA:</label>
                                                     <div className="col-7">
                                                         {
-                                                            herramienta.nombre ?
-                                                                <span>{herramienta.nombre}</span>
+                                                            bodega.nombre ?
+                                                                <span>{bodega.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -45,8 +45,8 @@ export default class HerramientaCard extends Component {
                                                     <label className="col-5 font-weight-bolder text-primary">MODELO DE LA HERRAMIENTA:</label>
                                                     <div className="col-7">
                                                         {
-                                                            herramienta.modelo ?
-                                                                <span>{herramienta.modelo}</span>
+                                                            bodega.modelo ?
+                                                                <span>{bodega.modelo}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -55,8 +55,8 @@ export default class HerramientaCard extends Component {
                                                     <label className="col-5 font-weight-bolder text-primary">SERIE DE LA HERRAMIENTA:</label>
                                                     <div className="col-7">
                                                         {
-                                                            herramienta.serie ?
-                                                                <span>{herramienta.serie}</span>
+                                                            bodega.serie ?
+                                                                <span>{bodega.serie}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -65,8 +65,8 @@ export default class HerramientaCard extends Component {
                                                     <label className="col-5 font-weight-bolder text-primary">EMPRESA:</label>
                                                     <div className="col-7">
                                                         {
-                                                            herramienta.empresa ?
-                                                                <span>{herramienta.empresa.name}</span>
+                                                            bodega.empresa ?
+                                                                <span>{bodega.empresa.name}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -75,8 +75,8 @@ export default class HerramientaCard extends Component {
                                                     <label className="col-5 font-weight-bolder text-primary">PROYECTO:</label>
                                                     <div className="col-7">
                                                         {
-                                                            herramienta.proyecto ?
-                                                                <span>{herramienta.proyecto.nombre}</span>
+                                                            bodega.proyecto ?
+                                                                <span>{bodega.proyecto.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -85,8 +85,8 @@ export default class HerramientaCard extends Component {
                                                     <label className="col-5 font-weight-bolder text-primary">FECHA DE COMPRA:</label>
                                                     <div className="col-7">
                                                         {
-                                                            herramienta.created_at ?
-                                                                <span><Moment format="DD/MM/YYYY">{herramienta.created_at}</Moment></span>
+                                                            bodega.created_at ?
+                                                                <span><Moment format="DD/MM/YYYY">{bodega.created_at}</Moment></span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -95,8 +95,8 @@ export default class HerramientaCard extends Component {
                                                     <label className="col-5 font-weight-bolder text-primary align-self-center">DESCRIPCIÓN:</label>
                                                     <div className="col-7">
                                                         {
-                                                            herramienta.descripcion ?
-                                                                <span>{herramienta.descripcion}</span>
+                                                            bodega.descripcion ?
+                                                                <span>{bodega.descripcion}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -109,8 +109,8 @@ export default class HerramientaCard extends Component {
                                     <Card className="card card-without-box-shadown border-0">
                                         <Card.Body className="p-0">
                                             {
-                                                herramienta.adjuntos ?
-                                                    <ItemSlider items={herramienta.adjuntos} item='' />
+                                                bodega.adjuntos ?
+                                                    <ItemSlider items={bodega.adjuntos} item='' />
                                                     : <span>-</span>
                                             }
                                         </Card.Body>
