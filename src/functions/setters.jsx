@@ -632,9 +632,9 @@ export function setLabelTable(text) {
             <span style={{
                 backgroundColor:`${text.fondo}`,
                 color: `${text.letra}`,
-                border: 'transparent', padding: '2.8px 5.6px',
+                border: 'transparent', padding: '0.3rem 0.6rem',
                 width:text.estatus==='Respuesta pendiente'?'min-content':'auto', 
-                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px',
+                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '9.5px',
                 fontWeight: 500, borderRadius:'0.42rem'
             }} >
                 {text.estatus}
