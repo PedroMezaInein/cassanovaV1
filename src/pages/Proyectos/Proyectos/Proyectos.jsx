@@ -26,7 +26,6 @@ import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
 import { setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
-import { setSingleHeader } from '../../../functions/routers'
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
 class Proyectos extends Component {
@@ -523,9 +522,9 @@ class Proyectos extends Component {
         }
     }
     async getOptionsAxios() {
-        const { access_token } = this.props.authUser
         waitAlert()
-        await axios.options(`${URL_DEV}v2/proyectos/compras`, { headers: setSingleHeader(access_token) }).then(
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 const { proveedores } = response.data
