@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { DATE } from '../../../constants';
 import { validateAlert } from '../../../functions/alert';
-import { Input, SelectSearchTrue, Button, SelectSearch, InputNumber } from '../../form-components';
-import Calendar from '../../form-components/Calendar';
+import { Input, Button, SelectSearch, InputNumber } from '../../form-components';
 import ItemSlider from '../../singles/ItemSlider';
 class BodegaForm extends Component {
     updatePartida = value => {
