@@ -110,8 +110,8 @@ const SolicitudVentaForm = React.lazy(() => import('./pages/Proyectos/SolicitudV
 const Remision = React.lazy(() => import('./pages/Proyectos/Remision/Remision') )
 const RemisionForm = React.lazy(() => import('./pages/Proyectos/Remision/RemisionForm') )
 
-const Herramienta = React.lazy(() => import('./pages/Proyectos/Herramienta/Herramienta') )
-const HerramientaForm = React.lazy(() => import('./pages/Proyectos/Herramienta/HerramientaForm') )
+const Bodega = React.lazy(() => import('./pages/Proyectos/Bodega/Bodega') )
+const BodegaForm = React.lazy(() => import('./pages/Proyectos/Bodega/BodegaForm') )
 
 const CalendarioProyectos = React.lazy(() => import('./pages/Proyectos/Calendario/CalendarioProyectos') )
 
@@ -338,8 +338,8 @@ class App extends Component{
 
                     {/* <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } /> */}
 
-                    <Route path = "/proyectos/herramientas" exact component ={ Herramienta } />
-                    <Route path = "/proyectos/herramientas/:action" exact component ={ HerramientaForm } />
+                    <Route path = "/proyectos/bodega" exact component ={ Bodega } />
+                    <Route path = "/proyectos/bodega/:action" exact component ={ BodegaForm } />
 
                     <Route path = "/proyectos/calendario-proyectos" exact component = { CalendarioProyectos } />
 

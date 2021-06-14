@@ -4,21 +4,21 @@ import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from '../../../constants'
+import { URL_DEV, BODEGA_COLUMNS, UBICACIONES_BODEGA_COLUMNS } from '../../../constants'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
-import { setDateTable, setTextTable, setTextTableReactDom, setDateTableReactDom, setOptions  } from '../../../functions/setters'
+import { setDateTable, setTextTable, setTextTableReactDom, setOptions  } from '../../../functions/setters'
 import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
-import { Button, CalendarDaySwal, InputGray } from '../../../components/form-components'
+import { Button, InputNumberGray, InputGray } from '../../../components/form-components'
 import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm'
 import { Tab, Tabs } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
-import { HerramientaCard } from '../../../components/cards'
+import { BodegaCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import { SelectSearchGray } from '../../../components/form-components'
 import $ from "jquery";
-class Herramienta extends Component {
+class Bodega extends Component {
     state = {
         modalDelete: false,
         modalAdjuntos: false,
@@ -26,65 +26,63 @@ class Herramienta extends Component {
         modalDeleteUbicacion: false,
         modalSee: false,
         active: 'historial',
-        herramienta: '',
+        bodega: '',
         form: {
-            adjuntos: {
-                adjuntos: {
-                    value: '',
-                    placeholder: 'Adjuntos',
-                    files: []
-                }
-            },
             fecha: new Date(),
-            herramienta: '',
-            ubicacion: '',
             comentario: '',
-            nombre: '',
-            serie: '',
-            modelo: '',
-            empresa: '',
-            proyecto: '',
-            descripcion: '',
+            // empresa: '',
             // fechaCompra: new Date(),
+            partida:'',
+            proyecto: '',
+            unidad:'',
+            nombre: '',
+            cantidad:'',
+            descripcion: '',
+            adjuntos: {
+                fotografia: {
+                    value: '',
+                    placeholder: 'Fotografía',
+                    files: []
+                },
+            },
+            ubicacion:''
         },
         options: {
-            empresas: [],
-            proyectos: []
+            partidas:[],
+            proyectos: [],
+            unidades:[]
         },
         data: {
             ubicaciones: []
         },
         ubicaciones: [],
-        ubicacion: ''
+        ubicacion: '',
+        key: 'materiales',
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
-        const herramienta = permisos.find(function (element, index) {
+        const bodega = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
         this.getOptionsAxios()
-        if (!herramienta)
+        if (!bodega)
             history.push('/')
     }
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, proyectos } = response.data
-                const { options, herramienta, form } = this.state
+                const { empresas, proyectos, partidas, unidades } = response.data
+                const { options, form } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
-                if (herramienta !== '') {
-                    if (herramienta.empresa_id)
-                        form.empresa = herramienta.empresa_id.toString()
-                    if (herramienta.proyecto_id)
-                        form.proyecto = herramienta.proyecto_id.toString()
-                }
+                options['partidas'] = setOptions(partidas, 'nombre', 'id')
+                options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 this.setState({
                     ...this.state,
                     options,
@@ -99,19 +97,19 @@ class Herramienta extends Component {
             console.log(error, 'error')
         })
     }
-    setHerramientas = herramientas => {
+    setBodega = bodega => {
         let aux = []
-        herramientas.map((herramienta) => {
+        bodega.map((bodega) => {
             aux.push({
-                actions: this.setActions(herramienta),
-                empresa: setTextTableReactDom(herramienta.empresa ? herramienta.empresa.name:'', this.doubleClick, herramienta, 'empresa', 'text-center'),
-                proyecto: setTextTableReactDom(herramienta.proyecto ? herramienta.proyecto.nombre :'', this.doubleClick, herramienta, 'proyecto', 'text-center'),
-                nombre: setTextTableReactDom(herramienta.nombre, this.doubleClick, herramienta, 'nombre', 'text-center'),
-                modelo: setTextTableReactDom(herramienta.modelo !== null ? herramienta.modelo :'', this.doubleClick, herramienta, 'modelo', 'text-center'),
-                serie: setTextTableReactDom(herramienta.serie !== null ? herramienta.serie :'', this.doubleClick, herramienta, 'serie', 'text-center'),
-                fecha: setDateTableReactDom(herramienta.created_at, this.doubleClick, herramienta, 'fecha', 'text-center'),
-                descripcion: setTextTableReactDom(herramienta.descripcion !== null ? herramienta.descripcion :'', this.doubleClick, herramienta, 'descripcion', 'text-justify'),
-                id: herramienta.id
+                actions: this.setActions(bodega),
+                nombre: setTextTableReactDom(bodega.nombre, this.doubleClick, bodega, 'nombre', 'text-center'),
+                proyecto: setTextTableReactDom(bodega.proyecto ? bodega.proyecto.nombre :'', this.doubleClick, bodega, 'proyecto', 'text-center'),
+                partida: setTextTableReactDom(bodega.partida ? bodega.partida.name:'', this.doubleClick, bodega, 'partida', 'text-center'),
+                unidad: setTextTableReactDom(bodega.unidad ? bodega.unidad.name:'', this.doubleClick, bodega, 'unidad', 'text-center'),
+                cantidad: setTextTableReactDom(bodega.cantidad, this.doubleClick, bodega, 'cantidad', 'text-center'),
+                ubicacion: setTextTableReactDom(bodega.ubicacion !== null ? bodega.ubicacion :'', this.doubleClick, bodega, 'ubicacion', 'text-justify'),
+                descripcion: setTextTableReactDom(bodega.descripcion !== null ? bodega.descripcion :'', this.doubleClick, bodega, 'descripcion', 'text-justify'),
+                id: bodega.id
             })
             return false
         })
@@ -120,18 +118,21 @@ class Herramienta extends Component {
 
     renderInputSwal = ( data, tipo, form ) => {
         switch(tipo){
-            case 'empresa':
+            case 'partida':
             case 'proyecto':
+            case 'unidad':
                 return(
                     <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
-                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
-                        placeholder={`SELECCIONA ${tipo==='proyecto' ? 'el proyecto' : 'la ' + tipo }`}/>
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} withtaglabel = { 0 } withtextlabel = { 0 } 
+                        placeholder={`SELECCIONA ${tipo==='proyecto' ? 'EL PROYECTO' : 'LA ' + tipo.toUpperCase() }`}/>
                 )
-            case 'fecha':
+            case 'cantidad':
                 return(
-                    <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } 
-                        name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                        requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } type="text"
+                        onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } customlabel="d-none"
+                    />
                 )
             case  'descripcion':
                 return(
@@ -151,13 +152,11 @@ class Herramienta extends Component {
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
-            case 'empresa':
+            case 'partida':
             case 'proyecto':
+            case 'unidad':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
-                break
-            case 'fecha':
-                form.fecha = new Date(data.created_at)
                 break
             default:
                 form[tipo] = data[tipo]
@@ -170,7 +169,7 @@ class Herramienta extends Component {
                 { this.renderInputSwal(data, tipo, form) }
             </div>,
             <Update />,
-            () => { this.patchRendimiento(data, tipo) },
+            () => { this.patchBodega(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -186,7 +185,7 @@ class Herramienta extends Component {
             switch(element){
                 case 'adjuntos':
                     form[element] = {
-                        adjuntos: {
+                        fotografia: {
                             value: '',
                             placeholder: 'Adjuntos',
                             files: []
@@ -200,7 +199,7 @@ class Herramienta extends Component {
         })
         return form
     }
-    patchRendimiento = async( data,tipo ) => {
+    patchBodega = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = form[tipo]
@@ -209,8 +208,14 @@ class Herramienta extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getHerramientasAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+                const { key } = this.state
+                if (key === 'materiales') {
+                    this.getMateriales()
+                }
+                if (key === 'herramientas') {
+                    this.getHerramientas()
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El registro de bodega fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -221,10 +226,12 @@ class Herramienta extends Component {
     setOptions = (data, tipo) => {
         const { options } = this.state
         switch(tipo){
+            case 'partida':
+                return options.partidas
             case 'proyecto':
                 return options.proyectos
-            case 'empresa':
-                return options.empresas
+            case 'unidad':
+                return options.unidades
             default: return []
         }
     }
@@ -307,24 +314,25 @@ class Herramienta extends Component {
             form
         })
     }
-    changePageEdit = (herramienta) => {
+    changePageEdit = (bodega) => {
+        const { key } = this.state
         const { history } = this.props
         history.push({
-            pathname: '/proyectos/herramientas/edit',
-            state: { herramienta: herramienta }
+            pathname: '/proyectos/bodega/edit',
+            state: { bodega: bodega, tipo:key }
         });
     }
-    openModalDelete = herramienta => {
+    openModalDelete = bodega => {
         this.setState({
             ...this.state,
-            herramienta: herramienta,
+            bodega: bodega,
             modalDelete: true
         })
     }
-    openModalAdjuntos = herramienta => {
+    openModalAdjuntos = bodega => {
         const { form } = this.state
         let aux = []
-        herramienta.adjuntos.map((adjunto) => {
+        bodega.adjuntos.map((adjunto) => {
             aux.push({
                 name: adjunto.name,
                 url: adjunto.url,
@@ -332,23 +340,23 @@ class Herramienta extends Component {
             })
             return false
         })
-        form.adjuntos.adjuntos.files = aux
+        form.adjuntos.fotografia.files = aux
         this.setState({
             ...this.state,
-            herramienta: herramienta,
+            bodega: bodega,
             modalAdjuntos: true,
             form
         })
     }
-    openModalUbicacion = (herramienta) => {
+    openModalUbicacion = (bodega) => {
         const { data } = this.state
-        data.ubicaciones = herramienta.ubicaciones
+        data.ubicaciones = bodega.ubicaciones
         this.setState({
             ...this.state,
-            herramienta: herramienta,
+            bodega: bodega,
             modalUbicacion: true,
             data,
-            ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
+            ubicaciones: this.setUbicaciones(bodega.ubicaciones)
         })
     }
     openModalDeleteUbicacion = ubicacion => {
@@ -362,23 +370,23 @@ class Herramienta extends Component {
         this.setState({
             ...this.state,
             modalDelete: false,
-            herramienta: ''
+            bodega: ''
         })
     }
     handleCloseAdjuntos = () => {
         const { form } = this.state
-        form.adjuntos.adjuntos.files = []
+        form.adjuntos.fotografia.files = []
         this.setState({
             ...this.state,
             modalAdjuntos: false,
-            herramienta: '',
+            bodega: '',
             form
         })
     }
     handleCloseUbicacion = () => {
         this.setState({
             ...this.state,
-            herramienta: '',
+            bodega: '',
             modalUbicacion: false
         })
     }
@@ -389,18 +397,18 @@ class Herramienta extends Component {
             ubicacion: ''
         })
     }
-    openModalSee = herramienta => {
+    openModalSee = bodega => {
         this.setState({
             ...this.state,
             modalSee: true,
-            herramienta: herramienta
+            bodega: bodega
         })
     }
     handleCloseSee = () => {
         this.setState({
             ...this.state,
             modalSee: false,
-            herramienta: ''
+            bodega: ''
         })
     }
     handleChange = (files, item) => {
@@ -444,16 +452,20 @@ class Herramienta extends Component {
     deleteFile = element => {
         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
     }
-    async getHerramientasAxios() {
-        $('#kt_datatable_herramientas').DataTable().ajax.reload();
-    }
-    async deleteHerramientaAxios() {
+    async deleteBodegaAxios() {
         const { access_token } = this.props.authUser
-        const { herramienta } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { bodega } = this.state
+        await axios.delete(URL_DEV + 'herramientas/' + bodega.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getHerramientasAxios()
-                doneAlert('Herramienta eliminada con éxito')
+                const { key } = this.state
+                if (key === 'materiales') {
+                    this.getMateriales()
+                }
+                if (key === 'herramientas') {
+                    this.getHerramientas()
+                }
+                doneAlert(`${key === 'materiales'?'Material':'Herramienta'} eliminado con éxito`)
+
                 this.setState({
                     ...this.state,
                     modalDelete: false,
@@ -469,10 +481,16 @@ class Herramienta extends Component {
     }
     async deleteUbicacionAxios() {
         const { access_token } = this.props.authUser
-        const { herramienta, ubicacion } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/ubicacion/' + ubicacion.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { bodega, ubicacion } = this.state
+        await axios.delete(URL_DEV + 'herramientas/' + bodega.id + '/ubicacion/' + ubicacion.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getHerramientasAxios()
+                const { key } = this.state
+                if (key === 'materiales') {
+                    this.getMateriales()
+                }
+                if (key === 'herramientas') {
+                    this.getHerramientas()
+                }
                 doneAlert('Ubicación eliminada con éxito')
                 const { herramienta } = response.data
                 const { data } = this.state
@@ -480,7 +498,7 @@ class Herramienta extends Component {
                 this.setState({
                     ...this.state,
                     active: 'historial',
-                    herramienta: herramienta,
+                    bodega: herramienta,
                     data,
                     modalDeleteUbicacion: false,
                     ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
@@ -497,8 +515,8 @@ class Herramienta extends Component {
     async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { herramienta } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { bodega } = this.state
+        await axios.delete(URL_DEV + 'herramientas/' + bodega.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
                 const { form } = this.state
@@ -511,11 +529,11 @@ class Herramienta extends Component {
                     })
                     return false
                 })
-                form.adjuntos.adjuntos.files = aux
+                form.adjuntos.fotografia.files = aux
                 this.setState({
                     ...this.state,
                     modalDelete: false,
-                    herramienta: '',
+                    bodega: '',
                     form
                 })
                 doneAlert('Adjunto eliminado con éxito')
@@ -531,7 +549,7 @@ class Herramienta extends Component {
     async sendAdjuntoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, herramienta } = this.state
+        const { form, bodega } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
@@ -556,7 +574,7 @@ class Herramienta extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'herramientas/' + bodega.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
                 const { form } = this.state
@@ -569,11 +587,11 @@ class Herramienta extends Component {
                     })
                     return false
                 })
-                form.adjuntos.adjuntos.files = aux
+                form.adjuntos.fotografia.files = aux
                 this.setState({
                     ...this.state,
                     modalDelete: false,
-                    herramienta: '',
+                    bodega: '',
                     form
                 })
                 doneAlert('Adjunto creado con éxito')
@@ -589,13 +607,19 @@ class Herramienta extends Component {
     async sendUbicacionAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, herramienta } = this.state
-        await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/ubicacion', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form, bodega } = this.state
+        await axios.post(URL_DEV + 'herramientas/' + bodega.id + '/ubicacion', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
                 let { form } = this.state
                 const { data } = this.state
-                this.getHerramientasAxios()
+                const { key } = this.state
+                if (key === 'materiales') {
+                    this.getMateriales()
+                }
+                if (key === 'herramientas') {
+                    this.getHerramientas()
+                }
                 form.fecha = new Date()
                 form.ubicacion = ''
                 form.comentario = ''
@@ -603,12 +627,12 @@ class Herramienta extends Component {
                 this.setState({
                     ...this.state,
                     active: 'historial',
-                    herramienta: herramienta,
+                    bodega: herramienta,
                     form,
                     data,
                     ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
                 })
-                doneAlert('Herramienta actualizada')
+                doneAlert(`${key === 'materiales'?'Material actualizado':'Herramienta actualizada'} con éxito`)
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -618,50 +642,101 @@ class Herramienta extends Component {
             console.log(error, 'error')
         })
     }
+    async getMateriales() {
+        $('#kt_datatable_materiales').DataTable().ajax.reload();
+    }
+    async getHerramientas() {
+        $('#kt_datatable_herramientas').DataTable().ajax.reload();
+    }
+    controlledTab = value => {
+        if (value === 'materiales') {
+            this.getMateriales()
+        }
+        if (value === 'herramientas') {
+            this.getHerramientas()
+        }
+        this.setState({
+            ...this.state,
+            key: value
+        })
+    }
     render() {
-        const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, herramienta } = this.state
+        const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender
-                    columns={HERRAMIENTAS_COLUMNS}
-                    title='Herramientas'
-                    subtitle='Listado de herramientas'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/proyectos/herramientas/add'
-                    mostrar_acciones={true}
-                    actions={
-                        {
-                            'edit': { function: this.changePageEdit },
-                            'delete': { function: this.openModalDelete },
-                            'adjuntos': { function: this.openModalAdjuntos },
-                            'ubicacion': { function: this.openModalUbicacion },
-                            'see': { function: this.openModalSee }
-                        }
-                    }
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setHerramientas}
-                    urlRender = { `${URL_DEV}v2/proyectos/herramientas` }
-                    idTable='kt_datatable_herramientas'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
+                <Tabs defaultActiveKey="materiales" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
+                    <Tab eventKey="materiales" title="Materiales">
+                        <NewTableServerRender
+                            columns={BODEGA_COLUMNS}
+                            title='Materiales'
+                            subtitle='Listado de materiales'
+                            mostrar_boton={true}
+                            abrir_modal={false}
+                            url='/proyectos/bodega/add?type=materiales'
+                            mostrar_acciones={true}
+                            actions={
+                                {
+                                    'edit': { function: this.changePageEdit },
+                                    'delete': { function: this.openModalDelete },
+                                    'adjuntos': { function: this.openModalAdjuntos },
+                                    'ubicacion': { function: this.openModalUbicacion },
+                                    'see': { function: this.openModalSee }
+                                }
+                            }
+                            accessToken={this.props.authUser.access_token}
+                            setter={this.setBodega}
+                            urlRender = { `${URL_DEV}v2/proyectos/herramientas` }
+                            idTable='kt_datatable_materiales'
+                            cardTable='cardTable_materiales'
+                            cardTableHeader='cardTableHeader_materiales'
+                            cardBody='cardBody_materiales'
+                            isTab={true}
+                        />
+                    </Tab>
+                    <Tab eventKey="herramientas" title="Herramientas">
+                        <NewTableServerRender
+                            columns={BODEGA_COLUMNS}
+                            title='Herramientas'
+                            subtitle='Listado de herramientas'
+                            mostrar_boton={true}
+                            abrir_modal={false}
+                            url='/proyectos/bodega/add?type=herramientas'
+                            mostrar_acciones={true}
+                            actions={
+                                {
+                                    'edit': { function: this.changePageEdit },
+                                    'delete': { function: this.openModalDelete },
+                                    'adjuntos': { function: this.openModalAdjuntos },
+                                    'ubicacion': { function: this.openModalUbicacion },
+                                    'see': { function: this.openModalSee }
+                                }
+                            }
+                            accessToken={this.props.authUser.access_token}
+                            setter={this.setBodega}
+                            urlRender = { `${URL_DEV}v2/proyectos/herramientas` }
+                            idTable='kt_datatable_herramientas'
+                            cardTable='cardTable_herramientas'
+                            cardTableHeader='cardTableHeader_herramientas'
+                            cardBody='cardBody_herramientas'
+                            isTab={true}
+                        />
+                    </Tab>
+                </Tabs>
                 <ModalDelete
-                    title='¿Estás seguro que deseas eliminar la herramienta?'
+                    title={`¿Estás seguro que deseas eliminar ${key === 'materiales'?'el material':'la herramienta'}?`}
                     show={modalDelete}
                     handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteHerramientaAxios() }}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteBodegaAxios() }}
                 />
                 <Modal size="lg" title="Adjuntos" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <ItemSlider
-                        items={form.adjuntos.adjuntos.files}
-                        item='adjuntos'
+                        items={form.adjuntos.fotografia.files}
+                        item='fotografia'
                         handleChange={this.handleChange}
                         deleteFile={this.deleteFile}
                     />
                     {
-                        form.adjuntos.adjuntos.value ?
+                        form.adjuntos.fotografia.value ?
                             <div className="card-footer py-3 pr-1">
                                 <div className="row mx-0">
                                     <div className="col-lg-12 text-right pr-0 pb-0">
@@ -678,7 +753,7 @@ class Herramienta extends Component {
                         activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="historial" title="Historial de ubicación">
                             <TableForModals
-                                columns={UBICACIONES_HERRAMIENTAS_COLUMNS}
+                                columns={UBICACIONES_BODEGA_COLUMNS}
                                 data={ubicaciones}
                                 hideSelector={true}
                                 mostrar_acciones={true}
@@ -705,9 +780,9 @@ class Herramienta extends Component {
                     handleClose={this.handleCloseDeleteUbicacion}
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() }} 
                 />
-                <Modal size="lg" title="Herramienta" show={modalSee} handleClose={this.handleCloseSee} >
-                    <HerramientaCard
-                        herramienta={herramienta}
+                <Modal size="lg" title={`Detalles ${key === 'materiales'?'del material':'de la herramienta'}`} show={modalSee} handleClose={this.handleCloseSee} >
+                    <BodegaCard
+                        bodega={bodega}
                     />
                 </Modal>
             </Layout>
@@ -718,4 +793,4 @@ class Herramienta extends Component {
 const mapStateToProps = state => { return { authUser: state.authUser } }
 const mapDispatchToProps = dispatch => ({ })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Herramienta);
+export default connect(mapStateToProps, mapDispatchToProps)(Bodega);
