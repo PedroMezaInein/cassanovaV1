@@ -1655,7 +1655,7 @@ class Proyectos extends Component {
             }
         })
         formBitacora.adjuntos.adjuntos.files.forEach((file) => {
-            data.append(`files`, file.file)
+            data.append(`files[]`, file.file)
         })
         data.append('proyecto', proyecto.id)
         await axios.post(`${URL_DEV}v1/proyectos/nota-bitacora`, data, { headers: setFormHeader(access_token) }).then(
