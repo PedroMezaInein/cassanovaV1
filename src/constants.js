@@ -1,10 +1,9 @@
 export const COLORES_GRAFICAS_MESES = [ '#AB47BC', '#5C6BC0', '#42A5F5', '#26C6DA', 
     '#26A69A', '#66BB6A', '#D4E157', '#FFEE58', '#FFA726', '#FF7043', '#8D6E63', '#78909C' ]
 
-export const COLORES_CALENDARIO_PROYECTOS = [ '#9e6e36', '#9e6e36', '#10c7a6', '#5b7533', '#b0b1ca', '#beac49', '#ac5684', '#34c1e7', '#308fa8',
-    '#6dc14f', '#21b3af', '#c7608a', '#f05c34', '#27d60', '#6462cc', '#39a5f1', '#cf60a5', '#a16792', '#9bac45', '#a2a5da', '#94c7ac', '#e28ac7',
-    '#68c979', '#e88f6b', '#65b1a0', '#64c6ce', '#10b27a', '#14a4e3', '#128897', '#90c793', '#5da48e', '#9eb6a1', '#37899b', '#b696b0', '#d05b7f',
-    '#8690c6', '#7ca0cd' ]
+export const COLORES_CALENDARIO_PROYECTOS = [ '#9e6e36', '#9e6e36', '#10c7a6', '#5b7533', '#b0b1ca', '#beac49', '#34c1e7',
+    '#6dc14f', '#21b3af','#f05c34', '#6462cc', '#39a5f1',  '#9bac45', '#a2a5da', '#94c7ac', 
+    '#68c979', '#e88f6b', '#65b1a0', '#64c6ce', '#10b27a', '#14a4e3',  '#5da48e', '#9eb6a1', '#8690c6', '#7ca0cd' ]
 
 export const INEIN_RED = '#D8005A'
 export const IM_AZUL = '#7096c1'
