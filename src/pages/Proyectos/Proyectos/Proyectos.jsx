@@ -24,7 +24,7 @@ import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
 import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
-import { setSingleHeaderJson } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
@@ -1635,13 +1635,33 @@ class Proyectos extends Component {
 
     openModalBitacora = proyecto => { this.setState({...this.state, modalBitacora:true, proyecto:proyecto}) }
     
-    async onSubmitNotaBitacora() {
+    onSubmitNotaBitacora = async (e) => {
+        e.preventDefault();
+        waitAlert();
         const { access_token } = this.props.authUser
         const { formBitacora, proyecto } = this.state
-
-        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/bitacora', formBitacora, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        const data = new FormData();
+        let aux = Object.keys(formBitacora)
+        aux.forEach((element) => {
+            switch (element) {
+                case 'fecha':
+                    data.append(element, (new Date(formBitacora[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formBitacora[element]);
+                    break
+            }
+        })
+        formBitacora.adjuntos.adjuntos.files.forEach((file) => {
+            data.append(`files`, file.file)
+        })
+        data.append('proyecto', proyecto.id)
+        await axios.post(`${URL_DEV}v1/proyectos/nota-bitacora`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
-                const { proyecto } = response.data
+                Swal.close()
+                /* const { proyecto } = response.data
                 const { key } = this.state
                 this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La bitácora registrada con éxito.')
@@ -1649,11 +1669,8 @@ class Proyectos extends Component {
                     ...this.state,
                     proyecto: proyecto,
                     form: this.clearFormBitacora(),
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                }) */
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -1908,7 +1925,7 @@ class Proyectos extends Component {
                         onChange={this.onChangeBitacora}
                         handleChange={this.handleChangeAdjB}
                         // deleteFile={this.deleteFile}
-                        onSubmit = { this.onSubmitNotaBitacora }
+                        onSubmit = { (e) => {this.onSubmitNotaBitacora(e)} }
                         proyecto={proyecto}
                     />
                 </Modal>
