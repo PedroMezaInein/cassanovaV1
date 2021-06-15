@@ -1169,7 +1169,36 @@ export const ADJUNTOS_COLUMNS_URL = [
         accessor: 'url'
     },
 ]
-
+export const NOTAS_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions'
+    },
+    {
+        Header: 'Número de nota',
+        accessor: 'numero_nota'
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha'
+    },
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
+    },
+    {
+        Header: 'Tipo',
+        accessor: 'tipo_nota'
+    },
+    {
+        Header: 'Notas',
+        accessor: 'notas'
+    },
+    {
+        Header: 'Adjunto',
+        accessor: 'adjunto'
+    },
+]
 export const ADJUNTOS_PRESUPUESTOS_COLUMNS = [
     {
         Header: 'Adjunto',
