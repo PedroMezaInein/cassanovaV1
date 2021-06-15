@@ -387,7 +387,7 @@ class MiProyecto extends Component {
 
                 var dias_transcurridos = fecha_hoy.diff(fecha_proyecto, 'days')
 
-                data.tiposTrabajo.map((tipo) => {
+                data.tiposTrabajo.forEach((tipo) => {
                     if(dias_transcurridos >= 365){
                         if(tipo.tipo !== 'Mantenimiento'){
                             options.tiposTrabajo.push({

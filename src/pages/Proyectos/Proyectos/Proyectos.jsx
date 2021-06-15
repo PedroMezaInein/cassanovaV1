@@ -24,7 +24,7 @@ import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
 import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
-import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
+import { setFormHeader, setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
