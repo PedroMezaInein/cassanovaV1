@@ -7,32 +7,34 @@ import { URL_DEV } from '../../../constants';
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert';
 import { setOptions } from '../../../functions/setters';
 import axios from 'axios'
-import { HerramientasForm as HerramientasFormulario } from '../../../components/forms'
-class HerramientaForm extends Component {
+import { BodegaForm as BodegaFormulario } from '../../../components/forms'
+class BodegaForm extends Component {
     state = {
-        title: 'Nueva herramienta',
+        title: 'Nuevo material',
         formeditado: 0,
         options: {
-            empresas: [],
-            proyectos: []
+            partidas:[],
+            proyectos: [],
+            unidades:[]
         },
         form: {
-            nombre: '',
-            serie: '',
-            modelo: '',
-            empresa: '',
+            partida:'',
             proyecto: '',
+            unidad:'',
+            nombre: '',
+            cantidad:'',
             descripcion: '',
-            fecha: new Date(),
             adjuntos: {
-                adjuntos: {
+                fotografia: {
                     value: '',
-                    placeholder: 'Adjuntos',
+                    placeholder: 'Fotografía',
                     files: []
                 }
-            }
+            },
+            ubicacion:''
         },
-        herramienta: ''
+        bodega: '',
+        tipo:''
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -43,27 +45,37 @@ class HerramientaForm extends Component {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
+        let queryString = this.props.history.location.search
+        let tipo = ''
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let type = params.get("type")
+            if (type) {
+                tipo = type
+            }
+        }
         switch (action) {
             case 'add':
                 this.setState({
                     ...this.state,
-                    title: 'Nueva herramienta',
-                    formeditado: 0
+                    title: `${tipo==='materiales'?'Nuevo material':'Nueva herramienta'}`,
+                    formeditado: 0,
+                    tipo:tipo
                 })
                 break;
             case 'edit':
                 if (state) {
-                    if (state.herramienta) {
+                    if (state.bodega) {
                         const { form } = this.state
-                        const { herramienta } = state
-                        form.nombre = herramienta.nombre
-                        form.serie = herramienta.serie
-                        form.modelo = herramienta.modelo
-                        form.descripcion = herramienta.descripcion
-                        form.fecha = new Date(herramienta.created_at)
-                        if (herramienta.adjuntos) {
+                        const { bodega } = state
+                        form.nombre = bodega.nombre
+                        form.serie = bodega.serie
+                        form.modelo = bodega.modelo
+                        form.descripcion = bodega.descripcion
+                        form.fecha = new Date(bodega.created_at)
+                        if (bodega.adjuntos) {
                             let aux = []
-                            herramienta.adjuntos.map((adjunto) => {
+                            bodega.adjuntos.map((adjunto) => {
                                 aux.push({
                                     name: adjunto.name,
                                     url: adjunto.url,
@@ -71,20 +83,21 @@ class HerramientaForm extends Component {
                                 })
                                 return false
                             })
-                            form.adjuntos.adjuntos.files = aux
+                            form.adjuntos.fotografia.files = aux
                         }
                         this.setState({
                             ...this.state,
                             formeditado: 1,
-                            herramienta: herramienta,
-                            title: 'Editar herramienta',
+                            bodega: bodega,
+                            tipo:state.tipo,
+                            title: `${state.tipo==='materiales'?'Editar material':'Editar herramienta'}`,
                             form
                         })
                     }
                     else
-                        history.push('/proyectos/herramientas')
+                        history.push('/proyectos/bodega')
                 } else
-                    history.push('/proyectos/herramientas')
+                    history.push('/proyectos/bodega')
                 break;
             default:
                 break;
@@ -97,6 +110,13 @@ class HerramientaForm extends Component {
         const { value, name } = e.target
         const { form } = this.state
         form[name] = value
+        switch (name) {
+            case 'cantidad':
+                form[name] = value.replace(/[,]/gi, '')
+                break;
+            default:
+                break;
+        }
         this.setState({
             ...this.state,
             form
@@ -113,7 +133,7 @@ class HerramientaForm extends Component {
             })
             return false
         })
-        form.adjuntos.adjuntos.files = aux
+        form.adjuntos.fotografia.files = aux
         this.setState({
             ...this.state,
             form
@@ -146,10 +166,10 @@ class HerramientaForm extends Component {
         e.preventDefault()
         const { title } = this.state
         waitAlert()
-        if (title === 'Editar herramienta')
-            this.editHerramientaAxios()
+        if (title === 'Editar material' || title === 'Editar herramienta' )
+            this.editBodega()
         else
-            this.createHerramientaAxios()
+            this.createBodegaAxios()
     }
     async getOptionsAxios() {
         waitAlert()
@@ -157,16 +177,12 @@ class HerramientaForm extends Component {
         await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, proyectos } = response.data
-                const { options, herramienta, form } = this.state
+                const { empresas, proyectos, partidas, unidades } = response.data
+                const { options, form } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
-                if (herramienta !== '') {
-                    if (herramienta.empresa_id)
-                        form.empresa = herramienta.empresa_id.toString()
-                    if (herramienta.proyecto_id)
-                        form.proyecto = herramienta.proyecto_id.toString()
-                }
+                options['partidas'] = setOptions(partidas, 'nombre', 'id')
+                options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 this.setState({
                     ...this.state,
                     options,
@@ -181,10 +197,10 @@ class HerramientaForm extends Component {
             console.log(error, 'error')
         })
     }
-    async createHerramientaAxios() {
+    async createBodegaAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form } = this.state
+        const { form, tipo } = this.state
         const data = new FormData();
 
         let aux = Object.keys(form)
@@ -214,9 +230,9 @@ class HerramientaForm extends Component {
             (response) => {
                 const { history } = this.props
                 history.push({
-                    pathname: '/proyectos/herramientas'
+                    pathname: '/proyectos/bodega'
                 });
-                doneAlert('Herramienta creda con éxito')
+                doneAlert(`Se creo con éxito ${tipo==='materiales'?'el material':'la herramienta'}`)
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -226,10 +242,11 @@ class HerramientaForm extends Component {
             console.log(error, 'error')
         })
     }
-    async editHerramientaAxios() {
+    async editBodega() {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, herramienta } = this.state
+        const { form, bodega, tipo } = this.state
+        console.log(tipo)
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
@@ -254,13 +271,13 @@ class HerramientaForm extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(URL_DEV + 'herramientas/' + herramienta.id, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'herramientas/' + bodega.id, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
                 history.push({
-                    pathname: '/proyectos/herramientas'
+                    pathname: '/proyectos/bodega'
                 });
-                doneAlert('Herramienta editada con éxito')
+                doneAlert(`Se edito con éxito ${tipo==='materiales'?'el material':'la herramienta'}`)
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -273,8 +290,8 @@ class HerramientaForm extends Component {
     async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { herramienta } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { bodega } = this.state
+        await axios.delete(URL_DEV + 'herramientas/' + bodega.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
                 this.setAdjuntos(herramienta.adjuntos)
@@ -289,7 +306,7 @@ class HerramientaForm extends Component {
         })
     }
     render() {
-        const { title, form, formeditado, options } = this.state
+        const { title, form, formeditado, options, tipo } = this.state
         return (
             <Layout active='proyectos' {...this.props} >
                 <Card>
@@ -301,7 +318,7 @@ class HerramientaForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <HerramientasFormulario
+                        <BodegaFormulario
                             onChange={this.onChange}
                             form={form}
                             formeditado={formeditado}
@@ -309,6 +326,7 @@ class HerramientaForm extends Component {
                             onSubmit={this.onSubmit}
                             handleChange={this.handleChange}
                             deleteFile={this.deleteFile}
+                            tipo={tipo}
                         />
                     </Card.Body>
                 </Card>
@@ -325,4 +343,4 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(HerramientaForm)
+export default connect(mapStateToProps, mapDispatchToProps)(BodegaForm)

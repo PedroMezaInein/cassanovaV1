@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { URL_DEV, COLORES_CALENDARIO_PROYECTOS} from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
@@ -65,19 +65,37 @@ class CalendarioProyectos extends Component {
             (response) => {
                 const { proyectos } = response.data
                 let { colorProyecto } = this.state
-
+                
                 proyectos.forEach((proyecto) => {
+                    // console.log(proyecto)
                     let esigual = false
                     let colorexistente = ''
-                    Object.assign(proyecto, { color: COLORES_CALENDARIO_PROYECTOS[Math.floor(Math.random() * COLORES_CALENDARIO_PROYECTOS.length)]});
+                    if(proyecto.fase1){
+                        Object.assign(proyecto, { color:'#A16793'});
+                    }else if(proyecto.fase2){
+                        Object.assign(proyecto, { color:'#308EA8'});
+                    }else if(proyecto.fase3){
+                        Object.assign(proyecto, { color:'#E88F6B'});
+                    }
+                    else{
+                        Object.assign(proyecto, { color: '#ABB2B9'});
+                    }
                     colorProyecto.forEach(color => {
                         if (color.id === proyecto.id ) {
                             esigual=true
-                            colorexistente=color.color
+                            if(proyecto.fase1){
+                                colorexistente='#A16793'
+                            }else if(proyecto.fase2){
+                                colorexistente='#308EA8'
+                            }else if(proyecto.fase3){
+                                colorexistente='#E88F6B'
+                            }else{
+                                colorexistente=color.color
+                            }
                         }
                     });
                     if(!esigual){
-                        Object.assign(proyecto, { color: COLORES_CALENDARIO_PROYECTOS[Math.floor(Math.random() * COLORES_CALENDARIO_PROYECTOS.length)]});
+                        // Object.assign(proyecto, { color: COLORES_CALENDARIO_PROYECTOS[Math.floor(Math.random() * COLORES_CALENDARIO_PROYECTOS.length)]});
                         colorProyecto.push({
                             id: proyecto.id,
                             color: proyecto.color
@@ -205,7 +223,7 @@ class CalendarioProyectos extends Component {
                 </Tooltip>
             }>
                 <td className="text-center position-relative p-0 text-hover" colSpan={colspan} onClick = { (e) => { e.preventDefault(); this.openModal(proyecto) }}>
-                    <div className={`text-truncate w-100 position-absolute text-white px-1 top-26 ${border}`} style={{ backgroundColor: proyecto.color, borderColor: proyecto.color }}>
+                    <div className={`text-truncate w-100 position-absolute text-white px-1 top-26 font-size-13px ${border}`} style={{ backgroundColor: proyecto.color, borderColor: proyecto.color }}>
                         {proyecto.nombre}
                     </div>
                 </td>
@@ -436,7 +454,20 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className='d-flex justify-content-between'>
+                        {
+                            <div className="d-flex justify-content-center">
+                                <span className="label-fase" style={{backgroundColor:'#A16793'}}>
+                                    FASE 1
+                                </span>
+                                <span className="label-fase" style={{backgroundColor:'#308EA8'}}>
+                                    FASE 2
+                                </span>
+                                <span className="label-fase" style={{backgroundColor:'#E88F6B'}}>
+                                    FASE 3
+                                </span>
+                            </div>
+                        }
+                        <div className='d-flex justify-content-between mt-8'>
                             <div className=''>
                                 <h2 className="font-weight-bolder text-dark">{`${mes} ${año}`}</h2>
                             </div>
@@ -465,8 +496,9 @@ class CalendarioProyectos extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="table-responsive-xl mt-5">
-                            <table className="table table-responsive table-bordered table-vertical-center border-0" id="calendario-proyectos">
+                        <div className="col-md-12 px-0">
+                        <div className="table-responsive mt-5">
+                            <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
                                 <thead className="text-center">
                                     <tr>
                                         <th className="font-weight-bolder border-0">PROYECTO</th>
@@ -498,8 +530,17 @@ class CalendarioProyectos extends Component {
                                                 }
                                                 return (
                                                     <tr key={index} className='h-30px'>
-                                                        <td className="text-center font-weight-bolder white-space-nowrap">
-                                                            {proyecto.nombre}
+                                                        <td className="text-center font-weight-bolder white-space-nowrap py-8px">
+                                                            <span className="d-block font-size-13px">
+                                                                {proyecto.nombre}
+                                                            </span>
+                                                            <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
+                                                                color: `${proyecto.estatus.letra}`,
+                                                                backgroundColor: `${proyecto.estatus.fondo}`,
+                                                                fontSize: "8.5px",
+                                                                }} >
+                                                                {proyecto.estatus.estatus}
+                                                            </span>
                                                         </td>
                                                         {
                                                             [...Array(dias)].map((element, diaActual) => {
@@ -512,6 +553,7 @@ class CalendarioProyectos extends Component {
                                     }
                                 </tbody>
                             </table>
+                        </div>
                         </div>
                     </Card.Body>
                 </Card>
