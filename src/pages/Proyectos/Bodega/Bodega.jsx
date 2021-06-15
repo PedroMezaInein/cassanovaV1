@@ -107,9 +107,8 @@ class Bodega extends Component {
             aux.push({
                 actions: this.setActions(bodega),
                 nombre: setTextTableReactDom(bodega.nombre, this.doubleClick, bodega, 'nombre', 'text-center'),
-                proyecto: setTextTableReactDom(bodega.proyecto ? bodega.proyecto.nombre :'', this.doubleClick, bodega, 'proyecto', 'text-center'),
-                partida: setTextTableReactDom(bodega.partida ? bodega.partida.name:'', this.doubleClick, bodega, 'partida', 'text-center'),
-                unidad: setTextTableReactDom(bodega.unidad ? bodega.unidad.name:'', this.doubleClick, bodega, 'unidad', 'text-center'),
+                partida: setTextTableReactDom(bodega.partida ? bodega.partida.nombre:'', this.doubleClick, bodega, 'partida', 'text-center'),
+                unidad: setTextTableReactDom(bodega.unidad ? bodega.unidad.nombre:'', this.doubleClick, bodega, 'unidad', 'text-center'),
                 cantidad: setTextTableReactDom(bodega.cantidad, this.doubleClick, bodega, 'cantidad', 'text-center'),
                 ubicacion: setTextTableReactDom(bodega.ubicacion !== null ? bodega.ubicacion :'', this.doubleClick, bodega, 'ubicacion', 'text-justify'),
                 descripcion: setTextTableReactDom(bodega.descripcion !== null ? bodega.descripcion :'', this.doubleClick, bodega, 'descripcion', 'text-justify'),

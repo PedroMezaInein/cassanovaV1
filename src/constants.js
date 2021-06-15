@@ -656,11 +656,6 @@ export const BODEGA_COLUMNS = [
         customRender: true
     },
     {
-        Header: 'Proyecto',
-        accessor: 'proyecto',
-        customRender: true
-    },
-    {
         Header: 'Partida',
         accessor: 'partida',
         customRender: true
@@ -670,11 +665,6 @@ export const BODEGA_COLUMNS = [
         accessor: 'unidad',
         customRender: true
     },
-    // {
-    //     Header: 'Serie',
-    //     accessor: 'serie',
-    //     customRender: true
-    // },
     {
         Header: 'Ubicación',
         accessor: 'ubicacion',
