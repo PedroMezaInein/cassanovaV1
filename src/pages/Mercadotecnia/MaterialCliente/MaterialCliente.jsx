@@ -7,15 +7,12 @@ import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { waitAlert, questionAlert, errorAlert, printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
-import { setFormHeader, setSingleHeader, setSingleHeaderJson, toAbsoluteUrl } from "../../../functions/routers"
+import { setSingleHeader, toAbsoluteUrl } from "../../../functions/routers"
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
-import { v4 as uuidv4 } from "uuid";
 import S3 from 'react-aws-s3';
-const chunkSize = 1048576 * 30;
-
 const config = {
     bucketName: 'admin-proyectos',
     region: 'us-east-2',
@@ -28,18 +25,6 @@ const ReactS3Client = new S3(config);
 /* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
-        chunked: {
-            showProgress: false,
-            progress: 0,
-            counter: 1,
-            begin: 0,
-            end: chunkSize,
-            filesize: 0,
-            totalCount: 1,
-            fileID: '',
-            file: '',
-            type: ''
-        },
         data: { empresas: [] },
         empresa: '',
         submenuactive: '',
