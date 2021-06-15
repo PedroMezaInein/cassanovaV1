@@ -33,13 +33,13 @@ class BitacoraObraForm extends Component {
                     }
                     {...props} >
                     <div className="row form-group-marginless mx-0 my-6">
-                        <div className="col-md-6 align-self-center text-center">
+                        <div className="col-md-5 align-self-center text-center">
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                 <label className="text-center font-weight-bolder text-dark-60">Fecha</label>
                             </div>
                             <CalendarDay date={form.fecha} onChange={onChange} name='fecha' requirevalidation={1} />
                         </div>
-                        <div className="col-md-6 align-self-center">
+                        <div className="col-md-7 align-self-center">
                             <div className="row form-group-marginless">
                                 <div className="col-md-12">
                                     <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } requirevalidation = { 1 } formeditado = { formeditado }
@@ -53,24 +53,21 @@ class BitacoraObraForm extends Component {
                                         value = { form.tipo_nota } onChange = { onChange } messageinc = "Incorrecto. Ingresa el tipo de nota."
                                         iconclass = "far fa-sticky-note" />
                                 </div>
+                                <div className="col-md-12">
+                                    <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 } 
+                                        requirevalidation = { 0 } formeditado = { formeditado } rows = "3" as = "textarea" placeholder = "NOTAS" 
+                                        name = "notas" value = { form.notas } onChange = { onChange } style = { { paddingLeft: "10px" } }
+                                        messageinc = "Incorrecto. Ingresa la nota." />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                    <div className="row form-group-marginless mt-4 mx-0">
-                        <div className="col-md-12">
-                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 } 
-                                requirevalidation = { 0 } formeditado = { formeditado } rows = "3" as = "textarea" placeholder = "NOTAS" 
-                                name = "notas" value = { form.notas } onChange = { onChange } style = { { paddingLeft: "10px" } }
-                                messageinc = "Incorrecto. Ingresa la nota." />
-                        </div>
-                    </div>
                     <div className="separator separator-dashed my-5"></div>
-                    <div className="row form-group-marginless mt-4 mx-0">
+                    <div className="row form-group-marginless mt-7 mx-0">
                         <div className="col-md-12 pb-5">
                             <ItemSlider items = { form.adjuntos.adjuntos.files } item = 'adjuntos' handleChange = { handleChange }
                             // deleteFile={deleteFile}
-                                />
+                            />
                         </div>
                     </div>
                     <div className="card-footer py-3 pr-1">
