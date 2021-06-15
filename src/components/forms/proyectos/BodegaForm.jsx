@@ -33,7 +33,7 @@ class BodegaForm extends Component {
                     }
                     {...props} >
                     <div className="form-group row form-group-marginless">
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <Input
                                 requirevalidation={1}
                                 formeditado={formeditado}
@@ -43,13 +43,10 @@ class BodegaForm extends Component {
                                 type="text"
                                 placeholder={`NOMBRE ${tipo==='materiales'?'DEL MATERIAL':'DE LA HERRAMIENTA'}`}
                                 iconclass="fas fa-toolbox"
-                                messageinc="Incorrecto. Ingresa el nombre de la herramienta."
+                                messageinc="Ingresa el nombre de la herramienta."
                             />
                         </div>
-                    </div>
-                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                    <div className="form-group row form-group-marginless">
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <SelectSearch
                                 options={options.partidas}
                                 placeholder="SELECCIONA LA PARTIDA"
@@ -58,10 +55,10 @@ class BodegaForm extends Component {
                                 onChange={this.updatePartida}
                                 iconclass="fas fa-layer-group"
                                 formeditado={formeditado}
-                                messageinc="Incorrecto. Selecciona la partida."
+                                messageinc="Selecciona la partida."
                             />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <SelectSearch
                                 formeditado={formeditado}
                                 options={options.unidades}
@@ -70,10 +67,10 @@ class BodegaForm extends Component {
                                 value={form.unidad}
                                 onChange={this.updateUnidades}
                                 iconclass={" fas fa-weight-hanging"}
-                                messageinc="Incorrecto. Selecciona la unidad"
+                                messageinc="Selecciona la unidad"
                             />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-2">
                             <InputNumber
                                 requirevalidation = { 1 }
                                 formeditado = { formeditado }
@@ -84,7 +81,7 @@ class BodegaForm extends Component {
                                 placeholder = "CANTIDAD"
                                 iconclass={"fas fa-ruler-combined"}
                                 thousandseparator={true}
-                                messageinc = "Incorrecto. Ingresa la cantidad."
+                                messageinc = "Ingresa la cantidad."
                             />
                         </div>
                     </div>
@@ -99,7 +96,7 @@ class BodegaForm extends Component {
                                 name='ubicacion'
                                 value={form.ubicacion}
                                 onChange={onChange}
-                                messageinc="Incorrecto. Ingresa la descripción."
+                                messageinc="Ingresa la descripción."
                             />
                         </div>
                     </div>
@@ -116,7 +113,7 @@ class BodegaForm extends Component {
                                 value={form.descripcion}
                                 onChange={onChange}
                                 style={{ paddingLeft: "10px" }}
-                                messageinc="Incorrecto. Ingresa la descripción."
+                                messageinc="Ingresa la descripción."
                             />
                         </div>
                     </div>
