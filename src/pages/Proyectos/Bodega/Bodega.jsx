@@ -18,6 +18,7 @@ import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import { SelectSearchGray } from '../../../components/form-components'
 import $ from "jquery";
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 class Bodega extends Component {
     state = {
         modalDelete: false,
@@ -59,6 +60,7 @@ class Bodega extends Component {
         ubicacion: '',
         key: 'materiales',
     }
+    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -71,6 +73,7 @@ class Bodega extends Component {
         if (!bodega)
             history.push('/')
     }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -97,6 +100,7 @@ class Bodega extends Component {
             console.log(error, 'error')
         })
     }
+
     setBodega = bodega => {
         let aux = []
         bodega.map((bodega) => {
@@ -173,11 +177,13 @@ class Bodega extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -199,22 +205,19 @@ class Bodega extends Component {
         })
         return form
     }
+
     patchBodega = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/herramientas/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v1/proyectos/bodegas/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                if (key === 'materiales') {
-                    this.getMateriales()
-                }
-                if (key === 'herramientas') {
-                    this.getHerramientas()
-                }
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El registro de bodega fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -235,6 +238,7 @@ class Bodega extends Component {
             default: return []
         }
     }
+
     setActions = () => {
         let aux = []
         aux.push(
@@ -277,7 +281,7 @@ class Bodega extends Component {
         return aux
     }
 
-    setActionsUbicaciones = () => {
+    /* setActionsUbicaciones = () => {
         let aux = []
         aux.push(
             {
@@ -289,8 +293,9 @@ class Bodega extends Component {
             }
         )
         return aux
-    }
-    setUbicaciones = ubicaciones => {
+    } */
+
+    /* setUbicaciones = ubicaciones => {
         let aux = []
         ubicaciones.map((ubicacion) => {
             aux.push({
@@ -304,51 +309,32 @@ class Bodega extends Component {
             return false
         })
         return aux
-    }
+    } */
+
     onChange = e => {
         const { value, name } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     changePageEdit = (bodega) => {
         const { key } = this.state
         const { history } = this.props
-        history.push({
-            pathname: '/proyectos/bodega/edit',
-            state: { bodega: bodega, tipo:key }
-        });
+        history.push({ pathname: '/proyectos/bodega/edit', state: { bodega: bodega, tipo:key } });
     }
-    openModalDelete = bodega => {
-        this.setState({
-            ...this.state,
-            bodega: bodega,
-            modalDelete: true
-        })
-    }
+
+    openModalDelete = bodega => { this.setState({ ...this.state, bodega: bodega, modalDelete: true }) }
+
     openModalAdjuntos = bodega => {
         const { form } = this.state
         let aux = []
-        bodega.adjuntos.map((adjunto) => {
-            aux.push({
-                name: adjunto.name,
-                url: adjunto.url,
-                id: adjunto.id
-            })
-            return false
-        })
+        bodega.adjuntos.forEach((adjunto) => { aux.push({ name: adjunto.name, url: adjunto.url, id: adjunto.id }) })
         form.adjuntos.fotografia.files = aux
-        this.setState({
-            ...this.state,
-            bodega: bodega,
-            modalAdjuntos: true,
-            form
-        })
+        this.setState({ ...this.state, bodega: bodega, modalAdjuntos: true, form })
     }
-    openModalUbicacion = (bodega) => {
+
+    /* openModalUbicacion = (bodega) => {
         const { data } = this.state
         data.ubicaciones = bodega.ubicaciones
         this.setState({
@@ -358,139 +344,82 @@ class Bodega extends Component {
             data,
             ubicaciones: this.setUbicaciones(bodega.ubicaciones)
         })
-    }
-    openModalDeleteUbicacion = ubicacion => {
-        this.setState({
-            ...this.state,
-            modalDeleteUbicacion: true,
-            ubicacion: ubicacion
-        })
-    }
-    handleCloseDelete = () => {
-        this.setState({
-            ...this.state,
-            modalDelete: false,
-            bodega: ''
-        })
-    }
+    } */
+
+    /* openModalDeleteUbicacion = ubicacion => {
+        this.setState({ ...this.state, modalDeleteUbicacion: true, ubicacion: ubicacion })
+    } */
+
+    handleCloseDelete = () => { this.setState({ ...this.state, modalDelete: false, bodega: '' }) }
+
     handleCloseAdjuntos = () => {
         const { form } = this.state
         form.adjuntos.fotografia.files = []
-        this.setState({
-            ...this.state,
-            modalAdjuntos: false,
-            bodega: '',
-            form
-        })
+        this.setState({ ...this.state, modalAdjuntos: false, bodega: '', form })
     }
-    handleCloseUbicacion = () => {
-        this.setState({
-            ...this.state,
-            bodega: '',
-            modalUbicacion: false
-        })
-    }
-    handleCloseDeleteUbicacion = () => {
-        this.setState({
-            ...this.state,
-            modalDeleteUbicacion: false,
-            ubicacion: ''
-        })
-    }
-    openModalSee = bodega => {
-        this.setState({
-            ...this.state,
-            modalSee: true,
-            bodega: bodega
-        })
-    }
-    handleCloseSee = () => {
-        this.setState({
-            ...this.state,
-            modalSee: false,
-            bodega: ''
-        })
-    }
+
+    /* handleCloseUbicacion = () => { this.setState({ ...this.state, bodega: '', modalUbicacion: false }) } */
+
+    /* handleCloseDeleteUbicacion = () => { this.setState({ ...this.state, modalDeleteUbicacion: false, ubicacion: '' }) } */
+
+    openModalSee = bodega => { this.setState({ ...this.state, modalSee: true, bodega: bodega }) }
+
+    handleCloseSee = () => { this.setState({ ...this.state, modalSee: false, bodega: '' }) }
+
     handleChange = (files, item) => {
-        const { form } = this.state
+        const { form, bodega } = this.state
         let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
+        if(bodega)
+            bodega.adjuntos.forEach((adjunto) => { aux.push(adjunto) })
+        files.forEach((file, counter) => { aux.push( { name: file.name, file: file, url: URL.createObjectURL(file), key: counter } ) })
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
-    onSelect = value => {
+
+    /* onSelect = value => {
         const { form } = this.state
         if (value === 'nuevo') {
             form.fecha = new Date()
             form.ubicacion = ''
             form.comentario = ''
         }
-        this.setState({
-            ...this.state,
-            active: value,
-            form
-        })
-    }
-    onSubmit = e => {
+        this.setState({ ...this.state, active: value, form })
+    } */
+
+    /* onSubmit = e => {
         e.preventDefault()
         waitAlert()
         this.sendUbicacionAxios()
-    }
-    deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
-    }
-    async deleteBodegaAxios() {
+    } */
+
+    deleteFile = element => { deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id)) }
+
+    deleteBodegaAxios = async () => {
         const { access_token } = this.props.authUser
         const { bodega } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + bodega.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { key } = this.state
-                if (key === 'materiales') {
-                    this.getMateriales()
-                }
-                if (key === 'herramientas') {
-                    this.getHerramientas()
-                }
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
                 doneAlert(`${key === 'materiales'?'Material':'Herramienta'} eliminado con éxito`)
-
-                this.setState({
-                    ...this.state,
-                    modalDelete: false,
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modalDelete: false, bodega: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async deleteUbicacionAxios() {
+
+    /* async deleteUbicacionAxios() {
         const { access_token } = this.props.authUser
         const { bodega, ubicacion } = this.state
         await axios.delete(URL_DEV + 'herramientas/' + bodega.id + '/ubicacion/' + ubicacion.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                if (key === 'materiales') {
-                    this.getMateriales()
-                }
-                if (key === 'herramientas') {
-                    this.getHerramientas()
-                }
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
                 doneAlert('Ubicación eliminada con éxito')
                 const { herramienta } = response.data
                 const { data } = this.state
@@ -503,108 +432,59 @@ class Bodega extends Component {
                     modalDeleteUbicacion: false,
                     ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
                 })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
-    async deleteAdjuntoAxios(id) {
+    } */
+
+    deleteAdjuntoAxios =  async (id) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { bodega } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + bodega.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/adjunto/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { herramienta } = response.data
-                const { form } = this.state
+                const { bodega } = response.data
+                const { form, key } = this.state
                 let aux = []
-                herramienta.adjuntos.map((adj) => {
-                    aux.push({
-                        name: adj.name,
-                        url: adj.url,
-                        id: adj.id
-                    })
-                    return false
-                })
+                bodega.adjuntos.forEach((adj) => { aux.push({ name: adj.name, url: adj.url, id: adj.id }) })
                 form.adjuntos.fotografia.files = aux
-                this.setState({
-                    ...this.state,
-                    modalDelete: false,
-                    bodega: '',
-                    form
-                })
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
+                this.setState({ ...this.state, modalDelete: false, bodega: bodega, form })
                 doneAlert('Adjunto eliminado con éxito')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async sendAdjuntoAxios() {
+
+    sendAdjuntoAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, bodega } = this.state
+        const { form, bodega, key } = this.state
         const data = new FormData();
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fecha':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-            return false
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-            }
-            data.append('adjuntos[]', element)
-            return false
-        })
-        await axios.post(URL_DEV + 'herramientas/' + bodega.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        let tipo = key === 'herramientas' ? 'herramienta' : 'material'
+        form.adjuntos.fotografia.files.forEach((file) => { data.append(`files[]`, file.file) })
+        await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/adjuntos?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
-                const { herramienta } = response.data
+                const { bodega } = response.data
                 const { form } = this.state
                 let aux = []
-                herramienta.adjuntos.map((adj) => {
-                    aux.push({
-                        name: adj.name,
-                        url: adj.url,
-                        id: adj.id
-                    })
-                    return false
-                })
+                bodega.adjuntos.forEach((adj) => { aux.push({ name: adj.name, url: adj.url, id: adj.id }) })
                 form.adjuntos.fotografia.files = aux
-                this.setState({
-                    ...this.state,
-                    modalDelete: false,
-                    bodega: '',
-                    form
-                })
+                this.setState({ ...this.state, bodega: bodega, form })
                 doneAlert('Adjunto creado con éxito')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async sendUbicacionAxios() {
+    
+    /* sendUbicacionAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, bodega } = this.state
@@ -633,122 +513,81 @@ class Bodega extends Component {
                     ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
                 })
                 doneAlert(`${key === 'materiales'?'Material actualizado':'Herramienta actualizada'} con éxito`)
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
-    async getMateriales() {
-        $('#kt_datatable_materiales').DataTable().ajax.reload();
-    }
-    async getHerramientas() {
-        $('#kt_datatable_herramientas').DataTable().ajax.reload();
-    }
+    } */
+
+    async getMateriales() { $('#kt_datatable_materiales').DataTable().ajax.reload(); }
+
+    async getHerramientas() { $('#kt_datatable_herramientas').DataTable().ajax.reload(); }
+    
     controlledTab = value => {
-        if (value === 'materiales') {
-            this.getMateriales()
-        }
-        if (value === 'herramientas') {
-            this.getHerramientas()
-        }
-        this.setState({
-            ...this.state,
-            key: value
-        })
+        if (value === 'materiales') { this.getMateriales() }
+        if (value === 'herramientas') { this.getHerramientas() }
+        this.setState({ ...this.state, key: value })
     }
+
     render() {
         const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
+
                 <Tabs defaultActiveKey="materiales" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="materiales" title="Materiales">
-                        <NewTableServerRender
-                            columns={BODEGA_COLUMNS}
-                            title='Materiales'
-                            subtitle='Listado de materiales'
-                            mostrar_boton={true}
-                            abrir_modal={false}
-                            url='/proyectos/bodega/add?type=materiales'
-                            mostrar_acciones={true}
-                            actions={
-                                {
+                        <NewTableServerRender columns = { BODEGA_COLUMNS } title = 'Materiales' subtitle = 'Listado de materiales'
+                            mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/bodega/add?type=materiales' mostrar_acciones = { true }
+                            actions = { {
                                     'edit': { function: this.changePageEdit },
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
                                     'ubicacion': { function: this.openModalUbicacion },
                                     'see': { function: this.openModalSee }
-                                }
-                            }
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setBodega}
-                            urlRender = { `${URL_DEV}v2/proyectos/herramientas` }
-                            idTable='kt_datatable_materiales'
-                            cardTable='cardTable_materiales'
-                            cardTableHeader='cardTableHeader_materiales'
-                            cardBody='cardBody_materiales'
-                            isTab={true}
-                        />
+                            } } accessToken = { this.props.authUser.access_token } setter = { this.setBodega }
+                            urlRender = { `${URL_DEV}v1/proyectos/bodegas?tipo=material` } idTable = 'kt_datatable_materiales' cardTable = 'cardTable_materiales'
+                            cardTableHeader = 'cardTableHeader_materiales' cardBody = 'cardBody_materiales' isTab = { true } />
                     </Tab>
                     <Tab eventKey="herramientas" title="Herramientas">
-                        <NewTableServerRender
-                            columns={BODEGA_COLUMNS}
-                            title='Herramientas'
-                            subtitle='Listado de herramientas'
-                            mostrar_boton={true}
-                            abrir_modal={false}
-                            url='/proyectos/bodega/add?type=herramientas'
-                            mostrar_acciones={true}
-                            actions={
-                                {
+                        <NewTableServerRender columns = { BODEGA_COLUMNS } title = 'Herramientas' subtitle = 'Listado de herramientas'
+                            mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/bodega/add?type=herramientas'
+                            mostrar_acciones = { true } accessToken = { this.props.authUser.access_token } setter = { this.setBodega }
+                            actions = { {
                                     'edit': { function: this.changePageEdit },
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
                                     'ubicacion': { function: this.openModalUbicacion },
                                     'see': { function: this.openModalSee }
-                                }
-                            }
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setBodega}
-                            urlRender = { `${URL_DEV}v2/proyectos/herramientas` }
-                            idTable='kt_datatable_herramientas'
-                            cardTable='cardTable_herramientas'
-                            cardTableHeader='cardTableHeader_herramientas'
-                            cardBody='cardBody_herramientas'
-                            isTab={true}
-                        />
+                            } }
+                            urlRender = { `${URL_DEV}v1/proyectos/bodegas?tipo=herramienta` } idTable = 'kt_datatable_herramientas'
+                            cardTable = 'cardTable_herramientas' cardTableHeader = 'cardTableHeader_herramientas' cardBody = 'cardBody_herramientas'
+                            isTab = { true } />
                     </Tab>
                 </Tabs>
-                <ModalDelete
-                    title={`¿Estás seguro que deseas eliminar ${key === 'materiales'?'el material':'la herramienta'}?`}
-                    show={modalDelete}
-                    handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteBodegaAxios() }}
-                />
+                
+                <ModalDelete title = {`¿Estás seguro que deseas eliminar ${key === 'materiales'?'el material':'la herramienta'}?` } show = { modalDelete }
+                    handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteBodegaAxios() }} />
+
                 <Modal size="lg" title="Adjuntos" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
-                    <ItemSlider
-                        items={form.adjuntos.fotografia.files}
-                        item='fotografia'
-                        handleChange={this.handleChange}
-                        deleteFile={this.deleteFile}
-                    />
-                    {
-                        form.adjuntos.fotografia.value ?
-                            <div className="card-footer py-3 pr-1">
-                                <div className="row mx-0">
-                                    <div className="col-lg-12 text-right pr-0 pb-0">
-                                        <Button icon='' text='ENVIAR'
-                                            onClick={(e) => { e.preventDefault(); this.sendAdjuntoAxios() }} />
+                    <div className="p-2">
+                        <ItemSlider items = { form.adjuntos.fotografia.files } item = 'fotografia' handleChange = { this.handleChange }
+                            deleteFile = { this.deleteFile } />
+                        {
+                            form.adjuntos.fotografia.value ?
+                                <div className="card-footer py-3 pr-1">
+                                    <div className="row mx-0">
+                                        <div className="col-lg-12 text-right pr-0 pb-0">
+                                            <Button icon = '' text = 'ENVIAR' onClick = { (e) => { e.preventDefault(); this.sendAdjuntoAxios() } } />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             : ''
-                    }
+                        }
+                    </div>
                 </Modal>
-                <Modal size="xl" title="Historial de ubicaciones" show={modalUbicacion} handleClose={this.handleCloseUbicacion} >
+                
+                {/* <Modal size="xl" title="Historial de ubicaciones" show={modalUbicacion} handleClose={this.handleCloseUbicacion} >
                     <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
                         activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="historial" title="Historial de ubicación">
@@ -773,17 +612,15 @@ class Bodega extends Component {
                             />
                         </Tab>
                     </Tabs>
-                </Modal>
-                <ModalDelete
+                </Modal> */}
+                {/* <ModalDelete
                     title='¿Estás seguro que deseas eliminar la ubicación?'
                     show={modalDeleteUbicacion}
                     handleClose={this.handleCloseDeleteUbicacion}
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() }} 
-                />
+                /> */}
                 <Modal size="lg" title={`Detalles ${key === 'materiales'?'del material':'de la herramienta'}`} show={modalSee} handleClose={this.handleCloseSee} >
-                    <BodegaCard
-                        bodega={bodega}
-                    />
+                    <BodegaCard bodega={bodega} />
                 </Modal>
             </Layout>
         );
