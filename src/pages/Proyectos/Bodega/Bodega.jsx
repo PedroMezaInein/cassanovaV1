@@ -484,10 +484,16 @@ class Bodega extends Component {
         await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo`, formPrestamos, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { bodega } = response.data
-                const { key } = this.state
+                const { key, formPrestamos } = this.state
                 if (key === 'materiales') { this.getMateriales() }
                 if (key === 'herramientas') { this.getHerramientas() }
-                this.setState({ ...this.state, active: 'historial', bodega: bodega, formPrestamos })
+                formPrestamos.fecha = new Date()
+                formPrestamos.cantidad = ''
+                formPrestamos.responsble = ''
+                formPrestamos.proyecto = ''
+                formPrestamos.comentario = ''
+                formPrestamos.ubicacion = ''
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, formPrestamos, showForm: false,  })
                 doneAlert(`Prestamo agregado con éxito`)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
