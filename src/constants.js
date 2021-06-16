@@ -656,11 +656,6 @@ export const BODEGA_COLUMNS = [
         customRender: true
     },
     {
-        Header: 'Proyecto',
-        accessor: 'proyecto',
-        customRender: true
-    },
-    {
         Header: 'Partida',
         accessor: 'partida',
         customRender: true
@@ -670,11 +665,10 @@ export const BODEGA_COLUMNS = [
         accessor: 'unidad',
         customRender: true
     },
-    // {
-    //     Header: 'Serie',
-    //     accessor: 'serie',
-    //     customRender: true
-    // },
+    {
+        Header: 'Cantidad',
+        accessor: 'cantidad'
+    },
     {
         Header: 'Ubicación',
         accessor: 'ubicacion',
@@ -1169,7 +1163,36 @@ export const ADJUNTOS_COLUMNS_URL = [
         accessor: 'url'
     },
 ]
-
+export const NOTAS_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions'
+    },
+    {
+        Header: 'Número de nota',
+        accessor: 'numero_nota'
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha'
+    },
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
+    },
+    {
+        Header: 'Tipo',
+        accessor: 'tipo_nota'
+    },
+    {
+        Header: 'Notas',
+        accessor: 'notas'
+    },
+    {
+        Header: 'Adjunto',
+        accessor: 'adjunto'
+    },
+]
 export const ADJUNTOS_PRESUPUESTOS_COLUMNS = [
     {
         Header: 'Adjunto',

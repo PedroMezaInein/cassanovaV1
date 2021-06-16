@@ -8,6 +8,7 @@ import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert 
 import { setOptions } from '../../../functions/setters';
 import axios from 'axios'
 import { BodegaForm as BodegaFormulario } from '../../../components/forms'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers';
 class BodegaForm extends Component {
     state = {
         title: 'Nuevo material',
@@ -36,6 +37,7 @@ class BodegaForm extends Component {
         bodega: '',
         tipo:''
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -54,6 +56,7 @@ class BodegaForm extends Component {
                 tipo = type
             }
         }
+        this.getOptionsAxios()
         switch (action) {
             case 'add':
                 this.setState({
@@ -69,20 +72,17 @@ class BodegaForm extends Component {
                         const { form } = this.state
                         const { bodega } = state
                         form.nombre = bodega.nombre
-                        form.serie = bodega.serie
-                        form.modelo = bodega.modelo
                         form.descripcion = bodega.descripcion
-                        form.fecha = new Date(bodega.created_at)
+                        if(bodega.partida)
+                            form.partida = bodega.partida.id.toString()
+                        if(bodega.unidad)
+                            form.unidad = bodega.unidad.id.toString()
+                        form.cantidad = bodega.cantidad
+                        form.ubicacion = bodega.ubicacion
+                        console.log(form, bodega)
                         if (bodega.adjuntos) {
                             let aux = []
-                            bodega.adjuntos.map((adjunto) => {
-                                aux.push({
-                                    name: adjunto.name,
-                                    url: adjunto.url,
-                                    id: adjunto.id
-                                })
-                                return false
-                            })
+                            bodega.adjuntos.forEach((adjunto) => { aux.push({ name: adjunto.name, url: adjunto.url, id: adjunto.id }) })
                             form.adjuntos.fotografia.files = aux
                         }
                         this.setState({
@@ -104,8 +104,8 @@ class BodegaForm extends Component {
         }
         if (!remisiones)
             history.push('/')
-        this.getOptionsAxios()
     }
+
     onChange = e => {
         const { value, name } = e.target
         const { form } = this.state
@@ -117,31 +117,22 @@ class BodegaForm extends Component {
             default:
                 break;
         }
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     setAdjuntos = adjuntos => {
         const { form } = this.state
         let aux = []
-        adjuntos.map((adj) => {
-            aux.push({
-                name: adj.name,
-                url: adj.url,
-                id: adj.id
-            })
-            return false
-        })
+        adjuntos.forEach((adj) => { aux.push({ name: adj.name, url: adj.url, id: adj.id }) })
         form.adjuntos.fotografia.files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     handleChange = (files, item) => {
-        const { form } = this.state
+        const { form, bodega } = this.state
         let aux = []
+        if(bodega)
+            bodega.adjuntos.forEach((adjunto) => { aux.push(adjunto) })
         for (let counter = 0; counter < files.length; counter++) {
             aux.push(
                 {
@@ -154,14 +145,11 @@ class BodegaForm extends Component {
         }
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
-    deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
-    }
+
+    deleteFile = element => { deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id)) }
+
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -171,7 +159,8 @@ class BodegaForm extends Component {
         else
             this.createBodegaAxios()
     }
-    async getOptionsAxios() {
+
+    getOptionsAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
@@ -183,128 +172,89 @@ class BodegaForm extends Component {
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
-                this.setState({
-                    ...this.state,
-                    options,
-                    form
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, options, form })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async createBodegaAxios() {
+
+    createBodegaAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, tipo } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form)
-        aux.map((element) => {
+        aux.forEach((element) => {
             switch (element) {
-                case 'fecha':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
                 case 'adjuntos':
                     break;
                 default:
                     data.append(element, form[element])
                     break
             }
-            return false
         })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-            }
-            data.append('adjuntos[]', element)
-            return false
-        })
-        await axios.post(URL_DEV + 'herramientas', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        form.adjuntos.fotografia.files.forEach((file) => { data.append(`files[]`, file.file) })
+        await axios.post(`${URL_DEV}v1/proyectos/bodegas?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/bodega'
-                });
+                history.push({ pathname: '/proyectos/bodega' });
                 doneAlert(`Se creo con éxito ${tipo==='materiales'?'el material':'la herramienta'}`)
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async editBodega() {
+
+    editBodega = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, bodega, tipo } = this.state
-        console.log(tipo)
+        const { form, tipo, bodega } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
-        aux.map((element) => {
+        aux.forEach((element) => {
             switch (element) {
-                case 'fecha':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
                 case 'adjuntos':
                     break;
                 default:
                     data.append(element, form[element])
                     break
             }
-            return false
         })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-            }
-            data.append('adjuntos[]', element)
-            return false
+        form.adjuntos.fotografia.files.forEach((file) => { 
+            if(file.id === undefined)
+                data.append(`files[]`, file.file) 
         })
-        await axios.post(URL_DEV + 'herramientas/' + bodega.id, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}?tipo=${tipo}&_method=PUT`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/bodega'
-                });
+                history.push({ pathname: '/proyectos/bodega' });
                 doneAlert(`Se edito con éxito ${tipo==='materiales'?'el material':'la herramienta'}`)
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async deleteAdjuntoAxios(id) {
+
+    deleteAdjuntoAxios = async (id) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { bodega } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + bodega.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/adjunto/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { herramienta } = response.data
-                this.setAdjuntos(herramienta.adjuntos)
+                const { bodega } = response.data
+                this.setAdjuntos(bodega.adjuntos)
                 doneAlert('Adjunto eliminado con éxito')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     render() {
         const { title, form, formeditado, options, tipo } = this.state
         return (
