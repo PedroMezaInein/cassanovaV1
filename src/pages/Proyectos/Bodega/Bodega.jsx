@@ -10,7 +10,7 @@ import { setTextTableCenter, setTextTableReactDom, setOptions  } from '../../../
 import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
 import { Button, InputGray } from '../../../components/form-components'
-import FormPrestamos from '../../../components/forms/proyectos/FormPrestamos'
+import { FormPrestamos, PestamosDevoluciones } from '../../../components/forms'
 import { Tab, Tabs } from 'react-bootstrap'
 import { BodegaCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
@@ -586,7 +586,9 @@ class Bodega extends Component {
                             onSubmit={this.onSubmitPrestamo}
                         />
                     </div>
-
+                    <PestamosDevoluciones
+                    
+                    />
                     
                     {/* <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
                         activeKey={active} onSelect={this.onSelect}>
