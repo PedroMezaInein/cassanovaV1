@@ -22,39 +22,41 @@ class PestamosDevoluciones extends Component {
                                 </Nav.Link>
                             </Nav.Item>
                         </Nav>
-                        <Tab.Content className="col-md-7 mx-auto">
+                        <Tab.Content>
                             <Tab.Pane eventKey="first">
-                                <div className="d-flex flex-stack position-relative mt-8">
-                                    <div className="position-absolute h-100 w-4px bg-success rounded top-0 left-0"></div>
-                                    <div className="font-weight-bold ml-5 text-dark-50 py-1">
-                                        <div className="d-flex font-size-h6 justify-content-between">
-                                            <div>DEVOLUCIÓN: 5</div>
-                                            <div className="font-size-sm text-muted align-self-center">
-                                                RESPONSABLE:
-                                                <span className="text-primary"> CARINA JIMÉNEZ GARCÍA</span>
+                                <div className="col-md-10 row mx-auto d-flex justify-content-end">
+                                    <div className="d-flex flex-stack position-relative mt-8">
+                                        <div className="position-absolute h-100 w-4px bg-success rounded top-0 left-0"></div>
+                                        <div className="font-weight-bold ml-5 text-dark-50 py-1">
+                                            <div className="d-flex font-size-h6 justify-content-between">
+                                                <div>DEVOLUCIÓN: 5</div>
+                                                <div className="font-size-sm text-muted align-self-center">
+                                                    RESPONSABLE:
+                                                    <span className="text-primary"> CARINA JIMÉNEZ GARCÍA</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="font-size-h6 font-weight-bolder text-body my-2">BODEGA 1, CAJÓN 2</div>
-                                        <div className="text-gray-700 text-uppercase font-weight-light text-justify">
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam finibus mattis dui a suscipit.
-                                            Ut dictum nulla non justo molestie viverra. Etiam eget risus id erat hendrerit viverra.
+                                            <div className="font-size-h6 font-weight-bolder text-body my-2">BODEGA 1, CAJÓN 2</div>
+                                            <div className="text-gray-700 text-uppercase font-weight-light text-justify">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam finibus mattis dui a suscipit.
+                                                Ut dictum nulla non justo molestie viverra. Etiam eget risus id erat hendrerit viverra.
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="d-flex flex-stack position-relative mt-8">
-                                    <div className="position-absolute h-100 w-4px bg-danger rounded top-0 left-0"></div>
-                                    <div className="font-weight-bold ml-5 text-dark-50 py-1">
-                                        <div className="d-flex font-size-h6 justify-content-between">
-                                            <div>PRÉSTAMO: 1</div>
-                                            <div className="font-size-sm text-muted align-self-center">
-                                                RESPONSABLE:
-                                                <span className="text-primary"> CARINA JIMÉNEZ GARCÍA</span>
+                                    <div className="d-flex flex-stack position-relative mt-8 w-94">
+                                        <div className="position-absolute h-100 w-4px bg-danger rounded top-0 left-0"></div>
+                                        <div className="font-weight-bold ml-5 text-dark-50 py-1">
+                                            <div className="d-flex font-size-h6 justify-content-between">
+                                                <div>PRÉSTAMO: 1</div>
+                                                <div className="font-size-sm text-muted align-self-center">
+                                                    RESPONSABLE:
+                                                    <span className="text-primary"> CARINA JIMÉNEZ GARCÍA</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="font-size-h6 font-weight-bolder text-body my-2">CENTAURO - OBRA - CHURUBUSCO</div>
-                                        <div className="text-gray-700 text-uppercase font-weight-light text-justify">
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam finibus mattis dui a suscipit.
-                                            Ut dictum nulla non justo molestie viverra. Etiam eget risus id erat hendrerit viverra.
+                                            <div className="font-size-h6 font-weight-bolder text-body my-2">CENTAURO - OBRA - CHURUBUSCO</div>
+                                            <div className="text-gray-700 text-uppercase font-weight-light text-justify">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam finibus mattis dui a suscipit.
+                                                Ut dictum nulla non justo molestie viverra. Etiam eget risus id erat hendrerit viverra.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
