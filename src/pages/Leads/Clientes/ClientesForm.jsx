@@ -170,19 +170,11 @@ class ClientesForm extends Component {
                     asentamientos.forEach((element) => {
                         aux.push({ name: element.nombre.toString().toUpperCase(), value: element.nombre.toString().toUpperCase() })
                     })
-                    options['colonias'] = aux
-                    this.setState({
-                        ...this.state,
-                        form,
-                        options
-                    })
+                    form['colonias'] = aux
+                    this.setState({ ...this.state, form, options })
                 }
-            },
-            (error) => {
-            }
-        ).catch((error) => {
-            console.log('error catch', error)
-        })
+            }, (error) => { }
+        ).catch((error) => { console.log('error catch', error) })
     }
     render() {
         const { form, formeditado, estado, municipio, colonias, title } = this.state
