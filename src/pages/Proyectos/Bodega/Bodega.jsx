@@ -74,10 +74,10 @@ class Bodega extends Component {
             history.push('/')
     }
 
-    async getOptionsAxios() {
+    getOptionsAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { empresas, proyectos, partidas, unidades } = response.data
@@ -86,15 +86,28 @@ class Bodega extends Component {
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
-                this.setState({
-                    ...this.state,
-                    options,
-                    form
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, options, form })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    patchBodega = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v1/proyectos/bodegas/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El registro de bodega fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -203,26 +216,6 @@ class Bodega extends Component {
             }
         })
         return form
-    }
-
-    patchBodega = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = form[tipo]
-        waitAlert()
-        await axios.put(`${URL_DEV}v1/proyectos/bodegas/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { key } = this.state
-                if (key === 'materiales') { this.getMateriales() }
-                if (key === 'herramientas') { this.getHerramientas() }
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El registro de bodega fue editado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
     }
     
     setOptions = (data, tipo) => {
