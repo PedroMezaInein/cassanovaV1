@@ -480,18 +480,13 @@ class Bodega extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { formPrestamos, bodega } = this.state
-        await axios.post(URL_DEV + 'proyectos/bodega/' + bodega.id + '/prestamo', formPrestamos, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo`, formPrestamos, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { herramienta } = response.data
+                const { bodega } = response.data
                 const { key } = this.state
                 if (key === 'materiales') { this.getMateriales() }
                 if (key === 'herramientas') { this.getHerramientas() }
-                this.setState({
-                    ...this.state,
-                    active: 'historial',
-                    bodega: herramienta,
-                    formPrestamos
-                })
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, formPrestamos })
                 doneAlert(`Prestamo agregado con éxito`)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -578,16 +573,10 @@ class Bodega extends Component {
                         <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
                             only_icon = "flaticon-bag icon-lg mr-3 px-0" text = 'AGREGAR PRÉSTAMO' />
                     </div>
-                    <div className={!this.state.showForm ? 'd-none' : ''}>
-                        <FormPrestamos
-                            form={formPrestamos}
-                            options={options}
-                            onChange={this.onChangePrestamo}
-                            onSubmit={this.onSubmitPrestamo}
-                        />
+                    <div className = { !this.state.showForm ? 'd-none' : '' } >
+                        <FormPrestamos form = { formPrestamos } options = { options } onChange = { this.onChangePrestamo } onSubmit = { this.onSubmitPrestamo } />
                     </div>
 
-                    
                     {/* <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
                         activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="historial" title="Historial de ubicación">
