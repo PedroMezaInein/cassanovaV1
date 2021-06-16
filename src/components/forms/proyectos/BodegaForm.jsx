@@ -33,7 +33,7 @@ class BodegaForm extends Component {
                     }
                     {...props} >
                     <div className="form-group row form-group-marginless">
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <Input
                                 requirevalidation={1}
                                 formeditado={formeditado}
@@ -43,24 +43,10 @@ class BodegaForm extends Component {
                                 type="text"
                                 placeholder={`NOMBRE ${tipo==='materiales'?'DEL MATERIAL':'DE LA HERRAMIENTA'}`}
                                 iconclass="fas fa-toolbox"
-                                messageinc="Incorrecto. Ingresa el nombre de la herramienta."
+                                messageinc="Ingresa el nombre de la herramienta."
                             />
                         </div>
-                        <div className="col-md-6">
-                            <SelectSearch
-                                options={options.proyectos}
-                                placeholder="SELECCIONA EL PROYECTO"
-                                name="proyecto"
-                                value={form.proyecto}
-                                onChange={this.updateProyecto}
-                                iconclass="fas fa-layer-group"
-                                formeditado={formeditado}
-                            />
-                        </div>
-                    </div>
-                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                    <div className="form-group row form-group-marginless">
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <SelectSearch
                                 options={options.partidas}
                                 placeholder="SELECCIONA LA PARTIDA"
@@ -69,10 +55,10 @@ class BodegaForm extends Component {
                                 onChange={this.updatePartida}
                                 iconclass="fas fa-layer-group"
                                 formeditado={formeditado}
-                                messageinc="Incorrecto. Selecciona la partida."
+                                messageinc="Selecciona la partida."
                             />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <SelectSearch
                                 formeditado={formeditado}
                                 options={options.unidades}
@@ -81,10 +67,10 @@ class BodegaForm extends Component {
                                 value={form.unidad}
                                 onChange={this.updateUnidades}
                                 iconclass={" fas fa-weight-hanging"}
-                                messageinc="Incorrecto. Selecciona la unidad"
+                                messageinc="Selecciona la unidad"
                             />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-2">
                             <InputNumber
                                 requirevalidation = { 1 }
                                 formeditado = { formeditado }
@@ -93,9 +79,9 @@ class BodegaForm extends Component {
                                 value = { form.cantidad }
                                 type = "text"
                                 placeholder = "CANTIDAD"
-                                iconclass={"fas fa-ruler-combined"}
+                                iconclass="flaticon2-add-square"
                                 thousandseparator={true}
-                                messageinc = "Incorrecto. Ingresa la cantidad."
+                                messageinc = "Ingresa la cantidad."
                             />
                         </div>
                     </div>
@@ -110,12 +96,12 @@ class BodegaForm extends Component {
                                 name='ubicacion'
                                 value={form.ubicacion}
                                 onChange={onChange}
-                                messageinc="Incorrecto. Ingresa la descripción."
+                                messageinc="Ingresa la descripción."
                             />
                         </div>
                     </div>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
-                    <div className="form-group row form-group-marginless">
+                    <div className="form-group row form-group-marginless justify-content-center">
                         <div className="col-md-12">
                             <Input
                                 requirevalidation={0}
@@ -127,18 +113,20 @@ class BodegaForm extends Component {
                                 value={form.descripcion}
                                 onChange={onChange}
                                 style={{ paddingLeft: "10px" }}
-                                messageinc="Incorrecto. Ingresa la descripción."
+                                messageinc="Ingresa la descripción."
                             />
                         </div>
                     </div>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
-                    <div className="col-md-12 pb-5 mt-8">
-                        <ItemSlider
-                            items={form.adjuntos.fotografia.files}
-                            item='fotografia'
-                            handleChange={handleChange}
-                            deleteFile={deleteFile}
-                        />
+                    <div className="form-group row form-group-marginless justify-content-center">
+                        <div className="col-md-6 pb-5 mt-8">
+                            <ItemSlider
+                                items={form.adjuntos.fotografia.files}
+                                item='fotografia'
+                                handleChange={handleChange}
+                                deleteFile={deleteFile}
+                            />
+                        </div>
                     </div>
                     <div className="card-footer py-3 pr-1">
                         <div className="row mx-0">
