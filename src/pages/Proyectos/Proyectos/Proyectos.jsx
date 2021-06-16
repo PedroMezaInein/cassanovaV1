@@ -24,7 +24,7 @@ import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
 import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
-import { setFormHeader, setSingleHeaderJson } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
 import TableForModals from '../../../components/tables/TableForModals'
 const MySwal = withReactContent(Swal)
@@ -1709,6 +1709,27 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                             ANCHOR Delete nota                             */
+    /* -------------------------------------------------------------------------- */
+    async deleteNotaAxios(nota) {
+        const { access_token } = this.props.authUser
+        const { proyecto } = this.state
+        await axios.delete(`${URL_DEV}v1/proyectos/nota-bitacora/${nota.id}?proyecto=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { proyecto } = response.data
+                const { data } = this.state
+                data.notas = proyecto.notas
+                this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     clearFormBitacora = () => {
         const { formBitacora } = this.state
         let aux = Object.keys(formBitacora)
@@ -1785,29 +1806,6 @@ class Proyectos extends Component {
     }
     openModalDeleteNota = nota => {
         deleteAlert(`¿DESEAS ELIMINAR LA NOTA ${this.cerosNota(nota.numero_nota)}?`, '', () => this.deleteNotaAxios(nota))
-    }
-    async deleteNotaAxios(nota) {
-        const { access_token } = this.props.authUser
-        const { proyecto } = this.state
-        await axios.delete(URL_DEV + 'proyectos/' + proyecto.id + '/nota-bitacora/' + nota.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { proyecto } = response.data
-                const { data } = this.state
-                data.notas = proyecto.notas
-                this.setState({
-                    ...this.state,
-                    data,
-                    notas: this.setNotas(proyecto.notas)
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
     }
     render() {
         const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead,
@@ -2030,33 +2028,18 @@ class Proyectos extends Component {
                     <Tabs defaultActiveKey = "formulario_bitacora" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
                         <Tab eventKey = "formulario_bitacora" title = "Formulario avance">
                             <div className="col-md-11 mx-auto px-0">
-                                <NotaBitacoraForm
-                                    options={options}
-                                    form={formBitacora}
-                                    onChange={this.onChangeBitacora}
-                                    handleChange={this.handleChangeAdjB}
-                                    // deleteFile={this.deleteFile}
-                                    onSubmit = { (e) => {this.onSubmitNotaBitacora(e)} }
-                                    proyecto={proyecto}
-                                />
+                                <NotaBitacoraForm options = { options } form = { formBitacora } onChange = { this.onChangeBitacora }
+                                    handleChange = { this.handleChangeAdjB } onSubmit = { (e) => {this.onSubmitNotaBitacora(e)} }
+                                    proyecto = { proyecto } />
                             </div>
                         </Tab>
                         {
                             data.notas.length > 0 &&
                             <Tab eventKey = "notas" title = "Historial de notas">
                                 <div>
-                                    <TableForModals
-                                        columns={NOTAS_COLUMNS}
-                                        data={notas}
-                                        hideSelector={true}
-                                        mostrar_acciones={true}
-                                        elements={data.notas}
-                                        actions={
-                                            {
-                                                'delete': { function: this.openModalDeleteNota },
-                                            }
-                                        }
-                                    />
+                                    <TableForModals columns = { NOTAS_COLUMNS } data = { notas } hideSelector = { true }
+                                        mostrar_acciones = { true } elements = { data.notas }
+                                        actions = { { 'delete': { function: this.openModalDeleteNota } } } />
                                 </div>
                             </Tab>
                         }
