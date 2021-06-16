@@ -333,6 +333,7 @@ class Bodega extends Component {
             ...this.state,
             bodega: bodega,
             modalPrestamo: true,
+            showForm: bodega.prestamos.length ? 0: 1
             // data,
             // ubicaciones: this.setUbicaciones(bodega.ubicaciones)
         })
@@ -569,10 +570,20 @@ class Bodega extends Component {
                 </Modal>
                 
                 <Modal size="xl" title="Préstamos" show={modalPrestamo} handleClose={this.handleClosePrestamo} >
-                    <div className="d-flex justify-content-end mt-5">
-                        <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
-                            only_icon = "flaticon-bag icon-lg mr-3 px-0" text = 'AGREGAR PRÉSTAMO' />
-                    </div>
+                    {
+                        bodega ?
+                            bodega.prestamos ?
+                                bodega.prestamos.length 
+                                    ?
+                                        <div className="d-flex justify-content-end mt-5">
+                                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
+                                                only_icon = "flaticon-bag icon-lg mr-3 px-0" text = 'AGREGAR PRÉSTAMO' />
+                                        </div>
+                                : <></>
+                            : <></>
+                        : <></>
+                    }
+                    
                     <div className = { !this.state.showForm ? 'd-none' : '' } >
                         <FormPrestamos form = { formPrestamos } options = { options } onChange = { this.onChangePrestamo } onSubmit = { this.onSubmitPrestamo } />
                     </div>
