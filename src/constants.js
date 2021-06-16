@@ -666,6 +666,10 @@ export const BODEGA_COLUMNS = [
         customRender: true
     },
     {
+        Header: 'Cantidad',
+        accessor: 'cantidad'
+    },
+    {
         Header: 'Ubicación',
         accessor: 'ubicacion',
         customRender: true

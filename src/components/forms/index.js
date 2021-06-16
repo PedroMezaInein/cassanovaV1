@@ -63,7 +63,7 @@ import accordionEstadosResultados from './reportes/AccordionEstadosResultados'
 import tablaEstadosResultados from './reportes/TablaEstadosResultados'
 import tablaReportesDepartamento from './reportes/TablaReportesDepartamento'
 import headersTotales from './reportes/HeadersTotales'
-import ubicacionHerramientaForm from './proyectos/UbicacionHerramientaForm'
+import formPrestamos from './proyectos/FormPrestamos'
 import documentosForm from './administracion/DocumentosForm'
 import imssForm from './recursoshumanos/ImssForm'
 import prestamosForm from './recursoshumanos/PrestamosForm'
@@ -175,7 +175,7 @@ export const TablaEstadosResultados = tablaEstadosResultados
 export const TablaReportesDepartamento = tablaReportesDepartamento
 export const HeadersTotales = headersTotales
 export const BodegaForm = bodegaForm
-export const UbicacionHerramientaForm = ubicacionHerramientaForm
+export const FormPrestamos = formPrestamos
 export const DocumentosForm = documentosForm
 export const ImssForm = imssForm
 export const PrestamosForm = prestamosForm

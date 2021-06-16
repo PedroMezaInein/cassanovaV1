@@ -4,15 +4,14 @@ import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { URL_DEV, BODEGA_COLUMNS, UBICACIONES_BODEGA_COLUMNS } from '../../../constants'
+import { URL_DEV, BODEGA_COLUMNS } from '../../../constants'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
-import { setDateTable, setTextTable, setTextTableReactDom, setOptions  } from '../../../functions/setters'
+import { setTextTableCenter, setTextTableReactDom, setOptions  } from '../../../functions/setters'
 import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
-import { Button, InputNumberGray, InputGray } from '../../../components/form-components'
-import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm'
+import { Button, InputGray } from '../../../components/form-components'
+import FormPrestamos from '../../../components/forms/proyectos/FormPrestamos'
 import { Tab, Tabs } from 'react-bootstrap'
-import TableForModals from '../../../components/tables/TableForModals'
 import { BodegaCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
@@ -23,16 +22,12 @@ class Bodega extends Component {
     state = {
         modalDelete: false,
         modalAdjuntos: false,
-        modalUbicacion: false,
+        modalPrestamo: false,
         modalDeleteUbicacion: false,
         modalSee: false,
         active: 'historial',
         bodega: '',
         form: {
-            fecha: new Date(),
-            comentario: '',
-            // empresa: '',
-            // fechaCompra: new Date(),
             partida:'',
             proyecto: '',
             unidad:'',
@@ -46,19 +41,28 @@ class Bodega extends Component {
                     files: []
                 },
             },
-            ubicacion:''
+            ubicacion:'',
+        },
+        formPrestamos:{
+            fecha: new Date(),
+            cantidad:'',
+            responsble:'',
+            proyecto: '',
+            comentario: '',
+            ubicacion:'',
         },
         options: {
             partidas:[],
             proyectos: [],
             unidades:[]
         },
-        data: {
-            ubicaciones: []
-        },
-        ubicaciones: [],
-        ubicacion: '',
+        // data: {
+        //     ubicaciones: []
+        // },
+        // ubicaciones: [],
+        // ubicacion: '',
         key: 'materiales',
+        showForm: false
     }
     
     componentDidMount() {
@@ -109,7 +113,7 @@ class Bodega extends Component {
                 nombre: setTextTableReactDom(bodega.nombre, this.doubleClick, bodega, 'nombre', 'text-center'),
                 partida: setTextTableReactDom(bodega.partida ? bodega.partida.nombre:'', this.doubleClick, bodega, 'partida', 'text-center'),
                 unidad: setTextTableReactDom(bodega.unidad ? bodega.unidad.nombre:'', this.doubleClick, bodega, 'unidad', 'text-center'),
-                cantidad: setTextTableReactDom(bodega.cantidad, this.doubleClick, bodega, 'cantidad', 'text-center'),
+                cantidad: renderToString(setTextTableCenter(bodega.cantidad)),
                 ubicacion: setTextTableReactDom(bodega.ubicacion !== null ? bodega.ubicacion :'', this.doubleClick, bodega, 'ubicacion', 'text-justify'),
                 descripcion: setTextTableReactDom(bodega.descripcion !== null ? bodega.descripcion :'', this.doubleClick, bodega, 'descripcion', 'text-justify'),
                 id: bodega.id
@@ -122,20 +126,12 @@ class Bodega extends Component {
     renderInputSwal = ( data, tipo, form ) => {
         switch(tipo){
             case 'partida':
-            case 'proyecto':
             case 'unidad':
                 return(
                     <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} withtaglabel = { 0 } withtextlabel = { 0 } 
                         placeholder={`SELECCIONA ${tipo==='proyecto' ? 'EL PROYECTO' : 'LA ' + tipo.toUpperCase() }`}/>
-                )
-            case 'cantidad':
-                return(
-                    <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                        requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } type="text"
-                        onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } customlabel="d-none"
-                    />
                 )
             case  'descripcion':
                 return(
@@ -230,8 +226,6 @@ class Bodega extends Component {
         switch(tipo){
             case 'partida':
                 return options.partidas
-            case 'proyecto':
-                return options.proyectos
             case 'unidad':
                 return options.unidades
             default: return []
@@ -260,21 +254,21 @@ class Bodega extends Component {
                 btnclass: 'primary',
                 iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+                tooltip: { id: 'see', text: 'Mostrar' },
             },
             {
                 text: 'Adjuntos',
                 btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+                tooltip: { id: 'adjuntos', text: 'Adjuntos' }
             },
             {
-                text: 'Historial de ubicaciones',
+                text: 'Préstamos',
                 btnclass: 'dark',
-                iconclass: 'flaticon-calendar',
-                action: 'ubicacion',
-                tooltip: { id: 'ubicacion', text: 'Ubicacion', type: 'error' }
+                iconclass: 'flaticon-bag',
+                action: 'prestamos',
+                tooltip: { id: 'prestamos', text: 'Préstamos' }
             }
         )
         return aux
@@ -310,13 +304,19 @@ class Bodega extends Component {
         return aux
     } */
 
-    onChange = e => {
+    onChangePrestamo = e => {
         const { value, name } = e.target
-        const { form } = this.state
-        form[name] = value
-        this.setState({ ...this.state, form })
+        const { formPrestamos } = this.state
+        formPrestamos[name] = value
+        switch (name) {
+            case 'cantidad':
+                formPrestamos[name] = value.replace(/[,]/gi, '')
+                break;
+            default:
+                break;
+        }
+        this.setState({ ...this.state, formPrestamos })
     }
-
     changePageEdit = (bodega) => {
         const { key } = this.state
         const { history } = this.props
@@ -333,17 +333,17 @@ class Bodega extends Component {
         this.setState({ ...this.state, bodega: bodega, modalAdjuntos: true, form })
     }
 
-    /* openModalUbicacion = (bodega) => {
-        const { data } = this.state
-        data.ubicaciones = bodega.ubicaciones
+    openModalPrestamo = (bodega) => {
+        // const { data } = this.state
+        // data.ubicaciones = bodega.ubicaciones
         this.setState({
             ...this.state,
             bodega: bodega,
-            modalUbicacion: true,
-            data,
-            ubicaciones: this.setUbicaciones(bodega.ubicaciones)
+            modalPrestamo: true,
+            // data,
+            // ubicaciones: this.setUbicaciones(bodega.ubicaciones)
         })
-    } */
+    }
 
     /* openModalDeleteUbicacion = ubicacion => {
         this.setState({ ...this.state, modalDeleteUbicacion: true, ubicacion: ubicacion })
@@ -357,7 +357,7 @@ class Bodega extends Component {
         this.setState({ ...this.state, modalAdjuntos: false, bodega: '', form })
     }
 
-    /* handleCloseUbicacion = () => { this.setState({ ...this.state, bodega: '', modalUbicacion: false }) } */
+    handleClosePrestamo = () => { this.setState({ ...this.state, bodega: '', modalPrestamo: false }) }
 
     /* handleCloseDeleteUbicacion = () => { this.setState({ ...this.state, modalDeleteUbicacion: false, ubicacion: '' }) } */
 
@@ -386,11 +386,11 @@ class Bodega extends Component {
         this.setState({ ...this.state, active: value, form })
     } */
 
-    /* onSubmit = e => {
+    onSubmitPrestamo = e => {
         e.preventDefault()
         waitAlert()
-        this.sendUbicacionAxios()
-    } */
+        this.sendPrestamoAxios()
+    }
 
     deleteFile = element => { deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id)) }
 
@@ -483,41 +483,29 @@ class Bodega extends Component {
         })
     }
     
-    /* sendUbicacionAxios = async() => {
+    sendPrestamoAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, bodega } = this.state
-        await axios.post(URL_DEV + 'herramientas/' + bodega.id + '/ubicacion', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { formPrestamos, bodega } = this.state
+        await axios.post(URL_DEV + 'proyectos/bodega/' + bodega.id + '/prestamo', formPrestamos, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
-                let { form } = this.state
-                const { data } = this.state
                 const { key } = this.state
-                if (key === 'materiales') {
-                    this.getMateriales()
-                }
-                if (key === 'herramientas') {
-                    this.getHerramientas()
-                }
-                form.fecha = new Date()
-                form.ubicacion = ''
-                form.comentario = ''
-                data.ubicaciones = herramienta.ubicaciones
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
                 this.setState({
                     ...this.state,
                     active: 'historial',
                     bodega: herramienta,
-                    form,
-                    data,
-                    ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
+                    formPrestamos
                 })
-                doneAlert(`${key === 'materiales'?'Material actualizado':'Herramienta actualizada'} con éxito`)
+                doneAlert(`Prestamo agregado con éxito`)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    } */
+    }
 
     async getMateriales() { $('#kt_datatable_materiales').DataTable().ajax.reload(); }
 
@@ -528,9 +516,15 @@ class Bodega extends Component {
         if (value === 'herramientas') { this.getHerramientas() }
         this.setState({ ...this.state, key: value })
     }
-
+    mostrarFormulario() {
+        const { showForm } = this.state
+        this.setState({
+            ...this.state,
+            showForm: !showForm
+        })
+    }
     render() {
-        const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key } = this.state
+        const { modalDelete, modalAdjuntos, modalPrestamo, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key, formPrestamos, options } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
 
@@ -542,7 +536,7 @@ class Bodega extends Component {
                                     'edit': { function: this.changePageEdit },
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
-                                    'ubicacion': { function: this.openModalUbicacion },
+                                    'prestamos': { function: this.openModalPrestamo },
                                     'see': { function: this.openModalSee }
                             } } accessToken = { this.props.authUser.access_token } setter = { this.setBodega }
                             urlRender = { `${URL_DEV}v1/proyectos/bodegas?tipo=material` } idTable = 'kt_datatable_materiales' cardTable = 'cardTable_materiales'
@@ -556,7 +550,7 @@ class Bodega extends Component {
                                     'edit': { function: this.changePageEdit },
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
-                                    'ubicacion': { function: this.openModalUbicacion },
+                                    'prestamos': { function: this.openModalPrestamo },
                                     'see': { function: this.openModalSee }
                             } }
                             urlRender = { `${URL_DEV}v1/proyectos/bodegas?tipo=herramienta` } idTable = 'kt_datatable_herramientas'
@@ -586,8 +580,22 @@ class Bodega extends Component {
                     </div>
                 </Modal>
                 
-                {/* <Modal size="xl" title="Historial de ubicaciones" show={modalUbicacion} handleClose={this.handleCloseUbicacion} >
-                    <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
+                <Modal size="xl" title="Préstamos" show={modalPrestamo} handleClose={this.handleClosePrestamo} >
+                    <div className="d-flex justify-content-end mt-5">
+                        <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
+                            only_icon = "flaticon-bag icon-lg mr-3 px-0" text = 'AGREGAR PRÉSTAMO' />
+                    </div>
+                    <div className={!this.state.showForm ? 'd-none' : ''}>
+                        <FormPrestamos
+                            form={formPrestamos}
+                            options={options}
+                            onChange={this.onChangePrestamo}
+                            onSubmit={this.onSubmitPrestamo}
+                        />
+                    </div>
+
+                    
+                    {/* <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
                         activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="historial" title="Historial de ubicación">
                             <TableForModals
@@ -604,14 +612,10 @@ class Bodega extends Component {
                             />
                         </Tab>
                         <Tab eventKey="nuevo" title="Nueva ubicación">
-                            <UbicacionHerramientaForm
-                                form={form}
-                                onChange={this.onChange}
-                                onSubmit={this.onSubmit}
-                            />
+                                
                         </Tab>
-                    </Tabs>
-                </Modal> */}
+                    </Tabs> */}
+                </Modal>
                 {/* <ModalDelete
                     title='¿Estás seguro que deseas eliminar la ubicación?'
                     show={modalDeleteUbicacion}

@@ -79,7 +79,7 @@ class BodegaForm extends Component {
                                 value = { form.cantidad }
                                 type = "text"
                                 placeholder = "CANTIDAD"
-                                iconclass={"fas fa-ruler-combined"}
+                                iconclass="flaticon2-add-square"
                                 thousandseparator={true}
                                 messageinc = "Ingresa la cantidad."
                             />
