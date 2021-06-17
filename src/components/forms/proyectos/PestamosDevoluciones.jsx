@@ -132,9 +132,11 @@ class PestamosDevoluciones extends Component {
                                                             <div className="font-weight-bold ml-5 text-dark-50 py-1 w-100">
                                                                 <div className="d-flex font-size-h6 justify-content-between">
                                                                     <div>DEVOLUCIÓN: {devolucion.cantidad} </div>
-                                                                    <div className="font-size-sm text-muted align-self-center">
-                                                                        RESPONSABLE:
-                                                                        <span className="text-primary"> {devolucion.responsable}</span>
+                                                                    <div>
+                                                                        <div className="font-size-sm text-muted align-self-center">
+                                                                            RESPONSABLE:
+                                                                            <span className="text-primary"> {devolucion.responsable}</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                                 <div className="font-size-h6 font-weight-bolder text-body my-2"> {setFechaTexto(devolucion.fecha)} </div>
