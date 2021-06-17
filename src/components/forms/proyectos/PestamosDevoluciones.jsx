@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import { validateAlert } from '../../../functions/alert';
 import { Tab, Nav, OverlayTrigger, Tooltip, Row, Col, Form } from 'react-bootstrap';
-import { InputGray, CalendarDay, Button, InputNumberGray, SelectSearch } from '../../form-components'
+import { InputGray, CalendarDay, Button, InputNumberGray } from '../../form-components'
+import { setDiaMesTexto } from '../../../functions/functions';
 
 const NavItem = children => {
-    const { prestamo: {id, cantidad, sumDevoluciones, proyecto}, onSelect } = children
+    const { prestamo: { id, cantidad, sumDevoluciones, proyecto, fecha }, onSelect } = children
     return (
         <OverlayTrigger overlay = { <Tooltip>{proyecto.nombre}</Tooltip> } >
             <Nav.Item className = 'mr-1' onClick = { (e) => { e.preventDefault(); onSelect(id) } }>
                 <Nav.Link eventKey = { id } className="nav-link btn btn-hover-light-primary d-flex flex-column flex-center border-radius-21px min-w-60px mr-2 py-4 px-3 ">
-                    <span className="opacity-50 font-size-sm font-weight-bold text-primary">16 JUN<span className="d-block">2021</span></span>
+                    <span className="opacity-50 font-size-sm font-weight-bold text-primary">
+                        { setDiaMesTexto(fecha) }
+                        <span className="d-block">{ new Date(fecha).getFullYear()}</span>
+                    </span>
                     <span className="font-size-lg font-weight-bolder text-primary">{ cantidad } / { sumDevoluciones } </span>
                 </Nav.Link>
             </Nav.Item>
