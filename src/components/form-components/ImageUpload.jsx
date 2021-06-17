@@ -38,12 +38,15 @@ class ImageUpload extends React.Component {
     };
 
     async makeClientCrop(crop) {
+        const { onChange } = this.props
         if (this.imageRef && crop.width && crop.height) {
             const croppedImageUrl = await this.getCroppedImg(
                 this.imageRef,
                 crop,
                 "newFile.jpeg"
             );
+            console.log('cropped', croppedImageUrl)
+            onChange({ target: { name: 'avatar', value: croppedImageUrl } })
             this.setState({ croppedImageUrl });
         }
     }
@@ -69,26 +72,36 @@ class ImageUpload extends React.Component {
         );
 
         return new Promise((resolve, reject) => {
+            const { src } = this.state
             canvas.toBlob(blob => {
                 if (!blob) {
                     console.error("Canvas is empty");
                     return;
                 }
-                blob.name = fileName;
-                window.URL.revokeObjectURL(this.fileUrl);
-                this.fileUrl = window.URL.createObjectURL(blob);
-                resolve(this.fileUrl);
+                /* blob.name = fileName; */
+                /* console.log('BLOB', blob)
+                console.log('filename', fileName)
+                console.log('src', src) */
+                const reader = new FileReader();
+                reader.readAsDataURL(blob); 
+                reader.onloadend = function() {
+                    var base64data = reader.result;                
+                    console.log(base64data, 'base64');
+                    resolve(base64data);
+                }
+                /* window.URL.revokeObjectURL(this.fileUrl); */
+                /* this.fileUrl = window.URL.createObjectURL(blob); */
+                /* console.log(this.fileUrl, 'FILE URL') */
+                
             }, "image/jpeg");
         });
     }
 
     render() {
         const { crop, croppedImageUrl, src } = this.state;
-        console.log(croppedImageUrl, 'croppedImageUrl')
-
         return (
             <div>
-                <div className="App">
+                <div>
                     <div>
                         <input type="file" onChange={this.onSelectFile} />
                     </div>
@@ -113,15 +126,6 @@ class ImageUpload extends React.Component {
 }
 
 export default ImageUpload
-
-
-
-
-
-
-
-
-
 
 // import React from 'react'
 // import Avatar from 'react-avatar-edit'
@@ -168,8 +172,6 @@ export default ImageUpload
 //             elem.target.value = "";
 //         };
 //     }
-
-    
 
 //     render() {
 //         console.log(this.state.preview)
