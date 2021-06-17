@@ -2616,3 +2616,13 @@ table#calendario-proyectos tr:last-child td {
     flex-direction: column;
     align-items: flex-end;
 }
+
+.flex-direction-column{
+    flex-direction: column;
+}
+.border-dashed{
+    border-style: dashed!important;
+    border-color: #e4e6ef!important;
+    border-radius: .475rem!important;
+    border: 1px #eff2f5;
+}

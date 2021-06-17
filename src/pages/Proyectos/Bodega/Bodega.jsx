@@ -46,10 +46,16 @@ class Bodega extends Component {
         formPrestamos:{
             fecha: new Date(),
             cantidad:'',
-            responsble:'',
+            responsable:'',
             proyecto: '',
             comentario: '',
             ubicacion:'',
+        },
+        formDevoluciones:{
+            fecha: new Date(),
+            responsable:'',
+            comentario: '',
+            cantidad:'',
         },
         options: {
             partidas:[],
@@ -310,6 +316,19 @@ class Bodega extends Component {
         }
         this.setState({ ...this.state, formPrestamos })
     }
+    onChangeDevoluciones= e => {
+        const { value, name } = e.target
+        const { formDevoluciones } = this.state
+        formDevoluciones[name] = value
+        switch (name) {
+            case 'cantidad':
+                formDevoluciones[name] = value.replace(/[,]/gi, '')
+                break;
+            default:
+                break;
+        }
+        this.setState({ ...this.state, formDevoluciones })
+    }
     changePageEdit = (bodega) => {
         const { key } = this.state
         const { history } = this.props
@@ -351,7 +370,20 @@ class Bodega extends Component {
         this.setState({ ...this.state, modalAdjuntos: false, bodega: '', form })
     }
 
-    handleClosePrestamo = () => { this.setState({ ...this.state, bodega: '', modalPrestamo: false }) }
+    handleClosePrestamo = () => { 
+        const { formPrestamos, formDevoluciones } = this.state
+        formPrestamos.fecha = new Date()
+        formPrestamos.cantidad = ''
+        formPrestamos.responsable = ''
+        formPrestamos.proyecto = ''
+        formPrestamos.comentario = ''
+        formPrestamos.ubicacion = ''
+        formDevoluciones.fecha = new Date()
+        formDevoluciones.responsable = ''
+        formDevoluciones.comentario = ''
+        formDevoluciones.cantidad = ''
+        this.setState({ ...this.state, bodega: '', modalPrestamo: false, formDevoluciones, formPrestamos }) 
+    }
 
     /* handleCloseDeleteUbicacion = () => { this.setState({ ...this.state, modalDeleteUbicacion: false, ubicacion: '' }) } */
 
@@ -489,7 +521,7 @@ class Bodega extends Component {
                 if (key === 'herramientas') { this.getHerramientas() }
                 formPrestamos.fecha = new Date()
                 formPrestamos.cantidad = ''
-                formPrestamos.responsble = ''
+                formPrestamos.responsable = ''
                 formPrestamos.proyecto = ''
                 formPrestamos.comentario = ''
                 formPrestamos.ubicacion = ''
@@ -518,8 +550,36 @@ class Bodega extends Component {
             showForm: !showForm
         })
     }
+    onSubmitDevolucion = e => {
+        e.preventDefault()
+        waitAlert()
+        this.sendPrestamoAxios()
+    }
+
+    sendDevolucionAxios = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { formDevoluciones, bodega } = this.state
+        await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/devolucion`, formDevoluciones, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { bodega } = response.data
+                const { key, formDevoluciones } = this.state
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
+                formDevoluciones.fecha = new Date()
+                formDevoluciones.responsable = ''
+                formDevoluciones.comentario = ''
+                formDevoluciones.cantidad = ''
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, formDevoluciones })
+                doneAlert(`Prestamo agregado con éxito`)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { modalDelete, modalAdjuntos, modalPrestamo, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key, formPrestamos, options } = this.state
+        const { modalDelete, modalAdjuntos, modalPrestamo, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key, formPrestamos, options, formDevoluciones } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
 
@@ -592,7 +652,7 @@ class Bodega extends Component {
                     <div className = { !this.state.showForm ? 'd-none' : '' } >
                         <FormPrestamos form = { formPrestamos } options = { options } onChange = { this.onChangePrestamo } onSubmit = { this.onSubmitPrestamo } />
                     </div>
-                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } /> : <></> }
+                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } form={formDevoluciones} onChange = { this.onChangeDevoluciones } onSubmit = { this.onSubmitDevolucion }/> : <></> }
                     
                     {/* <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
                         activeKey={active} onSelect={this.onSelect}>

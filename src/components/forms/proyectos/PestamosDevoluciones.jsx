@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Tab, Nav, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { validateAlert } from '../../../functions/alert';
+import { Tab, Nav, OverlayTrigger, Tooltip, Row, Col, Form } from 'react-bootstrap';
+import { InputGray, CalendarDay, Button, InputNumberGray, SelectSearch } from '../../form-components'
 
 const NavItem = children => {
     const { prestamo: {id, cantidad, sumDevoluciones, proyecto}, onSelect } = children
@@ -17,7 +19,8 @@ const NavItem = children => {
 class PestamosDevoluciones extends Component {
 
     state = {
-        active: ''
+        active: '',
+        showForm:false
     }
 
     componentDidMount = () => {
@@ -30,9 +33,15 @@ class PestamosDevoluciones extends Component {
     onSelect = item => {
         this.setState({...this.state, active: item})
     }
-
+    mostrarFormulario() {
+        const { showForm } = this.state
+        this.setState({
+            ...this.state,
+            showForm: !showForm
+        })
+    }
     render() {
-        const { bodega } = this.props
+        const { bodega, form, onChange, onSubmit } = this.props
         const { active } = this.state
         return (
             <div>
@@ -126,9 +135,80 @@ class PestamosDevoluciones extends Component {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="d-flex w-94 p-3 mt-5">
-                                                        Formulario
-                                                    </div>
+                                                <div className="d-flex p-3 mt-5 w-94 flex-direction-column align-items-center">
+                                                    <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
+                                                        only_icon = "la la-reply icon-lg mr-3 px-0 text-success" text = 'AGREGAR DEVOLUCIÓN' />
+                                                    <Form
+                                                        onSubmit={
+                                                            (e) => {
+                                                                e.preventDefault();
+                                                                validateAlert(onSubmit, e, 'form-devolución')
+                                                            }
+                                                        }
+                                                    >
+                                                        <Row className={!this.state.showForm ? 'd-none' : 'row mx-0 col-md-12 border-dashed p-5 mt-5'}>
+                                                            <Col md="6" className="text-center align-self-center">
+                                                                <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                                    <label className="text-center font-weight-bolder">Fecha del préstamo</label>
+                                                                </div>
+                                                                <CalendarDay value={form.fecha} name='fecha' onChange={onChange} date={form.fecha} withformgroup={0} requirevalidation={1} />
+                                                            </Col>
+                                                            <Col md="6" className="align-self-center">
+                                                                <div className="row form-group-marginless row-paddingless">
+                                                                    <div className="col-md-12">
+                                                                        <InputGray
+                                                                            withtaglabel={1} withtextlabel={1} withplaceholder={1}
+                                                                            withicon={1} requirevalidation={1} withformgroup={0}
+                                                                            name="responsable"
+                                                                            value={form.responsable}
+                                                                            onChange={onChange}
+                                                                            type="text"
+                                                                            placeholder='NOMBRE DEL RESPONSABLE'
+                                                                            iconclass="fas fa-user"
+                                                                            messageinc="Ingresa el nombre del responsable."
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-md-12 separator separator-dashed mt-5 mb-1"></div>
+                                                                    <div className="col-md-12">
+                                                                        <InputNumberGray
+                                                                            formgroup="mb-0"
+                                                                            requirevalidation={1}
+                                                                            name="cantidad"
+                                                                            onChange={onChange}
+                                                                            value={form.cantidad}
+                                                                            type="text"
+                                                                            placeholder="CANTIDAD"
+                                                                            iconclass={"flaticon2-add-square"}
+                                                                            thousandseparator={true}
+                                                                            messageinc="Ingresa la cantidad."
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-md-12 separator separator-dashed mt-5 mb-1"></div>
+                                                                    <div className="col-md-12">
+                                                                        <InputGray
+                                                                            withtaglabel={1} withtextlabel={1} withplaceholder={1}
+                                                                            withicon={0} requirevalidation={0} withformgroup={0}
+                                                                            formeditado={0}
+                                                                            rows="3"
+                                                                            as="textarea"
+                                                                            placeholder="COMENTARIO"
+                                                                            name="comentario"
+                                                                            value={form.comentario}
+                                                                            onChange={onChange}
+                                                                            style={{ paddingLeft: "10px" }}
+                                                                            messageinc="Incorrecto. Ingresa tu comentario."
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </Col>
+                                                            <Col md="12" className="mt-6">
+                                                                <div className="card-footer px-0 pb-0 pt-4 text-center">
+                                                                    <Button icon='' text='ENVIAR' className="btn btn-light-success font-weight-bolder" onClick={(e) => { e.preventDefault(); onSubmit(e) }} />
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+                                                    </Form>
+                                                </div>
                                             </div>
                                         </Tab.Pane>
                                     </div>
