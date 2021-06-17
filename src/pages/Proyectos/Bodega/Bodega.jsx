@@ -589,13 +589,10 @@ class Bodega extends Component {
                             : <></>
                         : <></>
                     }
-                    
                     <div className = { !this.state.showForm ? 'd-none' : '' } >
                         <FormPrestamos form = { formPrestamos } options = { options } onChange = { this.onChangePrestamo } onSubmit = { this.onSubmitPrestamo } />
                     </div>
-                    <PestamosDevoluciones
-                    
-                    />
+                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } /> : <></> }
                     
                     {/* <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
                         activeKey={active} onSelect={this.onSelect}>
