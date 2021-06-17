@@ -2610,3 +2610,9 @@ table#calendario-proyectos tr:last-child td {
 .w-94{
     width: 94%;
 }
+
+.align-end{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
