@@ -132,9 +132,6 @@ class PestamosDevoluciones extends Component {
                                                     )
                                                 })
                                             }
-                                            <div className="d-flex w-94 p-3 mt-5">
-                                                Formulario
-                                            </div>
                                             <div className="d-flex p-3 mt-5 w-94 flex-direction-column align-items-center">
                                                 <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
                                                     only_icon = "la la-reply icon-lg mr-3 px-0 text-success" text = 'AGREGAR DEVOLUCIÓN' />
