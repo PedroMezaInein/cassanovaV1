@@ -24,6 +24,34 @@ class PestamosDevoluciones extends Component {
                         </Nav>
                         <Tab.Content>
                             <Tab.Pane eventKey="first">
+                                <div className="w-auto d-flex flex-column mx-auto mt-8">
+                                    <div className="bg-light p-4 rounded-xl flex-grow-1 align-self-center">
+                                        <div id="symbol-total-contactos">
+                                            <span>
+                                                <span className="symbol symbol-circle symbol-white symbol-30 flex-shrink-0 mr-2">
+                                                    <span className="symbol-label">
+                                                        <i className="flaticon2-check-mark text-success font-size-14px"></i>
+                                                    </span>
+                                                </span>
+                                                <span className="font-size-sm font-weight-bolder">
+                                                    <span className="font-size-lg">9</span>
+                                                    <span className="ml-2 font-weight-light">Disponibles</span>
+                                                </span>
+                                            </span>
+                                            <span className="ml-4">
+                                                <span className="symbol symbol-circle symbol-white symbol-30 flex-shrink-0 mr-2">
+                                                    <span className="symbol-label">
+                                                        <i className="flaticon2-cancel-music text-danger icon-nm"></i>
+                                                    </span>
+                                                </span>
+                                                <span className="font-size-sm font-weight-bolder">
+                                                    <span className="font-size-lg">0</span>
+                                                    <span className="ml-2 font-weight-light">PRÉSTAMOS</span>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div className="col-md-10 row mx-auto d-flex justify-content-end">
                                     <div className="d-flex flex-stack position-relative mt-8">
                                         <div className="position-absolute h-100 w-4px bg-success rounded top-0 left-0"></div>
