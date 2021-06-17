@@ -15,7 +15,6 @@ const NavItem = children => {
                         { setDiaMesTexto(fecha) }
                         <span className="d-block">{ new Date(fecha).getFullYear()}</span>
                     </span>
-                    {console.log(cantidad, sumDevoluciones)}
                     <span className = {`font-size-lg font-weight-bolder ${cantidad-sumDevoluciones > 0 ? 'text-primary' : 'text-info'}`}>
                         { cantidad } / { sumDevoluciones }
                     </span>
@@ -106,7 +105,6 @@ class PestamosDevoluciones extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* col-md-10 row mx-auto d-flex justify-content-end */}
                                         <div className="align-end">
                                             {/* ANCHOR PRESTAMOS */}
                                             <div className="d-flex flex-stack position-relative mt-8 w-100">
@@ -148,6 +146,7 @@ class PestamosDevoluciones extends Component {
                                                     )
                                                 })
                                             }
+                                            {/* ANCHOR FORMULARIO DEVOLUCIONES */}
                                             <div className="w-94 py-3 mt-5">
                                                 {
                                                     prestamo.cantidad > prestamo.sumDevoluciones ?
