@@ -18,6 +18,8 @@ import Swal from 'sweetalert2'
 import { SelectSearchGray } from '../../../components/form-components'
 import $ from "jquery";
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { toAbsoluteUrl } from "../../../functions/routers"
+import SVG from "react-inlinesvg";
 class Bodega extends Component {
     state = {
         modalDelete: false,
@@ -498,6 +500,34 @@ class Bodega extends Component {
             })
         }
     }
+    deletePrestamoAxios = async(prestamo) => {
+        const { bodega } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo/${prestamo.id}`, { headers: setSingleHeader(access_token)  }).then(
+            (response) => {
+                const { bodega } = response.data
+                this.setState({ ...this.state, active: 'historial', bodega: bodega })
+                doneAlert('Préstamo eliminado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    deleteDevolucionAxios = async(devolucion) => {
+        const { bodega } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/devolucion/${devolucion.id}`, { headers: setSingleHeader(access_token)  }).then(
+            (response) => {
+                const { bodega } = response.data
+                this.setState({ ...this.state, active: 'historial', bodega: bodega })
+                doneAlert('Devolución eliminado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { modalDelete, modalAdjuntos, modalPrestamo, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key, formPrestamos, options, formDevoluciones } = this.state
         return (
@@ -554,16 +584,26 @@ class Bodega extends Component {
                         }
                     </div>
                 </Modal>
-                <Modal size="xl" title="Préstamos" show={modalPrestamo} handleClose={this.handleClosePrestamo} >
+                <Modal size="xl" title={bodega?<span>Préstamo de<span className="text-primary"> {bodega.nombre}</span></span>:'Préstamo'} show={modalPrestamo} handleClose={this.handleClosePrestamo} >
                     {
                         bodega ?
                             bodega.prestamos ?
                                 bodega.prestamos.length  ?
                                     <div className="d-flex justify-content-between my-5">
-                                        DISPONIBLES: { bodega.cantidad }
+                                        <div className="d-flex align-items-center bg-light-success rounded px-3 py-2">
+                                            <span className="svg-icon svg-icon-success mr-1">
+                                                <span className="svg-icon svg-icon-lg">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Clipboard-check.svg')} />
+                                                </span>
+                                            </span>
+                                            <div className="d-flex font-weight-bolder text-dark-75 font-size-13px mr-2">
+                                                DISPONIBLES
+                                            </div>
+                                            <span className="font-weight-boldest text-success font-size-lg"><u>{bodega.cantidad}</u></span>
+                                        </div>
                                         {
-                                            bodega.cantidad  > 0 && 
-                                                <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
+                                            bodega.cantidad > 0 &&
+                                            <Button icon='' className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
                                                 only_icon = "flaticon-bag icon-lg mr-3 px-0" text = 'AGREGAR PRÉSTAMO' />
                                         }
                                     </div>
@@ -574,7 +614,7 @@ class Bodega extends Component {
                     <div className = { !this.state.showForm ? 'd-none' : '' } >
                         <FormPrestamos form = { formPrestamos } options = { options } onChange = { this.onChangePrestamo } onSubmit = { this.onSubmitPrestamo } />
                     </div>
-                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } form={formDevoluciones} onChange = { this.onChangeDevoluciones } 
+                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } form={formDevoluciones} onChange = { this.onChangeDevoluciones }  deletePrestamo={ this.deletePrestamoAxios } deleteDevolucion={ this.deleteDevolucionAxios }
                         onSubmit = { this.onSubmitDevolucion }/> : <></> }
                 </Modal>
                 <Modal size="lg" title={`Detalles ${key === 'materiales'?'del material':'de la herramienta'}`} show={modalSee} handleClose={this.handleCloseSee} >

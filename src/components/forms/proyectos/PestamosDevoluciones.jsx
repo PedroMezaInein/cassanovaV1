@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Tab, Nav, OverlayTrigger, Tooltip, Row, Col, Form } from 'react-bootstrap';
+import SVG from "react-inlinesvg";
+import { Tab, Nav, OverlayTrigger, Tooltip, Form } from 'react-bootstrap';
 import { setDiaMesTexto, setFechaTexto } from '../../../functions/functions';
-import { validateAlert } from '../../../functions/alert';
+import { validateAlert, deleteAlert } from '../../../functions/alert';
 import { InputGray, CalendarDay, Button, InputNumberGray } from '../../form-components'
 import moment from 'moment';
+import { toAbsoluteUrl } from "../../../functions/routers"
 
 const NavItem = children => {
     const { prestamo: { id, cantidad, sumDevoluciones, proyecto, fecha }, onSelect } = children
@@ -60,7 +62,7 @@ class PestamosDevoluciones extends Component {
     }
     
     render() {
-        const { bodega, form, onChange, onSubmit } = this.props
+        const { bodega, form, onChange, onSubmit, deletePrestamo, deleteDevolucion } = this.props
         const { active, showForm } = this.state
         return (
             <div>
@@ -83,7 +85,9 @@ class PestamosDevoluciones extends Component {
                                                     <span>
                                                         <span className="symbol symbol-circle symbol-white symbol-30 flex-shrink-0 mr-2">
                                                             <span className="symbol-label">
-                                                                <i className="flaticon2-cancel-music text-danger icon-nm"></i>
+                                                                <span className="svg-icon svg-icon-lg svg-icon-danger">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Sign-out.svg')} />
+                                                                </span>
                                                             </span>
                                                         </span>
                                                         <span className="font-size-sm font-weight-bolder">
@@ -94,7 +98,9 @@ class PestamosDevoluciones extends Component {
                                                     <span className="ml-4">
                                                         <span className="symbol symbol-circle symbol-white symbol-30 flex-shrink-0 mr-2">
                                                             <span className="symbol-label">
-                                                                <i className="flaticon2-check-mark text-success font-size-14px"></i>
+                                                                <span className="svg-icon svg-icon-lg svg-icon-success">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Sign-in.svg')} />
+                                                                </span>
                                                             </span>
                                                         </span>
                                                         <span className="font-size-sm font-weight-bolder">
@@ -122,6 +128,11 @@ class PestamosDevoluciones extends Component {
                                                         { prestamo.comentarios }
                                                     </div>
                                                 </div>
+                                                <div className="ml-2 d-flex justify-content-center">
+                                                    <a className="btn btn-sm btn-icon btn-hover-bg-light btn-hover-icon-danger" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL PRÉSTAMO?', '¡NO PODRÁS REVERTIR ESTO!', () => deletePrestamo(prestamo)) }}>
+                                                        <i className="la la-trash icon-2x pr-1"></i>
+                                                    </a>
+                                                </div>
                                             </div>
                                             {/* ANCHOR DEVOLUCIONES */}
                                             {
@@ -143,6 +154,11 @@ class PestamosDevoluciones extends Component {
                                                                 <div className="text-gray-700 text-uppercase font-weight-light text-justify">
                                                                     {devolucion.comentarios}
                                                                 </div>
+                                                            </div>
+                                                            <div className="ml-2 d-flex justify-content-center">
+                                                                <a className="btn btn-sm btn-icon btn-hover-bg-light btn-hover-icon-danger" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA DEVOLUCIÓN?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteDevolucion(devolucion)) }}>
+                                                                    <i className="la la-trash icon-2x pr-1"></i>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     )
