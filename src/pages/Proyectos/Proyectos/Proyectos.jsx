@@ -2097,11 +2097,108 @@ class Proyectos extends Component {
                         {
                             data.notas.length > 0 &&
                                 <Tab eventKey = "notas" title = "Historial de notas">
-                                    <div>
-                                        <TableForModals columns = { NOTAS_COLUMNS } data = { notas } hideSelector = { true }
-                                            mostrar_acciones = { true } elements = { data.notas }
-                                            actions = { { 'delete': { function: this.openModalDeleteNota } } } />
-                                    </div>
+                                    <table className="table table-responsive-lg table-vertical-center text-center w-100" id="esquemas">
+                                        <thead>
+                                            <tr className="bg-gray-200">
+                                                <th></th>
+                                                <th># Nota</th>
+                                                <th>Fecha</th>
+                                                <th>Proveedor</th>
+                                                <th>Tipo</th>
+                                                <th>Notas</th>
+                                                <th>Adjuntos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                data.notas.map((nota, index) => {
+                                                    return(
+                                                        <tr key = { index }>
+                                                            <td className = 'px-2'>
+                                                                <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger' 
+                                                                    onClick = { (e) => {e.preventDefault(); this.openModalDeleteNota(nota)}} >
+                                                                    <i className='flaticon2-rubbish-bin' />
+                                                                </button>
+                                                            </td>
+                                                            <td className = 'px-2'> { nota.numero_nota } </td>
+                                                            <td className = 'px-2'> { setDateTable(nota.fecha) } </td>
+                                                            <td className = 'px-2'> { nota.proveedor ? nota.proveedor.razon_social : '-' } </td>
+                                                            <td className = 'px-2'> { nota.tipo_nota } </td>
+                                                            <td className = 'px-2'> { nota.notas } </td>
+                                                            <td className = 'px-2'>
+                                                                {
+                                                                    nota.adjuntos.map((adjunto, key) => {
+                                                                        return(
+                                                                            <div key = { key } >
+                                                                                <a target = '_blank' href = { adjunto.url }>
+                                                                                    <i className="flaticon2-file mr-2"></i> {adjunto.name}
+                                                                                </a>
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                        {/* <tbody>
+                                            <tr>
+                                                <th scope="row" className="bg-gray-200">PRECIO DISEÑO</th>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_1 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_1)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_2 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_2)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_3 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_3)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" className="bg-gray-200">INCREMENTO</th>
+                                                <td>-</td>
+                                                <td className="px-1">
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText
+                                                            requirevalidation={0}
+                                                            name="incremento_esquema_2"
+                                                            onChange={onChange}
+                                                            value={form.incremento_esquema_2}
+                                                            prefix='%'
+                                                            identificador='incremento_esquema_2'
+                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td className="px-1">
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText
+                                                            requirevalidation={0}
+                                                            name="incremento_esquema_3"
+                                                            onChange={onChange}
+                                                            value={form.incremento_esquema_3}
+                                                            prefix='%'
+                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
+                                                        />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody> */}
+                                    </table>
                                 </Tab>
                         }
                     </Tabs>
