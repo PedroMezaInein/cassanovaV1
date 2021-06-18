@@ -246,7 +246,7 @@ class Calendario extends Component {
                 inicio = new Date(mes + '/' + dia + '/' + (año - 1))
             }
             empleado.vacaciones.forEach((vacacion) => {
-                if (vacacion.estatus !== 'Rechazadas') {
+                if (vacacion.estatus === 'En espera') {
                     let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
                     for(let i = 0; i < dias; i++){
                         let date = new Date(moment(vacacion.fecha_inicio).add(i, 'days'))
@@ -364,19 +364,19 @@ class Calendario extends Component {
                 let mes = ''
                 let dia = ''
                 let año = new Date().getFullYear();
-                empleados.map((empleado, key) => {
-                    mes = empleado.rfc.substr(6, 2);
-                    dia = empleado.rfc.substr(8, 2);
-                    for (let x = -5; x <= 5; x++) {
-                        aux.push({
-                            title: empleado.nombre,
-                            start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                            end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                            iconClass: 'fas fa-birthday-cake',
-                            containerClass: 'cumpleaños'
-                        })
-                    }
-                    return false
+                empleados.forEach((empleado) => {
+                    if(empleado.fecha_nacimiento)
+                        for (let x = -3; x <= 3; x++) {
+                            let fecha_nacimiento = new Date(empleado.fecha_nacimiento)
+                            fecha_nacimiento.setFullYear(new Date().getFullYear() + x)
+                            aux.push({
+                                title: empleado.nombre,
+                                start: fecha_nacimiento,
+                                end: fecha_nacimiento,
+                                iconClass: 'fas fa-birthday-cake',
+                                containerClass: 'cumpleaños'
+                            })
+                        }
                 })
                 vacaciones.map((vacacion) => {
                     if (vacacion.estatus === 'Aceptadas')
