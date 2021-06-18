@@ -120,18 +120,29 @@ class PestamosDevoluciones extends Component {
                                                         <div>PRÉSTAMO: {prestamo.cantidad}</div>
                                                         <div className="font-size-sm text-muted align-self-center">
                                                             RESPONSABLE:
-                                                            <span className="text-primary"> {prestamo.responsable}</span>
+                                                            <span className="text-primary"> {prestamo.responsable}</span> <br />
                                                         </div>
                                                     </div>
                                                     <div className="font-size-h6 font-weight-bolder text-body my-2">{prestamo.proyecto.nombre}</div>
                                                     <div className="text-gray-700 text-uppercase font-weight-light text-justify">
                                                         { prestamo.comentarios }
+                                                        <br />
+                                                        {
+                                                            bodega.tipo === 'material' && prestamo.terminado === 1 ?
+                                                            <div className="d-flex font-weight-bolder text-danger font-size-13px mr-2">
+                                                                MATERIAL AGOTADO
+                                                            </div>
+                                                            : <></>
+                                                        }
                                                     </div>
                                                 </div>
                                                 <div className="ml-2 d-flex justify-content-center">
-                                                    <a className="btn btn-sm btn-icon btn-hover-bg-light btn-hover-icon-danger" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL PRÉSTAMO?', '¡NO PODRÁS REVERTIR ESTO!', () => deletePrestamo(prestamo)) }}>
+                                                    
+                                                    <span className="btn btn-sm btn-icon btn-hover-bg-light btn-hover-icon-danger ml-3" 
+                                                        onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL PRÉSTAMO?', '¡NO PODRÁS REVERTIR ESTO!', 
+                                                            () => deletePrestamo(prestamo)) }}>
                                                         <i className="la la-trash icon-2x pr-1"></i>
-                                                    </a>
+                                                    </span>
                                                 </div>
                                             </div>
                                             {/* ANCHOR DEVOLUCIONES */}
@@ -167,11 +178,13 @@ class PestamosDevoluciones extends Component {
                                             {/* ANCHOR FORMULARIO DEVOLUCIONES */}
                                             <div className="w-94 py-3 mt-5">
                                                 {
-                                                    prestamo.cantidad > prestamo.sumDevoluciones ?
-                                                        <div className="text-left">
-                                                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" 
-                                                                onClick={() => { this.mostrarFormulario() }} only_icon = "la la-reply icon-lg mr-3 px-0 text-success" text = 'AGREGAR DEVOLUCIÓN' />
-                                                        </div>
+                                                    prestamo.terminado === 0 ?
+                                                        (prestamo.cantidad > prestamo.sumDevoluciones) ?
+                                                            <div className="text-left">
+                                                                <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" 
+                                                                    onClick={() => { this.mostrarFormulario() }} only_icon = "la la-reply icon-lg mr-3 px-0 text-success" text = 'AGREGAR DEVOLUCIÓN' />
+                                                            </div>
+                                                        : <> </>
                                                     : <> </>
                                                 }
                                                 <Form onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-devolución') } } >
@@ -188,7 +201,7 @@ class PestamosDevoluciones extends Component {
                                                                     <div className="d-flex justify-content-center">
                                                                         <div className="col-md-12">
                                                                             <RadioGroupGray
-                                                                                placeholder={`¿Hay en existencia?`}
+                                                                                placeholder={`¿Quedan en existencia?`}
                                                                                 name={'existencia'}
                                                                                 onChange={onChange}
                                                                                 options={
@@ -237,7 +250,7 @@ class PestamosDevoluciones extends Component {
                                                             </div>
                                                         </div>
                                                         {
-                                                            form.responsable !== '' && form.cantidad !== '' && form.existencia !== '' ?
+                                                            form.existencia === 'No' || (form.responsable !== '' && form.cantidad !== '' ) ?
                                                                 <div className="col-md-12 mt-6">
                                                                     <div className="card-footer px-0 pb-0 pt-4 text-center">
                                                                         <Button icon = '' text = 'ENVIAR' className = "btn btn-light-success font-weight-bolder" 
