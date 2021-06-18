@@ -27,6 +27,9 @@ import { v4 as uuidv4 } from "uuid";
 import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
 import TableForModals from '../../../components/tables/TableForModals'
+import { toAbsoluteUrl } from "../../../functions/routers"
+import SVG from "react-inlinesvg";
+
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
 class Proyectos extends Component {
@@ -2079,7 +2082,23 @@ class Proyectos extends Component {
                 <Modal size = 'xl' title = 'Nota de obra' show = { modalNotaObra } handleClose = { this.handleCloseNotaObra }>
                     <div className="row mx-0 my-3">
                         <div className="col-md-6">
-                            
+                            {
+                                proyecto.bitacora ? 
+                                    <div className = 'd-flex'>
+                                        <a className="d-flex align-items-center bg-light-success rounded px-3 py-2 text-hover"
+                                            href = { proyecto.bitacora } target = '_blank' rel="noopener noreferrer" >
+                                            <span className="svg-icon svg-icon-success mr-1">
+                                                <span className="svg-icon svg-icon-lg">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                </span>
+                                            </span>
+                                            <div className="d-flex font-weight-bolder text-dark-75 font-size-13px mr-2">
+                                                Bitácora
+                                            </div>
+                                        </a>
+                                    </div>
+                                : <></>
+                            }
                         </div>
                         <div className="col-md-6 text-center text-md-right">
                             <Button icon='' className = "btn p-3 btn-light-info" onClick = { this.generarBitacora }
