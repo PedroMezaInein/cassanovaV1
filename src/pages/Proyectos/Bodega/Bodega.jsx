@@ -58,6 +58,7 @@ class Bodega extends Component {
             responsable:'',
             comentario: '',
             cantidad:'',
+            existencia:''
         },
         options: {
             partidas:[],
@@ -317,7 +318,7 @@ class Bodega extends Component {
             ...this.state,
             bodega: bodega,
             modalPrestamo: true,
-            showForm: bodega.prestamos.length ? 0: 1
+            showForm: bodega.prestamos.length ? 0: 1,
         })
     }
 
@@ -341,6 +342,7 @@ class Bodega extends Component {
         formDevoluciones.responsable = ''
         formDevoluciones.comentario = ''
         formDevoluciones.cantidad = ''
+        formDevoluciones.existencia=''
         this.setState({ ...this.state, bodega: '', modalPrestamo: false, formDevoluciones, formPrestamos }) 
     }
 
@@ -491,6 +493,7 @@ class Bodega extends Component {
                     formDevoluciones.responsable = ''
                     formDevoluciones.comentario = ''
                     formDevoluciones.cantidad = ''
+                    formDevoluciones.existencia=''
                     this.setState({ ...this.state, active: 'historial', bodega: bodega, formDevoluciones })
                     doneAlert(`Devolución registrada con éxito`)
                 }, (error) => { printResponseErrorAlert(error) }
@@ -530,6 +533,7 @@ class Bodega extends Component {
     }
     render() {
         const { modalDelete, modalAdjuntos, modalPrestamo, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key, formPrestamos, options, formDevoluciones } = this.state
+        let tipo = key === 'herramientas' ? 'herramienta' : 'material'
         return (
             <Layout active={'proyectos'}  {...this.props}>
 
@@ -614,7 +618,7 @@ class Bodega extends Component {
                     <div className = { !this.state.showForm ? 'd-none' : '' } >
                         <FormPrestamos form = { formPrestamos } options = { options } onChange = { this.onChangePrestamo } onSubmit = { this.onSubmitPrestamo } />
                     </div>
-                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } form={formDevoluciones} onChange = { this.onChangeDevoluciones }  deletePrestamo={ this.deletePrestamoAxios } deleteDevolucion={ this.deleteDevolucionAxios }
+                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } form={formDevoluciones} onChange = { this.onChangeDevoluciones }  deletePrestamo={ this.deletePrestamoAxios } deleteDevolucion={ this.deleteDevolucionAxios } tipo={tipo}
                         onSubmit = { this.onSubmitDevolucion }/> : <></> }
                 </Modal>
                 <Modal size="lg" title={`Detalles ${key === 'materiales'?'del material':'de la herramienta'}`} show={modalSee} handleClose={this.handleCloseSee} >
