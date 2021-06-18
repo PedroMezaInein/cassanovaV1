@@ -2082,8 +2082,8 @@ class Proyectos extends Component {
                             
                         </div>
                         <div className="col-md-6 text-center text-md-right">
-                            <Button icon='' className = "btn p-3 btn-light-info" onClick = { this.generarBitacora }
-                                text = 'Generar PDF' only_icon = "flaticon2-plus icon-13px mr-3" tooltip = { { text: 'AGREGAR' } } />
+                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" onClick = { this.generarBitacora }
+                                text = 'GENERAR PDF' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-info" tooltip = { { text: 'AGREGAR' } } />
                         </div>
                     </div>
                     <Tabs defaultActiveKey = "formulario_bitacora" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
