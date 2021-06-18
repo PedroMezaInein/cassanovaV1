@@ -27,6 +27,9 @@ import { v4 as uuidv4 } from "uuid";
 import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
 import TableForModals from '../../../components/tables/TableForModals'
+import { toAbsoluteUrl } from "../../../functions/routers"
+import SVG from "react-inlinesvg";
+
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
 class Proyectos extends Component {
@@ -2079,7 +2082,23 @@ class Proyectos extends Component {
                 <Modal size = 'xl' title = 'Nota de obra' show = { modalNotaObra } handleClose = { this.handleCloseNotaObra }>
                     <div className="row mx-0 my-3">
                         <div className="col-md-6">
-                            
+                            {
+                                proyecto.bitacora ? 
+                                    <div className = 'd-flex'>
+                                        <a className="d-flex align-items-center bg-light-success rounded px-3 py-2 text-hover"
+                                            href = { proyecto.bitacora } target = '_blank' rel="noopener noreferrer" >
+                                            <span className="svg-icon svg-icon-success mr-1">
+                                                <span className="svg-icon svg-icon-lg">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                </span>
+                                            </span>
+                                            <div className="d-flex font-weight-bolder text-dark-75 font-size-13px mr-2">
+                                                Bitácora
+                                            </div>
+                                        </a>
+                                    </div>
+                                : <></>
+                            }
                         </div>
                         <div className="col-md-6 text-center text-md-right">
                             <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" onClick = { this.generarBitacora }
@@ -2097,11 +2116,111 @@ class Proyectos extends Component {
                         {
                             data.notas.length > 0 &&
                                 <Tab eventKey = "notas" title = "Historial de notas">
-                                    <div>
-                                        <TableForModals columns = { NOTAS_COLUMNS } data = { notas } hideSelector = { true }
-                                            mostrar_acciones = { true } elements = { data.notas }
-                                            actions = { { 'delete': { function: this.openModalDeleteNota } } } />
-                                    </div>
+                                    <table className="table table-responsive-lg table-vertical-center text-center w-100" id="esquemas">
+                                        <thead>
+                                            <tr className="bg-gray-200">
+                                                <th></th>
+                                                <th># Nota</th>
+                                                <th>Fecha</th>
+                                                <th>Proveedor</th>
+                                                <th>Tipo</th>
+                                                <th>Notas</th>
+                                                <th>Adjuntos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                data.notas.map((nota, index) => {
+                                                    return(
+                                                        <tr key = { index }>
+                                                            <td className = 'px-2'>
+                                                                <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger' 
+                                                                    onClick = { (e) => {e.preventDefault(); this.openModalDeleteNota(nota)}} >
+                                                                    <i className='flaticon2-rubbish-bin' />
+                                                                </button>
+                                                            </td>
+                                                            <td className = 'px-2 text-break'> { nota.numero_nota.toString().padStart(4, 0) } </td>
+                                                            <td className = 'px-2 text-break'> { setDateTable(nota.fecha) } </td>
+                                                            <td className = 'px-2 text-break'> { nota.proveedor ? nota.proveedor.razon_social : '-' } </td>
+                                                            <td className = 'px-2 text-break'> { nota.tipo_nota } </td>
+                                                            <td className = 'px-2 text-break'> { nota.notas } </td>
+                                                            <td className = 'px-2 text-break'>
+                                                                <ul>
+                                                                    {
+                                                                        nota.adjuntos.map((adjunto, key) => {
+                                                                            return(
+                                                                                <li key = { key } >
+                                                                                    <a target = '_blank' href = { adjunto.url }>
+                                                                                        {adjunto.name}
+                                                                                    </a>
+                                                                                </li>
+                                                                            )
+                                                                        })
+                                                                    }    
+                                                                </ul>
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                        {/* <tbody>
+                                            <tr>
+                                                <th scope="row" className="bg-gray-200">PRECIO DISEÑO</th>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_1 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_1)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_2 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_2)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_3 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_3)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" className="bg-gray-200">INCREMENTO</th>
+                                                <td>-</td>
+                                                <td className="px-1">
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText
+                                                            requirevalidation={0}
+                                                            name="incremento_esquema_2"
+                                                            onChange={onChange}
+                                                            value={form.incremento_esquema_2}
+                                                            prefix='%'
+                                                            identificador='incremento_esquema_2'
+                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td className="px-1">
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText
+                                                            requirevalidation={0}
+                                                            name="incremento_esquema_3"
+                                                            onChange={onChange}
+                                                            value={form.incremento_esquema_3}
+                                                            prefix='%'
+                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
+                                                        />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody> */}
+                                    </table>
                                 </Tab>
                         }
                     </Tabs>

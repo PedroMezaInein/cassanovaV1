@@ -342,7 +342,7 @@ class Bodega extends Component {
         formDevoluciones.responsable = ''
         formDevoluciones.comentario = ''
         formDevoluciones.cantidad = ''
-        formDevoluciones.existencia=''
+        formDevoluciones.existencia='Si'
         this.setState({ ...this.state, bodega: '', modalPrestamo: false, formDevoluciones, formPrestamos }) 
     }
 
@@ -480,7 +480,7 @@ class Bodega extends Component {
     sendDevolucionAxios = async(prestamo) => {
         const { access_token } = this.props.authUser
         const { formDevoluciones, bodega } = this.state
-        if(formDevoluciones.cantidad !== '' && formDevoluciones.responsable !== ''){
+        if((formDevoluciones.cantidad !== '' && formDevoluciones.responsable !== '') || formDevoluciones.existencia === 'No'){
             waitAlert()
             await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo/${prestamo.id}/devolucion`, formDevoluciones, 
                 { headers: setSingleHeader(access_token) }).then(
@@ -493,7 +493,7 @@ class Bodega extends Component {
                     formDevoluciones.responsable = ''
                     formDevoluciones.comentario = ''
                     formDevoluciones.cantidad = ''
-                    formDevoluciones.existencia=''
+                    formDevoluciones.existencia='Si'
                     this.setState({ ...this.state, active: 'historial', bodega: bodega, formDevoluciones })
                     doneAlert(`Devolución registrada con éxito`)
                 }, (error) => { printResponseErrorAlert(error) }
@@ -509,7 +509,12 @@ class Bodega extends Component {
         await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo/${prestamo.id}`, { headers: setSingleHeader(access_token)  }).then(
             (response) => {
                 const { bodega } = response.data
-                this.setState({ ...this.state, active: 'historial', bodega: bodega })
+                const { key } = this.state
+                let { showForm } = this.state
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
+                showForm = bodega.prestamos.length === 0 ? true : false
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, showForm })
                 doneAlert('Préstamo eliminado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -518,12 +523,18 @@ class Bodega extends Component {
         })
     }
     deleteDevolucionAxios = async(devolucion) => {
+        waitAlert()
         const { bodega } = this.state
         const { access_token } = this.props.authUser
-        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/devolucion/${devolucion.id}`, { headers: setSingleHeader(access_token)  }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo/${devolucion.prestamo_bodega_id}/devolucion/${devolucion.id}`, { headers: setSingleHeader(access_token)  }).then(
             (response) => {
                 const { bodega } = response.data
-                this.setState({ ...this.state, active: 'historial', bodega: bodega })
+                const { key } = this.state
+                let { showForm } = this.state
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
+                showForm = bodega.prestamos.length === 0 ? true : false
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, showForm })
                 doneAlert('Devolución eliminado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -618,7 +629,8 @@ class Bodega extends Component {
                     <div className = { !this.state.showForm ? 'd-none' : '' } >
                         <FormPrestamos form = { formPrestamos } options = { options } onChange = { this.onChangePrestamo } onSubmit = { this.onSubmitPrestamo } />
                     </div>
-                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } form={formDevoluciones} onChange = { this.onChangeDevoluciones }  deletePrestamo={ this.deletePrestamoAxios } deleteDevolucion={ this.deleteDevolucionAxios } tipo={tipo}
+                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } form={formDevoluciones} onChange = { this.onChangeDevoluciones }  
+                        deletePrestamo={ this.deletePrestamoAxios } deleteDevolucion={ this.deleteDevolucionAxios } tipo={tipo}
                         onSubmit = { this.onSubmitDevolucion }/> : <></> }
                 </Modal>
                 <Modal size="lg" title={`Detalles ${key === 'materiales'?'del material':'de la herramienta'}`} show={modalSee} handleClose={this.handleCloseSee} >
