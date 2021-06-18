@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
-
 class RadioGroupGray extends Component {
     render() {
-        const { options, placeholder, name, onChange, value, customlabel} = this.props
+        const { options, placeholder, name, onChange, value, customlabel, messageinc, customdiv} = this.props
         return (
             <div>
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
 
-                <Form.Group>
+                <div className={`form-group ${customdiv}`}>
                     <div className="radio-inline">
                         {
                             options.map((option, key) => {
@@ -28,7 +26,8 @@ class RadioGroupGray extends Component {
                             })
                         }
                     </div>
-                </Form.Group>
+                </div>
+                <span className={value ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
             </div>
         )
     }

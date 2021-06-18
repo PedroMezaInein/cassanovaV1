@@ -18,7 +18,7 @@ import { OneLead } from '../../../components/modal'
 import Comentarios from '../../../components/forms/Comentarios'
 import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
 import moment from 'moment'
-import { InputGray, RangeCalendarSwal, SelectSearchGray, InputPhoneGray } from '../../../components/form-components'
+import { InputGray, RangeCalendarSwal, SelectSearchGray, InputPhoneGray, Button } from '../../../components/form-components'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
@@ -521,6 +521,7 @@ class Proyectos extends Component {
             }
         }
     }
+    
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -935,11 +936,13 @@ class Proyectos extends Component {
             form
         })
     }
+
     onSubmitAvance = e => {
         e.preventDefault()
         waitAlert();
         this.addAvanceAxios()
     }
+
     onSubmitNewAvance = e => {
         e.preventDefault()
         waitAlert();
@@ -949,6 +952,7 @@ class Proyectos extends Component {
     safeDelete = (e) => () => {
         this.deleteProyectoAxios()
     }
+
     setProyectos = proyectos => {
         let aux = []
         proyectos.map((proyecto) => {
@@ -977,6 +981,7 @@ class Proyectos extends Component {
         })
         return aux
     }
+
     deleteElementAxios = async(proyecto, element, tipo) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -992,6 +997,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -1058,6 +1064,7 @@ class Proyectos extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+
     changeEstatus = (estatus, proyecto) =>  {
         estatus === 'Detenido'?
             questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, proyecto))
@@ -1066,6 +1073,7 @@ class Proyectos extends Component {
         : 
             questionAlert('¿ESTÁS SEGURO?', 'EL PROYECTO ESTARÁ EN PROCESO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, proyecto))
     }
+
     async changeEstatusAxios(estatus, proyecto){
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1085,6 +1093,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     setSwalPlaceholder = (tipo) => {
         switch(tipo){
             case 'tipo_proyecto':
@@ -1093,11 +1102,13 @@ class Proyectos extends Component {
                 return ''
         }
     }
+
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+
     onChangeRange = range => {
         const { startDate, endDate } = range
         const { form } = this.state
@@ -1108,6 +1119,7 @@ class Proyectos extends Component {
             form
         })
     }
+
     patchProyectos = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -1144,6 +1156,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     setOptions = (data, tipo) => {
         switch(tipo){
             case 'tipo_proyecto':
@@ -1154,6 +1167,7 @@ class Proyectos extends Component {
             default: return []
         }
     }
+
     setFasesList = proyecto => {
         let aux = [];
         if(proyecto.fase1)
@@ -1166,6 +1180,7 @@ class Proyectos extends Component {
             aux.push({text: 'SIN FASES'})
         return aux
     }
+
     setAdjuntosTable = proyecto => {
         return (
             <>
@@ -1300,6 +1315,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     openModalComment = async(proyecto) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -1358,6 +1374,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     async deleteProyectoAxios() {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1380,6 +1397,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+    
     async deleteAdjuntoAxios(id) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1403,6 +1421,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     async addAvanceAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
@@ -1461,6 +1480,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     async addAvanceFileAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
@@ -1517,6 +1537,7 @@ class Proyectos extends Component {
         waitAlert();
         this.sendMailAvanceAxios(avance);
     }
+
     async sendMailAvanceAxios(avance) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1644,6 +1665,7 @@ class Proyectos extends Component {
             modalNotaObra: true,
         })
     }
+
     onSubmitNotaBitacora = async (e) => {
         e.preventDefault();
         waitAlert();
@@ -1689,6 +1711,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     getNotas = async(proyecto) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1755,6 +1778,7 @@ class Proyectos extends Component {
         })
         return formBitacora;
     }
+
     setNotas = notas => {
         let aux = []
         let _aux = []
@@ -1782,6 +1806,7 @@ class Proyectos extends Component {
         })
         return aux
     }
+
     cerosNota(num) {
         if ( num < 10 ){
             return ( '00' + num.toString () );
@@ -1791,6 +1816,7 @@ class Proyectos extends Component {
             return ( num );
         }
     }
+
     setActionsNotas = () => {
         let aux = []
         aux.push(
@@ -1804,9 +1830,35 @@ class Proyectos extends Component {
         )
         return aux
     }
+
     openModalDeleteNota = nota => {
         deleteAlert(`¿DESEAS ELIMINAR LA NOTA ${this.cerosNota(nota.numero_nota)}?`, '', () => this.deleteNotaAxios(nota))
     }
+
+    generarBitacora = async (e) => {
+        e.preventDefault();
+        questionAlert('¿ESTÁS SEGURO?', 'GENERARÁS EL PDF CON LAS NOTAS DE BITÁCORA GUARDADAS', () => this.generarBitacoraAxios())
+    }
+
+    generarBitacoraAxios = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { proyecto } = this.state
+        await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+
+                /* const { proyecto } = response.data
+                const { data } = this.state
+                data.notas = proyecto.notas
+                this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.') */
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead,
                 modalComentarios, tipo, modalNotaObra, options, formBitacora, data, notas } = this.state
@@ -2025,8 +2077,17 @@ class Proyectos extends Component {
                         handleChange = { this.handleChangeComentario } proyecto = { proyecto } />
                 </Modal>
                 <Modal size = 'xl' title = 'Nota de obra' show = { modalNotaObra } handleClose = { this.handleCloseNotaObra }>
+                    <div className="row mx-0 my-3">
+                        <div className="col-md-6">
+                            
+                        </div>
+                        <div className="col-md-6 text-center text-md-right">
+                            <Button icon='' className = "btn p-3 btn-light-info" onClick = { this.generarBitacora }
+                                text = 'Generar PDF' only_icon = "flaticon2-plus icon-13px mr-3" tooltip = { { text: 'AGREGAR' } } />
+                        </div>
+                    </div>
                     <Tabs defaultActiveKey = "formulario_bitacora" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
-                        <Tab eventKey = "formulario_bitacora" title = "Formulario avance">
+                        <Tab eventKey = "formulario_bitacora" title = "Formulario nota de obra">
                             <div className="col-md-11 mx-auto px-0">
                                 <NotaBitacoraForm options = { options } form = { formBitacora } onChange = { this.onChangeBitacora }
                                     handleChange = { this.handleChangeAdjB } onSubmit = { (e) => {this.onSubmitNotaBitacora(e)} }
@@ -2035,13 +2096,110 @@ class Proyectos extends Component {
                         </Tab>
                         {
                             data.notas.length > 0 &&
-                            <Tab eventKey = "notas" title = "Historial de notas">
-                                <div>
-                                    <TableForModals columns = { NOTAS_COLUMNS } data = { notas } hideSelector = { true }
-                                        mostrar_acciones = { true } elements = { data.notas }
-                                        actions = { { 'delete': { function: this.openModalDeleteNota } } } />
-                                </div>
-                            </Tab>
+                                <Tab eventKey = "notas" title = "Historial de notas">
+                                    <table className="table table-responsive-lg table-vertical-center text-center w-100" id="esquemas">
+                                        <thead>
+                                            <tr className="bg-gray-200">
+                                                <th></th>
+                                                <th># Nota</th>
+                                                <th>Fecha</th>
+                                                <th>Proveedor</th>
+                                                <th>Tipo</th>
+                                                <th>Notas</th>
+                                                <th>Adjuntos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                data.notas.map((nota, index) => {
+                                                    return(
+                                                        <tr key = { index }>
+                                                            <td className = 'px-2'>
+                                                                <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger' 
+                                                                    onClick = { (e) => {e.preventDefault(); this.openModalDeleteNota(nota)}} >
+                                                                    <i className='flaticon2-rubbish-bin' />
+                                                                </button>
+                                                            </td>
+                                                            <td className = 'px-2'> { nota.numero_nota } </td>
+                                                            <td className = 'px-2'> { setDateTable(nota.fecha) } </td>
+                                                            <td className = 'px-2'> { nota.proveedor ? nota.proveedor.razon_social : '-' } </td>
+                                                            <td className = 'px-2'> { nota.tipo_nota } </td>
+                                                            <td className = 'px-2'> { nota.notas } </td>
+                                                            <td className = 'px-2'>
+                                                                {
+                                                                    nota.adjuntos.map((adjunto, key) => {
+                                                                        return(
+                                                                            <div key = { key } >
+                                                                                <a target = '_blank' href = { adjunto.url }>
+                                                                                    <i className="flaticon2-file mr-2"></i> {adjunto.name}
+                                                                                </a>
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                        {/* <tbody>
+                                            <tr>
+                                                <th scope="row" className="bg-gray-200">PRECIO DISEÑO</th>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_1 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_1)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_2 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_2)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_3 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_3)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" className="bg-gray-200">INCREMENTO</th>
+                                                <td>-</td>
+                                                <td className="px-1">
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText
+                                                            requirevalidation={0}
+                                                            name="incremento_esquema_2"
+                                                            onChange={onChange}
+                                                            value={form.incremento_esquema_2}
+                                                            prefix='%'
+                                                            identificador='incremento_esquema_2'
+                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td className="px-1">
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText
+                                                            requirevalidation={0}
+                                                            name="incremento_esquema_3"
+                                                            onChange={onChange}
+                                                            value={form.incremento_esquema_3}
+                                                            prefix='%'
+                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
+                                                        />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody> */}
+                                    </table>
+                                </Tab>
                         }
                     </Tabs>
                 </Modal>
