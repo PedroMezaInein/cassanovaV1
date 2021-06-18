@@ -510,9 +510,11 @@ class Bodega extends Component {
             (response) => {
                 const { bodega } = response.data
                 const { key } = this.state
+                let { showForm } = this.state
                 if (key === 'materiales') { this.getMateriales() }
                 if (key === 'herramientas') { this.getHerramientas() }
-                this.setState({ ...this.state, active: 'historial', bodega: bodega })
+                showForm = bodega.prestamos.length === 0 ? true : false
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, showForm })
                 doneAlert('Préstamo eliminado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -528,9 +530,11 @@ class Bodega extends Component {
             (response) => {
                 const { bodega } = response.data
                 const { key } = this.state
+                let { showForm } = this.state
                 if (key === 'materiales') { this.getMateriales() }
                 if (key === 'herramientas') { this.getHerramientas() }
-                this.setState({ ...this.state, active: 'historial', bodega: bodega })
+                showForm = bodega.prestamos.length === 0 ? true : false
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, showForm })
                 doneAlert('Devolución eliminado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
