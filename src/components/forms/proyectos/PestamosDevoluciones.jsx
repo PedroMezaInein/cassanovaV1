@@ -3,7 +3,7 @@ import SVG from "react-inlinesvg";
 import { Tab, Nav, OverlayTrigger, Tooltip, Form } from 'react-bootstrap';
 import { setDiaMesTexto, setFechaTexto } from '../../../functions/functions';
 import { validateAlert, deleteAlert } from '../../../functions/alert';
-import { InputGray, CalendarDay, Button, InputNumberGray } from '../../form-components'
+import { InputGray, CalendarDay, Button, InputNumberGray, RadioGroupGray } from '../../form-components'
 import moment from 'moment';
 import { toAbsoluteUrl } from "../../../functions/routers"
 
@@ -11,8 +11,8 @@ const NavItem = children => {
     const { prestamo: { id, cantidad, sumDevoluciones, proyecto, fecha }, onSelect } = children
     return (
         <OverlayTrigger overlay = { <Tooltip>{proyecto.nombre}</Tooltip> } >
-            <Nav.Item className = 'mr-1' onClick = { (e) => { e.preventDefault(); onSelect(id) } }>
-                <Nav.Link eventKey = { id } className="nav-link btn btn-hover-light-primary d-flex flex-column flex-center border-radius-21px min-w-60px mr-2 py-4 px-3 ">
+            <Nav.Item className = 'mr-1' onClick = { (e) => { e.preventDefault(); onSelect(id) } } className="">
+                <Nav.Link eventKey = { id } className="nav-link btn btn-hover-light-primary d-flex flex-column flex-center border-radius-21px min-w-70px mr-2 py-4 px-3 ">
                     <span className="opacity-50 font-size-sm font-weight-bold text-primary">
                         { setDiaMesTexto(fecha) }
                         <span className="d-block">{ new Date(fecha).getFullYear()}</span>
@@ -62,7 +62,7 @@ class PestamosDevoluciones extends Component {
     }
     
     render() {
-        const { bodega, form, onChange, onSubmit, deletePrestamo, deleteDevolucion } = this.props
+        const { bodega, form, onChange, onSubmit, deletePrestamo, deleteDevolucion, tipo } = this.props
         const { active, showForm } = this.state
         return (
             <div>
@@ -183,6 +183,33 @@ class PestamosDevoluciones extends Component {
                                                             <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } 
                                                                 date = { form.fecha } withformgroup = { 0 } requirevalidation = { 1 } 
                                                                 minDate = { new Date(moment(prestamo.fecha)) } />
+                                                                {
+                                                                    tipo==='material' &&
+                                                                    <div className="d-flex justify-content-center">
+                                                                        <div className="col-md-12">
+                                                                            <RadioGroupGray
+                                                                                placeholder={`¿Hay en existencia?`}
+                                                                                name={'existencia'}
+                                                                                onChange={onChange}
+                                                                                options={
+                                                                                    [
+                                                                                        {
+                                                                                            label: 'Si',
+                                                                                            value: 'Si'
+                                                                                        },
+                                                                                        {
+                                                                                            label: 'No',
+                                                                                            value: 'No'
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                                value={form.existencia}
+                                                                                messageinc="Elige una opción"
+                                                                                customdiv="mb-0"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                }
                                                         </div>
                                                         <div className="col-md-6 align-self-center">
                                                             <div className="row form-group-marginless row-paddingless">
@@ -210,7 +237,7 @@ class PestamosDevoluciones extends Component {
                                                             </div>
                                                         </div>
                                                         {
-                                                            form.responsable !== '' && form.cantidad !== '' ?
+                                                            form.responsable !== '' && form.cantidad !== '' && form.existencia !== '' ?
                                                                 <div className="col-md-12 mt-6">
                                                                     <div className="card-footer px-0 pb-0 pt-4 text-center">
                                                                         <Button icon = '' text = 'ENVIAR' className = "btn btn-light-success font-weight-bolder" 
