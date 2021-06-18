@@ -2011,7 +2011,7 @@ class Crm extends Component {
                                                         value={form.proyecto}
                                                         onChange={this.onChange}
                                                         type="text"
-                                                        placeholder="BUSCAR PROYECTO"
+                                                        placeholder="BUSCAR TIPO DE PROYECTO"
                                                         iconclass={"flaticon2-search-1"}
                                                     />
                                                 </div>

@@ -10,7 +10,7 @@ import { setTextTableCenter, setTextTableReactDom, setOptions  } from '../../../
 import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
 import { Button, InputGray } from '../../../components/form-components'
-import FormPrestamos from '../../../components/forms/proyectos/FormPrestamos'
+import { FormPrestamos, PestamosDevoluciones } from '../../../components/forms'
 import { Tab, Tabs } from 'react-bootstrap'
 import { BodegaCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
@@ -18,6 +18,8 @@ import Swal from 'sweetalert2'
 import { SelectSearchGray } from '../../../components/form-components'
 import $ from "jquery";
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { toAbsoluteUrl } from "../../../functions/routers"
+import SVG from "react-inlinesvg";
 class Bodega extends Component {
     state = {
         modalDelete: false,
@@ -46,21 +48,23 @@ class Bodega extends Component {
         formPrestamos:{
             fecha: new Date(),
             cantidad:'',
-            responsble:'',
+            responsable:'',
             proyecto: '',
             comentario: '',
             ubicacion:'',
+        },
+        formDevoluciones:{
+            fecha: new Date(),
+            responsable:'',
+            comentario: '',
+            cantidad:'',
+            existencia:''
         },
         options: {
             partidas:[],
             proyectos: [],
             unidades:[]
         },
-        // data: {
-        //     ubicaciones: []
-        // },
-        // ubicaciones: [],
-        // ubicacion: '',
         key: 'materiales',
         showForm: false
     }
@@ -267,36 +271,6 @@ class Bodega extends Component {
         return aux
     }
 
-    /* setActionsUbicaciones = () => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            }
-        )
-        return aux
-    } */
-
-    /* setUbicaciones = ubicaciones => {
-        let aux = []
-        ubicaciones.map((ubicacion) => {
-            aux.push({
-                actions: this.setActionsUbicaciones(ubicacion),
-                user: renderToString(setTextTable(ubicacion.user ? ubicacion.user.name : 'Sin definir')),
-                ubicacion: renderToString(setTextTable(ubicacion.ubicacion)),
-                comentario: renderToString(setTextTable(ubicacion.comentario)),
-                fecha: renderToString(setDateTable(ubicacion.created_at)),
-                id: ubicacion.id
-            })
-            return false
-        })
-        return aux
-    } */
-
     onChangePrestamo = e => {
         const { value, name } = e.target
         const { formPrestamos } = this.state
@@ -309,6 +283,19 @@ class Bodega extends Component {
                 break;
         }
         this.setState({ ...this.state, formPrestamos })
+    }
+    onChangeDevoluciones= e => {
+        const { value, name } = e.target
+        const { formDevoluciones } = this.state
+        formDevoluciones[name] = value
+        switch (name) {
+            case 'cantidad':
+                formDevoluciones[name] = value.replace(/[,]/gi, '')
+                break;
+            default:
+                break;
+        }
+        this.setState({ ...this.state, formDevoluciones })
     }
     changePageEdit = (bodega) => {
         const { key } = this.state
@@ -327,20 +314,13 @@ class Bodega extends Component {
     }
 
     openModalPrestamo = (bodega) => {
-        // const { data } = this.state
-        // data.ubicaciones = bodega.ubicaciones
         this.setState({
             ...this.state,
             bodega: bodega,
             modalPrestamo: true,
-            // data,
-            // ubicaciones: this.setUbicaciones(bodega.ubicaciones)
+            showForm: bodega.prestamos.length ? 0: 1,
         })
     }
-
-    /* openModalDeleteUbicacion = ubicacion => {
-        this.setState({ ...this.state, modalDeleteUbicacion: true, ubicacion: ubicacion })
-    } */
 
     handleCloseDelete = () => { this.setState({ ...this.state, modalDelete: false, bodega: '' }) }
 
@@ -350,9 +330,21 @@ class Bodega extends Component {
         this.setState({ ...this.state, modalAdjuntos: false, bodega: '', form })
     }
 
-    handleClosePrestamo = () => { this.setState({ ...this.state, bodega: '', modalPrestamo: false }) }
-
-    /* handleCloseDeleteUbicacion = () => { this.setState({ ...this.state, modalDeleteUbicacion: false, ubicacion: '' }) } */
+    handleClosePrestamo = () => { 
+        const { formPrestamos, formDevoluciones } = this.state
+        formPrestamos.fecha = new Date()
+        formPrestamos.cantidad = ''
+        formPrestamos.responsable = ''
+        formPrestamos.proyecto = ''
+        formPrestamos.comentario = ''
+        formPrestamos.ubicacion = ''
+        formDevoluciones.fecha = new Date()
+        formDevoluciones.responsable = ''
+        formDevoluciones.comentario = ''
+        formDevoluciones.cantidad = ''
+        formDevoluciones.existencia='Si'
+        this.setState({ ...this.state, bodega: '', modalPrestamo: false, formDevoluciones, formPrestamos }) 
+    }
 
     openModalSee = bodega => { this.setState({ ...this.state, modalSee: true, bodega: bodega }) }
 
@@ -368,16 +360,6 @@ class Bodega extends Component {
         form['adjuntos'][item].files = aux
         this.setState({ ...this.state, form })
     }
-
-    /* onSelect = value => {
-        const { form } = this.state
-        if (value === 'nuevo') {
-            form.fecha = new Date()
-            form.ubicacion = ''
-            form.comentario = ''
-        }
-        this.setState({ ...this.state, active: value, form })
-    } */
 
     onSubmitPrestamo = e => {
         e.preventDefault()
@@ -403,33 +385,6 @@ class Bodega extends Component {
             console.log(error, 'error')
         })
     }
-
-    /* async deleteUbicacionAxios() {
-        const { access_token } = this.props.authUser
-        const { bodega, ubicacion } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + bodega.id + '/ubicacion/' + ubicacion.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { key } = this.state
-                if (key === 'materiales') { this.getMateriales() }
-                if (key === 'herramientas') { this.getHerramientas() }
-                doneAlert('Ubicación eliminada con éxito')
-                const { herramienta } = response.data
-                const { data } = this.state
-                data.ubicaciones = herramienta.ubicaciones
-                this.setState({
-                    ...this.state,
-                    active: 'historial',
-                    bodega: herramienta,
-                    data,
-                    modalDeleteUbicacion: false,
-                    ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    } */
 
     deleteAdjuntoAxios =  async (id) => {
         waitAlert()
@@ -483,10 +438,16 @@ class Bodega extends Component {
         await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo`, formPrestamos, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { bodega } = response.data
-                const { key } = this.state
+                const { key, formPrestamos } = this.state
                 if (key === 'materiales') { this.getMateriales() }
                 if (key === 'herramientas') { this.getHerramientas() }
-                this.setState({ ...this.state, active: 'historial', bodega: bodega, formPrestamos })
+                formPrestamos.fecha = new Date()
+                formPrestamos.cantidad = ''
+                formPrestamos.responsable = ''
+                formPrestamos.proyecto = ''
+                formPrestamos.comentario = ''
+                formPrestamos.ubicacion = ''
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, formPrestamos, showForm: false,  })
                 doneAlert(`Prestamo agregado con éxito`)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -511,8 +472,79 @@ class Bodega extends Component {
             showForm: !showForm
         })
     }
+    onSubmitDevolucion = prestamo => {
+        waitAlert()
+        this.sendDevolucionAxios(prestamo)
+    }
+
+    sendDevolucionAxios = async(prestamo) => {
+        const { access_token } = this.props.authUser
+        const { formDevoluciones, bodega } = this.state
+        if((formDevoluciones.cantidad !== '' && formDevoluciones.responsable !== '') || formDevoluciones.existencia === 'No'){
+            waitAlert()
+            await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo/${prestamo.id}/devolucion`, formDevoluciones, 
+                { headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    const { bodega } = response.data
+                    const { key, formDevoluciones } = this.state
+                    if (key === 'materiales') { this.getMateriales() }
+                    if (key === 'herramientas') { this.getHerramientas() }
+                    formDevoluciones.fecha = new Date()
+                    formDevoluciones.responsable = ''
+                    formDevoluciones.comentario = ''
+                    formDevoluciones.cantidad = ''
+                    formDevoluciones.existencia='Si'
+                    this.setState({ ...this.state, active: 'historial', bodega: bodega, formDevoluciones })
+                    doneAlert(`Devolución registrada con éxito`)
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }
+    }
+    deletePrestamoAxios = async(prestamo) => {
+        const { bodega } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo/${prestamo.id}`, { headers: setSingleHeader(access_token)  }).then(
+            (response) => {
+                const { bodega } = response.data
+                const { key } = this.state
+                let { showForm } = this.state
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
+                showForm = bodega.prestamos.length === 0 ? true : false
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, showForm })
+                doneAlert('Préstamo eliminado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    deleteDevolucionAxios = async(devolucion) => {
+        waitAlert()
+        const { bodega } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/prestamo/${devolucion.prestamo_bodega_id}/devolucion/${devolucion.id}`, { headers: setSingleHeader(access_token)  }).then(
+            (response) => {
+                const { bodega } = response.data
+                const { key } = this.state
+                let { showForm } = this.state
+                if (key === 'materiales') { this.getMateriales() }
+                if (key === 'herramientas') { this.getHerramientas() }
+                showForm = bodega.prestamos.length === 0 ? true : false
+                this.setState({ ...this.state, active: 'historial', bodega: bodega, showForm })
+                doneAlert('Devolución eliminado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { modalDelete, modalAdjuntos, modalPrestamo, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key, formPrestamos, options } = this.state
+        const { modalDelete, modalAdjuntos, modalPrestamo, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key, formPrestamos, options, formDevoluciones } = this.state
+        let tipo = key === 'herramientas' ? 'herramienta' : 'material'
         return (
             <Layout active={'proyectos'}  {...this.props}>
 
@@ -567,43 +599,40 @@ class Bodega extends Component {
                         }
                     </div>
                 </Modal>
-                
-                <Modal size="xl" title="Préstamos" show={modalPrestamo} handleClose={this.handleClosePrestamo} >
-                    <div className="d-flex justify-content-end mt-5">
-                        <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
-                            only_icon = "flaticon-bag icon-lg mr-3 px-0" text = 'AGREGAR PRÉSTAMO' />
-                    </div>
+                <Modal size="xl" title={bodega?<span>Préstamo de<span className="text-primary"> {bodega.nombre}</span></span>:'Préstamo'} show={modalPrestamo} handleClose={this.handleClosePrestamo} >
+                    {
+                        bodega ?
+                            bodega.prestamos ?
+                                bodega.prestamos.length  ?
+                                    <div className="d-flex justify-content-between my-5">
+                                        <div className="d-flex align-items-center bg-light-success rounded px-3 py-2">
+                                            <span className="svg-icon svg-icon-success mr-1">
+                                                <span className="svg-icon svg-icon-lg">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Clipboard-check.svg')} />
+                                                </span>
+                                            </span>
+                                            <div className="d-flex font-weight-bolder text-dark-75 font-size-13px mr-2">
+                                                DISPONIBLES
+                                            </div>
+                                            <span className="font-weight-boldest text-success font-size-lg"><u>{bodega.cantidad}</u></span>
+                                        </div>
+                                        {
+                                            bodega.cantidad > 0 &&
+                                            <Button icon='' className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px" onClick={() => { this.mostrarFormulario() }}
+                                                only_icon = "flaticon-bag icon-lg mr-3 px-0" text = 'AGREGAR PRÉSTAMO' />
+                                        }
+                                    </div>
+                                : <></>
+                            : <></>
+                        : <></>
+                    }
                     <div className = { !this.state.showForm ? 'd-none' : '' } >
                         <FormPrestamos form = { formPrestamos } options = { options } onChange = { this.onChangePrestamo } onSubmit = { this.onSubmitPrestamo } />
                     </div>
-
-                    {/* <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
-                        activeKey={active} onSelect={this.onSelect}>
-                        <Tab eventKey="historial" title="Historial de ubicación">
-                            <TableForModals
-                                columns={UBICACIONES_BODEGA_COLUMNS}
-                                data={ubicaciones}
-                                hideSelector={true}
-                                mostrar_acciones={true}
-                                elements={data.ubicaciones}
-                                actions={
-                                    {
-                                        'delete': { function: this.openModalDeleteUbicacion },
-                                    }
-                                }
-                            />
-                        </Tab>
-                        <Tab eventKey="nuevo" title="Nueva ubicación">
-                                
-                        </Tab>
-                    </Tabs> */}
+                    { bodega !== '' ? <PestamosDevoluciones bodega = { bodega } form={formDevoluciones} onChange = { this.onChangeDevoluciones }  
+                        deletePrestamo={ this.deletePrestamoAxios } deleteDevolucion={ this.deleteDevolucionAxios } tipo={tipo}
+                        onSubmit = { this.onSubmitDevolucion }/> : <></> }
                 </Modal>
-                {/* <ModalDelete
-                    title='¿Estás seguro que deseas eliminar la ubicación?'
-                    show={modalDeleteUbicacion}
-                    handleClose={this.handleCloseDeleteUbicacion}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() }} 
-                /> */}
                 <Modal size="lg" title={`Detalles ${key === 'materiales'?'del material':'de la herramienta'}`} show={modalSee} handleClose={this.handleCloseSee} >
                     <BodegaCard bodega={bodega} />
                 </Modal>

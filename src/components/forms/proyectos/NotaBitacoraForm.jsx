@@ -66,8 +66,7 @@ class BitacoraObraForm extends Component {
                     <div className="row form-group-marginless mt-7 mx-0">
                         <div className="col-md-12 pb-5">
                             <ItemSlider items = { form.adjuntos.adjuntos.files } item = 'adjuntos' handleChange = { handleChange }
-                            // deleteFile={deleteFile}
-                            />
+                                accept = 'image/*'  />
                         </div>
                     </div>
                     <div className="card-footer py-3 pr-1">

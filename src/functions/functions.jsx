@@ -73,3 +73,15 @@ export function replaceMoney( text ){
         text = text.toString().replace(',','');
     return text;
 }
+
+export const setDiaMesTexto = (fecha) => {
+    let momento = moment(fecha)
+    let months = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC']
+    return momento.date() + ' ' + months[ momento.month() ]
+}
+
+export const setFechaTexto = (fecha) => {
+    let momento = moment(fecha)
+    let months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+    return momento.date() + ' de ' + months[ momento.month() ] + ' del ' + momento.year()
+}
