@@ -1849,12 +1849,12 @@ class Proyectos extends Component {
         const { proyecto } = this.state
         await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-
-                /* const { proyecto } = response.data
+                const { proyecto } = response.data
+                doneAlert('PDF GENERADO CON ÉXITO')
+                window.open(proyecto.bitacora, '_blank').focus();
                 const { data } = this.state
                 data.notas = proyecto.notas
                 this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.') */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -2101,8 +2101,9 @@ class Proyectos extends Component {
                             }
                         </div>
                         <div className="col-md-6 text-center text-md-right">
-                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" onClick = { this.generarBitacora }
-                                text = 'GENERAR PDF' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-info" tooltip = { { text: 'AGREGAR' } } />
+                            <Button className = "btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" 
+                                onClick = { this.generarBitacora } text = 'GENERAR PDF' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-info" 
+                                tooltip = { { text: 'AGREGAR' } } icon='' />
                         </div>
                     </div>
                     <Tabs defaultActiveKey = "formulario_bitacora" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
