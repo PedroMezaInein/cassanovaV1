@@ -2224,10 +2224,6 @@ div#task{
     font-size: 5px!important;
 }
 
-
-
-
-
 .switch-notify{
     .switch.switch-sm input:empty ~ span:before, .switch.switch-sm input:empty ~ span:after{
         border-radius: 5px!important;
@@ -2395,9 +2391,6 @@ table#calendario-proyectos tr:last-child td {
     border-radius: 0.42rem;
     margin-right:0.5rem;
 }
-
-
-
 
 @media (min-width:992px) {
 
@@ -2626,9 +2619,6 @@ table#calendario-proyectos tr:last-child td {
     border-radius: .475rem!important;
     border: 1px #eff2f5;
 }
-
-
-
 
 .ReactCrop {
     position: relative;
@@ -2864,4 +2854,7 @@ table#calendario-proyectos tr:last-child td {
 }
 .border-gray-300 {
     border-color: #e4e6ef !important
+}
+.rounded-avatar{
+    border-radius: 50%!important;
 }

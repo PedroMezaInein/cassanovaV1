@@ -1857,12 +1857,12 @@ class Proyectos extends Component {
         const { proyecto } = this.state
         await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-
-                /* const { proyecto } = response.data
+                const { proyecto } = response.data
+                doneAlert('PDF GENERADO CON ÉXITO')
+                window.open(proyecto.bitacora, '_blank').focus();
                 const { data } = this.state
                 data.notas = proyecto.notas
                 this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.') */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
