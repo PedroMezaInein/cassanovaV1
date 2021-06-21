@@ -1452,6 +1452,9 @@ class Proyectos extends Component {
                 case 'correos':
                     data.append(element, JSON.stringify(form[element]))
                     break;
+                case 'actividades_realizadas':
+                    data.append('actividades', form[element])
+                    break;
                 default:
                     break
             }
