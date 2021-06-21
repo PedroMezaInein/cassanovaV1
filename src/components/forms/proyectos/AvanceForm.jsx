@@ -35,6 +35,7 @@ class AvanceForm extends Component {
         const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, 
             proyecto, sendMail, formeditado, deleteFile, handleChange, isNew, onChangeAdjunto, deleteRowAvance, ...props } = this.props
         const { activeKey } = this.state
+        console.log(form)
         return (
             <>
                 <Form
@@ -43,7 +44,7 @@ class AvanceForm extends Component {
                     <Row className="mx-0">
                         <Col md="5">
                             <div className="form-group row mx-0 form-group-marginless justify-content-center">
-                                <div className="col-md-6">
+                                <div className="col-md-7">
                                     <InputNumberGray
                                         // formgroup="mb-0"
                                         requirevalidation={1}
@@ -52,7 +53,7 @@ class AvanceForm extends Component {
                                         name="semana"
                                         onChange={onChange}
                                         iconclass="far fa-folder-open"
-                                        messageinc="Incorrecto. Ingresa el número de semana."
+                                        messageinc="Ingresa el número de semana."
                                         type="text"
                                     />
                                 </div>
@@ -130,6 +131,7 @@ class AvanceForm extends Component {
                                                                                                 onChange={e => onChangeAvance(key, e, 'avance')}
                                                                                                 placeholder="% DE AVANCE"
                                                                                                 iconclass={"fas fa-percent"}
+                                                                                                messageinc="Ingresa el porcentaje."
                                                                                                 // customstyle={{ width: '110px', borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
                                                                                             />
                                                                                         </div>
@@ -151,7 +153,7 @@ class AvanceForm extends Component {
                                                                                             name="descripcion"
                                                                                             value={form['avances'][key]['descripcion']}
                                                                                             onChange={e => onChangeAvance(key, e, 'descripcion')}
-                                                                                            messageinc="Incorrecto. Ingresa la descripción."
+                                                                                            messageinc="Ingresa la descripción."
                                                                                             style={{ paddingLeft: "10px" }}
                                                                                             customstyle={{ borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
                                                                                         />
@@ -165,7 +167,7 @@ class AvanceForm extends Component {
                                                                                             onChangeAdjunto={e => onChangeAdjuntoAvance(e, key, 'adjuntos')}
                                                                                             placeholder={form['avances'][key]['adjuntos']['placeholder']}
                                                                                             value={form['avances'][key]['adjuntos']['value']}
-                                                                                            name={`${key}-avance`} id={'avance'}
+                                                                                            name={`${key}-avance`} id={`${key}-avance`}
                                                                                             accept="image/*"
                                                                                             files={form['avances'][key]['adjuntos']['files']}
                                                                                             _key={key}
@@ -174,6 +176,7 @@ class AvanceForm extends Component {
                                                                                             classbtn='btn btn-default btn-hover-icon-primary font-weight-bolder btn-hover-bg-light text-hover-primary text-dark-50 mb-3'
                                                                                             iconclass='flaticon2-clip-symbol text-primary'
                                                                                             color_label="dark-75"
+                                                                                            classinput='avance'
                                                                                         />
                                                                                     </td>
                                                                                 </tr>
@@ -212,6 +215,7 @@ class AvanceForm extends Component {
                         </div>
                     </div>
                 </Form>
+                
                 {
                     proyecto ?
                         proyecto.avances ?
@@ -219,6 +223,7 @@ class AvanceForm extends Component {
                             <div className="d-flex justify-content-center">
                                 <div className="col-md-7">
                                     <Accordion activeKey={activeKey} className="accordion accordion-solid">
+                                        {/* {console.log(proyecto.avances)} */}
                                         {
                                             proyecto.avances.map((avance, key) => {
                                                 return (

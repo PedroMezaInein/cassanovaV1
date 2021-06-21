@@ -60,7 +60,7 @@ class InputMoneyGray extends Component {
         onChange({ target: { value: values.value, name: name } })
     }
     render() {
-        const { placeholder, value, prefix, thousandseparator, iconclass, customstyle, customlabel, customclass, withformgroup, customdiv, withtaglabel, withtextlabel, withicon } = this.props
+        const { placeholder, value, prefix, thousandseparator, iconclass, customstyle, customlabel, customclass, withformgroup, customdiv, withtaglabel, withtextlabel, withicon, messageinc } = this.props
         const { inputMoneyValido } = this.state
         return (
             <div className={withformgroup?`form-group ${customdiv}`:''}>
@@ -91,7 +91,7 @@ class InputMoneyGray extends Component {
                         style={customstyle}
                     />
                 </div>
-                <span className={inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}>Incorrecto. Ingresa la cantidad.</span>
+                <span className={inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}>{messageinc}</span>
             </div>
         )
     }

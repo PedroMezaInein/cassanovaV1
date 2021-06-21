@@ -64,7 +64,7 @@ class FileInput extends Component {
     }
 
     render() {
-        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, classbtn, iconclass, color_label, ...props } = this.props
+        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, classbtn, iconclass, color_label, classinput, ...props } = this.props
         const { fileValido } = this.state
         return (
             <>
@@ -99,6 +99,7 @@ class FileInput extends Component {
                         id={id}
                         accept={accept}
                         {...props}
+                        className={classinput}
                     />
                 </span>
                 <span className={fileValido ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>

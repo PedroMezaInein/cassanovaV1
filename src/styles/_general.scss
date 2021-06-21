@@ -2127,9 +2127,10 @@ span.font-weight-bolder.text-hover-error:hover{
     }
 }
 
-input[type="file"]#file-upload, #datosGenerales, #recibosNomina, #altasBajas, #factura, #presupuesto, #pago, #avance, #adjunto-contrato, #adjunto, #adjunto-carta, #contrato, #carta {
+input[type="file"]#file-upload, #datosGenerales, #recibosNomina, #altasBajas, #factura, #presupuesto, #pago, #avance, #adjunto-contrato, #adjunto, #adjunto-carta, #contrato, #carta, .avance {
     display: none!important;
 }
+
 .tagify{
     .tagify__tag{
         div {

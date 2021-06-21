@@ -223,6 +223,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     prefix={'%'}
                                                     formeditado={formeditado}
                                                     name="descuento"
+                                                    messageinc="Incorrecto. Ingresa la cantidad."
                                                 />
                                             </div>
                                         </div>
