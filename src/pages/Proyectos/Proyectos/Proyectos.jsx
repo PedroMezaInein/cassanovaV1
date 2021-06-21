@@ -27,6 +27,9 @@ import { v4 as uuidv4 } from "uuid";
 import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
 import TableForModals from '../../../components/tables/TableForModals'
+import { toAbsoluteUrl } from "../../../functions/routers"
+import SVG from "react-inlinesvg";
+
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
 class Proyectos extends Component {
@@ -1846,12 +1849,12 @@ class Proyectos extends Component {
         const { proyecto } = this.state
         await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-
-                /* const { proyecto } = response.data
+                const { proyecto } = response.data
+                doneAlert('PDF GENERADO CON ÉXITO')
+                window.open(proyecto.bitacora, '_blank').focus();
                 const { data } = this.state
                 data.notas = proyecto.notas
                 this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.') */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -2079,11 +2082,28 @@ class Proyectos extends Component {
                 <Modal size = 'xl' title = 'Nota de obra' show = { modalNotaObra } handleClose = { this.handleCloseNotaObra }>
                     <div className="row mx-0 my-3">
                         <div className="col-md-6">
-                            
+                            {
+                                proyecto.bitacora ? 
+                                    <div className = 'd-flex'>
+                                        <a className="d-flex align-items-center bg-light-success rounded px-3 py-2 text-hover"
+                                            href = { proyecto.bitacora } target = '_blank' rel="noopener noreferrer" >
+                                            <span className="svg-icon svg-icon-success mr-1">
+                                                <span className="svg-icon svg-icon-lg">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                </span>
+                                            </span>
+                                            <div className="d-flex font-weight-bolder text-dark-75 font-size-13px mr-2">
+                                                Bitácora
+                                            </div>
+                                        </a>
+                                    </div>
+                                : <></>
+                            }
                         </div>
                         <div className="col-md-6 text-center text-md-right">
-                            <Button icon='' className = "btn p-3 btn-light-info" onClick = { this.generarBitacora }
-                                text = 'Generar PDF' only_icon = "flaticon2-plus icon-13px mr-3" tooltip = { { text: 'AGREGAR' } } />
+                            <Button className = "btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" 
+                                onClick = { this.generarBitacora } text = 'GENERAR PDF' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-info" 
+                                tooltip = { { text: 'AGREGAR' } } icon='' />
                         </div>
                     </div>
                     <Tabs defaultActiveKey = "formulario_bitacora" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
