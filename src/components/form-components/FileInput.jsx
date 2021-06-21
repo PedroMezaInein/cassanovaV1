@@ -64,7 +64,7 @@ class FileInput extends Component {
     }
 
     render() {
-        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, classbtn, iconclass, ...props } = this.props
+        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, classbtn, iconclass, color_label, ...props } = this.props
         const { fileValido } = this.state
         return (
             <>
@@ -107,7 +107,7 @@ class FileInput extends Component {
                         files.map((file, key) => {
                             return (
                                 <div className={this.props.multiple ? "tagify form-control p-1 col-md-6  d-flex justify-content-center align-items-center" : "tagify form-control p-1 col-md-12  d-flex justify-content-center align-items-center"} tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
-                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim" >
+                                    <div className={`tagify__tag tagify__tag--${color_label ? 'color_label' : 'primary'} tagify--noAnim`} >
                                         <div
                                             title="Borrar archivo"
                                             className="tagify__tag__removeBtn"
@@ -127,10 +127,10 @@ class FileInput extends Component {
                                         {
                                             file.url ?
                                                 <a rel="noopener noreferrer"  href={file.url} target="_blank" className="pt-2 pb-2">
-                                                    <div><span className="tagify__tag-text p-1 white-space">{file.name}</span></div>
+                                                    <div><span className="tagify__tag-text p-1 white-space font-weight-bold">{file.name}</span></div>
                                                 </a>
                                                 :
-                                                <div><span className="tagify__tag-text p-1 white-space pt-2 pb-2">{file.name}</span></div>
+                                                <div><span className="tagify__tag-text p-1 white-space pt-2 pb-2 font-weight-bold">{file.name}</span></div>
                                         }
                                     </div>
                                 </div>
