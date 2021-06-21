@@ -112,7 +112,7 @@ class UserPanel extends Component {
 					<div className={`offcanvas-content pr-3 mr-n3 ${showProfile ? '' : 'd-none'}`}>
 						<div className="d-flex align-items-center mt-3">
 							<div className="symbol symbol-100 mr-3">
-								<img className="symbol-label bg-transparent"  src={avatar ? avatar : "/default.jpg"} alt = '' />
+								<img className="symbol-label bg-transparent rounded-avatar"  src={avatar ? avatar : "/default.jpg"} alt = '' />
 								{/* <i className="symbol-badge bg-success"></i> */}
 							</div>
 							<CustomUser clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props}/>
