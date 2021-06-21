@@ -35,7 +35,6 @@ class AvanceForm extends Component {
         const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, 
             proyecto, sendMail, formeditado, deleteFile, handleChange, isNew, onChangeAdjunto, deleteRowAvance, ...props } = this.props
         const { activeKey } = this.state
-        console.log(form)
         return (
             <>
                 <Form
@@ -236,7 +235,7 @@ class AvanceForm extends Component {
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey={avance.id}>
                                                                 <Card.Body>
-                                                                    <div>
+                                                                    {/* <div>
                                                                         <div className="d-flex justify-content-center">
                                                                             <a rel="noopener noreferrer" href={avance.pdf} target="_blank" className="text-info font-weight-bold font-size-sm">
                                                                                 <div className="bg-light-info rounded-sm mr-5 p-2">
@@ -265,7 +264,7 @@ class AvanceForm extends Component {
                                                                         <div>
                                                                             <SliderImages elements={avance.adjuntos} />
                                                                         </div>
-                                                                    </div>
+                                                                    </div> */}
                                                                 </Card.Body>
                                                             </Accordion.Collapse>
                                                         </Card>
