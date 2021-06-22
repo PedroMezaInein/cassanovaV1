@@ -1851,7 +1851,7 @@ class Proyectos extends Component {
 
     generarBitacora = async (e) => {
         e.preventDefault();
-        questionAlert('¿ESTÁS SEGURO?', 'GENERARÁS EL PDF CON LAS NOTAS DE BITÁCORA GUARDADAS', () => this.generarBitacoraAxios())
+        questionAlert('¿ESTÁS SEGURO?', 'GENERARÁS EL PDF CON LAS NOTAS DE OBRA GUARDADAS', () => this.generarBitacoraAxios())
     }
 
     generarBitacoraAxios = async() => {
@@ -2127,7 +2127,7 @@ class Proyectos extends Component {
                         {
                             data.notas.length > 0 &&
                                 <Tab eventKey = "notas" title = "Historial de notas">
-                                    <table className="table table-responsive-lg table-vertical-center text-center w-100" id="esquemas">
+                                    <table className="table table-responsive-lg table-vertical-center text-center w-100">
                                         <thead>
                                             <tr className="bg-gray-200">
                                                 <th></th>
