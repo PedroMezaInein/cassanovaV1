@@ -228,14 +228,14 @@ class PestamosDevoluciones extends Component {
                                                             <div className="row form-group-marginless row-paddingless">
                                                                 <div className="col-md-12">
                                                                     <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
-                                                                        withicon = { 1 } requirevalidation = { 1 } withformgroup = { 0 } name = "responsable"
+                                                                        withicon = { 1 } requirevalidation = { 0 } withformgroup = { 0 } name = "responsable"
                                                                         value = { form.responsable } onChange = { onChange } type = "text"
                                                                         placeholder = 'NOMBRE DEL RESPONSABLE' iconclass = "fas fa-user"
                                                                         messageinc = "Ingresa el nombre del responsable." />
                                                                 </div>
                                                                 <div className="col-md-12 separator separator-dashed mt-5 mb-1"></div>
                                                                 <div className="col-md-12">
-                                                                    <InputNumberGray formgroup = "mb-0" requirevalidation = { 1 } name = "cantidad" onChange = { onChange }
+                                                                    <InputNumberGray formgroup = "mb-0" requirevalidation = { 0 } name = "cantidad" onChange = { onChange }
                                                                         value = { form.cantidad } type = "text" placeholder = "CANTIDAD" iconclass = "flaticon2-add-square"
                                                                         thousandseparator = { true } messageinc = "Ingresa la cantidad." />
                                                                 </div>

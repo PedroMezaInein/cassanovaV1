@@ -4,6 +4,9 @@ import { Form, Accordion, Card, Row, Col } from 'react-bootstrap'
 import ItemSlider from '../../singles/ItemSlider'
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
+import SliderImages from '../../singles/SliderImages'
 class AvanceForm extends Component {
     state = {
         activeKey: ''
@@ -219,7 +222,6 @@ class AvanceForm extends Component {
                             <div className="d-flex justify-content-center">
                                 <div className="col-md-7">
                                     <Accordion activeKey={activeKey} className="accordion accordion-solid">
-                                        {/* {console.log(proyecto.avances)} */}
                                         {
                                             proyecto.avances.map((avance, key) => {
                                                 return (
@@ -227,12 +229,12 @@ class AvanceForm extends Component {
                                                         <Card key={key}>
                                                             <Accordion.Toggle as={Card.Header} eventKey={avance.id} onClick={() => this.handleAccordion(avance.id)}>
                                                                 <div className="card-title">
-                                                                    <div className="text-center">{avance.semana}</div>
+                                                                    <div className="text-center">SEMANA {avance.semana}</div>
                                                                 </div>
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey={avance.id}>
                                                                 <Card.Body>
-                                                                    {/* <div>
+                                                                    <div>
                                                                         <div className="d-flex justify-content-center">
                                                                             <a rel="noopener noreferrer" href={avance.pdf} target="_blank" className="text-info font-weight-bold font-size-sm">
                                                                                 <div className="bg-light-info rounded-sm mr-5 p-2">
@@ -246,7 +248,7 @@ class AvanceForm extends Component {
                                                                                 proyecto ?
                                                                                     proyecto.contactos.length ?
                                                                                         <span onClick={(e) => { e.preventDefault(); sendMail(avance.id) }} className="text-pink font-weight-bold font-size-sm">
-                                                                                            <div className="bg-light-pink rounded-sm mr-5 p-2">
+                                                                                            <div className="bg-light-pink rounded-sm p-2">
                                                                                                 <span className="svg-icon svg-icon-xl svg-icon-pink mr-2">
                                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} />
                                                                                                 </span>
@@ -258,10 +260,10 @@ class AvanceForm extends Component {
                                                                                     : ''
                                                                             }
                                                                         </div>
-                                                                        <div>
+                                                                        <div className="mt-5">
                                                                             <SliderImages elements={avance.adjuntos} />
                                                                         </div>
-                                                                    </div> */}
+                                                                    </div>
                                                                 </Card.Body>
                                                             </Accordion.Collapse>
                                                         </Card>
