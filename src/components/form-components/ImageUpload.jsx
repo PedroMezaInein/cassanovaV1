@@ -72,26 +72,17 @@ class ImageUpload extends React.Component {
         );
 
         return new Promise((resolve, reject) => {
-            const { src } = this.state
             canvas.toBlob(blob => {
                 if (!blob) {
                     console.error("Canvas is empty");
                     return;
                 }
-                /* blob.name = fileName; */
-                /* console.log('BLOB', blob)
-                console.log('filename', fileName)
-                console.log('src', src) */
                 const reader = new FileReader();
                 reader.readAsDataURL(blob); 
                 reader.onloadend = function() {
-                    var base64data = reader.result;                
-                    console.log(base64data, 'base64');
+                    var base64data = reader.result;
                     resolve(base64data);
                 }
-                /* window.URL.revokeObjectURL(this.fileUrl); */
-                /* this.fileUrl = window.URL.createObjectURL(blob); */
-                /* console.log(this.fileUrl, 'FILE URL') */
                 
             }, "image/jpeg");
         });

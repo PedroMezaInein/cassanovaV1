@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { FileInput, Button, InputGray, InputMoneyGray, RangeCalendar, InputNumberGray } from '../../form-components'
 import { Form, Accordion, Card, Row, Col } from 'react-bootstrap'
-import SliderImages from '../../singles/SliderImages'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
 import ItemSlider from '../../singles/ItemSlider'
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';

@@ -543,7 +543,7 @@ class Bodega extends Component {
         })
     }
     render() {
-        const { modalDelete, modalAdjuntos, modalPrestamo, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, bodega, key, formPrestamos, options, formDevoluciones } = this.state
+        const { modalDelete, modalAdjuntos, modalPrestamo, form, modalSee, bodega, key, formPrestamos, options, formDevoluciones } = this.state
         let tipo = key === 'herramientas' ? 'herramienta' : 'material'
         return (
             <Layout active={'proyectos'}  {...this.props}>

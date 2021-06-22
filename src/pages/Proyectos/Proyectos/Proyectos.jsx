@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL, NOTAS_COLUMNS } from '../../../constants'
+import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
 import { Small } from '../../../components/texts'
 import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -26,7 +26,6 @@ import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
 import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
-import TableForModals from '../../../components/tables/TableForModals'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import SVG from "react-inlinesvg";
 
@@ -1875,7 +1874,7 @@ class Proyectos extends Component {
 
     render() {
         const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead,
-                modalComentarios, tipo, modalNotaObra, options, formBitacora, data, notas } = this.state
+                modalComentarios, tipo, modalNotaObra, options, formBitacora, data } = this.state
         const tableActions = { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete },
             'adjuntos': { function: this.openModalAdjuntos }, 'avances': { function: this.openModalAvances }, 'see': { function: this.openModalSee }, 
             'proyecto': { function: this.changePageRelacionar }, 'lead': { function: this.openModalLead }, 'comment': { function: this.openModalComment },
@@ -2161,7 +2160,7 @@ class Proyectos extends Component {
                                                                         nota.adjuntos.map((adjunto, key) => {
                                                                             return(
                                                                                 <li key = { key } >
-                                                                                    <a target = '_blank' href = { adjunto.url }>
+                                                                                    <a target = '_blank' rel="noreferrer" href = { adjunto.url }>
                                                                                         {adjunto.name}
                                                                                     </a>
                                                                                 </li>
