@@ -224,7 +224,6 @@ class AvanceForm extends Component {
                                     <Accordion activeKey={activeKey} className="accordion accordion-solid">
                                         {
                                             proyecto.avances.map((avance, key) => {
-                                                console.log(avance)
                                                 return (
                                                     <>
                                                         <Card key={key}>
