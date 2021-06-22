@@ -112,6 +112,7 @@ import FormularioContrato from './recursoshumanos/FormularioContrato'
 import ContratoFormRH from './recursoshumanos/ContratoFormRH'
 import NotaBitacoraForm from './proyectos/NotaBitacoraForm'
 import PestamosDevoluciones from './proyectos/PestamosDevoluciones'
+// import FormCalendarioIEquipos from './proyectos/FormCalendarioIEquipos'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
