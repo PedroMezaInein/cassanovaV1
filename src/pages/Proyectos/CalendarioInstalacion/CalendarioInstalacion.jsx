@@ -81,13 +81,32 @@ class CalendarioInstalacion extends Component {
                 console.log(response.data)
                 const { instalaciones } = response.data
                 let aux = []
-                instalaciones.forEach((instalacion) => {  
-                    aux.push( { 
-                        title: instalacion.titulo,
-                        start: instalacion.fecha_limite,
-                        end: instalacion.fecha_limite,
-                        instalacion: instalacion
-                    })
+                let año = new Date().getFullYear();
+                let mes = ''
+                let dia = ''
+                instalaciones.forEach((instalacion) => {
+                    mes = instalacion.fecha.substr(6,2);
+                    dia = instalacion.fecha.substr(8,2);
+                    console.log(dia,'dia')
+                    // aux.push( { 
+                    //     title: instalacion.equipo.equipo,
+                    //     start: instalacion.fecha,
+                    //     end: instalacion.fecha,
+                    //     instalacion: instalacion,
+                    //     backgroundColor: "#009ef7",
+                    //     borderColor: "#009ef7"
+                    // })
+                    for(let x=1; x <= instalacion.duracion; x++){
+                        console.log(Number(Number(año) + Number(x)) + '-' + mes + dia)
+                        aux.push({
+                            title: instalacion.equipo.equipo,
+                            start: Number(Number(año) + Number(x)) + '-' + mes + dia,
+                            end: Number(Number(año) + Number(x)) + '-' + mes + dia,
+                            backgroundColor: "#009ef7",
+                            borderColor: "#009ef7"
+                        })
+                    }
+                    return false
                 })
                 this.setState({ 
                     ...this.state, 
@@ -107,10 +126,9 @@ class CalendarioInstalacion extends Component {
     
     renderEventContent = (eventInfo) => {
         return (
-            <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
-            <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
-                <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
-                <span>{eventInfo.event.title}</span>
+            <OverlayTrigger overlay={<Tooltip><span>{eventInfo.event.title}</span> - <span>{eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span></Tooltip>}>
+            <div style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}}>
+                <span>{eventInfo.event.title}</span> - <span>{eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span>
             </div>
         </OverlayTrigger>
         )
@@ -164,21 +182,8 @@ class CalendarioInstalacion extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         console.log(form)
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.forEach((element) => {
-            switch (element) {
-                case 'fecha':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-            return false
-        })
         waitAlert()
-        await axios.post(`${URL_DEV}v1/proyectos/instalacion-equipos`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
+        await axios.post(`${URL_DEV}v1/proyectos/instalacion-equipos`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('Instalación de equipo registrado con éxito.')
                 this.getInstalaciones()
