@@ -60,17 +60,25 @@ class InputMoneyGray extends Component {
         onChange({ target: { value: values.value, name: name } })
     }
     render() {
-        const { placeholder, value, prefix, thousandseparator, iconclass, customstyle, customlabel, customclass } = this.props
+        const { placeholder, value, prefix, thousandseparator, iconclass, customstyle, customlabel, customclass, withformgroup, customdiv, withtaglabel, withtextlabel, withicon, messageinc } = this.props
         const { inputMoneyValido } = this.state
         return (
-            <div className="form-group">
-                <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
+            <div className={withformgroup?`form-group ${customdiv}`:''}>
+                {
+                    withtaglabel?
+                    <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{withtextlabel?placeholder:''}</label>
+                    :''
+                }
                 <div className="input-group input-group-solid rounded-0">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">
-                            <i className={iconclass + " icon-lg text-dark-50"}></i>
-                        </span>
-                    </div>
+                    {
+                        withicon?
+                        <div className="input-group-prepend">
+                            <span className="input-group-text">
+                                <i className={iconclass + " icon-lg text-dark-50"}></i>
+                            </span>
+                        </div>
+                        :''
+                    }
                     <NumberFormat
                         value={value}
                         displayType={'input'}
@@ -83,7 +91,7 @@ class InputMoneyGray extends Component {
                         style={customstyle}
                     />
                 </div>
-                <span className={inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}>Incorrecto. Ingresa la cantidad.</span>
+                <span className={inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}>{messageinc}</span>
             </div>
         )
     }

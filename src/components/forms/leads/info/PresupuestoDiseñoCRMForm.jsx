@@ -208,6 +208,11 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputMoneyGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
+                                                    withicon={1}
+                                                    withformgroup={1}
                                                     requirevalidation={0}
                                                     type="text"
                                                     placeholder="DESCUENTO"
@@ -218,6 +223,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     prefix={'%'}
                                                     formeditado={formeditado}
                                                     name="descuento"
+                                                    messageinc="Incorrecto. Ingresa la cantidad."
                                                 />
                                             </div>
                                         </div>

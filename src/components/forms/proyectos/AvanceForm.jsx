@@ -1,25 +1,12 @@
 import React, { Component } from 'react'
-import { Calendar, FileInput, Button, InputSinText, InputMoneySinText, Input } from '../../form-components'
-import { Form, Accordion, Card } from 'react-bootstrap'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import SliderImages from '../../singles/SliderImages'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
+import { FileInput, Button, InputGray, InputMoneyGray, RangeCalendar, InputNumberGray } from '../../form-components'
+import { Form, Accordion, Card, Row, Col } from 'react-bootstrap'
 import ItemSlider from '../../singles/ItemSlider'
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 class AvanceForm extends Component {
     state = {
         activeKey: ''
-    }
-    handleChangeDateInicio = date => {
-        const { onChange, form } = this.props
-        if (form.fechaInicio > form.fechaFin) {
-            onChange({ target: { name: 'fechaFin', value: date } })
-        }
-        onChange({ target: { name: 'fechaInicio', value: date } })
-    }
-    handleChangeDateFin = date => {
-        const { onChange } = this.props
-        onChange({ target: { name: 'fechaFin', value: date } })
     }
     handleAccordion = eventKey => {
         const { proyecto: { avances } } = this.props;
@@ -35,152 +22,187 @@ class AvanceForm extends Component {
             activeKey: aux
         })
     }
+    updateRangeCalendar = range => {
+        const { startDate, endDate } = range
+        const { onChange } = this.props
+        onChange({ target: { value: startDate, name: 'fechaInicio' } })
+        onChange({ target: { value: endDate, name: 'fechaFin' } })
+    }
     render() {
         const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, 
-            proyecto, sendMail, formeditado, deleteFile, handleChange, isNew, onChangeAdjunto, ...props } = this.props
+            proyecto, sendMail, formeditado, deleteFile, handleChange, isNew, onChangeAdjunto, deleteRowAvance, ...props } = this.props
         const { activeKey } = this.state
         return (
             <>
                 <Form
                     {...props}
                 >
-                    <div className="form-group row form-group-marginless pt-4 m-3">
-                        <div className="col-md-4">
-                            <Input
-                                requirevalidation={1}
-                                formeditado={formeditado}
-                                name="semana"
-                                value={form.semana}
-                                onChange={onChange}
-                                type="text"
-                                placeholder="NÚMERO DE SEMANA"
-                                iconclass={"far fa-folder-open"}
-                                messageinc="Incorrecto. Ingresa el número de semana."
-                            />
-                        </div>
-                        <div className="col-md-4">
-                            <Calendar
-                                formeditado={formeditado}
-                                onChangeCalendar={this.handleChangeDateInicio}
-                                placeholder="FECHA DE INICIO"
-                                name="fechaInicio"
-                                value={form.fechaInicio}
-                                selectsStart
-                                startDate={form.fechaInicio}
-                                endDate={form.fechaFin}
-                                iconclass={"far fa-calendar-alt"}
-                            />
-                        </div>
-                        <div className="col-md-4">
-                            <Calendar
-                                formeditado={formeditado}
-                                onChangeCalendar={this.handleChangeDateFin}
-                                placeholder="FECHA FINAL"
-                                name="fechaFin"
-                                value={form.fechaFin}
-                                selectsEnd
-                                startDate={form.fechaInicio}
-                                endDate={form.fechaFin}
-                                minDate={form.fechaInicio}
-                                iconclass={"far fa-calendar-alt"}
-                            />
-                        </div>
-                        {
-                            isNew === true ?
-                                <div className = 'mt-2 col-md-12'>
-                                    <ItemSlider
-                                        items = {form.adjuntos.avance.files}
-                                        item = 'avance'
-                                        multiple = { false }
-                                        handleChange = { handleChange }
-                                        />
+                    <Row className="mx-0">
+                        <Col md="5">
+                            <div className="form-group row mx-0 form-group-marginless justify-content-center">
+                                <div className="col-md-7">
+                                    <InputNumberGray
+                                        // formgroup="mb-0"
+                                        requirevalidation={1}
+                                        placeholder="NÚMERO DE SEMANA"
+                                        value={form.semana}
+                                        name="semana"
+                                        onChange={onChange}
+                                        iconclass="far fa-folder-open"
+                                        messageinc="Ingresa el número de semana."
+                                        type="text"
+                                    />
                                 </div>
-                            : ''
-                        }
-                    </div>
-                    {
-                        isNew !== true ?
-                            <div className="mr-3">
-                                <div className="d-flex justify-content-end my-2">
-                                    <Button
-                                        pulse = "pulse-ring"
-                                        className = "btn btn-icon btn-light-info pulse pulse-info"
-                                        onClick = { addRowAvance }
-                                        icon = { faPlus }
-                                        tooltip = { { text: 'Agregar nuevo' } }
-                                        />
+                                <div className="col-md-12 text-center">
+                                    <label className="col-form-label mb-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
+                                    <RangeCalendar
+                                        onChange={this.updateRangeCalendar}
+                                        start={form.fechaInicio}
+                                        end={form.fechaFin}
+                                    />
                                 </div>
                             </div>
-                        : ''
-                    }
-                    {
-                        form.avances.map((avance, key) => {
-                            if(isNew !== true)
-                            return (
-                                <>
-                                    <div className="m-4" key={key}>
-                                        <table className="w-100">
-                                            <tbody>
-                                                <tr>
-                                                    <td rowSpan="2" className="w-400px p-4 text-center">
-                                                        <FileInput
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            onChangeAdjunto={e => onChangeAdjuntoAvance(e, key, 'adjuntos')}
-                                                            placeholder={form['avances'][key]['adjuntos']['placeholder']}
-                                                            value={form['avances'][key]['adjuntos']['value']}
-                                                            name={`${key}-avance`} id={'avance'}
-                                                            accept="image/*"
-                                                            files={form['avances'][key]['adjuntos']['files']}
-                                                            _key={key}
-                                                            deleteAdjuntoAvance={clearFilesAvances}
-                                                            multiple
-                                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
-                                                            iconclass='flaticon2-clip-symbol text-primary'
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <div className="d-flex justify-content-end">
-                                                            <InputMoneySinText
-                                                                requirevalidation={1}
-                                                                formeditado={formeditado}
-                                                                thousandseparator={false}
-                                                                prefix={'%'}
-                                                                name="avance"
-                                                                value={form.avance}
-                                                                onChange={e => onChangeAvance(key, e, 'avance')}
-                                                                placeholder="% DE AVANCE"
-                                                                iconclass={"fas fa-percent"}
-                                                                customstyle={{ width: '110px', borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
-                                                            />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <InputSinText
-                                                            requirevalidation={1}
-                                                            formeditado={formeditado}
-                                                            as="textarea"
-                                                            rows="3"
-                                                            placeholder="DESCRIPCIÓN"
-                                                            name="descripcion"
-                                                            value={form['avances'][key]['descripcion']}
-                                                            onChange={e => onChangeAvance(key, e, 'descripcion')}
-                                                            messageinc="Incorrecto. Ingresa la descripción."
-                                                            style={{ paddingLeft: "10px" }}
-                                                            customstyle={{ borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                        </Col>
+                        <Col md="7" className="align-self-center">
+                            <div className="form-group row mx-0 form-group-marginless justify-content-center">
+                                <div className="col-md-12">
+                                    <InputGray
+                                        withtaglabel={1}
+                                        withtextlabel={1}
+                                        withplaceholder={1}
+                                        withicon={0}
+                                        withformgroup={0}
+                                        placeholder="ACTIVIDADES REALIZADAS"
+                                        name="actividades_realizadas"
+                                        value={form.actividades_realizadas}
+                                        onChange={onChange}
+                                        rows={5}
+                                        as='textarea'
+                                    />
+                                </div>
+                            </div>
+                            {
+                                isNew === true ?
+                                    <div className='mt-2 col-md-12'>
+                                        <ItemSlider
+                                            items={form.adjuntos.avance.files}
+                                            item='avance'
+                                            multiple={false}
+                                            handleChange={handleChange}
+                                        />
                                     </div>
-                                </>
-                            )
-                            return ''
-                        })
-                    }
+                                    : ''
+                            }
+                            {
+                                isNew !== true ?
+                                    <>
+                                        <div className="border border-gray-300 border-solid rounded m-4 p-4">
+                                            <div style={{ display: 'flex', maxHeight: '350px'}} >
+                                                <Scrollbar>
+                                                    {
+                                                        form.avances.map((avance, key) => {
+                                                            if(isNew !== true)
+                                                            return (
+                                                                <>
+                                                                    <div className="m-4" key={key}>
+                                                                        <table className="w-100">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <div className="d-flex justify-content-between align-items-center">
+                                                                                            <div className="font-weight-bolder">Avance {key+1}</div>
+                                                                                            <InputMoneyGray
+                                                                                                withtaglabel={0}
+                                                                                                withtextlabel={0}
+                                                                                                withplaceholder={1}
+                                                                                                withicon={0}
+                                                                                                withformgroup={1}
+                                                                                                customdiv="mb-2"
+                                                                                                requirevalidation={1}
+                                                                                                formeditado={formeditado}
+                                                                                                thousandseparator={false}
+                                                                                                prefix={'%'}
+                                                                                                name="avance"
+                                                                                                value={form.avance}
+                                                                                                onChange={e => onChangeAvance(key, e, 'avance')}
+                                                                                                placeholder="% DE AVANCE"
+                                                                                                iconclass={"fas fa-percent"}
+                                                                                                messageinc="Ingresa el porcentaje."
+                                                                                                // customstyle={{ width: '110px', borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
+                                                                                            />
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <InputGray
+                                                                                            withtaglabel={0}
+                                                                                            withtextlabel={0}
+                                                                                            withplaceholder={1}
+                                                                                            withicon={0}
+                                                                                            withformgroup={1}
+                                                                                            requirevalidation={1}
+                                                                                            formeditado={formeditado}
+                                                                                            as="textarea"
+                                                                                            rows="3"
+                                                                                            placeholder="DESCRIPCIÓN"
+                                                                                            name="descripcion"
+                                                                                            value={form['avances'][key]['descripcion']}
+                                                                                            onChange={e => onChangeAvance(key, e, 'descripcion')}
+                                                                                            messageinc="Ingresa la descripción."
+                                                                                            style={{ paddingLeft: "10px" }}
+                                                                                            customstyle={{ borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
+                                                                                        />
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td className="w-400px p-4 text-left">
+                                                                                        <FileInput
+                                                                                            requirevalidation={0}
+                                                                                            formeditado={formeditado}
+                                                                                            onChangeAdjunto={e => onChangeAdjuntoAvance(e, key, 'adjuntos')}
+                                                                                            placeholder={form['avances'][key]['adjuntos']['placeholder']}
+                                                                                            value={form['avances'][key]['adjuntos']['value']}
+                                                                                            name={`${key}-avance`} id={`${key}-avance`}
+                                                                                            accept="image/*"
+                                                                                            files={form['avances'][key]['adjuntos']['files']}
+                                                                                            _key={key}
+                                                                                            deleteAdjuntoAvance={clearFilesAvances}
+                                                                                            multiple
+                                                                                            classbtn='btn btn-default btn-hover-icon-primary font-weight-bolder btn-hover-bg-light text-hover-primary text-dark-50 mb-3'
+                                                                                            iconclass='flaticon2-clip-symbol text-primary'
+                                                                                            color_label="dark-75"
+                                                                                            classinput='avance'
+                                                                                        />
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div className="separator separator-dashed separator-border-2 mb-7"></div>
+                                                                </>
+                                                            )
+                                                            return ''
+                                                        })
+                                                    }
+                                                        
+                                                        <div className="d-flex justify-content-end">
+                                                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" onClick={addRowAvance}
+                                                                text = 'AGREGAR FILA' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-success"/>
+                                                            {
+                                                                form.avances.length > 1 &&
+                                                                <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-danger btn-hover-light-danger text-danger font-weight-bolder font-size-13px ml-2" onClick={deleteRowAvance}
+                                                                text = 'ELIMINAR FILA' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-danger"/>
+                                                            }
+                                                        </div>
+                                                </Scrollbar>
+                                            </div>
+                                        </div>
+                                    </>
+                                :''
+                            }
+                        </Col>
+                    </Row>
                     <div className="card-footer py-3 pr-1">
                         <div className="row mx-0">
                             <div className="col-lg-12 text-right pr-0 pb-0">
@@ -189,6 +211,7 @@ class AvanceForm extends Component {
                         </div>
                     </div>
                 </Form>
+                
                 {
                     proyecto ?
                         proyecto.avances ?
@@ -196,6 +219,7 @@ class AvanceForm extends Component {
                             <div className="d-flex justify-content-center">
                                 <div className="col-md-7">
                                     <Accordion activeKey={activeKey} className="accordion accordion-solid">
+                                        {/* {console.log(proyecto.avances)} */}
                                         {
                                             proyecto.avances.map((avance, key) => {
                                                 return (
@@ -208,7 +232,7 @@ class AvanceForm extends Component {
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey={avance.id}>
                                                                 <Card.Body>
-                                                                    <div>
+                                                                    {/* <div>
                                                                         <div className="d-flex justify-content-center">
                                                                             <a rel="noopener noreferrer" href={avance.pdf} target="_blank" className="text-info font-weight-bold font-size-sm">
                                                                                 <div className="bg-light-info rounded-sm mr-5 p-2">
@@ -237,7 +261,7 @@ class AvanceForm extends Component {
                                                                         <div>
                                                                             <SliderImages elements={avance.adjuntos} />
                                                                         </div>
-                                                                    </div>
+                                                                    </div> */}
                                                                 </Card.Body>
                                                             </Accordion.Collapse>
                                                         </Card>
