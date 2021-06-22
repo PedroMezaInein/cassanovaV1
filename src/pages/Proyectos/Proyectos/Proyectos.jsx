@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL, NOTAS_COLUMNS } from '../../../constants'
+import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
 import { Small } from '../../../components/texts'
 import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -26,7 +26,6 @@ import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
 import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
-import TableForModals from '../../../components/tables/TableForModals'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import SVG from "react-inlinesvg";
 
@@ -472,6 +471,7 @@ class Proyectos extends Component {
                     }
                 }
             ],
+            actividades_realizadas:'',
             tipoProyecto:''
         },
         options: {
@@ -720,7 +720,14 @@ class Proyectos extends Component {
         )
         this.setState({ ...this.state, form })
     }
-
+    deleteRowAvance = () => {
+        const { form } = this.state
+        form.avances.pop()
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -1444,6 +1451,9 @@ class Proyectos extends Component {
                 case 'correos':
                     data.append(element, JSON.stringify(form[element]))
                     break;
+                case 'actividades_realizadas':
+                    data.append('actividades', form[element])
+                    break;
                 default:
                     break
             }
@@ -1864,7 +1874,7 @@ class Proyectos extends Component {
 
     render() {
         const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead,
-                modalComentarios, tipo, modalNotaObra, options, formBitacora, data, notas } = this.state
+                modalComentarios, tipo, modalNotaObra, options, formBitacora, data } = this.state
         const tableActions = { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete },
             'adjuntos': { function: this.openModalAdjuntos }, 'avances': { function: this.openModalAvances }, 'see': { function: this.openModalSee }, 
             'proyecto': { function: this.changePageRelacionar }, 'lead': { function: this.openModalLead }, 'comment': { function: this.openModalComment },
@@ -2055,15 +2065,15 @@ class Proyectos extends Component {
                     </div>
                 </Modal>
                 <Modal size="xl" title={title} show={modalAvances} handleClose={this.handleCloseAvances}>
-                    <Tabs defaultActiveKey = "nuevo" className = "mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
+                    <Tabs defaultActiveKey = "nuevo" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
                         <Tab eventKey = "nuevo" title = "Nuevo avance">
                             <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
-                                clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }
+                                clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance }  deleteRowAvance = {this.deleteRowAvance}   onSubmit = { this.onSubmitAvance }
                                 onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } formeditado = { formeditado } />
                         </Tab>
-                        <Tab eventKey = "existente" title = "Cargar avance">
+                        <Tab eventKey = "existente" title = "Adjuntar avance">
                             <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
-                                clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitNewAvance }
+                                clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } deleteRowAvance = {this.deleteRowAvance} onSubmit = { this.onSubmitNewAvance }
                                 onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } handleChange = { this.handleChangeAvance }
                                 formeditado = { formeditado } isNew = { true } />
                         </Tab>
@@ -2101,9 +2111,8 @@ class Proyectos extends Component {
                             }
                         </div>
                         <div className="col-md-6 text-center text-md-right">
-                            <Button className = "btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" 
-                                onClick = { this.generarBitacora } text = 'GENERAR PDF' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-info" 
-                                tooltip = { { text: 'AGREGAR' } } icon='' />
+                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" onClick = { this.generarBitacora }
+                                text = 'GENERAR PDF' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-info" />
                         </div>
                     </div>
                     <Tabs defaultActiveKey = "formulario_bitacora" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
@@ -2151,7 +2160,7 @@ class Proyectos extends Component {
                                                                         nota.adjuntos.map((adjunto, key) => {
                                                                             return(
                                                                                 <li key = { key } >
-                                                                                    <a target = '_blank' href = { adjunto.url }>
+                                                                                    <a target = '_blank' rel="noreferrer" href = { adjunto.url }>
                                                                                         {adjunto.name}
                                                                                     </a>
                                                                                 </li>

@@ -347,185 +347,47 @@ export const COMPRAS_COLUMNS = [
 ]
 
 export const DEVOLUCIONES_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'ID',
-        accessor: 'identificador'
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-        customRender: true
-    },    
-    {
-        Header: 'Proveedor',
-        accessor: 'proveedor'
-    },
-    {
-        Header: 'Proyecto',
-        accessor: 'proyecto',
-        customRender: true
-    },
-    {
-        Header: 'Factura',
-        accessor: 'factura'
-    },
-    {
-        Header: 'Área',
-        accessor: 'area',
-        customRender: true
-    },
-    {
-        Header: 'Sub-A',
-        accessor: 'subarea',
-        customRender: true
-    },
-    {
-        Header: 'Monto',
-        accessor: 'monto'
-    },
-    {
-        Header: 'Comisión',
-        accessor: 'comision'
-    },
-    {
-        Header: 'Total',
-        accessor: 'total'
-    },
-    {
-        Header: 'Cuenta',
-        accessor: 'cuenta'
-    },
-    {
-        Header: 'Impuesto',
-        accessor: 'impuesto',
-        customRender: true
-    },
-    {
-        Header: 'Pago',
-        accessor: 'tipoPago',
-        customRender: true
-    },    
-    {
-        Header: 'Estatus',
-        accessor: 'estatusCompra',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    }
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'ID', accessor: 'identificador' },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },    
+    { Header: 'Proveedor', accessor: 'proveedor' },
+    { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
+    { Header: 'Factura', accessor: 'factura' },
+    { Header: 'Área', accessor: 'area', customRender: true },
+    { Header: 'Sub-A', accessor: 'subarea', customRender: true },
+    { Header: 'Monto', accessor: 'monto' },
+    { Header: 'Comisión', accessor: 'comision' },
+    { Header: 'Total', accessor: 'total' },
+    { Header: 'Cuenta', accessor: 'cuenta' },
+    { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
+    { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
+    { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const SOLICITUD_COMPRA_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Proyecto',
-        accessor: 'proyecto',
-        customRender: true
-    },
-    {
-        Header: 'Proveedor',
-        accessor: 'proveedor',
-        customRender: true
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa',
-        customRender: true
-    },
-    {
-        Header: 'Monto',
-        accessor: 'monto',
-        customRender: true
-    },
-    {
-        Header: 'Factura',
-        accessor: 'factura',
-        customRender: true
-    },
-    {
-        Header: 'Pago', //Cambié de Tipo de pago a Pago
-        accessor: 'tipoPago',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    },    
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-        customRender: true
-    },
-    {
-        Header: 'Área',
-        accessor: 'area',
-        customRender: true
-    },
-    {
-        Header: 'Sub-Área',
-        accessor: 'subarea',
-        customRender: true
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
+    { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Monto', accessor: 'monto', customRender: true },
+    { Header: 'Factura', accessor: 'factura', customRender: true },
+    { Header: 'Pago',  accessor: 'tipoPago', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true },    
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Área', accessor: 'area', customRender: true },
+    { Header: 'Sub-Área', accessor: 'subarea', customRender: true }
 ]
 export const SOLICITUD_EGRESO_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Proveedor',
-        accessor: 'proveedor',
-        customRender: true
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa',
-        customRender: true
-    },
-    {
-        Header: 'Monto',
-        accessor: 'monto',
-        customRender: true
-    },
-    {
-        Header: 'Factura',
-        accessor: 'factura',
-        customRender: true
-    },
-    {
-        Header: 'Pago', //Cambié de Tipo de pago a Pago
-        accessor: 'tipoPago',
-        customRender: true
-    },   
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-        customRender: true
-    },
-    {
-        Header: 'Sub-Área',
-        accessor: 'subarea',
-        customRender: true
-    },
-    /* {
-        Header: 'Adjunto',
-        accessor: 'adjunto'
-    },*/
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Monto', accessor: 'monto', customRender: true },
+    { Header: 'Factura', accessor: 'factura', customRender: true },
+    { Header: 'Pago', accessor: 'tipoPago', customRender: true },   
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Sub-Área', accessor: 'subarea', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const PAGOS_COLUMNS = [
@@ -558,925 +420,272 @@ export const SOLICITUD_VENTA_COLUMNS = [
 ]
 
 export const CONCEPTOS_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Partida',
-        accessor: 'partida',
-        customRender: true
-    },
-    {
-        Header: 'Subpartida',
-        accessor: 'subpartida',
-        customRender: true
-    },
-    {
-        Header: 'Clave',
-        accessor: 'clave'
-    },
-    {
-        Header: 'Unidad',
-        accessor: 'unidad',
-        customRender: true
-    },
-    {
-        Header: 'Costo',
-        accessor: 'costo',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        class: 'desc-big',
-        customRender: true
-    },
-    {
-        Header: 'Proveedor',
-        accessor: 'proveedor',
-        customRender: true
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Partida', accessor: 'partida', customRender: true },
+    { Header: 'Subpartida', accessor: 'subpartida', customRender: true },
+    { Header: 'Clave', accessor: 'clave' },
+    { Header: 'Unidad', accessor: 'unidad', customRender: true },
+    { Header: 'Costo', accessor: 'costo', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', class: 'desc-big', customRender: true },
+    { Header: 'Proveedor', accessor: 'proveedor', customRender: true }
 ]
 
 export const ACCESOS_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Plataforma',
-        accessor: 'plataforma',
-        customRender: true
-    },
-    {
-        Header: 'Usuario y Contraseña',
-        accessor: 'usuario',
-        customRender: true
-    },
-    {
-        Header: 'Correo y teléfono de alta',
-        accessor: 'correo',
-        customRender: true
-    },
-    {
-        Header: 'Empresas',
-        accessor: 'empresa',
-        customRender: true,
-        orderable: false
-    },
-    {
-        Header: 'Departamento',
-        accessor: 'departamento',
-        customRender: true,
-        orderable: false
-    },
-    {
-        Header: 'Responsables',
-        accessor: 'responsables',
-        customRender: true,
-        orderable: false
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        class: 'desc-big',
-        customRender: true
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Plataforma', accessor: 'plataforma', customRender: true },
+    { Header: 'Usuario y Contraseña', accessor: 'usuario', customRender: true },
+    { Header: 'Correo y teléfono de alta', accessor: 'correo', customRender: true },
+    { Header: 'Empresas', accessor: 'empresa', customRender: true, orderable: false },
+    { Header: 'Departamento', accessor: 'departamento', customRender: true, orderable: false },
+    { Header: 'Responsables', accessor: 'responsables', customRender: true, orderable: false },
+    { Header: 'Descripción', accessor: 'descripcion', class: 'desc-big', customRender: true }
 ]
 
 export const BODEGA_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'nombre',
-        customRender: true
-    },
-    {
-        Header: 'Partida',
-        accessor: 'partida',
-        customRender: true
-    },
-    {
-        Header: 'Unidad',
-        accessor: 'unidad',
-        customRender: true
-    },
-    {
-        Header: 'Cantidad',
-        accessor: 'cantidad'
-    },
-    {
-        Header: 'Ubicación',
-        accessor: 'ubicacion',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Partida', accessor: 'partida', customRender: true },
+    { Header: 'Unidad', accessor: 'unidad', customRender: true },
+    { Header: 'Cantidad', accessor: 'cantidad' },
+    { Header: 'Ubicación', accessor: 'ubicacion', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const DOCUMENTOS_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa',
-        customRender: true
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'nombre',
-        customRender: true
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-        customRender: true
-    },
-    {
-        Header: 'Documento',
-        accessor:'documento'
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Documento', accessor:'documento' }
 ]
 
 export const IMSS_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa',
-        customRender: true
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-        customRender: true
-    },
-    {
-        Header: 'Adjunto',
-        accessor:'adjunto'
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Adjunto', accessor:'adjunto' }
 ]
 
 export const PRESTAMOS_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Empleado',
-        accessor: 'empleado'
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    },
-    {
-        Header: 'Monto',
-        accessor: 'monto'
-    },
-    {
-        Header: 'Acumulado',
-        accessor: 'acumulado'
-    },
-    {
-        Header: 'Restante',
-        accessor: 'restante'
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Empleado', accessor: 'empleado' },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Monto', accessor: 'monto' },
+    { Header: 'Acumulado', accessor: 'acumulado' },
+    { Header: 'Restante', accessor: 'restante' }
 ]
 
 export const UBICACIONES_BODEGA_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Usuario',
-        accessor: 'user'
-    },
-    {
-        Header: 'Ubicación',
-        accessor: 'ubicacion'
-    },
-    {
-        Header: 'Comentario',
-        accessor: 'comentario'
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha'
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Usuario', accessor: 'user' },
+    { Header: 'Ubicación', accessor: 'ubicacion' },
+    { Header: 'Comentario', accessor: 'comentario' },
+    { Header: 'Fecha', accessor: 'fecha' }
 ]
 
 export const RENDIMIENTOS_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Materiales',
-        accessor: 'materiales',
-        customRender: true
-    },
-    {
-        Header: 'Unidad',
-        accessor: 'unidad',
-        customRender: true
-    },
-    {
-        Header: 'Costo',
-        accessor: 'costo',
-        customRender: true
-    },
-    {
-        Header: 'Proveedor',
-        accessor: 'proveedor',
-        customRender: true
-    },
-    {
-        Header: 'Rendimiento',
-        accessor: 'rendimiento',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Materiales', accessor: 'materiales', customRender: true },
+    { Header: 'Unidad', accessor: 'unidad', customRender: true },
+    { Header: 'Costo', accessor: 'costo', customRender: true },
+    { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
+    { Header: 'Rendimiento', accessor: 'rendimiento', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const REMISION_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-        customRender: true
-    },
-    {
-        Header: 'Proyecto',
-        accessor: 'proyecto',
-        customRender: true
-    },
-    {
-        Header: 'Área',
-        accessor: 'area',
-        customRender: true
-    },
-    {
-        Header: 'Sub - Área',
-        accessor: 'subarea',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    },
-    {
-        Header: 'Adjunto',
-        accessor: 'adjunto'
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
+    { Header: 'Área', accessor: 'area', customRender: true },
+    { Header: 'Sub - Área', accessor: 'subarea', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Adjunto', accessor: 'adjunto' }
 ]
 
 export const EMPRESA_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions',
-        searchable: false,
-        orderable: false
-    },
-    {
-        Header: 'Logo',
-        accessor: 'logo',
-        searchable: false,
-        orderable: false
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'name',
-        customRender: true
-    },
-    {
-        Header: 'Razón social',
-        accessor: 'razonSocial',
-        customRender: true
-    },
-    {
-        Header: 'RFC',
-        accessor: 'rfc',
-        customRender: true
-    },
-    {
-        Header: 'Departamentos',
-        accessor: 'departamento',
-        customRender: true,
-        orderable: false
-    }
+    { Header: 'Opciones', accessor: 'actions', searchable: false, orderable: false },
+    { Header: 'Logo', accessor: 'logo', searchable: false, orderable: false },
+    { Header: 'Nombre', accessor: 'name', customRender: true },
+    { Header: 'Razón social', accessor: 'razonSocial', customRender: true },
+    { Header: 'RFC', accessor: 'rfc', customRender: true },
+    { Header: 'Departamentos', accessor: 'departamento', customRender: true, orderable: false }
 ]
 
 export const CONTRATOS_CLIENTES_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'nombre',
-        customRender: true
-    },
-    {
-        Header: 'Cliente',
-        accessor: 'cliente',
-        customRender: true
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa',
-        customRender: true
-    },
-    {
-        Header: 'Fecha de inicio',
-        accessor: 'fechaInicio',
-        customRender: true
-    },
-    {
-        Header: 'Fecha de fin',
-        accessor: 'fechaFin',
-        customRender: true
-    },
-    {
-        Header: 'Monto con IVA',
-        accessor: 'monto',
-        customRender: true
-    },
-    {
-        Header: 'Monto Pagado',
-        accessor: 'acumulado'
-    },
-    {
-        Header: 'Pendiente por pagar',
-        accessor: 'pendiente'
-    },
-    {
-        Header: 'Tipo de contrato',
-        accessor: 'contrato',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    }
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Cliente', accessor: 'cliente', customRender: true },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Fecha de inicio', accessor: 'fechaInicio', customRender: true },
+    { Header: 'Fecha de fin', accessor: 'fechaFin', customRender: true },
+    { Header: 'Monto con IVA', accessor: 'monto', customRender: true },
+    { Header: 'Monto Pagado', accessor: 'acumulado' },
+    { Header: 'Pendiente por pagar', accessor: 'pendiente' },
+    { Header: 'Tipo de contrato', accessor: 'contrato', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const CONTRATOS_PROVEEDORES_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'nombre',
-        customRender: true
-    },
-    {
-        Header: 'Proveedor',
-        accessor: 'proveedor',
-        customRender: true
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa',
-        customRender: true
-    },
-    {
-        Header: 'Fecha de inicio',
-        accessor: 'fechaInicio',
-        customRender: true
-    },
-    {
-        Header: 'Fecha de fin',
-        accessor: 'fechaFin',
-        customRender: true
-    },
-    {
-        Header: 'Monto con IVA',
-        accessor: 'monto',
-        customRender: true
-    },
-    {
-        Header: 'Monto Pagado',
-        accessor: 'acumulado'
-    },
-    {
-        Header: 'Pendiente por pagar',
-        accessor: 'pendiente'
-    },
-    {
-        Header: 'Tipo de contrato',
-        accessor: 'contrato',
-        customRender: true
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        customRender: true
-    }
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Fecha de inicio', accessor: 'fechaInicio', customRender: true },
+    { Header: 'Fecha de fin', accessor: 'fechaFin', customRender: true },
+    { Header: 'Monto con IVA', accessor: 'monto', customRender: true },
+    { Header: 'Monto Pagado', accessor: 'acumulado' },
+    { Header: 'Pendiente por pagar', accessor: 'pendiente' },
+    { Header: 'Tipo de contrato', accessor: 'contrato', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const UTILIDADES_COLUMNS = [
-    {
-        Header: 'Proyecto',
-        accessor: 'proyecto'
-    },
-    {
-        Header: 'Ventas',
-        accessor: 'ventas'
-    },
-    {
-        Header: 'Compras',
-        accessor: 'compras'
-    },
-    {
-        Header: 'Utilidad',
-        accessor: 'utilidad'
-    },
-    {
-        Header: 'Margen',
-        accessor: 'margen'
-    }
+    { Header: 'Proyecto', accessor: 'proyecto' },
+    { Header: 'Ventas', accessor: 'ventas' },
+    { Header: 'Compras', accessor: 'compras' },
+    { Header: 'Utilidad', accessor: 'utilidad' },
+    { Header: 'Margen', accessor: 'margen' }
 ]
 
 export const FLUJOS_COLUMNS = [
-    {
-        Header: 'Cuenta',
-        accessor: 'cuenta'
-    },
-    {
-        Header: 'Ingresos',
-        accessor: 'ingresos'
-    },
-    {
-        Header: 'Egresos',
-        accessor: 'egresos'
-    },
-    {
-        Header: 'Ventas',
-        accessor: 'ventas'
-    },
-    {
-        Header: 'Compras',
-        accessor: 'compras'
-    },
-    {
-        Header: 'Traspasos',
-        accessor: 'traspasos'
-    },
-    {
-        Header: 'Total',
-        accessor: 'total'
-    }
+    { Header: 'Cuenta', accessor: 'cuenta' },
+    { Header: 'Ingresos', accessor: 'ingresos' },
+    { Header: 'Egresos', accessor: 'egresos' },
+    { Header: 'Ventas', accessor: 'ventas' },
+    { Header: 'Compras', accessor: 'compras' },
+    { Header: 'Traspasos', accessor: 'traspasos' },
+    { Header: 'Total', accessor: 'total' }
 ]
 
 export const NOMINA_OBRA_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Nómina de Obra',
-        accessor: 'periodo'
-    },
-    {
-        Header: 'Fecha inicio',
-        accessor: 'fechaInicio'
-    },
-    {
-        Header: 'Fecha fin',
-        accessor: 'fechaFin'
-    },
-    {
-        Header: 'Total Pago de Nómina',
-        accessor: 'totalPagoNomina'
-    },
-    {
-        Header: 'Restante Nómina',
-        accessor: 'restanteNomina'
-    },
-    {
-        Header: 'Extras',
-        accessor: 'extras'
-    },
-    {
-        Header: 'Gran Total',
-        accessor: 'granTotal'
-    }
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Nómina de Obra', accessor: 'periodo' },
+    { Header: 'Fecha inicio', accessor: 'fechaInicio' },
+    { Header: 'Fecha fin', accessor: 'fechaFin' },
+    { Header: 'Total Pago de Nómina', accessor: 'totalPagoNomina' },
+    { Header: 'Restante Nómina', accessor: 'restanteNomina' },
+    { Header: 'Extras', accessor: 'extras' },
+    { Header: 'Gran Total', accessor: 'granTotal' }
 ]
 
 export const NOMINA_OBRA_SINGLE_COLUMNS = [
-    {
-        Header: 'ID del empleado',
-        accessor: 'idEmpleado'
-    },
-    {
-        Header: 'Empleado',
-        accessor: 'empleado'
-    },
-    {
-        Header: 'Proyecto',
-        accessor: 'proyecto'
-    },
-    {
-        Header: 'Salario x hr',
-        accessor: 'salario_hr'
-    },
-    {
-        Header: 'Horas trabajadas',
-        accessor: 'hr_trabajadas'
-    },
-    {
-        Header: 'Salario x hr extra',
-        accessor: 'salario_hr_extras'
-    },
-    {
-        Header: 'Horas trabajadas extras',
-        accessor: 'hr_extras'
-    },
-    {
-        Header: 'Nómina IMSS',
-        accessor: 'nominaIMSS',
-        total: 'totalNominaImss'
-    },
-    {
-        Header: 'Extras',
-        accessor: 'extras',
-        total: 'totalRestanteNomina'
-    },
-    {
-        Header: 'Viáticos',
-        accessor: 'viaticos',
-        total: 'totalExtras'
-    },
-    {
-        Header: 'Total',
-        accessor: 'total',
-        total: 'total'
-    }
+    { Header: 'ID del empleado', accessor: 'idEmpleado' },
+    { Header: 'Empleado', accessor: 'empleado' },
+    { Header: 'Proyecto', accessor: 'proyecto' },
+    { Header: 'Salario x hr', accessor: 'salario_hr' },
+    { Header: 'Horas trabajadas', accessor: 'hr_trabajadas' },
+    { Header: 'Salario x hr extra', accessor: 'salario_hr_extras' },
+    { Header: 'Horas trabajadas extras', accessor: 'hr_extras' },
+    { Header: 'Nómina IMSS', accessor: 'nominaIMSS', total: 'totalNominaImss' },
+    { Header: 'Extras', accessor: 'extras', total: 'totalRestanteNomina' },
+    { Header: 'Viáticos', accessor: 'viaticos', total: 'totalExtras' },
+    { Header: 'Total', accessor: 'total', total: 'total' }
 ]
 
 export const ADJUNTOS_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Adjunto',
-        accessor: 'url'
-    },
-    {
-        Header: 'Tipo',
-        accessor: 'tipo'
-    }
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Adjunto', accessor: 'url' },
+    { Header: 'Tipo', accessor: 'tipo' }
 ]
 export const ADJUNTOS_COLUMNS_URL = [
-    {
-        Header: 'Adjuntos',
-        accessor: 'url'
-    },
+    { Header: 'Adjuntos', accessor: 'url' }
 ]
 export const NOTAS_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Número de nota',
-        accessor: 'numero_nota'
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha'
-    },
-    {
-        Header: 'Proveedor',
-        accessor: 'proveedor'
-    },
-    {
-        Header: 'Tipo',
-        accessor: 'tipo_nota'
-    },
-    {
-        Header: 'Notas',
-        accessor: 'notas'
-    },
-    {
-        Header: 'Adjunto',
-        accessor: 'adjunto'
-    },
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Número de nota', accessor: 'numero_nota' },
+    { Header: 'Fecha', accessor: 'fecha' },
+    { Header: 'Proveedor', accessor: 'proveedor' },
+    { Header: 'Tipo', accessor: 'tipo_nota' },
+    { Header: 'Notas', accessor: 'notas' },
+    { Header: 'Adjunto', accessor: 'adjunto' }
 ]
 export const ADJUNTOS_PRESUPUESTOS_COLUMNS = [
-    {
-        Header: 'Adjunto',
-        accessor: 'url'
-    },
-    {
-        Header: 'Identificador',
-        accessor: 'identificador'
-    }
+    { Header: 'Adjunto', accessor: 'url' },
+    { Header: 'Identificador', accessor: 'identificador' }
 ]
 
 export const NOMINA_ADMIN_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Periodo de Nómina',
-        accessor: 'periodo'
-    },
-    {
-        Header: 'Fecha inicio',
-        accessor: 'fechaInicio'
-    },
-    {
-        Header: 'Fecha fin',
-        accessor: 'fechaFin'
-    },
-    {
-        Header: 'Total Nómina IMSS',
-        accessor: 'totalNominaIMSS'
-    },
-    {
-        Header: 'Restante Nómina',
-        accessor: 'restanteNomina'
-    },
-    {
-        Header: 'Extras',
-        accessor: 'extras'
-    },
-    {
-        Header: 'Gran Total',
-        accessor: 'granTotal'
-    }
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Periodo de Nómina', accessor: 'periodo' },
+    { Header: 'Fecha inicio', accessor: 'fechaInicio' },
+    { Header: 'Fecha fin', accessor: 'fechaFin' },
+    { Header: 'Total Nómina IMSS', accessor: 'totalNominaIMSS' },
+    { Header: 'Restante Nómina', accessor: 'restanteNomina' },
+    { Header: 'Extras', accessor: 'extras' },
+    { Header: 'Gran Total', accessor: 'granTotal' }
 ]
 
 export const NOMINA_ADMIN_SINGLE_COLUMNS = [
-    {
-        Header: 'ID del empleado',
-        accessor: 'idEmpleado'
-    },
-    {
-        Header: 'Empleado',
-        accessor: 'empleado'
-    },
-    {
-        Header: 'Nómina IMSS',
-        accessor: 'nominaIMSS',
-        total: 'totalNominaImss'
-    },
-    {
-        Header: 'Extras',
-        accessor: 'extras',
-        total: 'totalRestanteNomina'
-    },
-    {
-        Header: 'Viáticos',
-        accessor: 'viaticos',
-        total: 'totalExtras'
-    },
-    {
-        Header: 'Total',
-        accessor: 'total',
-        total: 'total'
-    }
+    { Header: 'ID del empleado', accessor: 'idEmpleado' },
+    { Header: 'Empleado', accessor: 'empleado' },
+    { Header: 'Nómina IMSS', accessor: 'nominaIMSS', total: 'totalNominaImss' },
+    { Header: 'Extras', accessor: 'extras', total: 'totalRestanteNomina' },
+    { Header: 'Viáticos', accessor: 'viaticos', total: 'totalExtras' },
+    { Header: 'Total', accessor: 'total', total: 'total' }
 ]
 
 export const EMPLEADOS_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'nombre',
-        customRender: true
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa',
-        customRender: true
-    },
-    {
-        Header: 'Departamento',
-        accessor: 'departamento',
-        customRender: true,
-        orderable: false
-    },
-    {
-        Header: 'Puesto',
-        accessor: 'puesto',
-        customRender: true
-    },
-    {
-        Header: 'RFC',
-        accessor: 'rfc',
-        customRender: true
-    },
-    {
-        Header: 'NSS',
-        accessor: 'nss',
-        customRender: true
-    },
-    {
-        Header: 'CURP',
-        accessor: 'curp',
-        customRender: true
-    },
-    {
-        Header: 'Estatus',
-        accessor: 'estatus',
-        customRender: true
-    },
-    {
-        Header: 'F.Inicio',
-        accessor: 'fechaInicio',
-        customRender: true
-    },
-    {
-        Header: 'Cuenta de Depósito',
-        accessor: 'cuenta'
-    },
-    {
-        Header: 'Contacto de Emergencia',
-        accessor: 'nombre_emergencia',
-        customRender: true
-    },
-    {
-        Header: 'Días de vacaciones disponibles',
-        accessor: 'vacaciones_tomadas',
-        customRender: true
-    }
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Departamento', accessor: 'departamento', customRender: true, orderable: false },
+    { Header: 'Puesto', accessor: 'puesto', customRender: true },
+    { Header: 'RFC', accessor: 'rfc', customRender: true },
+    { Header: 'NSS', accessor: 'nss', customRender: true },
+    { Header: 'CURP', accessor: 'curp', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'F.Inicio', accessor: 'fechaInicio', customRender: true },
+    { Header: 'Cuenta de Depósito', accessor: 'cuenta' },
+    { Header: 'Contacto de Emergencia', accessor: 'nombre_emergencia', customRender: true },
+    { Header: 'Días de vacaciones disponibles', accessor: 'vacaciones_tomadas', customRender: true }
 ]
 
 export const EMPLEADOS_COLUMNS_OBRA = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions_obra'
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'nombre_obra'
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa_obra'
-    },
-    {
-        Header: 'Puesto',
-        accessor: 'puesto_obra'
-    },
-    {
-        Header: 'RFC',
-        accessor: 'rfc_obra'
-    },
-    {
-        Header: 'NSS',
-        accessor: 'nss_obra'
-    },
-    {
-        Header: 'CURP',
-        accessor: 'curp_obra'
-    },
-    {
-        Header: 'Estatus',
-        accessor: 'estatus_obra'
-    },
-    {
-        Header: 'Fecha de Inicio',
-        accessor: 'fechaInicio_obra'
-    },
-    {
-        Header: 'Tipo de Empleado',
-        accessor: 'tipo_empleado_obra'
-    },
-    {
-        Header: 'Cuenta de Depósito',
-        accessor: 'cuenta_obra'
-    },
-    {
-        Header: 'Contacto de Emergencia',
-        accessor: 'nombre_emergencia_obra'
-    },
-    {
-        Header: 'Días de Vacaciones Tomadas',
-        accessor: 'vacaciones_tomadas_obra'
-    }
+    { Header: 'Opciones', accessor: 'actions_obra' },
+    { Header: 'Nombre', accessor: 'nombre_obra' },
+    { Header: 'Empresa', accessor: 'empresa_obra' },
+    { Header: 'Puesto', accessor: 'puesto_obra' },
+    { Header: 'RFC', accessor: 'rfc_obra' },
+    { Header: 'NSS', accessor: 'nss_obra' },
+    { Header: 'CURP', accessor: 'curp_obra' },
+    { Header: 'Estatus', accessor: 'estatus_obra' },
+    { Header: 'Fecha de Inicio', accessor: 'fechaInicio_obra' },
+    { Header: 'Tipo de Empleado', accessor: 'tipo_empleado_obra' },
+    { Header: 'Cuenta de Depósito', accessor: 'cuenta_obra' },
+    { Header: 'Contacto de Emergencia', accessor: 'nombre_emergencia_obra' },
+    { Header: 'Días de Vacaciones Tomadas', accessor: 'vacaciones_tomadas_obra' }
 ]
 
 export const PRESUPUESTO_COLUMNS = [
-    {
-        Header: 'Opciones',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa'
-    },
-    {
-        Header: 'Proyecto',
-        accessor: 'proyecto'
-    },
-    {
-        Header: 'Área',
-        accessor: 'area'
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha'
-    },
-    {
-        Header: 'Tiempo de ejecución',
-        accessor: 'tiempo_ejecucion'
-    },
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Empresa', accessor: 'empresa' },
+    { Header: 'Proyecto', accessor: 'proyecto' },
+    { Header: 'Área', accessor: 'area' },
+    { Header: 'Fecha', accessor: 'fecha' },
+    { Header: 'Tiempo de ejecución', accessor: 'tiempo_ejecucion' }
     
 ]
 
 export const USUARIOS = [                
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'name',
-        customRender: true
-    },
-    {
-        Header: 'Correo',
-        accessor: 'email',
-        customRender: true
-    },
-    {
-        Header: 'Departamento',
-        accessor: 'departamento',
-        customRender: true
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'name', customRender: true },
+    { Header: 'Correo', accessor: 'email', customRender: true },
+    { Header: 'Departamento', accessor: 'departamento', customRender: true }
 ]
 
 export const CLIENTES = [                
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'name',
-        customRender: true
-    },
-    {
-        Header: 'Correo',
-        accessor: 'email',
-        customRender: true
-    },
-    {
-        Header: 'Proyecto',
-        accessor: 'proyecto',
-        customRender: true
-    }
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'name', customRender: true },
+    { Header: 'Correo', accessor: 'email', customRender: true },
+    { Header: 'Proyecto', accessor: 'proyecto', customRender: true }
 ]
 
 export const PRECIO_M2_DISEÑOS_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions'
-    },
-    {
-        Header: 'M2',
-        accessor: 'm2'
-    },
-    {
-        Header: 'Esquema 1',
-        accessor: 'esquema1'
-    },
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'M2', accessor: 'm2' },
+    { Header: 'Esquema 1', accessor: 'esquema1' },
     { Header: 'Esquema 2', accessor: 'esquema2' },
     { Header: 'Esquema 3', accessor: 'esquema3' }
 ]
@@ -1538,4 +747,15 @@ export const CONTRATOS_RRHH_COLUMNS = [
     { Header: 'Fecha Inicio', accessor: 'fecha_inicio' },
     { Header: 'Fecha Fin', accessor: 'fecha_fin' },
     { Header: 'Estatus', accessor: 'estatus' }
+]
+
+export const EQUIPOS_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions'},
+    { Header: 'Equipo', accessor: 'equipo', customRender: true },
+    { Header: 'Marca', accessor: 'marca', customRender: true },
+    { Header: 'Modelo', accessor: 'modelo', customRender: true },
+    { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
+    { Header: 'Partida', accessor: 'partida', customRender: true },
+    { Header: 'Observaciones', accessor: 'observaciones', customRender: true },
+    { Header: 'Ficha técnica', accessor: 'ficha', customRender: true, searchable: false, orderable: false }
 ]

@@ -11,7 +11,7 @@ const NavItem = children => {
     const { prestamo: { id, cantidad, sumDevoluciones, proyecto, fecha }, onSelect } = children
     return (
         <OverlayTrigger overlay = { <Tooltip>{proyecto.nombre}</Tooltip> } >
-            <Nav.Item className = 'mr-1' onClick = { (e) => { e.preventDefault(); onSelect(id) } } className="">
+            <Nav.Item className = 'mr-1' onClick = { (e) => { e.preventDefault(); onSelect(id) } }>
                 <Nav.Link eventKey = { id } className="nav-link btn btn-hover-light-primary d-flex flex-column flex-center border-radius-21px min-w-70px mr-2 py-4 px-3 ">
                     <span className="opacity-50 font-size-sm font-weight-bold text-primary">
                         { setDiaMesTexto(fecha) }
@@ -167,9 +167,9 @@ class PestamosDevoluciones extends Component {
                                                                 </div>
                                                             </div>
                                                             <div className="ml-2 d-flex justify-content-center">
-                                                                <a className="btn btn-sm btn-icon btn-hover-bg-light btn-hover-icon-danger" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA DEVOLUCIÓN?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteDevolucion(devolucion)) }}>
+                                                                <span className="btn btn-sm btn-icon btn-hover-bg-light btn-hover-icon-danger" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA DEVOLUCIÓN?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteDevolucion(devolucion)) }}>
                                                                     <i className="la la-trash icon-2x pr-1"></i>
-                                                                </a>
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     )

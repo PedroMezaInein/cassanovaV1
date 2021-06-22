@@ -105,6 +105,7 @@ import commentsPanel from './usuarios/tareas/CommentsPanel'
 import addTaskForm from './usuarios/tareas/AddTaskForm'
 import TagColorForm from './usuarios/tareas/TagColorForm'
 import NewTag from './usuarios/tareas/NewTag'
+import EquipoForm from './proyectos/EquipoForm'
 import EtiquetasForm from './catalogos/EtiquetasForm'
 import FormEstadoResultados from './reportes/FormEstadoResultados'
 import FormularioContrato from './recursoshumanos/FormularioContrato'
@@ -216,4 +217,5 @@ export const Task = task
 export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
-export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, PestamosDevoluciones }
+export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, PestamosDevoluciones,
+    EquipoForm }
