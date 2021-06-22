@@ -2134,8 +2134,8 @@ class Proyectos extends Component {
                                                 <th>Fecha</th>
                                                 <th>Proveedor</th>
                                                 <th>Tipo</th>
-                                                <th>Notas</th>
-                                                <th>Adjuntos</th>
+                                                <th style={{minWidth:'200px'}}>Notas</th>
+                                                <th style={{minWidth:'180px'}}>Adjuntos</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -2153,14 +2153,14 @@ class Proyectos extends Component {
                                                             <td className = 'px-2 text-break'> { setDateTable(nota.fecha) } </td>
                                                             <td className = 'px-2 text-break'> { nota.proveedor ? nota.proveedor.razon_social : '-' } </td>
                                                             <td className = 'px-2 text-break'> { nota.tipo_nota } </td>
-                                                            <td className = 'px-2 text-break'> { nota.notas } </td>
-                                                            <td className = 'px-2 text-break'>
-                                                                <ul>
+                                                            <td className = 'px-2 text-break text-justify'> { nota.notas } </td>
+                                                            <td className = 'px-2 text-break text-justify'>
+                                                                <ul className="text-primary">
                                                                     {
                                                                         nota.adjuntos.map((adjunto, key) => {
                                                                             return(
                                                                                 <li key = { key } >
-                                                                                    <a target = '_blank' rel="noreferrer" href = { adjunto.url }>
+                                                                                    <a target = '_blank' rel="noreferrer" href = { adjunto.url } className="text-primary text-hover-success">
                                                                                         {adjunto.name}
                                                                                     </a>
                                                                                 </li>
