@@ -50,7 +50,7 @@ class SliderImages extends Component {
                                     <div>
                                         <img alt = '' src={elements[active].adjunto.url} className="rounded pdfview-img"/>
                                     </div>
-                                    <p className="font-weight-bolder font-size-lg">
+                                    <p className="font-weight-light font-size-lg mt-4 text-justify px-4">
                                         {
                                             elements[active].descripcion
                                         }
