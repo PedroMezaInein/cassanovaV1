@@ -4,6 +4,9 @@ import { Form, Accordion, Card, Row, Col } from 'react-bootstrap'
 import ItemSlider from '../../singles/ItemSlider'
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
+import SliderImages from '../../singles/SliderImages'
 class AvanceForm extends Component {
     state = {
         activeKey: ''
@@ -227,7 +230,7 @@ class AvanceForm extends Component {
                                                         <Card key={key}>
                                                             <Accordion.Toggle as={Card.Header} eventKey={avance.id} onClick={() => this.handleAccordion(avance.id)}>
                                                                 <div className="card-title">
-                                                                    <div className="text-center">{avance.semana}</div>
+                                                                    <div className="text-center">SEMANA {avance.semana}</div>
                                                                 </div>
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey={avance.id}>
