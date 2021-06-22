@@ -750,11 +750,12 @@ export const CONTRATOS_RRHH_COLUMNS = [
 ]
 
 export const EQUIPOS_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions' },
-    { Header: 'Equipo', accessor: 'equipo' },
-    { Header: 'Marca', accessor: 'marca' },
-    { Header: 'Modelo', accessor: 'modelo' },
-    { Header: 'Proveedor', accessor: 'proveedor' },
-    { Header: 'Partida', accessor: 'partida' },
-    { Header: 'Observaciones', accessor: 'observaciones' }
+    { Header: 'OPCIONES', accessor: 'actions'},
+    { Header: 'Equipo', accessor: 'equipo', customRender: true },
+    { Header: 'Marca', accessor: 'marca', customRender: true },
+    { Header: 'Modelo', accessor: 'modelo', customRender: true },
+    { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
+    { Header: 'Partida', accessor: 'partida', customRender: true },
+    { Header: 'Observaciones', accessor: 'observaciones', customRender: true },
+    { Header: 'Ficha técnica', accessor: 'ficha', customRender: true, searchable: false, orderable: false }
 ]
