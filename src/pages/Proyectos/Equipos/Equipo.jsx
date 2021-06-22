@@ -4,11 +4,21 @@ import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { EQUIPOS_COLUMNS, URL_DEV } from '../../../constants'
-import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { customInputAlert, deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { setSingleHeader } from '../../../functions/routers'
-import { setTextTableReactDom } from '../../../functions/setters'
+import { setOptions, setTextTableReactDom } from '../../../functions/setters'
 import $ from "jquery";
-class Bodega extends Component {
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
+import Swal from 'sweetalert2'
+import InputGray from '../../../components/form-components/Gray/InputGray'
+import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
+class Equipo extends Component {
+
+    state = {
+        form: { marca: '', equipo: '', modelo: '', proveedor: '', partida: '', observaciones: ''},
+        options: { proveedores: [], partidas: [] }
+    }
 
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -20,6 +30,11 @@ class Bodega extends Component {
         });
         if (!module)
             history.push('/')
+        this.getOptions()
+    }
+
+    clearForm = () => {
+        return { marca: '', equipo: '', modelo: '', proveedor: '', partida: '', observaciones: ''} 
     }
 
     setEquipos = (equipos) => {
@@ -74,8 +89,70 @@ class Bodega extends Component {
     }
 
     doubleClick = (data, tipo) => {
-        console.log(data, 'data')
-        console.log(tipo, 'tipo')
+        const { form, options } = this.state
+        switch(tipo){
+            case 'partida':
+            case 'proveedor':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        customInputAlert(
+            <div>
+                <h2 className="swal2-title mb-4 mt-2"> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo !== 'proveedor' && tipo !== 'partida' && tipo !== 'observaciones' ?
+                        <InputGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } swal = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } />
+                    : ''
+                }
+                {
+                    tipo === 'proveedor' ?
+                        <SelectSearchGray options = { options.proveedores } onChange = { (value) => { this.onChangeSwal(value, tipo)} } 
+                            name = { tipo } value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                            placeholder={this.setSwalPlaceholder(tipo)}/>
+                    : ''
+                }
+                {
+                    tipo === 'partida' ?
+                        <SelectSearchGray options = { options.partidas } onChange = { (value) => { this.onChangeSwal(value, tipo)} } 
+                            name = { tipo } value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                            placeholder={this.setSwalPlaceholder(tipo)}/>
+                    : ''
+                }
+                {
+                    tipo === 'observaciones' ?
+                        <InputGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } swal = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } as = 'textarea' rows = '5'/>
+                    : ''
+                }
+            </div>,
+            <Update />,
+            () => { this.patchEquipo(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'proveedor':
+                return 'SELECCIONA EL PROVEEDOR'
+            case 'partida':
+                return 'SELECCIONA LA PARTIDA'
+            default:
+                return ''
+        }
     }
 
     changePageEdit = equipo => {
@@ -87,6 +164,24 @@ class Bodega extends Component {
         deleteAlert('¿SEGURO DESEAS ELIMINAR EL EQUIPO?','', () => this.deleteEquipoAxios(equipo.id))
     }
 
+    getOptions = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.options(`${URL_DEV}v1/proyectos/equipos`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { partidas, proveedores } = response.data
+                const { options } = this.state
+                options.proveedores = setOptions(proveedores, 'razon_social', 'id')
+                options.partidas = setOptions(partidas, 'nombre', 'id')
+                this.setState({ ...this.state, options })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     deleteEquipoAxios = async(id) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -95,6 +190,22 @@ class Bodega extends Component {
                 doneAlert('Equipo eliminado con éxito')
                 this.getEquiposAxios()
             }, (error) =>  { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    patchEquipo = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v1/proyectos/equipos/${tipo}/${data.id}`,  { value: value }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getEquiposAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El equipo fue editado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -121,4 +232,4 @@ class Bodega extends Component {
 const mapStateToProps = state => { return { authUser: state.authUser } }
 const mapDispatchToProps = dispatch => ({ })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bodega)
+export default connect(mapStateToProps, mapDispatchToProps)(Equipo)
