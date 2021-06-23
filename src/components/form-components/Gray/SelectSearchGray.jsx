@@ -8,8 +8,7 @@ class SelectSearchGray extends Component {
     }
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle, customclass, messageinc, customdiv} = this.props
-
+        const { customstyle, customclass, messageinc, customdiv, withicon, iconvalid} = this.props
         let validado = false;
         if (requirevalidation) {
             if (onChange === null || onChange.value === null) {
@@ -24,16 +23,24 @@ class SelectSearchGray extends Component {
             <>
                 <div className={`form-group ${customdiv}`}>
                     <div className="input-group input-group-solid rounded-0">
-                        <div className="input-group-prepend">
-                            <span className="input-group-text"> <i className = "flaticon2-search-1 icon-md text-dark-50"></i> </span>
-                        </div>
+                        {
+                            withicon?
+                            <div className="input-group-prepend">
+                                <span className="input-group-text">
+                                    <i className="flaticon2-search-1 icon-md text-dark-50"></i>
+                                </span>
+                            </div>
+                            :''
+                        }
                         <input
-                            className={`form-control text-dark-50 font-weight-bold text-uppercase ${customclass}`}
+                            className={`${customclass} form-control text-dark-50 font-weight-bold text-uppercase ${validado ? 'is-valid sin_icono' : `is-invalid ${iconvalid?'':'sin_icono'}`}`}
                             {...valueProps}
                             style={customstyle}
                         />
                     </div>
-                    <span className={validado ? "form-text text-danger hidden" : "form-text text-danger is-invalid text-left"}> {messageinc} </span>
+                    {
+                        iconvalid? '': <span className={validado ? "form-text text-danger hidden" : "form-text text-danger is-invalid text-left"}> {messageinc} </span>
+                    }
                 </div>
             </>
         );

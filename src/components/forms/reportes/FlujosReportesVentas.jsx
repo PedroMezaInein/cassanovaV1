@@ -102,17 +102,17 @@ class FlujosReportesForm extends Component {
                     <div className="col-md-3">
                         <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'empresa'
                             options = { options.empresas } placeholder = 'SELECCIONA LA EMPRESA' value = { form.empresa }
-                            onChange = { this.updateEmpresa } iconclass = "far fa-building" messageinc = "Selecciona la empresa." />
+                            onChange = { this.updateEmpresa } iconclass = "far fa-building" messageinc = "Selecciona la empresa." withicon={1} />
                     </div>
                     <div className="col-md-2">
                         <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getAños() }
                             placeholder = 'SELECCIONA EL AÑO' value = { form.año } onChange = { this.updateAño }
-                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el año." />
+                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el año." withicon={1}/>
                     </div>
                     <div className="col-md-2"> 
                         <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getRangos() } 
                             placeholder = 'SELECCIONA EL RANGO' value = { form.rango } onChange = { this.updateRango }
-                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el rango." />
+                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el rango." withicon={1}/>
                     </div>
                     
                     {
@@ -120,13 +120,13 @@ class FlujosReportesForm extends Component {
                             <div className="col-md-3">
                                 <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'mes' options = { this.getMeses() }
                                     placeholder = 'SELECCIONA EL MES' value = { form.mes } onChange = { this.updateMes }
-                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el mes." />
+                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el mes." withicon={1}/>
                             </div>
                         : form.rango === "semestral" ?
                             <div className="col-md-3">
                                 <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'periodo' options = { this.getPeriodo() }
                                     placeholder = 'SELECCIONA EL PERIODO' value = { form.periodo } onChange = { this.updatePeriodo }
-                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el periodo." />
+                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el periodo." withicon={1}/>
                             </div>
                         : <></>
                     }

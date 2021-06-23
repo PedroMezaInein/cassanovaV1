@@ -100,6 +100,7 @@ class HistorialContactoForm extends Component {
                                             messageinc="Incorrecto. Selecciona el medio de contacto."
                                             withtaglabel={1}
                                             withtextlabel={1}
+                                            withicon={1}
                                         />
                                     </div>
                                     {

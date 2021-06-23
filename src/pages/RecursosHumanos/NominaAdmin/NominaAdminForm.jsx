@@ -8,6 +8,9 @@ import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { NominaAdminForm as NominaAdminFormulario } from '../../../components/forms'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { onChangeAdjunto } from '../../../functions/onChanges'
+import moment from 'moment'
+const meses = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
 class NominaAdminForm extends Component {
     state = {
@@ -19,6 +22,7 @@ class NominaAdminForm extends Component {
         title: 'Nueva nómina administrativa',
         form: {
             periodo: '',
+            empresa:'',
             empresas: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -31,6 +35,9 @@ class NominaAdminForm extends Component {
                 restanteNomina: '',
                 extras: ''
             }],
+            quincena:new Date().getDate() < 15 ? '1Q' : '2Q',
+            mes: meses[new Date().getMonth()],
+            año: new Date().getFullYear(),
             adjuntos: {
                 adjunto: {
                     value: '',
@@ -43,7 +50,8 @@ class NominaAdminForm extends Component {
             usuarios: [],
             empresas: [],
             cuentas: []
-        }
+        },
+        action: '',
     }
 
     componentDidMount() {
@@ -61,7 +69,8 @@ class NominaAdminForm extends Component {
                 this.setState({
                     ...this.state,
                     title: 'Nueva nómina administrativa',
-                    formeditado: 0
+                    formeditado: 0,
+                    action: 'add'
                 })
                 break;
             case 'edit':
@@ -75,7 +84,7 @@ class NominaAdminForm extends Component {
                         form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
 
                         let aux = []
-                        nomina.nominas_administrativas.map((nom, key) => {
+                        nomina.nominas_administrativas.forEach((nom, key) => {
                             aux.push(
                                 {
                                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
@@ -85,27 +94,26 @@ class NominaAdminForm extends Component {
                                     id: nom.id
                                 }
                             )
-                            return false
                         })
 
-                        if (aux.length) {
-                            form.nominasAdmin = aux
-                        } else {
-                            form.nominasAdmin = [{
-                                usuario: '',
-                                nominImss: '',
-                                restanteNomina: '',
-                                extras: ''
-                            }]
+                        if (aux.length) { form.nominasAdmin = aux } 
+                        else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+
+                        if(nomina.egresos){
+                            if(nomina.egresos.length){
+                                if(nomina.cuentaImss){ form.cuentaImss = nomina.cuentaImss.id.toString() }
+                                if(nomina.cuentaRestante){ form.cuentaRestante = nomina.cuentaRestante.id.toString() }
+                                if(nomina.cuentaExtras){ form.cuentaExtras = nomina.cuentaExtras.id.toString() }
+                            }
                         }
-                        
                         this.setState({
                             ...this.state,
                             title: 'Editar nómina administrativa',
                             nomina: nomina,
                             form,
                             options,
-                            formeditado: 1
+                            formeditado: 1,
+                            action: 'edit'
                         })
                     }
                     else
@@ -165,6 +173,7 @@ class NominaAdminForm extends Component {
         const { form } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
+        console.log(form, 'form')
         aux.forEach((element) => {
             switch (element) {
                 /* case 'fechaInicio':
@@ -207,16 +216,79 @@ class NominaAdminForm extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, nomina } = this.state
-        await axios.put(URL_DEV + 'rh/nomina-administrativa/' + nomina.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { history } = this.props
+                const { nom } = response.data
+                const { options } = this.state
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
-                history.push({ pathname: '/rh/nomina-admin' });
+                let aux = []
+                nom.nominas_administrativas.forEach((element, key) => {
+                    aux.push(
+                        {
+                            usuario: element.empleado ? element.empleado.id.toString() : '',
+                            nominImss: element.nomina_imss,
+                            restanteNomina: element.restante_nomina,
+                            extras: element.extras,
+                            id: element.id
+                        }
+                    )
+                })
+                if (aux.length) { form.nominasAdmin = aux } 
+                else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
+                window.history.replaceState(nom, 'nomina')
+                this.setState({...this.state, nomina: nom, options, form })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+
+    deleteRowNominaAdmin = async(nominaAdmin, key) => {
+        if(nominaAdmin.id){
+            waitAlert()
+            const { access_token } = this.props.authUser
+            const { nomina } = this.state
+            await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}/${nominaAdmin.id}`, { headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    Swal.close()
+                    const { form, options } = this.state
+                    const { nom } = response.data
+                    let aux = []
+                    nom.nominas_administrativas.forEach((element, key) => {
+                        aux.push(
+                            {
+                                usuario: element.empleado ? element.empleado.id.toString() : '',
+                                nominImss: element.nomina_imss,
+                                restanteNomina: element.restante_nomina,
+                                extras: element.extras,
+                                id: element.id
+                            }
+                        )
+                    })
+                    if (aux.length) { form.nominasAdmin = aux } 
+                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                    options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
+                    window.history.replaceState(nom, 'nomina')
+                    this.setState({...this.state, nomina: nom, options, form })
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{
+            let aux = []
+            const { form, options } = this.state
+            form.nominasAdmin.forEach((element, index) => {
+                if(index !== key)
+                    aux.push(element)
+            })
+            if (aux.length) { form.nominasAdmin = aux } 
+            else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+            options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
+            this.setState({...this.state, form, options})
+        }
     }
 
     clearForm = () => {
@@ -262,8 +334,19 @@ class NominaAdminForm extends Component {
 
     onChange = e => {
         const { name, value } = e.target
-        const { form } = this.state
+        let { form } = this.state
         form[name] = value
+        if(form.empresa !== ''){
+            form.periodo = form.año+form.mes+form.quincena
+            if(form.quincena === '1Q'){
+                form.fechaInicio= moment(`${form.año}-${form.mes}-01`).format("DD/MM/YYYY");
+                form.fechaFin= moment(`${form.año}-${form.mes}-15`).format("DD/MM/YYYY");
+            }else{
+                var diasMes = new Date(form.año, form.mes, 0).getDate();
+                form.fechaInicio= moment(`${form.año}-${form.mes}-16`).format("DD/MM/YYYY");
+                form.fechaFin= moment(`${form.año}-${form.mes}-${diasMes}`).format("DD/MM/YYYY");
+            }
+        }
         this.setState({ ...this.state, form })
     }
     
@@ -301,50 +384,6 @@ class NominaAdminForm extends Component {
         const { form } = this.state
         form.nominasAdmin.push( {  usuario: '', nominImss: '', restanteNomina: '', extras: '' } )
         this.setState({ ...this.state, form })
-    }
-
-    deleteRowNominaAdmin = async(nominaAdmin, key) => {
-        if(nominaAdmin.id){
-            waitAlert()
-            const { access_token } = this.props.authUser
-            const { nomina } = this.state
-            await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}/${nominaAdmin.id}`, { headers: setSingleHeader(access_token) }).then(
-                (response) => {
-                    const { form, options } = this.state
-                    const { nom } = response.data
-                    let aux = []
-                    nom.nominas_administrativas.forEach((element, key) => {
-                        aux.push(
-                            {
-                                usuario: element.empleado ? element.empleado.id.toString() : '',
-                                nominImss: element.nomina_imss,
-                                restanteNomina: element.restante_nomina,
-                                extras: element.extras,
-                                id: element.id
-                            }
-                        )
-                    })
-                    if (aux.length) { form.nominasAdmin = aux } 
-                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
-                    options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
-                    this.setState({...this.state, nomina: nom, options, form })
-                }, (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-        }else{
-            let aux = []
-            const { form, options } = this.state
-            form.nominasAdmin.forEach((element, index) => {
-                if(index !== key)
-                    aux.push(element)
-            })
-            if (aux.length) { form.nominasAdmin = aux } 
-            else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
-            options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
-            this.setState({...this.state, form, options})
-        }
     }
 
     handleChange = (files, item) => {
@@ -389,14 +428,14 @@ class NominaAdminForm extends Component {
     }
 
     render() {
-        const { options, title, form, formeditado, data } = this.state
+        const { options, title, form, formeditado, data, action } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <NominaAdminFormulario title = { title } formeditado = { formeditado } className = "px-3" options = { options } form = { form }
                     addRowNominaAdmin = { this.addRowNominaAdmin } deleteRowNominaAdmin = { this.deleteRowNominaAdmin } 
                     onChangeNominasAdmin = { this.onChangeNominasAdmin } onChange = { this.onChange } clearFiles = { this.clearFiles } 
                     onSubmit = { this.onSubmit } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange } 
-                    usuarios = { data.usuarios } />
+                    usuarios = { data.usuarios } action = { action } onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}/>
             </Layout>
         )
     }

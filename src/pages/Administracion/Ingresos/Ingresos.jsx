@@ -552,7 +552,7 @@ class Ingresos extends Component {
                         :
                             <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
                                 onChange = { (value) => { this.onChangeSwal(value, tipo) } } withtaglabel = { 1 } 
-                                name = { tipo } customdiv = "mb-3"/>
+                                name = { tipo } customdiv = "mb-3" withicon={1}/>
                     : ''
                 }
                 {

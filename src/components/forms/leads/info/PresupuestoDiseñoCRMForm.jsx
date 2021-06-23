@@ -178,6 +178,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     messageinc="Ingresa selecciona el esquema."
                                                     withtaglabel={1}
                                                     withtextlabel={1}
+                                                    withicon={1}
                                                 />
                                             </div>
                                         </div>

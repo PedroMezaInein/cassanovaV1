@@ -364,7 +364,7 @@ class Contratos extends Component {
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
-                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                        placeholder={this.setSwalPlaceholder(tipo)} withicon={1}/>
                     :<></>
                 }
             </div>,

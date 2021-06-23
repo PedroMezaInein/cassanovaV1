@@ -644,29 +644,6 @@ class NominaObra extends Component {
         })
     }
 
-    addRowNominaObra = () => {
-        const { form } = this.state
-        form.nominasObra.push(
-            {
-                nominasObra:[{
-                    usuario: '',
-                    proyecto: '',
-                    salario_hr: '',
-                    salario_hr_extra: '',
-                    hr_trabajadas: '',
-                    hr_extra: '',
-                    nominImss: '',
-                    restanteNomina: '',
-                    extras: ''
-                }]
-            }
-        )
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-
     deleteRowNominaObra = () => {
         const { form } = this.state
         form.nominasObra.pop(
