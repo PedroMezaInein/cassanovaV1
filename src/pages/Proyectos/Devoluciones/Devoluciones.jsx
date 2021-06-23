@@ -556,7 +556,7 @@ class Devoluciones extends Component {
                 {
                     tipo === 'proyecto' ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv = "mb-2 mt-7" requirevalidation = { 1 } 
-                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } placeholder={this.setSwalPlaceholder(tipo)}/>
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } placeholder={this.setSwalPlaceholder(tipo)} withicon={1}/>
                     : <></>
                 }
                 {
@@ -568,7 +568,7 @@ class Devoluciones extends Component {
                         :
                             <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
                                 onChange = { (value) => { this.onChangeSwal(value, tipo) } } withtaglabel = { 1 } 
-                                name = { tipo } customdiv = "mb-3"/>
+                                name = { tipo } customdiv = "mb-3" withicon={1}/>
                     : ''
                 }
                 {

@@ -357,6 +357,7 @@ class Checador extends Component {
                                     value = { año }
                                     onChange={this.updateAño}
                                     iconclass="fas fa-calendar-day"
+                                    withicon={1}
                                 />
                             </div>
                             <div className="col-md-3 mr-4">
@@ -367,6 +368,7 @@ class Checador extends Component {
                                     customdiv='mb-0'
                                     onChange={this.updateMes}
                                     iconclass="fas fa-calendar-day"
+                                    withicon={1}
                                 />
                             </div>
                             <div className="col-md-2 mr-4">
@@ -377,6 +379,7 @@ class Checador extends Component {
                                     customdiv='mb-0'
                                     onChange={this.updateQuincena}
                                     iconclass="fas fa-calendar-day"
+                                    withicon={1}
                                 />
                             </div>
                         </div>

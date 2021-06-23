@@ -167,7 +167,7 @@ class Rendimientos extends Component {
                     (tipo !== 'descripcion') && (tipo !== 'costo') && (tipo !== 'materiales') &&  (tipo !== 'rendimiento') &&
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                             onChange = { (value) => { this.onChange(value, tipo)} } name = { tipo }
-                            value = { form[tipo] } customdiv="mb-2 mt-7"/>
+                            value = { form[tipo] } customdiv="mb-2 mt-7" withicon={1}/>
                 }
             </div>,
             <Update />,

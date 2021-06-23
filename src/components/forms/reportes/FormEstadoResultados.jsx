@@ -24,6 +24,7 @@ class FlujosReportes extends Component {
                             messageinc="Incorrecto. Selecciona la empresa."
                             withtaglabel={0}
                             withtextlabel={0}
+                            withicon={1}
                         />
                     </div>
                     <div className="col-md-12 text-center mt-3">

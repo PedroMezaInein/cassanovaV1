@@ -112,6 +112,8 @@ import FormularioContrato from './recursoshumanos/FormularioContrato'
 import ContratoFormRH from './recursoshumanos/ContratoFormRH'
 import NotaBitacoraForm from './proyectos/NotaBitacoraForm'
 import PestamosDevoluciones from './proyectos/PestamosDevoluciones'
+import FormCalendarioIEquipos from './proyectos/FormCalendarioIEquipos'
+import DetailsInstalacion from './proyectos/DetailsInstalacion'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -217,5 +219,5 @@ export const Task = task
 export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
-export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, PestamosDevoluciones,
-    EquipoForm }
+export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, PestamosDevoluciones, FormCalendarioIEquipos,
+    EquipoForm, DetailsInstalacion }

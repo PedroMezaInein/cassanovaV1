@@ -50,11 +50,11 @@ class DoubleSelectSearchGray extends Component {
             <div className = 'py-4'>
                 <div className="text-left mt-4">
                     <SelectSearchGray options = { options.one } placeholder = { one.placeholder } value = { form.one } 
-                        onChange = { (value) => { this.update(value, 'one') } } withtaglabel = { 1 } withtextlabel = { 1 } />
+                        onChange = { (value) => { this.update(value, 'one') } } withtaglabel = { 1 } withtextlabel = { 1 } withicon={1}/>
                 </div>
                 <div className="text-left">
                     <SelectSearchGray options = { options.two } placeholder = { two.placeholder } value = { form.two }
-                        onChange = { (value) => { this.update(value, 'two') } } withtaglabel = { 1 } withtextlabel = { 1 } />
+                        onChange = { (value) => { this.update(value, 'two') } } withtaglabel = { 1 } withtextlabel = { 1 } withicon={1}/>
                 </div>
             </div>
             

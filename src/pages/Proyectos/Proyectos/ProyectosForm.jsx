@@ -1128,6 +1128,7 @@ class ProyectosForm extends Component {
                                                 withtaglabel={0}
                                                 withtextlabel={0}
                                                 customdiv={'mb-0'}
+                                                withicon={1}
                                             />
                                         </div>
                                     </div>
