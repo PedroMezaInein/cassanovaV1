@@ -15,7 +15,7 @@ import { Modal } from '../../../components/singles'
 import { setSingleHeader } from '../../../functions/routers';
 import { FormCalendarioIEquipos, DetailsInstalacion } from '../../../components/forms';
 import { setOptions } from '../../../functions/setters'
-import { SelectSearchGray } from '../../../components/form-components'
+// import { SelectSearchGray } from '../../../components/form-components'
 import moment from 'moment'
 
 class CalendarioInstalacion extends Component {
@@ -225,24 +225,24 @@ class CalendarioInstalacion extends Component {
             console.log(error, 'error')
         })
     }
-    cleanForm = () => {
-        const { form } = this.state
-        form.equipo = ''
-        form.proyecto = ''
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    updateProyecto = value => {
-        this.onChange({ target: { value: value, name: 'proyecto' } })
-    }
-    updateEquipo = value => {
-        this.onChange({ target: { value: value, name: 'equipo' } })
-    }
-    filtrarCalendario = () => {
-        console.log('filtrar')
-    }
+    // cleanForm = () => {
+    //     const { form } = this.state
+    //     form.equipo = ''
+    //     form.proyecto = ''
+    //     this.setState({
+    //         ...this.state,
+    //         form
+    //     })
+    // }
+    // updateProyecto = value => {
+    //     this.onChange({ target: { value: value, name: 'proyecto' } })
+    // }
+    // updateEquipo = value => {
+    //     this.onChange({ target: { value: value, name: 'equipo' } })
+    // }
+    // filtrarCalendario = () => {
+    //     console.log('filtrar')
+    // }
     render() {
         const { events, title, modal, form, options, instalacion } = this.state
         return (
@@ -259,7 +259,7 @@ class CalendarioInstalacion extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className="col-md-12 mx-auto px-0">
+                        {/* <div className="col-md-12 mx-auto px-0">
                             <div className="form-group row mx-0 form-group-marginless justify-content-center">
                                 <div className="col-md-4">
                                     <SelectSearchGray
@@ -288,7 +288,7 @@ class CalendarioInstalacion extends Component {
                                     <span className="btn btn-sm btn-bg-light btn-hover-light-danger text-dark-50 text-hover-danger font-weight-bolder font-size-13px py-3 ml-2" onClick={this.cleanForm}>Limpiar</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
                             initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
                             firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
