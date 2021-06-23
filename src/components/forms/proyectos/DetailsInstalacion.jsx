@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment'
 import 'moment/locale/es' 
+import { deleteAlert } from '../../../functions/alert'
 
 class DetailsInstalacion extends Component {
 
@@ -10,10 +11,21 @@ class DetailsInstalacion extends Component {
         return format.replace('.', '');
     }
     render() {
-        const { instalacion } = this.props
+        const { instalacion, deleteInstalacion } = this.props
         return (
             <>
+            
                 {
+                    instalacion.tipo === 'Instalación'&&
+                    <div className="d-flex justify-content-flex-end mt-3">
+                        <span className="btn btn-sm btn-bg-light btn-hover-light-danger text-dark-50 text-hover-danger font-weight-bolder font-size-13px py-3" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO DE ELIMINAR LA INSTALACIÓN DEL EQUIPO?', '',  () => deleteInstalacion(instalacion.instalacion)) }}>
+                            <i class="far fa-trash-alt icon-md text-dark-50 text-hover-danger mr-1"></i>
+                            ELIMINAR
+                        </span>
+                    </div>
+                }
+                {
+                    
                     instalacion&&
                     <div className="card-body py-5 mx-4 mt-7">
                         <div className="text-center mb-5">
