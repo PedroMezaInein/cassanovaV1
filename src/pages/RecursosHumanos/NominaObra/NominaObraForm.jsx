@@ -4,419 +4,203 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
+import { setSingleHeader } from '../../../functions/routers'
+import { errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
-import $ from "jquery";
+import readXlsxFile from 'read-excel-file'
 class NominaObraForm extends Component {
+
     state = {
-        formeditado: 0,
-        data: {
-            adjuntos: []
-        },
+        data: { usuarios: [] },
+        options: { usuarios: [], proyectos: [], empresas: [] },
         title: 'Nueva nómina de obra',
+        formeditado: 0,
         form: {
             periodo: '',
             empresas: '',
-            fechaInicio: new Date(),
+            fechaInicio: new Date().setDate( new Date().getDate() - 4),
             fechaFin: new Date(),
+            proyecto: '',
             nominasObra: [{
                 usuario: '',
-                proyecto: '',
-                salario_hr: '',
-                salario_hr_extra: '',
-                hr_trabajadas: '',
-                hr_extra: '',
-                nominImss: '',
-                restanteNomina: '',
-                extras: ''
+                costo_hr_regular: 0.0,
+                costo_hr_nocturna: 0.0,
+                costo_hr_extra: 0.0,
+                total_hrs_regular: 0,
+                total_hrs_nocturna: 0,
+                total_hrs_extra: 0,
+                viaticos: 0.0,
+                nominImss: 0.0,
+                restanteNomina: 0.0,
+                extras: 0.0
             }],
             adjuntos: {
                 adjunto: {
                     value: '',
                     placeholder: 'Ingresa los adjuntos',
                     files: []
+                },
+                excel: {
+                    value: '',
+                    placeholder: '¿Deseas importar la nómina?',
+                    files: []
                 }
             }
         },
-        options: {
-            proyectos: [],
-            usuarios: [],
-            empresas: []
-        }
     }
+    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { match: { params: { action } } } = this.props
         const { history, location: { state } } = this.props
-        const nominaOmbra = permisos.find(function (element, index) {
+        const module = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
-                this.setState({
-                    ...this.state,
-                    title: 'Nueva nómina obra',
-                    formeditado: 0
-                })
-                break;
-            case 'edit':
-                if (state) {
-                    if (state.nomina) {
-                        const { nomina } = state
-                        const { form, options } = this.state
-                        form.periodo = nomina.periodo
-                        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
-                        form.fechaInicio = new Date(nomina.fecha_inicio)
-                        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
-                        let aux = []
-                        nomina.nominas_obras.map((nom, key) => {
-                            aux.push(
-                                {
-                                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
-                                    proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
-                                    salario_hr: nom.salario_hr,
-                                    salario_hr_extra: nom.salario_hr_extras,
-                                    hr_trabajadas: nom.hr_trabajadas,
-                                    hr_extra: nom.hr_extras,
-                                    nominImss: nom.nomina_imss,
-                                    restanteNomina: nom.restante_nomina,
-                                    extras: nom.extras
-                                }
-                            )
-                            return false
-                        })
-                        if (aux.length) {
-                            form.nominasObra = aux
-                        } else {
-                            form.nominasObra = [{
-                                usuario: '',
-                                proyecto: '',
-                                salario_hr: '',
-                                salario_hr_extra: '',
-                                hr_trabajadas: '',
-                                hr_extra: '',
-                                nominImss: '',
-                                restanteNomina: '',
-                                extras: ''
-                            }]
-                        }
-                        this.setState({
-                            ...this.state,
-                            title: 'Editar nómina obra',
-                            nomina: nomina,
-                            form,
-                            options,
-                            formeditado: 1
-                        })
-                    }
-                    else
-                        history.push('/rh/nomina-obras')
-                } else
-                    history.push('/rh/nomina-obras')
+                this.setState({ ...this.state, title: 'Nueva nómina obra', formeditado: 0 })
                 break;
             default:
                 break;
         }
-        if (!nominaOmbra)
+        if (!module)
             history.push('/')
         this.getOptionsAxios()
     }
-    setOptions = (name, array) => {
-        const { options } = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ...this.state,
-            options
-        })
-    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/nomina-obra/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v2/rh/nomina-obra`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { proyectos, usuarios, empresas } = response.data
                 const { options, data } = this.state
                 data.usuarios = usuarios
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                options['usuarios'] = setOptions(usuarios, 'nombre', 'id')
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                this.setState({
-                    ...this.state,
-                    options,
-                    data
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                options.proyectos = setOptions(proyectos, 'nombre', 'id')
+                options.usuarios = setOptions(usuarios, 'nombre', 'id')
+                options.empresas = setOptions(empresas, 'name', 'id')
+                this.setState({ ...this.state, options, data })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async addNominaObraAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaInicio':
-                case 'fechaFin':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break;
-                case 'nominasObra':
-                    data.append(element, JSON.stringify(form[element]))
-                    break;
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-            return false
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
-        })
-        await axios.post(URL_DEV + 'rh/nomina-obra', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { history } = this.props
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
-                history.push({
-                    pathname: '/rh/nomina-obras'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async updateNominaObraAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { form, nomina } = this.state
-        await axios.put(URL_DEV + 'rh/nomina-obra/' + nomina.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { history } = this.props
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
-                history.push({
-                    pathname: '/rh/nomina-obras'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    clearForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaInicio':
-                case 'fechaFin':
-                    form[element] = new Date()
-                    break;
-                case 'nominasObra':
-                    form[element] = [{
-                        usuarios: '',
-                        proyecto: '',
-                        empresa: ''
-                    }]
-                    break;
-                case 'adjuntos':
-                    form[element] = {
-                        adjunto: {
-                            value: '',
-                            placeholder: 'Ingresa los adjuntos',
-                            files: []
-                        }
-                    }
-                    break;
-                default:
-                    form[element] = ''
-                    break;
-            }
-            return false
-        })
-        return form;
-    }
-    clearFiles = (name, key) => {
-        const { form } = this.state
-        let aux = []
-        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
-            if (counter !== key) {
-                aux.push(form.adjuntos[name].files[counter])
-            }
-        }
-        if (aux.length < 1) {
-            form.adjuntos[name].value = ''
-        }
-        form.adjuntos[name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
+
     onChange = e => {
-        const { name, value } = e.target
+        const { value, name } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({...this.state, form})
     }
-    onSubmit = e => {
-        e.preventDefault()
-        const { title } = this.state
-        if (title === 'Editar nómina obra')
-            this.updateNominaObraAxios()
-        else
-            this.addNominaObraAxios()
-    }
-    onChangeNominasObra = (key, e, name) => {
-        const { value } = e.target
-        const { form, data } = this.state
-        form['nominasObra'][key][name] = value
-        if (name === 'usuario') {
-            data.usuarios.map((empleado) => {
-                if (value.toString() === empleado.id.toString()) {
-                    form['nominasObra'][key].nominImss = empleado.nomina_imss
-                    form['nominasObra'][key].salario_hr = empleado.salario_hr
-                    form['nominasObra'][key].salario_hr_extra = empleado.salario_hr_extra
-                }
-                return false
-            })
-        } else {
-            if (name === 'salario_hr' || name === 'hr_trabajadas' || name === 'nominImss') {
-                if (form['nominasObra'][key].salario_hr !== '' && form['nominasObra'][key].hr_trabajadas !== '' && form['nominasObra'][key].nominImss !== '') {
-                    form['nominasObra'][key].restanteNomina = (parseFloat(form['nominasObra'][key].hr_trabajadas) * parseFloat(form['nominasObra'][key].salario_hr)) - form['nominasObra'][key].nominImss
-                }
-            }
-            if (name === 'salario_hr_extra' || name === 'hr_extra') {
-                if (form['nominasObra'][key].salario_hr_extra !== '' && form['nominasObra'][key].hr_extra !== '') {
-                    form['nominasObra'][key].extras = parseFloat(form['nominasObra'][key].hr_extra) * parseFloat(form['nominasObra'][key].salario_hr_extra)
-                }
-            }
-        }
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    addRowNominaObra = () => {
-        const { form } = this.state
-        form.nominasObra.push(
-            {
-                usuario: '',
-                proyecto: '',
-                salario_hr: '',
-                salario_hr_extra: '',
-                hr_trabajadas: '',
-                hr_extra: '',
-                nominImss: '',
-                restanteNomina: '',
-                extras: ''
-            }
-        )
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    deleteRowNominaObra = () => {
-        const { form } = this.state
-        form.nominasObra.pop()
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    async getNominasAxios() {
-        $('#kt_datatable2_nomina_obra').DataTable().ajax.reload();
-    }
-    handleChange = (files, item) => {
-        const { form } = this.state
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form['adjuntos'][item].value = files
-        form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
+
     onChangeRange = range => {
         const { startDate, endDate } = range
         const { form } = this.state
         form.fechaInicio = startDate
         form.fechaFin = endDate
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        files.forEach((file, index) => { aux.push( { name: file.name, file: file, url: URL.createObjectURL(file), key: index } ) })
+        form.adjuntos[item].value = files
+        form.adjuntos[item].files = aux
+        this.setState({ ...this.state, form })
+    }
+
+    onChangeAdjunto = e => {
+        const { value, name, files } = e.target
+        const { form, data, options } = this.state
+        let aux = []
+        files.forEach((file, index) => { aux.push( { name: file.name, file: file, url: URL.createObjectURL(file), key: index } ) })
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        this.setState({...this.state, form})
+        aux = []
+        if( files.length ){
+            readXlsxFile(files[0]).then((rows) => {
+                rows.forEach( (row, index) => {
+                    if(index > 1){
+                        if(row[0] !== null && ((row[28] + row[27] + row[26] + row[25]) > 0)){
+                            let usuario = data.usuarios.find((element) => { return element.nombre === row[1] })
+                            aux.push(
+                                {
+                                    usuario: usuario ? usuario.id.toString() : '',
+                                    costo_hr_regular: row[10],
+                                    costo_hr_nocturna: row[19],
+                                    costo_hr_extra: row[22],
+                                    total_hrs_regular: row[9],
+                                    total_hrs_nocturna: row[18],
+                                    total_hrs_extra: row[21],
+                                    viaticos: row[23],
+                                    nominImss: row[25],
+                                    restanteNomina: ((row[10] * row[9]) + (row[19] * row[18])) - row[25],
+                                    extras: (row[22] * row[21]) + row[23]
+                                }
+                            )
+                        }
+                    }
+                })
+                form.nominasObra = aux.length > 0 ? aux : {
+                    usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
+                    total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0
+                }
+                this.setForm(form)
+            })
+        }
+    }
+
+    onChangeNominasObra = (key, e, name) => {
+        const { value } = e.target
+        const { form, data } = this.state
+        form.nominasObra[key][name] = value
+        if(name === 'usuario'){
+            let usuario = data.usuarios.find( (empleado) => {
+                return value.toString() === empleado.id.toString()
+            })
+            if(usuario){
+                const { costo_hr_regular, costo_hr_nocturna, costo_hr_extra, total_hrs_extra, total_hrs_nocturna, total_hrs_regular, viaticos } = form.nominasObra[key]
+                let total = (costo_hr_regular * total_hrs_regular) + (costo_hr_nocturna * total_hrs_nocturna) + (costo_hr_extra * total_hrs_extra) + viaticos
+                if(total === 0){
+                    form.nominasObra[key].costo_hr_regular = usuario.salario_hr ? usuario.salario_hr : 0.0
+                    form.nominasObra[key].costo_hr_nocturna = usuario.salario_hr_nocturno ? usuario.salario_hr_nocturno : 0.0
+                    form.nominasObra[key].costo_hr_extra = usuario.salario_hr_extra ? usuario.salario_hr_extra : 0.0
+                }
+            }
+        }
+        this.setState({ ...this.state, form })
+    }
+
+    setForm = form => { this.setState({...this.state, form: form}) }
+
+    addRowNominaObra = () => {
+        const { form } = this.state
+        form.nominasObra.push( { usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
+            total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0 } )
+        this.setState({ ...this.state, form })
+    }
+    
     render() {
-        const { options, title, form, formeditado } = this.state
+        const { title, options, form, formeditado } = this.state
         return (
-            <Layout active={'rh'} {...this.props}>
-                <NominaObraFormulario
-                    title={title}
-                    formeditado={formeditado}
-                    className=" px-3 "
-                    options={options}
-                    form={form}
-                    addRowNominaObra={this.addRowNominaObra}
-                    deleteRowNominaObra={this.deleteRowNominaObra}
-                    onChangeNominasObra={this.onChangeNominasObra}
-                    onChange={this.onChange}
-                    clearFiles={this.clearFiles}
-                    onSubmit={this.onSubmit}
-                    handleChange={this.handleChange}
-                    onChangeRange={this.onChangeRange}
-                />
+            <Layout active = 'rh' {...this.props}>
+                <NominaObraFormulario title = { title } formeditado = { formeditado } className = " px-3 " options = { options } form = { form } 
+                    onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } 
+                    onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } 
+                    addRowNominaObra = { this.addRowNominaObra } />
             </Layout>
         )
     }
 
 }
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(NominaObraForm);
