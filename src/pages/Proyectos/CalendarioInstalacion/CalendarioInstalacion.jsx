@@ -85,26 +85,41 @@ class CalendarioInstalacion extends Component {
                 let mes = ''
                 let dia = ''
                 instalaciones.forEach((instalacion) => {
-                    mes = instalacion.fecha.substr(6,2);
-                    dia = instalacion.fecha.substr(8,2);
+                    // mes = instalacion.fecha.substr(6,2);
+                    // dia = instalacion.fecha.substr(8,2);
                     console.log(dia,'dia')
-                    // aux.push( { 
-                    //     title: instalacion.equipo.equipo,
-                    //     start: instalacion.fecha,
-                    //     end: instalacion.fecha,
-                    //     instalacion: instalacion,
-                    //     backgroundColor: "#009ef7",
-                    //     borderColor: "#009ef7"
-                    // })
-                    for(let x=1; x <= instalacion.duracion; x++){
-                        console.log(Number(Number(año) + Number(x)) + '-' + mes + dia)
-                        aux.push({
-                            title: instalacion.equipo.equipo,
-                            start: Number(Number(año) + Number(x)) + '-' + mes + dia,
-                            end: Number(Number(año) + Number(x)) + '-' + mes + dia,
-                            backgroundColor: "#009ef7",
-                            borderColor: "#009ef7"
-                        })
+                    let periodo = instalacion.periodo //meses
+                    let duracion = instalacion.duracion //años
+                    let meses = duracion === 0 ? periodo : duracion * 12
+
+                    
+
+                    aux.push( { 
+                        title: instalacion.equipo.equipo,
+                        start: instalacion.fecha,
+                        end: instalacion.fecha,
+                        instalacion: instalacion,
+                        backgroundColor: "#009ef7",
+                        borderColor: "#009ef7"
+                    })
+                    for(let x=1; x <= meses; x++){
+                        if(x % periodo === 0){
+                            let fecha_instalacion = moment(instalacion.fecha);
+                            let fecha_mantenimiento = fecha_instalacion.add(x, 'M');
+                            if(fecha_mantenimiento.day() === 0){
+                                fecha_mantenimiento.add(1, 'd')
+                            }
+
+                            let fecha_mantenimiento_format= fecha_mantenimiento.format("YYYY-MM-DD")
+                            aux.push({
+                                title: instalacion.equipo.equipo,
+                                start:fecha_mantenimiento_format,
+                                end:fecha_mantenimiento_format,
+                                instalacion: instalacion,
+                                backgroundColor: "red",
+                                borderColor: "red"
+                            })
+                        }
                     }
                     return false
                 })
@@ -125,6 +140,7 @@ class CalendarioInstalacion extends Component {
 
     
     renderEventContent = (eventInfo) => {
+        console.log(eventInfo)
         return (
             <OverlayTrigger overlay={<Tooltip><span>{eventInfo.event.title}</span> - <span>{eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span></Tooltip>}>
             <div style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}}>
