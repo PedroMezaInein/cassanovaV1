@@ -152,14 +152,15 @@ class NominaObraForm extends Component {
                     usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
                     total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0
                 }
-                this.setForm(form)
+                options.usuarios = this.updateOptionsUsuarios(form.nominasObra)
+                this.setForm(form, options)
             })
         }
     }
 
     onChangeNominasObra = (key, e, name) => {
         const { value } = e.target
-        const { form, data } = this.state
+        const { form, data, options } = this.state
         form.nominasObra[key][name] = value
         if(name === 'usuario'){
             let usuario = data.usuarios.find( (empleado) => {
@@ -175,10 +176,11 @@ class NominaObraForm extends Component {
                 }
             }
         }
-        this.setState({ ...this.state, form })
+        options.usuarios = this.updateOptionsUsuarios(form.nominasObra)
+        this.setState({ ...this.state, form, options })
     }
 
-    setForm = form => { this.setState({...this.state, form: form}) }
+    setForm = (form, options) => { this.setState({...this.state, form: form, options: options}) }
 
     addRowNominaObra = () => {
         const { form } = this.state
@@ -221,7 +223,7 @@ class NominaObraForm extends Component {
             }) */
         }else{
             let aux = []
-            const { form } = this.state
+            const { form, options } = this.state
             form.nominasObra.forEach((element, index) => {
                 if(index !== key)
                     aux.push(element)
@@ -229,17 +231,34 @@ class NominaObraForm extends Component {
             if (aux.length) { form.nominasObra = aux } 
             else { form.nominasObra = [{ usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
                 total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0 }] }
-            this.setState({...this.state, form})
+            options.usuarios = this.updateOptionsUsuarios(form.nominasObra)
+            this.setState({...this.state, form, options})
         }
+    }
+
+    updateOptionsUsuarios = (formulario) => {
+        const { data, options } = this.state
+        let aux = []
+        let aux2 = []
+        options.usuarios = setOptions(data.usuarios, 'nombre', 'id')
+        console.log(formulario, 'FORMULARIO')
+        formulario.forEach((element) => {
+            aux.push(element.usuario)
+        })
+        options.usuarios.forEach((element) => {
+            if(!aux.includes(element.value))
+                aux2.push(element)
+        })
+        return aux2
     }
     
     render() {
-        const { title, options, form, formeditado } = this.state
+        const { title, options, form, formeditado, data } = this.state
         return (
             <Layout active = 'rh' {...this.props}>
                 <NominaObraFormulario title = { title } formeditado = { formeditado } className = " px-3 " options = { options } form = { form } 
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } 
-                    onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } 
+                    onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
                     addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } />
             </Layout>
         )

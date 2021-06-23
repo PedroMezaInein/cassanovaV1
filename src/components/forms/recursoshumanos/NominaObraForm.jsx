@@ -66,6 +66,22 @@ class NominaObraForm extends Component {
         return suma
     }
 
+    setOptions = key => {
+        const { options, form, usuarios } = this.props
+        let array = []
+        if (form.nominasObra[key].usuario === '')
+            return options.usuarios
+        let aux = usuarios.find((element) => {
+            return element.id.toString() === form.nominasObra[key].usuario
+        })
+        options.usuarios.forEach((element) => {
+            array.push(element)
+        })
+        if (aux)
+            array.push({ 'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString() })
+        return array
+    }
+
     render() {
         const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange,
             clearFiles, onChangeAdjunto } = this.props
@@ -183,9 +199,8 @@ class NominaObraForm extends Component {
                                                         className="btn btn-sm btn-icon btn-bg-white btn-icon-danger btn-hover-danger" only_icon="far fa-trash-alt icon-md text-danger" />
                                                 </td>
                                                 <td className='text-center align-middle' >
-                                                    <SelectSearchSinText identificador = "empleado" formeditado = { formeditado }
-                                                        options = { options.usuarios } placeholder = "Selecciona el colaborador"
-                                                        name = "usuario" value = { nom['usuario'] }
+                                                    <SelectSearchSinText identificador = "empleado" formeditado = { formeditado } name = "usuario" 
+                                                        options = { this.setOptions(key) } placeholder = "Selecciona el colaborador" value = { nom['usuario'] }
                                                         onChange={(value) => this.updateUsuario(value, key)} />
                                                 </td>
                                                 <td className='text-center align-middle' >
