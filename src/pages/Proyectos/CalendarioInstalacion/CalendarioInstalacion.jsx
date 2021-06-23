@@ -6,7 +6,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
-import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -243,6 +243,20 @@ class CalendarioInstalacion extends Component {
     // filtrarCalendario = () => {
     //     console.log('filtrar')
     // }
+    deleteInstalacionAxios = async(instalacion) => {
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/${instalacion.id}`, { headers: setSingleHeader(access_token)  }).then(
+            (response) => {
+                doneAlert('Instalación de equipo eliminado con éxito.')
+                this.getCalendarioInstalaciones()
+                this.handleCloseModalInstalacion()
+
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { events, title, modal, form, options, instalacion } = this.state
         return (
@@ -298,7 +312,7 @@ class CalendarioInstalacion extends Component {
                     <FormCalendarioIEquipos form = { form } options = { options } onChange = { this.onChange } onSubmit = { this.onSubmitInstalacion } />
                 </Modal>
                 <Modal size="lg" title={<span><i className={`${instalacion.iconClass} icon-lg mr-2 ${instalacion.tipo==='Instalación'?'color-instalacion':'color-mantenimiento'}`}></i>{title}</span>} show={modal.details} handleClose={this.handleCloseModalInstalacion} classBody="bg-light">
-                    <DetailsInstalacion instalacion={instalacion}/>
+                    <DetailsInstalacion instalacion={instalacion} deleteInstalacion={this.deleteInstalacionAxios}/>
                 </Modal>
             </Layout>
         );

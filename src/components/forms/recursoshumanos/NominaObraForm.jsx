@@ -7,15 +7,6 @@ import { Card } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles';
 class NominaObraForm extends Component {
 
-    // handleChangeDateInicio = date => {
-    //     const { onChange } = this.props
-    //     onChange({ target: { value: date, name: 'fechaInicio' } })
-    // }
-    // handleChangeDateFin = date => {
-    //     const { onChange } = this.props
-    //     onChange({ target: { value: date, name: 'fechaFin' } })
-    // }
-
     updateSelector = (value, name) => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: name } })
@@ -84,7 +75,7 @@ class NominaObraForm extends Component {
 
     render() {
         const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange,
-            clearFiles, onChangeAdjunto } = this.props
+            clearFiles, onChangeAdjunto, nomina } = this.props
         return (
             <Card className="card card-custom gutter-b example example-compact">
                 <Card.Header>
@@ -285,14 +276,12 @@ class NominaObraForm extends Component {
                         </table>
                         <div className="form-group d-flex justify-content-center">
                             <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={addRowNominaObra} >Agregar Fila</button>
-                            <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick={deleteRowNominaObra} >Eliminar Fila</button>
                         </div>
                     </Card.Body>
                     <Card.Footer>
-                        <div className="row">
-                            <div className="col-lg-12 text-right">
-                                <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
-                            </div>
+                        <div className="text-right">
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
+                            <Button text='GENERAR COMPRAS' className="btn btn-success mr-2" icon=''only_icon='fas fa-wallet mr-1'/> 
                         </div>
                     </Card.Footer>
                 </Form>
