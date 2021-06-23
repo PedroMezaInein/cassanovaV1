@@ -754,7 +754,7 @@ class Empleados extends Component {
     }
     onChangeContrato= e => {
         const { name, value, type } = e.target
-        const { formContrato } = this.state
+        let { formContrato, empleado } = this.state
         formContrato[name] = value
 
         if(type === 'radio'){
@@ -767,7 +767,24 @@ class Empleados extends Component {
             case 'pagos_hr_extra':
             case 'total_obra':
                 formContrato[name] = value.replace(/[,]/gi, '')
-                break
+                break;
+            case 'periodo':
+                if(empleado.contratos.length === 0){
+                    formContrato.fechaInicio = new Date(moment(empleado.fecha_inicio))
+                }else{
+                    let aux = []
+                    empleado.contratos.map((contrato) => {
+                        if (contrato.fecha_fin) {
+                            aux.push(contrato.fecha_fin)
+                        }
+                        return false
+                    })
+                    aux.sort(function(a,b){
+                        return new Date(b) - new Date(a);
+                    });
+                    formContrato.fechaInicio = new Date(moment(aux[0]))
+                }
+                break;
             default:
                 break;
         }
@@ -802,8 +819,8 @@ class Empleados extends Component {
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
                 modal.contrato = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
-                var win = window.open(contrato.contrato, '_blank');
-                win.focus();
+                if(contrato.contrato)
+                    window.open(contrato.contrato, '_blank');
                 if(contrato.carta)
                     window.open(contrato.carta, '_blank');
                 this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
@@ -826,8 +843,8 @@ class Empleados extends Component {
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
                 modal.contrato = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
-                var win = window.open(contrato.contrato, '_blank');
-                win.focus();
+                if(contrato.contrato)
+                    window.open(contrato.contrato, '_blank');
                 if(contrato.carta)
                     window.open(contrato.carta, '_blank');
                 this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
@@ -870,11 +887,32 @@ class Empleados extends Component {
     cancelarContrato = element => {
         deleteAlert('¿DESEAS TERMINAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element.id), 'SI, TERMINAR')
     }
+    regeneratePdf = element => {
+        deleteAlert('¿ESTÁS SEGURO?', 'GENERARÁS UN NUEVO CONTRATO', () => this.regeneratePdfAxios(element.id), 'SI, REGENERAR')
+    }
     async cancelarContratoAxios(element) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { empleado } = this.state
         await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${element}/terminar`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                this.setState({...this.state, empleado: empleado})
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    regeneratePdfAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { empleado } = this.state
+        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${id}/regenerar`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { empleado } = response.data
                 const { key } = this.state
@@ -945,7 +983,7 @@ class Empleados extends Component {
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
                         generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
-                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } />
+                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } />
                 </Modal>
             </Layout>
         )

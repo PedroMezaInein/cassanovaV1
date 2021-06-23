@@ -483,28 +483,32 @@ class Contratar extends Component {
             console.log(error, 'error')
         })
     }
-
     async cpAxios(value) {
-        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
+        await axios.get(`${CP_URL}${TOKEN_CP}/${value}`).then(
             (response) => {
-                const { municipio, estado, asentamiento } = response.data.response
-                const { form } = this.state
-                let aux = [];
-                asentamiento.map((colonia, key) => {
-                    aux.push({ value: colonia, name: colonia.toUpperCase() })
-                    return false
-                })
-                form.municipio = municipio.toUpperCase()
-                form.estado = estado.toUpperCase()
-                form.colonias = aux
-                this.setState({
-                    ...this.state,
-                    form
-                })
+                const { estatus } = response.data
+                const { form, options } = this.state
+                if (estatus  === 'si') {
+                    const { municipio, estado, asentamientos } = response.data.data
+                    console.log(response.data.data, 'DATA')
+                    form['municipio'] = municipio.toUpperCase()
+                    form['estado'] = estado.toUpperCase()
+                    let aux = []
+                    asentamientos.forEach((element) => {
+                        aux.push({ name: element.nombre.toString().toUpperCase(), value: element.nombre.toString().toUpperCase() })
+                    })
+                    options['colonias'] = aux
+                    this.setState({
+                        ...this.state,
+                        form,
+                        options
+                    })
+                }
             },
             (error) => {
             }
         ).catch((error) => {
+            console.log('error catch', error)
         })
     }
 

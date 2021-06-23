@@ -111,6 +111,8 @@ export function printSwalHeader(tipo){
             return 'EDITAR EL CORREO Y TELÉFONO'
         case 'nss':
             return 'EDITAR NSS'
+        case 'ubicacion':
+            return 'EDITAR LA UBICACIÓN'
         default:
             return ''
     }

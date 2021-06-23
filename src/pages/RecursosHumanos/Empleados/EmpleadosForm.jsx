@@ -459,6 +459,6 @@ class EmpleadosForm extends Component {
 
 }
 const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EmpleadosForm);

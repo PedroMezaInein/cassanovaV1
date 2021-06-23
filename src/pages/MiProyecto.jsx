@@ -18,6 +18,7 @@ import { toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import Swal from 'sweetalert2'
 import WOW from 'wowjs';
+import moment from 'moment'
 /* import ModalVideo from 'react-modal-video' */
 class MiProyecto extends Component {
 
@@ -87,6 +88,7 @@ class MiProyecto extends Component {
         data: {
             proyectos: [],
             tickets: [],
+            tiposTrabajo: []
         },
         form: {
             proyecto: '',
@@ -359,6 +361,8 @@ class MiProyecto extends Component {
 
     updateProyecto = value => {
         const { data, form, adjuntos } = this.state
+        let { options } = this.state
+        options.tiposTrabajo = []
         let newdefaultactivekey = "";
         form.proyecto = value
         data.proyectos.map((proyecto) => {
@@ -376,17 +380,51 @@ class MiProyecto extends Component {
                     }
                 }
                 data.tickets = proyecto.tickets
+                
+                var now = moment();
+                var fecha_proyecto = moment(proyecto.fecha_fin, 'YYYY-MM-DD');
+                var fecha_hoy = moment(now, 'YYYY-MM-DD');
+
+                var dias_transcurridos = fecha_hoy.diff(fecha_proyecto, 'days')
+
+                data.tiposTrabajo.forEach((tipo) => {
+                    if(dias_transcurridos >= 365){
+                        if(tipo.tipo !== 'Mantenimiento'){
+                            options.tiposTrabajo.push({
+                                name: tipo.tipo,
+                                value: tipo.id.toString()
+                            })
+                        }
+                    }else{
+                        options.tiposTrabajo.push({
+                            name: tipo.tipo,
+                            value: tipo.id.toString()
+                        })
+                    }
+                })
+                options.tiposTrabajo.sort(this.compare)
                 this.setState({
                     ...this.state,
                     defaultactivekey: newdefaultactivekey,
                     proyecto: proyecto,
                     tickets: this.setTickets(proyecto.tickets),
                     form: this.clearForm(),
-                    data
+                    data,
+                    options
                 })
             }
             return false
         })
+    }
+
+    compare( a, b ) {
+        if ( a.name < b.name ){
+            return -1;
+        }
+        if ( a.name > b.name ){
+            return 1;
+        }
+        return 0;
     }
 
     async getMiProyectoAxios() {
@@ -398,7 +436,8 @@ class MiProyecto extends Component {
                 let { proyecto, tickets } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
-                options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
+
+                data.tiposTrabajo = tiposTrabajo
                 data.proyectos = proyectos
 
                 if (id !== '') {

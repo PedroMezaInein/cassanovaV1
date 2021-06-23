@@ -39,7 +39,7 @@ class FormularioContrato extends Component {
         })
     }
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato, regeneratePdf } = this.props
         const { renovar, showForm, showHistorial } = this.state
         return (
             <>
@@ -72,12 +72,12 @@ class FormularioContrato extends Component {
                             <table className="table table-responsive-lg table-head-custom table-vertical-center w-100">
                                 <thead>
                                     <tr>
-                                        <th className="text-center" style={{ minWidth: '155px' }}>Tipo de contrato</th>
-                                        <th style={{ minWidth: '140px' }}>Fecha</th>
-                                        <th style={{ minWidth: '100px' }}>Estatus</th>
+                                        <th className="text-center">Tipo de contrato</th>
+                                        <th>Fecha</th>
+                                        <th>Estatus</th>
                                         <th>Adjuntar</th>
-                                        <th style={{ minWidth: '166px' }}>ADJ. AGREGADOS</th>
-                                        <th style={{ minWidth: '103px' }}></th>
+                                        <th style={{ minWidth: '163px' }}>ADJ. AGREGADOS</th>
+                                        <th style={{ minWidth: '148px' }}></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -175,6 +175,17 @@ class FormularioContrato extends Component {
                                                                 </OverlayTrigger>
                                                             : <></>
                                                         }
+                                                        {
+                                                            contrato.contrato_firmado === null ? 
+                                                                <OverlayTrigger overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2" onClick = { (e) => { e.preventDefault(); regeneratePdf(contrato)   }}>
+                                                                        <span className="svg-icon svg-icon-lg svg-icon-info">
+                                                                            <i className="far fa-file-pdf svg-icon-info"></i>
+                                                                        </span>
+                                                                    </span>
+                                                                </OverlayTrigger>
+                                                            : ''
+                                                        }
                                                         
                                                     </td>
                                                 </tr>
@@ -228,30 +239,29 @@ class FormularioContrato extends Component {
                                             </div>
                                             {
                                                 form.periodo === true &&
-                                                <div className="col-md-6">
-                                                    <InputNumberGray
-                                                        formgroup="mb-0"
-                                                        requirevalidation={1}
-                                                        onChange={onChangeContrato}
-                                                        name="dias"
-                                                        type="text"
-                                                        value={form.dias}
-                                                        placeholder="DÍAS"
-                                                        iconclass="flaticon2-calendar-6"
-                                                        messageinc="Incorrecto. Ingresa el número de días."
-                                                    />
-                                                </div>
-                                            }
-                                            {
-                                                renovar &&
-                                                <div className="col-md-12 text-center align-self-center mt-10">
-                                                    <div className="text-center">
-                                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                                            <label className="text-center font-weight-bolder">Fecha de contrato</label>
-                                                        </div>
-                                                        <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
+                                                <>
+                                                    <div className="col-md-6">
+                                                        <InputNumberGray
+                                                            formgroup="mb-0"
+                                                            requirevalidation={1}
+                                                            onChange={onChangeContrato}
+                                                            name="dias"
+                                                            type="text"
+                                                            value={form.dias}
+                                                            placeholder="DÍAS"
+                                                            iconclass="flaticon2-calendar-6"
+                                                            messageinc="Incorrecto. Ingresa el número de días."
+                                                        />
                                                     </div>
-                                                </div>
+                                                    <div className="col-md-12 text-center align-self-center mt-10">
+                                                        <div className="text-center">
+                                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                                <label className="text-center font-weight-bolder">Fecha de contrato</label>
+                                                            </div>
+                                                            <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
+                                                        </div>
+                                                    </div>
+                                                </>
                                             }
                                         </div>
                                         :

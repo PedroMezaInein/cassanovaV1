@@ -16,6 +16,7 @@ export default class InformacionProyecto extends Component {
 
     render() {
         const { proyecto, form, addComentario, onChange, handleChange, tipo, urls } = this.props
+        console.log(proyecto)
         return (
             <div className="col-md-12 mt-4">
                 {
@@ -182,8 +183,9 @@ export default class InformacionProyecto extends Component {
                                                             <span>{proyecto.tipo_proyecto.tipo}</span>
                                                         </td>
                                                     </tr>
-                                            }{
-                                                proyecto.m2 &&
+                                            }
+                                            {
+                                                proyecto.m2>0 &&
                                                     <tr>
                                                         <td className="text-center">
                                                             <i className="las la-ruler icon-2x text-dark-50"></i>

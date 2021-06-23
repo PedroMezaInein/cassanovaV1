@@ -16,6 +16,7 @@ class AccountSettings extends Component {
             newPassword: '',
             newPassword2: '',
             foto: '',
+            avatar: '',
             adjuntos: {
                 firma: {
                     value: '',
@@ -39,10 +40,8 @@ class AccountSettings extends Component {
         const { form } = this.state
         const { name, value } = e.target
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        console.log(name, value, 'ON CHANGE')
+        this.setState({ ...this.state, form })
     }
 
     clearAvatar = () => {
@@ -154,6 +153,7 @@ class AccountSettings extends Component {
     }
 
     sendAvatar = async (e) => {
+        console.log('FORM', this.state.form)
         e.preventDefault();
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -175,6 +175,7 @@ class AccountSettings extends Component {
             console.log(error, 'error')
         })
     }
+
     handleChange = (files, item) => {
         questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIAR LA FIRMA?', () => {
             const { form } = this.state
@@ -198,6 +199,7 @@ class AccountSettings extends Component {
             this.sendFirma(item) 
         })
     }
+
     sendFirma = async (e) => {
         // e.preventDefault();
         waitAlert();
@@ -252,27 +254,26 @@ class AccountSettings extends Component {
             console.log(error, 'error')
         })
     }
+
     render() {
         const { form, empresas, activeKey, user, formeditado } = this.state
         return (
-            <>
-                <Layout {...this.props}>
-                    <ChangePasswordForm
-                        form={form}
-                        onChange={this.onChange}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios() }}
-                        sendAvatar={this.sendAvatar}
-                        clearAvatar={this.clearAvatar}
-                        handleChange={this.handleChange}
-                        sendCorreo={this.sendCorreo}
-                        empresas={empresas}
-                        user={user}
-                        onClickEmpresa={this.onClickEmpresa}
-                        activeKey={activeKey}
-                        formeditado = { formeditado }
-                    />
-                </Layout>
-            </>
+            <Layout {...this.props}>
+                <ChangePasswordForm
+                    form={form}
+                    onChange={this.onChange}
+                    onSubmit={(e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios() }}
+                    sendAvatar={this.sendAvatar}
+                    clearAvatar={this.clearAvatar}
+                    handleChange={this.handleChange}
+                    sendCorreo={this.sendCorreo}
+                    empresas={empresas}
+                    user={user}
+                    onClickEmpresa={this.onClickEmpresa}
+                    activeKey={activeKey}
+                    formeditado = { formeditado }
+                />
+            </Layout>
         )
     }
 }

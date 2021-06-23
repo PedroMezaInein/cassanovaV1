@@ -7,17 +7,25 @@ import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { waitAlert, questionAlert, errorAlert, printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
+import { setSingleHeader, toAbsoluteUrl } from "../../../functions/routers"
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
+import S3 from 'react-aws-s3';
+const config = {
+    bucketName: 'admin-proyectos',
+    region: 'us-east-2',
+    accessKeyId: 'AKIAJPBN556AJO7KB2RA',
+    secretAccessKey: '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'
+}
+
+const ReactS3Client = new S3(config);
+
 /* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
-        data: {
-            empresas: []
-        },
+        data: { empresas: [] },
         empresa: '',
         submenuactive: '',
         menuactive: '',
@@ -218,39 +226,61 @@ class MaterialCliente extends Component {
         })
     }
 
-    /* ANCHOR ADD ADJUNTO SINGLE */
     addAdjunto = async() => {
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        const { form, menuactive, opciones_adjuntos, empresa, submenuactive, levelName  } = this.state
+        const { form, menuactive, submenuactive, empresa, levelName, opciones_adjuntos } = this.state
+        let filePath = ''
+        let tipo = ''
+        let proyecto = ''
         if(menuactive === 3){
-            data.append('proyecto', submenuactive)
-            data.append('tipo', levelName)
+            filePath = `empresas/${empresa.id}/tipo-proyecto/${submenuactive}/${levelName}/${Math.floor(Date.now() / 1000)}-`;
+            tipo = submenuactive
+            proyecto = levelName
         }else{
-            if(opciones_adjuntos.length >= menuactive + 1)
-                data.append('tipo', opciones_adjuntos[menuactive].slug)
+            filePath = `empresas/${empresa.id}/adjuntos/${opciones_adjuntos[menuactive].slug}/${Math.floor(Date.now() / 1000)}-`;
+            tipo = opciones_adjuntos[menuactive].slug
         }
-        form.adjuntos.adjuntos.files.map((file)=>{
-            data.append(`files_name[]`, file.name)
-            data.append(`files[]`, file.file)
-            return '';
+        let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+            return new Promise((resolve, reject) => {
+                ReactS3Client.uploadFile(file.file, `${filePath}${file.name}`)
+                    .then((data) =>{
+                        const { location,status } = data
+                        if(status === 204)
+                            resolve({ name: file.name, url: location })
+                        else
+                            reject(data)
+                    }).catch(err => reject(err))
+            })
         })
-        data.append('empresa', empresa.id)
-        await axios.post(`${URL_DEV}mercadotecnia/material-clientes`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                Swal.close()
-                const { empresa } = response.data
-                form.adjuntos.adjuntos.files = []
-                form.adjuntos.adjuntos.value = ''
-                this.setState({...this.state,form,empresa:empresa})
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, tipo, proyecto)}).catch(err => console.error(err))
+    }
+
+    addS3FilesAxios = async(arreglo, tipo, proyecto) => {
+        const { access_token } = this.props.authUser
+        const { empresa, form } = this.state
+        let parametros = {}
+        if(proyecto === ''){
+            parametros = { tipo: tipo }
+        }else{
+            parametros = { tipo: tipo, proyecto: proyecto }
+        }
+        waitAlert()
+        try{
+            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/s3`, { empresa: empresa.id, archivos: arreglo }, 
+            { 
+                params: parametros, 
+                headers: setSingleHeader(access_token)
+            }).then(
+                (response) => {
+                    doneAlert('Adjunto generado con éxito')
+                    const { empresa } = response.data
+                    form.adjuntos.adjuntos.files = []
+                    this.setState({...this.state,empresa:empresa, modal: false, form})
+            }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        } catch (error) { console.log("error", error); }   
     }
 
     /* ANCHOR ADD ADJUNTO RENDER */

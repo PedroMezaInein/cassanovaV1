@@ -144,11 +144,11 @@ class TableForModals extends Component {
                                 return ''
                             })
                         return (
-                            '<div>' + aux + '</div>'
+                            '<div class="text-center">' + aux + '</div>'
                         )
                     }
                     else {
-                        return (`<div>${data}</div>`)
+                        return (`<div class="text-center">${data}</div>`)
                     }
                 }
                 /* 'defaultContent': '<button type="button" class="btn btn-primary btn-edit">Edit</button>' */

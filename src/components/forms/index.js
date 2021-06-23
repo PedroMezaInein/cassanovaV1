@@ -28,7 +28,7 @@ import comprasForm from './proyectos/ComprasForm'
 import facturaForm from './administracion/FacturaForm'
 import solicitudCompraForm from './proyectos/SolicitudCompraForm'
 import solicitudVentaForm from './proyectos/SolicitudVentaForm'
-import herramientasForm from './proyectos/HerramientasForm'
+import bodegaForm from './proyectos/BodegaForm'
 import conceptoForm from './presupuesto/ConceptoForm'
 import rendimientoForm from './presupuesto/RendimientoForm'
 import presupuestoForm from './presupuesto/PresupuestoForm'
@@ -63,7 +63,7 @@ import accordionEstadosResultados from './reportes/AccordionEstadosResultados'
 import tablaEstadosResultados from './reportes/TablaEstadosResultados'
 import tablaReportesDepartamento from './reportes/TablaReportesDepartamento'
 import headersTotales from './reportes/HeadersTotales'
-import ubicacionHerramientaForm from './proyectos/UbicacionHerramientaForm'
+import formPrestamos from './proyectos/FormPrestamos'
 import documentosForm from './administracion/DocumentosForm'
 import imssForm from './recursoshumanos/ImssForm'
 import prestamosForm from './recursoshumanos/PrestamosForm'
@@ -105,10 +105,13 @@ import commentsPanel from './usuarios/tareas/CommentsPanel'
 import addTaskForm from './usuarios/tareas/AddTaskForm'
 import TagColorForm from './usuarios/tareas/TagColorForm'
 import NewTag from './usuarios/tareas/NewTag'
+import EquipoForm from './proyectos/EquipoForm'
 import EtiquetasForm from './catalogos/EtiquetasForm'
 import FormEstadoResultados from './reportes/FormEstadoResultados'
 import FormularioContrato from './recursoshumanos/FormularioContrato'
 import ContratoFormRH from './recursoshumanos/ContratoFormRH'
+import NotaBitacoraForm from './proyectos/NotaBitacoraForm'
+import PestamosDevoluciones from './proyectos/PestamosDevoluciones'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -173,8 +176,8 @@ export const AccordionEstadosResultados = accordionEstadosResultados
 export const TablaEstadosResultados = tablaEstadosResultados
 export const TablaReportesDepartamento = tablaReportesDepartamento
 export const HeadersTotales = headersTotales
-export const HerramientasForm = herramientasForm
-export const UbicacionHerramientaForm = ubicacionHerramientaForm
+export const BodegaForm = bodegaForm
+export const FormPrestamos = formPrestamos
 export const DocumentosForm = documentosForm
 export const ImssForm = imssForm
 export const PrestamosForm = prestamosForm
@@ -214,4 +217,5 @@ export const Task = task
 export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
-export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH }
+export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, PestamosDevoluciones,
+    EquipoForm }

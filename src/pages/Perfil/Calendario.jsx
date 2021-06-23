@@ -17,7 +17,6 @@ import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie'
 import { Button } from '../../components/form-components'
-
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
 class Calendario extends Component {
@@ -247,7 +246,7 @@ class Calendario extends Component {
                 inicio = new Date(mes + '/' + dia + '/' + (año - 1))
             }
             empleado.vacaciones.forEach((vacacion) => {
-                if (vacacion.estatus !== 'Rechazadas') {
+                if (vacacion.estatus === 'En espera') {
                     let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
                     for(let i = 0; i < dias; i++){
                         let date = new Date(moment(vacacion.fecha_inicio).add(i, 'days'))
@@ -365,19 +364,19 @@ class Calendario extends Component {
                 let mes = ''
                 let dia = ''
                 let año = new Date().getFullYear();
-                empleados.map((empleado, key) => {
-                    mes = empleado.rfc.substr(6, 2);
-                    dia = empleado.rfc.substr(8, 2);
-                    for (let x = -5; x <= 5; x++) {
-                        aux.push({
-                            title: empleado.nombre,
-                            start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                            end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                            iconClass: 'fas fa-birthday-cake',
-                            containerClass: 'cumpleaños'
-                        })
-                    }
-                    return false
+                empleados.forEach((empleado) => {
+                    if(empleado.fecha_nacimiento)
+                        for (let x = -3; x <= 3; x++) {
+                            let fecha_nacimiento = new Date(empleado.fecha_nacimiento)
+                            fecha_nacimiento.setFullYear(new Date().getFullYear() + x)
+                            aux.push({
+                                title: empleado.nombre,
+                                start: fecha_nacimiento,
+                                end: fecha_nacimiento,
+                                iconClass: 'fas fa-birthday-cake',
+                                containerClass: 'cumpleaños'
+                            })
+                        }
                 })
                 vacaciones.map((vacacion) => {
                     if (vacacion.estatus === 'Aceptadas')
@@ -417,6 +416,21 @@ class Calendario extends Component {
                     aux2.push(start)
                     return false
                 })
+                var now = moment();
+                var dias = moment().add(21, 'days');
+
+                const start = moment(now, 'YYYY-MM-DD');
+                const end = moment(dias, 'YYYY-MM-DD');
+
+                const current = start.clone();
+                const result = [];
+
+                while (current.isBefore(end)) {
+                    result.push(moment(current).toDate());
+                    current.add(1, "day");
+                }
+
+                let arr3 = [...aux2, ...result]
 
                 eventos.map((evento) => {
                     aux.push({
@@ -442,7 +456,7 @@ class Calendario extends Component {
                     inicio: diasDisponibles.inicio,
                     final: diasDisponibles.final,
                     estatus: this.getVacaciones(empleado, user_vacaciones),
-                    disabledDates: aux2,
+                    disabledDates: arr3,
                     data
                 })
             }, (error) => { printResponseErrorAlert(error) }
@@ -451,7 +465,6 @@ class Calendario extends Component {
             console.log(error, 'error')
         })
     }
-
     async getEventsOneDateAxios(date) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones/single/' + date, { headers: { Authorization: `Bearer ${access_token}` } }).then(

@@ -7,9 +7,9 @@ import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
 import { Small } from '../../../components/texts'
-import { setTextTable, setArrayTable, setListTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
+import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert, questionAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert, questionAlert, deleteAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Card, Tabs } from 'react-bootstrap'
 import Swal from 'sweetalert2'
@@ -18,13 +18,17 @@ import { OneLead } from '../../../components/modal'
 import Comentarios from '../../../components/forms/Comentarios'
 import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
 import moment from 'moment'
-import { InputGray, RangeCalendarSwal, SelectSearchGray, InputPhoneGray } from '../../../components/form-components'
+import { InputGray, RangeCalendarSwal, SelectSearchGray, InputPhoneGray, Button } from '../../../components/form-components'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
 import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
-import { setSingleHeaderJson } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
+import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
+import { toAbsoluteUrl } from "../../../functions/routers"
+import SVG from "react-inlinesvg";
+
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
 class Proyectos extends Component {
@@ -40,6 +44,7 @@ class Proyectos extends Component {
         modalAvances: false,
         modalLead: false,
         modalComentarios: false,
+        modalNotaObra:false,
         adjuntos: [],
         primeravista: true,
         defaultactivekey: "",
@@ -124,7 +129,8 @@ class Proyectos extends Component {
             }
         ],
         data: {
-            proyectos: []
+            proyectos: [],
+            notas: []
         },
         formeditado: 0,
         form: {
@@ -465,15 +471,31 @@ class Proyectos extends Component {
                     }
                 }
             ],
+            actividades_realizadas:'',
             tipoProyecto:''
         },
         options: {
             clientes: [],
             empresas: [],
             colonias: [],
-            tipos:[]
+            tipos:[],
+            proveedores:[],
         },
-        tipo: ''
+        tipo: '',
+        formBitacora: {
+            proveedor: '',
+            fecha: new Date(),
+            tipo_nota: '',
+            notas: '',
+            adjuntos: {
+                adjuntos: {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                },
+            },
+        },
+        notas: [],
     }
 
     componentDidMount() {
@@ -486,6 +508,7 @@ class Proyectos extends Component {
         })
         if (!proyectos)
             history.push('/')
+            this.getOptionsAxios()
         const { search: queryString } = this.props.history.location
         if (queryString) {
             let id = parseInt( new URLSearchParams(queryString).get("id") )
@@ -500,6 +523,29 @@ class Proyectos extends Component {
                 }, 1000);
             }
         }
+    }
+    
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { proveedores } = response.data
+                const { options } = this.state
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     seleccionaradj(adjuntos) {
@@ -560,6 +606,8 @@ class Proyectos extends Component {
 
     handleCloseAdjuntos = () => { this.setState({ ...this.state, modalAdjuntos: false, proyecto: '', prospecto: '', form: this.clearForm() }) }
 
+    handleCloseNotaObra = () => { this.setState({ ...this.state, modalNotaObra: false, proyecto: '', formBitacora: this.clearFormBitacora()  }) }
+
     setAdjuntosSlider = proyecto => {
         let auxheaders = []
         let aux = []
@@ -582,7 +630,12 @@ class Proyectos extends Component {
         form[name] = value
         this.setState({ ...this.state, form })
     }
-
+    onChangeBitacora = e => {
+        const { name, value } = e.target
+        const { formBitacora } = this.state
+        formBitacora[name] = value
+        this.setState({ ...this.state, formBitacora })
+    }
     onChangeAvance = (key, e, name) => {
         const { value } = e.target
         const { form } = this.state
@@ -667,7 +720,14 @@ class Proyectos extends Component {
         )
         this.setState({ ...this.state, form })
     }
-
+    deleteRowAvance = () => {
+        const { form } = this.state
+        form.avances.pop()
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -886,11 +946,13 @@ class Proyectos extends Component {
             form
         })
     }
+
     onSubmitAvance = e => {
         e.preventDefault()
         waitAlert();
         this.addAvanceAxios()
     }
+
     onSubmitNewAvance = e => {
         e.preventDefault()
         waitAlert();
@@ -900,6 +962,7 @@ class Proyectos extends Component {
     safeDelete = (e) => () => {
         this.deleteProyectoAxios()
     }
+
     setProyectos = proyectos => {
         let aux = []
         proyectos.map((proyecto) => {
@@ -919,7 +982,7 @@ class Proyectos extends Component {
                 porcentaje: renderToString(setTextTable(proyecto.porcentaje + '%')),
                 fechaInicio: setDateTableReactDom(proyecto.fecha_inicio, this.doubleClick, proyecto, 'fecha_inicio', 'text-center'),
                 fechaFin: proyecto.fecha_fin !== null ? setDateTableReactDom(proyecto.fecha_fin, this.doubleClick, proyecto, 'fecha_fin', 'text-center') : setTextTableCenter('Sin definir'),
-                descripcion: setTextTableReactDom(proyecto.descripcion !== null ? proyecto.descripcion :'', this.doubleClick, proyecto, 'descripcion', 'text-justify'),
+                descripcion: setTextTableReactDom(proyecto.descripcion !== null ? proyecto.descripcion :'', this.doubleClick, proyecto, 'descripcion', 'text-justify min-width-180px'),
                 adjuntos: renderToString(this.setAdjuntosTable(proyecto)),
                 fases: renderToString(setListTable(this.setFasesList(proyecto), 'text')),
                 id: proyecto.id
@@ -928,6 +991,7 @@ class Proyectos extends Component {
         })
         return aux
     }
+
     deleteElementAxios = async(proyecto, element, tipo) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -943,6 +1007,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -1009,6 +1074,7 @@ class Proyectos extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+
     changeEstatus = (estatus, proyecto) =>  {
         estatus === 'Detenido'?
             questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, proyecto))
@@ -1017,6 +1083,7 @@ class Proyectos extends Component {
         : 
             questionAlert('¿ESTÁS SEGURO?', 'EL PROYECTO ESTARÁ EN PROCESO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, proyecto))
     }
+
     async changeEstatusAxios(estatus, proyecto){
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1036,6 +1103,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     setSwalPlaceholder = (tipo) => {
         switch(tipo){
             case 'tipo_proyecto':
@@ -1044,11 +1112,13 @@ class Proyectos extends Component {
                 return ''
         }
     }
+
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+
     onChangeRange = range => {
         const { startDate, endDate } = range
         const { form } = this.state
@@ -1059,6 +1129,7 @@ class Proyectos extends Component {
             form
         })
     }
+
     patchProyectos = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -1095,6 +1166,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     setOptions = (data, tipo) => {
         switch(tipo){
             case 'tipo_proyecto':
@@ -1105,6 +1177,7 @@ class Proyectos extends Component {
             default: return []
         }
     }
+
     setFasesList = proyecto => {
         let aux = [];
         if(proyecto.fase1)
@@ -1117,6 +1190,7 @@ class Proyectos extends Component {
             aux.push({text: 'SIN FASES'})
         return aux
     }
+
     setAdjuntosTable = proyecto => {
         return (
             <>
@@ -1177,6 +1251,13 @@ class Proyectos extends Component {
                 iconclass: 'flaticon2-photo-camera',
                 action: 'avances',
                 tooltip: { id: 'avances', text: 'Avances' }
+            },
+            {
+                text: 'Nota&nbsp;de&nbsp;obra',
+                btnclass: 'info',
+                iconclass: 'flaticon-notes',
+                action: 'nota',
+                tooltip: { id: 'nota', text: 'Nota&nbsp;de&nbsp;obra' }
             }
         )
         if(proyecto.fase3 !== 1)
@@ -1244,6 +1325,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     openModalComment = async(proyecto) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -1302,6 +1384,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     async deleteProyectoAxios() {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1324,6 +1407,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+    
     async deleteAdjuntoAxios(id) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1347,6 +1431,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     async addAvanceAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
@@ -1365,6 +1450,9 @@ class Proyectos extends Component {
                     break;
                 case 'correos':
                     data.append(element, JSON.stringify(form[element]))
+                    break;
+                case 'actividades_realizadas':
+                    data.append('actividades', form[element])
                     break;
                 default:
                     break
@@ -1405,6 +1493,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
     async addAvanceFileAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
@@ -1461,6 +1550,7 @@ class Proyectos extends Component {
         waitAlert();
         this.sendMailAvanceAxios(avance);
     }
+
     async sendMailAvanceAxios(avance) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1558,9 +1648,238 @@ class Proyectos extends Component {
                 </span>
             )
     }
-    
+
+    handleChangeAdjB = (files, item) => {
+        const { formBitacora } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        formBitacora['adjuntos'][item].value = files
+        formBitacora['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            formBitacora
+        })
+    }
+
+    openModalNotaObra = (proyecto) => {
+        this.getNotas(proyecto)
+        this.setState({
+            ...this.state,
+            proyecto:proyecto,
+            modalNotaObra: true,
+        })
+    }
+
+    onSubmitNotaBitacora = async (e) => {
+        e.preventDefault();
+        waitAlert();
+        const { access_token } = this.props.authUser
+        const { formBitacora, proyecto } = this.state
+        const data = new FormData();
+        let aux = Object.keys(formBitacora)
+        aux.forEach((element) => {
+            switch (element) {
+                case 'fecha':
+                    data.append(element, (new Date(formBitacora[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formBitacora[element]);
+                    break
+            }
+        })
+        formBitacora.adjuntos.adjuntos.files.forEach((file) => {
+            data.append(`files[]`, file.file)
+        })
+        data.append('proyecto', proyecto.id)
+        await axios.post(`${URL_DEV}v1/proyectos/nota-bitacora`, data, { headers: setFormHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { key } = this.state
+                const { proyecto } = response.data
+                this.getProyectoAxios(key)
+                data.notas = proyecto.notas
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La bitácora registrada con éxito.')
+                this.setState({
+                    ...this.state,
+                    formBitacora: this.clearFormBitacora(),
+                    // modalNotaObra: false,
+                    notas: this.setNotas(proyecto.notas),
+                    data
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getNotas = async(proyecto) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { proyecto } = response.data
+                const { data } = this.state
+                data.notas = proyecto.notas
+                this.setState({
+                    ...this.state,
+                    data,
+                    notas: this.setNotas(proyecto.notas)
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                             ANCHOR Delete nota                             */
+    /* -------------------------------------------------------------------------- */
+    async deleteNotaAxios(nota) {
+        const { access_token } = this.props.authUser
+        const { proyecto } = this.state
+        await axios.delete(`${URL_DEV}v1/proyectos/nota-bitacora/${nota.id}?proyecto=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { proyecto } = response.data
+                const { data } = this.state
+                data.notas = proyecto.notas
+                this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    clearFormBitacora = () => {
+        const { formBitacora } = this.state
+        let aux = Object.keys(formBitacora)
+        aux.map((element) => {
+            switch (element) {
+                case 'fecha':
+                    formBitacora[element] = new Date()
+                    break;
+                case 'adjuntos':
+                    formBitacora[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjunto',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    formBitacora[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formBitacora;
+    }
+
+    setNotas = notas => {
+        let aux = []
+        let _aux = []
+        notas.map((nota) => {
+            _aux = []
+            if (nota.adjuntos) {
+                nota.adjuntos.map((adjunto) => {
+                    _aux.push({
+                        text: adjunto.name, url: adjunto.url
+                    })
+                    return false
+                })
+            }
+            aux.push({
+                actions: this.setActionsNotas(nota),
+                numero_nota: renderToString(setTextTableCenter(this.cerosNota(nota.numero_nota))),
+                fecha: renderToString(setDateTable(nota.fecha)),
+                proveedor: renderToString(setTextTable(nota.proveedor ? nota.proveedor.razon_social : 'Sin definir')),
+                tipo_nota: renderToString(setTextTable(nota.tipo_nota)),
+                notas: renderToString(setTextTable(nota.notas)),
+                adjunto: renderToString(setArrayTable(_aux)),
+                id: nota.id
+            })
+            return false
+        })
+        return aux
+    }
+
+    cerosNota(num) {
+        if ( num < 10 ){
+            return ( '00' + num.toString () );
+        }else if ( num < 100 ){
+            return ( '0' + num.toString () );
+        }else{
+            return ( num );
+        }
+    }
+
+    setActionsNotas = () => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
+    }
+
+    openModalDeleteNota = nota => {
+        deleteAlert(`¿DESEAS ELIMINAR LA NOTA ${this.cerosNota(nota.numero_nota)}?`, '', () => this.deleteNotaAxios(nota))
+    }
+
+    generarBitacora = async (e) => {
+        e.preventDefault();
+        questionAlert('¿ESTÁS SEGURO?', 'GENERARÁS EL PDF CON LAS NOTAS DE OBRA GUARDADAS', () => this.generarBitacoraAxios())
+    }
+
+    generarBitacoraAxios = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { proyecto } = this.state
+        await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { proyecto } = response.data
+                doneAlert('PDF GENERADO CON ÉXITO')
+                window.open(proyecto.bitacora, '_blank').focus();
+                const { data } = this.state
+                data.notas = proyecto.notas
+                this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead, modalComentarios, tipo} = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead,
+                modalComentarios, tipo, modalNotaObra, options, formBitacora, data } = this.state
+        const tableActions = { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete },
+            'adjuntos': { function: this.openModalAdjuntos }, 'avances': { function: this.openModalAvances }, 'see': { function: this.openModalSee }, 
+            'proyecto': { function: this.changePageRelacionar }, 'lead': { function: this.openModalLead }, 'comment': { function: this.openModalComment },
+            'nota' : { function: this.openModalNotaObra }
+        }
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Tabs defaultActiveKey = 'all' activeKey = { key }
@@ -1568,139 +1887,60 @@ class Proyectos extends Component {
                     <Tab eventKey = 'all' title = "Fases">
                         {
                             key === 'all' ?
-                                <NewTableServerRender
-                                    columns={PROYECTOS_COLUMNS}
-                                    title='Proyectos'
-                                    subtitle='Listado de proyectos'
-                                    mostrar_boton={true}
-                                    abrir_modal={false}
-                                    url='/proyectos/proyectos/add'
-                                    mostrar_acciones={true}
-                                    actions={{
-                                        'edit': { function: this.changePageEdit },
-                                        'delete': { function: this.openModalDelete },
-                                        'adjuntos': { function: this.openModalAdjuntos },
-                                        'avances': { function: this.openModalAvances },
-                                        'see': { function: this.openModalSee },
-                                        'proyecto': { function: this.changePageRelacionar },
-                                        'lead': { function: this.openModalLead },
-                                        'comment': { function: this.openModalComment }
-                                    }}
-                                    accessToken={this.props.authUser.access_token}
-                                    setter={this.setProyectos}
-                                    urlRender={URL_DEV + 'proyectos/proyectos'}
-                                    cardTable='cardTable'
-                                    cardTableHeader='cardTableHeader'
-                                    cardBody='cardBody'
-                                    idTable='proyecto'
-                                    isTab={true}
-                                />
+                                <NewTableServerRender columns = { PROYECTOS_COLUMNS } title = 'Proyectos' subtitle = 'Listado de proyectos'
+                                    mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/proyectos/add' mostrar_acciones = { true }
+                                    actions = { tableActions } accessToken = { this.props.authUser.access_token } setter = { this.setProyectos }
+                                    urlRender = { `${URL_DEV}proyectos/proyectos` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader'
+                                    cardBody = 'cardBody' idTable = 'proyecto' isTab = { true } />
                             : ''
                         }
                     </Tab>
                     <Tab eventKey = 'fase1' title = "FASE 1">
                         {
                             key === 'fase1' ?
-                                <NewTableServerRender
-                                    columns={PROYECTOS_COLUMNS}
-                                    title='Proyectos'
-                                    subtitle='Listado de proyectos'
-                                    mostrar_boton={true}
-                                    abrir_modal={false}
-                                    url='/proyectos/proyectos/add'
-                                    mostrar_acciones={true}
-                                    actions={{
-                                        'edit': { function: this.changePageEdit },
-                                        'delete': { function: this.openModalDelete },
-                                        'adjuntos': { function: this.openModalAdjuntos },
-                                        'avances': { function: this.openModalAvances },
-                                        'see': { function: this.openModalSee },
-                                        'proyecto': { function: this.changePageRelacionar },
-                                        'lead': { function: this.openModalLead },
-                                        'comment': { function: this.openModalComment }
-                                    }}
-                                    accessToken={this.props.authUser.access_token}
-                                    setter={this.setProyectos}
-                                    urlRender={URL_DEV + 'proyectos/proyectos/1'}
-                                    cardTable='cardTable'
-                                    cardTableHeader='cardTableHeader'
-                                    cardBody='cardBody'
-                                    idTable='proyecto_fase1'
-                                    isTab={true}
-                                />
+                                <NewTableServerRender columns = { PROYECTOS_COLUMNS } title = 'Proyectos' subtitle = 'Listado de proyectos'
+                                    mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/proyectos/add' mostrar_acciones = { true }
+                                    actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete },
+                                        'adjuntos': { function: this.openModalAdjuntos }, 'avances': { function: this.openModalAvances },
+                                        'see': { function: this.openModalSee }, 'proyecto': { function: this.changePageRelacionar },
+                                        'lead': { function: this.openModalLead }, 'comment': { function: this.openModalComment }
+                                    } } accessToken = { this.props.authUser.access_token } setter = { this.setProyectos }
+                                    urlRender = { `${URL_DEV}proyectos/proyectos/1` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader'
+                                    cardBody = 'cardBody' idTable = 'proyecto_fase1' isTab = { true } />
                             : ''
                         }
                     </Tab>
                     <Tab eventKey = 'fase2' title = "FASE 2">
                         {
                             key === 'fase2' ?
-                                <NewTableServerRender
-                                    columns={PROYECTOS_COLUMNS}
-                                    title='Proyectos'
-                                    subtitle='Listado de proyectos'
-                                    mostrar_boton={true}
-                                    abrir_modal={false}
-                                    url='/proyectos/proyectos/add'
-                                    mostrar_acciones={true}
-                                    actions={{
-                                        'edit': { function: this.changePageEdit },
-                                        'delete': { function: this.openModalDelete },
-                                        'adjuntos': { function: this.openModalAdjuntos },
-                                        'avances': { function: this.openModalAvances },
-                                        'see': { function: this.openModalSee },
-                                        'proyecto': { function: this.changePageRelacionar },
-                                        'lead': { function: this.openModalLead },
-                                        'comment': { function: this.openModalComment }
-                                    }}
-                                    accessToken={this.props.authUser.access_token}
-                                    setter={this.setProyectos}
-                                    urlRender={URL_DEV + 'proyectos/proyectos/2'}
-                                    cardTable='cardTable'
-                                    cardTableHeader='cardTableHeader'
-                                    cardBody='cardBody'
-                                    idTable='proyecto_fase2'
-                                    isTab={true}
-                                />
+                                <NewTableServerRender columns = { PROYECTOS_COLUMNS } title = 'Proyectos' subtitle = 'Listado de proyectos' 
+                                    mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/proyectos/add' mostrar_acciones = { true }
+                                    actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete },
+                                        'adjuntos': { function: this.openModalAdjuntos }, 'avances': { function: this.openModalAvances },
+                                        'see': { function: this.openModalSee }, 'proyecto': { function: this.changePageRelacionar },
+                                        'lead': { function: this.openModalLead }, 'comment': { function: this.openModalComment }
+                                    } } accessToken = { this.props.authUser.access_token } setter = { this.setProyectos }
+                                    urlRender = { `${URL_DEV}proyectos/proyectos/2` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader'
+                                    cardBody = 'cardBody' idTable = 'proyecto_fase2' isTab = { true } />
                             : ''
                         }
                     </Tab>
                     <Tab eventKey = 'fase3' title = "FASE 3">
                         {
                             key === 'fase3' ?
-                                <NewTableServerRender
-                                    columns={PROYECTOS_COLUMNS}
-                                    title='Proyectos'
-                                    subtitle='Listado de proyectos'
-                                    mostrar_boton={true}
-                                    abrir_modal={false}
-                                    url='/proyectos/proyectos/add'
-                                    mostrar_acciones={true}
-                                    actions={{
-                                        'edit': { function: this.changePageEdit },
-                                        'delete': { function: this.openModalDelete },
-                                        'adjuntos': { function: this.openModalAdjuntos },
-                                        'avances': { function: this.openModalAvances },
-                                        'see': { function: this.openModalSee },
-                                        'lead': { function: this.openModalLead },
-                                        'comentarios': { function: this.openModalComment },
-                                    }}
-                                    accessToken={this.props.authUser.access_token}
-                                    setter={this.setProyectos}
-                                    urlRender={URL_DEV + 'proyectos/proyectos/3'}
-                                    cardTable='cardTable'
-                                    cardTableHeader='cardTableHeader'
-                                    cardBody='cardBody'
-                                    idTable='proyecto_fase3'
-                                    isTab={true}
-                                />
+                                <NewTableServerRender columns = { PROYECTOS_COLUMNS } title = 'Proyectos' subtitle = 'Listado de proyectos'
+                                    mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/proyectos/add' mostrar_acciones = { true }
+                                    actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete },
+                                        'adjuntos': { function: this.openModalAdjuntos }, 'avances': { function: this.openModalAvances },
+                                        'see': { function: this.openModalSee }, 'lead': { function: this.openModalLead },
+                                        'comentarios': { function: this.openModalComment }, } } accessToken = { this.props.authUser.access_token } 
+                                    setter = { this.setProyectos } urlRender = { `${URL_DEV}proyectos/proyectos/3` } cardTable = 'cardTable' 
+                                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' idTable = 'proyecto_fase3' isTab = { true } />
                             : ''
                         }
                     </Tab>
                 </Tabs>
-                
-                <ModalDelete title = "¿Estás seguro que deseas eliminar el proyecto?" show = { modalDelete } 
-                    handleClose = { this.handleCloseDelete } onClick={(e) => { this.safeDelete(e)() }} />
-
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el proyecto?" show = { modalDelete } handleClose = { this.handleCloseDelete } onClick={(e) => { this.safeDelete(e)() }} />
                 <Modal size="xl" title="Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
                         <Card className="card-custom card-without-box-shadown">
@@ -1825,53 +2065,175 @@ class Proyectos extends Component {
                     </div>
                 </Modal>
                 <Modal size="xl" title={title} show={modalAvances} handleClose={this.handleCloseAvances}>
-                    <Tabs 
-                        defaultActiveKey = "nuevo" 
-                        className = "mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
+                    <Tabs defaultActiveKey = "nuevo" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
                         <Tab eventKey = "nuevo" title = "Nuevo avance">
-                            <AvanceForm
-                                form = { form }
-                                onChangeAvance = { this.onChangeAvance }
-                                onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
-                                clearFilesAvances = { this.clearFilesAvances }
-                                addRowAvance = { this.addRowAvance }
-                                onSubmit = { this.onSubmitAvance }
-                                onChange = { this.onChange }
-                                proyecto = { proyecto }
-                                sendMail = { this.sendMail }
-                                formeditado = { formeditado }
-                            />
+                            <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                                clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance }  deleteRowAvance = {this.deleteRowAvance}   onSubmit = { this.onSubmitAvance }
+                                onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } formeditado = { formeditado } />
                         </Tab>
-                        <Tab eventKey = "existente" title = "Cargar avance">
-                            <AvanceForm
-                                form = { form }
-                                onChangeAvance = { this.onChangeAvance }
-                                onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
-                                clearFilesAvances = { this.clearFilesAvances }
-                                addRowAvance = { this.addRowAvance }
-                                onSubmit = { this.onSubmitNewAvance }
-                                onChange = { this.onChange }
-                                proyecto = { proyecto }
-                                sendMail = { this.sendMail }
-                                handleChange = { this.handleChangeAvance }
-                                formeditado = { formeditado }
-                                isNew = { true }
-                            />
+                        <Tab eventKey = "existente" title = "Adjuntar avance">
+                            <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                                clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } deleteRowAvance = {this.deleteRowAvance} onSubmit = { this.onSubmitNewAvance }
+                                onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } handleChange = { this.handleChangeAvance }
+                                formeditado = { formeditado } isNew = { true } />
                         </Tab>
                     </Tabs>
-                    
                 </Modal>
                 <Modal size="lg" title="Proyecto" show={modalSee} handleClose={this.handleCloseSee} >
                     <InformacionProyecto proyecto={proyecto} printDates={this.printDates} tipo={tipo}/>
                 </Modal>
                 <Modal size = 'xl' title = 'Información del lead' show = { modalLead } handleClose = { this.handleCloseLead }>
-                    {
-                        lead ? <OneLead lead = { lead } />  : ''
-                    }
+                    { lead ? <OneLead lead = { lead } />  : '' }
                 </Modal>
                 <Modal size = 'lg' title = 'Comentarios' show = { modalComentarios } handleClose = { this.handleCloseComentarios }>
                     <Comentarios addComentario = { this.addComentarioAxios } form = { form } onChange = { this.onChange }
                         handleChange = { this.handleChangeComentario } proyecto = { proyecto } />
+                </Modal>
+                <Modal size = 'xl' title = 'Nota de obra' show = { modalNotaObra } handleClose = { this.handleCloseNotaObra }>
+                    <div className="row mx-0 my-3">
+                        <div className="col-md-6">
+                            {
+                                proyecto.bitacora ? 
+                                    <div className = 'd-flex'>
+                                        <a className="d-flex align-items-center bg-light-success rounded px-3 py-2 text-hover"
+                                            href = { proyecto.bitacora } target = '_blank' rel="noopener noreferrer" >
+                                            <span className="svg-icon svg-icon-success mr-1">
+                                                <span className="svg-icon svg-icon-lg">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
+                                                </span>
+                                            </span>
+                                            <div className="d-flex font-weight-bolder text-dark-75 font-size-13px mr-2">
+                                                Bitácora
+                                            </div>
+                                        </a>
+                                    </div>
+                                : <></>
+                            }
+                        </div>
+                        <div className="col-md-6 text-center text-md-right">
+                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" onClick = { this.generarBitacora }
+                                text = 'GENERAR PDF' only_icon = "flaticon2-plus icon-13px mr-2 px-0 text-info" />
+                        </div>
+                    </div>
+                    <Tabs defaultActiveKey = "formulario_bitacora" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
+                        <Tab eventKey = "formulario_bitacora" title = "Formulario nota de obra">
+                            <div className="col-md-11 mx-auto px-0">
+                                <NotaBitacoraForm options = { options } form = { formBitacora } onChange = { this.onChangeBitacora }
+                                    handleChange = { this.handleChangeAdjB } onSubmit = { (e) => {this.onSubmitNotaBitacora(e)} }
+                                    proyecto = { proyecto } />
+                            </div>
+                        </Tab>
+                        {
+                            data.notas.length > 0 &&
+                                <Tab eventKey = "notas" title = "Historial de notas">
+                                    <table className="table table-responsive-lg table-vertical-center text-center w-100">
+                                        <thead>
+                                            <tr className="bg-gray-200">
+                                                <th></th>
+                                                <th># Nota</th>
+                                                <th>Fecha</th>
+                                                <th>Proveedor</th>
+                                                <th>Tipo</th>
+                                                <th style={{minWidth:'200px'}}>Notas</th>
+                                                <th style={{minWidth:'180px'}}>Adjuntos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                data.notas.map((nota, index) => {
+                                                    return(
+                                                        <tr key = { index }>
+                                                            <td className = 'px-2'>
+                                                                <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger' 
+                                                                    onClick = { (e) => {e.preventDefault(); this.openModalDeleteNota(nota)}} >
+                                                                    <i className='flaticon2-rubbish-bin' />
+                                                                </button>
+                                                            </td>
+                                                            <td className = 'px-2 text-break'> { nota.numero_nota.toString().padStart(4, 0) } </td>
+                                                            <td className = 'px-2 text-break'> { setDateTable(nota.fecha) } </td>
+                                                            <td className = 'px-2 text-break'> { nota.proveedor ? nota.proveedor.razon_social : '-' } </td>
+                                                            <td className = 'px-2 text-break'> { nota.tipo_nota } </td>
+                                                            <td className = 'px-2 text-break text-justify'> { nota.notas } </td>
+                                                            <td className = 'px-2 text-break text-justify'>
+                                                                <ul className="text-primary">
+                                                                    {
+                                                                        nota.adjuntos.map((adjunto, key) => {
+                                                                            return(
+                                                                                <li key = { key } >
+                                                                                    <a target = '_blank' rel="noreferrer" href = { adjunto.url } className="text-primary text-hover-success">
+                                                                                        {adjunto.name}
+                                                                                    </a>
+                                                                                </li>
+                                                                            )
+                                                                        })
+                                                                    }    
+                                                                </ul>
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                        {/* <tbody>
+                                            <tr>
+                                                <th scope="row" className="bg-gray-200">PRECIO DISEÑO</th>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_1 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_1)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_2 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_2)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        form.precio_esquema_3 !== '-' ?
+                                                            setMoneyTableForNominas(form.precio_esquema_3)
+                                                            : '-'
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" className="bg-gray-200">INCREMENTO</th>
+                                                <td>-</td>
+                                                <td className="px-1">
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText
+                                                            requirevalidation={0}
+                                                            name="incremento_esquema_2"
+                                                            onChange={onChange}
+                                                            value={form.incremento_esquema_2}
+                                                            prefix='%'
+                                                            identificador='incremento_esquema_2'
+                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td className="px-1">
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText
+                                                            requirevalidation={0}
+                                                            name="incremento_esquema_3"
+                                                            onChange={onChange}
+                                                            value={form.incremento_esquema_3}
+                                                            prefix='%'
+                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
+                                                        />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody> */}
+                                    </table>
+                                </Tab>
+                        }
+                    </Tabs>
                 </Modal>
             </Layout>
         )

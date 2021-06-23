@@ -13,7 +13,7 @@ import proyectoCard from './Proyectos/ProyectoCard'
 import comprasCard from './Proyectos/ComprasCard'
 import proyectosCard from './Proyectos/ProyectosCard'
 import ventasCard from './Proyectos/VentasCard'
-import herramientaCard from './Proyectos/HerramientaCard'
+import bodegaCard from './Proyectos/BodegaCard'
 import solicitudDevolucionCard from './Proyectos/SolicitudDevolucionCard'
 import devolucionCard from './Proyectos/DevolucionCard'
 
@@ -73,7 +73,7 @@ export const ProyectoCard = proyectoCard
 export const ComprasCard = comprasCard
 export const ProyectosCard = proyectosCard
 export const VentasCard = ventasCard
-export const HerramientaCard = herramientaCard
+export const BodegaCard = bodegaCard
 export const SolicitudDevolucionCard = solicitudDevolucionCard
 export const DevolucionCard = devolucionCard
 

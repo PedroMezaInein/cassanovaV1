@@ -257,7 +257,8 @@ class Layout extends Component {
                                                 <span className="symbol symbol-45">
                                                     {
                                                         this.hasUser() ? this.props.authUser.user.avatar ?
-                                                            <img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src = { this.props.authUser.user.avatar } alt ="profile" />
+                                                            <img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent rounded-avatar" 
+                                                                src = { this.props.authUser.user.avatar } alt ="profile" />
                                                         :
                                                             <span className="symbol-label font-size-h5 font-weight-bold">
                                                                 { this.props.authUser.user.name ? this.props.authUser.user.name.charAt(0) : '' }
