@@ -347,6 +347,7 @@ class ProyectosForm extends Component {
                                                 messageinc="Incorrecto. Selecciona la colonia"
                                                 withtaglabel={1}
                                                 withtextlabel={1}
+                                                withicon={1}
                                             />
                                         }
                                         {
@@ -429,7 +430,8 @@ class ProyectosForm extends Component {
                                                     messageinc = "Incorrecto. Seleccione el proyecto."
                                                     customdiv = "mb-0" 
                                                     withtaglabel = { 1 } 
-                                                    withtextlabel = { 1 } 
+                                                    withtextlabel = { 1 }
+                                                    withicon={1}
                                                 />
                                             </div>
                                             <div className="col-md-6">

@@ -324,7 +324,7 @@ class Areas extends Component {
                                 <div className="px-5">
                                     <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
                                         onChange = { (value) => { this.onChangeSwal(value, 'subarea') } } withtaglabel = { 1 } 
-                                        name = { 'subarea' } customdiv = "mb-3"/>
+                                        name = { 'subarea' } customdiv = "mb-3" withicon={1}/>
                                 </div>
                             </div>,
                             <Update />,

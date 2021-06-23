@@ -656,12 +656,12 @@ class PlanTrabajo extends Component {
                             <div className='mr-3 d-flex'>
                                 <SelectSearchGray name='mes' options={getMeses()} value={mes} customdiv='mb-0'
                                     onChange={this.updateMes} iconclass="fas fa-calendar-day"
-                                    messageinc="Incorrecto. Selecciona el mes." requirevalidation={1} />
+                                    messageinc="Incorrecto. Selecciona el mes." requirevalidation={1} withicon={1}/>
                             </div>
                             <div className='mr-3 d-flex'>
                                 <SelectSearchGray name='año' options={getAños()} customdiv='mb-0'
                                     value={año} onChange={this.updateAño}
-                                    iconclass="fas fa-calendar-day" />
+                                    iconclass="fas fa-calendar-day" withicon={1}/>
                             </div>
                             <Button icon='' className='btn btn-light-success btn-sm font-weight-bold'
                                 only_icon='flaticon2-writing pr-0 mr-2' text='AGENDAR PLAN'

@@ -829,6 +829,7 @@ class MiProyecto extends Component {
                                                                 customdiv="mb-0"
                                                                 withtaglabel={0}
                                                                 withtextlabel={0}
+                                                                withicon={1}
                                                             />
                                                         </div>
                                                     </Nav>

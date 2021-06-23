@@ -123,7 +123,7 @@ a.text-hover-danger2:hover,
 
 .pdfview-img {
     @include down-screen($xs) {
-        width: 18rem;
+        width: 80%;
         height: auto;
     }
 
@@ -2311,6 +2311,10 @@ div#symbol-total-contactos{
     width: 65%;
 }
 
+.pointer-events-none{
+    pointer-events: none;
+    opacity: 0.9;
+}
 .w-fit-content{
     width: fit-content;
 }
