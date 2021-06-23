@@ -186,6 +186,52 @@ class NominaObraForm extends Component {
             total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0 } )
         this.setState({ ...this.state, form })
     }
+
+    deleteRowNominaObra = async(nom, key) => {
+        if(nom.id){
+            waitAlert()
+            /* const { access_token } = this.props.authUser
+            const { nomina } = this.state
+            await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}/${nominaAdmin.id}`, { headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    Swal.close()
+                    const { form, options } = this.state
+                    const { nom } = response.data
+                    let aux = []
+                    nom.nominas_administrativas.forEach((element, key) => {
+                        aux.push(
+                            {
+                                usuario: element.empleado ? element.empleado.id.toString() : '',
+                                nominImss: element.nomina_imss,
+                                restanteNomina: element.restante_nomina,
+                                extras: element.extras,
+                                id: element.id
+                            }
+                        )
+                    })
+                    if (aux.length) { form.nominasAdmin = aux } 
+                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                    options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
+                    window.history.replaceState(nom, 'nomina')
+                    this.setState({...this.state, nomina: nom, options, form })
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            }) */
+        }else{
+            let aux = []
+            const { form } = this.state
+            form.nominasObra.forEach((element, index) => {
+                if(index !== key)
+                    aux.push(element)
+            })
+            if (aux.length) { form.nominasObra = aux } 
+            else { form.nominasObra = [{ usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
+                total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0 }] }
+            this.setState({...this.state, form})
+        }
+    }
     
     render() {
         const { title, options, form, formeditado } = this.state
@@ -194,7 +240,7 @@ class NominaObraForm extends Component {
                 <NominaObraFormulario title = { title } formeditado = { formeditado } className = " px-3 " options = { options } form = { form } 
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } 
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } 
-                    addRowNominaObra = { this.addRowNominaObra } />
+                    addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } />
             </Layout>
         )
     }

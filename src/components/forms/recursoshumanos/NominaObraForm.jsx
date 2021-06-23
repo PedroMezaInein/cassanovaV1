@@ -146,6 +146,7 @@ class NominaObraForm extends Component {
                         <table className="table table-separate table-responsive-xl table_nominas_obras pt-5" id="tabla_obra">
                             <thead>
                                 <tr>
+                                    <th rowSpan="2"></th>
                                     <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Colaborador</div></th>
                                     <th colSpan="3" className="pb-0 border-bottom-0 font-size-sm"><div>Jornada regular</div></th>
                                     <th colSpan="3" className="pb-0 border-bottom-0 font-size-sm"><div>Jornada nocturna</div></th>
@@ -156,16 +157,16 @@ class NominaObraForm extends Component {
                                     <th className="pb-0 border-bottom-0 font-size-sm ">Total</th>
                                 </tr>
                                 <tr>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> $ x hr</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> # hrs</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> TOTAL</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> $ x hr</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> # hrs</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> TOTAL</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> $ x hr</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> # hrs</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> VIÁTICOS</div> </th>
-                                    <th className = 'pt-2' > <div className="p-0 my-0 font-size-sm text-center"> TOTAL</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> $ x hr</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> # hrs</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> TOTAL</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> $ x hr</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> # hrs</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> TOTAL</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> $ x hr</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> # hrs</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> VIÁTICOS</div> </th>
+                                    <th className = 'pt-2' style={{ minWidth: "80px" }}> <div className="p-0 my-0 font-size-sm text-center"> TOTAL</div> </th>
                                     <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm ">{setMoneyTableForNominas(this.getTotalesByType("nominImss"))}</div></th>
                                     <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm ">{setMoneyTableForNominas(this.getTotalesByType("restanteNomina"))}</div></th>
                                     <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm ">{setMoneyTableForNominas(this.getTotalesByType("extras"))}</div></th>
@@ -177,82 +178,86 @@ class NominaObraForm extends Component {
                                     form.nominasObra.map((nom, key) => {
                                         return(
                                             <tr key = { key }>
-                                                <td>
+                                                <td className='text-center align-middle' style={{ minWidth: "60px" }}>
+                                                    <Button icon='' onClick={() => { deleteRowNominaObra(nom, key) }}
+                                                        className="btn btn-sm btn-icon btn-bg-white btn-icon-danger btn-hover-danger" only_icon="far fa-trash-alt icon-md text-danger" />
+                                                </td>
+                                                <td className='text-center align-middle' >
                                                     <SelectSearchSinText identificador = "empleado" formeditado = { formeditado }
                                                         options = { options.usuarios } placeholder = "Selecciona el colaborador"
                                                         name = "usuario" value = { nom['usuario'] }
                                                         onChange={(value) => this.updateUsuario(value, key)} />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <InputMoneySinText identificador = "costo_hr_regular" requirevalidation = { 0 } formeditado = { formeditado }
                                                         name = "costo_hr_regular" value = { nom['costo_hr_regular'] } thousandseparator = { true } prefix = '$'
                                                         onChange = { e => onChangeNominasObra(key, e, 'costo_hr_regular') } />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <InputNumberSinText identificador = "total_hrs_regular" requirevalidation = { 0 }
                                                         formeditado = { formeditado } name = "total_hrs_regular" value = { nom['total_hrs_regular'] }
                                                         onChange = { e => onChangeNominasObra(key, e, 'total_hrs_regular') }
                                                         thousandseparator = { true } typeformat = "###########" />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <div className="p-0 my-0 font-size-sm"> 
                                                         { setMoneyTableForNominas(nom.costo_hr_regular * nom.total_hrs_regular) } 
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <InputMoneySinText identificador = "costo_hr_nocturna" requirevalidation = { 0 } formeditado = { formeditado }
                                                         name = "costo_hr_nocturna" value = { nom['costo_hr_nocturna'] } thousandseparator = { true } prefix = '$'
                                                         onChange = { e => onChangeNominasObra(key, e, 'costo_hr_nocturna') } />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <InputNumberSinText identificador = "total_hrs_nocturna" requirevalidation = { 0 }
                                                         formeditado = { formeditado } name = "total_hrs_nocturna" value = { nom['total_hrs_nocturna'] }
                                                         onChange = { e => onChangeNominasObra(key, e, 'total_hrs_nocturna') }
                                                         thousandseparator = { true } typeformat = "###########" />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <div className="p-0 my-0 font-size-sm"> 
                                                         { setMoneyTableForNominas(nom.costo_hr_nocturna * nom.total_hrs_nocturna) } 
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <InputMoneySinText identificador = "costo_hr_extra" requirevalidation = { 0 } formeditado = { formeditado }
                                                         name = "costo_hr_extra" value = { nom.costo_hr_extra } thousandseparator = { true } prefix = '$'
                                                         onChange = { e => onChangeNominasObra(key, e, 'costo_hr_extra') } />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <InputNumberSinText identificador = "total_hrs_extra" requirevalidation = { 0 }
                                                         formeditado = { formeditado } name = "total_hrs_extra" value = { nom.total_hrs_extra }
                                                         onChange = { e => onChangeNominasObra(key, e, 'total_hrs_extra') }
                                                         thousandseparator = { true } typeformat = "###########" />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <InputMoneySinText identificador = "viaticos" requirevalidation = { 0 } formeditado = { formeditado }
                                                         name = "viaticos" value = { nom.viaticos } thousandseparator = { true } prefix = '$'
                                                         onChange = { e => onChangeNominasObra(key, e, 'viaticos') } />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <div className="p-0 my-0 font-size-sm"> 
                                                         { setMoneyTableForNominas(parseInt(nom.costo_hr_extra * nom.total_hrs_extra) + parseInt(nom.viaticos)) } 
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <InputMoneySinText identificador = "nominImss" requirevalidation = { 0 } formeditado = { formeditado }
                                                         name = "nominImss" value = { nom.nominImss } onChange = { e => onChangeNominasObra(key, e, 'nominImss') }
                                                         thousandseparator = { true } prefix = '$' />
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <div className="p-0 my-0 font-size-sm"> 
                                                         { setMoneyTableForNominas(parseInt(nom.costo_hr_regular * nom.total_hrs_regular) 
                                                             + parseInt(nom.costo_hr_nocturna * nom.total_hrs_nocturna) - parseInt(nom.nominImss))} 
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td className='text-center align-middle' >
                                                     <div className="p-0 my-0 font-size-sm"> 
                                                         { setMoneyTableForNominas(parseInt(nom.costo_hr_extra * nom.total_hrs_extra) + parseInt(nom.viaticos)) } 
                                                     </div>
                                                 </td>
-                                                <td className="text-center">
+                                                <td className='text-center align-middle' >
                                                     <div id="total" className="font-size-lg font-weight-bolder">
                                                         { setMoneyTableForNominas(this.getTotal(key)) }
                                                     </div>
