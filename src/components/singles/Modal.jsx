@@ -11,7 +11,7 @@ class modal extends Component {
     }
 
     render() {
-        const { show, handleClose, children, title, size, icon } = this.props
+        const { show, handleClose, children, title, size, icon, classBody } = this.props
 
         return (
             <>
@@ -32,7 +32,7 @@ class modal extends Component {
                             <i aria-hidden="true" className="ki ki-close"></i>
                         </button>
                     </Modal.Header>
-                    <Modal.Body style={{ paddingTop: "0px" }}>
+                    <Modal.Body style={{ paddingTop: "0px" }} className={classBody}>
                         {children}
                     </Modal.Body>
                 </Modal>

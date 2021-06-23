@@ -7,14 +7,13 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
-import { PUSHER_OBJECT, URL_DEV } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
-/* import Pusher from 'pusher-js'; */
 import { Modal } from '../../../components/singles'
-import { setSingleHeader, setFormHeader } from '../../../functions/routers';
-import FormCalendarioIEquipos from '../../../components/forms/proyectos/FormCalendarioIEquipos';
+import { setSingleHeader } from '../../../functions/routers';
+import { FormCalendarioIEquipos, DetailsInstalacion } from '../../../components/forms';
 import { setOptions } from '../../../functions/setters'
 import { SelectSearchGray } from '../../../components/form-components'
 import moment from 'moment'
@@ -22,7 +21,6 @@ import moment from 'moment'
 class CalendarioInstalacion extends Component {
     state = {
         events: [],
-        tipo: 'own',
         title:'',
         modal: {
             details:false,
@@ -39,7 +37,7 @@ class CalendarioInstalacion extends Component {
             proyectos:'',
             equipos:''
         },
-        tareas: [],
+        instalaciones: [],
         instalacion:[]
     };
 
@@ -54,7 +52,7 @@ class CalendarioInstalacion extends Component {
         if (!calendario)
             history.push('/')
         this.getOptionsAxios()
-        this.getInstalaciones()
+        this.getCalendarioInstalaciones()
     }
 
     getOptionsAxios = async() => {
@@ -74,50 +72,46 @@ class CalendarioInstalacion extends Component {
             console.log(error, 'error')
         })
     }
-    async getInstalaciones() {
+    async getCalendarioInstalaciones() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'v1/proyectos/instalacion-equipos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                console.log(response.data)
                 const { instalaciones } = response.data
                 let aux = []
-                let año = new Date().getFullYear();
-                let mes = ''
-                let dia = ''
                 instalaciones.forEach((instalacion) => {
-                    // mes = instalacion.fecha.substr(6,2);
-                    // dia = instalacion.fecha.substr(8,2);
-                    console.log(dia,'dia')
                     let periodo = instalacion.periodo //meses
                     let duracion = instalacion.duracion //años
                     let meses = duracion === 0 ? periodo : duracion * 12
-
-                    
-
                     aux.push( { 
                         title: instalacion.equipo.equipo,
                         start: instalacion.fecha,
                         end: instalacion.fecha,
                         instalacion: instalacion,
-                        backgroundColor: "#009ef7",
-                        borderColor: "#009ef7"
+                        backgroundColor: "#17a2b8",
+                        borderColor: "#17a2b8",
+                        iconClass: 'la la-toolbox',
+                        tipo:'Instalación'
                     })
+                    let contadorPeriodo = 0;
                     for(let x=1; x <= meses; x++){
                         if(x % periodo === 0){
+                            contadorPeriodo++;
                             let fecha_instalacion = moment(instalacion.fecha);
                             let fecha_mantenimiento = fecha_instalacion.add(x, 'M');
                             if(fecha_mantenimiento.day() === 0){
                                 fecha_mantenimiento.add(1, 'd')
                             }
-
                             let fecha_mantenimiento_format= fecha_mantenimiento.format("YYYY-MM-DD")
                             aux.push({
                                 title: instalacion.equipo.equipo,
                                 start:fecha_mantenimiento_format,
                                 end:fecha_mantenimiento_format,
                                 instalacion: instalacion,
-                                backgroundColor: "red",
-                                borderColor: "red"
+                                backgroundColor: "#2756C3",
+                                borderColor: "#2756C3",
+                                iconClass: 'la la-tools',
+                                tipo:'Mantenimiento',
+                                contadorPeriodo:contadorPeriodo
                             })
                         }
                     }
@@ -140,13 +134,20 @@ class CalendarioInstalacion extends Component {
 
     
     renderEventContent = (eventInfo) => {
-        console.log(eventInfo)
+        let { extendedProps } = eventInfo.event._def
         return (
-            <OverlayTrigger overlay={<Tooltip><span>{eventInfo.event.title}</span> - <span>{eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span></Tooltip>}>
-            <div style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}}>
-                <span>{eventInfo.event.title}</span> - <span>{eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span>
-            </div>
-        </OverlayTrigger>
+            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</Tooltip>}>
+                <div className="text-hover container p-1 tarea" style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}} onClick={(e) => { e.preventDefault(); this.getInstalacion(extendedProps) }}>
+                        <div className="row mx-0 row-paddingless">
+                            <div className="col-md-auto mr-1 text-truncate">
+                                <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
+                            </div>
+                            <div className="col align-self-center text-truncate">
+                                <span className="text-white font-weight-bold font-size-12px">{eventInfo.event.title} - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span>
+                            </div>
+                        </div>
+                    </div>
+            </OverlayTrigger>
         )
     }
 
@@ -168,6 +169,21 @@ class CalendarioInstalacion extends Component {
             title: 'Agregar nueva instalación',
             form: this.clearForm()
         })
+    }
+
+    getInstalacion = (instalacion) => {
+        const { modal } = this.state
+        modal.details = true
+        this.setState({
+            modal,
+            title: `${instalacion.tipo} de ${instalacion.instalacion.equipo.equipo}`,
+            instalacion:instalacion
+        })
+    }
+    handleCloseModalInstalacion= () => {
+        const { modal } = this.state
+        modal.details = false
+        this.setState({ ...this.state, modal, instalacion: '' })
     }
     clearForm = () => {
         const { form } = this.state
@@ -197,12 +213,11 @@ class CalendarioInstalacion extends Component {
     onSubmitInstalacion = async() => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        console.log(form)
         waitAlert()
         await axios.post(`${URL_DEV}v1/proyectos/instalacion-equipos`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('Instalación de equipo registrado con éxito.')
-                this.getInstalaciones()
+                this.getCalendarioInstalaciones()
                 this.handleClose()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -229,7 +244,7 @@ class CalendarioInstalacion extends Component {
         console.log('filtrar')
     }
     render() {
-        const { events, tipo, title, modal, tarea, form, options } = this.state
+        const { events, title, modal, form, options, instalacion } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <Card className="card-custom">
@@ -282,9 +297,9 @@ class CalendarioInstalacion extends Component {
                 <Modal size="lg" title={title} show={modal.form} handleClose={this.handleClose} >
                     <FormCalendarioIEquipos form = { form } options = { options } onChange = { this.onChange } onSubmit = { this.onSubmitInstalacion } />
                 </Modal>
-                {/* <Modal size="lg" title={title} show={modal.details} handleClose={this.handleCloseModalT} >
-                        
-                </Modal> */}
+                <Modal size="lg" title={<span><i className={`${instalacion.iconClass} icon-lg mr-2 ${instalacion.tipo==='Instalación'?'color-instalacion':'color-mantenimiento'}`}></i>{title}</span>} show={modal.details} handleClose={this.handleCloseModalInstalacion} classBody="bg-light">
+                    <DetailsInstalacion instalacion={instalacion}/>
+                </Modal>
             </Layout>
         );
     }
