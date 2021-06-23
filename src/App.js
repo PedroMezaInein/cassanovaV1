@@ -121,6 +121,8 @@ const CalendarioProyectos = React.lazy(() => import('./pages/Proyectos/Calendari
 const Devoluciones = React.lazy(() => import('./pages/Proyectos/Devoluciones/Devoluciones') )
 const DevolucionesForm = React.lazy(() => import('./pages/Proyectos/Devoluciones/DevolucionesForm') )
 
+const CalendarioInstalacion = React.lazy(() => import('./pages/Proyectos/CalendarioInstalacion/CalendarioInstalacion') )
+
 const Areas = React.lazy( () => import('./pages/Catalogos/Areas') )
 const Partidas = React.lazy( () => import('./pages/Catalogos/Partidas') )
 const Unidades = React.lazy( () => import('./pages/Catalogos/Unidades') )
@@ -352,6 +354,8 @@ class App extends Component{
                     <Route path = "/proyectos/devoluciones" exact component ={ Devoluciones } />
                     <Route path = "/proyectos/devoluciones/:action" exact component ={ DevolucionesForm } />
 
+                    <Route path = "/proyectos/calendario-instalacion-equipos" exact component = { CalendarioInstalacion } />
+                    
                     {/*  ANCHOR Routes for administracion */}
 
                     <Route path = "/administracion/egresos" exact component ={ Egresos } />
