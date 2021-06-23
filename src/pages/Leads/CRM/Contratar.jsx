@@ -490,7 +490,7 @@ class Contratar extends Component {
                 const { form, options } = this.state
                 if (estatus  === 'si') {
                     const { municipio, estado, asentamientos } = response.data.data
-                    console.log(response.data.data, 'DATA')
+                    console.log(response.data.data, 'DATA', asentamientos)
                     form['municipio'] = municipio.toUpperCase()
                     form['estado'] = estado.toUpperCase()
                     let aux = []
@@ -498,6 +498,7 @@ class Contratar extends Component {
                         aux.push({ name: element.nombre.toString().toUpperCase(), value: element.nombre.toString().toUpperCase() })
                     })
                     options['colonias'] = aux
+                    form.colonias = aux
                     this.setState({
                         ...this.state,
                         form,
