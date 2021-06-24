@@ -4,8 +4,8 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
-import { setSingleHeader } from '../../../functions/routers'
-import { errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
 import readXlsxFile from 'read-excel-file'
@@ -62,7 +62,7 @@ class NominaObraForm extends Component {
         });
         switch (action) {
             case 'add':
-                this.setState({ ...this.state, title: 'Nueva nómina obra', formeditado: 0 })
+                this.setState({ ...this.state, title: 'Nueva nómina de obra', formeditado: 0 })
                 break;
             default:
                 break;
@@ -72,7 +72,7 @@ class NominaObraForm extends Component {
         this.getOptionsAxios()
     }
 
-    async getOptionsAxios() {
+    getOptionsAxios = async() =>{
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.options(`${URL_DEV}v2/rh/nomina-obra`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
@@ -85,6 +85,47 @@ class NominaObraForm extends Component {
                 options.usuarios = setOptions(usuarios, 'nombre', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
                 this.setState({ ...this.state, options, data })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    addNominaObraAxios = async() => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break;
+                case 'nominasObra':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                case 'adjuntos':
+                case 'empresas':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        if(form.adjuntos.adjunto.value !== ''){
+            form.adjuntos.adjunto.files.forEach((file) => {
+                data.append(`files`, file.file)
+            })
+        }
+        await axios.post(`${URL_DEV}v2/rh/nomina-obra`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Nomina de obras guardad con éxito.')
+                Swal.close()
+                const { nomina } = response.data
+                this.setState({...this.state, nomina: nomina})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -222,6 +263,16 @@ class NominaObraForm extends Component {
         })
         return aux2
     }
+
+    onSubmit = e => {
+        e.preventDefault();
+        waitAlert()
+        const { title } = this.state
+        if (title === 'Nueva nómina de obra')
+            this.addNominaObraAxios()
+        else
+            console.log('EDITAR')
+    }
     
     render() {
         const { title, options, form, formeditado, data, nomina } = this.state
@@ -230,7 +281,7 @@ class NominaObraForm extends Component {
                 <NominaObraFormulario title = { title } formeditado = { formeditado } className = " px-3 " options = { options } form = { form } 
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
-                    addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } />
+                    addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } />
             </Layout>
         )
     }

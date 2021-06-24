@@ -281,7 +281,7 @@ class NominaObraForm extends Component {
                     <Card.Footer>
                         <div className="text-right">
                             <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
-                            <Button text='GENERAR COMPRAS' className="btn btn-success mr-2" icon=''only_icon='fas fa-wallet mr-1'/> 
+                            { nomina !== '' ?  <Button text='GENERAR COMPRAS' className="btn btn-success mr-2" icon=''only_icon='fas fa-wallet mr-1'/>  : <></> }
                         </div>
                     </Card.Footer>
                 </Form>
