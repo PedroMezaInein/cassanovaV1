@@ -173,7 +173,6 @@ class NominaAdminForm extends Component {
         const { form } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
-        console.log(form, 'form')
         aux.forEach((element) => {
             switch (element) {
                 /* case 'fechaInicio':

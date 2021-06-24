@@ -45,7 +45,6 @@ class ImageUpload extends React.Component {
                 crop,
                 "newFile.jpeg"
             );
-            console.log('cropped', croppedImageUrl)
             onChange({ target: { name: 'avatar', value: croppedImageUrl } })
             this.setState({ croppedImageUrl });
         }
@@ -93,8 +92,7 @@ class ImageUpload extends React.Component {
         return (
             <div>
                 <div>
-                    <div>
-                        {/* <input type="file" onChange={this.onSelectFile} /> */}
+                    <div className="d-flex justify-content-center">
                         <span>
                             <label htmlFor="file-upload" className="btn btn-sm btn-bg-light btn-hover-light-primary text-dark-50 text-hover-primary font-weight-bolder font-size-lg py-3 btn btn-primary">
                                 <i className="la la-photo text-primary mr-1 icon-xl"></i>SUBIR FOTO DE PERFIL
@@ -107,20 +105,24 @@ class ImageUpload extends React.Component {
                             />
                         </span>
                     </div>
-                    {src && (
-                        <ReactCrop
-                            src={src}
-                            crop={crop}
-                            onImageLoaded={this.onImageLoaded}
-                            onComplete={this.onCropComplete}
-                            onChange={this.onCropChange}
-                            minHeight={300}
-                            minWidth={300}
-                        />
-                    )}
-                    {croppedImageUrl && (
-                        <img alt="Crop" style={{ maxWidth: "100%" }} src={croppedImageUrl} />
-                    )}
+                        <>
+                            {
+                                src && (
+                                    <ReactCrop
+                                        src={src}
+                                        crop={crop}
+                                        onImageLoaded={this.onImageLoaded}
+                                        onComplete={this.onCropComplete}
+                                        onChange={this.onCropChange}
+                                        minHeight={300}
+                                        minWidth={300}
+                                    />
+                                )
+                            }
+                            {
+                                croppedImageUrl && ( <img alt="Crop" style={{ maxWidth: "100%" }} src={croppedImageUrl} /> )
+                            }
+                        </>
                 </div>
             </div>
         )
@@ -128,93 +130,3 @@ class ImageUpload extends React.Component {
 }
 
 export default ImageUpload
-
-// import React from 'react'
-// import Avatar from 'react-avatar-edit'
-
-// class ImageUpload extends React.Component {
-
-//     constructor(props) {
-//         super(props)
-//         const src = ''
-//         this.state = {
-//             preview: null,
-//             src
-//         }
-//         this.onCrop = this.onCrop.bind(this)
-//         this.onClose = this.onClose.bind(this)
-//         this.onBeforeFileLoad = this.onBeforeFileLoad.bind(this)
-//     }
-
-//     componentDidUpdate(nextProps){
-//         if (nextProps.value !== this.props.value){
-//             const { value } = this.props
-//             this.setState({
-//                 ...this.state,
-//                 src: value,
-//                 preview: value
-//             })
-//         }
-//     }
-
-//     onClose() {
-//         const { clearAvatar } = this.props
-//         clearAvatar()
-//     }
-
-//     onCrop(preview) {
-//         const { onChange} = this.props
-//         this.setState({ preview })
-//         onChange({ target: { name: 'foto', value: preview } })
-//     }
-
-//     onBeforeFileLoad(elem) {
-//         if (elem.target.files[0].size > 71680) {
-//             alert("¡El archivo es demasiado grande!");
-//             elem.target.value = "";
-//         };
-//     }
-
-//     render() {
-//         console.log(this.state.preview)
-//         const divStyle = {
-//             color: '#80808F',
-//             fontSize: 18.8,
-//             fontWeight: 'bold',
-//             width:'auto'
-//         };
-//         const divborderStyle = {
-//             backgroundColor: '#ECF0F3 ',
-//             // border: '2px dashed #80808F'
-//         };
-
-//         return (
-//             <div className="form-group row form-group-marginless d-flex justify-content-center">
-//                 <div className="col align-self-center text-center">
-//                     <Avatar
-//                         width={390}
-//                         height={295}
-//                         onCrop={this.onCrop}
-//                         onClose={this.onClose}
-//                         label="Elige tu foto de perfil"
-//                         src={this.state.src}
-//                         labelStyle={divStyle}
-//                         borderStyle={divborderStyle}
-//                         minCropRadius={30}
-//                         exportSize={390}
-//                         exportQuality={1.0}
-//                     />
-//                 </div>
-//                 {
-//                     this.state.preview?
-//                         <div className="col align-self-center text-center">
-//                             <img src={this.state.preview} alt = 'imagen-profile' />
-//                         </div>
-//                     :''
-//                 }
-//             </div>
-//         )
-//     }
-// }
-
-// export default ImageUpload
