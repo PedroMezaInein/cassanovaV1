@@ -94,7 +94,18 @@ class ImageUpload extends React.Component {
             <div>
                 <div>
                     <div>
-                        <input type="file" onChange={this.onSelectFile} />
+                        {/* <input type="file" onChange={this.onSelectFile} /> */}
+                        <span>
+                            <label htmlFor="file-upload" className="btn btn-sm btn-bg-light btn-hover-light-primary text-dark-50 text-hover-primary font-weight-bolder font-size-lg py-3 btn btn-primary">
+                                <i className="la la-photo text-primary mr-1 icon-xl"></i>SUBIR FOTO DE PERFIL
+                            </label>
+                            <input
+                                id="file-upload"
+                                type="file"
+                                onChange={this.onSelectFile}
+                                accept="image/*, application/pdf"
+                            />
+                        </span>
                     </div>
                     {src && (
                         <ReactCrop
