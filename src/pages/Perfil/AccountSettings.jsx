@@ -29,7 +29,8 @@ class AccountSettings extends Component {
         empresas: [],
         user: '',
         activeKey: '',
-        formeditado: 0
+        formeditado: 0,
+        cropped:true
     }
 
     componentDidMount() {
@@ -40,7 +41,7 @@ class AccountSettings extends Component {
         const { form } = this.state
         const { name, value } = e.target
         form[name] = value
-        console.log(name, value, 'ON CHANGE')
+        // console.log(name, value, 'ON CHANGE')
         this.setState({ ...this.state, form })
     }
 
@@ -108,7 +109,7 @@ class AccountSettings extends Component {
                 const { user, empresas } = response.data
                 const { form } = this.state
 
-                form.foto = user.avatar
+                // form.foto = user.avatar
 
                 this.setState({
                     ...this.state,
@@ -153,19 +154,30 @@ class AccountSettings extends Component {
     }
 
     sendAvatar = async (e) => {
-        console.log('FORM', this.state.form)
         e.preventDefault();
         const { access_token } = this.props.authUser
         const { form } = this.state
+        let { cropped } = this.state
+        cropped=true
         await axios.post(URL_DEV + 'user/users/avatar', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { user } = response.data
                 const { update } = this.props
+                let { form } = this.state
                 update({
                     access_token: response.data.access_token,
                     user: response.data.user,
                     modulos: response.data.modulos
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El avatar fue actualizado con éxito.')
+                form.foto = ''
+                cropped=false
+                this.setState({
+                    ...this.state,
+                    form,
+                    user:user,
+                    cropped
+                })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -256,7 +268,7 @@ class AccountSettings extends Component {
     }
 
     render() {
-        const { form, empresas, activeKey, user, formeditado } = this.state
+        const { form, empresas, activeKey, user, formeditado, cropped } = this.state
         return (
             <Layout {...this.props}>
                 <ChangePasswordForm
@@ -272,6 +284,7 @@ class AccountSettings extends Component {
                     onClickEmpresa={this.onClickEmpresa}
                     activeKey={activeKey}
                     formeditado = { formeditado }
+                    cropped={cropped}
                 />
             </Layout>
         )
