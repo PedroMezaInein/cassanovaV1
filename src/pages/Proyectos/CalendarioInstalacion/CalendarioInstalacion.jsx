@@ -245,7 +245,7 @@ class CalendarioInstalacion extends Component {
             <Layout active = 'proyectos' {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
-                        <div class="card-title">
+                        <div className="card-title">
                             <span className="font-weight-bolder text-dark font-size-h3">Instalaciones de Equipos</span>
                         </div>
                         <div class="card-toolbar">
