@@ -242,7 +242,7 @@ class CalendarioInstalacion extends Component {
     render() {
         const { events, title, modal, form, options, instalacion } = this.state
         return (
-            <Layout active={'usuarios'} {...this.props}>
+            <Layout active = 'proyectos' {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div class="card-title">
