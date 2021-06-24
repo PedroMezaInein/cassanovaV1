@@ -10,7 +10,8 @@ import { setOptions } from '../../../functions/setters'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
 import readXlsxFile from 'read-excel-file'
 import { SelectSearchGray } from '../../../components/form-components'
-
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 class NominaObraForm extends Component {
 
     state = {
@@ -101,57 +102,61 @@ class NominaObraForm extends Component {
         const { history } = this.props;
         const { options, form } = this.state;
         customInputAlert(
-            <div class="row mx-0">
-                <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
-                <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
-                <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
-                <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
-                    {
-                        this.getTotalesByType("nominImss") !==0 &&
-                        <div className="col-md-10">
-                            <SelectSearchGray
-                                options={options.cuentas}
-                                onChange={(value) => { this.onChangeSwal(value, 'cuentaImss') }}
-                                name='cuentaImss'
-                                value={form.cuentaImss}
-                                customdiv="mb-2 text-left"
-                                requirevalidation={1}
-                                placeholder='NÓMINA IMSS'
-                                withicon={0}
-                            />
+            <div style={{ display: 'flex', maxHeight: '300px'}} >
+                <Scrollbar>
+                    <div class="row mx-0">
+                        <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
+                        <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
+                        <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
+                        <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
+                            {
+                                this.getTotalesByType("nominImss") !==0 &&
+                                <div className="col-md-10">
+                                    <SelectSearchGray
+                                        options={options.cuentas}
+                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaImss') }}
+                                        name='cuentaImss'
+                                        value={form.cuentaImss}
+                                        customdiv="mb-2 text-left"
+                                        requirevalidation={1}
+                                        placeholder='NÓMINA IMSS'
+                                        withicon={0}
+                                    />
+                                </div>
+                            }
+                            {
+                                this.getTotalesByType("restanteNomina") !== 0 &&
+                                <div className="col-md-10">
+                                    <SelectSearchGray
+                                        options={options.cuentas}
+                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaRestante') }}
+                                        name='cuentaRestante'
+                                        value={form.cuentaRestante}
+                                        customdiv="mb-2 text-left"
+                                        requirevalidation={1}
+                                        placeholder='RESTANTE NÓMINA'
+                                        withicon={0}
+                                    />
+                                </div> 
+                            }
+                            {
+                                this.getTotalesByType("extras") !==0 &&
+                                <div className="col-md-10">
+                                    <SelectSearchGray
+                                        options={options.cuentas}
+                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaExtras') }}
+                                        name='cuentaExtras'
+                                        value={form.cuentaExtras}
+                                        customdiv="mb-0 text-left"
+                                        requirevalidation={1}
+                                        placeholder='EXTRAS'
+                                        withicon={0}
+                                    />
+                                </div> 
+                            }
                         </div>
-                    }
-                    {
-                        this.getTotalesByType("restanteNomina") !== 0 &&
-                        <div className="col-md-10">
-                            <SelectSearchGray
-                                options={options.cuentas}
-                                onChange={(value) => { this.onChangeSwal(value, 'cuentaRestante') }}
-                                name='cuentaRestante'
-                                value={form.cuentaRestante}
-                                customdiv="mb-2 text-left"
-                                requirevalidation={1}
-                                placeholder='RESTANTE NÓMINA'
-                                withicon={0}
-                            />
-                        </div> 
-                    }
-                    {
-                        this.getTotalesByType("extras") !==0 &&
-                        <div className="col-md-10">
-                            <SelectSearchGray
-                                options={options.cuentas}
-                                onChange={(value) => { this.onChangeSwal(value, 'cuentaExtras') }}
-                                name='cuentaExtras'
-                                value={form.cuentaExtras}
-                                customdiv="mb-0 text-left"
-                                requirevalidation={1}
-                                placeholder='EXTRAS'
-                                withicon={0}
-                            />
-                        </div> 
-                    }
-                </div>
+                    </div>
+                </Scrollbar>
             </div>,
             '',
             () => { this.generarComprasAxios() },
