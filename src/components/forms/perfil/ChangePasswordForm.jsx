@@ -21,8 +21,8 @@ class ChangePasswordFrom extends Component {
 	}
 
 	render() {
-		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendCorreo, empresas, onClickEmpresa, activeKey, formeditado } = this.props
-		console.log(user)
+		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendCorreo, empresas, onClickEmpresa, activeKey, formeditado, cropped } = this.props
+		// console.log(user)
 		return (<>
 			<Tab.Container defaultActiveKey="1" className="p-5">
 				<div className="card mb-6 mb-xl-9">
@@ -53,45 +53,48 @@ class ChangePasswordFrom extends Component {
 										</div>
 									</div>
 								</div>
-								<div className="d-flex flex-wrap justify-content-start">
-									<div className="d-flex flex-wrap">
-										<div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mr-6">
-											<div className="d-flex align-items-center">
-												<span className="svg-icon svg-icon-3 svg-icon-success mr-2">
-													<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24"></polygon>
-															<rect fill="#000000" opacity="0.5" x="11" y="5" width="2" height="14" rx="1"></rect>
-															<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero"></path>
-														</g>
-													</svg>
-												</span>
-												<div className="font-size-h5 font-weight-bolder counted">{user ? setDateTableLG(user.empleado.fecha_inicio) : ''}</div>
+								{
+									user.tipo !== 3 &&
+									<div className="d-flex flex-wrap justify-content-start">
+										<div className="d-flex flex-wrap">
+											<div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mr-6">
+												<div className="d-flex align-items-center">
+													<span className="svg-icon svg-icon-3 svg-icon-success mr-2">
+														<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+															<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																<polygon points="0 0 24 0 24 24 0 24"></polygon>
+																<rect fill="#000000" opacity="0.5" x="11" y="5" width="2" height="14" rx="1"></rect>
+																<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero"></path>
+															</g>
+														</svg>
+													</span>
+													<div className="font-size-h5 font-weight-bolder counted">{user ? setDateTableLG(user.empleado.fecha_inicio) : ''}</div>
+												</div>
+												<div className="font-weight-bold font-size-lg text-muted">FECHA DE INGRESO</div>
 											</div>
-											<div className="font-weight-bold font-size-lg text-muted">FECHA DE INGRESO</div>
-										</div>
-										<div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mr-6">
-											<div className="d-flex align-items-center justify-content-center">
-												<div className="font-size-h5 font-weight-bolder">{user ? user.empleado.tipo_empleado : ''}</div>
+											<div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mr-6">
+												<div className="d-flex align-items-center justify-content-center">
+													<div className="font-size-h5 font-weight-bolder">{user ? user.empleado.tipo_empleado : ''}</div>
+												</div>
+												<div className="font-weight-bold font-size-lg text-muted text-center">TIPO DE EMPLEADO</div>
 											</div>
-											<div className="font-weight-bold font-size-lg text-muted text-center">TIPO DE EMPLEADO</div>
-										</div>
-										<div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mr-6">
-											<div className="d-flex align-items-center justify-content-center">
-												<div className="font-size-h5 font-weight-bolder">{
-													user ? 
-														user.empleado.contratos ?
-															user.empleado.contratos[0]?
-																user.empleado.contratos[0].indefinido === 1 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
-															:'-'
-														:'-'
-													: '-'
-												}</div>
+											<div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mr-6">
+												<div className="d-flex align-items-center justify-content-center">
+													<div className="font-size-h5 font-weight-bolder">{
+														user ?
+															user.empleado.contratos ?
+																user.empleado.contratos[0] ?
+																	user.empleado.contratos[0].indefinido === 1 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
+																	: '-'
+																: '-'
+															: '-'
+													}</div>
+												</div>
+												<div className="font-weight-bold font-size-lg text-muted text-center">TIPO DE CONTRATO</div>
 											</div>
-											<div className="font-weight-bold font-size-lg text-muted text-center">TIPO DE CONTRATO</div>
 										</div>
 									</div>
-								</div>
+								}
 							</div>
 						</div>
 						<div className="separator"></div>
@@ -145,10 +148,12 @@ class ChangePasswordFrom extends Component {
 														value={form.foto}
 														onChange={onChange}
 														clearAvatar={clearAvatar}
+														cropped={cropped}
 													/>
+													{/* {console.log(form)} */}
 													{
 														form.foto ?
-															<div className="form-group row form-group-marginless justify-content-center mb-0">
+															<div className="form-group row form-group-marginless justify-content-center mb-0 mt-5">
 																<div className="text-center">
 																	<Button icon='' className="btn btn-light-primary font-weight-bold"
 																		onClick={
@@ -283,6 +288,18 @@ class ChangePasswordFrom extends Component {
 												{
 													activeKey !== '' ?
 														<>
+															<div className='col-md-10 text-center mt-5 mb-10 mx-auto'>
+																<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}</label>
+																<div className='d-flex align-items-center justify-content-center'>
+																	<ItemSlider
+																		items={form.adjuntos.firma.files}
+																		item='firma'
+																		handleChange={handleChange}
+																		multiple={false}
+																	/>
+																</div>
+															</div>
+															
 															<Form id="form-correo"
 																onSubmit={
 																	(e) => {
@@ -293,7 +310,12 @@ class ChangePasswordFrom extends Component {
 															>
 																<div className="form-group row form-group-marginless justify-content-center">
 																	<div className="col-md-4">
-																		<Input
+																		<InputGray
+																			withtaglabel={1}
+																			withtextlabel={1}
+																			withplaceholder={1}
+																			withicon={1}
+																			withformgroup={0}
 																			requirevalidation={0}
 																			placeholder={`CORREO ELECTRÓNICO${this.getName()}`}
 																			type="email"
@@ -308,34 +330,20 @@ class ChangePasswordFrom extends Component {
 																		/>
 																	</div>
 																</div>
-																<div className="mt-4 text-center">
-																	<Button icon='' className="btn btn-light-primary font-weight-bold"
-																		onClick={
-																			(e) => {
-																				e.preventDefault();
-																				validateAlert(sendCorreo, e, 'form-correo')
+																{
+																	form.correo_empresa&&
+																	<div className="mt-4 text-center">
+																		<Button icon='' className="btn btn-light-primary font-weight-bold"
+																			onClick={
+																				(e) => {
+																					e.preventDefault();
+																					validateAlert(sendCorreo, e, 'form-correo')
+																				}
 																			}
-																		}
-																		text="ENVIAR CORREO" />
-																</div>
-															</Form>
-															<div className='col-md-12 text-center mt-5'>
-																<div>
-																	<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}
-
-																	</label>
-																</div>
-																<div className='d-flex align-items-center justify-content-center'>
-																	<div>
-																		<ItemSlider
-																			items={form.adjuntos.firma.files}
-																			item='firma'
-																			handleChange={handleChange}
-																			multiple={false}
-																		/>
+																			text="ENVIAR CORREO" />
 																	</div>
-																</div>
-															</div>
+																}
+															</Form>
 														</>
 														: ''
 												}
