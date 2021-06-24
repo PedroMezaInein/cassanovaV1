@@ -97,6 +97,68 @@ class NominaObraForm extends Component {
             console.log(error, 'error')
         })
     }
+    openModalCompras = () => {
+        const { history } = this.props;
+        const { options, form } = this.state;
+        customInputAlert(
+            <div class="row mx-0">
+                <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
+                <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
+                <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
+                <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
+                    {
+                        this.getTotalesByType("nominImss") !==0 &&
+                        <div className="col-md-10">
+                            <SelectSearchGray
+                                options={options.cuentas}
+                                onChange={(value) => { this.onChangeSwal(value, 'cuentaImss') }}
+                                name='cuentaImss'
+                                value={form.cuentaImss}
+                                customdiv="mb-2 text-left"
+                                requirevalidation={1}
+                                placeholder='NÓMINA IMSS'
+                                withicon={0}
+                            />
+                        </div>
+                    }
+                    {
+                        this.getTotalesByType("restanteNomina") !== 0 &&
+                        <div className="col-md-10">
+                            <SelectSearchGray
+                                options={options.cuentas}
+                                onChange={(value) => { this.onChangeSwal(value, 'cuentaRestante') }}
+                                name='cuentaRestante'
+                                value={form.cuentaRestante}
+                                customdiv="mb-2 text-left"
+                                requirevalidation={1}
+                                placeholder='RESTANTE NÓMINA'
+                                withicon={0}
+                            />
+                        </div> 
+                    }
+                    {
+                        this.getTotalesByType("extras") !==0 &&
+                        <div className="col-md-10">
+                            <SelectSearchGray
+                                options={options.cuentas}
+                                onChange={(value) => { this.onChangeSwal(value, 'cuentaExtras') }}
+                                name='cuentaExtras'
+                                value={form.cuentaExtras}
+                                customdiv="mb-0 text-left"
+                                requirevalidation={1}
+                                placeholder='EXTRAS'
+                                withicon={0}
+                            />
+                        </div> 
+                    }
+                </div>
+            </div>,
+            '',
+            () => { this.generarComprasAxios() },
+            () => { history.push({pathname: '/rh/nomina-obras'}) },
+            'htmlClass'
+        )
+    }
     getTotalesByType(key) {
         const { form } = this.state
         var suma = 0
@@ -148,71 +210,10 @@ class NominaObraForm extends Component {
         }
         await axios.post(`${URL_DEV}v2/rh/nomina-obra`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
             (response) => {
-                const { history } = this.props;
-                const { options, form } = this.state;
-                console.log(form)
                 doneAlert('Nomina de obras guardada con éxito.')
                 Swal.close()
                 const { nomina } = response.data
-
-                customInputAlert(
-                    <div class="row mx-0">
-                        <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
-                        <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
-                        <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
-                        <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
-                            {
-                                this.getTotalesByType("nominImss") !==0 &&
-                                <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaImss') }}
-                                        name='cuentaImss'
-                                        value={form.cuentaImss}
-                                        customdiv="mb-2 text-left"
-                                        requirevalidation={1}
-                                        placeholder='NÓMINA IMSS'
-                                        withicon={0}
-                                    />
-                                </div>
-                            }
-                            {
-                                this.getTotalesByType("restanteNomina") !== 0 &&
-                                <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaRestante') }}
-                                        name='cuentaRestante'
-                                        value={form.cuentaRestante}
-                                        customdiv="mb-2 text-left"
-                                        requirevalidation={1}
-                                        placeholder='RESTANTE NÓMINA'
-                                        withicon={0}
-                                    />
-                                </div> 
-                            }
-                            {
-                                this.getTotalesByType("extras") !==0 &&
-                                <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaExtras') }}
-                                        name='cuentaExtras'
-                                        value={form.cuentaExtras}
-                                        customdiv="mb-0 text-left"
-                                        requirevalidation={1}
-                                        placeholder='EXTRAS'
-                                        withicon={0}
-                                    />
-                                </div> 
-                            }
-                        </div>
-                    </div>,
-                    '',
-                    () => { this.addCompras() },
-                    () => { history.push({pathname: '/rh/nomina-obras'}) },
-                    'htmlClass'
-                )
+                this.openModalCompras()
                 this.setState({...this.state, nomina: nomina})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -226,32 +227,18 @@ class NominaObraForm extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    addCompras = async() => {
-        const { access_token } = this.props.authUser
+    generarComprasAxios = async() => {
+        waitAlert();
         const { form, nomina } = this.state
-        waitAlert()
+        console.log(form)
+        const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/compras`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                doneAlert('Instalación de equipo registrado con éxito.')
+                doneAlert('Compras registradas con éxito.')
                 const { history } = this.props
                 history.push({
                     pathname: '/rh/nomina-obras'
                 });
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    generarComprasAxios = async() => {
-        waitAlert();
-        const { nomina } = this.state
-        const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/compras`, {}, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                Swal.close()
-                
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -408,7 +395,7 @@ class NominaObraForm extends Component {
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
                     addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } 
-                    generarComprasAxios = { this.generarComprasAxios } />
+                    generarComprasAxios = { this.openModalCompras } />
             </Layout>
         )
     }
