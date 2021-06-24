@@ -6,7 +6,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
-import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -72,6 +72,7 @@ class CalendarioInstalacion extends Component {
             console.log(error, 'error')
         })
     }
+
     async getCalendarioInstalaciones() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'v1/proyectos/instalacion-equipos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -101,6 +102,9 @@ class CalendarioInstalacion extends Component {
                             if(fecha_mantenimiento.day() === 0){
                                 fecha_mantenimiento.add(1, 'd')
                             }
+                            if(fecha_mantenimiento.day() === 6){
+                                fecha_mantenimiento.add(2, 'd')
+                            }
                             let fecha_mantenimiento_format= fecha_mantenimiento.format("YYYY-MM-DD")
                             aux.push({
                                 title: instalacion.equipo.equipo,
@@ -117,22 +121,14 @@ class CalendarioInstalacion extends Component {
                     }
                     return false
                 })
-                this.setState({ 
-                    ...this.state, 
-                    events: aux,
-                    instalaciones: instalaciones
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({  ...this.state,  events: aux, instalaciones: instalaciones })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    
     renderEventContent = (eventInfo) => {
         let { extendedProps } = eventInfo.event._def
         return (
@@ -161,6 +157,7 @@ class CalendarioInstalacion extends Component {
             formeditado:0
         })
     }
+    
     handleClose = () => {
         const { modal } = this.state
         modal.form = false
@@ -180,11 +177,13 @@ class CalendarioInstalacion extends Component {
             instalacion:instalacion
         })
     }
+    
     handleCloseModalInstalacion= () => {
         const { modal } = this.state
         modal.details = false
         this.setState({ ...this.state, modal, instalacion: '' })
     }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -201,15 +200,14 @@ class CalendarioInstalacion extends Component {
         })
         return form
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     onSubmitInstalacion = async() => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -225,24 +223,22 @@ class CalendarioInstalacion extends Component {
             console.log(error, 'error')
         })
     }
-    // cleanForm = () => {
-    //     const { form } = this.state
-    //     form.equipo = ''
-    //     form.proyecto = ''
-    //     this.setState({
-    //         ...this.state,
-    //         form
-    //     })
-    // }
-    // updateProyecto = value => {
-    //     this.onChange({ target: { value: value, name: 'proyecto' } })
-    // }
-    // updateEquipo = value => {
-    //     this.onChange({ target: { value: value, name: 'equipo' } })
-    // }
-    // filtrarCalendario = () => {
-    //     console.log('filtrar')
-    // }
+
+    deleteInstalacionAxios = async(instalacion) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/${instalacion.id}`, { headers: setSingleHeader(access_token)  }).then(
+            (response) => {
+                doneAlert('Instalación de equipo eliminado con éxito.')
+                this.getCalendarioInstalaciones()
+                this.handleCloseModalInstalacion()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { events, title, modal, form, options, instalacion } = this.state
         return (
@@ -298,7 +294,7 @@ class CalendarioInstalacion extends Component {
                     <FormCalendarioIEquipos form = { form } options = { options } onChange = { this.onChange } onSubmit = { this.onSubmitInstalacion } />
                 </Modal>
                 <Modal size="lg" title={<span><i className={`${instalacion.iconClass} icon-lg mr-2 ${instalacion.tipo==='Instalación'?'color-instalacion':'color-mantenimiento'}`}></i>{title}</span>} show={modal.details} handleClose={this.handleCloseModalInstalacion} classBody="bg-light">
-                    <DetailsInstalacion instalacion={instalacion}/>
+                    <DetailsInstalacion instalacion={instalacion} deleteInstalacion={this.deleteInstalacionAxios}/>
                 </Modal>
             </Layout>
         );
