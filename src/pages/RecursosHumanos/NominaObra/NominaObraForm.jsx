@@ -244,6 +244,21 @@ class NominaObraForm extends Component {
         })
     }
 
+    generarComprasAxios = async() => {
+        waitAlert();
+        const { nomina } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/compras`, {}, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onChange = e => {
         const { value, name } = e.target
         const { form } = this.state
@@ -286,14 +301,14 @@ class NominaObraForm extends Component {
                             aux.push(
                                 {
                                     usuario: usuario ? usuario.id.toString() : '',
-                                    costo_hr_regular: row[10],
-                                    costo_hr_nocturna: row[19],
-                                    costo_hr_extra: row[22],
-                                    total_hrs_regular: row[9],
-                                    total_hrs_nocturna: row[18],
-                                    total_hrs_extra: row[21],
-                                    viaticos: row[23],
-                                    nominImss: row[25],
+                                    costo_hr_regular: row[10] ? row[10] : 0.0,
+                                    costo_hr_nocturna: row[19] ? row[19] : 0.0,
+                                    costo_hr_extra: row[22] ? row[22] : 0.0,
+                                    total_hrs_regular: row[9] ? row[9] : 0,
+                                    total_hrs_nocturna: row[18] ? row[18] : 0,
+                                    total_hrs_extra: row[21] ? row[21] : 0,
+                                    viaticos: row[23] ? row[23] : 0.0,
+                                    nominImss: row[25] ? row[25] : 0.0,
                                     restanteNomina: ((row[10] * row[9]) + (row[19] * row[18])) - row[25],
                                     extras: (row[22] * row[21]) + row[23]
                                 }
@@ -392,7 +407,8 @@ class NominaObraForm extends Component {
                 <NominaObraFormulario title = { title } formeditado = { formeditado } className = " px-3 " options = { options } form = { form } 
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
-                    addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } />
+                    addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } 
+                    generarComprasAxios = { this.generarComprasAxios } />
             </Layout>
         )
     }

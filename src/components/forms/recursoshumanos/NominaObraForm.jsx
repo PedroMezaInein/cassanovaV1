@@ -25,7 +25,7 @@ class NominaObraForm extends Component {
     getTotal(key) {
         const { form } = this.props
         const { costo_hr_regular, costo_hr_nocturna, costo_hr_extra, total_hrs_extra, total_hrs_nocturna, total_hrs_regular, viaticos } = form.nominasObra[key]
-        return parseFloat(costo_hr_regular * total_hrs_regular) + parseFloat(costo_hr_nocturna * total_hrs_nocturna) + parseFloat(costo_hr_extra * total_hrs_extra) + parseFloat(viaticos)
+        return parseFloat(costo_hr_regular * total_hrs_regular) + parseFloat(costo_hr_nocturna * total_hrs_nocturna) + parseFloat(costo_hr_extra * total_hrs_extra) + parseFloat(viaticos ? viaticos : 0.0)
     }
 
     getTotalesByType(key) {
@@ -75,7 +75,7 @@ class NominaObraForm extends Component {
 
     render() {
         const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange,
-            clearFiles, onChangeAdjunto, nomina } = this.props
+            clearFiles, onChangeAdjunto, nomina, generarComprasAxios } = this.props
         return (
             <Card className="card card-custom gutter-b example example-compact">
                 <Card.Header>
@@ -244,7 +244,7 @@ class NominaObraForm extends Component {
                                                 </td>
                                                 <td className='text-center align-middle' >
                                                     <div className="p-0 my-0 font-size-sm"> 
-                                                        { setMoneyTableForNominas(parseInt(nom.costo_hr_extra * nom.total_hrs_extra) + parseInt(nom.viaticos)) } 
+                                                        { setMoneyTableForNominas(parseFloat(nom.costo_hr_extra * nom.total_hrs_extra) + parseFloat(nom.viaticos ? nom.viaticos : 0.0)) } 
                                                     </div>
                                                 </td>
                                                 <td className='text-center align-middle' >
@@ -254,13 +254,13 @@ class NominaObraForm extends Component {
                                                 </td>
                                                 <td className='text-center align-middle' >
                                                     <div className="p-0 my-0 font-size-sm"> 
-                                                        { setMoneyTableForNominas(parseInt(nom.costo_hr_regular * nom.total_hrs_regular) 
-                                                            + parseInt(nom.costo_hr_nocturna * nom.total_hrs_nocturna) - parseInt(nom.nominImss))} 
+                                                        { setMoneyTableForNominas(parseFloat(nom.costo_hr_regular * nom.total_hrs_regular) 
+                                                            + parseFloat(nom.costo_hr_nocturna * nom.total_hrs_nocturna) - parseFloat(nom.nominImss ? nom.nominImss : 0.0))} 
                                                     </div>
                                                 </td>
                                                 <td className='text-center align-middle' >
                                                     <div className="p-0 my-0 font-size-sm"> 
-                                                        { setMoneyTableForNominas(parseInt(nom.costo_hr_extra * nom.total_hrs_extra) + parseInt(nom.viaticos)) } 
+                                                        { setMoneyTableForNominas(parseFloat(nom.costo_hr_extra * nom.total_hrs_extra) + parseFloat(nom.viaticos ? nom.viaticos : 0.0)) } 
                                                     </div>
                                                 </td>
                                                 <td className='text-center align-middle' >
@@ -281,7 +281,12 @@ class NominaObraForm extends Component {
                     <Card.Footer>
                         <div className="text-right">
                             <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
-                            { nomina !== '' ?  <Button text='GENERAR COMPRAS' className="btn btn-success mr-2" icon=''only_icon='fas fa-wallet mr-1'/>  : <></> }
+                            { 
+                                nomina !== '' ?  
+                                    <Button text='GENERAR COMPRAS' className="btn btn-success mr-2" icon=''only_icon='fas fa-wallet mr-1'
+                                        onClick = { (e) => { e.preventDefault(); generarComprasAxios(); } } />  
+                                : <></> 
+                            }
                         </div>
                     </Card.Footer>
                 </Form>
