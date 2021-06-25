@@ -298,7 +298,7 @@ class NominaObraForm extends Component {
                                 { 
                                     nomina !== '' ?  
                                         nomina.compras.length === 0 ?
-                                            <Button text='GENERAR COMPRAS' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px ml-2" icon=''only_icon='fas fa-wallet mr-1'
+                                            <Button text='GENERAR COMPRAS' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px ml-2" icon=''only_icon='fas fa-wallet mr-1 text-primary'
                                                 onClick = { (e) => { e.preventDefault(); generarComprasAxios(); } } />  
                                         : <></>         
                                     : <></> 

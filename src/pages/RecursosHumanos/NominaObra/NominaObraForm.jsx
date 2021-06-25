@@ -118,17 +118,17 @@ class NominaObraForm extends Component {
                             {
                                 this.getTotalesByType("nominImss") !==0 &&
                                 <div className="col-md-10">
-                                    <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaImss') } }
+                                    <SelectSearchGray withtaglabel={1} withtextlabel={1} options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaImss') } }
                                         name = 'cuentaImss' value = { form.cuentaImss } customdiv = "mb-2 text-left" requirevalidation = { 1 }
-                                        placeholder = 'NÓMINA IMSS' withicon = { 0 } />
+                                        placeholder = 'NÓMINA IMSS' withicon = { 0 } customclass='text-center px-2'/>
                                 </div>
                             }
                             {
                                 this.getTotalesByType("restanteNomina") !== 0 &&
                                     <div className="col-md-10">
-                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaRestante') } }
+                                        <SelectSearchGray withtaglabel={1} withtextlabel={1} options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaRestante') } }
                                             name='cuentaRestante' value = { form.cuentaRestante } customdiv = "mb-2 text-left" requirevalidation = { 1 }
-                                            placeholder='RESTANTE NÓMINA' withicon = { 0 } />
+                                            placeholder='RESTANTE NÓMINA' withicon = { 0 } customclass='text-center px-2'/>
                                     </div> 
                             }
                         </div>
@@ -144,7 +144,9 @@ class NominaObraForm extends Component {
 
     openModalComprasUpdate = () => {
         // const { history } = this.props;
-        const { options, form } = this.state;
+        const { options, form, nomina } = this.state;
+        form.cuentaImss=nomina.cuentaImss?nomina.cuentaImss.id.toString(): ''
+        form.cuentaRestante=nomina.cuentaRestante?nomina.cuentaRestante.id.toString(): ''
         customInputAlert(
             <div style={{ display: 'flex', maxHeight: '300px'}} >
                 <Scrollbar>
@@ -155,17 +157,17 @@ class NominaObraForm extends Component {
                             {
                                 this.getTotalesByType("nominImss") !==0 &&
                                 <div className="col-md-10">
-                                    <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaImss') } }
+                                    <SelectSearchGray withtaglabel={1} withtextlabel={1} options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaImss') } }
                                         name = 'cuentaImss' value = { form.cuentaImss } customdiv = "mb-2 text-left" requirevalidation = { 1 }
-                                        placeholder = 'NÓMINA IMSS' withicon = { 0 } />
+                                        placeholder = 'NÓMINA IMSS' withicon = { 0 } customclass='text-center px-2'/>
                                 </div>
                             }
                             {
                                 this.getTotalesByType("restanteNomina") !== 0 &&
                                     <div className="col-md-10">
-                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaRestante') } }
+                                        <SelectSearchGray withtaglabel={1} withtextlabel={1} options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaRestante') } }
                                             name='cuentaRestante' value = { form.cuentaRestante } customdiv = "mb-2 text-left" requirevalidation = { 1 }
-                                            placeholder='RESTANTE NÓMINA' withicon = { 0 } />
+                                            placeholder='RESTANTE NÓMINA' withicon = { 0 } customclass='text-center px-2'/>
                                     </div> 
                             }
                         </div>
@@ -432,10 +434,10 @@ class NominaObraForm extends Component {
                         }
                     }
                 })
-                form.nominasObra = aux.length > 0 ? aux : {
+                form.nominasObra = aux.length > 0 ? aux : [{
                     usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
                     total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0
-                }
+                }]
                 options.usuarios = this.updateOptionsUsuarios(form.nominasObra)
                 this.setForm(form, options)
             })
@@ -526,6 +528,10 @@ class NominaObraForm extends Component {
     }
     clearFiles = (name, key) => {
         const { form } = this.state
+        form.nominasObra =  [{
+            usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
+            total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0
+        }]
         let aux = []
         for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
             if (counter !== key) {
