@@ -5,13 +5,14 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, validateAlert } from '../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, validateAlert, questionAlert, questionAlertY } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
 import readXlsxFile from 'read-excel-file'
 import { SelectSearchGray } from '../../../components/form-components'
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
+import moment from 'moment'
 class NominaObraForm extends Component {
 
     state = {
@@ -72,6 +73,7 @@ class NominaObraForm extends Component {
                 break;
             case 'edit':
                 const { nomina } = state
+                this.setState({...this.state, title: 'Editar nómina de obra', formeditado: 1})
                 this.getNominaAxios(nomina.id);
                 break;
             default:
@@ -103,19 +105,6 @@ class NominaObraForm extends Component {
         })
     }
 
-    getNominaAxios = async(id) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/rh/nomina-obra/${id}`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
     openModalCompras = () => {
         const { history } = this.props;
         const { options, form } = this.state;
@@ -130,47 +119,26 @@ class NominaObraForm extends Component {
                             {
                                 this.getTotalesByType("nominImss") !==0 &&
                                 <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaImss') }}
-                                        name='cuentaImss'
-                                        value={form.cuentaImss}
-                                        customdiv="mb-2 text-left"
-                                        requirevalidation={1}
-                                        placeholder='NÓMINA IMSS'
-                                        withicon={0}
-                                    />
+                                    <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaImss') } }
+                                        name = 'cuentaImss' value = { form.cuentaImss } customdiv = "mb-2 text-left" requirevalidation = { 1 }
+                                        placeholder = 'NÓMINA IMSS' withicon = { 0 } />
                                 </div>
                             }
                             {
                                 this.getTotalesByType("restanteNomina") !== 0 &&
-                                <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaRestante') }}
-                                        name='cuentaRestante'
-                                        value={form.cuentaRestante}
-                                        customdiv="mb-2 text-left"
-                                        requirevalidation={1}
-                                        placeholder='RESTANTE NÓMINA'
-                                        withicon={0}
-                                    />
-                                </div> 
+                                    <div className="col-md-10">
+                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaRestante') } }
+                                            name='cuentaRestante' value = { form.cuentaRestante } customdiv = "mb-2 text-left" requirevalidation = { 1 }
+                                            placeholder='RESTANTE NÓMINA' withicon = { 0 } />
+                                    </div> 
                             }
                             {
                                 this.getTotalesByType("extras") !==0 &&
-                                <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaExtras') }}
-                                        name='cuentaExtras'
-                                        value={form.cuentaExtras}
-                                        customdiv="mb-0 text-left"
-                                        requirevalidation={1}
-                                        placeholder='EXTRAS'
-                                        withicon={0}
-                                    />
-                                </div> 
+                                    <div className="col-md-10">
+                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaExtras') } }
+                                            name = 'cuentaExtras' value = { form.cuentaExtras } customdiv = "mb-0 text-left" requirevalidation = { 1 }
+                                            placeholder = 'EXTRAS' withicon = { 0 } />
+                                    </div> 
                             }
                         </div>
                     </div>
@@ -182,6 +150,53 @@ class NominaObraForm extends Component {
             'htmlClass'
         )
     }
+
+    openModalComprasUpdate = () => {
+        const { history } = this.props;
+        const { options, form } = this.state;
+        customInputAlert(
+            <div style={{ display: 'flex', maxHeight: '300px'}} >
+                <Scrollbar>
+                    <div class="row mx-0">
+                        <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
+                        <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
+                        <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
+                        <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
+                            {
+                                this.getTotalesByType("nominImss") !==0 &&
+                                <div className="col-md-10">
+                                    <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaImss') } }
+                                        name = 'cuentaImss' value = { form.cuentaImss } customdiv = "mb-2 text-left" requirevalidation = { 1 }
+                                        placeholder = 'NÓMINA IMSS' withicon = { 0 } />
+                                </div>
+                            }
+                            {
+                                this.getTotalesByType("restanteNomina") !== 0 &&
+                                    <div className="col-md-10">
+                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaRestante') } }
+                                            name='cuentaRestante' value = { form.cuentaRestante } customdiv = "mb-2 text-left" requirevalidation = { 1 }
+                                            placeholder='RESTANTE NÓMINA' withicon = { 0 } />
+                                    </div> 
+                            }
+                            {
+                                this.getTotalesByType("extras") !==0 &&
+                                    <div className="col-md-10">
+                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaExtras') } }
+                                            name = 'cuentaExtras' value = { form.cuentaExtras } customdiv = "mb-0 text-left" requirevalidation = { 1 }
+                                            placeholder = 'EXTRAS' withicon = { 0 } />
+                                    </div> 
+                            }
+                        </div>
+                    </div>
+                </Scrollbar>
+            </div>,
+            '',
+            () => { console.log('EDITAR') },
+            () => {  },
+            'htmlClass'
+        )
+    }
+
     getTotalesByType(key) {
         const { form } = this.state
         var suma = 0
@@ -203,6 +218,7 @@ class NominaObraForm extends Component {
         }
         return suma
     }
+
     addNominaObraAxios = async() => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -256,10 +272,10 @@ class NominaObraForm extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
+
     generarComprasAxios = async() => {
         waitAlert();
         const { form, nomina } = this.state
-        console.log(form)
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/compras`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
@@ -268,6 +284,93 @@ class NominaObraForm extends Component {
                 history.push({
                     pathname: '/rh/nomina-obras'
                 });
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getNominaAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/nomina-obra/${id}`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { nomina } = response.data
+                const { form } = this.state
+                form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+                form.proyecto = nomina.proyecto ? nomina.proyecto.id.toString() : ''
+                form.periodo = nomina.periodo
+                form.fechaInicio = new Date(moment(nomina.fecha_inicio))
+                form.fechaFin = new Date(moment(nomina.fecha_fin))
+                let aux = []
+                nomina.nominas_obras.forEach((nom) => {
+                    aux.push({
+                        usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                        costo_hr_regular: parseFloat(nom.costo_hr_regular),
+                        costo_hr_nocturna: parseFloat(nom.costo_hr_nocturna),
+                        costo_hr_extra: parseFloat(nom.costo_hr_extra),
+                        total_hrs_regular: parseFloat(nom.total_hrs_regular),
+                        total_hrs_nocturna: parseFloat(nom.total_hrs_nocturna),
+                        total_hrs_extra: parseFloat(nom.total_hrs_extras),
+                        viaticos: parseFloat(nom.viaticos),
+                        nominImss: parseFloat(nom.nomina_imss),
+                        id: nom.id
+                    })
+                })
+                form.nominasObra = aux
+                this.setState({...this.state, form, nomina})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteRowNominaObraAxios = async(nom) => {
+        const { nomina } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/colaborador/${nom.id}`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Colaborador eliminado de la nómina con éxito.')
+                const { nomina } = response.data
+                const { form } = this.state
+                form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+                form.proyecto = nomina.proyecto ? nomina.proyecto.id.toString() : ''
+                form.periodo = nomina.periodo
+                form.fechaInicio = new Date(moment(nomina.fecha_inicio))
+                form.fechaFin = new Date(moment(nomina.fecha_fin))
+                let aux = []
+                nomina.nominas_obras.forEach((nom) => {
+                    aux.push({
+                        usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                        costo_hr_regular: parseFloat(nom.costo_hr_regular),
+                        costo_hr_nocturna: parseFloat(nom.costo_hr_nocturna),
+                        costo_hr_extra: parseFloat(nom.costo_hr_extra),
+                        total_hrs_regular: parseFloat(nom.total_hrs_regular),
+                        total_hrs_nocturna: parseFloat(nom.total_hrs_nocturna),
+                        total_hrs_extra: parseFloat(nom.total_hrs_extras),
+                        viaticos: parseFloat(nom.viaticos),
+                        nominImss: parseFloat(nom.nomina_imss),
+                        id: nom.id
+                    })
+                })
+                form.nominasObra = aux
+                this.setState({...this.state, form, nomina})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    updateNominaAxios = async() => {
+        const { nomina, form } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}`, form,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Nómina actualizada con éxito.')
+                this.getNominaAxios(nomina.id)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -373,9 +476,13 @@ class NominaObraForm extends Component {
         this.setState({ ...this.state, form })
     }
 
-    deleteRowNominaObra = async(nom, key) => {
+    deleteRowNominaObra = (nom, key) => {
         if(nom.id){
-            waitAlert()
+            const { data } = this.state
+            let empleado = data.usuarios.find((usuario) => {
+                return usuario.id.toString() === nom.usuario.toString()
+            })
+            questionAlertY('¿ESTÁS SEGURO?', `ELIMINARÁS A ${empleado.nombre} DE LA NÓMINA`, () => { this.deleteRowNominaObraAxios(nom) })
         }else{
             let aux = []
             const { form, options } = this.state
@@ -412,8 +519,14 @@ class NominaObraForm extends Component {
         const { title } = this.state
         if (title === 'Nueva nómina de obra')
             this.addNominaObraAxios()
-        else
-            console.log('EDITAR')
+        else{
+            const { nomina } = this.state
+            if(nomina.compras.length)
+                this.openModalComprasUpdate()            
+            else
+                this.updateNominaAxios()
+        }
+            
     }
     
     render() {
@@ -424,7 +537,7 @@ class NominaObraForm extends Component {
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
                     addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } 
-                    generarComprasAxios = { this.openModalCompras } />
+                    generarComprasAxios = { this.openModalCompras } formeditado = { formeditado } />
             </Layout>
         )
     }
