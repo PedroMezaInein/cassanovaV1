@@ -173,7 +173,7 @@ class NominaObraForm extends Component {
                 </Scrollbar>
             </div>,
             '',
-            () => { this.updateNominaAxios() },
+            () => { this.updateNominaComprasAxios() },
             () => { '' },
             'htmlClass'
         )
@@ -351,6 +351,20 @@ class NominaObraForm extends Component {
         const { nomina, form } = this.state
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}`, form,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Nómina actualizada con éxito.')
+                this.getNominaAxios(nomina.id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    updateNominaComprasAxios = async() => {
+        const { nomina, form } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/update/compras`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('Nómina actualizada con éxito.')
                 this.getNominaAxios(nomina.id)
