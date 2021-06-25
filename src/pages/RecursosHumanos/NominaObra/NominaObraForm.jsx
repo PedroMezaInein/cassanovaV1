@@ -420,10 +420,10 @@ class NominaObraForm extends Component {
                         }
                     }
                 })
-                form.nominasObra = aux.length > 0 ? aux : {
+                form.nominasObra = aux.length > 0 ? aux : [{
                     usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
                     total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0
-                }
+                }]
                 options.usuarios = this.updateOptionsUsuarios(form.nominasObra)
                 this.setForm(form, options)
             })
@@ -514,6 +514,10 @@ class NominaObraForm extends Component {
     }
     clearFiles = (name, key) => {
         const { form } = this.state
+        form.nominasObra =  [{
+            usuario: '', costo_hr_regular: 0.0, costo_hr_nocturna: 0.0, costo_hr_extra: 0.0, total_hrs_regular: 0,
+            total_hrs_nocturna: 0, total_hrs_extra: 0, viaticos: 0.0, nominImss: 0.0, restanteNomina: 0.0, extras: 0.0
+        }]
         let aux = []
         for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
             if (counter !== key) {
