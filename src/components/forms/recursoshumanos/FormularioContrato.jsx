@@ -242,6 +242,7 @@ class FormularioContrato extends Component {
                                                 <>
                                                     <div className="col-md-6">
                                                         <InputNumberGray
+                                                            withicon={1}
                                                             formgroup="mb-0"
                                                             requirevalidation={1}
                                                             onChange={onChangeContrato}
@@ -294,6 +295,7 @@ class FormularioContrato extends Component {
                                                 </div>
                                                 <div className="form-group col-md-12 mb-4">
                                                     <InputNumberGray
+                                                        withicon={1}
                                                         formgroup="mb-0"
                                                         requirevalidation={1}
                                                         onChange={onChangeContrato}
@@ -308,6 +310,7 @@ class FormularioContrato extends Component {
                                                 </div>
                                                 <div className="form-group col-md-12 mb-4">
                                                     <InputNumberGray
+                                                        withicon={1}
                                                         formgroup="mb-0"
                                                         requirevalidation={1}
                                                         onChange={onChangeContrato}
@@ -322,6 +325,7 @@ class FormularioContrato extends Component {
                                                 </div>
                                                 <div className="form-group col-md-12">
                                                     <InputNumberGray
+                                                        withicon={1}
                                                         formgroup="mb-0"
                                                         requirevalidation={1}
                                                         onChange={onChangeContrato}
