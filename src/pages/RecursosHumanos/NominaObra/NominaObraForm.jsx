@@ -302,6 +302,7 @@ class NominaObraForm extends Component {
                 })
                 form.nominasObra = aux
                 this.setState({...this.state, form, nomina})
+                Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
