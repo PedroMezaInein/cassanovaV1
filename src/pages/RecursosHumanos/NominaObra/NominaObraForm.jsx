@@ -64,6 +64,10 @@ class NominaObraForm extends Component {
             case 'add':
                 this.setState({ ...this.state, title: 'Nueva nómina de obra', formeditado: 0 })
                 break;
+            case 'edit':
+                const { nomina } = state
+                this.getNominaAxios(nomina.id);
+                break;
             default:
                 break;
         }
@@ -85,6 +89,19 @@ class NominaObraForm extends Component {
                 options.usuarios = setOptions(usuarios, 'nombre', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
                 this.setState({ ...this.state, options, data })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getNominaAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/nomina-obra/${id}`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -120,17 +137,24 @@ class NominaObraForm extends Component {
                 data.append(`files`, file.file)
             })
         }
-        await axios.post(`${URL_DEV}v2/rh/nomina-obra`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
-            (response) => {
-                doneAlert('Nomina de obras guardad con éxito.')
-                Swal.close()
-                const { nomina } = response.data
-                this.setState({...this.state, nomina: nomina})
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+        let arreglo = [];
+        form.nominasObra.forEach((nom)=>{
+            if(nom.usuario === '')
+                arreglo.push(nom)
         })
+        if(form.nominasObra.length > 0 && arreglo.length === 0){
+            await axios.post(`${URL_DEV}v2/rh/nomina-obra`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
+                (response) => {
+                    doneAlert('Nomina de obras guardad con éxito.')
+                    Swal.close()
+                    const { nomina } = response.data
+                    this.setState({...this.state, nomina: nomina})
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{ errorAlert('Llena todos los campos') }
     }
 
     generarComprasAxios = async() => {
