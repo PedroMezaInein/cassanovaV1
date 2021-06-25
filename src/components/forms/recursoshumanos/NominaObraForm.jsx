@@ -75,7 +75,7 @@ class NominaObraForm extends Component {
 
     render() {
         const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange,
-            clearFiles, onChangeAdjunto, nomina, generarComprasAxios } = this.props
+            clearFiles, onChangeAdjunto, nomina, generarComprasAxios, changePageTable } = this.props
         return (
             <Card className="card card-custom gutter-b example example-compact">
                 <Card.Header>
@@ -84,8 +84,8 @@ class NominaObraForm extends Component {
                     </Card.Title>
                     <div className="card-toolbar">
                         <a href='https://admin-proyectos.s3.us-east-2.amazonaws.com/rrhh/plantilla-nomina-obra.xlsx' target='_blank' rel="noreferrer"
-                            className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success font-weight-bolder text-success align-self-center" >
-                            <i className="far fa-file-excel text-success px-0"></i><span className="pl-2 ocultar-checador">DESCARGAR PLANTILLA</span>
+                            className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info font-weight-bolder text-info align-self-center" >
+                            <i className="far fa-file-excel text-info px-0"></i><span className="pl-2 ocultar-checador">DESCARGAR PLANTILLA</span>
                         </a>
                     </div>
                 </Card.Header>
@@ -103,7 +103,7 @@ class NominaObraForm extends Component {
                                 <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
                                 <RangeCalendar onChange = { onChangeRange } start = { form.fechaInicio } end = { form.fechaFin } formeditado = { formeditado } />
                             </Col>
-                            <Col md="8">
+                            <Col md="8" className="align-self-center">
                                 <div className="form-group row form-group-marginless mx-0">
                                     <div className="col-md-4">
                                         <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
@@ -122,27 +122,29 @@ class NominaObraForm extends Component {
                                     <div className="col-md-4">
                                         <SelectSearchGray withtaglabel={1} withtextlabel={1} formeditado = { formeditado } options = { options.proyectos }
                                             placeholder = "Selecciona el proyecto" name = "proyecto" value = { form.proyecto }
-                                            onChange = { (value) =>  { this.updateSelector(value, 'proyecto') } } iconclass = "far fa-building"
+                                            onChange = { (value) =>  { this.updateSelector(value, 'proyecto') } } iconclass = "far fa-folder-open"
                                             messageinc = "Selecciona el proyecto"
                                         />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless d-flex justify-content-center mx-0">
-                                    {
-                                        formeditado !== 1 ?
-                                            <div className="col-md-10 text-center">
-                                                <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
-                                                <ItemSlider
-                                                    items={form.adjuntos.adjunto.files}
-                                                    item='adjunto'
-                                                    handleChange={handleChange}
-                                                    multiple={true}
-                                                />
+                                {
+                                    formeditado !== 1 ?
+                                        <>
+                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            <div className="form-group row form-group-marginless d-flex justify-content-center mx-0">
+                                                <div className="col-md-10 text-center">
+                                                    <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
+                                                    <ItemSlider
+                                                        items={form.adjuntos.adjunto.files}
+                                                        item='adjunto'
+                                                        handleChange={handleChange}
+                                                        multiple={true}
+                                                    />
+                                                </div>
                                             </div>
-                                        : ''
-                                    }
-                                </div>
+                                        </>
+                                    : ''
+                                }
                             </Col>
                         </Row>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -284,20 +286,24 @@ class NominaObraForm extends Component {
                             </table>
                         </div>
                         <div className="d-flex justify-content-center">
-                            <button type="button" className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px" onClick={addRowNominaObra}>AGREGAR COLABORADOR</button>
+                            <button type="button" className="btn btn-sm btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px" onClick={addRowNominaObra}>AGREGAR COLABORADOR</button>
                         </div>
                     </Card.Body>
                     <Card.Footer>
-                        <div className="text-right">
-                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
-                            { 
-                                nomina !== '' ?  
-                                    nomina.compras.length === 0 ?
-                                        <Button text='GENERAR COMPRAS' className="btn btn-success mr-2" icon=''only_icon='fas fa-wallet mr-1'
-                                            onClick = { (e) => { e.preventDefault(); generarComprasAxios(); } } />  
-                                    : <></>         
-                                : <></> 
-                            }
+                        <div className="d-flex justify-content-between">
+                            <button type="button" className="btn btn-bg-light btn-hover-light-danger font-weight-bolder text-danger align-self-center font-size-13px" onClick={(e) => { e.preventDefault(); changePageTable() }}>REGRESAR</button>
+                            
+                            <div className="d-flex">
+                                <Button text='ENVIAR' type='submit' className="btn btn-bg-light btn-hover-light-success font-weight-bolder text-success align-self-center font-size-13px" icon=''/>
+                                { 
+                                    nomina !== '' ?  
+                                        nomina.compras.length === 0 ?
+                                            <Button text='GENERAR COMPRAS' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px ml-2" icon=''only_icon='fas fa-wallet mr-1 text-primary'
+                                                onClick = { (e) => { e.preventDefault(); generarComprasAxios(); } } />  
+                                        : <></>         
+                                    : <></> 
+                                }
+                            </div>
                         </div>
                     </Card.Footer>
                 </Form>
