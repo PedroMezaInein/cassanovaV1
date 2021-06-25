@@ -502,7 +502,7 @@ export function questionAlert2(title, text, action, html) {
     })
 }
 
-export function customInputAlert(html, iconHtml, success, cancel){
+export function customInputAlert(html, iconHtml, success, cancel, htmlClass){
     MySwal.fire({
         title: '',
         iconHtml: iconHtml,
@@ -512,7 +512,7 @@ export function customInputAlert(html, iconHtml, success, cancel){
         cancelButtonText: "CANCELAR",
         reverseButtons: true,
         customClass: { 
-            htmlContainer:'overflow-hidden',
+            htmlContainer:`overflow-hidden ${htmlClass} `,
             cancelButton: 'bg-transparent bg-hover-danger text-danger text-hover-white', 
             confirmButton: 'bg-transparent bg-hover-primary text-primary text-hover-white',
             actions: 'd-flex justify-content-between px-0 mt-0'

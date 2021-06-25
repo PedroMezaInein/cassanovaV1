@@ -359,24 +359,25 @@ class Calendario extends Component {
                 const { user } = this.props.authUser
                 const { empleados, vacaciones, empleado, user_vacaciones, feriados, eventos, usuarios } = response.data
                 data.usuarios = usuarios
-                let aux = []
                 let aux2 = []
+                let aux = []
                 let mes = ''
                 let dia = ''
                 let año = new Date().getFullYear();
-                empleados.forEach((empleado) => {
-                    if(empleado.fecha_nacimiento)
-                        for (let x = -3; x <= 3; x++) {
-                            let fecha_nacimiento = new Date(empleado.fecha_nacimiento)
-                            fecha_nacimiento.setFullYear(new Date().getFullYear() + x)
-                            aux.push({
-                                title: empleado.nombre,
-                                start: fecha_nacimiento,
-                                end: fecha_nacimiento,
-                                iconClass: 'fas fa-birthday-cake',
-                                containerClass: 'cumpleaños'
-                            })
-                        }
+                empleados.map((empleado) => {
+                    mes = empleado.rfc.substr(6,2);
+                    dia = empleado.rfc.substr(8,2);
+                    for(let x = -5; x <= 5; x++){
+                        aux.push({
+                            title: empleado.nombre,
+                            // shortName: empleado.nombre.split(" ")[0],
+                            start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
+                            end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
+                            iconClass: 'fas fa-birthday-cake icon-md',
+                            containerClass: 'cumpleaños'
+                        })
+                    }
+                    return false
                 })
                 vacaciones.map((vacacion) => {
                     if (vacacion.estatus === 'Aceptadas')

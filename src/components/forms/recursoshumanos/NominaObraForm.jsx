@@ -283,8 +283,10 @@ class NominaObraForm extends Component {
                             <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
                             { 
                                 nomina !== '' ?  
-                                    <Button text='GENERAR COMPRAS' className="btn btn-success mr-2" icon=''only_icon='fas fa-wallet mr-1'
-                                        onClick = { (e) => { e.preventDefault(); generarComprasAxios(); } } />  
+                                    nomina.compras.length === 0 ?
+                                        <Button text='GENERAR COMPRAS' className="btn btn-success mr-2" icon=''only_icon='fas fa-wallet mr-1'
+                                            onClick = { (e) => { e.preventDefault(); generarComprasAxios(); } } />  
+                                    : <></>         
                                 : <></> 
                             }
                         </div>

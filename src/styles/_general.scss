@@ -2038,6 +2038,21 @@ span.font-weight-bolder.text-hover-error:hover{
         }
     }
 }
+.swal2-html-container.overflow-hidden.htmlClass{
+    .select-search{
+        &.has-focus{
+            .select-search{
+                &__select{
+                    height: auto;
+                    max-height: 150px;
+                }
+                &__value{
+                    height: auto;
+                }
+            }
+        }
+    }
+}
 
 .setListTable{
     display: table;
