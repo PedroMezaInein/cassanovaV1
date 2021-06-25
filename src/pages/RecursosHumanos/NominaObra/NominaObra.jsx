@@ -12,6 +12,7 @@ import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList,
 import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert} from '../../../functions/alert'
 import TableForModals from '../../../components/tables/TableForModals'
 import $ from "jquery";
+import { setSingleHeader } from '../../../functions/routers'
 
 class NominaObra extends Component {
     state = {  
@@ -339,27 +340,19 @@ class NominaObra extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { nomina} = this.state
-        
-        await axios.delete(URL_DEV + 'rh/nomina-obra/' + nomina.id , { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modal } = this.state
                 this.getNominasAxios()
-
                 modal.delete = false
-
                 this.setState({                    
                     ...this.state,
                     modal,
                     nomina: '',
                     form: this.clearForm()
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.')
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
