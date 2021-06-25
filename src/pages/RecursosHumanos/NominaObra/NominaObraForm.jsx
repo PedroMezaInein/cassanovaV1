@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, validateAlert } from '../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, validateAlert, questionAlert, questionAlertY } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
 import readXlsxFile from 'read-excel-file'
@@ -105,41 +105,6 @@ class NominaObraForm extends Component {
         })
     }
 
-    getNominaAxios = async(id) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/rh/nomina-obra/${id}`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { nomina } = response.data
-                const { form } = this.state
-                form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
-                form.proyecto = nomina.proyecto ? nomina.proyecto.id.toString() : ''
-                form.periodo = nomina.periodo
-                form.fechaInicio = new Date(moment(nomina.fecha_inicio))
-                form.fechaFin = new Date(moment(nomina.fecha_fin))
-                let aux = []
-                nomina.nominas_obras.forEach((nom) => {
-                    aux.push({
-                        usuario: nom.empleado ? nom.empleado.id.toString() : '',
-                        costo_hr_regular: parseFloat(nom.costo_hr_regular),
-                        costo_hr_nocturna: parseFloat(nom.costo_hr_nocturna),
-                        costo_hr_extra: parseFloat(nom.costo_hr_extra),
-                        total_hrs_regular: parseFloat(nom.total_hrs_regular),
-                        total_hrs_nocturna: parseFloat(nom.total_hrs_nocturna),
-                        total_hrs_extra: parseFloat(nom.total_hrs_extras),
-                        viaticos: parseFloat(nom.viaticos),
-                        nominImss: parseFloat(nom.nomina_imss)
-                    })
-                })
-                form.nominasObra = aux
-                this.setState({...this.state, form, nomina})
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
     openModalCompras = () => {
         const { history } = this.props;
         const { options, form } = this.state;
@@ -185,6 +150,7 @@ class NominaObraForm extends Component {
             'htmlClass'
         )
     }
+
     getTotalesByType(key) {
         const { form } = this.state
         var suma = 0
@@ -206,6 +172,7 @@ class NominaObraForm extends Component {
         }
         return suma
     }
+
     addNominaObraAxios = async() => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -259,11 +226,11 @@ class NominaObraForm extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
+
     generarComprasAxios = async() => {
         waitAlert();
         const { form, nomina } = this.state
-        console.log(form)
-        /* const { access_token } = this.props.authUser
+        const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/compras`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('Compras registradas con éxito.')
@@ -275,7 +242,80 @@ class NominaObraForm extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-        }) */
+        })
+    }
+
+    getNominaAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/nomina-obra/${id}`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { nomina } = response.data
+                const { form } = this.state
+                form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+                form.proyecto = nomina.proyecto ? nomina.proyecto.id.toString() : ''
+                form.periodo = nomina.periodo
+                form.fechaInicio = new Date(moment(nomina.fecha_inicio))
+                form.fechaFin = new Date(moment(nomina.fecha_fin))
+                let aux = []
+                nomina.nominas_obras.forEach((nom) => {
+                    aux.push({
+                        usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                        costo_hr_regular: parseFloat(nom.costo_hr_regular),
+                        costo_hr_nocturna: parseFloat(nom.costo_hr_nocturna),
+                        costo_hr_extra: parseFloat(nom.costo_hr_extra),
+                        total_hrs_regular: parseFloat(nom.total_hrs_regular),
+                        total_hrs_nocturna: parseFloat(nom.total_hrs_nocturna),
+                        total_hrs_extra: parseFloat(nom.total_hrs_extras),
+                        viaticos: parseFloat(nom.viaticos),
+                        nominImss: parseFloat(nom.nomina_imss),
+                        id: nom.id
+                    })
+                })
+                form.nominasObra = aux
+                this.setState({...this.state, form, nomina})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteRowNominaObraAxios = async(nom) => {
+        const { nomina } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/colaborador/${nom.id}`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Colaborador eliminado de la nómina con éxito.')
+                const { nomina } = response.data
+                const { form } = this.state
+                form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+                form.proyecto = nomina.proyecto ? nomina.proyecto.id.toString() : ''
+                form.periodo = nomina.periodo
+                form.fechaInicio = new Date(moment(nomina.fecha_inicio))
+                form.fechaFin = new Date(moment(nomina.fecha_fin))
+                let aux = []
+                nomina.nominas_obras.forEach((nom) => {
+                    aux.push({
+                        usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                        costo_hr_regular: parseFloat(nom.costo_hr_regular),
+                        costo_hr_nocturna: parseFloat(nom.costo_hr_nocturna),
+                        costo_hr_extra: parseFloat(nom.costo_hr_extra),
+                        total_hrs_regular: parseFloat(nom.total_hrs_regular),
+                        total_hrs_nocturna: parseFloat(nom.total_hrs_nocturna),
+                        total_hrs_extra: parseFloat(nom.total_hrs_extras),
+                        viaticos: parseFloat(nom.viaticos),
+                        nominImss: parseFloat(nom.nomina_imss),
+                        id: nom.id
+                    })
+                })
+                form.nominasObra = aux
+                this.setState({...this.state, form, nomina})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     onChange = e => {
@@ -376,9 +416,13 @@ class NominaObraForm extends Component {
         this.setState({ ...this.state, form })
     }
 
-    deleteRowNominaObra = async(nom, key) => {
+    deleteRowNominaObra = (nom, key) => {
         if(nom.id){
-            waitAlert()
+            const { data } = this.state
+            let empleado = data.usuarios.find((usuario) => {
+                return usuario.id.toString() === nom.usuario.toString()
+            })
+            questionAlertY('¿ESTÁS SEGURO?', `ELIMINARÁS A ${empleado.nombre} DE LA NÓMINA`, () => { this.deleteRowNominaObraAxios(nom) })
         }else{
             let aux = []
             const { form, options } = this.state
