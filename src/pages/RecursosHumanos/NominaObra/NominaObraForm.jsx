@@ -320,6 +320,7 @@ class NominaObraForm extends Component {
                 })
                 form.nominasObra = aux
                 this.setState({...this.state, form, nomina})
+                Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -526,9 +527,24 @@ class NominaObraForm extends Component {
             else
                 this.updateNominaAxios()
         }
-            
     }
-    
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form.adjuntos[name].files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form.adjuntos[name].value = ''
+        }
+        form.adjuntos[name].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
         const { title, options, form, formeditado, data, nomina } = this.state
         return (
@@ -537,7 +553,7 @@ class NominaObraForm extends Component {
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
                     addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } 
-                    generarComprasAxios = { this.openModalCompras } formeditado = { formeditado } />
+                    generarComprasAxios = { this.openModalCompras } formeditado = { formeditado } clearFiles={this.clearFiles}/>
             </Layout>
         )
     }

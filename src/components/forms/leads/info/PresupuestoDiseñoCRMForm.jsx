@@ -155,6 +155,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withicon={1}
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="M²"
@@ -185,6 +186,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withicon={1}
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="DÍAS DE EJECUCIÓN"
@@ -197,6 +199,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withicon={1}
                                                     formeditado={formeditado}
                                                     requirevalidation={0}
                                                     placeholder="TOTAL"
@@ -248,6 +251,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 formDiseño.si_renders?
                                                     <div className="col-md-4">
                                                         <InputNumberGray
+                                                            withicon={1}
                                                             formeditado={formeditado}
                                                             requirevalidation={1}
                                                             placeholder="NÚMERO DE RENDERS"
@@ -621,13 +625,13 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="ACAB. INTERIOR INF." value={formDiseño.construccion_interiores_inf}
                                                                     name="construccion_interiores_inf" onChange={onChange} iconclass="fas fa-dollar-sign"
                                                                     messageinc="Ingresa el precio de acab. interior inf." thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="ACAB. INTERIOR SUP." value={formDiseño.construccion_interiores_sup}
                                                                     name="construccion_interiores_sup" onChange={onChange} iconclass="fas fa-dollar-sign"
                                                                     messageinc="Ingresa el precio de acab. de interiores sup." thousandseparator={true} formgroup={"mb-1"} />
@@ -643,14 +647,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="MOBILIARIO INF." value={formDiseño.mobiliario_inf}
                                                                     name="mobiliario_inf" onChange={onChange}
                                                                     messageinc="Ingresa el precio de mobiliario inf."
                                                                     iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="MOBILIARIO SUP." value={formDiseño.mobiliario_sup}
                                                                     name="mobiliario_sup" onChange={onChange}
                                                                     messageinc="Ingresa el precio de mobiliario sup."
@@ -667,14 +671,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="CONST. CIVIL INF." value={formDiseño.construccion_civil_inf}
                                                                     name="construccion_civil_inf" onChange={onChange}
                                                                     messageinc="Ingresa el precio de const. civil inf."
                                                                     iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="CONST. CIVIL SUP." value={formDiseño.construccion_civil_sup}
                                                                     name="construccion_civil_sup" onChange={onChange}
                                                                     messageinc="Ingresa el precio de const. civil sup."

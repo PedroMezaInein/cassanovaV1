@@ -279,6 +279,7 @@ class ProyectosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputNumberGray
+                                            withicon={1}
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             name="cp"
@@ -436,6 +437,7 @@ class ProyectosForm extends Component {
                                             </div>
                                             <div className="col-md-6">
                                                 <InputNumberGray
+                                                    withicon={1}
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="M²"

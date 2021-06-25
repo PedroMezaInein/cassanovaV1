@@ -66,6 +66,7 @@ class ContratoFormRH extends Component {
                                     form.periodo === true &&
                                     <div className={`${(title.includes('Nuevo') && form.periodo === true) ? 'col-md-4' : 'col-md-6'}`}>
                                         <InputNumberGray
+                                            withicon={1}
                                             formgroup="mb-0"
                                             requirevalidation={1}
                                             onChange={onChangeContrato}
@@ -139,6 +140,7 @@ class ContratoFormRH extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputNumberGray
+                                            withicon={1}
                                             formgroup="mb-0"
                                             requirevalidation={1}
                                             onChange={onChangeContrato}
@@ -157,6 +159,7 @@ class ContratoFormRH extends Component {
                                 <div className="form-group row form-group-marginless pt-4">
                                     <div className="col-md-4">
                                         <InputNumberGray
+                                            withicon={1}
                                             formgroup="mb-0"
                                             requirevalidation={1}
                                             onChange={onChangeContrato}
@@ -172,6 +175,7 @@ class ContratoFormRH extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputNumberGray
+                                            withicon={1}
                                             formgroup="mb-0"
                                             requirevalidation={1}
                                             onChange={onChangeContrato}
