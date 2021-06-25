@@ -12,6 +12,7 @@ import readXlsxFile from 'read-excel-file'
 import { SelectSearchGray } from '../../../components/form-components'
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
+import moment from 'moment'
 class NominaObraForm extends Component {
 
     state = {
@@ -72,6 +73,7 @@ class NominaObraForm extends Component {
                 break;
             case 'edit':
                 const { nomina } = state
+                this.setState({...this.state, title: 'Editar nómina de obra', formeditado: 1})
                 this.getNominaAxios(nomina.id);
                 break;
             default:
@@ -108,7 +110,29 @@ class NominaObraForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/rh/nomina-obra/${id}`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                
+                const { nomina } = response.data
+                const { form } = this.state
+                form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+                form.proyecto = nomina.proyecto ? nomina.proyecto.id.toString() : ''
+                form.periodo = nomina.periodo
+                form.fechaInicio = new Date(moment(nomina.fecha_inicio))
+                form.fechaFin = new Date(moment(nomina.fecha_fin))
+                let aux = []
+                nomina.nominas_obras.forEach((nom) => {
+                    aux.push({
+                        usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                        costo_hr_regular: parseFloat(nom.costo_hr_regular),
+                        costo_hr_nocturna: parseFloat(nom.costo_hr_nocturna),
+                        costo_hr_extra: parseFloat(nom.costo_hr_extra),
+                        total_hrs_regular: parseFloat(nom.total_hrs_regular),
+                        total_hrs_nocturna: parseFloat(nom.total_hrs_nocturna),
+                        total_hrs_extra: parseFloat(nom.total_hrs_extras),
+                        viaticos: parseFloat(nom.viaticos),
+                        nominImss: parseFloat(nom.nomina_imss)
+                    })
+                })
+                form.nominasObra = aux
+                this.setState({...this.state, form, nomina})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -130,47 +154,26 @@ class NominaObraForm extends Component {
                             {
                                 this.getTotalesByType("nominImss") !==0 &&
                                 <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaImss') }}
-                                        name='cuentaImss'
-                                        value={form.cuentaImss}
-                                        customdiv="mb-2 text-left"
-                                        requirevalidation={1}
-                                        placeholder='NÓMINA IMSS'
-                                        withicon={0}
-                                    />
+                                    <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaImss') } }
+                                        name = 'cuentaImss' value = { form.cuentaImss } customdiv = "mb-2 text-left" requirevalidation = { 1 }
+                                        placeholder = 'NÓMINA IMSS' withicon = { 0 } />
                                 </div>
                             }
                             {
                                 this.getTotalesByType("restanteNomina") !== 0 &&
-                                <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaRestante') }}
-                                        name='cuentaRestante'
-                                        value={form.cuentaRestante}
-                                        customdiv="mb-2 text-left"
-                                        requirevalidation={1}
-                                        placeholder='RESTANTE NÓMINA'
-                                        withicon={0}
-                                    />
-                                </div> 
+                                    <div className="col-md-10">
+                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaRestante') } }
+                                            name='cuentaRestante' value = { form.cuentaRestante } customdiv = "mb-2 text-left" requirevalidation = { 1 }
+                                            placeholder='RESTANTE NÓMINA' withicon = { 0 } />
+                                    </div> 
                             }
                             {
                                 this.getTotalesByType("extras") !==0 &&
-                                <div className="col-md-10">
-                                    <SelectSearchGray
-                                        options={options.cuentas}
-                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaExtras') }}
-                                        name='cuentaExtras'
-                                        value={form.cuentaExtras}
-                                        customdiv="mb-0 text-left"
-                                        requirevalidation={1}
-                                        placeholder='EXTRAS'
-                                        withicon={0}
-                                    />
-                                </div> 
+                                    <div className="col-md-10">
+                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaExtras') } }
+                                            name = 'cuentaExtras' value = { form.cuentaExtras } customdiv = "mb-0 text-left" requirevalidation = { 1 }
+                                            placeholder = 'EXTRAS' withicon = { 0 } />
+                                    </div> 
                             }
                         </div>
                     </div>
@@ -260,7 +263,7 @@ class NominaObraForm extends Component {
         waitAlert();
         const { form, nomina } = this.state
         console.log(form)
-        const { access_token } = this.props.authUser
+        /* const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/compras`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('Compras registradas con éxito.')
@@ -272,7 +275,7 @@ class NominaObraForm extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-        })
+        }) */
     }
 
     onChange = e => {
@@ -424,7 +427,7 @@ class NominaObraForm extends Component {
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
                     addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } 
-                    generarComprasAxios = { this.openModalCompras } />
+                    generarComprasAxios = { this.openModalCompras } formeditado = { formeditado } />
             </Layout>
         )
     }
