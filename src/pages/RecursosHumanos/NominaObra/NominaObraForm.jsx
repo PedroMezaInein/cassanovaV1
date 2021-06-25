@@ -52,8 +52,7 @@ class NominaObraForm extends Component {
                 }
             },
             cuentaImss:'',
-            cuentaRestante:'',
-            cuentaExtras:''
+            cuentaRestante:''
         },
         nomina: ''
     }
@@ -106,7 +105,7 @@ class NominaObraForm extends Component {
     }
 
     openModalCompras = () => {
-        const { history } = this.props;
+        // const { history } = this.props;
         const { options, form } = this.state;
         customInputAlert(
             <div style={{ display: 'flex', maxHeight: '300px'}} >
@@ -130,14 +129,6 @@ class NominaObraForm extends Component {
                                         <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaRestante') } }
                                             name='cuentaRestante' value = { form.cuentaRestante } customdiv = "mb-2 text-left" requirevalidation = { 1 }
                                             placeholder='RESTANTE NÓMINA' withicon = { 0 } />
-                                    </div> 
-                            }
-                            {
-                                this.getTotalesByType("extras") !==0 &&
-                                    <div className="col-md-10">
-                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaExtras') } }
-                                            name = 'cuentaExtras' value = { form.cuentaExtras } customdiv = "mb-0 text-left" requirevalidation = { 1 }
-                                            placeholder = 'EXTRAS' withicon = { 0 } />
                                     </div> 
                             }
                         </div>
@@ -146,20 +137,19 @@ class NominaObraForm extends Component {
             </div>,
             '',
             () => { this.generarComprasAxios() },
-            () => { history.push({pathname: '/rh/nomina-obras'}) },
+            () => { '' },
             'htmlClass'
         )
     }
 
     openModalComprasUpdate = () => {
-        const { history } = this.props;
+        // const { history } = this.props;
         const { options, form } = this.state;
         customInputAlert(
             <div style={{ display: 'flex', maxHeight: '300px'}} >
                 <Scrollbar>
                     <div class="row mx-0">
-                        <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
-                        <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
+                        <h3 className="mb-2 font-weight-bold text-dark col-md-12">PARA CONTINUAR SELECCIONA LAS CUENTAS A ASIGNAR</h3>
                         <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
                         <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
                             {
@@ -178,21 +168,13 @@ class NominaObraForm extends Component {
                                             placeholder='RESTANTE NÓMINA' withicon = { 0 } />
                                     </div> 
                             }
-                            {
-                                this.getTotalesByType("extras") !==0 &&
-                                    <div className="col-md-10">
-                                        <SelectSearchGray options = { options.cuentas } onChange = { (value) => { this.onChangeSwal(value, 'cuentaExtras') } }
-                                            name = 'cuentaExtras' value = { form.cuentaExtras } customdiv = "mb-0 text-left" requirevalidation = { 1 }
-                                            placeholder = 'EXTRAS' withicon = { 0 } />
-                                    </div> 
-                            }
                         </div>
                     </div>
                 </Scrollbar>
             </div>,
             '',
-            () => { console.log('EDITAR') },
-            () => {  },
+            () => { this.updateNominaAxios() },
+            () => { '' },
             'htmlClass'
         )
     }
@@ -544,6 +526,10 @@ class NominaObraForm extends Component {
             form
         })
     }
+    changePageTable = () => {
+        const { history } = this.props
+        history.push({ pathname: '/rh/nomina-obras' });
+    }
     render() {
         const { title, options, form, formeditado, data, nomina } = this.state
         return (
@@ -552,7 +538,7 @@ class NominaObraForm extends Component {
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
                     addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } 
-                    generarComprasAxios = { this.openModalCompras } formeditado = { formeditado } clearFiles={this.clearFiles}/>
+                    generarComprasAxios = { this.openModalCompras } formeditado = { formeditado } clearFiles={this.clearFiles} changePageTable={this.changePageTable}/>
             </Layout>
         )
     }
