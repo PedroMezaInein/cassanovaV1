@@ -5,15 +5,18 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, validateAlert } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
 import readXlsxFile from 'read-excel-file'
+import { SelectSearchGray } from '../../../components/form-components'
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 class NominaObraForm extends Component {
 
     state = {
         data: { usuarios: [] },
-        options: { usuarios: [], proyectos: [], empresas: [] },
+        options: { usuarios: [], proyectos: [], empresas: [], cuentas:[] },
         title: 'Nueva nómina de obra',
         formeditado: 0,
         form: {
@@ -46,7 +49,10 @@ class NominaObraForm extends Component {
                     placeholder: '¿Deseas importar la nómina?',
                     files: []
                 }
-            }
+            },
+            cuentaImss:'',
+            cuentaRestante:'',
+            cuentaExtras:''
         },
         nomina: ''
     }
@@ -82,12 +88,13 @@ class NominaObraForm extends Component {
         await axios.options(`${URL_DEV}v2/rh/nomina-obra`,  { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { proyectos, usuarios, empresas } = response.data
+                const { proyectos, usuarios, empresas, cuentas } = response.data
                 const { options, data } = this.state
                 data.usuarios = usuarios
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.usuarios = setOptions(usuarios, 'nombre', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
+                options.cuentas = setOptions(cuentas, 'nombre', 'id')
                 this.setState({ ...this.state, options, data })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -109,6 +116,93 @@ class NominaObraForm extends Component {
         })
     }
 
+    openModalCompras = () => {
+        const { history } = this.props;
+        const { options, form } = this.state;
+        customInputAlert(
+            <div style={{ display: 'flex', maxHeight: '300px'}} >
+                <Scrollbar>
+                    <div class="row mx-0">
+                        <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
+                        <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
+                        <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
+                        <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
+                            {
+                                this.getTotalesByType("nominImss") !==0 &&
+                                <div className="col-md-10">
+                                    <SelectSearchGray
+                                        options={options.cuentas}
+                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaImss') }}
+                                        name='cuentaImss'
+                                        value={form.cuentaImss}
+                                        customdiv="mb-2 text-left"
+                                        requirevalidation={1}
+                                        placeholder='NÓMINA IMSS'
+                                        withicon={0}
+                                    />
+                                </div>
+                            }
+                            {
+                                this.getTotalesByType("restanteNomina") !== 0 &&
+                                <div className="col-md-10">
+                                    <SelectSearchGray
+                                        options={options.cuentas}
+                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaRestante') }}
+                                        name='cuentaRestante'
+                                        value={form.cuentaRestante}
+                                        customdiv="mb-2 text-left"
+                                        requirevalidation={1}
+                                        placeholder='RESTANTE NÓMINA'
+                                        withicon={0}
+                                    />
+                                </div> 
+                            }
+                            {
+                                this.getTotalesByType("extras") !==0 &&
+                                <div className="col-md-10">
+                                    <SelectSearchGray
+                                        options={options.cuentas}
+                                        onChange={(value) => { this.onChangeSwal(value, 'cuentaExtras') }}
+                                        name='cuentaExtras'
+                                        value={form.cuentaExtras}
+                                        customdiv="mb-0 text-left"
+                                        requirevalidation={1}
+                                        placeholder='EXTRAS'
+                                        withicon={0}
+                                    />
+                                </div> 
+                            }
+                        </div>
+                    </div>
+                </Scrollbar>
+            </div>,
+            '',
+            () => { this.generarComprasAxios() },
+            () => { history.push({pathname: '/rh/nomina-obras'}) },
+            'htmlClass'
+        )
+    }
+    getTotalesByType(key) {
+        const { form } = this.state
+        var suma = 0
+        form.nominasObra.forEach(element => {
+            switch(key){
+                case 'nominImss':
+                    suma += parseFloat(element[key])
+                    break;
+                case 'restanteNomina':
+                    suma += parseFloat(element.costo_hr_regular *  element.total_hrs_regular) + parseFloat(element.costo_hr_nocturna * element.total_hrs_nocturna) - parseFloat(element.nominImss)
+                    break;
+                case 'extras':
+                    suma += parseFloat(element.costo_hr_extra *  element.total_hrs_extra) + parseFloat(element.viaticos)
+                    break;
+            }
+        })
+        if (isNaN(suma)) {
+            return suma = 0;
+        }
+        return suma
+    }
     addNominaObraAxios = async() => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -145,9 +239,9 @@ class NominaObraForm extends Component {
         if(form.nominasObra.length > 0 && arreglo.length === 0){
             await axios.post(`${URL_DEV}v2/rh/nomina-obra`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    doneAlert('Nomina de obras guardad con éxito.')
-                    Swal.close()
+                    doneAlert('Nomina de obras guardada con éxito.')
                     const { nomina } = response.data
+                    this.openModalCompras()
                     this.setState({...this.state, nomina: nomina})
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
@@ -156,15 +250,24 @@ class NominaObraForm extends Component {
             })
         }else{ errorAlert('Llena todos los campos') }
     }
-
+    
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
     generarComprasAxios = async() => {
         waitAlert();
-        const { nomina } = this.state
+        const { form, nomina } = this.state
+        console.log(form)
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/compras`, {}, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+        await axios.put(`${URL_DEV}v2/rh/nomina-obra/${nomina.id}/compras`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
-                
+                doneAlert('Compras registradas con éxito.')
+                const { history } = this.props
+                history.push({
+                    pathname: '/rh/nomina-obras'
+                });
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -321,7 +424,7 @@ class NominaObraForm extends Component {
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
                     addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } 
-                    generarComprasAxios = { this.generarComprasAxios } />
+                    generarComprasAxios = { this.openModalCompras } />
             </Layout>
         )
     }
