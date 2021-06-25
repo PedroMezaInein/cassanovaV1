@@ -215,7 +215,7 @@ class NominaAdminForm extends Component {
                                 <thead>
                                     <tr>
                                         <th className='border-bottom-0'></th>
-                                        <th rowSpan="3"><div className="mt-2 pb-3">Empleado</div></th>
+                                        <th rowSpan="3"><div className="mt-2 pb-3">COLABORADOR</div></th>
                                         <th className="pb-0 border-bottom-0 text-center">Nómina IMSS</th>
                                         <th className="pb-0 border-bottom-0 text-center">Restante Nómina</th>
                                         <th className="pb-0 border-bottom-0 text-center">Extras</th>
@@ -319,7 +319,7 @@ class NominaAdminForm extends Component {
                             {
                                 options.usuarios.length > 0 &&
                                 <div className="d-flex justify-content-center">
-                                    <button type="button" className="btn btn-light-primary font-weight-bolder mr-2" onClick={addRowNominaAdmin}>AGREGAR FILA</button>
+                                    <button type="button" className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px" onClick={addRowNominaAdmin}>AGREGAR COLABORADOR</button>
                                 </div>
                             }
                         </div>
