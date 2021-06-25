@@ -64,17 +64,21 @@ class InputNumberGray extends Component {
         this.setState({...this.state, valor: value})
     }
     render() {
-        const { error, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator, formgroup, value, swal, ...props } = this.props
+        const { error, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator, formgroup, value, swal, withicon, ...props } = this.props
         const { inputValido, valor } = this.state
         return (
             <div className={`form-group ${formgroup}`}>
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
                 <div className="input-group input-group-solid rounded-0">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">
-                            <i className={iconclass + " icon-lg text-dark-50"}></i>
-                        </span>
-                    </div>
+                    {
+                        withicon ?
+                        <div className="input-group-prepend">
+                            <span className="input-group-text">
+                                <i className={iconclass + " icon-lg text-dark-50"}></i>
+                            </span>
+                        </div>
+                        :''
+                    }
                     <NumberFormat
                         placeholder={placeholder}
                         className={`form-control text-dark-50 font-weight-bold ${customclass}`}
