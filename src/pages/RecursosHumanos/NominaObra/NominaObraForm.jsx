@@ -110,7 +110,7 @@ class NominaObraForm extends Component {
         customInputAlert(
             <div style={{ display: 'flex', maxHeight: '300px'}} >
                 <Scrollbar>
-                    <div class="row mx-0">
+                    <div className="row mx-0">
                         <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
                         <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
                         <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
@@ -150,7 +150,7 @@ class NominaObraForm extends Component {
         customInputAlert(
             <div style={{ display: 'flex', maxHeight: '300px'}} >
                 <Scrollbar>
-                    <div class="row mx-0">
+                    <div className="row mx-0">
                         <h3 className="mb-2 font-weight-bold text-dark col-md-12">PARA CONTINUAR SELECCIONA LAS CUENTAS A ASIGNAR</h3>
                         <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
                         <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
