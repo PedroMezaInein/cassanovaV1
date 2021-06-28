@@ -6,7 +6,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
-import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, deleteAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -249,9 +249,9 @@ class CalendarioInstalacion extends Component {
                             <span className="font-weight-bolder text-dark font-size-h3">Instalaciones de Equipos</span>
                         </div>
                         <div class="card-toolbar">
-                            <a className="btn btn-success font-weight-bold" onClick={this.openModal}>
+                            <span className="btn btn-success font-weight-bold" onClick={this.openModal}>
                                 <i className="flaticon-add"></i> AGREGAR
-                            </a>
+                            </span>
                         </div>
                     </Card.Header>
                     <Card.Body>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
-import { Button, Input, ImageUpload, InputGray } from '../../form-components'
+import { Button, ImageUpload, InputGray } from '../../form-components'
 import { Form, Col, Tab, Nav, Row, Card } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles'
 import SVG from "react-inlinesvg";
@@ -35,7 +35,7 @@ class ChangePasswordFrom extends Component {
 								<div className="d-flex justify-content-between align-items-start flex-wrap mb-2">
 									<div className="d-flex flex-column">
 										<div className="d-flex align-items-center mb-2">
-											<a className="text-dark-75 font-size-h3 font-weight-bolder">{user ? user.empleado.nombre : ''}</a>
+											<span className="text-dark-75 font-size-h3 font-weight-bolder">{user ? user.empleado.nombre : ''}</span>
 										</div>
 										<div className="d-flex flex-wrap font-weight-bold text-muted">
 											<div class="d-flex align-items-center text-muted mr-5 mb-2">
