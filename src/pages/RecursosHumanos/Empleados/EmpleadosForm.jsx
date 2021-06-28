@@ -19,7 +19,7 @@ class EmpleadosForm extends Component {
             adjuntos: []
         },
         adjuntos: [],
-        title: 'Nuevo empleado',
+        title: 'Nuevo colaborador',
         form: {
             nombre: '',
             curp: '',
@@ -90,7 +90,7 @@ class EmpleadosForm extends Component {
             case 'add':
                 this.setState({
                     ...this.state,
-                    title: 'Nuevo empleado',
+                    title: 'Nuevo colaborador',
                     formeditado: 0
                 })
                 break;
@@ -143,14 +143,14 @@ class EmpleadosForm extends Component {
                             form,
                             options,
                             empleado: empleado,
-                            title: 'Editar empleado',
+                            title: 'Editar colaborador',
                             formeditado: 1
                         })
                     }
                     else
-                        history.push('/rh/empleados')
+                        history.push('/rh/colaboradores')
                 } else
-                    history.push('/rh/empleados')
+                    history.push('/rh/colaboradores')
                 break;
             default:
                 break;
@@ -241,9 +241,9 @@ class EmpleadosForm extends Component {
         })
         await axios.post(`${URL_DEV}v2/rh/empleados`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El colaborador fue registrado con éxito.')
                 const { history } = this.props
-                history.push({ pathname: '/rh/empleados' });
+                history.push({ pathname: '/rh/colaboradores' });
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -256,9 +256,9 @@ class EmpleadosForm extends Component {
         const { form, empleado } = this.state
         await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue modificado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El colaborador fue modificado con éxito.')
                 const { history } = this.props
-                history.push({ pathname: '/rh/empleados' });
+                history.push({ pathname: '/rh/colaboradores' });
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -331,7 +331,7 @@ class EmpleadosForm extends Component {
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        if (title === 'Editar empleado')
+        if (title === 'Editar colaborador')
             this.updateEmpleadoAxios()
         else
             this.addEmpleadoAxios()

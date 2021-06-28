@@ -248,7 +248,7 @@ class CalendarioInstalacion extends Component {
                         <div className="card-title">
                             <span className="font-weight-bolder text-dark font-size-h3">Instalaciones de Equipos</span>
                         </div>
-                        <div class="card-toolbar">
+                        <div className="card-toolbar">
                             <span className="btn btn-success font-weight-bold" onClick={this.openModal}>
                                 <i className="flaticon-add"></i> AGREGAR
                             </span>
