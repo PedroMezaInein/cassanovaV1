@@ -42,6 +42,7 @@ class NominaObraForm extends Component {
                 case 'extras':
                     suma += parseFloat(element.costo_hr_extra *  element.total_hrs_extra) + parseFloat(element.viaticos)
                     break;
+                default: break;
             }
         })
         return suma

@@ -74,7 +74,7 @@ class EmpleadosForm extends Component {
                         <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_4TABS() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                    <span>1.</span> INFORMACIÓN DEL EMPLEADO</h3>
+                                    <span>1.</span> INFORMACIÓN DEL COLABORADOR</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
@@ -93,7 +93,7 @@ class EmpleadosForm extends Component {
                             </div>
                         </div>
                         {
-                            title !== 'Editar empleado' &&
+                            title !== 'Editar colaborador' &&
                             <div id="wizard-4" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard4_4TABS() }}>
                                 <div className="wizard-label">
                                     <h3 className="wizard-title">
@@ -140,7 +140,7 @@ class EmpleadosForm extends Component {
                                                     name="nombre"
                                                     type="text"
                                                     value={form.nombre}
-                                                    placeholder="NOMBRE DEL EMPLEADO"
+                                                    placeholder="NOMBRE DEL COLABORADOR"
                                                     iconclass="fas fa-user"
                                                     messageinc="Incorrecto. Ingresa el nombre."
                                                 />
@@ -718,7 +718,7 @@ class EmpleadosForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2_4TABS() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     {
-                                        title === 'Editar empleado' ?
+                                        title === 'Editar colaborador' ?
                                         <div>
                                             <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" 
                                                 onClick = {
