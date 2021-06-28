@@ -449,19 +449,29 @@ class NominaObraForm extends Component {
         const { value } = e.target
         const { form, data, options } = this.state
         form.nominasObra[key][name] = value
-        if(name === 'usuario'){
-            let usuario = data.usuarios.find( (empleado) => {
-                return value.toString() === empleado.id.toString()
-            })
-            if(usuario){
-                const { costo_hr_regular, costo_hr_nocturna, costo_hr_extra, total_hrs_extra, total_hrs_nocturna, total_hrs_regular, viaticos } = form.nominasObra[key]
-                let total = (costo_hr_regular * total_hrs_regular) + (costo_hr_nocturna * total_hrs_nocturna) + (costo_hr_extra * total_hrs_extra) + viaticos
-                if(total === 0){
-                    form.nominasObra[key].costo_hr_regular = usuario.salario_hr ? usuario.salario_hr : 0.0
-                    form.nominasObra[key].costo_hr_nocturna = usuario.salario_hr_nocturno ? usuario.salario_hr_nocturno : 0.0
-                    form.nominasObra[key].costo_hr_extra = usuario.salario_hr_extra ? usuario.salario_hr_extra : 0.0
+        switch(name){
+            case 'usuario':
+                let usuario = data.usuarios.find( (empleado) => {
+                    return value.toString() === empleado.id.toString()
+                })
+                if(usuario){
+                    const { costo_hr_regular, costo_hr_nocturna, costo_hr_extra, total_hrs_extra, total_hrs_nocturna, total_hrs_regular, viaticos } = form.nominasObra[key]
+                    let total = (costo_hr_regular * total_hrs_regular) + (costo_hr_nocturna * total_hrs_nocturna) + (costo_hr_extra * total_hrs_extra) + viaticos
+                    if(total === 0){
+                        form.nominasObra[key].costo_hr_regular = usuario.salario_hr ? usuario.salario_hr : 0.0
+                        form.nominasObra[key].costo_hr_nocturna = usuario.salario_hr_nocturno ? usuario.salario_hr_nocturno : 0.0
+                        form.nominasObra[key].costo_hr_extra = usuario.salario_hr_extra ? usuario.salario_hr_extra : 0.0
+                    }
                 }
-            }
+                break;
+            case 'costo_hr_regular':
+                form.nominasObra[key].costo_hr_nocturna = value * 1.4
+                form.nominasObra[key].costo_hr_extra = value * 2
+                break;
+            default: break;
+        }
+        if(name === 'usuario'){
+            
         }
         options.usuarios = this.updateOptionsUsuarios(form.nominasObra)
         this.setState({ ...this.state, form, options })
