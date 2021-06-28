@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, validateAlert, questionAlert, questionAlertY } from '../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, questionAlertY } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
 import readXlsxFile from 'read-excel-file'
@@ -110,7 +110,7 @@ class NominaObraForm extends Component {
         customInputAlert(
             <div style={{ display: 'flex', maxHeight: '300px'}} >
                 <Scrollbar>
-                    <div class="row mx-0">
+                    <div className="row mx-0">
                         <h3 className="mb-2 font-weight-bold text-dark col-md-12">¿DESEAS CREAR LAS COMPRAS?</h3>
                         <span className="font-weight-light col-md-9 mx-auto mb-5">Si no deseas crear las cuentas, da clic en cancelar</span>
                         <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
@@ -150,7 +150,7 @@ class NominaObraForm extends Component {
         customInputAlert(
             <div style={{ display: 'flex', maxHeight: '300px'}} >
                 <Scrollbar>
-                    <div class="row mx-0">
+                    <div className="row mx-0">
                         <h3 className="mb-2 font-weight-bold text-dark col-md-12">PARA CONTINUAR SELECCIONA LAS CUENTAS A ASIGNAR</h3>
                         <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA LA CUENTA PARA:</h5>
                         <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center mb-5">
@@ -195,6 +195,7 @@ class NominaObraForm extends Component {
                 case 'extras':
                     suma += parseFloat(element.costo_hr_extra *  element.total_hrs_extra) + parseFloat(element.viaticos)
                     break;
+                default: break;
             }
         })
         if (isNaN(suma)) {
@@ -559,7 +560,7 @@ class NominaObraForm extends Component {
                     onChange = { this.onChange }  onChangeRange = { this.onChangeRange } handleChange = { this.handleChange } nomina = { nomina }
                     onChangeAdjunto = { this.onChangeAdjunto } onChangeNominasObra = { this.onChangeNominasObra } usuarios = { data.usuarios }
                     addRowNominaObra = { this.addRowNominaObra } deleteRowNominaObra = { this.deleteRowNominaObra } onSubmit = { this.onSubmit } 
-                    generarComprasAxios = { this.openModalCompras } formeditado = { formeditado } clearFiles={this.clearFiles} changePageTable={this.changePageTable}/>
+                    generarComprasAxios = { this.openModalCompras } clearFiles={this.clearFiles} changePageTable={this.changePageTable}/>
             </Layout>
         )
     }

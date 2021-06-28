@@ -34,7 +34,7 @@ class Empleados extends Component {
             see: false,
             contrato: false
         },
-        title: 'Nuevo empleado',
+        title: 'Nuevo colaborador',
         form: {
             nombre: '',
             curp: '',
@@ -116,30 +116,30 @@ class Empleados extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
-    changePageEdit = empleado => {
+    changePageEdit = colaborador => {
         const { history } = this.props
         history.push({
-            pathname: '/rh/empleados/edit',
-            state: { empleado: empleado }
+            pathname: '/rh/colaboradores/edit',
+            state: { empleado: colaborador }
         });
     }
-    openModalDelete = empleado => {
+    openModalDelete = colaborador => {
         const { modal } = this.state
         modal.delete = true
         this.setState({
             ...this.state,
             modal,
-            empleado: empleado
+            empleado: colaborador
         })
     }
-    openModalAdjuntos = empleado => {
+    openModalAdjuntos = colaborador => {
         const { modal, data } = this.state
         modal.adjuntos = true
-        data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
+        data.adjuntos = colaborador.datos_generales.concat(colaborador.recibos_nomina).concat(colaborador.altas_bajas)
         this.setState({
             ...this.state,
             modal,
-            empleado: empleado,
+            empleado: colaborador,
             data,
             form: this.clearForm(),
             adjuntos: this.setAdjuntosTable(data.adjuntos)
@@ -148,22 +148,22 @@ class Empleados extends Component {
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
-    openModalSee = empleado => {
+    openModalSee = colaborador => {
         const { modal } = this.state
         modal.see = true
         this.setState({
             ...this.state,
             modal,
-            empleado: empleado
+            empleado: colaborador
         })
     }
-    openModalContrato = empleado => {
+    openModalContrato = colaborador => {
         const { modal } = this.state
         modal.contrato = true
         this.setState({
             ...this.state,
             modal,
-            empleado: empleado
+            empleado: colaborador
         })
     }
     handleCloseModalDelete = () => {
@@ -340,38 +340,38 @@ class Empleados extends Component {
         })
         return form;
     }
-    setEmpleado = empleados => {
+    setEmpleado = colaboradores => {
         let aux = []
-        if (empleados)
-            empleados.map((empleado) => {
+        if (colaboradores)
+            colaboradores.map((colaborador) => {
                 aux.push(
                     {
-                        actions: this.setActions(empleado),
-                        nombre: setTextTableReactDom(empleado.nombre, this.doubleClick, empleado, 'nombre', 'text-center'),
-                        empresa: setTextTableReactDom(empleado.empresa ? empleado.empresa.name : '', this.doubleClick, empleado, 'empresa', 'text-center '),
-                        departamento: empleado.departamentos.length === 0 ? setTextTableCenter("Sin definir") 
-                        : setTagLabelReactDom(empleado, empleado.departamentos, 'departamento_empleado', this.deleteElementAxios, ''),
-                        puesto: setTextTableReactDom(empleado.puesto, this.doubleClick, empleado, 'puesto', 'text-center'),
-                        rfc: setTextTableReactDom(empleado.rfc, this.doubleClick, empleado, 'rfc', 'text-center'),
-                        nss: setTextTableReactDom(empleado.nss, this.doubleClick, empleado, 'nss', 'text-center'),
-                        curp: setTextTableReactDom(empleado.curp, this.doubleClick, empleado, 'curp', 'text-center'),
-                        estatus: setEstatusBancoTableReactDom(empleado, this.changeEstatus ),
-                        fechaInicio: setDateTableReactDom(empleado.fecha_inicio, this.doubleClick, empleado, 'fecha', 'text-center'),
+                        actions: this.setActions(colaborador),
+                        nombre: setTextTableReactDom(colaborador.nombre, this.doubleClick, colaborador, 'nombre', 'text-center'),
+                        empresa: setTextTableReactDom(colaborador.empresa ? colaborador.empresa.name : '', this.doubleClick, colaborador, 'empresa', 'text-center '),
+                        departamento: colaborador.departamentos.length === 0 ? setTextTableCenter("Sin definir") 
+                        : setTagLabelReactDom(colaborador, colaborador.departamentos, 'departamento_empleado', this.deleteElementAxios, ''),
+                        puesto: setTextTableReactDom(colaborador.puesto, this.doubleClick, colaborador, 'puesto', 'text-center'),
+                        rfc: setTextTableReactDom(colaborador.rfc, this.doubleClick, colaborador, 'rfc', 'text-center'),
+                        nss: setTextTableReactDom(colaborador.nss, this.doubleClick, colaborador, 'nss', 'text-center'),
+                        curp: setTextTableReactDom(colaborador.curp, this.doubleClick, colaborador, 'curp', 'text-center'),
+                        estatus: setEstatusBancoTableReactDom(colaborador, this.changeEstatus ),
+                        fechaInicio: setDateTableReactDom(colaborador.fecha_inicio, this.doubleClick, colaborador, 'fecha', 'text-center'),
                         cuenta: renderToString(setArrayTable(
                             [
-                                { 'name': 'Banco', 'text': empleado.banco ? empleado.banco : 'Sin definir' },
-                                { 'name': 'No. Cuenta', 'text': empleado.cuenta ? empleado.cuenta : 'Sin definir' },
-                                { 'name': 'Clabe', 'text': empleado.clabe ? empleado.clabe : 'Sin definir' },
+                                { 'name': 'Banco', 'text': colaborador.banco ? colaborador.banco : 'Sin definir' },
+                                { 'name': 'No. Cuenta', 'text': colaborador.cuenta ? colaborador.cuenta : 'Sin definir' },
+                                { 'name': 'Clabe', 'text': colaborador.clabe ? colaborador.clabe : 'Sin definir' },
                             ], '180px'
                         )),
                         nombre_emergencia:setArrayTableReactDom(
                             [
-                                { 'name': 'Nombre', 'text': empleado.nombre_emergencia ? empleado.nombre_emergencia : 'Sin definir' },
-                                { 'name': 'Teléfono', 'text': empleado.telefono_emergencia ? empleado.telefono_emergencia : 'Sin definir' }
-                            ],'120px', this.doubleClick, empleado, 'nombre_emergencia'
+                                { 'name': 'Nombre', 'text': colaborador.nombre_emergencia ? colaborador.nombre_emergencia : 'Sin definir' },
+                                { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia ? colaborador.telefono_emergencia : 'Sin definir' }
+                            ],'120px', this.doubleClick, colaborador, 'nombre_emergencia'
                         ),
-                        vacaciones_tomadas: setTextTableReactDom(empleado.vacaciones_disponibles, this.doubleClick, empleado, 'vacaciones_disponibles', 'text-center'),
-                        id: empleado.id
+                        vacaciones_tomadas: setTextTableReactDom(colaborador.vacaciones_disponibles, this.doubleClick, colaborador, 'vacaciones_disponibles', 'text-center'),
+                        id: colaborador.id
                     }
                 )
                 return false
@@ -448,11 +448,11 @@ class Empleados extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
-    changeEstatus = (estatus, empleado) =>  {
+    changeEstatus = (estatus, colaborador) =>  {
         estatus === 'Activo'?
-            questionAlert('¿ESTÁS SEGURO?', 'ACTIVARÁS EL EMPLEADO', () => this.changeEstatusAxios(estatus, empleado))
+            questionAlert('¿ESTÁS SEGURO?', 'ACTIVARÁS EL COLABORADOR', () => this.changeEstatusAxios(estatus, colaborador))
         : 
-            questionAlert('¿ESTÁS SEGURO?', 'INHABILITARÁS EL EMPLEADO', () => this.changeEstatusAxios(estatus, empleado))
+            questionAlert('¿ESTÁS SEGURO?', 'INHABILITARÁS EL COLABORADOR', () => this.changeEstatusAxios(estatus, colaborador))
     }
     
     setSwalPlaceholder = (tipo) => {
@@ -479,7 +479,7 @@ class Empleados extends Component {
         }
     }
 
-    setActions = empleado => {
+    setActions = colaborador => {
         let aux = []
         aux.push(
             {
@@ -511,7 +511,7 @@ class Empleados extends Component {
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             }
         )
-        if (empleado.estatus_empleado === 'Activo') {
+        if (colaborador.estatus_empleado === 'Activo') {
             aux.push({
                 text: 'Contrato',
                 btnclass: 'warning',
@@ -599,7 +599,7 @@ class Empleados extends Component {
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
                     data
                 })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -617,7 +617,7 @@ class Empleados extends Component {
                 data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
                 if (key === 'administrativo') { this.getEmpleadosAxios() }
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue eliminado con éxito.')
                 this.setState({
                     ...this.state,
                     form: this.clearForm(),
@@ -657,7 +657,7 @@ class Empleados extends Component {
                     this.getEmpleadosAxios()
                 if (key === 'obra')
                     this.getEmpleadosObraAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La empleado fue editado con éxito')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La colaborador fue editado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -665,10 +665,10 @@ class Empleados extends Component {
         })
     }
 
-    async changeEstatusAxios(estatus, empleado){
+    async changeEstatusAxios(estatus, colaborador){
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/empleados/update/${empleado.id}/estatus`,{estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/empleados/update/${colaborador.id}/estatus`,{estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 doneAlert('Estatus actualizado con éxito')
@@ -932,9 +932,9 @@ class Empleados extends Component {
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="administrativo" title="Administrativo">
-                        <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Empleados administrativos'
-                            subtitle = 'Listado de empleados' mostrar_boton = { true } abrir_modal = { false }
-                            url = '/rh/empleados/add' mostrar_acciones = { true } exportar_boton = { true }
+                        <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
+                            subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
+                            url = '/rh/colaboradores/add' mostrar_acciones = { true } exportar_boton = { true }
                             onClickExport = { () => this.exportRHAxios() }
                             actions = {
                                 {
@@ -951,8 +951,8 @@ class Empleados extends Component {
                             cardBody = 'cardBody_admin' isTab = { true } />
                     </Tab>
                     <Tab eventKey="obra" title="Obra">
-                        <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Empleados de obra' subtitle = 'Listado de empleados' 
-                            mostrar_boton = { true } abrir_modal = { false } url = '/rh/empleados/add' mostrar_acciones = { true } exportar_boton = { true }
+                        <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores de obra' subtitle = 'Listado de colaboradores' 
+                            mostrar_boton = { true } abrir_modal = { false } url = '/rh/colaboradores/add' mostrar_acciones = { true } exportar_boton = { true }
                             onClickExport = { () => this.exportRHAxios() }
                             actions={{
                                 'edit': { function: this.changePageEdit },
@@ -966,7 +966,7 @@ class Empleados extends Component {
                             cardTableHeader = 'cardTableHeader_obra' cardBody = 'cardBody_obra' isTab = { true } />
                     </Tab>
                 </Tabs>
-                <ModalDelete title={'¿Quieres eliminar el empleado?'} show={modal.delete} handleClose={this.handleCloseModalDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEmpleadoAxios() }}>
+                <ModalDelete title={'¿Quieres eliminar el colaborador?'} show={modal.delete} handleClose={this.handleCloseModalDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEmpleadoAxios() }}>
                 </ModalDelete>
                 <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles }
@@ -977,7 +977,7 @@ class Empleados extends Component {
                         actions = { { 'deleteAdjunto': { function: this.openModalDeleteAdjuntos } }} dataID = 'adjuntos'
                         elements = { data.adjuntos }/>
                 </Modal>
-                <Modal size="lg" title="Empleados" show={modal.see} handleClose={this.handleCloseSee} >
+                <Modal size="lg" title="Colaborador" show={modal.see} handleClose={this.handleCloseSee} >
                     <EmpleadosCard empleado={empleado} />
                 </Modal>
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
