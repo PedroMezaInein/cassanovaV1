@@ -1876,7 +1876,12 @@ class Proyectos extends Component {
                 window.open(proyecto.bitacora, '_blank').focus();
                 const { data } = this.state
                 data.notas = proyecto.notas
-                this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
+                this.setState({ 
+                    ...this.state, 
+                    data,
+                    notas: this.setNotas(proyecto.notas),
+                    proyecto:proyecto
+                })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
