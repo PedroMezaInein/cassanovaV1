@@ -22,7 +22,7 @@ class ChangePasswordFrom extends Component {
 
 	render() {
 		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendCorreo, empresas, onClickEmpresa, activeKey, formeditado, cropped } = this.props
-		// console.log(user)
+		
 		return (<>
 			<Tab.Container defaultActiveKey="1" className="p-5">
 				<div className="card mb-6 mb-xl-9">
@@ -35,14 +35,27 @@ class ChangePasswordFrom extends Component {
 								<div className="d-flex justify-content-between align-items-start flex-wrap mb-2">
 									<div className="d-flex flex-column">
 										<div className="d-flex align-items-center mb-2">
-											<span className="text-dark-75 font-size-h3 font-weight-bolder">{user ? user.empleado.nombre : ''}</span>
+											<span className="text-dark-75 font-size-h3 font-weight-bolder">
+												{
+													user ? 
+														user.empleado?
+														user.empleado.nombre : user.name
+													: ''
+												}
+											</span>
 										</div>
 										<div className="d-flex flex-wrap font-weight-bold text-muted">
 											<div className="d-flex align-items-center text-muted mr-5 mb-2">
 												<span className="svg-icon svg-icon-2x mr-1">
 													<SVG src={toAbsoluteUrl('/images/svg/Folder-star.svg')} />
 												</span>
-												<span className="font-size-h6">{user ? user.empleado.puesto : ''}</span>
+												<span className="font-size-h6">
+													{
+														user ? 
+															user.empleado? user.empleado.puesto : 'CLIENTE'
+														: ''
+													}
+												</span>
 											</div>
 											<div className="d-flex align-items-center text-muted mr-5 mb-2">
 												<span className="svg-icon svg-icon-2x mr-1">
