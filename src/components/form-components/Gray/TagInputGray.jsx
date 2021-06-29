@@ -9,9 +9,9 @@ class TagInputGray extends Component {
         $('.react-tag-input').attr('id','react-tag-input')
     }
     render() {
-        const { placeholder, tags, onChange, iconclass, letterCase } = this.props
+        const { placeholder, tags, onChange, iconclass, letterCase, uppercase } = this.props
         return (
-            <div className = { letterCase === false ? 'text-no-transform' : 'text-uppercase'} >
+            <div className = { uppercase === false ? 'text-transform-none' : '' }>
                 <label className="col-form-label font-weight-bold text-dark-60">{placeholder}</label>
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
@@ -24,9 +24,9 @@ class TagInputGray extends Component {
                         readOnly = { false }
                         removeOnBackspace = { true }
                         onChange = { onChange }
+                        className = { uppercase === false ? 'text-transform-none' : '' }
                     />
                 </div>
-                
             </div>
         )
     }

@@ -388,6 +388,15 @@
     color: #e44e93 !important;
 }
 
+.bg-hover-pink {
+    cursor: pointer
+}
+
+.bg-hover-pink:hover {
+    background-color: #FDEDF7 !important;
+    border-color: #FDEDF7 !important;
+}
+
 // btn.btn-light-brown 
 .btn.btn-light-brown {
     color: #5D4037;

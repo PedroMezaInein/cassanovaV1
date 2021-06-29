@@ -9,7 +9,7 @@ import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
 import { Small } from '../../../components/texts'
 import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert, questionAlert, deleteAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert, questionAlert, deleteAlert, questionAlertY } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Card, Tabs } from 'react-bootstrap'
 import Swal from 'sweetalert2'
@@ -150,6 +150,7 @@ class Proyectos extends Component {
             porcentaje: '',
             descripcion: '',
             correos: [],
+            correos_avances: [],
             correo: '',
             comentario: '',
             adjuntos_grupo: [
@@ -582,12 +583,20 @@ class Proyectos extends Component {
     }
 
     openModalAvances = proyecto => {
+        const { form } = this.state
+        let aux = []
+        if (proyecto.contactos) {
+            proyecto.contactos.map((contacto) => {
+                aux.push(contacto.correo)
+                return false
+            })
+            form.correos_avances = aux
+        }
         this.setState({
             ...this.state,
             modalAvances: true,
             title: 'Avances del proyecto',
             proyecto: proyecto,
-            form: this.clearForm(),
             formeditado: 0,
         })
     }
@@ -770,6 +779,7 @@ class Proyectos extends Component {
                 case 'adjuntos_grupo':
                     break;
                 case 'correos':
+                case 'correos_avances':
                     form[element] = []
                     break;
                 default:
@@ -1449,6 +1459,7 @@ class Proyectos extends Component {
                 case 'avances':
                     break;
                 case 'correos':
+                case 'correos_avances':
                     data.append(element, JSON.stringify(form[element]))
                     break;
                 case 'actividades_realizadas':
@@ -1547,16 +1558,17 @@ class Proyectos extends Component {
     }
     
     sendMail = avance => {
-        waitAlert();
-        this.sendMailAvanceAxios(avance);
+        questionAlertY('¿DESEAS ENVIAR EL AVANCE?', '¡NO PODRÁS REVERTIR ESTO!', () =>  this.sendMailAvanceAxios(avance))
     }
 
     async sendMailAvanceAxios(avance) {
+        waitAlert();
         const { access_token } = this.props.authUser
-        const { proyecto } = this.state
-        await axios.get(URL_DEV + 'proyectos/' + proyecto.id + '/avances/' + avance, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { proyecto, form } = this.state
+        // form.correos_avances
+        await axios.put(`${URL_DEV}proyectos/${proyecto.id}/avances/${avance}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue enviado con éxito.')
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -1864,14 +1876,27 @@ class Proyectos extends Component {
                 window.open(proyecto.bitacora, '_blank').focus();
                 const { data } = this.state
                 data.notas = proyecto.notas
-                this.setState({ ...this.state, data, notas: this.setNotas(proyecto.notas) })
+                this.setState({ 
+                    ...this.state, 
+                    data,
+                    notas: this.setNotas(proyecto.notas),
+                    proyecto:proyecto
+                })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
+    tagInputChange = (nuevosCorreos) => {
+        const { form } = this.state 
+        let unico = {};
+        nuevosCorreos.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        form.correos_avances = nuevosCorreos ? Object.keys(unico) : [];
+        this.setState({ ...this.state, form })
+    }
     render() {
         const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead,
                 modalComentarios, tipo, modalNotaObra, options, formBitacora, data } = this.state
@@ -2069,13 +2094,13 @@ class Proyectos extends Component {
                         <Tab eventKey = "nuevo" title = "Nuevo avance">
                             <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
                                 clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance }  deleteRowAvance = {this.deleteRowAvance}   onSubmit = { this.onSubmitAvance }
-                                onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } formeditado = { formeditado } />
+                                onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } formeditado = { formeditado } tagInputChange = { (e) => this.tagInputChange(e) }/>
                         </Tab>
                         <Tab eventKey = "existente" title = "Adjuntar avance">
                             <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
                                 clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } deleteRowAvance = {this.deleteRowAvance} onSubmit = { this.onSubmitNewAvance }
                                 onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } handleChange = { this.handleChangeAvance }
-                                formeditado = { formeditado } isNew = { true } />
+                                formeditado = { formeditado } isNew = { true } tagInputChange = { (e) => this.tagInputChange(e) }/>
                         </Tab>
                     </Tabs>
                 </Modal>
