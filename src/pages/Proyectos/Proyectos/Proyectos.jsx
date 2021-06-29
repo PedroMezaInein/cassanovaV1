@@ -1565,14 +1565,9 @@ class Proyectos extends Component {
         waitAlert();
         const { access_token } = this.props.authUser
         const { proyecto, form } = this.state
-        // form.correos_avances
-        await axios.put(`${URL_DEV}proyectos/${proyecto.id}/avances/${avance}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue enviado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+        await axios.put(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}/avances/${avance}`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => { doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue enviado con éxito.') }, 
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
