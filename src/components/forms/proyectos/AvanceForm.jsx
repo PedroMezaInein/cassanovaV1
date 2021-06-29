@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { FileInput, Button, InputGray, InputMoneyGray, RangeCalendar, InputNumberGray } from '../../form-components'
+import { FileInput, Button, InputGray, InputMoneyGray, RangeCalendar, InputNumberGray, TagInputGray } from '../../form-components'
 import { Form, Accordion, Card, Row, Col } from 'react-bootstrap'
 import ItemSlider from '../../singles/ItemSlider'
 import Scrollbar from 'perfect-scrollbar-react';
@@ -7,6 +7,7 @@ import 'perfect-scrollbar-react/dist/style.min.css';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import SliderImages from '../../singles/SliderImages'
+import { validateAlert } from '../../../functions/alert';
 class AvanceForm extends Component {
     state = {
         activeKey: ''
@@ -32,8 +33,8 @@ class AvanceForm extends Component {
         onChange({ target: { value: endDate, name: 'fechaFin' } })
     }
     render() {
-        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, 
-            proyecto, sendMail, formeditado, deleteFile, handleChange, isNew, onChangeAdjunto, deleteRowAvance, ...props } = this.props
+        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, sendMail, formeditado, deleteFile, handleChange, isNew, 
+                onChangeAdjunto, deleteRowAvance, tagInputChange, ...props } = this.props
         const { activeKey } = this.state
         return (
             <>
@@ -219,13 +220,12 @@ class AvanceForm extends Component {
                     proyecto ?
                         proyecto.avances ?
                             proyecto.avances.length ?
-                            <div className="d-flex justify-content-center">
-                                <div className="col-md-7">
-                                    <Accordion activeKey={activeKey} className="accordion accordion-solid">
-                                        {
-                                            proyecto.avances.map((avance, key) => {
-                                                return (
-                                                    <>
+                                <div className="d-flex justify-content-center">
+                                    <div className="col-md-7">
+                                        <Accordion activeKey={activeKey} className="accordion accordion-solid">
+                                            {
+                                                proyecto.avances.map((avance, key) => {
+                                                    return (
                                                         <Card key={key}>
                                                             <Accordion.Toggle as={Card.Header} eventKey={avance.id} onClick={() => this.handleAccordion(avance.id)}>
                                                                 <div className="card-title">
@@ -234,45 +234,53 @@ class AvanceForm extends Component {
                                                             </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey={avance.id}>
                                                                 <Card.Body>
-                                                                    <div>
-                                                                        <div className="d-flex justify-content-center">
-                                                                            <a rel="noopener noreferrer" href={avance.pdf} target="_blank" className="text-info font-weight-bold font-size-sm">
-                                                                                <div className="bg-light-info rounded-sm mr-5 p-2">
+                                                                    <Row className="mx-0">
+                                                                        <Col md={12} className="mb-5">
+                                                                            <div className="d-flex justify-content-end">
+                                                                                <div rel="noopener noreferrer" href={avance.pdf} target="_blank" className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bold font-size-13px px-2 py-1">
                                                                                     <span className="svg-icon svg-icon-xl svg-icon-info mr-2">
                                                                                         <SVG src={toAbsoluteUrl('/images/svg/Download.svg')} />
                                                                                     </span>
                                                                                     Descargar PDF
                                                                                 </div>
-                                                                            </a>
-                                                                            {
-                                                                                proyecto ?
-                                                                                    proyecto.contactos.length ?
-                                                                                        <span onClick={(e) => { e.preventDefault(); sendMail(avance.id) }} className="text-pink font-weight-bold font-size-sm">
-                                                                                            <div className="bg-light-pink rounded-sm p-2">
-                                                                                                <span className="svg-icon svg-icon-xl svg-icon-pink mr-2">
-                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} />
-                                                                                                </span>
-                                                                                                Enviar por correo
-                                                                                            </div>
-                                                                                        </span>
-                                                                                        :
-                                                                                        ''
-                                                                                    : ''
-                                                                            }
-                                                                        </div>
-                                                                        <div className="mt-5">
+                                                                            </div>
+                                                                        </Col>
+                                                                        <Col md={12} className="my-5">
                                                                             <SliderImages elements={avance.adjuntos} />
-                                                                        </div>
-                                                                    </div>
+                                                                        </Col>
+                                                                        <Col md={12} className="p-0">
+                                                                            <Form
+                                                                                onSubmit={
+                                                                                    (e) => {
+                                                                                        e.preventDefault();
+                                                                                        validateAlert(sendMail, e, 'form-send-avance')
+                                                                                    }
+                                                                                }
+                                                                                {...props} >
+                                                                                <div className="d-flex justify-content-between align-items-end row mx-0">
+                                                                                    <div className="col">
+                                                                                        <TagInputGray tags={form.correos_avances} onChange={tagInputChange} placeholder="CORREO" iconclass="flaticon-email" uppercase={false} />
+                                                                                    </div>
+                                                                                    <div className="col-md-auto d-flex justify-content-end">
+                                                                                        <div onClick={(e) => { e.preventDefault(); sendMail(avance.id) }} className="btn btn-sm btn-bg-light btn-icon-pink btn-hover-light-pink text-pink font-weight-bold font-size-13px bg-hover-pink px-2 py-1">
+                                                                                            <span className="svg-icon svg-icon-xl svg-icon-pink mr-2">
+                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} />
+                                                                                            </span>
+                                                                                            Enviar por correo
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </Form>
+                                                                        </Col>
+                                                                    </Row>
                                                                 </Card.Body>
                                                             </Accordion.Collapse>
                                                         </Card>
-                                                    </>
-                                                )
-                                            })
-                                        }
-                                    </Accordion>
-                                </div>
+                                                    )
+                                                })
+                                            }
+                                        </Accordion>
+                                    </div>
                                 </div>
                                 : ''
                             : ''
