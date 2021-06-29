@@ -9,7 +9,7 @@ class TagInputGray extends Component {
         $('.react-tag-input').attr('id','react-tag-input')
     }
     render() {
-        const { placeholder, tags, onChange, iconclass, letterCase, uppercase } = this.props
+        const { placeholder, tags, onChange, iconclass, uppercase } = this.props
         return (
             <div className = { uppercase === false ? 'text-transform-none' : '' }>
                 <label className="col-form-label font-weight-bold text-dark-60">{placeholder}</label>
