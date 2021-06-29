@@ -566,7 +566,7 @@ class ComprasForm extends Component {
     async editCompraAxios() {
         const { access_token } = this.props.authUser
         const { form, compra } = this.state
-        const data = new FormData();
+        /* const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -590,23 +590,15 @@ class ComprasForm extends Component {
             }
             data.append('adjuntos[]', element)
             return false
-        })
-        await axios.post(URL_DEV + 'compras/update/' + compra.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        }) */
+        await axios.put(`${URL_DEV}v2/proyectos/compras/${compra.id}`, form, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 this.getOptionsAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                })
+                this.setState({ ...this.state, form: this.clearForm(), })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/compras'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/proyectos/compras' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
