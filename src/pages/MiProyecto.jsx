@@ -847,11 +847,15 @@ class MiProyecto extends Component {
                                                             : ''
                                                         : ''
                                                 }
-                                                <Nav.Item className="nav-item my-3">
-                                                    <Nav.Link eventKey="mantenimiento" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                        MANTENIMIENTO
-                                                    </Nav.Link>
-                                                </Nav.Item>
+                                                {
+                                                    proyecto.mantenimiento_correctivo.length ?
+                                                    <Nav.Item className="nav-item my-3">
+                                                        <Nav.Link eventKey="mantenimiento" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
+                                                            MANTENIMIENTO
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    :''
+                                                }
                                                 {
                                                     proyecto ?
                                                         proyecto.avances.length ?
@@ -868,11 +872,15 @@ class MiProyecto extends Component {
                                                         TICKETS
                                                     </Nav.Link>
                                                 </Nav.Item>
-                                                <Nav.Item className="nav-item my-3">
-                                                    <Nav.Link eventKey="bitacora" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                        BITÁCORA
-                                                    </Nav.Link>
-                                                </Nav.Item>
+                                                {
+                                                    proyecto.bitacora !== null?
+                                                    <Nav.Item className="nav-item my-3">
+                                                        <Nav.Link eventKey="bitacora" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
+                                                            BITÁCORA
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    :''
+                                                }
                                             </Nav>
                                         </div>
                                     </div>
