@@ -238,7 +238,6 @@ class CalendarioInstalacion extends Component {
         form.cotizacion.files.forEach((file) => {
             data.append(`files[]`, file.file)
         })
-        
         await axios.post(`${URL_DEV}v1/proyectos/instalacion-equipos`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
             (response) => {
                 doneAlert('Instalación de equipo registrado con éxito.')
