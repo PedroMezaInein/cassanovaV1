@@ -2148,7 +2148,7 @@ span.font-weight-bolder.text-hover-error:hover{
     }
 }
 
-input[type="file"]#file-upload, #datosGenerales, #recibosNomina, #altasBajas, #factura, #presupuesto, #pago, #avance, #adjunto-contrato, #adjunto, #adjunto-carta, #contrato, #carta, .avance {
+input[type="file"]#file-upload, #datosGenerales, #recibosNomina, #altasBajas, #factura, #presupuesto, #pago, #avance, #adjunto-contrato, #adjunto, #adjunto-carta, #contrato, #carta, .avance, .file-input {
     display: none!important;
 }
 
@@ -2871,7 +2871,6 @@ table#calendario-proyectos tr:last-child td {
   
   /*# sourceMappingURL=ReactCrop.css.map */
   
-
   .mw-lg-75px {
     max-width: 75px !important
 }

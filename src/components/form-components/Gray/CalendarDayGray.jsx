@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form'
 
 registerLocale("es", es);
 
-class Calendar extends Component{
+class CalendarDayGray extends Component{
 
     state = { calendarValido: true }
 
@@ -25,12 +25,13 @@ class Calendar extends Component{
     }
 
     render(){
-        const { placeholder, onChangeCalendar, name, value, messageinc, iconclass, ...props } = this.props
+        const { placeholder, onChangeCalendar, name, value, messageinc, iconclass, customdiv,withicon, ...props } = this.props
         const { minDate, endDate, selectsEnd, startDate, selectsStart, onChangeCalendar: onChangeCalendarProps, withPlaceholder, ...props2} = this.props
         const { calendarValido } = this.state
         return(
-            <div>  
-                { withPlaceholder !== false ? <label className="col-form-label">{placeholder}</label>  : <></> }
+            <div className={`form-group ${customdiv}`}>
+                <label className="col-form-label text-dark-50 font-weight-bold">{placeholder}</label>
+                <div className="input-group input-group-solid rounded-0">
                 <DatePicker
                     { ...props }
                     dateFormat="dd/MM/yyyy"
@@ -54,17 +55,16 @@ class Calendar extends Component{
                         }
                     }}
                     customInput={
-                    
-                    <Form.Control    
-                        className = { calendarValido ? " form-control is-valid text-uppercase sin_icono" : " form-control is-invalid text-uppercase sin_icono" }
-                        {...props2} 
-                    />  
+                        <Form.Control    
+                            className = { calendarValido ? " form-control is-valid text-uppercase sin_icono text-dark-50" : " form-control is-invalid text-uppercase sin_icono text-dark-50" }
+                            {...props2}  />
                     }
                 /> 
+                </div>
                 <span className={ calendarValido ? "form-text text-danger hidden" : "form-text text-danger" }>Incorrecto. Selecciona la fecha.</span>                  
             </div> 
         )
     }
 }
 
-export default Calendar
+export default CalendarDayGray

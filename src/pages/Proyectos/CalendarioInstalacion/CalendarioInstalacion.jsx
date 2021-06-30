@@ -31,7 +31,10 @@ class CalendarioInstalacion extends Component {
             equipo:'',
             duracion:'',
             periodo:'',
-            fecha: new Date()
+            fecha: new Date(),
+            cantidad: '',
+            costo: 0.0,
+            cotizacion: { files: [], value: '' },
         },
         options:{ 
             proyectos:'',
@@ -192,6 +195,12 @@ class CalendarioInstalacion extends Component {
                 case 'fecha':
                     form[element] = new Date()
                     break;
+                case 'cotizacion':
+                    form[element] = { files: [], value: '' }
+                    break;
+                case 'costo':
+                    form[element] = 0.0
+                    break;
                 default:
                     form[element] = ''
                     break;
@@ -255,36 +264,6 @@ class CalendarioInstalacion extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        {/* <div className="col-md-12 mx-auto px-0">
-                            <div className="form-group row mx-0 form-group-marginless justify-content-center">
-                                <div className="col-md-4">
-                                    <SelectSearchGray
-                                        options={options.proyectos}
-                                        placeholder="SELECCIONA EL PROYECTO"
-                                        name="proyecto"
-                                        value={form.proyecto}
-                                        onChange={this.updateProyecto}
-                                        iconclass={"far fa-folder-open"}
-                                        customdiv = "mb-0"
-                                    />
-                                </div>
-                                <div className="col-md-4">
-                                    <SelectSearchGray
-                                        options={options.equipos}
-                                        placeholder="SELECCIONA EL EQUIPO"
-                                        name="equipo"
-                                        value={form.equipo}
-                                        onChange={this.updateEquipo}
-                                        iconclass={"far fa-folder-open"}
-                                        customdiv = "mb-0"
-                                    />
-                                </div>
-                                <div className="col-md-2 align-self-center">
-                                    <span className="btn btn-sm btn-bg-light btn-hover-light-primary text-dark-50 text-hover-primary font-weight-bolder font-size-13px py-3" onClick={this.filtrarCalendario}>Buscar</span>
-                                    <span className="btn btn-sm btn-bg-light btn-hover-light-danger text-dark-50 text-hover-danger font-weight-bolder font-size-13px py-3 ml-2" onClick={this.cleanForm}>Limpiar</span>
-                                </div>
-                            </div>
-                        </div> */}
                         <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
                             initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
                             firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
