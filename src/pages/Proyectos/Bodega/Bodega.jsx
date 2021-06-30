@@ -6,7 +6,7 @@ import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { URL_DEV, BODEGA_COLUMNS } from '../../../constants'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
-import { setTextTableCenter, setTextTableReactDom, setOptions  } from '../../../functions/setters'
+import { setTextTableCenter, setTextTableReactDom, setOptions, setArrayTable } from '../../../functions/setters'
 import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
 import { Button, InputGray } from '../../../components/form-components'
@@ -124,7 +124,17 @@ class Bodega extends Component {
 
     setBodega = bodega => {
         let aux = []
+        let _aux = []
         bodega.map((bodega) => {
+            _aux = []
+            if (bodega.adjuntos) {
+                bodega.adjuntos.map((adjunto) => {
+                    _aux.push({
+                        text: adjunto.name, url: adjunto.url
+                    })
+                    return false
+                })
+            }
             aux.push({
                 actions: this.setActions(bodega),
                 nombre: setTextTableReactDom(bodega.nombre, this.doubleClick, bodega, 'nombre', 'text-center'),
@@ -133,6 +143,7 @@ class Bodega extends Component {
                 cantidad: renderToString(setTextTableCenter(bodega.cantidad)),
                 ubicacion: setTextTableReactDom(bodega.ubicacion !== null ? bodega.ubicacion :'', this.doubleClick, bodega, 'ubicacion', 'text-justify'),
                 descripcion: setTextTableReactDom(bodega.descripcion !== null ? bodega.descripcion :'', this.doubleClick, bodega, 'descripcion', 'text-justify'),
+                adjuntos: bodega.adjuntos ? renderToString(setArrayTable(_aux)) : renderToString(setTextTableCenter('Sin adjuntos')),
                 id: bodega.id
             })
             return false
