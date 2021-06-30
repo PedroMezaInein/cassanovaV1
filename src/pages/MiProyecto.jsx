@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
 import { errorAlert, waitAlert, doneAlert, questionAlert, printResponseErrorAlert } from '../functions/alert'
-import { SelectSearchGray, InputGray } from '../components/form-components'
+import { SelectSearch, SelectSearchGray, Input } from '../components/form-components'
 import { setOptions, setLabelTable, setEmpresaLogo } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row, NavDropdown, Navbar } from 'react-bootstrap'
 import { Button } from '../components/form-components'
@@ -18,8 +18,7 @@ import { toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import Swal from 'sweetalert2'
 import WOW from 'wowjs';
-import moment from 'moment';
-import 'moment/locale/es';
+import moment from 'moment'
 /* import ModalVideo from 'react-modal-video' */
 class MiProyecto extends Component {
 
@@ -40,7 +39,6 @@ class MiProyecto extends Component {
         defaultactivekey: "",
         modal: false,
         modalDetalles: false,
-        modalLevantamiento:false,
         showadjuntos: [
             {
                 name: 'Fotografías levantamiento',
@@ -307,6 +305,7 @@ class MiProyecto extends Component {
         new WOW.WOW({
             live: false
         }).init();
+
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
@@ -756,9 +755,9 @@ class MiProyecto extends Component {
     setImage(proyecto){
         if(proyecto){
             if(proyecto.empresa.name==='INEIN'){
-                return 'url(https://infraestructuramedica.mx/wp-content/uploads/2020/10/VITARA-QUIROFANOS-RENDER-SALA-DE-RECUPERACION-.jpg)'
+                return 'url("/inein_proyecto1.jpg")'
             }else if (proyecto.empresa.name==='INFRAESTRUCTURA MÉDICA'){
-                return 'url(https://infraestructuramedica.mx/wp-content/uploads/2020/10/VITARA-QUIROFANOS-RENDER-SALA-DE-RECUPERACION-.jpg)'
+                return 'url("/im_proyecto1.jpg")'
             }else{
                 return 'url("/header_1.jpg")'
             }
@@ -791,541 +790,451 @@ class MiProyecto extends Component {
                     return 'https://' + proyecto.empresa.pagina_web;
         return ''
     }
-    formatDay (fechaInicio, fechaFinal){
-        let fecha_inicio = moment(fechaInicio);
-        let fecha_final = moment(fechaFinal);
-        let formatInicio = fecha_inicio.locale('es').format("DD MMM YYYY");
-        let formatFinal = fecha_final.locale('es').format("DD MMM YYYY");
-        return formatInicio.replace('.', '') + ' - ' + formatFinal.replace('.', '');
-    }
-    openModalLevantamiento = () => { this.setState({...this.state,modalLevantamiento:true}) }
 
-    handleCloseLevantamiento = () => {
-        const { modalLevantamiento } = this.state
-        this.setState({
-            ...this.state,
-            modalLevantamiento: !modalLevantamiento,
-        })
-    }
     render() {
         const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, 
-            modal, ticket, modalDetalles, modalLevantamiento /* openModalVideo */ } = this.state
-            console.log(proyecto)
+            modal, ticket, modalDetalles, /* openModalVideo */ } = this.state
         return (
+
             <Layout {...this.props}>
-                <section className="py-0 overflow-hidden section-proyecto">
-                    <div className="bgi-no-repeat bgi-position-center bgi-size-cover d-flex flex-column h-400px h-lg-500px" style={{ backgroundImage: this.setImage(proyecto) }}></div>
-                    <div className="mt-n15 content-bg-for-font-color d-flex" style={{ position: 'relative' }}>
-                        <svg width="100%" height="56px" viewBox="0 0 100 100" version="1.1" preserveAspectRatio="none" className="">
-                            <path d="M0,0 C16.6666667,66 33.3333333,99 50,99 C66.6666667,99 83.3333333,66 100,0 L100,100 L0,100 L0,0 Z" fill="currentColor"></path>
-                        </svg>
+                <section className="py-10 overflow-hidden text-center section-proyecto">
+                    <div className="background-holder overlay overlay-1 parallax" style={{ backgroundImage: this.setImage(proyecto) }}>
                     </div>
                     <div className="container">
-                        <div className="row d-flex justify-content-center mx-0">
-
-                            <Tab.Container defaultActiveKey="tickets">
-                                <div className="container">
-                                    <div className="card translate-middle-y mt-n10 mt-lg-n10">
-                                        <div className="card-body p-3">
-                                            <Nav className="nav mx-auto border-transparent nav-pills d-flex flex-nowrap hover-scroll-x d-flex align-items-center font-weight-bolder letter-spacing-1px nav-center">
-                                                {
-                                                    proyecto &&
-                                                    <Nav.Item className="nav-item my-3">
-                                                        <Nav.Link eventKey="general" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                            GENERAL
-                                                        </Nav.Link>
-                                                    </Nav.Item>
-                                                }
-                                                {
-                                                    proyecto ?
-                                                        proyecto.adjuntos.length ?
-                                                            <Nav.Item className="nav-item my-3">
-                                                                <Nav.Link eventKey="adjuntos" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                                    MATERIAL
-                                                                </Nav.Link>
-                                                            </Nav.Item>
-                                                            : ''
+                        <div className="row d-flex justify-content-center">
+                            <div className="row d-flex justify-content-center">
+                                <div className="w-auto pb-25rem">
+                                    <div className="znav-container znav-white znav-freya znav-fixed" id="znav-container">
+                                        <div className="container wow fadeIn" data-wow-delay="1.7s" data-wow-duration="1.5s">
+                                            <Navbar expand="lg">
+                                                <Navbar.Brand target = '_blank' href = { this.getWebPage(proyecto)} className="overflow-hidden pr-3">
+                                                    {
+                                                        setEmpresaLogo(proyecto) !== '' ?
+                                                            <img alt = '' width="120" src = { setEmpresaLogo(proyecto) }  />
                                                         : ''
-                                                }
-                                                <Nav.Item className="nav-item my-3">
-                                                    <Nav.Link eventKey="mantenimiento" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                        MANTENIMIENTO
+                                                    }
+                                                </Navbar.Brand>
+                                                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                                                <Navbar.Collapse className="text-center mt-3">
+                                                    <Nav className="">
+                                                        <div className="widthSelect">
+                                                            <SelectSearchGray
+                                                                options={options.proyectos}
+                                                                placeholder="SELECCIONE UN PROYECTO"
+                                                                name="proyecto"
+                                                                value={form.proyecto}
+                                                                onChange={this.updateProyecto}
+                                                                requirevalidation={1}
+                                                                messageinc="Incorrecto. Seleccione el proyecto."
+                                                                customdiv="mb-0"
+                                                                withtaglabel={0}
+                                                                withtextlabel={0}
+                                                                withicon={1}
+                                                            />
+                                                        </div>
+                                                    </Nav>
+                                                    <Nav.Link href={proyecto.empresa?proyecto.empresa.facebook:''} className="py-0 pt-2">
+                                                        <i className="socicon-facebook icon-lg text-hover-dark"></i>
                                                     </Nav.Link>
-                                                </Nav.Item>
-                                                {
-                                                    proyecto ?
-                                                        proyecto.avances.length ?
-                                                            <Nav.Item className="nav-item my-3">
-                                                                <Nav.Link eventKey="avances" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                                    AVANCES POR SEMANA
-                                                                </Nav.Link>
-                                                            </Nav.Item>
-                                                            : ''
-                                                        : ''
-                                                }
-                                                <Nav.Item className="nav-item my-3">
-                                                    <Nav.Link eventKey="tickets" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                        TICKETS
+                                                    <Nav.Link href={proyecto.empresa?proyecto.empresa.linkedin:''}  className="py-0 pt-2">
+                                                        <i className="socicon-linkedin icon-lg text-hover-dark"></i>
                                                     </Nav.Link>
-                                                </Nav.Item>
-                                                <Nav.Item className="nav-item my-3">
-                                                    <Nav.Link eventKey="bitacora" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                        BITÁCORA
+                                                    <Nav.Link href={proyecto.empresa?proyecto.empresa.pinterest:''}  className="py-0 pt-2">
+                                                        <i className="socicon-pinterest icon-lg text-hover-dark"></i>
                                                     </Nav.Link>
-                                                </Nav.Item>
-                                            </Nav>
+                                                </Navbar.Collapse>
+                                            </Navbar>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="container ">
-                                    <Tab.Content className="col-md-12 px-0">
-                                        <Tab.Pane eventKey='general' className="col-md-11 mx-auto px-0">
-                                            <Row className="mx-0 mb-5 mb-xl-10 mx-auto justify-content-center mt-n3">
-                                                {
-                                                    proyecto &&
-                                                    <Col md="auto">
-                                                        <div className="card">
-                                                            <div className="card-body py-5">
-                                                                <div className="d-flex flex-column">
-                                                                    <div className="d-flex align-items-center align-self-center mb-2">
-                                                                        <a className="text-dark-75 font-size-h4 font-weight-bolder mr-1">
-                                                                            {proyecto.nombre}
-                                                                            {
-                                                                                proyecto ?
-                                                                                    proyecto.estatus ?
-                                                                                        <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
-                                                                                            color: `${proyecto.estatus.letra}`,
-                                                                                            backgroundColor: `${proyecto.estatus.fondo}`,
-                                                                                            fontSize: "75%",
-                                                                                            marginLeft: '10px'
-                                                                                        }} >
-                                                                                            {proyecto.estatus.estatus}
-                                                                                        </span>
-                                                                                        : <span></span>
-                                                                                    : ''
-                                                                            }
-                                                                        </a>
-                                                                        <span className="svg-icon svg-icon-1 svg-icon-primary ml-2">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                                <path d="M10.0813 3.7242C10.8849 2.16438 13.1151 2.16438 13.9187 3.7242V3.7242C14.4016 4.66147 15.4909 5.1127 16.4951 4.79139V4.79139C18.1663 4.25668 19.7433 5.83365 19.2086 7.50485V7.50485C18.8873 8.50905 19.3385 9.59842 20.2758 10.0813V10.0813C21.8356 10.8849 21.8356 13.1151 20.2758 13.9187V13.9187C19.3385 14.4016 18.8873 15.491 19.2086 16.4951V16.4951C19.7433 18.1663 18.1663 19.7433 16.4951 19.2086V19.2086C15.491 18.8873 14.4016 19.3385 13.9187 20.2758V20.2758C13.1151 21.8356 10.8849 21.8356 10.0813 20.2758V20.2758C9.59842 19.3385 8.50905 18.8873 7.50485 19.2086V19.2086C5.83365 19.7433 4.25668 18.1663 4.79139 16.4951V16.4951C5.1127 15.491 4.66147 14.4016 3.7242 13.9187V13.9187C2.16438 13.1151 2.16438 10.8849 3.7242 10.0813V10.0813C4.66147 9.59842 5.1127 8.50905 4.79139 7.50485V7.50485C4.25668 5.83365 5.83365 4.25668 7.50485 4.79139V4.79139C8.50905 5.1127 9.59842 4.66147 10.0813 3.7242V3.7242Z" fill="#2171c1"></path>
-                                                                                <path className="permanent" d="M14.8563 9.1903C15.0606 8.94984 15.3771 8.9385 15.6175 9.14289C15.858 9.34728 15.8229 9.66433 15.6185 9.9048L11.863 14.6558C11.6554 14.9001 11.2876 14.9258 11.048 14.7128L8.47656 12.4271C8.24068 12.2174 8.21944 11.8563 8.42911 11.6204C8.63877 11.3845 8.99996 11.3633 9.23583 11.5729L11.3706 13.4705L14.8563 9.1903Z" fill="white"></path>
-                                                                            </svg>
-                                                                        </span>
-                                                                    </div>
-                                                                    <div className="d-flex flex-wrap font-weight-bold font-size-h6 align-self-center">
-                                                                        {
-                                                                            proyecto.contacto !== "Sin información" &&
-                                                                            <a className="d-flex align-items-center text-muted mr-5">
-                                                                                <i className="las la-user-alt text-dark-50 mr-2 icon-xl"></i>
-                                                                                {proyecto.contacto}
-                                                                            </a>
-                                                                        }
-                                                                        {
-                                                                            proyecto.numero_contacto !== "Sin información" &&
-                                                                            <a className="d-flex align-items-center text-muted mr-5">
-                                                                                <i className="las la-phone text-dark-50 mr-2 icon-xl"></i>
-                                                                                {proyecto.numero_contacto}
-                                                                            </a>
-                                                                        }
-                                                                        {/* {
-                                                                    proyecto.numero_contacto !== "Sin información" &&
-                                                                    <a className="d-flex align-items-center text-muted">
-                                                                        <i className="las la-envelope text-dark-50 mr-2 icon-xl"></i>
-                                                                        {proyecto.numero_contacto}
-                                                                    </a>
-                                                                } */}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </Col>
-                                                }
-
-
-                                                <Col md="auto">
-                                                    <div className="card card-custom card-stretch">
-                                                        <div className="card-body py-5 d-flex align-items-center row mx-0">
-                                                            <div className="col-md-12 px-0">
-                                                                <SelectSearchGray
-                                                                    options={options.proyectos}
-                                                                    placeholder="SELECCIONE UN PROYECTO"
-                                                                    name="proyecto"
-                                                                    value={form.proyecto}
-                                                                    onChange={this.updateProyecto}
-                                                                    requirevalidation={0}
-                                                                    customdiv="mb-0"
-                                                                    withtaglabel={0}
-                                                                    withtextlabel={0}
-                                                                    withicon={1}
-                                                                    iconvalid={1}
-                                                                    customstyle={{ width: '210px' }}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                            {
-                                                proyecto &&
-                                                <Row className="mx-0 d-flex justify-content-center">
-                                                    <Col md="8">
-                                                        <Card className="card-custom card-stretch">
-                                                            <Card.Header className="border-0">
-                                                                <Card.Title>
-                                                                    <h3 className="card-label">DATOS DEL PROYECTO</h3>
-                                                                </Card.Title>
-                                                            </Card.Header>
-                                                            <Card.Body className="pt-0">
-                                                                {
-                                                                    proyecto &&
-                                                                    <div className="table-responsive-lg table-borderless">
-                                                                        <table className="table table-vertical-center w-100 mx-auto" id="mi-proyecto">
-                                                                            <tbody>
-                                                                                {
-                                                                                    proyecto.fecha_inicio &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-calendar font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">PERIODO DEL PROYECTO</td>
-                                                                                        <td className="font-weight-light">
-                                                                                            {this.formatDay(proyecto.fecha_inicio, proyecto.fecha_fin)}
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                }
-                                                                                {
-                                                                                    proyecto.tipo_proyecto &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-toolbox font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">TIPO DEL PROYECTO</td>
-                                                                                        <td className="font-weight-light">
-                                                                                            <span>{proyecto.tipo_proyecto.tipo}</span>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                }
-                                                                                {
-                                                                                    proyecto.m2 > 0 &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-ruler font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">M²</td>
-                                                                                        <td className="font-weight-light">
-                                                                                            <span>{proyecto.m2} m²</span>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                }
-                                                                                {
-                                                                                    proyecto.fase3 === 0 && proyecto.fase2 === 0 && proyecto.fase1 === 0 ? <></> :
-                                                                                        <tr className="borderBottom">
-                                                                                            <td className="text-center">
-                                                                                                <div className="symbol symbol-40 symbol-light">
-                                                                                                    <span className="symbol-label">
-                                                                                                        <i className="las la-tools font-size-2-1rem text-primary"></i>
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <td className="font-weight-bolder text-dark-75">FASE</td>
-                                                                                            <td className="font-weight-light">
-                                                                                                {
-                                                                                                    proyecto.fase1 ?
-                                                                                                        <div>• Fase 1</div>
-                                                                                                        : ''
-                                                                                                }
-                                                                                                {
-                                                                                                    proyecto.fase2 ?
-                                                                                                        <div>• Fase 2</div>
-                                                                                                        : ''
-                                                                                                }
-                                                                                                {
-                                                                                                    proyecto.fase3 ?
-                                                                                                        <div>• Fase 3</div>
-                                                                                                        : ''
-                                                                                                }
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                }
-                                                                                {
-                                                                                    proyecto.cp &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-map-pin font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">CÓDIGO POSTAL</td>
-                                                                                        <td className="font-weight-light">
-                                                                                            <span>{proyecto.cp}</span>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                }
-                                                                                {
-                                                                                    proyecto.estado &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-globe font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">ESTADO</td>
-                                                                                        <td className="font-weight-light">
-                                                                                            <span>{proyecto.estado}</span>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                }
-                                                                                {
-                                                                                    proyecto.municipio &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-map font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">MUNICIPIO/DELEGACIÓN</td>
-                                                                                        <td className="font-weight-light">
-                                                                                            <span>{proyecto.municipio}</span>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                }
-                                                                                {
-                                                                                    proyecto.colonia &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-map-marker font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">COLONIA</td>
-                                                                                        <td className="font-weight-light text-justify">
-                                                                                            <span>{proyecto.colonia}</span>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                }
-                                                                                {
-                                                                                    proyecto.calle &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-map-marked-alt font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">CALLE Y NÚMERO</td>
-                                                                                        <td className="font-weight-light text-justify">
-                                                                                            <span>{proyecto.calle}</span>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                }
-                                                                                {/* {
-                                                                                proyecto.descripcion && proyecto.descripcion !== "null" &&
-                                                                                    <tr className="borderBottom">
-                                                                                        <td className="text-center">
-                                                                                            <div className="symbol symbol-40 symbol-light">
-                                                                                                <span className="symbol-label">
-                                                                                                    <i className="las la-file-alt font-size-2-1rem text-primary"></i>
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td className="font-weight-bolder text-dark-75">DESCRIPCIÓN</td>
-                                                                                        <td className="font-weight-light text-justify">
-                                                                                            <span>{proyecto.descripcion}</span>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                            } */}
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                }
-                                                            </Card.Body>
-                                                        </Card>
-                                                    </Col>
-                                                </Row>
-                                            }
-                                        </Tab.Pane>
-                                        <Tab.Pane eventKey='adjuntos' className="col-md-10 mx-auto">
-                                            {
-                                                proyecto &&
-                                                <div className="card card-custom gutter-b">
-                                                    <div className="card-header border-0">
-                                                        <div className="card-title">
-                                                            <span className="font-size-h5">ADJUNTOS DEL PROYECTO</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="card-body pt-0">
-                                                        <Nav as="ul" className="nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
-                                                            {
-                                                                adjuntos.map((grupo, key) => {
-                                                                    let aux = false
-                                                                    grupo.adjuntos.forEach(element => {
-                                                                        if (proyecto[element.value].length)
-                                                                            aux = true
-                                                                    });
-                                                                    if (aux) {
-                                                                        return (
-                                                                            <div key={key}>
-                                                                                <Nav.Item as="li" className="mr-2">
-                                                                                    <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active rounded-0" : " rounded-0"} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
-                                                                                </Nav.Item>
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                    return aux
-                                                                })
-                                                            }
-                                                        </Nav>
-                                                        <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
-                                                            onSelect={(select) => { this.updateActiveTabContainer(select) }}>
-                                                            <Row className="mt-5 mx-0">
-                                                                <Col md={3} className="navi navi-accent navi-hover navi-bold align-self-center">
-                                                                    <Nav variant="pills" className="flex-column navi navi-hover navi-active">
-                                                                        {
-                                                                            showadjuntos.map((adjunto, key) => {
-                                                                                if (proyecto[adjunto.value].length) {
-                                                                                    return (
-                                                                                        <Nav.Item className="navi-item" key={key}>
-                                                                                            <Nav.Link className="navi-link" eventKey={adjunto.value}>
-                                                                                                <span className="navi-text">{adjunto.name}</span>
-                                                                                            </Nav.Link>
-                                                                                        </Nav.Item>
-                                                                                    )
-                                                                                }
-                                                                                return false
-                                                                            })
-                                                                        }
-                                                                    </Nav>
-                                                                </Col>
-                                                                <Col md={9}>
-                                                                    <Tab.Content>
-                                                                        {
-                                                                            showadjuntos.map((adjunto, key) => {
-                                                                                if (proyecto[adjunto.value].length) {
-                                                                                    return (
-                                                                                        <Tab.Pane key={key} eventKey={adjunto.value}>
-                                                                                            {
-                                                                                                proyecto ?
-                                                                                                    proyecto[adjunto.value].length ?
-                                                                                                        <div className="mt-2 d-flex justify-content-center">
-                                                                                                            <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                                                <i className="fas fa-file-archive"></i> Descargar ZIP
-                                                                                                            </span>
-                                                                                                        </div>
-                                                                                                        : ''
-                                                                                                    : ''
-                                                                                            }
-                                                                                            {
-                                                                                                proyecto ?
-                                                                                                    <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
-                                                                                                    : ''
-                                                                                            }
-                                                                                        </Tab.Pane>
-                                                                                    )
-                                                                                }
-                                                                                return false
-                                                                            })
-                                                                        }
-                                                                    </Tab.Content>
-                                                                </Col>
-                                                            </Row>
-                                                        </Tab.Container>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </Tab.Pane>
-                                        <Tab.Pane eventKey='mantenimiento' className="col-md-10 mx-auto">
-                                            mantenimiento
-                                        </Tab.Pane>
-                                        <Tab.Pane eventKey='avances' className="col-md-10 mx-auto">
-                                            <div className="card card-custom gutter-b">
-                                                <div className="card-header border-0">
-                                                    <div className="card-title">
-                                                        <span className="font-size-h5">AVANCES DEL PROYECTO</span>
-                                                    </div>
-                                                </div>
-                                                <div className="card-body pt-2">
-
-                                                    {
-                                                        proyecto ?
-                                                            proyecto.avances.length ?
-                                                                <>
-                                                                    <div className="row mx-0">
-                                                                        {
-                                                                            proyecto.avances.map((avance, key) => {
-                                                                                return (
-                                                                                    <a rel="noopener noreferrer" target="_blank" href={avance.pdf} className="text-dark-75 text-hover-primary d-flex flex-column col-md-3 align-items-center" key={key}>
-                                                                                        <div className="symbol symbol-60px mb-5">
-                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')} />
-                                                                                        </div>
-                                                                                        <div className="font-size-lg font-weight-bolder mb-2">SEMANA {avance.semana}</div>
-                                                                                    </a>
-                                                                                )
-                                                                            })
-                                                                        }
-                                                                    </div>
-                                                                </>
-                                                                : ''
-                                                            : ''
-                                                    }
-                                                </div>
-                                            </div>
-                                        </Tab.Pane>
-                                        <Tab.Pane eventKey='tickets' className="col-md-10 mx-auto">
-                                            <div className="card card-custom">
-                                                <div className="card-header border-0">
-                                                    <div className="card-title">
-                                                        <span className="font-size-h5">ESTATUS DE TICKETS</span>
-                                                    </div>
-                                                    <div className="card-toolbar">
-                                                        <span className="btn btn-sm btn-bg-light btn-text-primary btn-hover-primary" onClick={(e) => { e.preventDefault(); this.openModalLevantamiento() }}>
-                                                            <i className="la la-file-excel icon-xl mr-2"></i> Nuevo levantamiento
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className="card-body pt-0">
-                                                    <TableForModals
-                                                        mostrar_acciones={true}
-                                                        actions={{
-                                                            'see': { function: this.openModalSee },
-                                                            'details': { function: this.openModalDetalles },
-                                                        }}
-                                                        columns={TICKETS_ESTATUS}
-                                                        data={tickets}
-                                                        elements={data.tickets}
-                                                        idTable='kt_datatable_presupuesto'
-                                                    />
-                                                </div>
-                                            </div>
-                                        </Tab.Pane>
-                                    </Tab.Content>
+                                <div className="col-md-12 wow fadeIn" data-wow-delay="1.7s" data-wow-duration="1.5s">
+                                    <div className="overflow-hidden px-5">
+                                        <h1 className="text-white mb-3 letter-spacing-1">{proyecto.nombre}</h1>
+                                        <div className="text-white mb-3 letter-spacing-1">{this.showFase(proyecto)}</div>
+                                    </div>
+                                    <div className="overflow-hidden">
+                                        <div className="mt-3">
+                                            {/* ANCHOR Ver video comentario */}
+                                            {/* <React.Fragment>
+                                                <ModalVideo channel='custom' isOpen={openModalVideo} url='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' autoplay={1} onClose={() => this.setState({openModalVideo: false})} />
+                                                    <a className="btn btn-outline-white font-weight-bolder rounded-0 font-size-lg letter-spacing-1" onClick={() => this.setState({openModalVideo: true})}>Ver video</a>
+                                            </React.Fragment> */}
+                                        </div>
+                                    </div>
                                 </div>
-                            </Tab.Container>
-
+                            </div>
                         </div>
                     </div>
                 </section>
+                <div className="content pt-4 d-flex flex-column flex-column-fluid " style={{ paddingBottom: "11px" }}>
+                    <div className="col-md-12">
+                        <div className="row ">
+                            <div className="col-lg-4 mb-3 ">
+                                <div className="card card-custom wave wave-animate-slow wave-primary mb-8 mb-lg-0 h-100">
+                                    <div className="card-body">
+                                        <div className="d-flex align-items-center ">
+                                            <div className="mr-6">
+                                                <span className="svg-icon svg-icon-primary svg-icon-4x">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Bulb1.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="d-flex flex-column">
+                                                <span className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3 pl-2">PROYECTO</span>
+                                                <div className="text-dark-75 pl-2">{proyecto.nombre}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-lg-4 mb-3 ">
+                                <div className="card card-custom wave wave-animate-slow wave-danger mb-8 mb-lg-0 h-100">
+                                    <div className="card-body">
+                                        <div className="d-flex align-items-center">
+                                            <div className="mr-6">
+                                                <span className="svg-icon svg-icon-danger svg-icon-4x">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Earth.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="d-flex flex-column">
+                                                <span className="text-dark text-hover-danger font-weight-bold font-size-h4 mb-3 pl-2">Dirección</span>
+                                                <div className="text-dark-75 text-justify pl-2">
+                                                    {
+                                                        proyecto ?
+                                                            <div>
+                                                                {proyecto.calle}
+                                                                , colonia
+                                                                {proyecto.colonia},
+                                                                {proyecto.municipio},
+                                                                {proyecto.estado}. CP:
+                                                                {proyecto.cp}
+
+                                                                {/* <Small className="mr-1 mb-0" >
+                                                                    {proyecto.calle}, colonia
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.colonia},
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.municipio},
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.estado}. CP:
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.cp}
+                                                                </Small> */}
+                                                            </div>
+                                                            : ""
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-lg-4 mb-3">
+                                <div className="card card-custom wave wave-animate-slow wave-info mb-8 mb-lg-0 h-100">
+                                    <div className="card-body">
+                                        <div className="d-flex align-items-center">
+                                            <div className="mr-6">
+                                                <span className="svg-icon svg-icon-info svg-icon-4x">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="d-flex flex-column">
+                                                <span className="text-dark text-hover-info font-weight-bold font-size-h4 mb-3 pl-2">PERIODO</span>
+                                                <div className="text-dark-75 pl-2">
+                                                    {
+                                                        proyecto ?
+                                                            <div>
+                                                                <Moment format="DD/MM/YYYY">
+                                                                    {proyecto.fecha_inicio}
+                                                                </Moment>
+                                                                {" - "}
+                                                                <Moment format="DD/MM/YYYY">
+                                                                    {proyecto.fecha_fin}
+                                                                </Moment>
+                                                            </div>
+                                                            : ""
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {proyecto ?
+                    <Tab.Container defaultActiveKey="third">
+                        <Card className="card-custom">
+                            <Card.Header className="card-header-tabs-line">
+                                <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-3x">
+                                    {
+                                        proyecto.adjuntos.length ?
+                                            <Nav.Item className="nav-item">
+                                                <Nav.Link eventKey="first">
+                                                    <span className="nav-icon">
+                                                        <span className="svg-icon mr-3">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                        </span>
+                                                    </span>
+                                                    <span className="nav-text font-weight-bold">ADJUNTOS DEL PROYECTO</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                            : ''
+                                    }
+                                    {proyecto ?
+                                        proyecto.avances.length ?
+                                            <Nav.Item className="nav-item">
+                                                <Nav.Link eventKey="second">
+                                                    <span className="nav-icon">
+                                                        <span className="svg-icon mr-3">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Shield-check.svg')} />
+                                                        </span>
+                                                    </span>
+                                                    <span className="nav-text font-weight-bold">AVANCES POR SEMANA</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                            : '' : ''
+                                    }
+                                    <Nav.Item className="nav-item">
+                                        <Nav.Link eventKey="third">
+                                            <span className="nav-icon">
+                                                <span className="svg-icon mr-3">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                                </span>
+                                            </span>
+                                            <span className="nav-text font-weight-bold">LEVANTAMIENTO DE TICKETS</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item className="nav-item">
+                                        <Nav.Link eventKey="fourth">
+                                            <span className="nav-icon">
+                                                <span className="svg-icon mr-3">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
+                                                </span>
+                                            </span>
+                                            <span className="nav-text font-weight-bold">ESTATUS DE TICKETS</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
+                            </Card.Header>
+                            <Card.Body>
+                                <Tab.Content>
+                                    <Tab.Pane eventKey="first" className="tab-pane fade">
+                                        {
+                                            proyecto ?
+                                                <div className="col-md-12 mb-4">
+                                                    <Nav as="ul" className="nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
+                                                        {
+                                                            adjuntos.map((grupo, key) => {
+                                                                let aux = false
+                                                                grupo.adjuntos.forEach(element => {
+                                                                    if (proyecto[element.value].length)
+                                                                        aux = true
+                                                                });
+                                                                if (aux) {
+                                                                    return (
+                                                                        <div key={key}>
+                                                                            <Nav.Item as="li" className="mr-2">
+                                                                                <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active rounded-0" : " rounded-0"} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
+                                                                            </Nav.Item>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                return aux
+                                                            })
+                                                        }
+                                                    </Nav>
+
+                                                    <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
+                                                        onSelect={(select) => { this.updateActiveTabContainer(select) }}>
+                                                        <Row className="mt-5 mx-0">
+                                                            <Col md={3} className="navi navi-accent navi-hover navi-bold">
+                                                                <Nav variant="pills" className="flex-column navi navi-hover navi-active">
+                                                                    {
+                                                                        showadjuntos.map((adjunto, key) => {
+                                                                            if (proyecto[adjunto.value].length) {
+                                                                                return (
+                                                                                    <Nav.Item className="navi-item" key={key}>
+                                                                                        <Nav.Link className="navi-link" eventKey={adjunto.value}>
+                                                                                            <span className="navi-text">{adjunto.name}</span>
+                                                                                        </Nav.Link>
+                                                                                    </Nav.Item>
+                                                                                )
+                                                                            }
+                                                                            return false
+                                                                        })
+                                                                    }
+                                                                </Nav>
+                                                            </Col>
+
+                                                            <Col md={9}>
+                                                                <Tab.Content>
+                                                                    {
+                                                                        showadjuntos.map((adjunto, key) => {
+                                                                            if (proyecto[adjunto.value].length) {
+                                                                                return (
+                                                                                    <Tab.Pane key={key} eventKey={adjunto.value}>
+                                                                                        {
+                                                                                            proyecto ?
+                                                                                                proyecto[adjunto.value].length ?
+                                                                                                    <div className="mt-2 d-flex justify-content-center">
+                                                                                                        <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
+                                                                                                            <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                    : ''
+                                                                                                : ''
+                                                                                        }
+                                                                                        {
+                                                                                            proyecto ?
+                                                                                                <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
+                                                                                                : ''
+                                                                                        }
+                                                                                    </Tab.Pane>
+                                                                                )
+                                                                            }
+                                                                            return false
+                                                                        })
+                                                                    }
+                                                                </Tab.Content>
+                                                            </Col>
+                                                        </Row>
+                                                    </Tab.Container>
+                                                </div> : ''
+                                        }
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="second" className="tab-pane fade">
+                                        {
+                                            proyecto ?
+                                                <div className="col-md-12 mb-4" >
+                                                    {
+                                                        proyecto.avances.length ?
+                                                            <>
+                                                                <div className="row mx-0">
+                                                                    {
+                                                                        proyecto.avances.map((avance, key) => {
+                                                                            return (
+                                                                                <div key={key} className="col-md-2 text-center">
+                                                                                    <div className="d-flex flex-column align-items-center">
+                                                                                        <a href={avance.pdf} className="text-dark-75 font-weight-bold mt-15 font-size-lg text-hover-danger2 pb-3">
+                                                                                            <img alt="" className="max-h-50px pb-2" src="/pdf.svg" />{avance.semana}
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </div>
+                                                            </>
+                                                            : ''
+                                                    }
+                                                </div>
+                                                : ''
+                                        }
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="third" className="tab-pane fade">
+                                        {
+                                            proyecto ?
+                                                <div className="col-md-12 mb-4" >
+                                                    <Form id="form-miproyecto"
+                                                        onSubmit={
+                                                            (e) => {
+                                                                e.preventDefault();
+                                                                validateAlert(this.onSubmit, e, 'form-miproyecto')
+                                                            }
+                                                        }
+                                                    >
+                                                        <div className="form-group row form-group-marginless">
+                                                            <div className="col-md-6">
+                                                                <SelectSearch
+                                                                    formeditado={formeditado}
+                                                                    options={options.tiposTrabajo}
+                                                                    placeholder="SELECCIONA EL TIPO DE TRABAJO"
+                                                                    name="tipo_trabajo"
+                                                                    value={form.tipo_trabajo}
+                                                                    onChange={this.updateTrabajo}
+                                                                    iconclass={"fas fa-book"}
+                                                                    messageinc="Incorrecto. Selecciona el tipo de trabajo"
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <SelectSearch
+                                                                    formeditado={formeditado}
+                                                                    options={options.partidas}
+                                                                    placeholder="SELECCIONA LA PARTIDA"
+                                                                    name="partida"
+                                                                    value={form.partida}
+                                                                    onChange={this.updatePartida}
+                                                                    iconclass={" fas fa-book"}
+                                                                    messageinc="Incorrecto. Selecciona la partida"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                        <div className="form-group row form-group-marginless">
+                                                            <div className="col-md-12">
+                                                                <Input
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    as="textarea"
+                                                                    placeholder="DESCRIPCIÓN DEL PROBLEMA"
+                                                                    rows="2"
+                                                                    value={form.descripcion}
+                                                                    name="descripcion"
+                                                                    onChange={this.onChange}
+                                                                    messageinc="Incorrecto. Ingresa una descripción."
+                                                                    style={{ paddingLeft: "10px" }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group row form-group-marginless">
+                                                            <div className="col-md-12">
+                                                                <ItemSlider
+                                                                    items={form.adjuntos.fotos.files}
+                                                                    handleChange={this.handleChange}
+                                                                    item="fotos"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="card-footer py-3 pr-1">
+                                                            <div className="row mx-0">
+                                                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                                                    <Button text='SOLICITAR' type='submit' className="btn btn-primary mr-2" icon='' />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </Form >
+                                                </div>
+                                                : ''
+                                        }
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="fourth" className="tab-pane fade">
+                                        {
+                                            proyecto ?
+                                                <TableForModals
+                                                    mostrar_acciones={true}
+                                                    actions={{
+                                                        'see': { function: this.openModalSee },
+                                                        'details': { function: this.openModalDetalles },
+                                                    }}
+                                                    columns={TICKETS_ESTATUS}
+                                                    data={tickets}
+                                                    elements={data.tickets}
+                                                    idTable='kt_datatable_presupuesto'
+                                                />
+                                                : ''
+                                        }
+                                    </Tab.Pane>
+                                </Tab.Content>
+                            </Card.Body>
+                        </Card>
+                    </Tab.Container>
+                    : ''
+                }
                 <Modal size="lg" title="Presupuesto" show={modal} handleClose={this.handleClose} >
                     <div className="mt-4">
                         {
@@ -1478,86 +1387,6 @@ class MiProyecto extends Component {
                             }
                         </Tab.Content>
                     </Tab.Container>
-                </Modal>
-                <Modal size="lg" title = 'Levantamiento de tickets' show = { modalLevantamiento } handleClose = { this.handleCloseLevantamiento } customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
-                    <Form id="form-miproyecto"
-                        onSubmit={
-                            (e) => {
-                                e.preventDefault();
-                                validateAlert(this.onSubmit, e, 'form-miproyecto')
-                            }
-                        }
-                    >
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-6">
-                                <SelectSearchGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    customdiv="mb-0"
-                                    formeditado={formeditado}
-                                    options={options.tiposTrabajo}
-                                    placeholder="SELECCIONA EL TIPO DE TRABAJO"
-                                    name="tipo_trabajo"
-                                    value={form.tipo_trabajo}
-                                    onChange={this.updateTrabajo}
-                                    iconclass={"fas fa-book"}
-                                    messageinc="Incorrecto. Selecciona el tipo de trabajo"
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <SelectSearchGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    customdiv="mb-0"
-                                    formeditado={formeditado}
-                                    options={options.partidas}
-                                    placeholder="SELECCIONA LA PARTIDA"
-                                    name="partida"
-                                    value={form.partida}
-                                    onChange={this.updatePartida}
-                                    iconclass={" fas fa-book"}
-                                    messageinc="Incorrecto. Selecciona la partida"
-                                />
-                            </div>
-                        </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-12">
-                                <InputGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    withplaceholder={1}
-                                    withicon={0}
-                                    withformgroup={0}
-                                    requirevalidation={1}
-                                    formeditado={formeditado}
-                                    as="textarea"
-                                    placeholder="DESCRIPCIÓN DEL PROBLEMA"
-                                    rows="2"
-                                    value={form.descripcion}
-                                    name="descripcion"
-                                    onChange={this.onChange}
-                                    messageinc="Incorrecto. Ingresa una descripción."
-                                />
-                            </div>
-                        </div>
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-12">
-                                <ItemSlider
-                                    items={form.adjuntos.fotos.files}
-                                    handleChange={this.handleChange}
-                                    item="fotos"
-                                />
-                            </div>
-                        </div>
-                        <div className="card-footer p-0 pt-5">
-                            <div className="row mx-0">
-                                <div className="col-lg-12 text-right px-0">
-                                    <Button text='SOLICITAR' type='submit' className="btn btn-primary" icon='' />
-                                </div>
-                            </div>
-                        </div>
-                    </Form >
                 </Modal>
             </Layout>
         )
