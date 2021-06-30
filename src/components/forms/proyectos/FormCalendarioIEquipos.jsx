@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap'
-import { DATE } from '../../../constants';
 import { validateAlert } from '../../../functions/alert';
-import { Button, InputNumber, SelectSearch, CalendarDay, Calendar, InputNumberGray, CalendarDayGray, InputMoneyGray, FileInput } from '../../form-components';
+import { Button, CalendarDay, InputNumberGray, InputMoneyGray, FileInput } from '../../form-components';
 import SelectSearchGray from '../../form-components/Gray/SelectSearchGray';
 
 class FormCalendarioIEquipos extends Component {
