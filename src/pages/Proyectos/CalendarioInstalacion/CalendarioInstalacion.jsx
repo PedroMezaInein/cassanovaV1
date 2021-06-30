@@ -12,7 +12,7 @@ import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
 import { Modal } from '../../../components/singles'
-import { setSingleHeader } from '../../../functions/routers';
+import { setFormHeader, setSingleHeader } from '../../../functions/routers';
 import { FormCalendarioIEquipos, DetailsInstalacion } from '../../../components/forms';
 import { setOptions } from '../../../functions/setters'
 // import { SelectSearchGray } from '../../../components/form-components'
@@ -221,7 +221,24 @@ class CalendarioInstalacion extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
-        await axios.post(`${URL_DEV}v1/proyectos/instalacion-equipos`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+        let data = new FormData()
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch (element) {
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'cotizacion':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        form.cotizacion.files.forEach((file) => {
+            data.append(`files[]`, file.file)
+        })
+        await axios.post(`${URL_DEV}v1/proyectos/instalacion-equipos`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
             (response) => {
                 doneAlert('Instalación de equipo registrado con éxito.')
                 this.getCalendarioInstalaciones()
