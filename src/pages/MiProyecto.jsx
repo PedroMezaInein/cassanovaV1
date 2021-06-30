@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
 import { errorAlert, waitAlert, doneAlert, questionAlert, printResponseErrorAlert } from '../functions/alert'
-import { SelectSearchGray, InputGray } from '../components/form-components'
+import { SelectSearch, SelectSearchGray, Input } from '../components/form-components'
 import { setOptions, setLabelTable, setEmpresaLogo } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row, NavDropdown, Navbar } from 'react-bootstrap'
 import { Button } from '../components/form-components'
@@ -18,7 +18,7 @@ import { toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import Swal from 'sweetalert2'
 import WOW from 'wowjs';
-import moment from 'moment';
+import moment from 'moment'
 /* import ModalVideo from 'react-modal-video' */
 class MiProyecto extends Component {
 
@@ -305,6 +305,7 @@ class MiProyecto extends Component {
         new WOW.WOW({
             live: false
         }).init();
+
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
@@ -754,9 +755,9 @@ class MiProyecto extends Component {
     setImage(proyecto){
         if(proyecto){
             if(proyecto.empresa.name==='INEIN'){
-                return 'url(https://infraestructuramedica.mx/wp-content/uploads/2020/10/VITARA-QUIROFANOS-RENDER-SALA-DE-RECUPERACION-.jpg)'
+                return 'url("/inein_proyecto1.jpg")'
             }else if (proyecto.empresa.name==='INFRAESTRUCTURA MÉDICA'){
-                return 'url(https://infraestructuramedica.mx/wp-content/uploads/2020/10/VITARA-QUIROFANOS-RENDER-SALA-DE-RECUPERACION-.jpg)'
+                return 'url("/im_proyecto1.jpg")'
             }else{
                 return 'url("/header_1.jpg")'
             }
@@ -793,382 +794,13 @@ class MiProyecto extends Component {
     render() {
         const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, 
             modal, ticket, modalDetalles, /* openModalVideo */ } = this.state
-            console.log(proyecto)
         return (
+
             <Layout {...this.props}>
-                {
-                proyecto&&
-                <section className="pt-0 overflow-hidden section-proyecto">
-                    <div className="bgi-no-repeat bgi-position-center bgi-size-cover d-flex flex-column h-400px h-lg-500px" style={{ backgroundImage: this.setImage(proyecto) }}></div>
-                    <div className="mt-n15 content-bg-for-font-color d-flex" style={{position:'relative'}}>
-                        <svg width="100%" height="56px" viewBox="0 0 100 100" version="1.1" preserveAspectRatio="none" className="">
-                            <path d="M0,0 C16.6666667,66 33.3333333,99 50,99 C66.6666667,99 83.3333333,66 100,0 L100,100 L0,100 L0,0 Z" fill="currentColor"></path>
-                        </svg>
+                <section className="py-10 overflow-hidden text-center section-proyecto">
+                    <div className="background-holder overlay overlay-1 parallax" style={{ backgroundImage: this.setImage(proyecto) }}>
                     </div>
-                    <Tab.Container defaultActiveKey="adjuntos">
-                        <div className="container">
-                            <div className="card translate-middle-y mt-n10 mt-lg-n10">
-                                <div className="card-body p-3">
-                                    <Nav className="nav mx-auto border-transparent nav-pills d-flex flex-nowrap hover-scroll-x d-flex align-items-center font-weight-bolder letter-spacing-1px nav-center">
-                                        <Nav.Item className="nav-item my-3">
-                                            <Nav.Link eventKey="general" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                GENERAL
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        {
-                                            proyecto.adjuntos.length&&
-                                            <Nav.Item className="nav-item my-3">
-                                                <Nav.Link eventKey="adjuntos" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                    ADJUNTOS
-                                                </Nav.Link>
-                                            </Nav.Item>
-                                        }
-                                        <Nav.Item className="nav-item my-3">
-                                            <Nav.Link eventKey="mantenimiento" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                MANTENIMIENTO
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        {
-                                            proyecto.avances.length&&
-                                            <Nav.Item className="nav-item my-3">
-                                                <Nav.Link eventKey="avances" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                    AVANCES POR SEMANA
-                                                </Nav.Link>
-                                            </Nav.Item>
-                                        }
-                                        <Nav.Item className="nav-item my-3">
-                                            <Nav.Link eventKey="tickets" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                TICKETS
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item className="nav-item my-3">
-                                            <Nav.Link eventKey="bitacora" className="btn btn-hover-light-primary font-weight-boldest nav-link btn-color-gray-700 px-3 px-lg-8 mx-2 font-size-lg">
-                                                BITÁCORA
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </Nav>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row mx-0">
-                            <Tab.Content className="col-md-12">
-                                <Tab.Pane eventKey='general' className="col-md-11 mx-auto px-0">
-                                    {
-                                        proyecto&&
-                                        <div className="card mb-5 mb-xl-10 col-md-6 mx-auto mt-n3">
-                                            <div className="card-body py-5">
-                                                <div className="d-flex flex-column">
-                                                    <div className="d-flex align-items-center align-self-center mb-2">
-                                                        <a className="text-dark-75 font-size-h4 font-weight-bolder mr-1">
-                                                            {proyecto.nombre}
-                                                            {
-                                                                proyecto ?
-                                                                    proyecto.estatus ?
-                                                                        <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
-                                                                            color: `${proyecto.estatus.letra}`,
-                                                                            backgroundColor: `${proyecto.estatus.fondo}`,
-                                                                            fontSize: "75%",
-                                                                            marginLeft: '10px'
-                                                                        }} >
-                                                                            {proyecto.estatus.estatus}
-                                                                        </span>
-                                                                        : <span></span>
-                                                                    : ''
-                                                            }
-                                                        </a>
-                                                        <span className="svg-icon svg-icon-1 svg-icon-primary ml-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                <path d="M10.0813 3.7242C10.8849 2.16438 13.1151 2.16438 13.9187 3.7242V3.7242C14.4016 4.66147 15.4909 5.1127 16.4951 4.79139V4.79139C18.1663 4.25668 19.7433 5.83365 19.2086 7.50485V7.50485C18.8873 8.50905 19.3385 9.59842 20.2758 10.0813V10.0813C21.8356 10.8849 21.8356 13.1151 20.2758 13.9187V13.9187C19.3385 14.4016 18.8873 15.491 19.2086 16.4951V16.4951C19.7433 18.1663 18.1663 19.7433 16.4951 19.2086V19.2086C15.491 18.8873 14.4016 19.3385 13.9187 20.2758V20.2758C13.1151 21.8356 10.8849 21.8356 10.0813 20.2758V20.2758C9.59842 19.3385 8.50905 18.8873 7.50485 19.2086V19.2086C5.83365 19.7433 4.25668 18.1663 4.79139 16.4951V16.4951C5.1127 15.491 4.66147 14.4016 3.7242 13.9187V13.9187C2.16438 13.1151 2.16438 10.8849 3.7242 10.0813V10.0813C4.66147 9.59842 5.1127 8.50905 4.79139 7.50485V7.50485C4.25668 5.83365 5.83365 4.25668 7.50485 4.79139V4.79139C8.50905 5.1127 9.59842 4.66147 10.0813 3.7242V3.7242Z" fill="#2171c1"></path>
-                                                                <path className="permanent" d="M14.8563 9.1903C15.0606 8.94984 15.3771 8.9385 15.6175 9.14289C15.858 9.34728 15.8229 9.66433 15.6185 9.9048L11.863 14.6558C11.6554 14.9001 11.2876 14.9258 11.048 14.7128L8.47656 12.4271C8.24068 12.2174 8.21944 11.8563 8.42911 11.6204C8.63877 11.3845 8.99996 11.3633 9.23583 11.5729L11.3706 13.4705L14.8563 9.1903Z" fill="white"></path>
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-                                                    <div className="d-flex flex-wrap font-weight-bold font-size-h6 align-self-center">
-                                                        {
-                                                            proyecto.contacto !== "Sin información" &&
-                                                            <a className="d-flex align-items-center text-muted mr-5">
-                                                                <i className="las la-user-alt text-dark-50 mr-2 icon-xl"></i>
-                                                                {proyecto.contacto}
-                                                            </a>
-                                                        }
-                                                        {
-                                                            proyecto.numero_contacto !== "Sin información" &&
-                                                            <a className="d-flex align-items-center text-muted mr-5">
-                                                                <i className="las la-phone text-dark-50 mr-2 icon-xl"></i>
-                                                                {proyecto.numero_contacto}
-                                                            </a>
-                                                        }
-                                                        {/* {
-                                                            proyecto.numero_contacto !== "Sin información" &&
-                                                            <a className="d-flex align-items-center text-muted">
-                                                                <i className="las la-envelope text-dark-50 mr-2 icon-xl"></i>
-                                                                {proyecto.numero_contacto}
-                                                            </a>
-                                                        } */}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </Tab.Pane>
-                                <Tab.Pane eventKey='adjuntos' className="col-md-10 mx-auto">
-                                        <div className="card card-custom gutter-b">
-                                            <div className="card-header border-0">
-                                                <div className="card-title">
-                                                    <span className="card-icon">
-                                                        <span className="svg-icon svg-icon-primary">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                        </span>
-                                                    </span>
-                                                    <span className="font-size-h5">ADJUNTOS DEL PROYECTO</span>
-                                                </div>
-                                            </div>
-                                            <div className="card-body pt-0">
-                                                <Nav as="ul" className="nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
-                                                    {
-                                                        adjuntos.map((grupo, key) => {
-                                                            let aux = false
-                                                            grupo.adjuntos.forEach(element => {
-                                                                if (proyecto[element.value].length)
-                                                                    aux = true
-                                                            });
-                                                            if (aux) {
-                                                                return (
-                                                                    <div key={key}>
-                                                                        <Nav.Item as="li" className="mr-2">
-                                                                            <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active rounded-0" : " rounded-0"} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
-                                                                        </Nav.Item>
-                                                                    </div>
-                                                                )
-                                                            }
-                                                            return aux
-                                                        })
-                                                    }
-                                                </Nav>
-                                                <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
-                                                    onSelect={(select) => { this.updateActiveTabContainer(select) }}>
-                                                    <Row className="mt-5 mx-0">
-                                                        <Col md={3} className="navi navi-accent navi-hover navi-bold align-self-center">
-                                                            <Nav variant="pills" className="flex-column navi navi-hover navi-active">
-                                                                {
-                                                                    showadjuntos.map((adjunto, key) => {
-                                                                        if (proyecto[adjunto.value].length) {
-                                                                            return (
-                                                                                <Nav.Item className="navi-item" key={key}>
-                                                                                    <Nav.Link className="navi-link" eventKey={adjunto.value}>
-                                                                                        <span className="navi-text">{adjunto.name}</span>
-                                                                                    </Nav.Link>
-                                                                                </Nav.Item>
-                                                                            )
-                                                                        }
-                                                                        return false
-                                                                    })
-                                                                }
-                                                            </Nav>
-                                                        </Col>
-                                                        <Col md={9}>
-                                                            <Tab.Content>
-                                                                {
-                                                                    showadjuntos.map((adjunto, key) => {
-                                                                        if (proyecto[adjunto.value].length) {
-                                                                            return (
-                                                                                <Tab.Pane key={key} eventKey={adjunto.value}>
-                                                                                    {
-                                                                                        proyecto ?
-                                                                                            proyecto[adjunto.value].length ?
-                                                                                                <div className="mt-2 d-flex justify-content-center">
-                                                                                                    <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                                        <i className="fas fa-file-archive"></i> Descargar ZIP
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                                : ''
-                                                                                            : ''
-                                                                                    }
-                                                                                    {
-                                                                                        proyecto ?
-                                                                                            <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
-                                                                                            : ''
-                                                                                    }
-                                                                                </Tab.Pane>
-                                                                            )
-                                                                        }
-                                                                        return false
-                                                                    })
-                                                                }
-                                                            </Tab.Content>
-                                                        </Col>
-                                                    </Row>
-                                                </Tab.Container>
-                                            </div>
-                                        </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey='mantenimiento' className="col-md-10 mx-auto">
-                                    mantenimiento
-                                </Tab.Pane>
-                                <Tab.Pane eventKey='avances' className="col-md-10 mx-auto">
-                                        {
-                                            proyecto.avances.length ?
-                                                <>
-                                                    <div className="row mx-0">
-                                                        {
-                                                            proyecto.avances.map((avance, key) => {
-                                                                return (
-                                                                    <div key={key} className="col-md-2 text-center">
-                                                                        <div className="d-flex flex-column align-items-center">
-                                                                            <a href={avance.pdf} className="text-dark-75 font-weight-bold mt-15 font-size-lg text-hover-danger2 pb-3">
-                                                                                <img alt="" className="max-h-50px pb-2" src="/pdf.svg" />{avance.semana}
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                )
-                                                            })
-                                                        }
-                                                    </div>
-                                                </>
-                                                : ''
-                                        }
-                                </Tab.Pane>
-                                <Tab.Pane eventKey='tickets' className="col-md-10 mx-auto">
-                                        <div className="card card-custom gutter-b">
-                                            <div className="card-header border-0">
-												<div className="card-title">
-													<span className="card-icon">
-                                                        <span className="svg-icon svg-icon-primary">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                        </span>
-													</span>
-													<span className="font-size-h5">LEVANTAMIENTO DE TICKETS</span>
-												</div>
-											</div>
-                                            <div className="card-body pt-0">
-                                                <div className="col-md-12 mb-4" >
-                                                    <Form id="form-miproyecto"
-                                                        onSubmit={
-                                                            (e) => {
-                                                                e.preventDefault();
-                                                                validateAlert(this.onSubmit, e, 'form-miproyecto')
-                                                            }
-                                                        }
-                                                    >
-                                                        <div className="form-group row form-group-marginless">
-                                                            <div className="col-md-6">
-                                                                <SelectSearchGray
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    customdiv="mb-0"
-                                                                    formeditado={formeditado}
-                                                                    options={options.tiposTrabajo}
-                                                                    placeholder="SELECCIONA EL TIPO DE TRABAJO"
-                                                                    name="tipo_trabajo"
-                                                                    value={form.tipo_trabajo}
-                                                                    onChange={this.updateTrabajo}
-                                                                    iconclass={"fas fa-book"}
-                                                                    messageinc="Incorrecto. Selecciona el tipo de trabajo"
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <SelectSearchGray
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    customdiv="mb-0"
-                                                                    formeditado={formeditado}
-                                                                    options={options.partidas}
-                                                                    placeholder="SELECCIONA LA PARTIDA"
-                                                                    name="partida"
-                                                                    value={form.partida}
-                                                                    onChange={this.updatePartida}
-                                                                    iconclass={" fas fa-book"}
-                                                                    messageinc="Incorrecto. Selecciona la partida"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                                        <div className="form-group row form-group-marginless">
-                                                            <div className="col-md-12">
-                                                                <InputGray
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    withplaceholder={1}
-                                                                    withicon={0}
-                                                                    withformgroup={0}
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    as="textarea"
-                                                                    placeholder="DESCRIPCIÓN DEL PROBLEMA"
-                                                                    rows="2"
-                                                                    value={form.descripcion}
-                                                                    name="descripcion"
-                                                                    onChange={this.onChange}
-                                                                    messageinc="Incorrecto. Ingresa una descripción."
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group row form-group-marginless">
-                                                            <div className="col-md-12">
-                                                                <ItemSlider
-                                                                    items={form.adjuntos.fotos.files}
-                                                                    handleChange={this.handleChange}
-                                                                    item="fotos"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="card-footer p-0 pt-5">
-                                                            <div className="row mx-0">
-                                                                <div className="col-lg-12 text-right px-0">
-                                                                    <Button text='SOLICITAR' type='submit' className="btn btn-primary" icon='' />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </Form >
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="card card-custom">
-                                            <div className="card-header border-0">
-												<div className="card-title">
-													<span className="card-icon">
-                                                        <span className="svg-icon svg-icon-primary">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
-                                                        </span>
-													</span>
-													<span className="font-size-h5">ESTATUS DE TICKETS</span>
-												</div>
-											</div>
-                                            <div className="card-body pt-0">
-                                                <TableForModals
-                                                    mostrar_acciones={true}
-                                                    actions={{
-                                                        'see': { function: this.openModalSee },
-                                                        'details': { function: this.openModalDetalles },
-                                                    }}
-                                                    columns={TICKETS_ESTATUS}
-                                                    data={tickets}
-                                                    elements={data.tickets}
-                                                    idTable='kt_datatable_presupuesto'
-                                                />
-                                            </div>
-                                        </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey='bitacora' className="col-md-10 mx-auto">
-                                        <div className="card card-custom gutter-b">
-                                            <div className="card-header border-0">
-                                                <div className="card-title">
-                                                    <span className="card-icon">
-                                                        <span className="svg-icon svg-icon-primary">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                        </span>
-                                                    </span>
-                                                    <span className="font-size-h5">BITÁCORA</span>
-                                                </div>
-                                            </div>
-                                            <div className="card-body pt-0">
-                                            </div>
-                                        </div>
-                                </Tab.Pane>
-                            </Tab.Content>
-                        </div>
-                    </Tab.Container>
-                    {/* <div className="container">
+                    <div className="container">
                         <div className="row d-flex justify-content-center">
                             <div className="row d-flex justify-content-center">
                                 <div className="w-auto pb-25rem">
@@ -1222,20 +854,19 @@ class MiProyecto extends Component {
                                     </div>
                                     <div className="overflow-hidden">
                                         <div className="mt-3">
-                                            ANCHOR Ver video comentario
-                                            <React.Fragment>
+                                            {/* ANCHOR Ver video comentario */}
+                                            {/* <React.Fragment>
                                                 <ModalVideo channel='custom' isOpen={openModalVideo} url='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' autoplay={1} onClose={() => this.setState({openModalVideo: false})} />
                                                     <a className="btn btn-outline-white font-weight-bolder rounded-0 font-size-lg letter-spacing-1" onClick={() => this.setState({openModalVideo: true})}>Ver video</a>
-                                            </React.Fragment>
+                                            </React.Fragment> */}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div> */}
+                    </div>
                 </section>
-                }
-                {/* <div className="content pt-4 d-flex flex-column flex-column-fluid " style={{ paddingBottom: "11px" }}>
+                <div className="content pt-4 d-flex flex-column flex-column-fluid " style={{ paddingBottom: "11px" }}>
                     <div className="col-md-12">
                         <div className="row ">
                             <div className="col-lg-4 mb-3 ">
@@ -1276,6 +907,22 @@ class MiProyecto extends Component {
                                                                 {proyecto.municipio},
                                                                 {proyecto.estado}. CP:
                                                                 {proyecto.cp}
+
+                                                                {/* <Small className="mr-1 mb-0" >
+                                                                    {proyecto.calle}, colonia
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.colonia},
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.municipio},
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.estado}. CP:
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.cp}
+                                                                </Small> */}
                                                             </div>
                                                             : ""
                                                     }
@@ -1318,8 +965,8 @@ class MiProyecto extends Component {
                             </div>
                         </div>
                     </div>
-                </div> */}
-                {/* {proyecto ?
+                </div>
+                {proyecto ?
                     <Tab.Container defaultActiveKey="third">
                         <Card className="card-custom">
                             <Card.Header className="card-header-tabs-line">
@@ -1587,7 +1234,7 @@ class MiProyecto extends Component {
                         </Card>
                     </Tab.Container>
                     : ''
-                } */}
+                }
                 <Modal size="lg" title="Presupuesto" show={modal} handleClose={this.handleClose} >
                     <div className="mt-4">
                         {

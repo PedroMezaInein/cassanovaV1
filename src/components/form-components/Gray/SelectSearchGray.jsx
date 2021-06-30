@@ -8,7 +8,7 @@ class SelectSearchGray extends Component {
     }
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle, customclass, messageinc, customdiv, withicon, iconvalid} = this.props
+        const { customstyle, customclass, messageinc, customdiv, withicon, iconvalid, iconclass } = this.props
         let validado = false;
         if (requirevalidation) {
             if (onChange === null || onChange.value === null) {
@@ -27,7 +27,7 @@ class SelectSearchGray extends Component {
                             withicon?
                             <div className="input-group-prepend">
                                 <span className="input-group-text">
-                                    <i className="flaticon2-search-1 icon-md text-dark-50"></i>
+                                    <i className = {`${iconclass ? iconclass : 'flaticon2-search-1'} icon-md text-dark-50`}></i>
                                 </span>
                             </div>
                             :''

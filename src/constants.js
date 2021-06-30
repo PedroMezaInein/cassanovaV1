@@ -448,7 +448,9 @@ export const BODEGA_COLUMNS = [
     { Header: 'Unidad', accessor: 'unidad', customRender: true },
     { Header: 'Cantidad', accessor: 'cantidad' },
     { Header: 'Ubicación', accessor: 'ubicacion', customRender: true },
-    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Adjuntos', accessor: 'adjuntos' }
+
 ]
 
 export const DOCUMENTOS_COLUMNS = [
