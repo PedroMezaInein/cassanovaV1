@@ -478,6 +478,12 @@ export function questionAlertY(title, text, action) {
         confirmButtonText: "SI",
         cancelButtonText: "NO",
         reverseButtons: true,
+        customClass: {
+            title:'text-uppercase',
+            content: text?text:'d-none',
+            confirmButton: 'btn-light-success-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2'
+        }
     }).then((result) => {
         if (result.value) {
             action()

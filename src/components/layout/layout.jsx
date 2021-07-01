@@ -8,12 +8,11 @@ import { PUSHER_OBJECT, URL_DEV } from '../../constants'
 import UrlLocation from './urlLocation'
 import MobileHeader from './mobileHeader'
 import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
-import { ChecadorButton, Notificacion } from '../singles'
+import { Notificacion } from '../singles'
 import { Zoom, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
+import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert, questionAlertY } from '../../functions/alert'
 import {Helmet} from "react-helmet";
-import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
 
 /* function openUserProfile() {
@@ -113,19 +112,22 @@ class Layout extends Component {
 		if(checador.length){
 			if(checador[0].fecha_fin === null)
 				return(
-                    <span className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-primary font-weight-bolder text-primary align-self-center" onClick = { (e) => { e.preventDefault(); this.actualizarChecadorAxios('salida') } } >
+                    <span className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-primary font-weight-bolder text-primary align-self-center" onClick = { (e) => { e.preventDefault(); this.checador('salida') } } >
                         <i className="fas fa-sign-in-alt text-primary px-0"></i><span className="pl-2 ocultar-checador">CHECAR SALIDA</span>
                     </span>
 				)
 		}else{
 			return(
-                <span className="btn btn-sm btn-bg-light btn-icon-success btn-hover-success font-weight-bolder text-success align-self-center" onClick = { (e) => { e.preventDefault(); this.actualizarChecadorAxios('entrada') } }>
+                <span className="btn btn-sm btn-bg-light btn-icon-success btn-hover-success font-weight-bolder text-success align-self-center" onClick = { (e) => { e.preventDefault(); this.checador('entrada') } }>
                     <i className="fas fa-sign-in-alt text-success px-0"></i><span className="pl-2 ocultar-checador">CHECAR ENTRADA</span>
                 </span>
 			)
 		}
 	}
 
+    checador = (tipo) => {
+        questionAlertY(`¿DESEAS CHECAR ${tipo}?`, '', () => this.actualizarChecadorAxios(tipo))
+    }
     async getNotificacionesAxios() {
         const options = {
             position: "top-right",
@@ -170,7 +172,6 @@ class Layout extends Component {
             history.push('/login')
         })
     }
-
     actualizarChecadorAxios = async(tipo) => {
         const { access_token } = this.props.authUser
         const { json } = this.state
