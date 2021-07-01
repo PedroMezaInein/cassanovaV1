@@ -2411,3 +2411,8 @@ a.ml-0.proyecto.dropdown-item{
 #table-proyecto tr:last-child, #table-proyecto tr:first-child{
     border-bottom: none;
 }
+header#header{
+    .justify-content-flex-end.navbar-collapse.collapse.show{
+        background: white;
+    }
+}
