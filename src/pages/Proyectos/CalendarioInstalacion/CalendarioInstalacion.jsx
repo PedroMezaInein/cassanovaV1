@@ -12,7 +12,7 @@ import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
 import { Modal } from '../../../components/singles'
-import { setSingleHeader } from '../../../functions/routers';
+import { setFormHeader, setSingleHeader } from '../../../functions/routers';
 import { FormCalendarioIEquipos, DetailsInstalacion } from '../../../components/forms';
 import { setOptions } from '../../../functions/setters'
 // import { SelectSearchGray } from '../../../components/form-components'
@@ -31,7 +31,10 @@ class CalendarioInstalacion extends Component {
             equipo:'',
             duracion:'',
             periodo:'',
-            fecha: new Date()
+            fecha: new Date(),
+            cantidad: '',
+            costo: 0.0,
+            cotizacion: { files: [], value: '' },
         },
         options:{ 
             proyectos:'',
@@ -192,6 +195,12 @@ class CalendarioInstalacion extends Component {
                 case 'fecha':
                     form[element] = new Date()
                     break;
+                case 'cotizacion':
+                    form[element] = { files: [], value: '' }
+                    break;
+                case 'costo':
+                    form[element] = 0.0
+                    break;
                 default:
                     form[element] = ''
                     break;
@@ -212,7 +221,24 @@ class CalendarioInstalacion extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
-        await axios.post(`${URL_DEV}v1/proyectos/instalacion-equipos`, form, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+        let data = new FormData()
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch (element) {
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'cotizacion':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        form.cotizacion.files.forEach((file) => {
+            data.append(`files[]`, file.file)
+        })
+        await axios.post(`${URL_DEV}v1/proyectos/instalacion-equipos`, data, { responseType: 'json', headers: setFormHeader(access_token) }).then(
             (response) => {
                 doneAlert('Instalación de equipo registrado con éxito.')
                 this.getCalendarioInstalaciones()
@@ -255,36 +281,6 @@ class CalendarioInstalacion extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        {/* <div className="col-md-12 mx-auto px-0">
-                            <div className="form-group row mx-0 form-group-marginless justify-content-center">
-                                <div className="col-md-4">
-                                    <SelectSearchGray
-                                        options={options.proyectos}
-                                        placeholder="SELECCIONA EL PROYECTO"
-                                        name="proyecto"
-                                        value={form.proyecto}
-                                        onChange={this.updateProyecto}
-                                        iconclass={"far fa-folder-open"}
-                                        customdiv = "mb-0"
-                                    />
-                                </div>
-                                <div className="col-md-4">
-                                    <SelectSearchGray
-                                        options={options.equipos}
-                                        placeholder="SELECCIONA EL EQUIPO"
-                                        name="equipo"
-                                        value={form.equipo}
-                                        onChange={this.updateEquipo}
-                                        iconclass={"far fa-folder-open"}
-                                        customdiv = "mb-0"
-                                    />
-                                </div>
-                                <div className="col-md-2 align-self-center">
-                                    <span className="btn btn-sm btn-bg-light btn-hover-light-primary text-dark-50 text-hover-primary font-weight-bolder font-size-13px py-3" onClick={this.filtrarCalendario}>Buscar</span>
-                                    <span className="btn btn-sm btn-bg-light btn-hover-light-danger text-dark-50 text-hover-danger font-weight-bolder font-size-13px py-3 ml-2" onClick={this.cleanForm}>Limpiar</span>
-                                </div>
-                            </div>
-                        </div> */}
                         <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
                             initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
                             firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />

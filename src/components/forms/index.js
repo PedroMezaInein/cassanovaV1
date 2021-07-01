@@ -219,5 +219,5 @@ export const Task = task
 export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
-export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, PestamosDevoluciones, FormCalendarioIEquipos,
-    EquipoForm, DetailsInstalacion }
+export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
+    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion }
