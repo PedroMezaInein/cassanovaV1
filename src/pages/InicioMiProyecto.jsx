@@ -12,7 +12,7 @@ import moment from 'moment';
 import Swal from 'sweetalert2'
 import 'moment/locale/es';
 import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../functions/routers"
+import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
@@ -307,7 +307,6 @@ class InicioMiProyecto extends Component {
         if (!proyecto)
             history.push('/')
         this.getMiProyectoAxios()
-        // this.getTicketsPage()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
@@ -402,6 +401,7 @@ class InicioMiProyecto extends Component {
                     tickets,
                     form: this.clearForm()
                 })
+                this.getTicketsPage()
 
             }, (error) => {
                 printResponseErrorAlert(error)
@@ -794,24 +794,18 @@ class InicioMiProyecto extends Component {
     getTicketsPage = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { tickets_info, form } = this.state
-        await axios.put(URL_DEV + 'proyectos/mi-proyecto/' + tickets_info.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { tickets_info, form, proyecto } = this.state
+        await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { total, page } = response.data
+                const { total, page, tickets } = response.data
                 const { tickets_info } = this.state
                 tickets_info.total = total
                 tickets_info.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 tickets_info.total_paginas = total_paginas
-                this.setState({
-                    ...this.state,
-                    tickets_info
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, tickets_info, tickets })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
