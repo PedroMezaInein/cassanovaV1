@@ -13,6 +13,7 @@ import { Zoom, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert, questionAlertY } from '../../functions/alert'
 import {Helmet} from "react-helmet";
+import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
 
 /* function openUserProfile() {
