@@ -47,7 +47,9 @@ export class ShowFile extends Component {
             case 'GIF':
             case 'PNG':
                 return(
-                    <img alt = '' className="rounded pdfview-img" src = { item.url } style={{ width: "100", height: "100" }} />
+                    <div className="text-center">
+                        <img alt = '' className="rounded img-responsive" src = { item.url } style={{width:'60%', height:'60%'}}/>
+                    </div>
                 )
             case 'MP4':
                 return(

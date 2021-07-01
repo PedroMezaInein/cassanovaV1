@@ -2700,3 +2700,18 @@ table#calendario-proyectos tr:last-child td {
 .font-size-2-1rem{
     font-size: 2.1rem
 }
+
+.width-inherit{
+    width: inherit;
+}
+
+.img-responsive{
+    background-size: cover;
+    background-position-x: center;
+    background-position-y: top;
+    background-attachment: initial;
+    background-origin: initial;
+    background-clip: initial;
+    background-color: initial;
+    background-repeat: no-repeat;
+}
