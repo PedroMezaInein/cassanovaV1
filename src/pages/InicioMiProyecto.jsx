@@ -16,7 +16,7 @@ import { toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
-
+import $ from "jquery";
 class InicioMiProyecto extends Component {
     state = {
         id: '',
@@ -319,6 +319,12 @@ class InicioMiProyecto extends Component {
                 })
             }
         }
+    }
+    componentDidUpdate() {
+        $(document).scroll(function () {
+            var $nav = $(".fixed-top");
+            $nav.toggleClass('header-scrolled', $(this).scrollTop() > $nav.height());
+        });
     }
     async getMiProyectoAxios() {
         const { access_token, user } = this.props.authUser
