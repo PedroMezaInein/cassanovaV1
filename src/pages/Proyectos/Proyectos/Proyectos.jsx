@@ -854,7 +854,7 @@ class Proyectos extends Component {
         chunked.file = file
         chunked.tipo = item
         this.setState({chunked})
-        if(chunked.counter < totalCount){
+        if(chunked.counter <= totalCount){
             let chunk = file.slice(chunked.begin, chunked.end)
             this.uploadChunk(chunk)
         }
@@ -862,6 +862,7 @@ class Proyectos extends Component {
 
     uploadChunk = async(chunk) => {
         try{
+            console.log('CHUNK', chunk)
             const { proyecto, chunked } = this.state
             const { access_token } = this.props.authUser
             /* let formulario = new FormData()
