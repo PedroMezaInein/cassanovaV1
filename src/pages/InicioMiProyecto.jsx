@@ -854,6 +854,9 @@ class InicioMiProyecto extends Component {
                                                     </Nav.Item>
                                                     : ''
                                             }
+                                            <Nav.Item className = 'nav-cliente'>
+                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
+                                            </Nav.Item>
                                             {
                                                 proyecto.avances.length ?
                                                     <Nav.Item className = 'nav-cliente'>
@@ -861,9 +864,6 @@ class InicioMiProyecto extends Component {
                                                     </Nav.Item>
                                                     : ''
                                             }
-                                            <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
-                                            </Nav.Item>
                                             {
                                                 proyecto.bitacora !== null ?
                                                     <Nav.Link className="nav-cliente" href = { proyecto.bitacora} target = '_blank'>
@@ -871,6 +871,9 @@ class InicioMiProyecto extends Component {
                                                     </Nav.Link>
                                                     : ''
                                             }
+                                            <Nav.Item className = 'nav-cliente'>
+                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500}>MANTENIMIENTO</Link>
+                                            </Nav.Item>
                                         </Navbar.Collapse>
                                     </>
                                 }
@@ -901,13 +904,13 @@ class InicioMiProyecto extends Component {
                                     </div>
                                 </div>
                             }
-                            <div className="row mx-0 col-md-11 d-flex">
-                                <div className="col-md-7 d-flex flex-column justify-content-center">
+                            <div className="row mx-auto col-md-11 d-flex">
+                                <div className="col-md-6 d-flex flex-column justify-content-center">
                                     <div className="padding-col-7">
                                         <h1 className="wow fadeInUp">{proyecto.nombre}</h1>
                                         <span className="d-flex flex-column">
                                             <h2 className={`wow fadeInUp ${proyecto ? 'margin-y-30px' : 'mb-0'} ${showSelect ? 'order-1' : 'order-2'}`} data-wow-delay="400">Plaforma administrativa</h2>
-                                            <h4 className={`wow fadeInUp order-3 ${!showSelect && proyecto ? '' : 'margin-y-30px'}`} data-wow-delay="700">
+                                            <h4 className={`wow fadeInUp order-3 ${!showSelect && proyecto ? '' : 'margin-y-30px mb-0'}`} data-wow-delay="700">
                                                 En este sitio podrás encontrar información importante de tu proyecto, como datos generales, avances, material,
                                                 levantamiento de tickets, bitácora, entre otros, de acuerdo al progreso del mismo.
                                             </h4>
@@ -918,7 +921,7 @@ class InicioMiProyecto extends Component {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="col-md-5 bienvenida-img text-center wow pulse" data-wow-delay="400">
+                                <div className="col-md-6 bienvenida-img px-10 text-center wow pulse" data-wow-delay="400">
                                     <CommonLottie animationData = { Meetings } />
                                 </div>
                             </div>
@@ -927,16 +930,16 @@ class InicioMiProyecto extends Component {
                     {
                         proyecto &&
                         <>
-                            <Element name = 'informacion' className="features bg-blue-proyecto section" >
+                            <Element name = 'informacion' className="informacion bg-blue-proyecto section" >
                                 <div className="container fadeInUp">
                                     <div className="row mx-0 feature-icons justify-content-center fadeInUp">
                                         <h3>Información del proyecto</h3>
                                         <div className="row mx-0 col-md-12">
-                                            <div className="col-xl-5 text-center fadeInRight" data-wow-delay="100">
+                                            <div className="col-xl-5 text-center my-10 fadeInRight" data-wow-delay="100">
                                                 <SVG src={toAbsoluteUrl('/images/svg/Construction-info.svg')} />
                                             </div>
                                             <div className="col-xl-7 d-flex content">
-                                                <div className="row align-self-center gy-4 mx-0 mt-5">
+                                                <div className="row align-self-center gy-4 mx-0">
                                                     {
                                                         proyecto.contacto !== "Sin información" &&
                                                         <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
@@ -1158,7 +1161,7 @@ class InicioMiProyecto extends Component {
                                         tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket } />
                                 </div>
                             </Element>
-                            <section id="avances" className="avances bg-white">
+                            <Element name="avances" className="avances bg-white section">
                                 <div className="container" data-aos="fade-up">
                                     <div className="title-proyecto">AVANCES POR SEMANA</div>
                                     <div className="text-center">
@@ -1179,8 +1182,11 @@ class InicioMiProyecto extends Component {
                                         }
                                     </div>
                                 </div>
+                            </Element>
+                            <Element name="mantenimiento" className="section bg-blue-proyecto">
+                                <div className="title-proyecto">MANTENIMIENTO</div>
 
-                            </section>
+                            </Element>
                         </>
                     }
                 </div>
@@ -1264,7 +1270,7 @@ class InicioMiProyecto extends Component {
                         </div>
                     </Form >
                 </Modal>
-                <Modal size="lg" title="Presupuesto" show={modal} handleClose={this.handleClose} >
+                <Modal size="lg" title="Presupuesto" show={modal} handleClose={this.handleClose} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <div className="mt-4">
                         {
                             ticket ?
@@ -1302,7 +1308,7 @@ class InicioMiProyecto extends Component {
                         }
                     </div>
                 </Modal>
-                <Modal size="lg" title="Detalles del levantamiento" show={modalDetalles} handleClose={this.handleCloseDetalles} >
+                <Modal size="lg" title="Detalles del levantamiento" show={modalDetalles} handleClose={this.handleCloseDetalles} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable" >
                     <Tab.Container defaultActiveKey="first">
                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x mt-2">
                             <Nav.Item>

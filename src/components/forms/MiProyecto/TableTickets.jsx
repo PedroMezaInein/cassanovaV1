@@ -30,9 +30,9 @@ class TableTickets extends Component {
         return (
             <div className="tab-content">
                 <div className="table-responsive" id='table-proyecto'>
-                    <table className="table table-borderless table-vertical-center">
+                    <table className="table table-borderless table-vertical-center table-hover">
                         <thead>
-                            <tr className="text-left bg-blue-proyecto text-proyecto">
+                            <tr className="text-center bg-blue-proyecto text-proyecto">
                                 <th>Estatus</th>
                                 <th style={{ minWidth: '100px' }}>Fecha</th>
                                 <th>Partida</th>
@@ -46,7 +46,7 @@ class TableTickets extends Component {
                             {
                                 tickets.map((ticket, key) => {
                                     return (
-                                        <tr className="text-dark-75 font-weight-normal font-size-13px text-center" key={key}>
+                                        <tr className="text-dark-75 font-weight-normal text-center" key={key}>
                                             <td>
                                                 {setLabelTable(ticket.estatus_ticket)}
                                             </td>
@@ -91,7 +91,7 @@ class TableTickets extends Component {
                 <div className={tickets_info.total === 0 ? "d-flex justify-content-end" : "d-flex justify-content-between"} >
                     {
                         tickets_info.total > 0 ?
-                            <div className="text-body font-weight-bolder font-size-sm">
+                            <div className="text-body font-weight-bolder font-size-md">
                                 Página {parseInt(tickets_info.numPage) + 1} de {tickets_info.total_paginas}
                             </div>
                             : ''
