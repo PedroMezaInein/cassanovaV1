@@ -21,6 +21,12 @@ section {
     background: white;
 }
 
+.section{
+    padding: 100px 0;
+    overflow: hidden;
+    background: white;
+}
+
 .section-header {
     text-align: center;
     padding-bottom: 40px;
@@ -198,6 +204,7 @@ a.nav-cliente.nav-link{
     color: #013289;
     white-space: nowrap;
     transition: 0.3s;
+    &:hover{ cursor: pointer; }
 }
 
 .navbar-cliente a i, .navbar-cliente a:focus i {
