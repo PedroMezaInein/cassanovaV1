@@ -18,6 +18,8 @@ import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import $ from "jquery";
 import { Link, DirectLink, Element, Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+import { CommonLottie } from '../components/Lottie'
+import { Meetings } from '../assets/animate'
 class InicioMiProyecto extends Component {
     state = {
         id: '',
@@ -836,31 +838,31 @@ class InicioMiProyecto extends Component {
                                                 <Link activeClass="active" offset = { 0 } className="nav-cliente nav-link" to="inicio" spy={true} smooth={true} duration={500} >Inicio</Link>
                                             </Nav.Item>
                                             <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { -150 } className="nav-cliente nav-link" to="informacion" spy={true} smooth={true} duration={500} >Información</Link>
+                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="informacion" spy={true} smooth={true} duration={500} >Información</Link>
                                             </Nav.Item>
                                             {
                                                 proyecto.adjuntos.length ?
                                                     <Nav.Item className = 'nav-cliente'>
-                                                        <Link activeClass="active" offset = { -150 } className="nav-cliente nav-link" to="material" spy={true} smooth={true} duration={500} >Material</Link>
+                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="material" spy={true} smooth={true} duration={500} >Material</Link>
                                                     </Nav.Item>
                                                     : ''
                                             }
                                             {
                                                 proyecto.mantenimiento_correctivo.length ?
                                                     <Nav.Item className = 'nav-cliente'>
-                                                        <Link activeClass="active" offset = { -150 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500} >Mantenimiento</Link>
+                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500} >Mantenimiento</Link>
                                                     </Nav.Item>
                                                     : ''
                                             }
                                             {
                                                 proyecto.avances.length ?
                                                     <Nav.Item className = 'nav-cliente'>
-                                                        <Link activeClass="active" offset = { -150 } className="nav-cliente nav-link" to="avances" spy={true} smooth={true} duration={500} >Avances</Link>
+                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="avances" spy={true} smooth={true} duration={500} >Avances</Link>
                                                     </Nav.Item>
                                                     : ''
                                             }
                                             <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { -150 } className="nav-cliente nav-link" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
+                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
                                             </Nav.Item>
                                             {
                                                 proyecto.bitacora !== null ?
@@ -917,7 +919,7 @@ class InicioMiProyecto extends Component {
                                     </div>
                                 </div>
                                 <div className="col-md-5 bienvenida-img text-center wow pulse" data-wow-delay="400">
-                                    <img src="/bienvenida-img.png" className="img-fluid" alt="" />
+                                    <CommonLottie animationData = { Meetings } />
                                 </div>
                             </div>
                         </div>
