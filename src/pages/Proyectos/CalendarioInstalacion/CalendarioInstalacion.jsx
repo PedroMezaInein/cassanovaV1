@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
+import { renderToString } from 'react-dom/server'
 import axios from 'axios';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
-import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -17,7 +18,9 @@ import { FormCalendarioIEquipos, DetailsInstalacion } from '../../../components/
 import { setOptions } from '../../../functions/setters'
 // import { SelectSearchGray } from '../../../components/form-components'
 import moment from 'moment'
-
+import TableForModals from '../../../components/tables/TableForModals'
+import { MANTENIMIENTOS } from '../../../constants'
+import { setDateTable, setTextTable, setLabelTable, setArrayTable } from '../../../functions/setters'
 class CalendarioInstalacion extends Component {
     state = {
         events: [],
@@ -41,7 +44,13 @@ class CalendarioInstalacion extends Component {
             equipos:''
         },
         instalaciones: [],
-        instalacion:[]
+        instalacion:[],
+        showTable: true,
+        showCalendario: false,
+        data: {
+            mantenimientos: []
+        },
+        mantenimientos: []
     };
 
     componentDidMount() {
@@ -265,14 +274,101 @@ class CalendarioInstalacion extends Component {
         })
     }
 
+    showMantenimentos() {
+        this.setState({
+            ...this.state,
+            showCalendario: true,
+            showTable: false
+        })
+    }
+    showTable() {
+        this.setState({
+            ...this.state,
+            showTable: true,
+            showCalendario: false
+        })
+    }
+    openModalDeleteMantenimiento = mantenimiento => {
+        deleteAlert('¿DESEAS ELIMINAR EL MANTENIMIENTO?', '', () => this.deleteMantenimientoAxios(mantenimiento.id))
+    }
+    async deleteMantenimientoAxios(id) {
+        const { access_token } = this.props.authUser
+        const { mantenimiento } = this.state
+        await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/${mantenimiento.id}/mantenimiento/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { mantenimientos } = response.data
+                const { data } = this.state
+                data.mantenimientos = mantenimiento.estados
+                this.setState({
+                    ...this.state,
+                    data,
+                    mantenimientos: this.setMantenimientos(mantenimientos)
+                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Mantenimiento eliminado con éxito.')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    setMantenimientos = mantenimientos => {
+        let aux = []
+        mantenimientos.map((mantenimiento) => {
+            aux.push({
+                actions: this.setActionsMantenimientos(mantenimiento),
+                proyecto: renderToString(setTextTable('')),
+                tipo: renderToString(setTextTable('')),
+                equipo: renderToString(setTextTable('')),
+                estatus: renderToString(setLabelTable(mantenimiento.estatus)),
+                costo: renderToString(setTextTable('')),
+                presupuesto: renderToString(setArrayTable([{ url: mantenimiento.adjunto.url, text: mantenimiento.adjunto.name }])),
+                fecha: renderToString(setDateTable(mantenimiento.created_at)),
+                id: mantenimiento.id
+            })
+            return false
+        })
+        return aux
+    }
+    setActionsMantenimientos = () => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'deleteAction',
+                tooltip: { id: 'deleteEstado', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
+    }
     render() {
-        const { events, title, modal, form, options, instalacion } = this.state
+        const { events, title, modal, form, options, instalacion, showCalendario, showTable, data, mantenimientos } = this.state
         return (
             <Layout active = 'proyectos' {...this.props}>
+                <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
+                    <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR CALENDARIO</span></Tooltip>}>
+                        <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.showMantenimentos() }}>
+                            <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info" >
+                                <i className="la flaticon2-calendar-8 icon-xl"></i>
+                            </span>
+                        </li>
+                    </OverlayTrigger>
+                    <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR TABLA</span></Tooltip>}>
+                        <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.showTable() }} >
+                            <span className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary">
+                                <i className="la flaticon2-list-2 icon-xl"></i>
+                            </span>
+                        </li>
+                    </OverlayTrigger>
+                </ul>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
-                            <span className="font-weight-bolder text-dark font-size-h3">Instalaciones de Equipos</span>
+                            <span className="font-weight-bolder text-dark font-size-h3">Mantenimientos</span>
                         </div>
                         <div className="card-toolbar">
                             <span className="btn btn-success font-weight-bold" onClick={this.openModal}>
@@ -281,9 +377,29 @@ class CalendarioInstalacion extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
-                            initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
-                            firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
+                        {
+                            <div className={`${showCalendario ? '' : 'd-none'}`}>
+                                <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
+                                initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
+                                firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
+                            </div>
+                        }
+                        {
+                            <div className={`${showTable ? '' : 'd-none'}`}>
+                                <TableForModals
+                                columns={MANTENIMIENTOS}
+                                data={mantenimientos}
+                                mostrar_acciones={true}
+                                actions={
+                                    {
+                                        'deleteAction': { function: this.openModalDeleteEstado }
+                                    }
+                                }
+                                elements={data.mantenimientos}
+                                idTable='kt_datatable_estado'
+                            />
+                            </div>
+                        }
                     </Card.Body>
                 </Card>
                 <Modal size="lg" title={title} show={modal.form} handleClose={this.handleClose} >
