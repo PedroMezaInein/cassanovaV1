@@ -1155,44 +1155,19 @@ class InicioMiProyecto extends Component {
                                         onClickPrev={this.prevPageTicket} />
                                 </div>
                             </section>
-                            <section id="avances" className="bg-blue-proyecto">
-                                <div className="container fadeInUp">
-                                    <div className="title-proyecto">AVANCES POR SEMANA</div>
-                                    {
-                                        proyecto ?
-                                            proyecto.avances.length ?
-                                                <>
-                                                    <div className="row mx-0">
-                                                        {
-                                                            proyecto.avances.map((avance, key) => {
-                                                                return (
-                                                                    <a rel="noopener noreferrer" target="_blank" href={avance.pdf} className="text-dark-75 text-hover-primary d-flex flex-column col-md-2 align-items-center" key={key}>
-                                                                        <div className="symbol symbol-60px mb-5">
-                                                                            <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')} />
-                                                                        </div>
-                                                                        <div className="font-size-lg font-weight-bolder mb-2">SEMANA {avance.semana}</div>
-                                                                    </a>
-                                                                )
-                                                            })
-                                                        }
-                                                    </div>
-                                                </>
-                                                : ''
-                                            : ''
-                                    }
-                                </div>
-                            </section>
-                            <section id="values" className="values">
+                            <section id="avances" className="avances bg-white">
                                 <div className="container" data-aos="fade-up">
                                     <div className="title-proyecto">AVANCES POR SEMANA</div>
-                                    <div className="row mx-0">
+                                    <div className="text-center">
+                                        <SVG src={toAbsoluteUrl('/images/svg/Avances-Proyecto.svg')} style={{width:'40%'}}/>
+                                    </div>
+                                    <div className="row mx-0 mt-12 justify-content-center">
                                         {
                                             proyecto.avances.map((avance, key) => {
                                                 return (
-                                                    <div className="col-md-4 mt-4 mt-lg-0" key={key} rel="noopener noreferrer" target="_blank" href={avance.pdf}>
+                                                    <div className="col-md-4 mt-4 mt-lg-0" key={key}>
                                                         <div className="box fadeInUp" data-wow-delay="200">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')} />
-                                                            <h3 >SEMANA {avance.semana}</h3>
+                                                            <a rel="noopener noreferrer" target="_blank" href={avance.pdf}>SEMANA {avance.semana}</a>
                                                             <p>{avance.actividades}</p>
                                                         </div>
                                                     </div>
@@ -1200,7 +1175,6 @@ class InicioMiProyecto extends Component {
                                             })
                                         }
                                     </div>
-
                                 </div>
 
                             </section>
