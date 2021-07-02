@@ -17,6 +17,9 @@ import { Modal, ItemSlider } from '../components/singles'
 import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import $ from "jquery";
+import { Link, DirectLink, Element, Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+import { CommonLottie } from '../components/Lottie'
+import { Meetings } from '../assets/animate'
 class InicioMiProyecto extends Component {
     state = {
         id: '',
@@ -831,39 +834,39 @@ class InicioMiProyecto extends Component {
                                     <>
                                         <Navbar.Toggle />
                                         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-flex-end" >
-                                            <Nav.Link className="nav-cliente" href="#inicio">
-                                                Inicio
-                                            </Nav.Link>
-                                            <Nav.Link className="nav-cliente" href="#informacion">
-                                                Información
-                                            </Nav.Link>
+                                            <Nav.Item className = 'nav-cliente'>
+                                                <Link activeClass="active" offset = { 0 } className="nav-cliente nav-link" to="inicio" spy={true} smooth={true} duration={500} >Inicio</Link>
+                                            </Nav.Item>
+                                            <Nav.Item className = 'nav-cliente'>
+                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="informacion" spy={true} smooth={true} duration={500} >Información</Link>
+                                            </Nav.Item>
                                             {
                                                 proyecto.adjuntos.length ?
-                                                    <Nav.Link className="nav-cliente" href="#material">
-                                                        Material
-                                                    </Nav.Link>
+                                                    <Nav.Item className = 'nav-cliente'>
+                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="material" spy={true} smooth={true} duration={500} >Material</Link>
+                                                    </Nav.Item>
                                                     : ''
                                             }
                                             {
                                                 proyecto.mantenimiento_correctivo.length ?
-                                                    <Nav.Link className="nav-cliente">
-                                                        Mantenimiento
-                                                    </Nav.Link>
+                                                    <Nav.Item className = 'nav-cliente'>
+                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500} >Mantenimiento</Link>
+                                                    </Nav.Item>
                                                     : ''
                                             }
                                             {
                                                 proyecto.avances.length ?
-                                                    <Nav.Link className="nav-cliente" href="#avances">
-                                                        Avances
-                                                    </Nav.Link>
+                                                    <Nav.Item className = 'nav-cliente'>
+                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="avances" spy={true} smooth={true} duration={500} >Avances</Link>
+                                                    </Nav.Item>
                                                     : ''
                                             }
-                                            <Nav.Link className="nav-cliente" href="#tickets">
-                                                Tickets
-                                            </Nav.Link>
+                                            <Nav.Item className = 'nav-cliente'>
+                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
+                                            </Nav.Item>
                                             {
                                                 proyecto.bitacora !== null ?
-                                                    <Nav.Link className="nav-cliente">
+                                                    <Nav.Link className="nav-cliente" href = { proyecto.bitacora} target = '_blank'>
                                                         Bitácora
                                                     </Nav.Link>
                                                     : ''
@@ -874,7 +877,7 @@ class InicioMiProyecto extends Component {
                             </Navbar>
                         </div>
                     </header>
-                    <section id="inicio" className="bienvenida-cliente d-flex align-items-center place-content-center" style={{ backgroundImage: "url('/hero-bg.png')" }}>
+                    <Element name = 'inicio' className="section bienvenida-cliente d-flex align-items-center place-content-center" style={{ backgroundImage: "url('/hero-bg.png')" }}>
                         <div>
                             {
                                 showSelect &&
@@ -916,15 +919,15 @@ class InicioMiProyecto extends Component {
                                     </div>
                                 </div>
                                 <div className="col-md-5 bienvenida-img text-center wow pulse" data-wow-delay="400">
-                                    <img src="/bienvenida-img.png" className="img-fluid" alt="" />
+                                    <CommonLottie animationData = { Meetings } />
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </Element>
                     {
                         proyecto &&
                         <>
-                            <section id="informacion" className="features bg-blue-proyecto">
+                            <Element name = 'informacion' className="features bg-blue-proyecto section" >
                                 <div className="container fadeInUp">
                                     <div className="row mx-0 feature-icons justify-content-center fadeInUp">
                                         <h3>Información del proyecto</h3>
@@ -1051,10 +1054,10 @@ class InicioMiProyecto extends Component {
                                         </div>
                                     </div>
                                 </div>
-                            </section>
+                            </Element>
                             {
                                 proyecto.adjuntos.length ?
-                                    <section id="material">
+                                    <Element name = 'material' className = 'section' >
                                         <div className="container fadeInUp">
                                             <div className="title-proyecto">ADJUNTOS DEL PROYECTO</div>
                                             <Nav as="ul" className="nav nav-tabs justify-content-start nav-bolder">
@@ -1140,10 +1143,10 @@ class InicioMiProyecto extends Component {
                                                 </Row>
                                             </Tab.Container>
                                         </div>
-                                    </section>
+                                    </Element>
                                     : ''
                             }
-                            <section id="tickets" className="border-y-blue">
+                            <Element name = 'tickets' className = 'border-y-blue section' >
                                 <div className="title-proyecto">ESTATUS DE TICKETS</div>
                                 <div className="container fadeInUp">
                                     <div className="d-flex justify-content-end mb-10">
@@ -1151,10 +1154,10 @@ class InicioMiProyecto extends Component {
                                             <i className="la la-file-archive icon-xl text-pink"></i> NUEVO LEVANTAMIENTO
                                         </span>
                                     </div>
-                                    <TableTickets tickets={data.tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles} tickets_info={tickets_info} onClickNext={this.nextPageTicket}
-                                        onClickPrev={this.prevPageTicket} />
+                                    <TableTickets tickets = { tickets } openModalSee = { this.openModalSee } openModalDetalles = { this.openModalDetalles } 
+                                        tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket } />
                                 </div>
-                            </section>
+                            </Element>
                             <section id="avances" className="avances bg-white">
                                 <div className="container" data-aos="fade-up">
                                     <div className="title-proyecto">AVANCES POR SEMANA</div>
