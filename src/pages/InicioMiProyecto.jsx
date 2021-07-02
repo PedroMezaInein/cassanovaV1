@@ -1151,7 +1151,7 @@ class InicioMiProyecto extends Component {
                                             <i className="la la-file-archive icon-xl text-pink"></i> NUEVO LEVANTAMIENTO
                                         </span>
                                     </div>
-                                    <TableTickets tickets={data.tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles} tickets_info={tickets_info}  onClickNext={this.nextPageTicket}
+                                    <TableTickets tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles} tickets_info={tickets_info}  onClickNext={this.nextPageTicket}
                                         onClickPrev={this.prevPageTicket}/>
                             </div>
                         </section>
