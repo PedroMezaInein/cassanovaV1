@@ -44,6 +44,15 @@ class TableTickets extends Component {
                         </thead>
                         <tbody>
                             {
+                                tickets.length === 0 ?
+                                    <tr className="text-dark-75 font-weight-normal text-center" >
+                                        <td colSpan = "7">
+                                            Aún no hay tickets levantados
+                                        </td>
+                                    </tr>
+                                :<></>
+                            }
+                            {
                                 tickets.map((ticket, key) => {
                                     return (
                                         <tr className="text-dark-75 font-weight-normal text-center" key={key}>
