@@ -846,7 +846,7 @@ class Proyectos extends Component {
     }
 
     fileUpload = (totalCount, fileID, file, item) => {
-        console.log(totalCount, fileID, file, item)
+        /* console.log(totalCount, fileID, file, item) */
         waitAlert()
         const { chunked } = this.state
         chunked.totalCount = totalCount
@@ -854,7 +854,7 @@ class Proyectos extends Component {
         chunked.file = file
         chunked.tipo = item
         this.setState({chunked})
-        if(chunked.counter < totalCount){
+        if(chunked.counter <= totalCount){
             let chunk = file.slice(chunked.begin, chunked.end)
             this.uploadChunk(chunk)
         }
