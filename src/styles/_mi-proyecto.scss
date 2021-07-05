@@ -97,8 +97,8 @@ a.nav-cliente.nav-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 10px 0 10px 30px;
-    font-size: 18px;
+    margin: 10px 0 10px 10px;
+    font-size: 1.3rem;
     font-weight: 500;
     color: #013289;
     white-space: nowrap;
@@ -350,7 +350,7 @@ a.nav-cliente.nav-link:focus,
 
 .padding-container {
     padding-left: 2.5rem;
-    padding-right: 5rem;
+    padding-right: 2.5rem;
 }
 
 .bienvenida-cliente .btn-get-started span {
@@ -602,8 +602,7 @@ a.nav-cliente.nav-link:focus,
     border-color: #f6f9ff;
 }
 
-span.btn.btn-sm.font-weight-bolder.text-success.align-self-center.font-size-lg:hover,
-span.btn.btn-sm.font-weight-bolder.text-pink.align-self-center.font-size-lg:hover {
+.box-shadow-button:hover {
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px !important;
 }
 
@@ -652,4 +651,9 @@ header#header {
 
 .col-md-6.icon-box.align-items-center.mb-7.fadeInUp:last-child {
     margin-bottom: 0px !important;
+}
+
+.bg-form{
+    background-color: #f6f9ff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
 }
