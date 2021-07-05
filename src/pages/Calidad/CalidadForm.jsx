@@ -7,7 +7,9 @@ import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAler
 import Layout from '../../components/layout/layout'
 import { CalidadView } from '../../components/forms'
 import { Form } from 'react-bootstrap'
-import { setFormHeader } from '../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../functions/routers'
+import { Modal } from '../../components/singles'
+import { SelectSearch, CalendarDay, InputMoney, Button } from '../../components/form-components'
 class CalidadForm extends Component {
     state = {
         ticket: '',
@@ -30,13 +32,16 @@ class CalidadForm extends Component {
                 }
             },
             fechaProgramada: new Date(),
+            fechaMantenimiento: new Date(),
             empleado: '',
             recibe: '',
-            motivo: ''
+            motivo: '',
+            costo: 0.0,
+            equipo: '',
         },
-        options: {
-            empleados: []
-        }
+        options: { empleados: [], equipos: [] },
+        modal: false,
+        
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -53,61 +58,36 @@ class CalidadForm extends Component {
                 if (state) {
                     if (state.calidad) {
                         const { calidad } = state
-                        if (calidad.estatus_ticket.estatus === 'En espera')
-                            this.changeEstatusAxios({ id: calidad.id })
+                        if (calidad.estatus_ticket.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
                         else {
-                            this.setState({
-                                ...this.state,
-                                ticket: calidad,
-                                form: this.setForm(calidad)
-                            })
+                            console.log(calidad, 'CALIDAD')
+                            this.getOneTicketAxios(calidad.id)
+                            //this.setState({ ...this.state, ticket: calidad, form: this.setForm(calidad) }) 
                         }
-                        window.history.replaceState(null, '')
-                    }
-                    else
-                        history.push('/calidad/tickets')
-                }
-                else
-                    history.push('/calidad/tickets')
+                        //window.history.replaceState(null, '')
+                    } else history.push('/calidad/tickets')
+                } else history.push('/calidad/tickets')
                 break;
             default:
                 break;
         }
-        if (!remisiones)
-            history.push('/')
+        if (!remisiones) history.push('/')
     }
     setForm = ticket => {
         const { form } = this.state
         let aux = []
-        ticket.presupuesto.map((presupuesto) => {
-            aux.push({
-                name: presupuesto.name,
-                url: presupuesto.url,
-                file: ''
-            })
-            return false
+        ticket.presupuesto.forEach((presupuesto) => {
+            aux.push({ name: presupuesto.name, url: presupuesto.url, file: '' })
         })
         form.adjuntos.presupuesto.files = aux
         aux = []
-        ticket.reporte_problema_reportado.map((element) => {
-            aux.push({
-                name: element.name,
-                url: element.url,
-                file: '',
-                id: element.id
-            })
-            return false
+        ticket.reporte_problema_reportado.forEach((element) => {
+            aux.push({ name: element.name, url: element.url, file: '', id: element.id })
         })
         form.adjuntos.reporte_problema_reportado.files = aux
         aux = []
-        ticket.reporte_problema_solucionado.map((element) => {
-            aux.push({
-                name: element.name,
-                url: element.url,
-                file: '',
-                id: element.id
-            })
-            return false
+        ticket.reporte_problema_solucionado.forEach((element) => {
+            aux.push({ name: element.name, url: element.url, file: '', id: element.id })
         })
         form.adjuntos.reporte_problema_solucionado.files = aux
         form.fechaProgramada = new Date(ticket.created_at)
@@ -123,30 +103,17 @@ class CalidadForm extends Component {
         const { files, value, name } = e.target
         let aux = []
         for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
+            aux.push( { name: files[counter].name, file: files[counter], url: URL.createObjectURL(files[counter]), key: counter } )
         }
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
     handleChange = (files, item) => {
         if (item === 'presupuesto')
@@ -154,21 +121,14 @@ class CalidadForm extends Component {
         else
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
-    deleteFile = element => {
-        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id))
-    }
+    deleteFile = element => { deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id)) }
     openModalWithInput = estatus => {
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
         questionAlert2('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.cancelTicket({ id: ticket.id, estatus: estatus }),
             <div>
-                <Form.Control
-                    placeholder='MOTIVO DE CANCELACIÓN'
-                    className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                    id='motivo'
-                    as="textarea"
-                    rows="3"
-                />
+                <Form.Control placeholder='MOTIVO DE CANCELACIÓN' className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                    id='motivo' as="textarea" rows="3" />
             </div>
         )
     }
@@ -176,33 +136,37 @@ class CalidadForm extends Component {
         e.preventDefault();
         this.saveProcesoTicketAxios('')
     }
-    generateEmail = value => {
-        this.saveProcesoTicketAxios(value)
+    generateEmail = value => { this.saveProcesoTicketAxios(value) }
+    onSubmitMantenimiento = async(e) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket, form } = this.state
+        await axios.post(`${URL_DEV}v2/calidad/tickets/${ticket.id}/mantenimiento`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => { 
+                doneAlert('Mantenimiento correctivo generado con éxito.') 
+                this.getOneTicketAxios(ticket.id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
-    async deleteAdjuntoAxios(id) {
+    deleteAdjuntoAxios = async(id) => {
         const { access_token } = this.props.authUser
         const { ticket } = this.state
         await axios.delete(URL_DEV + 'calidad/' + ticket.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
-                this.setState({
-                    ...this.state,
-                    ticket: ticket,
-                    form: this.setForm(ticket)
-                })
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
                 doneAlert('Adjunto eliminado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
-    async saveProcesoTicketAxios(email) {
+    saveProcesoTicketAxios = async(email) =>{
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket, form } = this.state
@@ -244,15 +208,14 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
-    
-    async sendPresupuestoTicketAxios(files, item) {
+    sendPresupuestoTicketAxios = async(files, item) => {
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket, form } = this.state
         const data = new FormData();
         let aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
+        aux.forEach((element) => {
             if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
@@ -260,75 +223,51 @@ class CalidadForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
-            return false
         })
         await axios.post(URL_DEV + 'calidad/presupuesto/' + ticket.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
-                this.setState({
-                    ...this.state,
-                    ticket: ticket,
-                    form: this.setForm(ticket)
-                })
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
                 doneAlert('Presupuesto adjuntado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async changeEstatusAxios(data) {
+    changeEstatusAxios = async(data) =>{
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
-                this.setState({
-                    ...this.state,
-                    ticket: ticket,
-                    form: this.setForm(ticket)
-                })
-                if (data.estatus) {
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
+                if (data.estatus)
                     doneAlert('El ticket fue actualizado con éxito.')
-                }
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async cancelTicket(data) {
+    cancelTicket = async(data) => {
         const { access_token } = this.props.authUser
         data.motivo = document.getElementById('motivo').value
         await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
-                this.setState({
-                    ...this.state,
-                    ticket: ticket,
-                    form: this.setForm(ticket)
-                })
-                if (data.estatus) {
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
+                if (data.estatus) 
                     doneAlert('El ticket fue actualizado con éxito.')
-                }
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async getTicketsOptions() {
+    getTicketsOptions = async() => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -336,14 +275,33 @@ class CalidadForm extends Component {
                 const { options } = this.state
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
                 options['estatus'] = this.setOptionsEstatus(estatus, 'estatus', 'id')
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, options })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    getOneTicketAxios = async(id) => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/calidad/tickets/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { ticket } = response.data
+                const { options } = this.state
+                let aux = []
+                if(ticket.proyecto){
+                    if(ticket.proyecto.equipos_instalados){
+                        ticket.proyecto.equipos_instalados.forEach((element) => {
+                            if(element.equipo){
+                                const { texto } = element.equipo
+                                aux.push({ value: element.id.toString(), name: `${element.fecha} - (${element.cantidad}) ${texto}` })
+                            }
+                        })
+                    }
+                }
+                options.equipos = aux
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket), options })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -351,59 +309,79 @@ class CalidadForm extends Component {
     }
     setOptionsEstatus = (arreglo) => {
         let aux = []
-        arreglo.map((element) => {
-            aux.push(
-                { 
-                    name: element.estatus, 
-                    value: element.id.toString(),
-                    letra: element.letra,
-                    fondo: element.fondo
-                }
-            )
-            return ''
+        arreglo.forEach((element) => {
+            aux.push( {  name: element.estatus,  value: element.id.toString(), letra: element.letra, fondo: element.fondo } )
         });
         return aux
     }
     changeEstatus = estatus => {
         const { ticket } = this.state
-        if (estatus === 'Rechazado') {
-            this.openModalWithInput('Rechazado')
-        }
-        if (estatus === 'Aceptado') {
-            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR ACEPTADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-        }
-        if (estatus === 'Terminado') {
-            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TERMINADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-        }
-        if (estatus === 'En proceso') {
-            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN PROCESO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-        }
-        if (estatus === 'Respuesta pendiente') {
-            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EL TICKET EN RESPUESTA PENDIENTE ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-        }
-        if (estatus === 'En revisión') {
-            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN REVISIÓN EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-        }
-        if (estatus === 'En espera') {
-            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN ESPERA EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        switch(estatus){
+            case 'Rechazado':
+                this.openModalWithInput('Rechazado');
+                break;
+            case 'Aceptado':
+                questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR ACEPTADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                break;
+            case 'Terminado':
+                questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TERMINADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                break;
+            case 'En proceso':
+                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN PROCESO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                break;
+            case 'Respuesta pendiente':
+                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EL TICKET EN RESPUESTA PENDIENTE ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                break;
+            case 'En revisión':
+                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN REVISIÓN EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                break;
+            case 'En espera':
+                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN ESPERA EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                break;
         }
     }
+    updateSelect = (value, name) => {
+        const { form } = this.state
+        form[name] = value
+        this.setState({...this.state, form})
+    }
+    openModalMantenimiento = () => { this.setState({...this.state, modal: true}) }
+    handleCloseLevantamiento = () => { this.setState({...this.state, modal: false}) }
     render() {
-        const { ticket, form, options } = this.state
+        const { ticket, form, options, modal } = this.state
         return (
             <Layout active={'calidad'}  {...this.props}>
-                <CalidadView
-                    data={ticket}
-                    form={form}
-                    options={options}
-                    handleChange={this.handleChange}
-                    changeEstatus={this.changeEstatus}
-                    onChange={this.onChange}
-                    onSubmit={this.onSubmit}
-                    generateEmail={this.generateEmail}
-                    openModalWithInput={this.openModalWithInput}
-                    deleteFile={this.deleteFile}
-                />
+                <CalidadView data = { ticket } form = { form } options = { options } handleChange = { this.handleChange }
+                    changeEstatus = { this.changeEstatus } onChange = { this.onChange } onSubmit = { this.onSubmit }
+                    generateEmail = { this.generateEmail } openModalWithInput = { this.openModalWithInput}
+                    deleteFile = { this.deleteFile } openModalMantenimiento = { this.openModalMantenimiento } />
+                <Modal size = "lg" title = 'Mantenimiento correctivo' show = { modal } handleClose = { this.handleCloseLevantamiento } customcontent = { true } 
+                    contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                    <Form onSubmit = { (e) => { e.preventDefault(); this.onSubmitMantenimiento(e) } } >
+                        <div className="row mx-0 justify-content-center">
+                            <div className="col-md-4">
+                                <InputMoney requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } prefix = '$' name = "costo"
+                                    value = { form.costo } onChange = { this.onChange } placeholder = "COSTO" iconclass = "fas fa-money-bill-wave-alt" />
+                            </div>
+                            <div className="col-md-8">
+                                <SelectSearch options = { options.equipos } placeholder = 'Selecciona el equipo instalado' name = "equipo" 
+                                    value = { form.equipo } onChange = { (value) => this.updateSelect(value, 'equipo') }
+                                    iconclass="fas fa-toolbox" formeditado={0} messageinc="Incorrecto. Selecciona el técnico que asiste" />
+                            </div>
+                        </div>
+                        <div className = 'text-center'>
+                            <div className="d-flex justify-content-center pt-5" style={{ height: '1px' }}>
+                                <label className="text-center font-weight-bolder">Fecha del mantenimiento</label>
+                            </div>
+                            <CalendarDay value = { form.fechaMantenimiento } name = 'fechaMantenimiento' date = { form.fechaMantenimiento } withformgroup = { 1 } 
+                                onChange = { this.onChange } placeholder = 'Fecha del mantenimiento' requirevalidation = { 1 } />
+                        </div>
+                        <div className="text-right">
+                            <Button icon = '' className = "btn btn-primary mr-2" text = "ENVIAR"
+                                type = 'submit'/>
+                        </div>
+                    </Form>
+                </Modal>
             </Layout>
         )
     }

@@ -22,7 +22,7 @@ class CalidadView extends Component {
 
     render() {
 
-        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile, openModalWithInput } = this.props
+        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile, openModalWithInput, openModalMantenimiento } = this.props
         return (
             <>
                 <div className="card card-custom gutter-b">
@@ -280,6 +280,12 @@ class CalidadView extends Component {
                                                 <div className="card-title">
                                                     <h3 className="card-label">TICKET EN PROCESO</h3>
                                                 </div>
+                                                <div className="card-toolbar" >
+                                                    <button className="btn btn-sm btn-light-info font-weight-bold" onClick = { openModalMantenimiento } >
+                                                        <i class="fas fa-tools"></i>
+                                                        MANTENIMIENTO
+                                                    </button>
+                                                </div>   
                                             </div>
                                             <div className="card-body pt-0">
                                                 <ProcesoTicketForm form = { form } options = { options } onChange = { onChange } formeditado = { 1 }
