@@ -45,8 +45,8 @@ class CalendarioInstalacion extends Component {
         },
         instalaciones: [],
         instalacion:[],
-        showTable: true,
-        showCalendario: false,
+        showTable: false,
+        showCalendario: true,
         data: {
             mantenimientos: []
         },
