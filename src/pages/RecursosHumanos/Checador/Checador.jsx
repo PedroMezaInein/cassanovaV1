@@ -9,9 +9,12 @@ import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { SelectSearchGray } from '../../../components/form-components'
 import Echo from 'laravel-echo';
 /* import Pusher from 'pusher-js'; */
+import moment from 'moment'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-const horasPorTrabajar = 8
+const day = moment().format('YYYY-MM-DD')
+const validador = moment("2021-07-01").isSameOrAfter(day);
+const horasPorTrabajar = validador ? 9:8
 class Checador extends Component {
     state = {
         mes: meses[new Date().getMonth()],
@@ -52,6 +55,9 @@ class Checador extends Component {
         }
     }
     getEmpleadosChecador = async(quincena, mes, año) => {
+        console.log (day, 'day')
+        console.log (horasPorTrabajar, 'horasPorTrabajar')
+        console.log(validador, 'validador')
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/rh/checador/${quincena}/${mes}/${año}`, { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
