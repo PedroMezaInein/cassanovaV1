@@ -989,7 +989,6 @@ class InicioMiProyecto extends Component {
         })
     }
     async filtrarTabla() {
-        console.log('entre')
         const { access_token } = this.props.authUser
         const { proyecto, form } = this.state
         await axios.put(URL_DEV + 'v1/proyectos/' + proyecto.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
