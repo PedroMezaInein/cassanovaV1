@@ -4,15 +4,15 @@ import { URL_DEV, URL_ASSETS } from '../constants'
 import { setOptions, setEmpresaLogo } from '../functions/setters'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, questionAlert, doneAlert } from '../functions/alert'
 import { connect } from 'react-redux'
-import { SelectSearchGray, InputGray } from '../components/form-components'
+import { SelectSearchGray, InputGray, Button } from '../components/form-components'
 import { Nav, Navbar, Tab, Col, Row, NavDropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { Button } from '../components/form-components'
 import moment from 'moment';
 import Swal from 'sweetalert2'
 import 'moment/locale/es';
 import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
+import { DetailsInstalacion, DetailsMantenimiento } from '../components/forms'
 import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
@@ -43,6 +43,7 @@ class InicioMiProyecto extends Component {
             single : false,
             details: false,
             tickets: false,
+            mantenimiento: false
         },
         showadjuntos: [
             {
@@ -312,6 +313,7 @@ class InicioMiProyecto extends Component {
             total_paginas: 0,
             value: "en_contacto"
         },
+        mantenimiento: ''
     }
 
     componentDidMount() {
@@ -534,7 +536,14 @@ class InicioMiProyecto extends Component {
         modal.tickets = false
         modal.details = false
         modal.single = false
-        this.setState({...this.state, form: this.clearForm(), modal, ticket: '' })
+        modal.mantenimiento = false
+        this.setState({...this.state, form: this.clearForm(), modal, ticket: '', mantenimiento: '' })
+    }
+
+    onClickMantenimiento = mantenimiento => {
+        const { modal } = this.state
+        modal.mantenimiento = true
+        this.setState({...this.state, modal, mantenimiento: mantenimiento})
     }
 
     changeEstatus = estatus => {
@@ -567,7 +576,7 @@ class InicioMiProyecto extends Component {
         let { extendedProps } = eventInfo.event._def
         return (
             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {proyecto.nombre}</Tooltip>}>
-                <div className="text-hover container p-1 tarea" style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}} onClick={(e) => { e.preventDefault(); this.getInstalacion(extendedProps) }}>
+                <div className="text-hover container p-1 tarea" style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}} onClick={(e) => { e.preventDefault(); this.onClickMantenimiento(extendedProps) }}>
                         <div className="row mx-0 row-paddingless">
                             <div className="col-md-auto mr-1 text-truncate">
                                 <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
@@ -680,7 +689,7 @@ class InicioMiProyecto extends Component {
                                 backgroundColor: "#2756C3",
                                 borderColor: "#2756C3",
                                 iconClass: 'la la-tools',
-                                tipo:'Mantenimiento'
+                                tipo:'Mantenimiento correctivo'
                             })
                         else
                             aux.push({
@@ -691,7 +700,7 @@ class InicioMiProyecto extends Component {
                                 backgroundColor: "#eea71a",
                                 borderColor: "#eea71a",
                                 iconClass: 'la la-tools',
-                                tipo:'Mantenimiento'
+                                tipo:'Mantenimiento preventivo'
                             })
                         aux2.push({mantenimiento: mantenimiento, instalacion: equipo})
                     })
@@ -840,7 +849,7 @@ class InicioMiProyecto extends Component {
         })
     }
     render() {
-        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos } = this.state
+        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento } = this.state
         const { user } = this.props.authUser
         return (
             <div>
@@ -849,11 +858,7 @@ class InicioMiProyecto extends Component {
                         <div className="container-fluid padding-container mx-auto">
                             <Navbar expand="lg" className="navbar-cliente ">
                                 <Navbar.Brand href="https://infraestructuramedica.mx/" target="_blank" rel="noopener noreferrer" className="logo d-flex align-items-center">
-                                    {
-                                        setEmpresaLogo(proyecto) !== '' ?
-                                            <img alt="" className="img-logo" src={setEmpresaLogo(proyecto)} />
-                                        : ''
-                                    }
+                                    { setEmpresaLogo(proyecto) !== '' ? <img alt="" className="img-logo" src={setEmpresaLogo(proyecto)} /> : '' }
                                 </Navbar.Brand>
                                 {
                                     proyecto &&
@@ -897,9 +902,6 @@ class InicioMiProyecto extends Component {
                                                         </Nav.Link>
                                                     : ''
                                                 }
-                                            <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500}>MANTENIMIENTO</Link>
-                                            </Nav.Item>
                                         </Navbar.Collapse>
                                     </>
                                 }
@@ -1413,6 +1415,16 @@ class InicioMiProyecto extends Component {
                         </Tab.Content>
                     </Tab.Container>
                 </Modal>
+                {
+                    mantenimiento !== '' &&
+                        <Modal size="lg" title={<span><i className={`${mantenimiento.iconClass} icon-lg mr-2 
+                            ${mantenimiento.tipo==='Instalación'?'color-instalacion': mantenimiento.tipo === 'Mantenimiento correctivo' ? 'color-mantenimiento' : 'color-mantenimiento-preventivo'}`}></i>
+                            {`${mantenimiento.tipo} de ${mantenimiento.instalacion.equipo.equipo}`}
+                            </span>} 
+                            show={modal.mantenimiento} handleClose={this.handleClose} classBody="bg-light">
+                            <DetailsInstalacion instalacion = { mantenimiento } />
+                        </Modal>
+                }
             </div>
         )
     }
