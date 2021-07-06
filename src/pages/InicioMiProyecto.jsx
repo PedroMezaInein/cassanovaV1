@@ -824,6 +824,21 @@ class InicioMiProyecto extends Component {
         })
     }
     
+    cleanForm = () => {
+        const { form } = this.state
+        form.rubro = []
+        form.mantenimiento = ''
+        form.equipo = ''
+        form.estatus = ''
+        form.costo = ''
+        form.fechaInicio = new Date()
+        form.fechaFin = new Date()
+        this.filtrarTabla()
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
         const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos } = this.state
         const { user } = this.props.authUser
@@ -1190,10 +1205,10 @@ class InicioMiProyecto extends Component {
                             {
                                 proyecto.equipos_instalados.length ? 
                                     <Element name="mantenimiento" className="section border-y-blue position-relative">
-                                        <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4 position-absolute">
+                                        <ul className="sticky-toolbar nav flex-column pl-2 pr-2 py-2 position-absolute">
                                             <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">
                                                 {`${activeFlag === 'tabla' ? 'MOSTRAR CALENDARIO' : 'MOSTRAR TABLA'}`}</span></Tooltip>}>
-                                                <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.changeActiveFlag() }} >
+                                                <li className="nav-item" onClick={(e) => { e.preventDefault(); this.changeActiveFlag() }} >
                                                     <span className = {`btn btn-sm btn-icon btn-bg-light btn-text-${activeFlag === 'tabla' ? 'primary' : 'info'} btn-hover-${activeFlag === 'tabla' ? 'primary' : 'info'}`}>
                                                         <i className = {`la flaticon2-${activeFlag === 'tabla' ? 'calendar-8' : 'list-2'} icon-xl`}></i>
                                                     </span>
@@ -1209,7 +1224,7 @@ class InicioMiProyecto extends Component {
                                                         firstDay={1} themeSystem='bootstrap' height='1290.37px' />
                                                 :
                                                     <TableMantenimiento mantenimientos = { mantenimientos } form = { form } options = { options } 
-                                                        onChange = { this.onChange } onChangeRange = { this.onChangeRange } filtrarTabla = { this.filtrarTabla }/>
+                                                        onChange = { this.onChange } onChangeRange = { this.onChangeRange } filtrarTabla = { this.filtrarTabla } cleanForm={this.cleanForm}/>
                                             }
                                         </div>
                                     </Element>

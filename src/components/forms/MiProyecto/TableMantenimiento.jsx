@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { InputNumberGray, RangeCalendar, ReactSelectSearch, TagSelectSearchGray } from '../../form-components'
+import moment from 'moment';
 import 'moment/locale/es';
 import { Row, Col, Form } from 'react-bootstrap'
+import { setLabelTable } from '../../../functions/setters'
+import NumberFormat from 'react-number-format';
 class TableMantenimiento extends Component {
     state={
         searchForm : false,
@@ -73,9 +76,23 @@ class TableMantenimiento extends Component {
         this.setState({...this.state, searchForm: false })
         filtrarTabla()
     }
-
+    
+    formatDay (fecha){
+        let fecha_ticket = moment(fecha);
+        let formatDate = fecha_ticket.locale('es').format("DD MMM YYYY");
+        return formatDate.replace('.', '');
+    }
+    setMoneyTable(value) {
+        let cantidad = 0
+        cantidad = parseFloat(value).toFixed(2)
+        return (
+            <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
+                renderText={cantidad => <span> {cantidad} </span>} />
+        )
+    }
+    
     render() {
-        const { options, form, onChangeRange, onChange, mantenimientos } = this.props
+        const { options, form, onChangeRange, onChange, mantenimientos, cleanForm } = this.props
         const { searchForm } = this.state
         return (
             <div>
@@ -129,7 +146,7 @@ class TableMantenimiento extends Component {
                                     form.rubro.length > 0 ?
                                         <div className="d-flex justify-content-center my-5" >
                                             <span className='btn btn-sm font-weight-bolder text-primary align-self-center font-size-lg box-shadow-button' onClick={ (e) => { e.preventDefault(); this.filtrarTabla() } }>
-                                                <i className="la icon-xl text-primary"></i> FILTRAR
+                                                <i className="la la-filter icon-xl text-primary"></i> FILTRAR
                                             </span>
                                         </div>
                                     : ''
@@ -143,15 +160,18 @@ class TableMantenimiento extends Component {
                                 <span className='btn btn-sm font-weight-bolder text-info align-self-center font-size-lg box-shadow-button' onClick={(e) => { e.preventDefault(); this.searchForm() }}>
                                     <i className={`la ${searchForm?'la-search-minus':'la-search-plus'} icon-xl text-info`}></i> FILTRAR
                                 </span>
+                                <span className='btn btn-sm font-weight-bolder text-success align-self-center font-size-lg box-shadow-button' onClick={ (e) => { e.preventDefault(); cleanForm() } }>
+                                    <i className="la la-list icon-xl text-success"></i> LISTADO COMPLETO
+                                </span>
                             </div>
-                            <div className="table-responsive">
-                                <table className="table table-borderless table-vertical-center">
+                            <div className="table-responsive rounded">
+                                <table className="table table-borderless table-vertical-center rounded" id="table-mantenimientos">
                                     <thead>
                                         <tr className="text-center text-proyecto">
                                             <th>Estatus</th>
                                             <th>Tipo de mantenimiento</th>
                                             <th>Equipo</th>
-                                            <th>Fecha</th>
+                                            <th style={{minWidth:'100px'}}>Fecha</th>
                                             <th>Costo</th>
                                             <th>Presupuesto</th>
                                         </tr>
@@ -159,26 +179,32 @@ class TableMantenimiento extends Component {
                                     <tbody>
                                         {
                                             mantenimientos.length === 0 &&
-                                                <tr className="text-dark-75 font-weight-normal text-center" >
+                                                <tr className="text-dark-75 font-weight-light text-center" >
                                                     <td colSpan = "6"> Sin mantenimientos </td>
                                                 </tr>
                                         }
                                         {
                                             mantenimientos.map((mantenimiento, index) => {
+                                                console.log(mantenimiento)
                                                 return(
-                                                    <tr className="text-dark-75 font-weight-normal text-center" key = { index } >
-                                                        <td> { mantenimiento.mantenimiento.status.estatus } </td>
+                                                    <tr className="text-dark-75 font-weight-light text-center" key = { index } >
+                                                        <td>
+                                                            {setLabelTable(mantenimiento.mantenimiento.status)}
+                                                        </td>
                                                         <td> { mantenimiento.mantenimiento.tipo } </td>
                                                         <td> { mantenimiento.instalacion.equipo.equipo } </td>
-                                                        <td> { mantenimiento.mantenimiento.fecha } </td>
-                                                        <td> { mantenimiento.mantenimiento.costo } </td>
+                                                        <td> {this.formatDay(mantenimiento.mantenimiento.fecha )}</td>
+                                                        <td> 
+                                                            {this.setMoneyTable(mantenimiento.mantenimiento.costo)}
+                                                        </td>
                                                         <td>
                                                             { 
                                                                 mantenimiento.mantenimiento.cotizacion  ?
-                                                                    <a href = { mantenimiento.mantenimiento.cotizacion } target = '_blank' rel="noopener noreferrer">
-                                                                        Cotización
+                                                                    <a href = { mantenimiento.mantenimiento.cotizacion } target = '_blank' rel="noopener noreferrer" className="btn btn-icon btn-white btn-hover-primary btn-sm ml-3" >
+                                                                        <i className="la la-file-invoice-dollar text-primary icon-xl"></i>
                                                                     </a>
-                                                                : <></>
+                                                                :    
+                                                                <span>-</span>
                                                             }
                                                         </td>
                                                     </tr>

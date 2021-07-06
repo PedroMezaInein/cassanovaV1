@@ -627,7 +627,6 @@ a.nav-cliente.nav-link:focus,
     }
     .table-hover tbody tr:hover{
         background-color: #eaf0fc;
-
     }
 }
 
@@ -680,4 +679,24 @@ header#header {
 .back-to-top:hover {
     background: #6776f4;
     color: #fff;
+}
+
+#table-mantenimientos{
+    background: #f6f9ff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    thead{
+        background: white;
+        border: 10px solid #f6f9ff;
+    }
+    .table-hover tbody tr:hover{
+        background-color: #eaf0fc;
+    }
+    tr {
+        border-bottom-width: 1px;
+        border-bottom-style: dashed;
+        border-bottom-color: #e4e6ef;
+    }
+    tr:last-child{
+        border-bottom: none;
+    }
 }
