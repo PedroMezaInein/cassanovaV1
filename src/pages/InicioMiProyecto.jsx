@@ -887,15 +887,11 @@ class InicioMiProyecto extends Component {
                                                         </Nav.Link>
                                                     : ''
                                                 }
-                                                {
-                                                    user.tipo.tipo !== 'Cliente'?
-                                                        <Nav.Link className="nav-cliente" href={link_url} >
-                                                            Regresar
-                                                        </Nav.Link>
-                                                    :''
-                                                }
-                                            </Navbar.Collapse>
-                                        </>
+                                            <Nav.Item className = 'nav-cliente'>
+                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500}>MANTENIMIENTO</Link>
+                                            </Nav.Item>
+                                        </Navbar.Collapse>
+                                    </>
                                 }
                             </Navbar>
                         </div>
@@ -1226,8 +1222,12 @@ class InicioMiProyecto extends Component {
                             }
                         </>
                     }
+                    {
+                        user.tipo.tipo !== 'Cliente'?
+                        <a href={link_url} className="back-to-top d-flex align-items-center justify-content-center"><i className="la la-arrow-right"></i></a>
+                        :''
+                    }
                 </div>
-                {/* <a href="#" className="back-to-top d-flex align-items-center justify-content-center"><i className="bi bi-arrow-up-short"></i></a> */}
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
                     customcontent = { true } contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <Form id="form-miproyecto" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.addTicketAxios, e, 'form-miproyecto') } } >

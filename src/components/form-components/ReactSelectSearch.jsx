@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 class ReactSelectSearch extends Component {
     render() {
-        const { options, placeholder, onChange, defaultvalue, requirevalidation, messageinc} = this.props
+        const { options, placeholder, onChange, defaultvalue, requirevalidation, messageinc, iconclass} = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'
@@ -23,7 +23,7 @@ class ReactSelectSearch extends Component {
                 transition:'all 100ms',
                 boxSizing:'border-box',
                 borderColor: '#ECF0F3 !important',
-                // paddingLeft:'calc(1.5em + 1.3rem + 2px) !important'
+                paddingLeft:'calc(1.5em + 1.3rem + 2px) !important'
             }),
             dropdownIndicator: () => ({ 
                 color:'#686871 !important',
@@ -72,17 +72,22 @@ class ReactSelectSearch extends Component {
         return (
             <div>
                 <label className="col-form-label font-weight-bold text-dark-60">{placeholder}</label>
-                <Select
-                    placeholder={placeholder}
-                    onChange={onChange}
-                    styles={customStyles}
-                    defaultValue={defaultvalue}
-                    isClearable={true}
-                    isSearchable={true}
-                    name="color"
-                    options={options}
-                    noOptionsMessage={() => "NO HAY MÁS OPCIONES"}
-                />
+                <div className="input-icon">
+                    <span className="input-icon input-icon-right">
+                        <i className={iconclass + " m-0 kt-font-boldest text-dark-50"} style={{zIndex:'2'}}></i>
+                    </span>
+                    <Select
+                        placeholder={placeholder}
+                        onChange={onChange}
+                        styles={customStyles}
+                        defaultValue={defaultvalue}
+                        isClearable={true}
+                        isSearchable={true}
+                        name="color"
+                        options={options}
+                        noOptionsMessage={() => "NO HAY MÁS OPCIONES"}
+                    />
+                </div>
                 {
                     requirevalidation?(defaultvalue.length>0?'':<span className={"form-text text-danger"}> {messageinc} </span>):''
                 }

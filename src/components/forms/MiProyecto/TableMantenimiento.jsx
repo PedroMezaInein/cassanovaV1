@@ -80,17 +80,17 @@ class TableMantenimiento extends Component {
         return (
             <div>
                 <Row>
-                    <Col md="4" className={`bg-form ${searchForm?'':'d-none'}`}>
+                    <Col md="4" className={`bg-form rounded ${searchForm?'':'d-none'}`}>
                         <Form>
                             <div className="row form-group-marginless mx-0 mt-10">
                                 <div className="col-md-12 mb-5">
                                     <TagSelectSearchGray placeholder = '¿QUÉ DESEAS FILTRAR?' options = { options.rubro } defaultvalue = { form.rubro }
-                                        iconclass = 'las la-user-friends icon-xl' onChange = { this.updateRubro } />
+                                        iconclass = 'las la-user-friends icon-xl' onChange = { this.updateRubro } bgcolor='#fff'/>
                                 </div>
                                 {
                                     this.getActive('tipo_mantenimiento') &&
                                         <div className="col-md-12 mb-5">
-                                            <ReactSelectSearch placeholder = 'Selecciona el mantenimiento' defaultvalue = { form.mantenimiento }
+                                            <ReactSelectSearch placeholder = 'Selecciona el mantenimiento' defaultvalue = { form.mantenimiento } iconclass='las la-tools icon-xl'
                                                 options = { this.transformarOptions(options.mantenimientos) } onChange = { this.updateMantenimiento } />
                                         </div>
                                 }
@@ -98,21 +98,22 @@ class TableMantenimiento extends Component {
                                     this.getActive('equipo') &&
                                         <div className="col-md-12 mb-5">
                                             <ReactSelectSearch placeholder = 'Selecciona el equipo' defaultvalue = { form.equipo } onChange = { this.updateEquipos }
-                                                options = { this.transformarOptions(options.equipos) } />
+                                                options = { this.transformarOptions(options.equipos) } iconclass='las la-desktop icon-xl' />
                                         </div>
                                 }
                                 {
                                     this.getActive('estatus') &&
                                         <div className="col-md-12 mb-5">
                                             <ReactSelectSearch placeholder = 'Selecciona el estatus' options = { this.transformarOptions(options.estatus) }
-                                                defaultvalue = { form.estatus } onChange = { this.updateEstatus } />
+                                                defaultvalue = { form.estatus } onChange = { this.updateEstatus } iconclass='las la-check-circle icon-xl' />
                                         </div>
                                 }
                                 {
                                     this.getActive('costo') &&
                                         <div className="col-md-12 mb-5">
-                                            <InputNumberGray withicon = { 0 } requirevalidation = { 0 } placeholder = "COSTO" value = { form.costo }
-                                                name = "costo" onChange = { onChange } thousandseparator = { true } customclass = 'bg-white border' />
+                                            <InputNumberGray withicon = { 1 } requirevalidation = { 0 } placeholder = "COSTO" value = { form.costo }
+                                                name = "costo" onChange = { onChange } thousandseparator = { true }  customclass='bg-white '
+                                                iconclass='las la-money-bill icon-xl' custom_gtext='bg-white' custom_inputg='bg-white border' />
                                         </div>
                                 }
                                 {

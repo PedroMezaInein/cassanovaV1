@@ -9,7 +9,7 @@ import { CalidadView } from '../../components/forms'
 import { Form } from 'react-bootstrap'
 import { setFormHeader, setSingleHeader } from '../../functions/routers'
 import { Modal } from '../../components/singles'
-import { SelectSearch, CalendarDay, InputMoney, Button } from '../../components/form-components'
+import { SelectSearchGray, CalendarDay, InputMoneyGray, Button } from '../../components/form-components'
 class CalidadForm extends Component {
     state = {
         ticket: '',
@@ -361,23 +361,25 @@ class CalidadForm extends Component {
                     <Form onSubmit = { (e) => { e.preventDefault(); this.onSubmitMantenimiento(e) } } >
                         <div className="row mx-0 justify-content-center">
                             <div className="col-md-4">
-                                <InputMoney requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } prefix = '$' name = "costo"
-                                    value = { form.costo } onChange = { this.onChange } placeholder = "COSTO" iconclass = "fas fa-money-bill-wave-alt" />
+                                <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 }
+                                    requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } prefix = '$' name = "costo"
+                                    value = { form.costo } onChange = { this.onChange } placeholder = "COSTO" iconclass = "la la-money-bill icon-xl" />
                             </div>
                             <div className="col-md-8">
-                                <SelectSearch options = { options.equipos } placeholder = 'Selecciona el equipo instalado' name = "equipo" 
+                                <SelectSearchGray withtaglabel={1} withtextlabel={1} withicon={1} options = { options.equipos } 
+                                    placeholder = 'SELECCIONA EL EQUIPO INSTALADO' name = "equipo" 
                                     value = { form.equipo } onChange = { (value) => this.updateSelect(value, 'equipo') }
-                                    iconclass="fas fa-toolbox" formeditado={0} messageinc="Incorrecto. Selecciona el técnico que asiste" />
+                                    iconclass="la la-toolbox icon-xl" formeditado={0} messageinc="Incorrecto. Selecciona el técnico que asiste" />
                             </div>
                         </div>
                         <div className = 'text-center'>
-                            <div className="d-flex justify-content-center pt-5" style={{ height: '1px' }}>
-                                <label className="text-center font-weight-bolder">Fecha del mantenimiento</label>
+                            <div className="d-flex justify-content-center pt-5" style={{ height: '14px' }}>
+                                <label className="text-center font-weight-bolder text-dark-60">Fecha del mantenimiento</label>
                             </div>
                             <CalendarDay value = { form.fechaMantenimiento } name = 'fechaMantenimiento' date = { form.fechaMantenimiento } withformgroup = { 1 } 
                                 onChange = { this.onChange } placeholder = 'Fecha del mantenimiento' requirevalidation = { 1 } />
                         </div>
-                        <div className="text-right">
+                        <div className="card-footer py-3 pr-1 text-right">
                             <Button icon = '' className = "btn btn-primary mr-2" text = "ENVIAR"
                                 type = 'submit'/>
                         </div>
