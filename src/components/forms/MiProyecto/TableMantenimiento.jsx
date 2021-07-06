@@ -76,7 +76,7 @@ class TableMantenimiento extends Component {
 
     render() {
         const { options, form, onChangeRange, onChange, mantenimientos } = this.props
-        const { searchForm, rubros } = this.state
+        const { searchForm } = this.state
         return (
             <div>
                 <Row>
