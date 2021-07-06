@@ -887,9 +887,6 @@ class InicioMiProyecto extends Component {
                                                         </Nav.Link>
                                                     : ''
                                                 }
-                                            <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500}>MANTENIMIENTO</Link>
-                                            </Nav.Item>
                                         </Navbar.Collapse>
                                     </>
                                 }
