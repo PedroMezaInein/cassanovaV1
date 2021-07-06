@@ -77,16 +77,16 @@ class TableTickets extends Component {
                                             <td>
                                                 {
                                                     ticket.presupuesto.length ?
-                                                        <a className="btn btn-icon btn-light btn-hover-primary btn-sm" onClick={(e) => { openModalSee(ticket) }}>
+                                                        <span className="btn btn-icon btn-light btn-hover-primary btn-sm" onClick={(e) => { openModalSee(ticket) }}>
                                                             <i className="la la-file-invoice-dollar text-primary icon-xl"></i>
-                                                        </a>
+                                                        </span>
                                                         : ''
                                                 }
                                                 {
                                                     ticket.estatus_ticket.estatus === "Terminado" ?
-                                                        <a className="btn btn-icon btn-light btn-hover-primary btn-sm ml-3" onClick={(e) => { openModalDetalles(ticket) }}>
+                                                        <span className="btn btn-icon btn-light btn-hover-primary btn-sm ml-3" onClick={(e) => { openModalDetalles(ticket) }}>
                                                             <i className="la la-list-alt text-primary icon-xl"></i>
-                                                        </a>
+                                                        </span>
                                                         : ''
                                                 }
                                             </td>
