@@ -53,7 +53,7 @@ class TableMantenimiento extends Component {
         })
     }
     render() {
-        const { options, form, onChangeRange, onChange, filtrarTabla } = this.props
+        const { options, form, onChangeRange, onChange, filtrarTabla, mantenimientos } = this.props
         const { searchForm, rubros } = this.state
         return (
             <div>
@@ -161,26 +161,30 @@ class TableMantenimiento extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="text-dark-75 font-weight-normal text-center">
-                                            <td>
-                                                
-                                            </td>
-                                            <td>
-                                                
-                                            </td>
-                                            <td>
-                                                
-                                            </td>
-                                            <td>
-                                                
-                                            </td>
-                                            <td>
-                                                
-                                            </td>
-                                            <td>
-                                                
-                                            </td>
-                                        </tr>
+                                        {
+                                            mantenimientos.map((mantenimiento, index) => {
+                                                console.log(mantenimiento, 'mante')
+                                                return(
+                                                    <tr className="text-dark-75 font-weight-normal text-center" key = { index } >
+                                                        <td> { mantenimiento.mantenimiento.status.estatus } </td>
+                                                        <td> { mantenimiento.mantenimiento.tipo } </td>
+                                                        <td> { mantenimiento.instalacion.equipo.equipo } </td>
+                                                        <td> { mantenimiento.mantenimiento.fecha } </td>
+                                                        <td> { mantenimiento.mantenimiento.costo } </td>
+                                                        <td>
+                                                            { 
+                                                                mantenimiento.mantenimiento.cotizacion  ?
+                                                                    <a href = { mantenimiento.mantenimiento.cotizacion } target = '_blank' rel="noopener noreferrer">
+                                                                        Cotización
+                                                                    </a>
+                                                                : <></>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                        
                                     </tbody>
                                 </table>
                             </div>

@@ -28,23 +28,23 @@ import esLocale from '@fullcalendar/core/locales/es'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 class InicioMiProyecto extends Component {
     state = {
+        activeFlag: 'calendario',
+        mantenimientos: [],
+        events: [],
         id: '',
         ticket: {
-            estatus_ticket: {
-                estatus: ''
-            },
-            tecnico: {
-                nombre: ''
-            }
+            estatus_ticket: { estatus: '' }, 
+            tecnico: { nombre: '' }
         },
         tickets: [],
         proyecto: '',
         formeditado: 0,
         primeravista: true,
-        defaultactivekey: "",
-        modal: false,
-        modalDetalles: false,
-        modalLevantamiento: false,
+        modal: {
+            single : false,
+            details: false,
+            tickets: false,
+        },
         showadjuntos: [
             {
                 name: 'Fotografías levantamiento',
@@ -91,11 +91,6 @@ class InicioMiProyecto extends Component {
                 value: 'carta_oferta'
             }
         ],
-        data: {
-            proyectos: [],
-            tickets: [],
-            tiposTrabajo: []
-        },
         form: {
             proyecto: '',
             tipo_trabajo: '',
@@ -108,14 +103,7 @@ class InicioMiProyecto extends Component {
                     placeholder: 'Fotos del incidente',
                     files: []
                 }
-            },
-            tipo_mantenimiento:'',
-            equipo:'',
-            estatus:'',
-            costo:'',
-            fechaInicio: new Date(),
-            fechaFin: new Date(),
-            rubro:''
+            }
         },
         options: {
             proyectos: [],
@@ -318,291 +306,41 @@ class InicioMiProyecto extends Component {
             total_paginas: 0,
             value: "en_contacto"
         },
-        showTable: false,
-        showCalendario: true,
-        searchForm: false,
-        events: [],
-        link_url:'',
     }
-    getLink = () => {
-        return '/leads/crm'
-    }
-    componentDidMount() {
-        new WOW.WOW({
-            live: false
-        }).init();
 
+    componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
-        const proyecto = permisos.find(function (element, index) {
+        const modulo = permisos.find(function (element, index) {
             return element.modulo.url === pathname
         });
-        if (!proyecto)
-            history.push('/')
-        this.getMiProyectoAxios()
-        this.getCalendarioInstalaciones()
+        /* if (!modulo)
+            history.push('/') */
+        this.getProyectosAxios()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
-            if (id) {
-                this.setState({
-                    ...this.state,
-                    id: id
-                })
-            }
+            if (id) { this.getMiProyectoAxios(id) }
         }
         this.changePage(permisos)
-        
     }
-    
-    changePage = (permisos) => {
-        let flag = false
-        let { link_url } = this.state
-        const calendarioTareas = permisos ? permisos.find(function(element, index) {
-            return element.modulo.slug === 'calendario-tareas'
-        }) : null;
-        if(calendarioTareas){
-            flag = true
-            link_url ='/usuarios/calendario-tareas'
-        }
-        
-        const crm = permisos ? permisos.find(function(element, index) {
-            return element.modulo.slug === 'crm'
-        }) : null;
-        if(crm && flag === false){
-            flag = true
-            link_url ='/leads/crm'
-        }
 
-        const tareas = permisos ? permisos.find(function(element, index) {
-            return element.modulo.slug === 'tareas'
-        }) : null;
-        if(tareas && flag === false){
-            flag = true
-            link_url ='/usuarios/tareas'
-        }
-
-        if(permisos === undefined && flag === false){
-            link_url ='/login'
-        }
-        else{
-            if(flag === false) {
-                link_url =permisos[0].modulo.url
-            }
-        }
-
-        this.setState({
-            ...this.state,
-            link_url
-        })
-        
-    }
     componentDidUpdate() {
         $(document).scroll(function () {
             var $nav = $(".fixed-top");
             $nav.toggleClass('header-scrolled', $(this).scrollTop() > $nav.height());
         });
     }
-    async getMiProyectoAxios() {
-        const { access_token, user } = this.props.authUser
-        await axios.get(URL_DEV + 'proyectos/mi-proyecto', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { proyectos, partidas, tiposTrabajo } = response.data
-                const { data, options, id } = this.state
-                let { proyecto, tickets, showSelect } = this.state
-                options.proyectos = setOptions(proyectos, 'nombre', 'id')
-                options.partidas = setOptions(partidas, 'nombre', 'id')
 
-                data.tiposTrabajo = tiposTrabajo
-                data.proyectos = proyectos
-
-                if (id !== '') {
-                    proyectos.map((proy) => {
-                        if (proy.id === id) {
-                            proyecto = proy
-                        }
-                        return false
-                    })
-                    if (proyectos.length === 1) {
-                        proyecto = proyectos[0]
-                        showSelect = false
-                    } else {
-                        showSelect = true
-                    }
-                }
-
-                if (id === '') {
-                    if (user.tipo.tipo === 'Cliente') {
-                        if (proyectos.length > 0) {
-                            proyecto = proyectos[0]
-                        }
-                    }
-                }
-
-                if (proyecto !== '') {
-                    proyectos.map((element) => {
-                        if (element.id === proyecto.id) {
-                            proyecto = element
-                            data.tickets = element.tickets
-                        }
-                        return false
-                    })
-                }
-
-                var now = moment();
-                var fecha_proyecto = moment(proyecto.fecha_fin, 'YYYY-MM-DD');
-                var fecha_hoy = moment(now, 'YYYY-MM-DD');
-
-                var dias_transcurridos = fecha_hoy.diff(fecha_proyecto, 'days')
-                let aux = []
-                data.tiposTrabajo.forEach((tipo) => {
-                    if (dias_transcurridos >= 365) {
-                        if (tipo.tipo !== 'Mantenimiento') {
-                            aux.push({
-                                name: tipo.tipo,
-                                value: tipo.id.toString()
-                            })
-                        }
-                    } else {
-                        aux.push({
-                            name: tipo.tipo,
-                            value: tipo.id.toString()
-                        })
-                    }
-                })
-                options.tiposTrabajo = aux
-                this.setState({
-                    ...this.state,
-                    data,
-                    options,
-                    proyecto,
-                    tickets,
-                    form: this.clearForm()
-                })
-                this.getTicketsPage()
-
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    clearForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            if (element !== 'adjuntos')
-                form[element] = ''
-            else
-                form[element] = {
-                    adjunto: {
-                        value: '',
-                        placeholder: 'Ingresa los adjuntos',
-                        files: []
-                    },
-                    fotos: {
-                        value: '',
-                        placeholder: 'Fotos del incidente',
-                        files: []
-                    }
-                }
-            return false
-        })
-        return form
-    }
     updateProyecto = value => {
-        const { data, form, adjuntos } = this.state
-        let { options } = this.state
-        options.tiposTrabajo = []
-        let newdefaultactivekey = "";
-        form.proyecto = value
-        data.proyectos.map((proyecto) => {
-            if (proyecto.id.toString() === value.toString()) {
-                for (var i = 0; i < adjuntos.length; i++) {
-                    var grupo = adjuntos[i];
-                    let aux = false
-                    grupo.adjuntos.forEach(element => {
-                        if (proyecto[element.value].length)
-                            aux = true
-                    });
-                    if (aux) {
-                        newdefaultactivekey = grupo.adjuntos[0].value;
-                        break;
-                    }
-                }
-                data.tickets = proyecto.tickets
-
-                var now = moment();
-                var fecha_proyecto = moment(proyecto.fecha_fin, 'YYYY-MM-DD');
-                var fecha_hoy = moment(now, 'YYYY-MM-DD');
-
-                var dias_transcurridos = fecha_hoy.diff(fecha_proyecto, 'days')
-
-                data.tiposTrabajo.forEach((tipo) => {
-                    if (dias_transcurridos >= 365) {
-                        if (tipo.tipo !== 'Mantenimiento') {
-                            options.tiposTrabajo.push({
-                                name: tipo.tipo,
-                                value: tipo.id.toString()
-                            })
-                        }
-                    } else {
-                        options.tiposTrabajo.push({
-                            name: tipo.tipo,
-                            value: tipo.id.toString()
-                        })
-                    }
-                })
-                options.tiposTrabajo.sort(this.compare)
-                this.setState({
-                    ...this.state,
-                    defaultactivekey: newdefaultactivekey,
-                    proyecto: proyecto,
-                    form: this.clearForm(),
-                    data,
-                    options
-                })
-            }
-            return false
-        })
-    }
-    compare(a, b) {
-        if (a.name < b.name) {
-            return -1;
-        }
-        if (a.name > b.name) {
-            return 1;
-        }
-        return 0;
-    }
-    onChange = e => {
         const { form } = this.state
-        const { name, value } = e.target
-        form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    updateTrabajo = value => {
-        this.onChange({ target: { value: value, name: 'tipo_trabajo' } })
+        form.proyecto = value
+        this.setState({...this.state, form})
+        this.getMiProyectoAxios(value)
     }
 
-    updatePartida = value => {
-        this.onChange({ target: { value: value, name: 'partida' } })
-    }
-    changePageEdit = proyecto => {
-        const { history } = this.props
-        history.push({
-            pathname: '/mi-proyecto/ver-proyecto',
-            state: { proyecto: proyecto }
-
-        });
-    }
     setEmpresaName(proyecto) {
         if (proyecto.empresa) {
             switch (proyecto.empresa.name) {
@@ -617,6 +355,7 @@ class InicioMiProyecto extends Component {
             }
         }
     }
+
     setEmpresaColor(proyecto) {
         if (proyecto.empresa) {
             switch (proyecto.empresa.name) {
@@ -631,6 +370,7 @@ class InicioMiProyecto extends Component {
             }
         }
     }
+
     setFase(proyecto) {
         let aux = ''
         if (proyecto.fase1)
@@ -649,6 +389,7 @@ class InicioMiProyecto extends Component {
             aux = 'Fase 1, 2 y 3'
         return aux
     }
+
     formatDay(fechaInicio, fechaFinal) {
         let fecha_inicio = moment(fechaInicio);
         let fecha_final = moment(fechaFinal);
@@ -656,6 +397,7 @@ class InicioMiProyecto extends Component {
         let formatFinal = fecha_final.locale('es').format("DD MMM YYYY");
         return formatInicio.replace('.', '') + ' - ' + formatFinal.replace('.', '');
     }
+
     seleccionaradj(adjuntos) {
         const { proyecto } = this.state;
         let newdefaultactivekey = "";
@@ -669,18 +411,264 @@ class InicioMiProyecto extends Component {
         this.setState({
             ...this.state,
             primeravista: false,
-            defaultactivekey: newdefaultactivekey,
             subActiveKey: newdefaultactivekey,
             showadjuntos: adjuntos
         })
     }
-    updateActiveTabContainer = active => {
-        this.setState({
-            ...this.state,
-            subActiveKey: active
+
+    updateActiveTabContainer = active => { this.setState({ ...this.state, subActiveKey: active }) }
+
+    updateOptions = opciones => {
+        const { proyecto } = this.state
+        let now = moment();
+        let fecha_proyecto = moment(proyecto.fecha_fin, 'YYYY-MM-DD');
+        let fecha_hoy = moment(now, 'YYYY-MM-DD');
+        let dias_transcurridos = fecha_hoy.diff(fecha_proyecto, 'days')
+        let aux = []
+        opciones.forEach((tipo) => {
+            if (dias_transcurridos >= 365) {
+                if (tipo.name !== 'Mantenimiento') { aux.push(tipo) }
+            } else { aux.push(tipo) }
+        })
+        return aux
+    }
+
+    updateSelect = (value, name) => {
+        const { form } = this.state
+        form[name] = value
+        this.setState({...this.state, form})
+    }
+
+    onChange = e => {
+        const { value, name } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({...this.state, form})
+    }
+
+    handleChange = (files, item) => {
+        if(files.length)
+            this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
+    }
+
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        files.forEach((file, key) => { aux.push( { name: file.name, file: file, url: URL.createObjectURL(file), key: key } ) })
+        form['adjuntos'][name].value = value
+        form['adjuntos'][name].files = aux
+        this.setState({ ...this.state, form })
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjunto: {
+                            value: '',
+                            placeholder: 'Ingresa los adjuntos',
+                            files: []
+                        },
+                        fotos: {
+                            value: '',
+                            placeholder: 'Fotos del incidente',
+                            files: []
+                        }
+                    }
+                    break;
+                case 'proyecto':
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form
+    }
+
+    openModalLevantamiento = () => { 
+        const { modal } = this.state
+        modal.tickets = true
+        this.setState({ ...this.state, modal }) 
+    }
+
+    openModalSee = (ticket) => {
+        const { modal } = this.state
+        modal.single = true
+        this.setState({ ...this.state, modal, formeditado: 0, ticket: ticket })
+    }
+
+    openModalDetalles = (ticket) => {
+        const { modal } = this.state
+        modal.details = true
+        this.setState({ ...this.state, modal, formeditado: 0, ticket: ticket })
+    }
+
+    handleClose = () => {
+        const { form, modal } = this.state
+        modal.tickets = false
+        modal.details = false
+        modal.single = false
+        this.setState({...this.state, form: this.clearForm(), modal, ticket: '' })
+    }
+
+    changeEstatus = estatus => {
+        const { ticket } = this.state
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+    }
+
+    nextPageTicket = (e) => {
+        e.preventDefault()
+        const { tickets_info } = this.state
+        if (tickets_info.numPage < tickets_info.total_paginas - 1) {
+            tickets_info.numPage++
+            this.setState({ tickets_info })
+        }
+        this.getTicketsPage()
+    }
+
+    prevPageTicket = (e) => {
+        e.preventDefault()
+        const { tickets_info } = this.state
+        if (tickets_info.numPage > 0) {
+            tickets_info.numPage--
+            this.setState({ tickets_info })
+            this.getTicketsPage()
+        }
+    }
+
+    renderEventContent = (eventInfo) => {
+        const { proyecto } = this.state
+        let { extendedProps } = eventInfo.event._def
+        return (
+            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {proyecto.nombre}</Tooltip>}>
+                <div className="text-hover container p-1 tarea" style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}} onClick={(e) => { e.preventDefault(); this.getInstalacion(extendedProps) }}>
+                        <div className="row mx-0 row-paddingless">
+                            <div className="col-md-auto mr-1 text-truncate">
+                                <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
+                            </div>
+                            <div className="col align-self-center text-truncate">
+                                <span className="text-white font-weight-bold font-size-12px">{eventInfo.event.title} - {proyecto.nombre}</span>
+                            </div>
+                        </div>
+                    </div>
+            </OverlayTrigger>
+        )
+    }
+
+    changePage = (permisos) => {
+        let flag = false
+        let { link_url } = this.state
+        const calendarioTareas = permisos ? permisos.find(function(element, index) {
+            return element.modulo.slug === 'calendario-tareas'
+        }) : null;
+        if(calendarioTareas){
+            flag = true
+            link_url ='/usuarios/calendario-tareas'
+        }
+        const crm = permisos ? permisos.find(function(element, index) {
+            return element.modulo.slug === 'crm'
+        }) : null;
+        if(crm && flag === false){
+            flag = true
+            link_url ='/leads/crm'
+        }
+        const tareas = permisos ? permisos.find(function(element, index) {
+            return element.modulo.slug === 'tareas'
+        }) : null;
+        if(tareas && flag === false){
+            flag = true
+            link_url ='/usuarios/tareas'
+        }
+        if(permisos === undefined && flag === false){ link_url ='/login' }
+        else{ if(flag === false) { link_url =permisos[0].modulo.url } }
+        this.setState({ ...this.state, link_url })
+    }
+
+    changeActiveFlag = () => {
+        const { activeFlag } = this.state
+        this.setState({...this.state, activeFlag: activeFlag === 'calendario' ? 'tabla' : 'calendario'})
+    }
+
+    getProyectosAxios = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/mi-proyecto`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { proyectos, tiposTrabajo, partidas } = response.data
+                const { options, form } = this.state
+                let show = proyectos.length === 1 ? false : true
+                options.proyectos = setOptions(proyectos, 'nombre', 'id')
+                options.partidas = setOptions(partidas, 'nombre', 'id')
+                options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
+                let proyecto = options.proyectos[0]
+                form.proyecto = proyecto.value
+                this.getMiProyectoAxios(proyecto.value);
+                this.setState( { ...this.state, showSelect: show, options, form } )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
-    async getProyectoAdjuntosZip(array) {
+
+    getMiProyectoAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/mi-proyecto/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { adjuntos } = this.state
+                const { proyecto } = response.data
+                let activeKey = ''
+                adjuntos.forEach((grupo) => {
+                    grupo.adjuntos.forEach(element => {
+                        if (proyecto[element.value].length)
+                            if(activeKey === '')
+                                activeKey = element.value
+                    });
+                })
+                console.log(proyecto, 'PROYECTO')
+                let aux = []
+                let aux2 = []
+                proyecto.equipos_instalados.forEach((equipo) => {
+                    aux.push( { 
+                        title: equipo.equipo.equipo,
+                        start: equipo.fecha,
+                        end: equipo.fecha,
+                        instalacion: equipo,
+                        backgroundColor: "#17a2b8",
+                        borderColor: "#17a2b8",
+                        iconClass: 'la la-toolbox',
+                        tipo:'Instalación'
+                    })
+                    equipo.mantenimientos.forEach((mantenimiento) => {
+                        aux.push({
+                            title: equipo.equipo.equipo,
+                            start:mantenimiento.fecha,
+                            end:mantenimiento.fecha,
+                            instalacion: equipo,
+                            backgroundColor: "#2756C3",
+                            borderColor: "#2756C3",
+                            iconClass: 'la la-tools',
+                            tipo:'Mantenimiento'
+                        })
+                        aux2.push({mantenimiento: mantenimiento, instalacion: equipo})
+                    })
+                })
+                this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2 })
+                this.getTicketsPage()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getProyectoAdjuntosZip = async(array) =>{
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
         let aux = { tipo: array }
@@ -694,88 +682,15 @@ class InicioMiProyecto extends Component {
                 link.setAttribute('download', proyecto.nombre + '.zip');
                 document.body.appendChild(link);
                 link.click();
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    openModalSee = (ticket) => {
-        this.setState({
-            ...this.state,
-            modal: true,
-            formeditado: 0,
-            ticket: ticket
-        })
-    }
 
-    handleClose = () => {
-        const { modal } = this.state
-        this.setState({
-            ...this.state,
-            modal: !modal,
-            ticket: ''
-        })
-    }
-
-    openModalDetalles = (ticket) => {
-        this.setState({
-            ...this.state,
-            modalDetalles: true,
-            formeditado: 0,
-            ticket: ticket
-        })
-    }
-
-    handleCloseDetalles = () => {
-        const { modalDetalles } = this.state
-        this.setState({
-            ...this.state,
-            modalDetalles: !modalDetalles,
-            ticket: ''
-        })
-    }
-    openModalLevantamiento = () => { this.setState({ ...this.state, modalLevantamiento: true }) }
-
-    handleCloseLevantamiento = () => {
-        const { modalLevantamiento } = this.state
-        this.setState({
-            ...this.state,
-            modalLevantamiento: !modalLevantamiento,
-        })
-    }
-    handleChange = (files, item) => {
-        questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => this.onChangeAdjunto({ target: { name: item, value: files, files: files } }))
-    }
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form['adjuntos'][name].value = value
-        form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    onSubmit = (e) => {
-        e.preventDefault()
+    addTicketAxios = async () =>{
         waitAlert()
-        this.addTicketAxios();
-    }
-    async addTicketAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
         const data = new FormData();
@@ -788,10 +703,9 @@ class InicioMiProyecto extends Component {
                     data.append(element, form[element]);
                     break
             }
-            return false
         })
         aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
+        aux.forEach((element) => {
             if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
@@ -799,82 +713,24 @@ class InicioMiProyecto extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
-            return false
         })
         data.append('proyecto', proyecto.id)
         await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ticket fue solicitado con éxito.')
-                const { history } = this.props
-                history.push({ pathname: '/mi-proyecto' })
-
-                this.getMiProyectoAxios()
-
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    modalLevantamiento: false
-                })
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.getMiProyectoAxios(proyecto.id)
+                this.handleClose()
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    changeEstatus = estatus => {
-        const { ticket } = this.state
-        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-    }
 
-    async changeEstatusAxios(data) {
-        const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.setState({
-                    ...this.state,
-                    modal: false
-                })
-                if (data.estatus) {
-                    doneAlert('El ticket fue actualizado con éxito.')
-                    this.getMiProyectoAxios()
-                }
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    nextPageLeadEnContacto = (e) => {
-        e.preventDefault()
-        const { tickets_info } = this.state
-        if (tickets_info.numPage < tickets_info.total_paginas - 1) {
-            tickets_info.numPage++
-            this.setState({
-                tickets_info
-            })
-        }
-        this.getTicketsPage()
-    }
-
-    prevPageLeadEnContacto = (e) => {
-        e.preventDefault()
-        const { tickets_info } = this.state
-        if (tickets_info.numPage > 0) {
-            tickets_info.numPage--
-            this.setState({
-                tickets_info
-            })
-            this.getTicketsPage()
-        }
-    }
     getTicketsPage = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { tickets_info, form, proyecto } = this.state
+        const { tickets_info, proyecto } = this.state
         await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
@@ -891,121 +747,26 @@ class InicioMiProyecto extends Component {
             console.log(error, 'error')
         })
     }
-    async getCalendarioInstalaciones() {
+
+    changeEstatusAxios = async (data) => {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'v1/proyectos/instalacion-equipos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { instalaciones } = response.data
-                let aux = []
-                instalaciones.forEach((instalacion) => {
-                    let periodo = instalacion.periodo //meses
-                    let duracion = instalacion.duracion //años
-                    let meses = duracion === 0 ? periodo : duracion * 12
-                    aux.push( { 
-                        title: instalacion.equipo.equipo,
-                        start: instalacion.fecha,
-                        end: instalacion.fecha,
-                        instalacion: instalacion,
-                        backgroundColor: "#17a2b8",
-                        borderColor: "#17a2b8",
-                        iconClass: 'la la-toolbox',
-                        tipo:'Instalación'
-                    })
-                    let contadorPeriodo = 0;
-                    for(let x=1; x <= meses; x++){
-                        if(x % periodo === 0){
-                            contadorPeriodo++;
-                            let fecha_instalacion = moment(instalacion.fecha);
-                            let fecha_mantenimiento = fecha_instalacion.add(x, 'M');
-                            if(fecha_mantenimiento.day() === 0){
-                                fecha_mantenimiento.add(1, 'd')
-                            }
-                            if(fecha_mantenimiento.day() === 6){
-                                fecha_mantenimiento.add(2, 'd')
-                            }
-                            let fecha_mantenimiento_format= fecha_mantenimiento.format("YYYY-MM-DD")
-                            aux.push({
-                                title: instalacion.equipo.equipo,
-                                start:fecha_mantenimiento_format,
-                                end:fecha_mantenimiento_format,
-                                instalacion: instalacion,
-                                backgroundColor: "#2756C3",
-                                borderColor: "#2756C3",
-                                iconClass: 'la la-tools',
-                                tipo:'Mantenimiento',
-                                contadorPeriodo:contadorPeriodo
-                            })
-                        }
-                    }
-                    return false
-                })
-                this.setState({  ...this.state,  events: aux, instalaciones: instalaciones })
+                const { proyecto } = this.state
+                this.handleClose()
+                if (data.estatus) {
+                    doneAlert('El ticket fue actualizado con éxito.')
+                    this.getMiProyectoAxios(proyecto.id)
+                }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
-    renderEventContent = (eventInfo) => {
-        let { extendedProps } = eventInfo.event._def
-        return (
-            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</Tooltip>}>
-                <div className="text-hover container p-1 tarea" style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}} onClick={(e) => { e.preventDefault(); this.getInstalacion(extendedProps) }}>
-                        <div className="row mx-0 row-paddingless">
-                            <div className="col-md-auto mr-1 text-truncate">
-                                <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
-                            </div>
-                            <div className="col align-self-center text-truncate">
-                                <span className="text-white font-weight-bold font-size-12px">{eventInfo.event.title} - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span>
-                            </div>
-                        </div>
-                    </div>
-            </OverlayTrigger>
-        )
-    }
-    showMantenimentos() {
-        this.setState({
-            ...this.state,
-            showCalendario: true,
-            showTable: false
-        })
-    }
-    showTable() {
-        this.setState({
-            ...this.state,
-            showTable: true,
-            showCalendario: false
-        })
-    }
-    onChangeRange = range => {
-        const { startDate, endDate } = range
-        const { form } = this.state
-        form.fechaInicio = startDate
-        form.fechaFin = endDate
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    filtrarTabla = async () => {
-        const { access_token } = this.props.authUser
-        const { proyecto, form } = this.state
-        await axios.put(URL_DEV + 'v1/proyectos/' + proyecto.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Tabla filtrada con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     render() {
-        const { options, form, proyecto, showSelect, primeravista, defaultactivekey, subActiveKey, adjuntos, showadjuntos, tickets, data, ticket, modal, modalDetalles, modalLevantamiento, formeditado, tickets_info,
-                showCalendario, events, link_url} = this.state
+        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos } = this.state
         const { user } = this.props.authUser
         return (
             <div>
@@ -1017,63 +778,60 @@ class InicioMiProyecto extends Component {
                                     {
                                         setEmpresaLogo(proyecto) !== '' ?
                                             <img alt="" className="img-logo" src={setEmpresaLogo(proyecto)} />
-                                            : ''
+                                        : ''
                                     }
                                 </Navbar.Brand>
                                 {
                                     proyecto &&
-                                    <>
-                                        <Navbar.Toggle />
-                                        <Navbar.Collapse id="basic-navbar-nav" className="justify-content-flex-end" >
-                                            <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { 0 } className="nav-cliente nav-link" to="inicio" spy={true} smooth={true} duration={500} >Inicio</Link>
-                                            </Nav.Item>
-                                            <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="informacion" spy={true} smooth={true} duration={500} >Información</Link>
-                                            </Nav.Item>
-                                            {
-                                                proyecto.adjuntos.length ?
-                                                    <Nav.Item className = 'nav-cliente'>
-                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="material" spy={true} smooth={true} duration={500} >Material</Link>
-                                                    </Nav.Item>
+                                        <>
+                                            <Navbar.Toggle />
+                                            <Navbar.Collapse id="basic-navbar-nav" className="justify-content-flex-end" >
+                                                <Nav.Item className = 'nav-cliente'>
+                                                    <Link activeClass="active" offset = { 0 } className="nav-cliente nav-link" to="inicio" spy={true} smooth={true} duration={500} >Inicio</Link>
+                                                </Nav.Item>
+                                                <Nav.Item className = 'nav-cliente'>
+                                                    <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="informacion" spy={true} smooth={true} duration={500} >Información</Link>
+                                                </Nav.Item>
+                                                {
+                                                    proyecto.adjuntos.length ?
+                                                        <Nav.Item className = 'nav-cliente'>
+                                                            <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="material" spy={true} smooth={true} duration={500} >Material</Link>
+                                                        </Nav.Item>
                                                     : ''
-                                            }
-                                            {
-                                                proyecto.mantenimiento_correctivo.length ?
-                                                    <Nav.Item className = 'nav-cliente'>
-                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500} >Mantenimiento</Link>
-                                                    </Nav.Item>
+                                                }
+                                                <Nav.Item className = 'nav-cliente'>
+                                                    <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
+                                                </Nav.Item>
+                                                {
+                                                    proyecto.avances.length ?
+                                                        <Nav.Item className = 'nav-cliente'>
+                                                            <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="avances" spy={true} smooth={true} duration={500} >Avances</Link>
+                                                        </Nav.Item>
                                                     : ''
-                                            }
-                                            <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
-                                            </Nav.Item>
-                                            {
-                                                proyecto.avances.length ?
-                                                    <Nav.Item className = 'nav-cliente'>
-                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="avances" spy={true} smooth={true} duration={500} >Avances</Link>
-                                                    </Nav.Item>
+                                                }
+                                                {
+                                                    proyecto.equipos_instalados.length ?
+                                                        <Nav.Item className = 'nav-cliente'>
+                                                            <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500} >Mantenimiento</Link>
+                                                        </Nav.Item>
                                                     : ''
-                                            }
-                                            {
-                                                proyecto.bitacora !== null ?
-                                                    <Nav.Link className="nav-cliente" href = { proyecto.bitacora} target = '_blank'>
-                                                        Bitácora
-                                                    </Nav.Link>
+                                                }
+                                                {
+                                                    proyecto.bitacora !== null ?
+                                                        <Nav.Link className="nav-cliente" href = { proyecto.bitacora} target = '_blank' rel="noopener noreferrer" >
+                                                            Bitácora
+                                                        </Nav.Link>
                                                     : ''
-                                            }
-                                            <Nav.Item className = 'nav-cliente'>
-                                                <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500}>MANTENIMIENTO</Link>
-                                            </Nav.Item>
-                                            {
-                                                user.tipo.tipo !== 'Cliente'?
-                                                <Nav.Link className="nav-cliente" href={link_url} >
-                                                    Regresar
-                                                </Nav.Link>
-                                                :''
-                                            }
-                                        </Navbar.Collapse>
-                                    </>
+                                                }
+                                                {
+                                                    user.tipo.tipo !== 'Cliente'?
+                                                        <Nav.Link className="nav-cliente" href={link_url} >
+                                                            Regresar
+                                                        </Nav.Link>
+                                                    :''
+                                                }
+                                            </Navbar.Collapse>
+                                        </>
                                 }
                             </Navbar>
                         </div>
@@ -1082,25 +840,15 @@ class InicioMiProyecto extends Component {
                         <div>
                             {
                                 showSelect &&
-                                <div className="row mx-0 col-md-12 d-flex justify-content-flex-end mb-20 mt-10">
-                                    <div className="col-md-7 d-flex justify-content-end">
-                                        <div className="wow fadeInUp col-md-4" data-wow-delay="700">
-                                            <SelectSearchGray
-                                                options={options.proyectos}
-                                                placeholder="SELECCIONE UN PROYECTO"
-                                                name="proyecto"
-                                                value={form.proyecto}
-                                                onChange={this.updateProyecto}
-                                                requirevalidation={0}
-                                                customdiv="mb-0"
-                                                withtaglabel={0}
-                                                withtextlabel={0}
-                                                withicon={1}
-                                                iconvalid={1}
-                                            />
+                                    <div className="row mx-0 col-md-12 d-flex justify-content-flex-end mb-20 mt-10">
+                                        <div className="col-md-7 d-flex justify-content-end">
+                                            <div className="wow fadeInUp col-md-4" data-wow-delay="700">
+                                                <SelectSearchGray options = { options.proyectos } placeholder = "SELECCIONE UN PROYECTO" name = "proyecto" 
+                                                    value = { form.proyecto } onChange = { this.updateProyecto } requirevalidation = { 0 }  customdiv = "mb-0" 
+                                                    withtaglabel = { 0 } withtextlabel = { 0 } withicon = { 1 } iconvalid = { 1 } />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                             }
                             <div className="row mx-auto col-md-11 d-flex">
                                 <div className="col-md-6 d-flex flex-column justify-content-center">
@@ -1127,235 +875,234 @@ class InicioMiProyecto extends Component {
                     </Element>
                     {
                         proyecto &&
-                        <>
-                            <Element name = 'informacion' className="informacion bg-blue-proyecto section" >
-                                <div className="container fadeInUp">
-                                    <div className="row mx-0 feature-icons justify-content-center fadeInUp">
-                                        <h3>Información del proyecto</h3>
-                                        <div className="row mx-0 col-md-12">
-                                            <div className="col-xl-5 text-center my-10 fadeInRight" data-wow-delay="100">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Construction-info.svg')} />
-                                            </div>
-                                            <div className="col-xl-7 d-flex content">
-                                                <div className="row align-self-center gy-4 mx-0">
-                                                    {
-                                                        proyecto.contacto !== "Sin información" &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
-                                                            <i className="las la-user-alt"></i>
-                                                            <div>
-                                                                <h4>Contacto</h4>
-                                                                <p>{proyecto.contacto}</p>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.numero_contacto !== "Sin información" &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
-                                                            <i className="las la-phone"></i>
-                                                            <div>
-                                                                <h4>Número de contacto</h4>
-                                                                <p>{proyecto.numero_contacto}</p>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.fecha_inicio &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow="fade-up">
-                                                            <i className="las la-calendar"></i>
-                                                            <div>
-                                                                <h4>Periodo</h4>
-                                                                <p>{this.formatDay(proyecto.fecha_inicio, proyecto.fecha_fin)}</p>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.tipo_proyecto &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="100">
-                                                            <i className="las la-toolbox"></i>
-                                                            <div>
-                                                                <h4>Tipo de proyecto</h4>
-                                                                <p>{proyecto.tipo_proyecto}</p>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.m2 > 0 &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="200">
-                                                            <i className="las la-ruler"></i>
-                                                            <div>
-                                                                <h4>M²</h4>
-                                                                <p>{proyecto.m2}</p>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.fase3 === 0 && proyecto.fase2 === 0 && proyecto.fase1 === 0 ? <></> :
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="300">
-                                                                <i className="las la-tools"></i>
+                            <>
+                                <Element name = 'informacion' className="informacion bg-blue-proyecto section" >
+                                    <div className="container fadeInUp">
+                                        <div className="row mx-0 feature-icons justify-content-center fadeInUp">
+                                            <h3>Información del proyecto</h3>
+                                            <div className="row mx-0 col-md-12">
+                                                <div className="col-xl-5 text-center my-10 fadeInRight" data-wow-delay="100">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Construction-info.svg')} />
+                                                </div>
+                                                <div className="col-xl-7 d-flex content">
+                                                    <div className="row align-self-center gy-4 mx-0">
+                                                        {
+                                                            proyecto.contacto !== "Sin información" &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                                <i className="las la-user-alt"></i>
                                                                 <div>
-                                                                    <h4>Fase</h4>
-                                                                    <p>
-                                                                        {this.setFase(proyecto)}
-                                                                    </p>
+                                                                    <h4>Contacto</h4>
+                                                                    <p>{proyecto.contacto}</p>
                                                                 </div>
                                                             </div>
-                                                    }
-                                                    {
-                                                        proyecto.cp &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="400">
-                                                            <i className="las la-map-pin"></i>
-                                                            <div>
-                                                                <h4>Código postal</h4>
-                                                                <p>{proyecto.cp}</p>
+                                                        }
+                                                        {
+                                                            proyecto.numero_contacto !== "Sin información" &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                                <i className="las la-phone"></i>
+                                                                <div>
+                                                                    <h4>Número de contacto</h4>
+                                                                    <p>{proyecto.numero_contacto}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.estado &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
-                                                            <i className="las la-globe"></i>
-                                                            <div>
-                                                                <h4>Estado</h4>
-                                                                <p>{proyecto.estado}</p>
+                                                        }
+                                                        {
+                                                            proyecto.fecha_inicio &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow="fade-up">
+                                                                <i className="las la-calendar"></i>
+                                                                <div>
+                                                                    <h4>Periodo</h4>
+                                                                    <p>{this.formatDay(proyecto.fecha_inicio, proyecto.fecha_fin)}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.municipio &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
-                                                            <i className="las la-map"></i>
-                                                            <div>
-                                                                <h4>Municipio/Delegación</h4>
-                                                                <p>{proyecto.municipio}</p>
+                                                        }
+                                                        {
+                                                            proyecto.tipo_proyecto &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="100">
+                                                                <i className="las la-toolbox"></i>
+                                                                <div>
+                                                                    <h4>Tipo de proyecto</h4>
+                                                                    <p>{proyecto.tipo_proyecto}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.colonia &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
-                                                            <i className="las la-map-marker"></i>
-                                                            <div>
-                                                                <h4>Colonia</h4>
-                                                                <p>{proyecto.colonia}</p>
+                                                        }
+                                                        {
+                                                            proyecto.m2 > 0 &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="200">
+                                                                <i className="las la-ruler"></i>
+                                                                <div>
+                                                                    <h4>M²</h4>
+                                                                    <p>{proyecto.m2}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    }
-                                                    {
-                                                        proyecto.calle &&
-                                                        <div className="col-md-6 icon-box align-items-center mb-7 text-justify fadeInUp" data-wow-delay="500">
-                                                            <i className="las la-map-marked-alt"></i>
-                                                            <div>
-                                                                <h4>Calle y número</h4>
-                                                                <p>{proyecto.calle}</p>
+                                                        }
+                                                        {
+                                                            proyecto.fase3 === 0 && proyecto.fase2 === 0 && proyecto.fase1 === 0 ? <></> :
+                                                                <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="300">
+                                                                    <i className="las la-tools"></i>
+                                                                    <div>
+                                                                        <h4>Fase</h4>
+                                                                        <p>
+                                                                            {this.setFase(proyecto)}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                        }
+                                                        {
+                                                            proyecto.cp &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="400">
+                                                                <i className="las la-map-pin"></i>
+                                                                <div>
+                                                                    <h4>Código postal</h4>
+                                                                    <p>{proyecto.cp}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    }
+                                                        }
+                                                        {
+                                                            proyecto.estado &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                                <i className="las la-globe"></i>
+                                                                <div>
+                                                                    <h4>Estado</h4>
+                                                                    <p>{proyecto.estado}</p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            proyecto.municipio &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                                <i className="las la-map"></i>
+                                                                <div>
+                                                                    <h4>Municipio/Delegación</h4>
+                                                                    <p>{proyecto.municipio}</p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            proyecto.colonia &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                                <i className="las la-map-marker"></i>
+                                                                <div>
+                                                                    <h4>Colonia</h4>
+                                                                    <p>{proyecto.colonia}</p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            proyecto.calle &&
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 text-justify fadeInUp" data-wow-delay="500">
+                                                                <i className="las la-map-marked-alt"></i>
+                                                                <div>
+                                                                    <h4>Calle y número</h4>
+                                                                    <p>{proyecto.calle}</p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </Element>
-                            {
-                                proyecto.adjuntos.length ?
-                                    <Element name = 'material' className = 'section' >
-                                        <div className="container fadeInUp">
-                                            <div className="title-proyecto">ADJUNTOS DEL PROYECTO</div>
-                                            <Nav as="ul" className="nav nav-tabs justify-content-start nav-bolder">
-                                                {
-                                                    adjuntos.map((grupo, key) => {
-                                                        let aux = false
-                                                        grupo.adjuntos.forEach(element => {
-                                                            if (proyecto[element.value].length)
-                                                                aux = true
-                                                        });
-                                                        if (aux) {
-                                                            return (
-                                                                <div key={key}>
-                                                                    <Nav.Item as="li" className="mr-2">
-                                                                        <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active rounded-0" : " rounded-0"} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>
-                                                                            <span className="nav-icon">
-                                                                                <i className={`icon-lg ${grupo.icon}`}></i>
-                                                                            </span>
-                                                                            <span className="nav-text">
-                                                                                {grupo.name}
-                                                                            </span>
-                                                                        </Nav.Link>
-                                                                    </Nav.Item>
-                                                                </div>
-                                                            )
-                                                        }
-                                                        return aux
-                                                    })
-                                                }
-                                            </Nav>
-                                            <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
-                                                onSelect={(select) => { this.updateActiveTabContainer(select) }}>
-                                                <Row className="mx-0 bg-blue-proyecto">
-                                                    <Col md={3} className="navi navi-accent nav-bold d-flex align-items-center pl-5 ">
-                                                        <Nav variant="pills" className="flex-column navi navi-accent nav-bolder width-inherit">
-                                                            {
-                                                                showadjuntos.map((adjunto, key) => {
-                                                                    if (proyecto[adjunto.value].length) {
-                                                                        return (
-                                                                            <Nav.Item className="navi-item mb-3" key={key}>
-                                                                                <Nav.Link className="navi-link rounded-0 bg-active" eventKey={adjunto.value}>
-                                                                                    <div className="navi-text font-size-lg">{adjunto.name}</div>
-                                                                                </Nav.Link>
-                                                                            </Nav.Item>
-                                                                        )
-                                                                    }
-                                                                    return false
-                                                                })
+                                </Element>
+                                {
+                                    proyecto.adjuntos.length ?
+                                        <Element name = 'material' className = 'section' >
+                                            <div className="container fadeInUp">
+                                                <div className="title-proyecto">ADJUNTOS DEL PROYECTO</div>
+                                                <Nav as="ul" className="nav nav-tabs justify-content-start nav-bolder">
+                                                    {
+                                                        adjuntos.map((grupo, key) => {
+                                                            let aux = false
+                                                            grupo.adjuntos.forEach(element => {
+                                                                if (proyecto[element.value].length)
+                                                                    aux = true
+                                                            });
+                                                            if (aux) {
+                                                                return (
+                                                                    <div key={key}>
+                                                                        <Nav.Item as="li" className="mr-2">
+                                                                            <Nav.Link data-toggle = "tab" className = { primeravista && key === 0 ? "active rounded-0" : " rounded-0" } 
+                                                                                eventKey = { grupo.value } onClick = { () => { this.seleccionaradj(grupo.adjuntos) } }>
+                                                                                <span className="nav-icon"> <i className={`icon-lg ${grupo.icon}`}></i> </span>
+                                                                                <span className="nav-text"> {grupo.name} </span>
+                                                                            </Nav.Link>
+                                                                        </Nav.Item>
+                                                                    </div>
+                                                                )
                                                             }
-                                                        </Nav>
-                                                    </Col>
-                                                    <Col md={9} className="py-5">
-                                                        <Tab.Content>
-                                                            {
-                                                                showadjuntos.map((adjunto, key) => {
-                                                                    if (proyecto[adjunto.value].length) {
-                                                                        return (
-                                                                            <Tab.Pane key={key} eventKey={adjunto.value}>
-                                                                                {
-                                                                                    proyecto ?
-                                                                                        proyecto[adjunto.value].length ?
-                                                                                            <div className="mb-5 d-flex justify-content-center">
-                                                                                                <span className='btn btn-sm font-weight-bolder text-success align-self-center font-size-lg box-shadow-button' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                                    <i className="la la-file-archive icon-xl text-success"></i> Descargar ZIP
-                                                                                                </span>
-                                                                                            </div>
+                                                            return aux
+                                                        })
+                                                    }
+                                                </Nav>
+                                                <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey}
+                                                    onSelect={(select) => { this.updateActiveTabContainer(select) }}>
+                                                    <Row className="mx-0 bg-blue-proyecto">
+                                                        <Col md={3} className="navi navi-accent nav-bold d-flex align-items-center pl-5 ">
+                                                            <Nav variant="pills" className="flex-column navi navi-accent nav-bolder width-inherit">
+                                                                {
+                                                                    showadjuntos.map((adjunto, key) => {
+                                                                        if (proyecto[adjunto.value].length) {
+                                                                            return (
+                                                                                <Nav.Item className="navi-item mb-3" key={key}>
+                                                                                    <Nav.Link className="navi-link rounded-0 bg-active" eventKey={adjunto.value}>
+                                                                                        <div className="navi-text font-size-lg">{adjunto.name}</div>
+                                                                                    </Nav.Link>
+                                                                                </Nav.Item>
+                                                                            )
+                                                                        }
+                                                                        return false
+                                                                    })
+                                                                }
+                                                            </Nav>
+                                                        </Col>
+                                                        <Col md={9} className="py-5">
+                                                            <Tab.Content>
+                                                                {
+                                                                    showadjuntos.map((adjunto, key) => {
+                                                                        if (proyecto[adjunto.value].length) {
+                                                                            return (
+                                                                                <Tab.Pane key={key} eventKey={adjunto.value}>
+                                                                                    {
+                                                                                        proyecto ?
+                                                                                            proyecto[adjunto.value].length ?
+                                                                                                <div className="mb-5 d-flex justify-content-center">
+                                                                                                    <span className='btn btn-sm font-weight-bolder text-success align-self-center font-size-lg box-shadow-button' 
+                                                                                                        onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
+                                                                                                        <i className="la la-file-archive icon-xl text-success"></i> Descargar ZIP
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                                : ''
                                                                                             : ''
-                                                                                        : ''
-                                                                                }
-                                                                                {
-                                                                                    proyecto ?
-                                                                                        <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
-                                                                                        : ''
-                                                                                }
-                                                                            </Tab.Pane>
-                                                                        )
-                                                                    }
-                                                                    return false
-                                                                })
-                                                            }
-                                                        </Tab.Content>
-                                                    </Col>
-                                                </Row>
-                                            </Tab.Container>
-                                        </div>
-                                    </Element>
-                                    : ''
-                            }
+                                                                                    }
+                                                                                    {
+                                                                                        proyecto ?
+                                                                                            <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
+                                                                                            : ''
+                                                                                    }
+                                                                                </Tab.Pane>
+                                                                            )
+                                                                        }
+                                                                        return false
+                                                                    })
+                                                                }
+                                                            </Tab.Content>
+                                                        </Col>
+                                                    </Row>
+                                                </Tab.Container>
+                                            </div>
+                                        </Element>
+                                        : ''
+                                }
                             <Element name = 'tickets' className = 'border-y-blue section' >
                                 <div className="title-proyecto">ESTATUS DE TICKETS</div>
                                 <div className="container fadeInUp">
                                     <div className="d-flex justify-content-end mb-10">
-                                        <span className='btn btn-sm font-weight-bolder text-pink align-self-center font-size-lg box-shadow-button' onClick={(e) => { e.preventDefault(); this.openModalLevantamiento() }}>
+                                        <span className='btn btn-sm font-weight-bolder text-pink align-self-center font-size-lg box-shadow-button' 
+                                            onClick={(e) => { e.preventDefault(); this.openModalLevantamiento() }}>
                                             <i className="la la-file-archive icon-xl text-pink"></i> NUEVO LEVANTAMIENTO
                                         </span>
                                     </div>
-                                    <TableTickets tickets = { tickets } openModalSee = { this.openModalSee } openModalDetalles = { this.openModalDetalles } 
+                                    <TableTickets tickets = { tickets } openModalSee = { this.openModalSee }  openModalDetalles = { this.openModalDetalles } 
                                         tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket } />
                                 </div>
                             </Element>
@@ -1383,114 +1130,68 @@ class InicioMiProyecto extends Component {
                                             </div>
                                         </div>
                                     </Element>
-                                :''
+                                : ''
                             }
-                            <Element name="mantenimiento" className="section border-y-blue position-relative">
-                                <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4 position-absolute">
-                                    {
-                                        showCalendario?
-                                        <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR TABLA</span></Tooltip>}>
-                                            <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.showTable() }} >
-                                                <span className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary">
-                                                    <i className="la flaticon2-list-2 icon-xl"></i>
-                                                </span>
-                                            </li>
-                                        </OverlayTrigger>
-                                        :
-                                        <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR CALENDARIO</span></Tooltip>}>
-                                            <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.showMantenimentos() }}>
-                                                <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info" >
-                                                    <i className="la flaticon2-calendar-8 icon-xl"></i>
-                                                </span>
-                                            </li>
-                                        </OverlayTrigger>
-                                    }
-                                </ul>
-                                <div className="title-proyecto">MANTENIMIENTO</div>
-                                <div className="col-md-11 mx-auto">
-                                    {
-                                        showCalendario ?
-                                            <FullCalendar locale={esLocale} plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
-                                                initialView="dayGridMonth" weekends={true} events={events} eventContent={this.renderEventContent}
-                                                firstDay={1} themeSystem='bootstrap' height='1290.37px' />
-                                        :
-                                        <TableMantenimiento form={form} options={options} onChange={this.onChange} onChangeRange={this.onChangeRange} filtrarTabla={this.filtrarTabla}/>
-                                    }
-                                </div>
-                            </Element>
+                            {
+                                proyecto.equipos_instalados.length ? 
+                                    <Element name="mantenimiento" className="section border-y-blue position-relative">
+                                        <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4 position-absolute">
+                                            <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">
+                                                {`${activeFlag === 'tabla' ? 'MOSTRAR CALENDARIO' : 'MOSTRAR TABLA'}`}</span></Tooltip>}>
+                                                <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.changeActiveFlag() }} >
+                                                    <span className = {`btn btn-sm btn-icon btn-bg-light btn-text-${activeFlag === 'tabla' ? 'primary' : 'info'} btn-hover-${activeFlag === 'tabla' ? 'primary' : 'info'}`}>
+                                                        <i className = {`la flaticon2-${activeFlag === 'tabla' ? 'calendar-8' : 'list-2'} icon-xl`}></i>
+                                                    </span>
+                                                </li>
+                                            </OverlayTrigger>
+                                        </ul>
+                                        <div className="title-proyecto">MANTENIMIENTO</div>
+                                        <div className="col-md-11 mx-auto">
+                                            {
+                                                activeFlag === 'calendario' ?
+                                                    <FullCalendar locale={esLocale} plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
+                                                        initialView="dayGridMonth" weekends={true} events={events} eventContent={this.renderEventContent}
+                                                        firstDay={1} themeSystem='bootstrap' height='1290.37px' />
+                                                :
+                                                    <TableMantenimiento mantenimientos = { mantenimientos } form={form} options={options} onChange={this.onChange} onChangeRange={this.onChangeRange} 
+                                                        filtrarTabla={this.filtrarTabla}/>
+                                            }
+                                        </div>
+                                    </Element>
+                                : <></>
+                            }
                         </>
                     }
                 </div>
-                <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-                <Modal size="lg" title='Levantamiento de tickets' show={modalLevantamiento} handleClose={this.handleCloseLevantamiento} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
-                    <Form id="form-miproyecto"
-                        onSubmit={
-                            (e) => {
-                                e.preventDefault();
-                                validateAlert(this.onSubmit, e, 'form-miproyecto')
-                            }
-                        }
-                    >
+                <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
+                    customcontent = { true } contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                    <Form id="form-miproyecto" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.addTicketAxios, e, 'form-miproyecto') } } >
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
-                                <SelectSearchGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    customdiv="mb-0"
-                                    formeditado={formeditado}
-                                    options={options.tiposTrabajo}
-                                    placeholder="SELECCIONA EL TIPO DE TRABAJO"
-                                    name="tipo_trabajo"
-                                    value={form.tipo_trabajo}
-                                    onChange={this.updateTrabajo}
-                                    iconclassName={"fas fa-book"}
-                                    messageinc="Incorrecto. Selecciona el tipo de trabajo"
-                                />
+                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } customdiv = "mb-0" formeditado = { formeditado }
+                                    options = { this.updateOptions(options.tiposTrabajo) } placeholder = "SELECCIONA EL TIPO DE TRABAJO" name = "tipo_trabajo" 
+                                    value = { form.tipo_trabajo } onChange = { (value) => { this.updateSelect(value, 'tipo_trabajo') } } iconclassName = "fas fa-book"
+                                    messageinc="Incorrecto. Selecciona el tipo de trabajo" />
                             </div>
                             <div className="col-md-6">
-                                <SelectSearchGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    customdiv="mb-0"
-                                    formeditado={formeditado}
-                                    options={options.partidas}
-                                    placeholder="SELECCIONA LA PARTIDA"
-                                    name="partida"
-                                    value={form.partida}
-                                    onChange={this.updatePartida}
-                                    iconclassName={" fas fa-book"}
-                                    messageinc="Incorrecto. Selecciona la partida"
-                                />
+                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } customdiv = "mb-0" formeditado = { formeditado }
+                                    options = { options.partidas } placeholder = "SELECCIONA LA PARTIDA" name = "partida" value = { form.partida }
+                                    onChange = { (value) => { this.updateSelect(value, 'partida') } } iconclassName = " fas fa-book" 
+                                    messageinc = "Incorrecto. Selecciona la partida" />
                             </div>
                         </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-12">
-                                <InputGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    withplaceholder={1}
-                                    withicon={0}
-                                    withformgroup={0}
-                                    requirevalidation={1}
-                                    formeditado={formeditado}
-                                    as="textarea"
-                                    placeholder="DESCRIPCIÓN DEL PROBLEMA"
-                                    rows="2"
-                                    value={form.descripcion}
-                                    name="descripcion"
-                                    onChange={this.onChange}
-                                    messageinc="Incorrecto. Ingresa una descripción."
-                                />
+                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
+                                    requirevalidation = { 1 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN DEL PROBLEMA"
+                                    rows = "2" value = { form.descripcion } name = "descripcion" onChange = { this.onChange }
+                                    messageinc = "Incorrecto. Ingresa una descripción." />
                             </div>
                         </div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-12">
-                                <ItemSlider
-                                    items={form.adjuntos.fotos.files}
-                                    handleChange={this.handleChange}
-                                    item="fotos"
-                                />
+                                <ItemSlider items = { form.adjuntos.fotos.files } handleChange = { this.handleChange } item = "fotos" />
                             </div>
                         </div>
                         <div className="card-footer p-0 pt-5">
@@ -1502,16 +1203,10 @@ class InicioMiProyecto extends Component {
                         </div>
                     </Form >
                 </Modal>
-                <Modal size="lg" title="Presupuesto" show={modal} handleClose={this.handleClose} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                <Modal size = "lg" title = "Presupuesto" show = { modal.single } handleClose = { this.handleClose } customcontent = { true } 
+                    contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <div className="mt-4">
-                        {
-                            ticket ?
-                                <ItemSlider
-                                    items={ticket.presupuesto}
-                                    item={'presupuesto'}
-                                />
-                                : ''
-                        }
+                        { ticket ? <ItemSlider items = { ticket.presupuesto } item = 'presupuesto' /> : '' }
                     </div>
                     <div className="d-flex justify-content-center mt-5">
                         {
@@ -1519,29 +1214,22 @@ class InicioMiProyecto extends Component {
                                 ticket.estatus_ticket ?
                                     ticket.estatus_ticket.estatus === "Respuesta pendiente" ?
                                         <>
-                                            <Button
-                                                onClick={() => { this.changeEstatus('En proceso') }}
-                                                className={"btn btn-icon btn-light-success btn-sm mr-2"}
-                                                only_icon={"flaticon2-check-mark icon-sm"}
-                                                tooltip={{ text: 'ACEPTAR' }}
-                                                icon=''
-                                            />
-                                            <Button
-                                                onClick={() => { this.changeEstatus('En espera') }}
-                                                className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"
-                                                only_icon={"flaticon2-cross icon-sm"}
-                                                tooltip={{ text: 'RECHAZAR' }}
-                                                icon=''
-                                            />
+                                            <Button onClick = { () => { this.changeEstatus('En proceso') } } 
+                                                className = "btn btn-icon btn-light-success btn-sm mr-2" only_icon = "flaticon2-check-mark icon-sm"
+                                                tooltip = { { text: 'ACEPTAR' } } icon = '' />
+                                            <Button onClick = { () => { this.changeEstatus('En espera') } }
+                                                className = "btn btn-icon  btn-light-danger btn-sm pulse pulse-danger" only_icon = "flaticon2-cross icon-sm"
+                                                tooltip = { { text: 'RECHAZAR' } } icon = '' />
                                         </>
-                                        : ''
                                     : ''
                                 : ''
+                            : ''
                         }
                     </div>
                 </Modal>
-                <Modal size="lg" title="Detalles del levantamiento" show={modalDetalles} handleClose={this.handleCloseDetalles} customcontent={true} contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable" >
-                    <Tab.Container defaultActiveKey="first">
+                <Modal size = "lg" title = "Detalles del levantamiento" show = { modal.details } handleClose = { this.handleClose } customcontent = { true } 
+                    contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable" >
+                    <Tab.Container defaultActiveKey = "first">
                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x mt-2">
                             <Nav.Item>
                                 <Nav.Link eventKey="first"> <span className="nav-text font-weight-bold">Información general</span></Nav.Link>
@@ -1630,28 +1318,22 @@ class InicioMiProyecto extends Component {
                                             {
                                                 ticket ?
                                                     <div className="my-3">
-                                                        <ItemSlider
-                                                            items={ticket.reporte_problema_reportado}
-                                                            item={'presupuesto'}
-                                                        />
+                                                        <ItemSlider items = { ticket.reporte_problema_reportado } item = 'presupuesto' />
                                                     </div>
-                                                    : ''
+                                                : ''
                                             }
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="third">
                                             {
                                                 ticket ?
                                                     <div className="my-3">
-                                                        <ItemSlider
-                                                            items={ticket.reporte_problema_solucionado}
-                                                            item={'presupuesto'}
-                                                        />
+                                                        <ItemSlider items = { ticket.reporte_problema_solucionado } item = 'presupuesto' />
                                                     </div>
-                                                    : ''
+                                                : ''
                                             }
                                         </Tab.Pane>
                                     </>
-                                    : ''
+                                : ''
                             }
                         </Tab.Content>
                     </Tab.Container>
