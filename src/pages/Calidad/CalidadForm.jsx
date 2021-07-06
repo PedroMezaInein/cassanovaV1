@@ -338,6 +338,7 @@ class CalidadForm extends Component {
             case 'En espera':
                 questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN ESPERA EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
                 break;
+            default: break;
         }
     }
     updateSelect = (value, name) => {

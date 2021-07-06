@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 class ReactSelectSearch extends Component {
     render() {
-        const { options, placeholder, onChange, defaultvalue, iconclass, requirevalidation, messageinc} = this.props
+        const { options, placeholder, onChange, defaultvalue, requirevalidation, messageinc} = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'

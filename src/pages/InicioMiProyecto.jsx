@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { SelectSearchGray, InputGray } from '../components/form-components'
 import { Nav, Navbar, Tab, Col, Row, NavDropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Button } from '../components/form-components'
-import WOW from 'wowjs';
 import moment from 'moment';
 import Swal from 'sweetalert2'
 import 'moment/locale/es';
@@ -18,7 +17,7 @@ import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
 import $ from "jquery";
-import { Link, DirectLink, Element, Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+import { Link, Element } from 'react-scroll'
 import { CommonLottie } from '../components/Lottie'
 import { Meetings } from '../assets/animate'
 import FullCalendar from '@fullcalendar/react'
@@ -97,6 +96,13 @@ class InicioMiProyecto extends Component {
             partida: '',
             descripcion: '',
             nombre: '',
+            mantenimiento: '',
+            equipo: '',
+            estatus: '',
+            costo: '',
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
+            rubro: [],
             adjuntos: {
                 fotos: {
                     value: '',
@@ -315,8 +321,8 @@ class InicioMiProyecto extends Component {
         const modulo = permisos.find(function (element, index) {
             return element.modulo.url === pathname
         });
-        /* if (!modulo)
-            history.push('/') */
+        if (!modulo)
+            history.push('/')
         this.getProyectosAxios()
         let queryString = this.props.history.location.search
         if (queryString) {
@@ -446,6 +452,14 @@ class InicioMiProyecto extends Component {
         this.setState({...this.state, form})
     }
 
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({ ...this.state, form })
+    }
+
     handleChange = (files, item) => {
         if(files.length)
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
@@ -480,6 +494,10 @@ class InicioMiProyecto extends Component {
                         }
                     }
                     break;
+                case 'fechaInicio':
+                case 'fechaFin':
+                    form[element] =  new Date()
+                    break;
                 case 'proyecto':
                     break;
                 default:
@@ -509,7 +527,7 @@ class InicioMiProyecto extends Component {
     }
 
     handleClose = () => {
-        const { form, modal } = this.state
+        const { modal } = this.state
         modal.tickets = false
         modal.details = false
         modal.single = false
@@ -598,12 +616,13 @@ class InicioMiProyecto extends Component {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/mi-proyecto`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { proyectos, tiposTrabajo, partidas } = response.data
+                const { proyectos, tiposTrabajo, partidas, status } = response.data
                 const { options, form } = this.state
                 let show = proyectos.length === 1 ? false : true
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
+                options.estatus = setOptions(status, 'estatus', 'id')
                 let proyecto = options.proyectos[0]
                 form.proyecto = proyecto.value
                 this.getMiProyectoAxios(proyecto.value);
@@ -621,7 +640,7 @@ class InicioMiProyecto extends Component {
         await axios.get(`${URL_DEV}v2/mi-proyecto/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { adjuntos } = this.state
+                const { adjuntos, options } = this.state
                 const { proyecto } = response.data
                 let activeKey = ''
                 adjuntos.forEach((grupo) => {
@@ -631,10 +650,13 @@ class InicioMiProyecto extends Component {
                                 activeKey = element.value
                     });
                 })
-                console.log(proyecto, 'PROYECTO')
                 let aux = []
                 let aux2 = []
+                let aux3 = []
+                let objeto
                 proyecto.equipos_instalados.forEach((equipo) => {
+                    objeto = { value: equipo.equipo.id.toString(), name: equipo.equipo.texto };
+                    if(!aux3.includes(objeto)){ aux3.push(objeto) }
                     aux.push( { 
                         title: equipo.equipo.equipo,
                         start: equipo.fecha,
@@ -646,20 +668,33 @@ class InicioMiProyecto extends Component {
                         tipo:'Instalación'
                     })
                     equipo.mantenimientos.forEach((mantenimiento) => {
-                        aux.push({
-                            title: equipo.equipo.equipo,
-                            start:mantenimiento.fecha,
-                            end:mantenimiento.fecha,
-                            instalacion: equipo,
-                            backgroundColor: "#2756C3",
-                            borderColor: "#2756C3",
-                            iconClass: 'la la-tools',
-                            tipo:'Mantenimiento'
-                        })
+                        if(mantenimiento.tipo === 'correctivo')
+                            aux.push({
+                                title: equipo.equipo.equipo,
+                                start:mantenimiento.fecha,
+                                end:mantenimiento.fecha,
+                                instalacion: equipo,
+                                backgroundColor: "#2756C3",
+                                borderColor: "#2756C3",
+                                iconClass: 'la la-tools',
+                                tipo:'Mantenimiento'
+                            })
+                        else
+                            aux.push({
+                                title: equipo.equipo.equipo,
+                                start:mantenimiento.fecha,
+                                end:mantenimiento.fecha,
+                                instalacion: equipo,
+                                backgroundColor: "#eea71a",
+                                borderColor: "#eea71a",
+                                iconClass: 'la la-tools',
+                                tipo:'Mantenimiento'
+                            })
                         aux2.push({mantenimiento: mantenimiento, instalacion: equipo})
                     })
                 })
-                this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2 })
+                options.equipos = aux3
+                this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options })
                 this.getTicketsPage()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -695,7 +730,7 @@ class InicioMiProyecto extends Component {
         const { form, proyecto } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
-        aux.map((element) => {
+        aux.forEach((element) => {
             switch (element) {
                 case 'adjuntos':
                     break;
@@ -758,6 +793,27 @@ class InicioMiProyecto extends Component {
                     doneAlert('El ticket fue actualizado con éxito.')
                     this.getMiProyectoAxios(proyecto.id)
                 }
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    filtrarTabla = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { proyecto, form } = this.state
+        await axios.put(`${URL_DEV}v2/mi-proyecto/${proyecto.id}`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { mantenimientos } = response.data
+                let aux = []
+                mantenimientos.forEach((mantenimiento) => {
+                    aux.push({mantenimiento: mantenimiento, instalacion: mantenimiento.instalacion})
+                })
+                this.setState({...this.state, mantenimientos: aux})
+                Swal.close()
+                /* doneAlert(response.data.message !== undefined ? response.data.message : 'Tabla filtrada con éxito.') */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1153,8 +1209,8 @@ class InicioMiProyecto extends Component {
                                                         initialView="dayGridMonth" weekends={true} events={events} eventContent={this.renderEventContent}
                                                         firstDay={1} themeSystem='bootstrap' height='1290.37px' />
                                                 :
-                                                    <TableMantenimiento mantenimientos = { mantenimientos } form={form} options={options} onChange={this.onChange} onChangeRange={this.onChangeRange} 
-                                                        filtrarTabla={this.filtrarTabla}/>
+                                                    <TableMantenimiento mantenimientos = { mantenimientos } form = { form } options = { options } 
+                                                        onChange = { this.onChange } onChangeRange = { this.onChangeRange } filtrarTabla = { this.filtrarTabla }/>
                                             }
                                         </div>
                                     </Element>
@@ -1163,7 +1219,7 @@ class InicioMiProyecto extends Component {
                         </>
                     }
                 </div>
-                <a href="#" className="back-to-top d-flex align-items-center justify-content-center"><i className="bi bi-arrow-up-short"></i></a>
+                {/* <a href="#" className="back-to-top d-flex align-items-center justify-content-center"><i className="bi bi-arrow-up-short"></i></a> */}
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
                     customcontent = { true } contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <Form id="form-miproyecto" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.addTicketAxios, e, 'form-miproyecto') } } >
@@ -1344,13 +1400,7 @@ class InicioMiProyecto extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InicioMiProyecto);
