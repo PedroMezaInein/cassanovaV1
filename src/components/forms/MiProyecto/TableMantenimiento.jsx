@@ -90,9 +90,13 @@ class TableMantenimiento extends Component {
                 renderText={cantidad => <span> {cantidad} </span>} />
         )
     }
-    
+    clearForm = () => {
+        const { cleanForm } = this.props
+        this.setState({...this.state, searchForm: false })
+        cleanForm()
+    }
     render() {
-        const { options, form, onChangeRange, onChange, mantenimientos, cleanForm } = this.props
+        const { options, form, onChangeRange, onChange, mantenimientos } = this.props
         const { searchForm } = this.state
         return (
             <div>
@@ -160,7 +164,7 @@ class TableMantenimiento extends Component {
                                 <span className='btn btn-sm font-weight-bolder text-info align-self-center font-size-lg box-shadow-button' onClick={(e) => { e.preventDefault(); this.searchForm() }}>
                                     <i className={`la ${searchForm?'la-search-minus':'la-search-plus'} icon-xl text-info`}></i> FILTRAR
                                 </span>
-                                <span className='btn btn-sm font-weight-bolder text-success align-self-center font-size-lg box-shadow-button' onClick={ (e) => { e.preventDefault(); cleanForm() } }>
+                                <span className='btn btn-sm font-weight-bolder text-success align-self-center font-size-lg box-shadow-button' onClick={ (e) => { e.preventDefault(); this.clearForm() }}>
                                     <i className="la la-list icon-xl text-success"></i> LISTADO COMPLETO
                                 </span>
                             </div>
