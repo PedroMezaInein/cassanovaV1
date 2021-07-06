@@ -500,6 +500,9 @@ class InicioMiProyecto extends Component {
                     break;
                 case 'proyecto':
                     break;
+                case 'rubro':
+                    form[element] = []
+                    break;
                 default:
                     form[element] = ''
                     break;
