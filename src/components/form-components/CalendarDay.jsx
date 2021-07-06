@@ -39,13 +39,13 @@ export default class CalendarDay extends Component {
     }
 
     render() {
-        const { date, withformgroup, disabledWeekends, className, requirevalidation, onChange, ...props } = this.props
+        const { date, withformgroup, disabledWeekends, className, requirevalidation, onChange, disabledDates, ...props } = this.props
         /* let { currentDate } = this.state */
         return (
             <>
                 <div className = { withformgroup ? 'form-group' : '' } >
-                    <Calendar className = { className } onChange={ (item) => {  this.updateDate(item)} } locale = { es } 
-                        date = { date && date !== '' ? date : null } color = "#2171c1"
+                    <Calendar className = { className } onChange={ (item) => {  this.updateDate(item)} } locale = { es }
+                        date = { date && date !== '' ? date : null } color = "#2171c1" showPreview={false}
                         disabledDay = {
                             (date) => {
                                 if(disabledWeekends){
@@ -56,7 +56,8 @@ export default class CalendarDay extends Component {
                                     return false
                                 } return false
                             }
-                        } { ...props} />
+                        } 
+                        { ...props} />
                     {
                         requirevalidation ? <span className={ date ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }>Incorrecto. Selecciona la fecha.</span> : ''
                     }
