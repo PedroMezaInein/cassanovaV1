@@ -58,7 +58,7 @@ class TableMantenimiento extends Component {
         return (
             <div>
                 <Row>
-                    <Col md="4" className={`bg-form ${searchForm?'':'d-none'}`}>
+                    <Col md="4" className={`bg-form rounded ${searchForm?'':'d-none'}`}>
                         <Form>
                         <div className="row form-group-marginless mx-0 mt-10">
                             <div className="col-md-12 mb-5">
@@ -68,6 +68,7 @@ class TableMantenimiento extends Component {
                                     iconclass='las la-user-friends icon-xl'
                                     defaultvalue={form.rubro}
                                     onChange={this.updateRubro}
+                                    bgcolor='#fff'
                                 />
                             </div>
                             {
@@ -75,6 +76,7 @@ class TableMantenimiento extends Component {
                                 <div className="col-md-12 mb-5">
                                     <ReactSelectSearch
                                         placeholder='Selecciona el mantenimiento'
+                                        iconclass='las la-tools icon-xl'
                                         options={this.transformarOptions(options.mantenimientos)}
                                         defaultvalue={form.mantenimiento}
                                         onChange={this.updateMantenimiento}
@@ -86,6 +88,7 @@ class TableMantenimiento extends Component {
                                 <div className="col-md-12 mb-5">
                                     <ReactSelectSearch
                                         placeholder='Selecciona el equipo'
+                                        iconclass='las la-desktop icon-xl'
                                         options={this.transformarOptions(options.equipos)}
                                         defaultvalue={form.equipo}
                                         onChange={this.updateEquipos}
@@ -97,6 +100,7 @@ class TableMantenimiento extends Component {
                                 <div className="col-md-12 mb-5">
                                     <ReactSelectSearch
                                         placeholder='Selecciona el estatus'
+                                        iconclass='las la-check-circle icon-xl'
                                         options={this.transformarOptions(options.estatus)}
                                         defaultvalue={form.estatus}
                                         onChange={this.updateEstatus}
@@ -107,14 +111,17 @@ class TableMantenimiento extends Component {
                                 rubros.includes('COSTO')&&
                                 <div className="col-md-12 mb-5">
                                     <InputNumberGray
-                                        withicon={0}
+                                        withicon={1}
                                         requirevalidation={0}
                                         placeholder="COSTO"
                                         value={form.costo}
-                                        name="tiempo_ejecucion_diseno"
+                                        name="costo"
                                         onChange={onChange}
                                         thousandseparator={true}
-                                        customclass='bg-white border'
+                                        customclass='bg-white '
+                                        iconclass='las la-money-bill icon-xl'
+                                        custom_gtext='bg-white'
+                                        custom_inputg='bg-white border'
                                     />
                                 </div>
                             }

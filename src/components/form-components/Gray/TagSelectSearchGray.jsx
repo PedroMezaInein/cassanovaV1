@@ -6,7 +6,7 @@ class TagSelectSearchGray extends Component {
         $('.css-2b097c-container').attr('id','css-2b097c-container-gray')
     }
     render() {
-        const { options, placeholder, onChange, defaultvalue, iconclass, requirevalidation, messageinc } = this.props
+        const { options, placeholder, onChange, defaultvalue, iconclass, requirevalidation, messageinc, bgcolor } = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'
@@ -28,7 +28,7 @@ class TagSelectSearchGray extends Component {
             }),
             control: () => ({
                 alignItems:'center',
-                backgroundColor:'#F3F6F9',
+                backgroundColor:`${bgcolor?bgcolor:'#F3F6F9'}` ,
                 borderStyle:'solid',
                 borderWidth:'1px',
                 cursor:'default',

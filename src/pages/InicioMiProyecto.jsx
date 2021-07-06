@@ -112,7 +112,7 @@ class InicioMiProyecto extends Component {
             tipo_mantenimiento:'',
             equipo:'',
             estatus:'',
-            costo:'',
+            costo:0,
             fechaInicio: new Date(),
             fechaFin: new Date(),
             rubro:''
