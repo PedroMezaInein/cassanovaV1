@@ -169,7 +169,7 @@ class TableMantenimiento extends Component {
                                 </span>
                             </div>
                             <div className="table-responsive rounded">
-                                <table className="table table-borderless table-vertical-center rounded" id="table-mantenimientos">
+                                <table className="table table-borderless table-vertical-center rounded table-hover" id="table-mantenimientos">
                                     <thead>
                                         <tr className="text-center text-proyecto">
                                             <th>Estatus</th>

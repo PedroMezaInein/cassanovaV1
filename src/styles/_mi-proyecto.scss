@@ -688,9 +688,6 @@ header#header {
         background: white;
         border: 10px solid #f6f9ff;
     }
-    .table-hover tbody tr:hover{
-        background-color: #eaf0fc;
-    }
     tr {
         border-bottom-width: 1px;
         border-bottom-style: dashed;
@@ -698,5 +695,8 @@ header#header {
     }
     tr:last-child{
         border-bottom: none;
+    }
+    tr:hover{
+        background-color: white;
     }
 }
