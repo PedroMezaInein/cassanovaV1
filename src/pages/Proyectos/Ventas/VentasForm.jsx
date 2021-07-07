@@ -611,8 +611,8 @@ class Ventas extends Component {
                 form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
                 if (solicitud.proyecto) {
                     if (solicitud.proyecto.clientes) {
-                        if (solicitud.proyecto.clientes.proyectos) {
-                            options['proyectos'] = setOptions(solicitud.proyecto.clientes.proyectos, 'nombre', 'id')
+                        if (solicitud.proyecto.clientes[0].proyectos) {
+                            options['proyectos'] = setOptions(solicitud.proyecto.clientes[0].proyectos, 'nombre', 'id')
                             form.cliente = solicitud.proyecto.clientes[0].id.toString()
                             form.rfc = solicitud.proyecto.clientes[0].rfc
                             form.proyecto = solicitud.proyecto.id.toString()
