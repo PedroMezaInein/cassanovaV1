@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown} from 'react-bootstrap'
-import Moment from 'react-moment'
 import ItemSlider from '../../singles/ItemSlider';
 import { ProcesoTicketForm } from '../../forms';
 import { Button } from '../../../components/form-components'

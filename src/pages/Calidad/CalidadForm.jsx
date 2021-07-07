@@ -6,10 +6,13 @@ import { setOptions } from '../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2 } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { CalidadView } from '../../components/forms'
-import { Form } from 'react-bootstrap'
+import { Form, Tabs, Tab } from 'react-bootstrap'
 import { setFormHeader, setSingleHeader } from '../../functions/routers'
 import { Modal } from '../../components/singles'
 import { SelectSearchGray, CalendarDay, InputMoneyGray, Button } from '../../components/form-components'
+import moment from 'moment'
+import 'moment/locale/es' 
+import NumberFormat from 'react-number-format';
 class CalidadForm extends Component {
     state = {
         ticket: '',
@@ -41,7 +44,9 @@ class CalidadForm extends Component {
         },
         options: { empleados: [], equipos: [] },
         modal: false,
-        
+        data: {
+            mantenimientos: []
+        },
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -140,11 +145,16 @@ class CalidadForm extends Component {
     onSubmitMantenimiento = async(e) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { ticket, form } = this.state
+        const { ticket, form, data } = this.state
         await axios.post(`${URL_DEV}v2/calidad/tickets/${ticket.id}/mantenimiento`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => { 
                 doneAlert('Mantenimiento correctivo generado con éxito.') 
                 this.getOneTicketAxios(ticket.id)
+                data.mantenimientos = ticket.mantenimientos
+                this.setState({
+                    ...this.state,
+                    data
+                })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -287,7 +297,7 @@ class CalidadForm extends Component {
         await axios.get(`${URL_DEV}v2/calidad/tickets/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
-                const { options } = this.state
+                const { options, data } = this.state
                 let aux = []
                 if(ticket.proyecto){
                     if(ticket.proyecto.equipos_instalados){
@@ -300,7 +310,8 @@ class CalidadForm extends Component {
                     }
                 }
                 options.equipos = aux
-                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket), options })
+                data.mantenimientos = ticket.mantenimientos
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket), options, data })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -348,8 +359,43 @@ class CalidadForm extends Component {
     }
     openModalMantenimiento = () => { this.setState({...this.state, modal: true}) }
     handleCloseLevantamiento = () => { this.setState({...this.state, modal: false}) }
+    
+    formatDay (fecha){
+        let fecha_momment = moment(fecha);
+        let format = fecha_momment.locale('es').format("DD MMM YYYY");
+        return format.replace('.', '');
+    }
+    setMoneyTable(value) {
+        let cantidad = 0
+        cantidad = parseFloat(value).toFixed(2)
+        return (
+            <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
+                renderText={cantidad => <span> {cantidad} </span>} />
+        )
+    }
+    openModalDeleteMantenimiento = mantenimiento => {
+        deleteAlert(`¿DESEAS ELIMINAR EL MANTENIMIENTO?`, '', () => this.deleteMantenimientoAxios(mantenimiento))
+    }
+    async deleteMantenimientoAxios(mantenimiento) {
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.delete(`${URL_DEV}v2/calidad/tickets/${mantenimiento.id}?ticket=${ticket.id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { ticket } = response.data
+                const { data } = this.state
+                data.mantenimiento = ticket.notas
+                this.setState({ ...this.state, data })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El mantenimiento fue eliminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { ticket, form, options, modal } = this.state
+        const { ticket, form, options, modal, data } = this.state
+        
+        console.log(data.mantenimientos)
         return (
             <Layout active={'calidad'}  {...this.props}>
                 <CalidadView data = { ticket } form = { form } options = { options } handleChange = { this.handleChange }
@@ -358,32 +404,70 @@ class CalidadForm extends Component {
                     deleteFile = { this.deleteFile } openModalMantenimiento = { this.openModalMantenimiento } />
                 <Modal size = "lg" title = 'Mantenimiento correctivo' show = { modal } handleClose = { this.handleCloseLevantamiento } customcontent = { true } 
                     contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
-                    <Form onSubmit = { (e) => { e.preventDefault(); this.onSubmitMantenimiento(e) } } >
-                        <div className="row mx-0 justify-content-center">
-                            <div className="col-md-4">
-                                <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 }
-                                    requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } prefix = '$' name = "costo"
-                                    value = { form.costo } onChange = { this.onChange } placeholder = "COSTO" iconclass = "la la-money-bill icon-xl" />
-                            </div>
-                            <div className="col-md-8">
-                                <SelectSearchGray withtaglabel={1} withtextlabel={1} withicon={1} options = { options.equipos } 
-                                    placeholder = 'SELECCIONA EL EQUIPO INSTALADO' name = "equipo" 
-                                    value = { form.equipo } onChange = { (value) => this.updateSelect(value, 'equipo') }
-                                    iconclass="la la-toolbox icon-xl" formeditado={0} messageinc="Incorrecto. Selecciona el técnico que asiste" />
-                            </div>
-                        </div>
-                        <div className = 'text-center'>
-                            <div className="d-flex justify-content-center pt-5" style={{ height: '14px' }}>
-                                <label className="text-center font-weight-bolder text-dark-60">Fecha del mantenimiento</label>
-                            </div>
-                            <CalendarDay value = { form.fechaMantenimiento } name = 'fechaMantenimiento' date = { form.fechaMantenimiento } withformgroup = { 1 } 
-                                onChange = { this.onChange } placeholder = 'Fecha del mantenimiento' requirevalidation = { 1 } />
-                        </div>
-                        <div className="card-footer py-3 pr-1 text-right">
-                            <Button icon = '' className = "btn btn-primary mr-2" text = "ENVIAR"
-                                type = 'submit'/>
-                        </div>
-                    </Form>
+                    <Tabs defaultActiveKey = "formulario_mantenimiento" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
+                        <Tab eventKey = "formulario_mantenimiento" title = "Agregar mantenimiento">
+                            <Form onSubmit = { (e) => { e.preventDefault(); this.onSubmitMantenimiento(e) } } >
+                                <div className="row mx-0 justify-content-center">
+                                    <div className="col-md-4">
+                                        <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 }
+                                            requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } prefix = '$' name = "costo"
+                                            value = { form.costo } onChange = { this.onChange } placeholder = "COSTO" iconclass = "la la-money-bill icon-xl" />
+                                    </div>
+                                    <div className="col-md-8">
+                                        <SelectSearchGray withtaglabel={1} withtextlabel={1} withicon={1} options = { options.equipos } 
+                                            placeholder = 'SELECCIONA EL EQUIPO INSTALADO' name = "equipo" 
+                                            value = { form.equipo } onChange = { (value) => this.updateSelect(value, 'equipo') }
+                                            iconclass="la la-toolbox icon-xl" formeditado={0} messageinc="Incorrecto. Selecciona el técnico que asiste" />
+                                    </div>
+                                </div>
+                                <div className = 'text-center'>
+                                    <div className="d-flex justify-content-center pt-5" style={{ height: '14px' }}>
+                                        <label className="text-center font-weight-bolder text-dark-60">Fecha del mantenimiento</label>
+                                    </div>
+                                    <CalendarDay value = { form.fechaMantenimiento } name = 'fechaMantenimiento' date = { form.fechaMantenimiento } withformgroup = { 1 } 
+                                        onChange = { this.onChange } placeholder = 'Fecha del mantenimiento' requirevalidation = { 1 } />
+                                </div>
+                                <div className="card-footer py-3 pr-1 text-right">
+                                    <Button icon = '' className = "btn btn-primary mr-2" text = "ENVIAR"
+                                        type = 'submit'/>
+                                </div>
+                            </Form>
+                        </Tab>
+                        {
+                            data.mantenimientos.length > 0 &&
+                                <Tab eventKey = "historial" title = "Historial de mantenimientos">
+                                    <table className="table table-responsive-lg table-vertical-center text-center w-100">
+                                        <thead>
+                                            <tr className="bg-gray-200">
+                                                <th></th>
+                                                <th style={{minWidth:'200px'}}>Equipo</th>
+                                                <th>Fecha de mantenimiento</th>
+                                                <th>Costo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                data.mantenimientos.map((mantenimiento, index) => {
+                                                    return(
+                                                        <tr key = { index }>
+                                                            <td className = 'px-2'>
+                                                                <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger' 
+                                                                    onClick = { (e) => {e.preventDefault(); this.openModalDeleteMantenimiento(mantenimiento)}} >
+                                                                    <i className='flaticon2-rubbish-bin' />
+                                                                </button>
+                                                            </td>
+                                                            <td className = 'px-2 text-break'>{mantenimiento.instalacion.equipo.texto}</td>
+                                                            <td className = 'px-2 text-break'> {this.formatDay(mantenimiento.fecha)} </td>
+                                                            <td className = 'px-2 text-break'> {this.setMoneyTable(mantenimiento.costo)} </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                    </table>
+                                </Tab>
+                        }
+                    </Tabs>
                 </Modal>
             </Layout>
         )
