@@ -1285,7 +1285,7 @@ class InicioMiProyecto extends Component {
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
                     customcontent = { true } contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <Form id="form-miproyecto" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.addTicketAxios, e, 'form-miproyecto') } } >
-                        <div className="form-group row form-group-marginless">
+                        {/* <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
                                 <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } customdiv = "mb-0" formeditado = { formeditado }
                                     options = { this.updateOptions(options.tiposTrabajo) } placeholder = "SELECCIONA EL TIPO DE TRABAJO" name = "tipo_trabajo" 
@@ -1299,8 +1299,8 @@ class InicioMiProyecto extends Component {
                                     messageinc = "Incorrecto. Selecciona la partida" />
                             </div>
                         </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless">
+                        <div className="separator separator-dashed mt-1 mb-2"></div> */}
+                        <div className="form-group row form-group-marginless mx-0 mt-3">
                             <div className="col-md-12">
                                 <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
                                     requirevalidation = { 1 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN DEL PROBLEMA"
