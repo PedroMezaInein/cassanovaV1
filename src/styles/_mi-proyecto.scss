@@ -67,7 +67,7 @@ section {
 }
 
 .img-logo {
-    max-height: 70px;
+    max-height: 4.5rem;
     margin-right: 6px;
 }
 
@@ -121,7 +121,7 @@ a.nav-cliente.nav-link:active,
 a.nav-cliente.nav-link:focus,
 .navbar-cliente li:hover>a
 {
-    color: #4154f1;
+    font-weight: 600;
 }
 
 .navbar-cliente .dropdown ul {
@@ -642,12 +642,6 @@ a.ml-0.proyecto.dropdown-item {
     border-bottom: none;
 }
 
-header#header {
-    .justify-content-flex-end.navbar-collapse.collapse.show {
-        background: white;
-    }
-}
-
 .col-md-6.icon-box.align-items-center.mb-7.fadeInUp:last-child {
     margin-bottom: 0px !important;
 }
@@ -698,5 +692,69 @@ header#header {
     }
     tr:hover{
         background-color: white;
+    }
+}
+.header-section {
+    font-size: 1rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin: 0;
+    color: #4154f1;
+    text-align: center;
+    margin-bottom: 0.6rem;
+}
+.span-nav{
+    background: whitesmoke;
+    padding: 0 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: 5px;
+}
+.pt-13px{
+    padding-top: 13px;
+}
+
+.link-durante-obra{
+    color: #0097A7!important;
+}
+.link-termino-obra{
+    color: #ff725e!important;
+}
+.nav-durante-obra, .nav-termino-obra{
+    display: inline-flex;
+}
+.div-nav{
+    display: block;
+    text-align: center;
+}
+.nav-general-termino, .nav-general-durante{
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .nav-durante-obra, .nav-termino-obra{
+        display: inline-block;
+    }
+    .div-nav{
+        display: block;
+        text-align: left;
+        background: whitesmoke;
+        padding: 6px 3px;
+        margin-bottom: 6px;
+    }
+    .header-cliente-mobile, .container-mobile{
+        background: white;
+    }
+    .nav-general-termino, .nav-general-durante{
+        text-align: left;
+    }
+}
+.header-scrolled{
+    .header-proyecto{
+        text-align: center;
+        color: #444444;
+        font-size: 1.1rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+        display: block!important;
     }
 }

@@ -149,7 +149,7 @@ class TableMantenimiento extends Component {
                                 form.rubro !== null ?
                                     form.rubro.length > 0 ?
                                         <div className="d-flex justify-content-center my-5" >
-                                            <span className='btn btn-sm font-weight-bolder text-primary align-self-center font-size-lg box-shadow-button' onClick={ (e) => { e.preventDefault(); this.filtrarTabla() } }>
+                                            <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button' onClick={ (e) => { e.preventDefault(); this.filtrarTabla() } }>
                                                 <i className="la la-filter icon-xl text-primary"></i> FILTRAR
                                             </span>
                                         </div>
@@ -161,10 +161,10 @@ class TableMantenimiento extends Component {
                     <Col md={`${searchForm?'8':'12'}`}>
                         <div className="tab-content ">
                             <div className="d-flex justify-content-end mb-10">
-                                <span className='btn btn-sm font-weight-bolder text-info align-self-center font-size-lg box-shadow-button' onClick={(e) => { e.preventDefault(); this.searchForm() }}>
+                                <span className='btn btn-sm btn-transparent btn-hover-light-info text-info font-weight-bolder font-size-13px box-shadow-button' onClick={(e) => { e.preventDefault(); this.searchForm() }}>
                                     <i className={`la ${searchForm?'la-search-minus':'la-search-plus'} icon-xl text-info`}></i> FILTRAR
                                 </span>
-                                <span className='btn btn-sm font-weight-bolder text-success align-self-center font-size-lg box-shadow-button' onClick={ (e) => { e.preventDefault(); this.clearForm() }}>
+                                <span className='btn btn-sm btn-transparent btn-hover-light-success text-success font-weight-bolder font-size-13px box-shadow-button ml-2' onClick={ (e) => { e.preventDefault(); this.clearForm() }}>
                                     <i className="la la-list icon-xl text-success"></i> LISTADO COMPLETO
                                 </span>
                             </div>
