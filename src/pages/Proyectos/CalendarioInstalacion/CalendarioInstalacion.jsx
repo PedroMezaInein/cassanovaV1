@@ -24,7 +24,7 @@ import { setDateTable, setTextTable, setLabelTable, setArrayTable } from '../../
 import { NewTable } from '../../../components/NewTables';
 import $ from "jquery";
 import InputGray from '../../../components/form-components/Gray/InputGray';
-import { Button, InputMoneyGray, RangeCalendar } from '../../../components/form-components';
+import { Button, InputMoneyGray, RadioGroupGray, RangeCalendar } from '../../../components/form-components';
 
 class CalendarioInstalacion extends Component {
     state = {
@@ -44,7 +44,9 @@ class CalendarioInstalacion extends Component {
         filters: {
             proyecto: '',
             equipo: '',
-            costo: ''
+            costo: '',
+            fecha: { start: null, end: null },
+            tipo: ''
         },
         options:{  proyectos:'', equipos:'' },
         instalaciones: [],
@@ -291,6 +293,8 @@ class CalendarioInstalacion extends Component {
         filters.proyecto = ''
         filters.equipo = ''
         filters.costo = ''
+        filters.fecha = { start: null, end: null }
+        filters.tipo = ''
         modal.filtros = false
         this.setState({...this.state, modal, filters})
         $('#mantenimientos').DataTable().search({}).draw();
@@ -455,8 +459,13 @@ class CalendarioInstalacion extends Component {
                                 <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
                                     withformgroup = { 0 } name = 'costo' placeholder = 'COSTO' value = { filters.costo } onChange = { this.onChangeFilter } />
                             </div>
+                            <div className="col-md-12 text-center my-6">
+                                <RadioGroupGray placeholder = "¿Qué tipo de mantenimiento es?" name = 'tipo' onChange = { this.onChangeFilter } value = { filters.tipo }
+                                    options = { [ { label: 'Preventivo', value: 'preventivo' }, { label: 'Correctivo', value: 'correctivo' } ] } />
+                            </div>
                             <div className="col-md-9 my-6 text-center">
-                                <RangeCalendar start = { new Date() } end = { new Date() } />
+                                <RangeCalendar start = { filters.fecha.start } end = { filters.fecha.end } 
+                                    onChange = { (value) => { this.onChangeFilter({target:{name:'fecha',value:{start: value.startDate, end: value.endDate}}}) } } />
                             </div>
                         </div>
                         <div className="mx-0 row justify-content-between">
