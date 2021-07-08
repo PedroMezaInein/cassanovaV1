@@ -55,7 +55,7 @@ class SelectSearchGray extends Component {
                         <>
                             {   withtaglabel ?
                                     <label className = { `col-form-label font-weight-bold text-dark-60  ${customlabel}` } >
-                                        { withtextlabel && placeholder }
+                                        { withtextlabel ? placeholder : '' }
                                     </label>
                                 : ''
                             }

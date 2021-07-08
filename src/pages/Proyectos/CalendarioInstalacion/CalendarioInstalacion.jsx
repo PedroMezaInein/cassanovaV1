@@ -25,6 +25,7 @@ import { NewTable } from '../../../components/NewTables';
 import $ from "jquery";
 import InputGray from '../../../components/form-components/Gray/InputGray';
 import { Button, InputMoneyGray, RadioGroupGray, RangeCalendar } from '../../../components/form-components';
+import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray';
 
 class CalendarioInstalacion extends Component {
     state = {
@@ -46,9 +47,10 @@ class CalendarioInstalacion extends Component {
             equipo: '',
             costo: '',
             fecha: { start: null, end: null },
-            tipo: ''
+            tipo: '',
+            estatus: '',
         },
-        options:{  proyectos:'', equipos:'' },
+        options:{  proyectos:[], equipos:[], estatus: [] },
         instalaciones: [],
         instalacion:[],
         activeKey: 'calendario',
@@ -180,10 +182,11 @@ class CalendarioInstalacion extends Component {
         await axios.options(`${URL_DEV}v1/proyectos/instalacion-equipos`, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 Swal.close()
-                const { proyectos, equipos } = response.data
+                const { proyectos, equipos, estatus } = response.data
                 const { options } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.equipos = setOptions(equipos, 'texto', 'id')
+                options.estatus = setOptions(estatus, 'estatus', 'id')
                 this.setState({...this.state, options})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -295,6 +298,7 @@ class CalendarioInstalacion extends Component {
         filters.costo = ''
         filters.fecha = { start: null, end: null }
         filters.tipo = ''
+        filters.estatus = ''
         modal.filtros = false
         this.setState({...this.state, modal, filters})
         $('#mantenimientos').DataTable().search({}).draw();
@@ -445,23 +449,29 @@ class CalendarioInstalacion extends Component {
                     contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <form onSubmit = { this.onSubmitFilters } >
                         <div className="row justify-content-center mx-0">
-                            <div className="col-md-4">
+                            <div className="col-md-6">
                                 <InputGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
                                     withformgroup = { 0 } name = 'proyecto' placeholder = 'PROYECTO' value = { filters.proyecto } 
                                     onChange = { this.onChangeFilter } />
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-6">
                                 <InputGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
                                     withformgroup = { 0 } name = 'equipo' placeholder = 'EQUIPO'  value = { filters.equipo } 
                                     onChange = { this.onChangeFilter }/>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-6">
                                 <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
                                     withformgroup = { 0 } name = 'costo' placeholder = 'COSTO' value = { filters.costo } onChange = { this.onChangeFilter } />
                             </div>
-                            <div className="col-md-12 text-center my-6">
-                                <RadioGroupGray placeholder = "¿Qué tipo de mantenimiento es?" name = 'tipo' onChange = { this.onChangeFilter } value = { filters.tipo }
-                                    options = { [ { label: 'Preventivo', value: 'preventivo' }, { label: 'Correctivo', value: 'correctivo' } ] } />
+                            <div className="col-md-6">
+                                <SelectSearchGray options = { options.estatus } placeholder = 'ESTATUS' value = { filters.estatus } 
+                                    withtaglabel = { 1 } withtextlabel = { 0 } withicon={0} customdiv = 'mb-0' 
+                                    onChange = { (value) => { this.onChangeFilter({target:{name:'estatus',value:value}}) } } />
+                            </div>
+                            <div className="col-md-12 text-center mt-6">
+                                <RadioGroupGray placeholder = "¿Qué tipo de mantenimiento es?" name = 'tipo' onChange = { this.onChangeFilter } 
+                                    options = { [ { label: 'Preventivo', value: 'preventivo' }, { label: 'Correctivo', value: 'correctivo' } ] } 
+                                    customdiv = 'mb-0' value = { filters.tipo }/>
                             </div>
                             <div className="col-md-9 my-6 text-center">
                                 <RangeCalendar start = { filters.fecha.start } end = { filters.fecha.end } 
