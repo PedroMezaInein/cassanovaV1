@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { setLabelTable } from '../../../functions/setters'
 import moment from 'moment';
 import 'moment/locale/es';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+
 class TableTickets extends Component {
     formatDay (fecha){
         let fecha_ticket = moment(fecha);
@@ -77,17 +79,26 @@ class TableTickets extends Component {
                                             <td>
                                                 {
                                                     ticket.presupuesto.length ?
-                                                        <span className="btn btn-icon btn-light btn-hover-primary btn-sm" onClick={(e) => { openModalSee(ticket) }}>
-                                                            <i className="la la-file-invoice-dollar text-primary icon-xl"></i>
-                                                        </span>
+                                                        <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>PRESUPUESTO</span></Tooltip>}>
+                                                            <span className={`btn btn-icon btn-sm ${ticket.estatus_ticket.estatus === "Respuesta pendiente" ? 'btn-light-warning pulse pulse-warning' : 'btn-light  btn-hover-primary'}`} onClick={(e) => { openModalSee(ticket) }}>
+                                                                <i className={`la la-file-invoice-dollar icon-xl text-${ticket.estatus_ticket.estatus === "Respuesta pendiente" ? '' : 'primary'} `}></i>
+                                                                {
+                                                                    ticket.estatus_ticket.estatus === "Respuesta pendiente" ?
+                                                                    <span className="pulse-ring"></span>
+                                                                    :''
+                                                                }
+                                                            </span>
+                                                        </OverlayTrigger>
                                                         : ''
                                                 }
                                                 {
                                                     ticket.estatus_ticket.estatus === "Terminado" ?
-                                                        <span className="btn btn-icon btn-light btn-hover-primary btn-sm ml-3" onClick={(e) => { openModalDetalles(ticket) }}>
-                                                            <i className="la la-list-alt text-primary icon-xl"></i>
-                                                        </span>
-                                                        : ''
+                                                        <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>DETALLES DEL LEVANTAMIENTO</span></Tooltip>}>
+                                                            <span className="btn btn-icon btn-light btn-hover-primary btn-sm ml-3" onClick={(e) => { openModalDetalles(ticket) }}>
+                                                                <i className="la la-list-alt text-primary icon-xl"></i>
+                                                            </span>
+                                                        </OverlayTrigger>
+                                                    : ''
                                                 }
                                             </td>
                                         </tr>

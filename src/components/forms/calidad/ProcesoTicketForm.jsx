@@ -51,7 +51,7 @@ class ProcesoTicketForm extends Component {
                             }
                             {...props}
                         >
-                            <div id="for2-wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
+                            <div id="for2-wizard-1-content" className="px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <Row className="mx-0">
                                     <Col md="6" className="align-self-center">
                                         <div className="col-md-12 text-center px-0" style={{ height: '1px' }}>
@@ -147,9 +147,9 @@ class ProcesoTicketForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div id="for2-wizard-2-content" className="pb-3" data-wizard-type="step-content">
+                            <div id="for2-wizard-2-content" data-wizard-type="step-content">
                                 <div className="form-group row form-group-marginless mx-0">
-                                    <div className="col-md-6">
+                                    <div className="col-md-6 align-self-center">
                                         <div>
                                             <div className="text-center mt-4 font-weight-bold text-dark-60">
                                                 {form.adjuntos.reporte_problema_reportado.placeholder}
@@ -164,7 +164,7 @@ class ProcesoTicketForm extends Component {
                                             }
                                         </div>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-6 align-self-center">
                                         <div>
                                             <div className="text-center mt-4 font-weight-bold text-dark-60">
                                                 {form.adjuntos.reporte_problema_solucionado.placeholder}
@@ -183,15 +183,15 @@ class ProcesoTicketForm extends Component {
                                 <div className="border-top mt-3 pt-3">
                                     <div className="row">
                                         <div className="col-lg-6 text-left">
-                                            <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1_for2_wizard() }} data-wizard-type="action-prev">Anterior</button>
+                                            <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard1_for2_wizard() }} data-wizard-type="action-prev">Anterior</button>
                                         </div>
                                         <div className="col-lg-6 text-right">
                                             {
                                                 estatus !== 'Terminado' ?
                                                     <div className="">
-                                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase mr-2" text="GUARDAR" 
+                                                        <Button icon='' className="btn btn-light-primary font-weight-bold text-uppercase mr-2" text="GUARDAR" 
                                                             onClick={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') } }/>
-                                                        <Button icon='' className="btn btn-success font-weight-bold text-uppercase" text="TERMINAR" 
+                                                        <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="TERMINAR" 
                                                             onClick={(e) => { e.preventDefault(); generateEmail(true) }} />
                                                     </div>
                                                 : ''

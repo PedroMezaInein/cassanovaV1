@@ -12,7 +12,7 @@ import 'moment/locale/es';
 import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
-import { DetailsInstalacion, DetailsMantenimiento } from '../components/forms'
+import { DetailsInstalacion } from '../components/forms'
 import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
@@ -833,14 +833,29 @@ class InicioMiProyecto extends Component {
         })
     }
     
+    cleanForm = () => {
+        const { form } = this.state
+        form.rubro = []
+        form.mantenimiento = ''
+        form.equipo = ''
+        form.estatus = ''
+        form.costo = ''
+        form.fechaInicio = new Date()
+        form.fechaFin = new Date()
+        this.filtrarTabla()
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
         const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento } = this.state
         const { user } = this.props.authUser
         return (
             <div>
                 <div>
-                    <header id="header" className="header-cliente fixed-top">
-                        <div className="container-fluid padding-container mx-auto">
+                    <header id="header" className="header-cliente fixed-top header-cliente-mobile">
+                        <div className="container-fluid padding-container mx-auto container-mobile">
                             <Navbar expand="lg" className="navbar-cliente ">
                                 <Navbar.Brand href="https://infraestructuramedica.mx/" target="_blank" rel="noopener noreferrer" className="logo d-flex align-items-center">
                                     { setEmpresaLogo(proyecto) !== '' ? <img alt="" className="img-logo" src={setEmpresaLogo(proyecto)} /> : '' }
@@ -851,46 +866,63 @@ class InicioMiProyecto extends Component {
                                             <Navbar.Toggle />
                                             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-flex-end" >
                                                 <Nav.Item className = 'nav-cliente'>
-                                                    <Link activeClass="active" offset = { 0 } className="nav-cliente nav-link" to="inicio" spy={true} smooth={true} duration={500} >Inicio</Link>
+                                                    <Link activeClass="active" offset = { 0 } className="nav-cliente nav-link pt-13px" to="inicio" spy={true} smooth={true} duration={500} >Inicio</Link>
                                                 </Nav.Item>
                                                 <Nav.Item className = 'nav-cliente'>
-                                                    <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="informacion" spy={true} smooth={true} duration={500} >Información</Link>
+                                                    <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link pt-13px" to="informacion" spy={true} smooth={true} duration={500} >Información</Link>
                                                 </Nav.Item>
                                                 {
-                                                    proyecto.adjuntos.length ?
+                                                    proyecto.adjuntos.length ||  proyecto.avances.length || proyecto.bitacora !== null ?
+                                                    <div className="nav-general-durante">
+                                                        <div className="div-nav"><span className="span-nav">Durante obra</span></div>
+                                                        <div className="nav-durante-obra">
+                                                            {
+                                                                proyecto.adjuntos.length ?
+                                                                    <Nav.Item className = 'nav-cliente'>
+                                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link mt-0 link-durante-obra" to="adjuntos" spy={true} smooth={true} duration={500} >Adjuntos</Link>
+                                                                    </Nav.Item>
+                                                                : ''
+                                                            }
+                                                            {
+                                                                proyecto.avances.length ?
+                                                                    <Nav.Item className = 'nav-cliente'>
+                                                                        <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link mt-0 link-durante-obra" to="avances" spy={true} smooth={true} duration={500} >Avances</Link>
+                                                                    </Nav.Item>
+                                                                : ''
+                                                            }
+                                                            {
+                                                                proyecto.bitacora !== null ?
+                                                                    <Nav.Link className="nav-cliente mt-0 link-durante-obra" href = { proyecto.bitacora} target = '_blank' rel="noopener noreferrer" >
+                                                                        Bitácora
+                                                                    </Nav.Link>
+                                                                : ''
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    :<></>
+                                                }
+                                                <div className="nav-general-termino">
+                                                    <div className="div-nav"><span className="span-nav">Al término de obra</span></div>
+                                                    <div className="nav-termino-obra">
                                                         <Nav.Item className = 'nav-cliente'>
-                                                            <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="material" spy={true} smooth={true} duration={500} >Material</Link>
+                                                            <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link mt-0 link-termino-obra" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
                                                         </Nav.Item>
-                                                    : ''
-                                                }
-                                                <Nav.Item className = 'nav-cliente'>
-                                                    <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="tickets" spy={true} smooth={true} duration={500} >Tickets</Link>
-                                                </Nav.Item>
-                                                {
-                                                    proyecto.avances.length ?
-                                                        <Nav.Item className = 'nav-cliente'>
-                                                            <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="avances" spy={true} smooth={true} duration={500} >Avances</Link>
-                                                        </Nav.Item>
-                                                    : ''
-                                                }
-                                                {
-                                                    proyecto.equipos_instalados.length ?
-                                                        <Nav.Item className = 'nav-cliente'>
-                                                            <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link" to="mantenimiento" spy={true} smooth={true} duration={500} >Mantenimiento</Link>
-                                                        </Nav.Item>
-                                                    : ''
-                                                }
-                                                {
-                                                    proyecto.bitacora !== null ?
-                                                        <Nav.Link className="nav-cliente" href = { proyecto.bitacora} target = '_blank' rel="noopener noreferrer" >
-                                                            Bitácora
-                                                        </Nav.Link>
-                                                    : ''
-                                                }
+                                                        {
+                                                            proyecto.equipos_instalados.length ?
+                                                                <Nav.Item className = 'nav-cliente'>
+                                                                    <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link mt-0 link-termino-obra" to="mantenimiento" spy={true} smooth={true} duration={500} >Mantenimiento</Link>
+                                                                </Nav.Item>
+                                                            : ''
+                                                        }
+                                                    </div>
+                                                </div>
                                         </Navbar.Collapse>
                                     </>
                                 }
                             </Navbar>
+                        </div>
+                        <div className="header-proyecto d-none">
+                            {proyecto.nombre}
                         </div>
                     </header>
                     <Element name = 'inicio' className="section bienvenida-cliente d-flex align-items-center place-content-center" style={{ backgroundImage: "url('/hero-bg.png')" }}>
@@ -899,7 +931,7 @@ class InicioMiProyecto extends Component {
                                 showSelect &&
                                     <div className="row mx-0 col-md-12 d-flex justify-content-flex-end mb-20 mt-10">
                                         <div className="col-md-7 d-flex justify-content-end">
-                                            <div className="wow fadeInUp col-md-4" data-wow-delay="700">
+                                            <div className="col-md-4">
                                                 <SelectSearchGray options = { options.proyectos } placeholder = "SELECCIONE UN PROYECTO" name = "proyecto" 
                                                     value = { form.proyecto } onChange = { this.updateProyecto } requirevalidation = { 0 }  customdiv = "mb-0" 
                                                     withtaglabel = { 0 } withtextlabel = { 0 } withicon = { 1 } iconvalid = { 1 } />
@@ -910,21 +942,21 @@ class InicioMiProyecto extends Component {
                             <div className="row mx-auto col-md-11 d-flex">
                                 <div className="col-md-6 d-flex flex-column justify-content-center">
                                     <div className="padding-col-7">
-                                        <h1 className="wow fadeInUp">{proyecto.nombre}</h1>
+                                        <h1>{proyecto.nombre}</h1>
                                         <span className="d-flex flex-column">
-                                            <h2 className={`wow fadeInUp ${proyecto ? 'margin-y-30px' : 'mb-0'} ${showSelect ? 'order-1' : 'order-2'}`} data-wow-delay="400">Plaforma administrativa</h2>
-                                            <h4 className={`wow fadeInUp order-3 ${!showSelect && proyecto ? '' : 'margin-y-30px mb-0'}`} data-wow-delay="700">
+                                            <h2 className={`${proyecto ? 'margin-y-30px' : 'mb-0'} ${showSelect ? 'order-1' : 'order-2'}`}>Plaforma administrativa</h2>
+                                            <h4 className={`order-3 ${!showSelect && proyecto ? '' : 'margin-y-30px mb-0'}`}>
                                                 En este sitio podrás encontrar información importante de tu proyecto, como datos generales, avances, material,
                                                 levantamiento de tickets, bitácora, entre otros, de acuerdo al progreso del mismo.
                                             </h4>
                                             {
                                                 proyecto &&
-                                                <h3 className={`wow fadeInUp mb-0 text-${this.setEmpresaColor(proyecto)} ${showSelect ? 'order-2 ' : 'order-1 margin-y-30px'}`}>{this.setEmpresaName(proyecto)}</h3>
+                                                <h3 className={`mb-0 text-${this.setEmpresaColor(proyecto)} ${showSelect ? 'order-2 ' : 'order-1 margin-y-30px'}`}>{this.setEmpresaName(proyecto)}</h3>
                                             }
                                         </span>
                                     </div>
                                 </div>
-                                <div className="col-md-6 bienvenida-img px-10 text-center wow pulse" data-wow-delay="400">
+                                <div className="col-md-6 bienvenida-img px-10 text-center">
                                     <CommonLottie animationData = { Meetings } />
                                 </div>
                             </div>
@@ -934,18 +966,21 @@ class InicioMiProyecto extends Component {
                         proyecto &&
                             <>
                                 <Element name = 'informacion' className="informacion bg-blue-proyecto section" >
-                                    <div className="container fadeInUp">
-                                        <div className="row mx-0 feature-icons justify-content-center fadeInUp">
+                                    <div className="container">
+                                        <div className="row mx-0 feature-icons justify-content-center">
                                             <h3>Información del proyecto</h3>
+                                            <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-12">
+                                                En esta sección encontraras los datos generales e importantes de tu proyecto.
+                                            </div>
                                             <div className="row mx-0 col-md-12">
-                                                <div className="col-xl-5 text-center my-10 fadeInRight" data-wow-delay="100">
+                                                <div className="col-xl-5 text-center my-10">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Construction-info.svg')} />
                                                 </div>
                                                 <div className="col-xl-7 d-flex content">
                                                     <div className="row align-self-center gy-4 mx-0">
                                                         {
                                                             proyecto.contacto !== "Sin información" &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-user-alt"></i>
                                                                 <div>
                                                                     <h4>Contacto</h4>
@@ -955,7 +990,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.numero_contacto !== "Sin información" &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-phone"></i>
                                                                 <div>
                                                                     <h4>Número de contacto</h4>
@@ -965,7 +1000,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.fecha_inicio &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow="fade-up">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-calendar"></i>
                                                                 <div>
                                                                     <h4>Periodo</h4>
@@ -975,7 +1010,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.tipo_proyecto &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="100">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-toolbox"></i>
                                                                 <div>
                                                                     <h4>Tipo de proyecto</h4>
@@ -985,7 +1020,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.m2 > 0 &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="200">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-ruler"></i>
                                                                 <div>
                                                                     <h4>M²</h4>
@@ -995,7 +1030,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.fase3 === 0 && proyecto.fase2 === 0 && proyecto.fase1 === 0 ? <></> :
-                                                                <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="300">
+                                                                <div className="col-md-6 icon-box align-items-center mb-7">
                                                                     <i className="las la-tools"></i>
                                                                     <div>
                                                                         <h4>Fase</h4>
@@ -1007,7 +1042,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.cp &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="400">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-map-pin"></i>
                                                                 <div>
                                                                     <h4>Código postal</h4>
@@ -1017,7 +1052,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.estado &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-globe"></i>
                                                                 <div>
                                                                     <h4>Estado</h4>
@@ -1027,7 +1062,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.municipio &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-map"></i>
                                                                 <div>
                                                                     <h4>Municipio/Delegación</h4>
@@ -1037,7 +1072,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.colonia &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 fadeInUp" data-wow-delay="500">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7">
                                                                 <i className="las la-map-marker"></i>
                                                                 <div>
                                                                     <h4>Colonia</h4>
@@ -1047,7 +1082,7 @@ class InicioMiProyecto extends Component {
                                                         }
                                                         {
                                                             proyecto.calle &&
-                                                            <div className="col-md-6 icon-box align-items-center mb-7 text-justify fadeInUp" data-wow-delay="500">
+                                                            <div className="col-md-6 icon-box align-items-center mb-7 text-justify">
                                                                 <i className="las la-map-marked-alt"></i>
                                                                 <div>
                                                                     <h4>Calle y número</h4>
@@ -1063,9 +1098,14 @@ class InicioMiProyecto extends Component {
                                 </Element>
                                 {
                                     proyecto.adjuntos.length ?
-                                        <Element name = 'material' className = 'section' >
-                                            <div className="container fadeInUp">
+                                        <Element name = 'adjuntos' className = 'section' >
+                                            <div className="container">
+                                                <div className="header-section link-durante-obra">Durante obra</div>
                                                 <div className="title-proyecto">ADJUNTOS DEL PROYECTO</div>
+                                                <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
+                                                    En este apartado podrás visualizar los archivos que se obtendrán de acuerdo al progreso de tu proyecto, es decir, desde el inicio y
+                                                    planeación hasta la entrega del mismo. 
+                                                </div>
                                                 <Nav as="ul" className="nav nav-tabs justify-content-start nav-bolder">
                                                     {
                                                         adjuntos.map((grupo, key) => {
@@ -1150,60 +1190,77 @@ class InicioMiProyecto extends Component {
                                         </Element>
                                         : ''
                                 }
-                            <Element name = 'tickets' className = 'border-y-blue section' >
-                                <div className="title-proyecto">ESTATUS DE TICKETS</div>
-                                <div className="container fadeInUp">
+                                {
+                                    proyecto.avances.length ?
+                                        <Element name="avances" className="avances bg-white section border-y-blue ">
+                                            <div className="container">
+                                                <div className="header-section link-durante-obra">Durante obra</div>
+                                                <div className="title-proyecto">AVANCES POR SEMANA</div>
+                                                <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
+                                                    En la siguiente sección, se muestra el trabajo realizado de acuerdo a la semana, donde se describen las actividades que se realizaron,
+                                                    el porcentaje del avance y evidencia fotográfica, con el objetivo de comparar el progreso de cada semana.
+                                                    <span className="font-weight-normal"><span className="font-weight-bolder"> Nota:</span> Para ver el adjunto, da clic en la semana.</span>
+                                                </div>
+                                                <div className="text-center">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Avances-Proyecto.svg')} style={{width:'40%'}}/>
+                                                </div>
+                                                <div className="row mx-0 mt-12 d-flex justify-content-center">
+                                                    {
+                                                        proyecto.avances.map((avance, key) => {
+                                                            return (
+                                                                <div className="col-md-4 mt-4 mt-lg-0" key={key}>
+                                                                    <div className="box">
+                                                                        <a rel="noopener noreferrer" target="_blank" href={avance.pdf}>SEMANA {avance.semana}</a>
+                                                                        <p>{avance.actividades}</p>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+                                        </Element>
+                                    : ''
+                                }
+                            <Element name = 'tickets' className = 'border-y-blue section'>
+                                <div className="header-section link-termino-obra">Al termino de obra</div>
+                                <div className="title-proyecto">TICKETS</div>
+                                <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
+                                    En este apartado podrás mandar una solicitud de alguna falla que tengas en el proyecto, solo deberás dar clic en <span className="font-weight-bolder">“Nuevo ticket”</span>, 
+                                    el cual abrirá una ventana donde podrás describirnos el problema que tienes y adjuntar o tomar fotografías,
+                                    con el objetivo de brindarte una pronta solución.
+                                </div>
+                                <div className="container">
                                     <div className="d-flex justify-content-end mb-10">
-                                        <span className='btn btn-sm font-weight-bolder text-pink align-self-center font-size-lg box-shadow-button' 
+                                        <span className='btn btn-sm btn-transparent btn-hover-light-info text-info font-weight-bolder font-size-13px box-shadow-button' 
                                             onClick={(e) => { e.preventDefault(); this.openModalLevantamiento() }}>
-                                            <i className="la la-file-archive icon-xl text-pink"></i> NUEVO LEVANTAMIENTO
+                                            <i className="la la-file-archive icon-xl text-info"></i> NUEVO TICKET
                                         </span>
                                     </div>
                                     <TableTickets tickets = { tickets } openModalSee = { this.openModalSee }  openModalDetalles = { this.openModalDetalles } 
                                         tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket } />
                                 </div>
-                            </Element>
-                            {
-                                proyecto.avances.length ?
-                                    <Element name="avances" className="avances bg-white section">
-                                        <div className="container" data-aos="fade-up">
-                                            <div className="title-proyecto">AVANCES POR SEMANA</div>
-                                            <div className="text-center">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Avances-Proyecto.svg')} style={{width:'40%'}}/>
-                                            </div>
-                                            <div className="row mx-0 mt-12 justify-content-center">
-                                                {
-                                                    proyecto.avances.map((avance, key) => {
-                                                        return (
-                                                            <div className="col-md-4 mt-4 mt-lg-0" key={key}>
-                                                                <div className="box fadeInUp" data-wow-delay="200">
-                                                                    <a rel="noopener noreferrer" target="_blank" href={avance.pdf}>SEMANA {avance.semana}</a>
-                                                                    <p>{avance.actividades}</p>
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    </Element>
-                                : ''
-                            }
+                            </Element>       
                             {
                                 proyecto.equipos_instalados.length ? 
                                     <Element name="mantenimiento" className="section border-y-blue position-relative">
-                                        <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4 position-absolute">
-                                            <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">
-                                                {`${activeFlag === 'tabla' ? 'MOSTRAR CALENDARIO' : 'MOSTRAR TABLA'}`}</span></Tooltip>}>
-                                                <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.changeActiveFlag() }} >
-                                                    <span className = {`btn btn-sm btn-icon btn-bg-light btn-text-${activeFlag === 'tabla' ? 'primary' : 'info'} btn-hover-${activeFlag === 'tabla' ? 'primary' : 'info'}`}>
-                                                        <i className = {`la flaticon2-${activeFlag === 'tabla' ? 'calendar-8' : 'list-2'} icon-xl`}></i>
-                                                    </span>
-                                                </li>
-                                            </OverlayTrigger>
-                                        </ul>
+                                        <div className="header-section link-termino-obra">Al termino de obra</div>
                                         <div className="title-proyecto">MANTENIMIENTO</div>
+                                        <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
+                                            En esta sección se agregarán al calendario y al listado los mantenimientos preventivos o correctivos programados en la obra. 
+                                            <span className="font-weight-normal"><span className="font-weight-bolder"> Nota:</span> En el calendario puedes encontrar información
+                                                detallada de la instalación/mantenimiento preventivo o correctivo y en el listado podrás encontrar el estatus del mantenimiento, el
+                                                presupuesto y el costo del mismo y si lo deseas puedes filtrar la información de acuerdo a tus necesidades.
+                                            </span>
+                                        </div>
                                         <div className="col-md-11 mx-auto">
+                                            <div className="justify-content-center mb-5 text-center">
+                                                <span className={`btn btn-sm btn-bg-light font-weight-bolder font-size-13px box-shadow-button text--${activeFlag === 'tabla' ? 'primary' : 'info'} btn-text-${activeFlag === 'tabla' ? 'primary' : 'info'} btn-hover-light-${activeFlag === 'tabla' ? 'primary' : 'info'}`}
+                                                    onClick={(e) => { e.preventDefault(); this.changeActiveFlag() }} >
+                                                    <i className={`flaticon2-${activeFlag === 'tabla' ? 'calendar-8' : 'list-2'} mr-2 icon-xl`}></i>
+                                                    {`${activeFlag === 'tabla' ? 'MOSTRAR CALENDARIO' : 'MOSTRAR LISTA'}`}
+                                                </span>
+                                            </div>
                                             {
                                                 activeFlag === 'calendario' ?
                                                     <FullCalendar locale={esLocale} plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
@@ -1211,7 +1268,7 @@ class InicioMiProyecto extends Component {
                                                         firstDay={1} themeSystem='bootstrap' height='1290.37px' />
                                                 :
                                                     <TableMantenimiento mantenimientos = { mantenimientos } form = { form } options = { options } 
-                                                        onChange = { this.onChange } onChangeRange = { this.onChangeRange } filtrarTabla = { this.filtrarTabla }/>
+                                                        onChange = { this.onChange } onChangeRange = { this.onChangeRange } filtrarTabla = { this.filtrarTabla } cleanForm={this.cleanForm}/>
                                             }
                                         </div>
                                     </Element>
@@ -1228,7 +1285,7 @@ class InicioMiProyecto extends Component {
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
                     customcontent = { true } contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <Form id="form-miproyecto" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.addTicketAxios, e, 'form-miproyecto') } } >
-                        <div className="form-group row form-group-marginless">
+                        {/* <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
                                 <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } customdiv = "mb-0" formeditado = { formeditado }
                                     options = { this.updateOptions(options.tiposTrabajo) } placeholder = "SELECCIONA EL TIPO DE TRABAJO" name = "tipo_trabajo" 
@@ -1242,8 +1299,8 @@ class InicioMiProyecto extends Component {
                                     messageinc = "Incorrecto. Selecciona la partida" />
                             </div>
                         </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless">
+                        <div className="separator separator-dashed mt-1 mb-2"></div> */}
+                        <div className="form-group row form-group-marginless mx-0 mt-3">
                             <div className="col-md-12">
                                 <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
                                     requirevalidation = { 1 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN DEL PROBLEMA"
