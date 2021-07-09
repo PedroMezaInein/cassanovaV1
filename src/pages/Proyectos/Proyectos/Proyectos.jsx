@@ -837,65 +837,62 @@ class Proyectos extends Component {
         let fileID = ''
         if(files.length){
             files.forEach((file) => {
-                this.resetChunks(file)
+                let chunked = this.resetChunks(file)
                 totalCount = file.size % chunkSize === 0 ? file.size / chunkSize : Math.floor(file.size / chunkSize) + 1
                 fileID = uuidv4()
-                this.fileUpload(totalCount, fileID, file, item)
+                console.log(fileID)
+                this.fileUpload(totalCount, fileID, file, item, chunked)
             })
         }
     }
 
-    fileUpload = (totalCount, fileID, file, item) => {
-        /* console.log(totalCount, fileID, file, item) */
+    fileUpload = (totalCount, fileID, file, item, chunked) => {
         waitAlert()
-        const { chunked } = this.state
         chunked.totalCount = totalCount
         chunked.fileID = fileID
         chunked.file = file
         chunked.tipo = item
-        this.setState({chunked})
         if(chunked.counter <= totalCount){
             let chunk = file.slice(chunked.begin, chunked.end)
-            this.uploadChunk(chunk)
+            this.uploadChunk(chunk, chunked)
         }
     }
 
-    uploadChunk = async(chunk) => {
+    uploadChunk = async(chunk, chunked) => {
         try{
-            const { proyecto, chunked } = this.state
+            const { proyecto } = this.state
             const { access_token } = this.props.authUser
-            /* let formulario = new FormData()
-            formulario.append('chunk', chunk) */
-            const response = await axios.post(
-                `${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/chunk`,
-                chunk,
-                {
-                    params: { counter: chunked.counter, id: chunked.fileID, fileName: chunked.file.name },
-                    headers: setSingleHeaderJson(access_token)
+            await axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/chunk`, chunk, {
+                params: { counter: chunked.counter, id: chunked.fileID, fileName: chunked.file.name },
+                headers: setSingleHeaderJson(access_token)
+            }).then(
+                (response) => {
+                    const { status, data } = response
+                    if(status === 200){
+                        chunked.begin = chunked.end
+                        chunked.end = chunked.end + chunkSize
+                        if(chunked.counter === chunked.totalCount){
+                            console.log("Process is complete, counter", chunked.counter);
+                            this.setState({chunked})
+                            this.uploadCompleted(chunked);
+                        }else{
+                            chunked.porcentaje = ( chunked.counter / chunked.totalCount ) * 100;
+                            chunked.counter =  chunked.counter + 1;
+                            let chunk = chunked.file.slice(chunked.begin, chunked.end)
+                            this.uploadChunk(chunk, chunked)
+                        }
+                        console.log(chunked, 'chunked')
+                    }else{ console.log("Error Occurred:", data.errorMessage); }
                 }
-            )
-            const { status, data } = response
-            if(status === 200){
-                chunked.begin = chunked.end
-                chunked.end = chunked.end + chunkSize
-                if(chunked.counter === chunked.totalCount){
-                    console.log("Process is complete, counter", chunked.counter);
-                    this.setState({chunked})
-                    await this.uploadCompleted();
-                }else{
-                    chunked.porcentaje = ( chunked.counter / chunked.totalCount ) * 100;
-                    chunked.counter =  chunked.counter + 1;
-                    this.setState({chunked})
-                    let chunk = chunked.file.slice(chunked.begin, chunked.end)
-                    this.uploadChunk(chunk)
-                }
-                console.log(chunked, 'chunked')
-            }else{ console.log("Error Occurred:", data.errorMessage); }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
         } catch (error) { console.log("error", error); }
     }
 
     resetChunks = (file) => {
-        const { chunked } = this.state
+        let chunked = {}
         chunked.showProgress = false
         chunked.progress = 0
         chunked.counter = 1
@@ -906,12 +903,13 @@ class Proyectos extends Component {
         chunked.fileID = ''
         chunked.file = ''
         chunked.tipo = ''
-        this.setState({chunked})
+        return chunked
     }
 
-    uploadCompleted = async() => {
+    uploadCompleted = async(chunked) => {
+        console.log('CHUNKED', chunked)
         const { access_token } = this.props.authUser
-        const { chunked, proyecto } = this.state
+        const { proyecto } = this.state
         waitAlert()
         await axios.post(
             `${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/complete`, {},
@@ -2028,7 +2026,7 @@ class Proyectos extends Component {
                                                                                             <i className="flaticon2-clip-symbol text-primary"></i> Adjuntar archivo
                                                                                         </label>
                                                                                         <input id="file-upload" type="file" placeholder={form.adjuntos.adjunto_comentario.placeholder}
-                                                                                            onChange={ (e) => { e.preventDefault(); this.handleChange(e.target.files, subActiveKey) }}
+                                                                                            onChange={ (e) => { e.preventDefault(); this.handleChange(e.target.files, subActiveKey) }} multiple
                                                                                             value={form.adjuntos.adjunto_comentario.value} name='adjunto_comentario' accept="image/*, application/pdf" />
                                                                                     </span>
                                                                                     <div>
