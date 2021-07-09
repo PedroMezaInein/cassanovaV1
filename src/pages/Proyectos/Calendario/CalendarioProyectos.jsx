@@ -4,8 +4,8 @@ import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
-import { SelectSearchGray } from '../../../components/form-components'
-import { getMeses, getAños } from '../../../functions/setters'
+import { SelectSearchGray, Single } from '../../../components/form-components'
+import { getMeses, getAños, getFases } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
@@ -18,6 +18,7 @@ class CalendarioProyectos extends Component {
     state = {
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
+        fase:'todas',
         proyectos: [],
         data: {
             empresas: []
@@ -48,8 +49,8 @@ class CalendarioProyectos extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
-        const { mes, año } = this.state
-        this.getContentCalendarAxios(mes, año)
+        const { mes, año, fase } = this.state
+        this.getContentCalendarAxios(mes, año, fase)
         const { search: queryString } = this.props.history.location
         if (queryString) {
             let id = parseInt( new URLSearchParams(queryString).get("id") )
@@ -59,9 +60,9 @@ class CalendarioProyectos extends Component {
         }
     }
 
-    getContentCalendarAxios = async (mes, año) => {
+    getContentCalendarAxios = async (mes, año, fase) => {
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}&fase=${fase}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
                 let { colorProyecto } = this.state
@@ -129,23 +130,30 @@ class CalendarioProyectos extends Component {
     diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
 
     updateMes = value => {
-        const { año } = this.state
+        const { año, fase } = this.state
         this.setState({
             ...this.state,
             mes: value
         })
-        this.getContentCalendarAxios(value, año)
+        this.getContentCalendarAxios(value, año, fase)
     }
 
     updateAño = value => {
-        const { mes } = this.state
+        const { mes, fase } = this.state
         this.setState({
             ...this.state,
             año: value
         })
-        this.getContentCalendarAxios(mes, value)
+        this.getContentCalendarAxios(mes, value, fase)
     }
-
+    updateFase = value => {
+        const { mes, año } = this.state
+        this.setState({
+            ...this.state,
+            fase: value
+        })
+        this.getContentCalendarAxios(mes, año, value)
+    }
     isActiveBackButton = () => {
         const { mes, año } = this.state
         let actualMonth = meses.indexOf(mes)
@@ -181,10 +189,11 @@ class CalendarioProyectos extends Component {
     }
 
     changeMonth = (direction) => {
-        const { mes, año } = this.state
+        const { mes, año, fase } = this.state
         let actualMonth = meses.indexOf(mes)
         let newMonth = meses[actualMonth]
         let newYear = año
+        let newFase = fase
         if (direction === 'back') {
             if (actualMonth === 0) {
                 newMonth = meses[11]
@@ -200,7 +209,7 @@ class CalendarioProyectos extends Component {
                 newMonth = meses[actualMonth + 1]
             }
         }
-        this.getContentCalendarAxios(newMonth, newYear)
+        this.getContentCalendarAxios(newMonth, newYear, newFase)
     }
     showtd(proyecto, colspan, border) {
         return (
@@ -428,7 +437,7 @@ class CalendarioProyectos extends Component {
         return form
     }
     render() {
-        const { mes, año, proyectos, dias, modal, proyecto, form, tipo } = this.state
+        const { mes, año, fase, proyectos, dias, modal, proyecto, form, tipo } = this.state
         return (
             <Layout active='proyectos' {... this.props}>
                 <Card className='card-custom'>
@@ -441,6 +450,13 @@ class CalendarioProyectos extends Component {
                             </h3>
                         </div>
                         <div className="card-toolbar row mx-0 row-paddingless d-flex justify-content-end ">
+                            <div className="col-md-4 mr-4">
+                                {/* <Single textlabel={false} placeholder = 'Selecciona el mes' defaultvalue = { mes } iconclass='las la-tools icon-xl'
+                                    options={getMeses()}  onChange={this.updateMes}  /> */}
+                                <SelectSearchGray name='fase' options={getFases()} value={fase} customdiv='mb-0'
+                                    onChange={this.updateFase} iconclass="fas fa-calendar-day"
+                                    messageinc="Incorrecto. Selecciona la fase." requirevalidation={1} withicon={1}/>
+                            </div>
                             <div className="col-md-4 mr-4">
                                 <SelectSearchGray name='mes' options={getMeses()} value={mes} customdiv='mb-0'
                                     onChange={this.updateMes} iconclass="fas fa-calendar-day"
