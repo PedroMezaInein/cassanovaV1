@@ -177,11 +177,13 @@ class ProyectosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <TagSelectSearchGray
+                                            requirevalidation={1}
                                             placeholder="SELECCIONA LA FASE"
                                             options={this.transformarOptions(options.fases)}
                                             defaultvalue={this.transformarOptions(form.fases)}
                                             onChange={this.nuevoUpdateFase}
                                             iconclass={"far fa-folder-open"}
+                                            messageinc="Incorrecto. Selecciona la fase."
                                         />
                                     </div>
                                     <div className="col-md-4">
