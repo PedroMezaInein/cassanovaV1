@@ -199,9 +199,6 @@ class CalendarioInstalacion extends Component {
                 const { instalaciones } = response.data
                 let aux = []
                 instalaciones.forEach((instalacion) => {
-                    let periodo = instalacion.periodo //meses
-                    let duracion = instalacion.duracion //años
-                    let meses = duracion === 0 ? periodo : duracion * 12
                     aux.push( { 
                         title: instalacion.equipo.equipo,
                         start: instalacion.fecha,
