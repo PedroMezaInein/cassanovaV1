@@ -6,16 +6,15 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
-import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, deleteAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, deleteAlert, questionAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Card, OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
 import Swal from 'sweetalert2'
 import { Modal } from '../../../components/singles'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers';
 import { FormCalendarioIEquipos, DetailsInstalacion } from '../../../components/forms';
 import { setMoneyTable, setOptions } from '../../../functions/setters'
-// import { SelectSearchGray } from '../../../components/form-components'
 import { MANTENIMIENTOS } from '../../../constants'
 import { setDateTable, setTextTable } from '../../../functions/setters'
 import { NewTable } from '../../../components/NewTables';
@@ -23,7 +22,6 @@ import $ from "jquery";
 import InputGray from '../../../components/form-components/Gray/InputGray';
 import { Button, InputMoneyGray, RadioGroupGray, RangeCalendar } from '../../../components/form-components';
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray';
-
 class CalendarioInstalacion extends Component {
     state = {
         events: [],
@@ -51,7 +49,7 @@ class CalendarioInstalacion extends Component {
         instalaciones: [],
         instalacion:[],
         activeKey: 'calendario',
-        data: { mantenimientos: [] },
+        data: { mantenimientos: [], estatus: [] },
         mantenimientos: [],
     };
 
@@ -180,11 +178,12 @@ class CalendarioInstalacion extends Component {
             (response) => {
                 Swal.close()
                 const { proyectos, equipos, estatus } = response.data
-                const { options } = this.state
+                const { options, data } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.equipos = setOptions(equipos, 'texto', 'id')
                 options.estatus = setOptions(estatus, 'estatus', 'id')
-                this.setState({...this.state, options})
+                data.estatus = estatus
+                this.setState({...this.state, options, data})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -311,14 +310,13 @@ class CalendarioInstalacion extends Component {
         })
     }
 
-    getMantenimientos = async() => {
+    changeStatusAxios =  async(status, mante) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos`, { headers: setSingleHeader(access_token) }).then(
+        await axios.get(`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos/${mante}/status/${status}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { instalaciones } = response.data
                 Swal.close()
-                this.setState({...this.state, mantenimientos: this.setMantenimientos(instalaciones)})
+                $('#mantenimientos').DataTable().search({}).draw();
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -337,14 +335,48 @@ class CalendarioInstalacion extends Component {
     }
 
     setMantenimientos = mantenimientos => {
+        const { data } = this.state
         let aux = []
         mantenimientos.forEach((mante) => {
             aux.push({
                 actions: this.setActionsMantenimientos(mante),
                 proyecto: setTextTable(mante.instalacion.proyecto.nombre),
-                tipo: setTextTable(mante.tipo),
+                tipo: <div className = 'd-flex align-items-center justify-content-center'>
+                    <i style = { { color: `${mante.tipo === 'correctivo' ? '#2756c3' : '#eea71a'}` } } 
+                        className = { `${mante.tipo === 'correctivo' ? 'la la-tools' : 'flaticon-security'} mr-2`} /> {setTextTable(mante.tipo)}
+                </div>,
                 equipo: setTextTable(mante.instalacion.equipo.equipo),
-                estatus: setTextTable(mante.status.estatus),
+                estatus: <Dropdown className = 'text-center'>
+                    <Dropdown.Toggle 
+                        style = { { backgroundColor: mante.status.fondo, color: mante.status.letra, border: 'transparent', padding: '0.3rem 0.6rem',
+                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10px',
+                                fontWeight: 600 }}>
+                        {mante.status.estatus.toUpperCase()}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className="p-0" >
+                        <Dropdown.Header>
+                            <span className="font-size-11px">Elige una opción</span>
+                        </Dropdown.Header>
+                        {
+                            data.estatus.map((status, index) => {
+                                return(
+                                    <Dropdown.Item className = 'p-0' key = { index } 
+                                        onClick = { () => { questionAlert(`CAMBIARÁS EL ESTATUS A ${status.estatus.toUpperCase()}`, 
+                                            `¿Deseas continuar?`, () => { this.changeStatusAxios(status.id, mante.id) } ) }} >
+                                        <span className="navi-link w-100">
+                                            <span className="navi-text">
+                                                <span style = { { backgroundColor: status.fondo, color: status.letra } }
+                                                    className="label label-xl label-inline rounded-0 w-100 font-size-12px">
+                                                    {status.estatus}
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </Dropdown.Item>
+                                )
+                            })
+                        }
+                    </Dropdown.Menu>
+                </Dropdown>,
                 costo: setMoneyTable(mante.costo),
                 presupuesto: mante.cotizacion ? <div className = 'text-center'>
                     <a href = { mante.cotizacion } target = '_blank' className="btn btn-icon btn-light btn-hover-primary btn-sm">
