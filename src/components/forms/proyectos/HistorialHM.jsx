@@ -1,30 +1,12 @@
 import React, { Component } from 'react';
-import SVG from "react-inlinesvg";
-import { Tab, Nav, OverlayTrigger, Tooltip, Form } from 'react-bootstrap';
-import { setDiaMesTexto, setFechaTexto } from '../../../functions/functions';
-import { validateAlert, deleteAlert } from '../../../functions/alert';
-import { InputGray, CalendarDay, Button, InputNumberGray, RadioGroupGray, InputCantidad } from '../../form-components'
-import moment from 'moment';
-import { toAbsoluteUrl } from "../../../functions/routers"
+import { Form } from 'react-bootstrap';
+import { validateAlert } from '../../../functions/alert';
+import { Button, InputCantidad } from '../../form-components'
 
 class HistorialHM extends Component {
-
-    state = {
-        active: '',
-        showForm:false
-    }
-
-    mostrarFormulario() {
-        const { showForm } = this.state
-        this.setState({
-            ...this.state,
-            showForm: !showForm
-        })
-    }
     
     render() {
-        const { bodega, form, onChange, onSubmit, deletePrestamo, deleteDevolucion, tipo } = this.props
-        const { active, showForm } = this.state
+        const { form, onChange, onSubmit } = this.props
         return (
             <>
                 <Form

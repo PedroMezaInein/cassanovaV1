@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
-import { InputGray, Calendar, Button, CalendarDay } from '../../form-components'
-import { DATE } from '../../../constants'
+import { InputGray, Button, CalendarDay } from '../../form-components'
 import ItemSlider from '../../singles/ItemSlider'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
 
