@@ -27,7 +27,7 @@ class RadioGroupGray extends Component {
                         }
                     </div>
                 </div>
-                <span className={value ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
+                <span className={value ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
             </div>
         )
     }

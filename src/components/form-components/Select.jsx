@@ -95,7 +95,7 @@ class Select extends Component {
                         }
                     </Form.Control>
                 </div>
-                <span className={selectValido ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
+                <span className={selectValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
             </>
         )
     }

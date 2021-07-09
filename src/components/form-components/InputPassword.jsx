@@ -78,7 +78,7 @@ class InputPassword extends Component {
                         className={ inputValido ? " form-control is-valid sin_icono" : " form-control is-invalid sin_icono" }
                         onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }} {...props} />
                 </div>
-                <span className={ inputValido ? "form-text text-danger hidden" : "form-text text-danger" }> {messageinc} </span>    
+                <span className={ inputValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }> {messageinc} </span>    
             </div>
         )
     }

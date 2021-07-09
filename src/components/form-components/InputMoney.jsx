@@ -97,7 +97,7 @@ class InputMoney extends Component {
                         style={customstyle}
                     />
                 </div>
-                <span className={inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger"}>Incorrecto. Ingresa la cantidad.</span>
+                <span className={inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}>Incorrecto. Ingresa la cantidad.</span>
             </div>
         )
     }

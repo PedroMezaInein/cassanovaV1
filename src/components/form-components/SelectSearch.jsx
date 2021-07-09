@@ -34,7 +34,7 @@ class SelectSearchForm extends Component {
                         style={customstyle}
                     />
                 </div>
-                <span className={validado ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
+                <span className={validado ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
             </>
         );
     }

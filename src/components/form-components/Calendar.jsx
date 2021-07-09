@@ -61,7 +61,7 @@ class Calendar extends Component{
                     />  
                     }
                 /> 
-                <span className={ calendarValido ? "form-text text-danger hidden" : "form-text text-danger" }>Incorrecto. Selecciona la fecha.</span>                  
+                <span className={ calendarValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }>Incorrecto. Selecciona la fecha.</span>                  
             </div> 
         )
     }

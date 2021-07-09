@@ -90,7 +90,7 @@ class SelectCreateSinText extends Component {
                         placeholder={placeholder}
                     />
                 {
-                    requirevalidation ? (elementoactual.value !== undefined && elementoactual.value !== null ? '' : <span className={"form-text text-danger"}> {messageinc} </span>) : ''
+                    requirevalidation ? (elementoactual.value !== undefined && elementoactual.value !== null ? '' : <span className={"form-text text-danger is-invalid"}> {messageinc} </span>) : ''
                 }
             </div>
         )

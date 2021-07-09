@@ -85,7 +85,7 @@ class InputCantidad extends Component {
                     {...props}
                 />
                 {
-                    !inputValido&&<span className="form-text text-danger mt-2">{messageinc}</span>
+                    !inputValido&&<span className="form-text text-danger mt-2 is-invalid">{messageinc}</span>
                 }
                 
             </>

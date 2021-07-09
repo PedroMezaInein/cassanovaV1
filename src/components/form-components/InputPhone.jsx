@@ -99,7 +99,7 @@ class InputPhone extends Component {
                         {...props}
                     />
                 </div>
-                <span className={inputPhone ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
+                <span className={inputPhone ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
             </div>
         )
     }

@@ -102,7 +102,7 @@ class FileInput extends Component {
                         className={classinput}
                     />
                 </span>
-                <span className={fileValido ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
+                <span className={fileValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
                 <div className="flex-wrap d-flex d-flex justify-content-center align-items-center">
                     {
                         files.map((file, key) => {

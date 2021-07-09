@@ -29,6 +29,7 @@ import selectCreate from './SelectCreate'
 import multipleRangeCalendar from './MultipleRangeCalendar'
 import reactSelectSearch from './ReactSelectSearch'
 import inputCantidad from './InputCantidad'
+import tagSelectFixed from './TagSelectFixed'
 // Validado, pero sin texto de error
 import inputMoneySinText from './SinText/InputMoneySinText'
 import selectSearchSinText from './SinText/SelectSearchSinText'
@@ -95,6 +96,7 @@ export const SelectCreate = selectCreate
 export const MultipleRangeCalendar = multipleRangeCalendar
 export const ReactSelectSearch = reactSelectSearch
 export const InputCantidad = inputCantidad
+export const TagSelectFixed = tagSelectFixed
 // Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText
