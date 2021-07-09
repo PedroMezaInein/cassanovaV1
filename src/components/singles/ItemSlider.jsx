@@ -133,12 +133,12 @@ class ItemSlider extends Component {
         return (
             <>
                 <div className="row mx-auto w-100">
-                    <div className="w-10 align-self-center">
+                    <div className="w-10 align-self-center text-center">
                         {
                             this.isEnablePrevButton() ?
                                 <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderBack(); }}>
-                                    <div className="btn btn-default font-weight-bold small-button mx-auto">
-                                        <span className="svg-icon svg-icon-lg mr-0">
+                                    <div className="btn btn-white btn-hover-white font-weight-bold btn-sm mx-auto p-1">
+                                        <span className="svg-icon svg-icon-xl mr-0 svg-icon-primary">
                                             <SVG src={toAbsoluteUrl('/images/svg/double-arrow-left.svg')} />
                                         </span>
                                     </div>
@@ -165,12 +165,12 @@ class ItemSlider extends Component {
                                 items.length > 0 ? <ShowFile item = { items[active] } /> : ''
                         }
                     </div>
-                    <div className="w-10 align-self-center">
+                    <div className="w-10 align-self-center text-center">
                         {
                             this.isEnableNextButton() ?
                                 <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderNext(); }}>
-                                    <div className="btn btn-default font-weight-bold small-button mx-auto">
-                                        <span className="svg-icon svg-icon-lg mr-0">
+                                    <div className="btn btn-white btn-hover-white font-weight-bold btn-sm mx-auto p-1">
+                                        <span className="svg-icon svg-icon-xl mr-0 svg-icon-primary">
                                             <SVG src={toAbsoluteUrl('/images/svg/double-arrow-right.svg')} />
                                         </span>
                                     </div>

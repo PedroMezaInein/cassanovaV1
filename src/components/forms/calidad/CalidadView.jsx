@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown} from 'react-bootstrap'
-import Moment from 'react-moment'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
 import ItemSlider from '../../singles/ItemSlider';
 import { ProcesoTicketForm } from '../../forms';
 import { Button } from '../../../components/form-components'
+import moment from 'moment'
+import 'moment/locale/es' 
 
 class CalidadView extends Component {
 
@@ -19,16 +18,21 @@ class CalidadView extends Component {
         })
         return iniciales
     }
+    formatDay (fecha){
+        let fecha_instalacion = moment(fecha);
+        let format = fecha_instalacion.locale('es').format("DD MMM YYYY");
+        return format.replace('.', '');
+    }
 
     render() {
 
-        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile, openModalWithInput } = this.props
+        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile, openModalWithInput, openModalMantenimiento } = this.props
         return (
             <>
                 <div className="card card-custom gutter-b">
                     <div className="card-body">
                         <div className="d-flex">
-                            <div className="mr-4" id="symbol_calidad">
+                            <div className="mr-4 align-self-center" id="symbol_calidad">
                                 <div className="symbol symbol-50 symbol-lg-120 symbol-light-primary">
                                     <span className="font-size-h6 symbol-label font-weight-boldest ">
                                         { data ? data.proyecto ? this.getIniciales(data.proyecto.nombre) : '' : '' }
@@ -42,8 +46,8 @@ class CalidadView extends Component {
                                             { data ? data.proyecto ? data.proyecto.nombre : '' : '' }
                                         </div>
                                         <div className="d-flex flex-wrap mt-2">
-                                            <div className="text-muted font-weight-bold my-2">
-                                                <i className="far fa-user-circle icon-md mr-2"></i>
+                                            <div className="font-weight-bold my-2 text-dark-65 font-size-lg">
+                                                <i className="la la-user-tie icon-lg text-primary mr-2"></i>
                                                 { data ? data.usuario ? data.usuario.name : '' : '' }
                                             </div>
                                         </div>
@@ -103,9 +107,15 @@ class CalidadView extends Component {
                                 </div>
 
                                 <div className="d-flex align-items-start flex-wrap justify-content-between">
-                                    <div className="font-weight-bold text-dark-50 py-lg-2 col-md-10 text-justify pl-0">
-                                        { data ? data.descripcion : '' }
-                                    </div>
+                                    {
+                                        data?
+                                            data.descripcion?
+                                            <div className="font-weight-light text-dark-50 py-lg-2 col-md-10 text-justify pl-0">
+                                                {data.descripcion}
+                                            </div>
+                                            :''
+                                        :''
+                                    }
                                     {
                                         data ?
                                             data.estatus_ticket ?
@@ -150,12 +160,10 @@ class CalidadView extends Component {
                         <div className="separator separator-solid my-4"></div>
                         <div className="row row-paddingless">
                             <div className="col-md-4">
-                                <div className="d-flex justify-content-center" id="partida_calidad" >
-                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                <div className="d-flex justify-content-center align-items-center" id="partida_calidad" >
+                                    <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
                                         <div className="symbol-label">
-                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                            </span>
+                                            <i className="la la-toolbox text-info icon-xl"></i>
                                         </div>
                                     </div>
                                     <div>
@@ -167,12 +175,10 @@ class CalidadView extends Component {
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <div className="d-flex justify-content-center" id="tipoT_calidad">
+                                <div className="d-flex justify-content-center align-items-center" id="tipoT_calidad">
                                     <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                         <div className="symbol-label">
-                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Tools.svg')} />
-                                            </span>
+                                            <i className="la la-tools text-primary icon-xl"></i>
                                         </div>
                                     </div>
                                     <div>
@@ -184,12 +190,10 @@ class CalidadView extends Component {
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <div className="d-flex justify-content-center" id="fecha_calidad">
-                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                <div className="d-flex justify-content-center align-items-center" id="fecha_calidad">
+                                    <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
                                         <div className="symbol-label">
-                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src = { toAbsoluteUrl('/images/svg/Box1.svg') } />
-                                            </span>
+                                            <i className="flaticon2-calendar-8 text-info icon-lg"></i>
                                         </div>
                                     </div>
                                     <div>
@@ -197,9 +201,7 @@ class CalidadView extends Component {
                                             {
                                                 data ?
                                                     data.created_at ?
-                                                        <Moment format="DD/MM/YYYY">
-                                                            {data.created_at}
-                                                        </Moment>
+                                                        this.formatDay(data.created_at)
                                                     : ''
                                                 : ''
                                             }
@@ -220,12 +222,10 @@ class CalidadView extends Component {
                                     <div className={data.estatus_ticket.estatus === 'En proceso' || data.estatus_ticket.estatus === 'Terminado' ? 'col-lg-4' : 'col-lg-12'}>
                                         <Card className="card-custom card-stretch">
                                             <Tab.Container defaultActiveKey="first">
-                                                <Card.Header>
-                                                    <Card.Title>
-                                                        <span className="card-label">Adjuntos</span>
-                                                    </Card.Title>
-                                                    <div className="card-toolbar">
-                                                        <Nav variant="pills">
+                                                <Card.Header className="border-0">
+                                                    <span className="font-size-h5 font-weight-bold align-self-center text-dark">Adjuntos</span>
+                                                    <div className="align-self-center">
+                                                        <Nav className="nav nav-tabs nav-tabs-line font-weight-bolder justify-content-end border-0 nav-tabs-line-2x">
                                                             {
                                                                 data.fotos.length ?
                                                                     <Nav.Item>
@@ -243,7 +243,7 @@ class CalidadView extends Component {
                                                         </Nav>
                                                     </div>
                                                 </Card.Header>
-                                                <Card.Body>
+                                                <Card.Body className="d-flex align-items-center align-self-center">
                                                     <Tab.Content>
                                                         <Tab.Pane eventKey={data.fotos.length === 0 ? "second" : "first"}>
                                                             {
@@ -280,6 +280,12 @@ class CalidadView extends Component {
                                                 <div className="card-title">
                                                     <h3 className="card-label">TICKET EN PROCESO</h3>
                                                 </div>
+                                                <div className="card-toolbar" >
+                                                    <button className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" onClick = { openModalMantenimiento } >
+                                                        <i className="las la-tools icon-lg mr-2 px-0 text-info"></i>
+                                                        MANTENIMIENTO
+                                                    </button>
+                                                </div>   
                                             </div>
                                             <div className="card-body pt-0">
                                                 <ProcesoTicketForm form = { form } options = { options } onChange = { onChange } formeditado = { 1 }

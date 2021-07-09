@@ -27,7 +27,7 @@ class SelectSearchTrue extends Component{
                     {...valueProps}
                 />
             </div>
-            <span className={ validado ? "form-text text-danger hidden" : "form-text text-danger" }> Selecciona una opción </span>
+            <span className={ validado ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }> Selecciona una opción </span>
             </>               
         );
     } 

@@ -24,7 +24,7 @@ class CircleColor extends Component {
                     />
                 </div>
                 {/* {
-                    requirevalidation?(<span className={"form-text text-danger"}> {messageinc} </span>):''
+                    requirevalidation?(<span className={"form-text text-danger is-invalid"}> {messageinc} </span>):''
                 } */}
             </div>
         )

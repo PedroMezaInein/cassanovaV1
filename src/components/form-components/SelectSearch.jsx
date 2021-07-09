@@ -5,13 +5,11 @@ import Input from './Input'
 import '../../styles/select_custom.css';
 class SelectSearchForm extends Component {
 
-    state = {
-        requirevalidation: true
-    }
+    state = { requirevalidation: true }
 
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle, messageinc } = this.props
+        const { customstyle, messageinc, iconclass } = this.props
 
         let validado = false;
         if (requirevalidation) {
@@ -28,7 +26,7 @@ class SelectSearchForm extends Component {
             <>
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
-                        <i className={"flaticon2-search-1 m-0 kt-font-boldest text-primary"}></i>
+                        <i className={`${iconclass ? iconclass : 'flaticon2-search-1'} m-0 kt-font-boldest text-primary`}></i>
                     </span>
                     <input
                         className={validado ? " form-control is-valid text-uppercase sin_icono" : " form-control is-invalid text-uppercase sin_icono"}
@@ -36,7 +34,7 @@ class SelectSearchForm extends Component {
                         style={customstyle}
                     />
                 </div>
-                <span className={validado ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
+                <span className={validado ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
             </>
         );
     }

@@ -104,7 +104,10 @@ class ProyectosForm extends Component {
         const { onChange } = this.props
         onChange({ target: { name: 'tipoProyecto', value: value.toString() } })
     }
-    
+    // updateFases = value => {
+    //     const { onChange } = this.props
+    //     onChange({target: { value: value, name: 'fases'}}, true)
+    // }
     render() {
         const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, 
             removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange, setOptions, openModalCP, showModal, ...props } = this.props
@@ -142,6 +145,12 @@ class ProyectosForm extends Component {
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
                                 <div className="form-group row form-group-marginless">
+                                    {/* <div className="col-md-7">
+                                        <TagSelectFixed placeholder = "SELECCIONA LA FASE" iconclass = "far fa-folder-open"
+                                            options = { options.fases } requirevalidation = { 1 }
+                                            defaultvalue = { form.fases } onChange = { this.updateFases }
+                                            messageinc = "Selecciona la fase" />
+                                    </div> */}
                                     <div className = 'col-md-2 mt-2 align-self-center'>
                                         <div className="d-flex justify-content-space-around">
                                             <div className="mr-5">
@@ -193,6 +202,10 @@ class ProyectosForm extends Component {
                                                 </div>
                                             </div>
                                         </div>
+                                        {
+                                            form.fase1 || form.fase2 || form.fase3 ? <></>:
+                                            <span class="form-text text-danger text-center is-invalid"> Selecciona una fase </span>
+                                        }
                                     </div>
                                     <div className="col-md-4">
                                         <Input requirevalidation = { 1 } formeditado = { formeditado } name = "nombre" value = { form.nombre }

@@ -761,3 +761,13 @@ export const EQUIPOS_COLUMNS = [
     { Header: 'Observaciones', accessor: 'observaciones', customRender: true },
     { Header: 'Ficha técnica', accessor: 'ficha', customRender: true, searchable: false, orderable: false }
 ]
+export const MANTENIMIENTOS = [
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
+    { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true },
+    { Header: 'Equipo', accessor: 'equipo', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'Costo', accessor: 'costo', customRender: true },
+    { Header: 'Presupuesto', accessor: 'presupuesto', customRender: true, searchable: false, orderable: false },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true, tipo: 'fecha' }
+]

@@ -78,7 +78,7 @@ class Input extends Component {
                             spellCheck={spellcheck}
                         /> 
                     </div>
-                    <span className={ inputValido ? "form-text text-danger hidden" : "form-text text-danger" }> {messageinc} </span>
+                    <span className={ inputValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }> {messageinc} </span>
             </div>
         )
     }
