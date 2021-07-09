@@ -11,6 +11,7 @@ import { waitAlert, errorAlert, printResponseErrorAlert } from '../functions/ale
 import { setOptions } from '../functions/setters'
 import { setSingleHeader } from '../functions/routers'
 import { MoneyTransaction } from '../components/Lottie'
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 class Normas extends Component {
 
     state = {
@@ -320,8 +321,48 @@ class Normas extends Component {
 
     render() {
         const { form, options, datos } = this.state
+        const getItems = count =>
+            Array.from({ length: count }, (v, k) => k).map(k => ({
+                id: `item-${k}`,
+                content: `item ${k}`
+            }));
         return (
             <Layout {...this.props}>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>HOLA</th>
+                        </tr>
+                    </thead>
+                    <DragDropContext onDragEnd={this.onDragEnd}>
+                        <Droppable droppableId="droppable">
+                            {(provided, snapshot) => (
+                                <tbody
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                >
+                                {getItems(5).map((item, index) => (
+                                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                                        {(provided, snapshot) => (
+                                        <tr
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        >
+                                            <td>
+                                                {item.content}
+                                            </td>
+                                        
+                                        </tr>
+                                    )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                                </tbody>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+                </table>
                 <div className="row">
                     <div className="col-lg-4">
                         <Card className="card-custom card-stretch gutter-b">
