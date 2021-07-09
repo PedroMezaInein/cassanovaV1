@@ -353,8 +353,8 @@ class CalendarioInstalacion extends Component {
                 estatus: setTextTable(mante.status.estatus),
                 costo: setMoneyTable(mante.costo),
                 presupuesto: mante.cotizacion ? <div className = 'text-center'>
-                    <a href = { mante.cotizacion } target = '_blank' class="btn btn-icon btn-light btn-hover-primary btn-sm">
-                        <i class="la la-file-invoice-dollar text-primary icon-xl"/>
+                    <a href = { mante.cotizacion } target = '_blank' className="btn btn-icon btn-light btn-hover-primary btn-sm">
+                        <i className="la la-file-invoice-dollar text-primary icon-xl"/>
                     </a>
                 </div> : '',
                 fecha: setDateTable(mante.fecha)
