@@ -67,7 +67,7 @@ class PestamosDevoluciones extends Component {
         return (
             <div>
                 <Tab.Container activeKey = { active }>
-                    <Nav className="nav nav-pills d-flex flex-nowrap hover-scroll-x py-2 justify-content-center">
+                    <Nav className="nav nav-pills d-flex flex-nowrap hover-scroll-x py-2 nav-center">
                         { 
                             bodega.prestamos.map((prestamo, index) => { 
                                 return( <NavItem prestamo = { prestamo } key = { index } onSelect = { this.onSelect } /> ) 
