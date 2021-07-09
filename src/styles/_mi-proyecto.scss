@@ -758,3 +758,15 @@ a.ml-0.proyecto.dropdown-item {
         display: block!important;
     }
 }
+.a-name-planos:hover{
+    font-weight: 500!important;
+}
+
+.listado-planos::before, .listado-planos::after{
+    content: '';
+    width: 12px;
+    height: 2px;
+    background: #2171c1;
+    display: inline-block;
+    margin: 0px 9px;
+}
