@@ -28,6 +28,7 @@ import circleColor from './CircleColor'
 import selectCreate from './SelectCreate'
 import multipleRangeCalendar from './MultipleRangeCalendar'
 import reactSelectSearch from './ReactSelectSearch'
+import inputCantidad from './InputCantidad'
 // Validado, pero sin texto de error
 import inputMoneySinText from './SinText/InputMoneySinText'
 import selectSearchSinText from './SinText/SelectSearchSinText'
@@ -93,6 +94,7 @@ export const CircleColor = circleColor
 export const SelectCreate = selectCreate
 export const MultipleRangeCalendar = multipleRangeCalendar
 export const ReactSelectSearch = reactSelectSearch
+export const InputCantidad = inputCantidad
 // Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText

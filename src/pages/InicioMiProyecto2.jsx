@@ -18,7 +18,7 @@ import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
 import $ from "jquery";
-import { Link, DirectLink, Element, Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+import { Link, Element } from 'react-scroll'
 import { CommonLottie } from '../components/Lottie'
 import { Meetings } from '../assets/animate'
 import FullCalendar from '@fullcalendar/react'
@@ -411,7 +411,7 @@ class InicioMiProyecto extends Component {
             (response) => {
                 const { proyectos, partidas, tiposTrabajo } = response.data
                 const { data, options, id } = this.state
-                let { proyecto, tickets, showSelect } = this.state
+                let { proyecto, tickets } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
 
@@ -427,9 +427,7 @@ class InicioMiProyecto extends Component {
                     })
                     if (proyectos.length === 1) {
                         proyecto = proyectos[0]
-                        showSelect = false
                     } else {
-                        showSelect = true
                     }
                 }
 
