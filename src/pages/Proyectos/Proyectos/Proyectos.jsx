@@ -28,6 +28,15 @@ import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../fu
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import SVG from "react-inlinesvg";
+import S3 from 'react-aws-s3';
+const config = {
+    bucketName: 'admin-proyectos',
+    region: 'us-east-2',
+    accessKeyId: 'AKIAJPBN556AJO7KB2RA',
+    secretAccessKey: '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'
+}
+
+const ReactS3Client = new S3(config);
 
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
@@ -833,105 +842,49 @@ class Proyectos extends Component {
     /* -------------------------------------------------------------------------- */
 
     handleChange = ( files, item ) => {
-        let totalCount = 0
-        let fileID = ''
-        if(files.length){
-            files.forEach((file) => {
-                let chunked = this.resetChunks(file)
-                totalCount = file.size % chunkSize === 0 ? file.size / chunkSize : Math.floor(file.size / chunkSize) + 1
-                fileID = uuidv4()
-                console.log(fileID)
-                this.fileUpload(totalCount, fileID, file, item, chunked)
-            })
-        }
-    }
-
-    fileUpload = (totalCount, fileID, file, item, chunked) => {
         waitAlert()
-        chunked.totalCount = totalCount
-        chunked.fileID = fileID
-        chunked.file = file
-        chunked.tipo = item
-        if(chunked.counter <= totalCount){
-            let chunk = file.slice(chunked.begin, chunked.end)
-            this.uploadChunk(chunk, chunked)
+        const { proyecto } = this.state
+        let filePath = `proyecto/${proyecto.id}/${item}/${Math.floor(Date.now() / 1000)}-`
+        let aux = []
+        files.forEach((file) => {
+            aux.push(file)
+        })
+        if(aux.length){
+            let auxPromises = aux.map((file) => {
+                return new Promise((resolve, reject) => {
+                    ReactS3Client.uploadFile(file, `${filePath}${file.name}`)
+                        .then((data) =>{
+                            const { location,status } = data
+                            if(status === 204)
+                                resolve({ name: file.name, url: location })
+                            else
+                                reject(data)
+                        }).catch(err => reject(err))
+                })
+            })
+            Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, item, proyecto)}).catch(err => console.error(err))
         }
     }
 
-    uploadChunk = async(chunk, chunked) => {
+    addS3FilesAxios = async(arreglo, tipo, proyecto) => {
+        const { access_token } = this.props.authUser
+        let parametros = { tipo: tipo }
+        waitAlert()
         try{
-            const { proyecto } = this.state
-            const { access_token } = this.props.authUser
-            await axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/chunk`, chunk, {
-                params: { counter: chunked.counter, id: chunked.fileID, fileName: chunked.file.name },
-                headers: setSingleHeaderJson(access_token)
+            await axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/s3`, { archivos: arreglo }, 
+            { 
+                params: parametros, 
+                headers: setSingleHeader(access_token)
             }).then(
                 (response) => {
-                    const { status, data } = response
-                    if(status === 200){
-                        chunked.begin = chunked.end
-                        chunked.end = chunked.end + chunkSize
-                        if(chunked.counter === chunked.totalCount){
-                            console.log("Process is complete, counter", chunked.counter);
-                            this.setState({chunked})
-                            this.uploadCompleted(chunked);
-                        }else{
-                            chunked.porcentaje = ( chunked.counter / chunked.totalCount ) * 100;
-                            chunked.counter =  chunked.counter + 1;
-                            let chunk = chunked.file.slice(chunked.begin, chunked.end)
-                            this.uploadChunk(chunk, chunked)
-                        }
-                        console.log(chunked, 'chunked')
-                    }else{ console.log("Error Occurred:", data.errorMessage); }
-                }
+                    doneAlert('Adjunto generado con éxito')
+                    this.openModalAdjuntos(proyecto)    
+                }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.log(error, 'error')
             })
-        } catch (error) { console.log("error", error); }
-    }
-
-    resetChunks = (file) => {
-        let chunked = {}
-        chunked.showProgress = false
-        chunked.progress = 0
-        chunked.counter = 1
-        chunked.begin = 0
-        chunked.end = chunkSize
-        chunked.filesize = file ? file.size : 0
-        chunked.totalCount = 1
-        chunked.fileID = ''
-        chunked.file = ''
-        chunked.tipo = ''
-        return chunked
-    }
-
-    uploadCompleted = async(chunked) => {
-        console.log('CHUNKED', chunked)
-        const { access_token } = this.props.authUser
-        const { proyecto } = this.state
-        waitAlert()
-        await axios.post(
-            `${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/complete`, {},
-            { 
-                params: { tipo: chunked.tipo, total: chunked.totalCount, id: chunked.fileID, fileName: chunked.file.name }, 
-                headers: setSingleHeaderJson(access_token)
-            }).then(
-                (response) => {
-                    const { proyecto } = response.data
-                    const { key } = this.state
-                    this.getProyectoAxios(key)
-                    doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
-                    this.setState({
-                        ...this.state,
-                        proyecto: proyecto,
-                        adjuntos: this.setAdjuntosSlider(proyecto),
-                    })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        } catch (error) { console.log("error", error); }   
     }
 
     handleChangeComentario = (files, item) => {
