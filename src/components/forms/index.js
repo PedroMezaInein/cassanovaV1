@@ -115,6 +115,7 @@ import PestamosDevoluciones from './proyectos/PestamosDevoluciones'
 import FormCalendarioIEquipos from './proyectos/FormCalendarioIEquipos'
 import DetailsInstalacion from './proyectos/DetailsInstalacion'
 import TableTickets from './MiProyecto/TableTickets'
+import HistorialHM from './proyectos/HistorialHM'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -221,4 +222,4 @@ export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
-    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets }
+    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM }

@@ -10,7 +10,7 @@ import { setTextTableCenter, setTextTableReactDom, setOptions, setArrayTable } f
 import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
 import { Button, InputGray } from '../../../components/form-components'
-import { FormPrestamos, PestamosDevoluciones } from '../../../components/forms'
+import { FormPrestamos, PestamosDevoluciones, HistorialHM } from '../../../components/forms'
 import { Tab, Tabs } from 'react-bootstrap'
 import { BodegaCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
@@ -27,6 +27,7 @@ class Bodega extends Component {
         modalPrestamo: false,
         modalDeleteUbicacion: false,
         modalSee: false,
+        modalHistorial:false,
         active: 'historial',
         bodega: '',
         form: {
@@ -59,6 +60,9 @@ class Bodega extends Component {
             comentario: '',
             cantidad:'',
             existencia:''
+        },
+        formHistorial:{
+            cantidad:''
         },
         options: {
             partidas:[],
@@ -277,6 +281,13 @@ class Bodega extends Component {
                 iconclass: 'flaticon-bag',
                 action: 'prestamos',
                 tooltip: { id: 'prestamos', text: 'Préstamos' }
+            },
+            {
+                text: 'Historial',
+                btnclass: 'warning',
+                iconclass: 'flaticon-list-1',
+                action: 'historial',
+                tooltip: { id: 'historial', text: 'Historial' }
             }
         )
         return aux
@@ -308,6 +319,15 @@ class Bodega extends Component {
         }
         this.setState({ ...this.state, formDevoluciones })
     }
+    onChangeHistorial = e => {
+        const { formHistorial } = this.state
+        const { name, value } = e.target
+        formHistorial[name] = value
+        this.setState({
+            ...this.state,
+            formHistorial
+        })
+    }
     changePageEdit = (bodega) => {
         const { key } = this.state
         const { history } = this.props
@@ -332,7 +352,14 @@ class Bodega extends Component {
             showForm: bodega.prestamos.length ? 0: 1,
         })
     }
-
+    
+    openModalHistorial = (bodega)  => {
+        this.setState({
+            ...this.state,
+            bodega: bodega,
+            modalHistorial: true
+        })
+    }
     handleCloseDelete = () => { this.setState({ ...this.state, modalDelete: false, bodega: '' }) }
 
     handleCloseAdjuntos = () => {
@@ -360,6 +387,12 @@ class Bodega extends Component {
     openModalSee = bodega => { this.setState({ ...this.state, modalSee: true, bodega: bodega }) }
 
     handleCloseSee = () => { this.setState({ ...this.state, modalSee: false, bodega: '' }) }
+
+    handleCloseHistorial  = () => {
+        const { formHistorial } = this.state
+        formHistorial.cantidad = ''
+        this.setState({ ...this.state, modalHistorial: false, bodega: '', formHistorial })
+    }
 
     handleChange = (files, item) => {
         const { form, bodega } = this.state
@@ -553,8 +586,24 @@ class Bodega extends Component {
             console.log(error, 'error')
         })
     }
+    onSubmitHistorial = async () => {
+        waitAlert()
+        const { formHistorial } = this.state
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'proyectos/bodega/historial', formHistorial, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Se agregó al historial con éxito.')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { modalDelete, modalAdjuntos, modalPrestamo, form, modalSee, bodega, key, formPrestamos, options, formDevoluciones } = this.state
+        const { modalDelete, modalAdjuntos, modalPrestamo, form, modalSee, bodega, key, formPrestamos, options, formDevoluciones, modalHistorial, formHistorial } = this.state
         let tipo = key === 'herramientas' ? 'herramienta' : 'material'
         return (
             <Layout active={'proyectos'}  {...this.props}>
@@ -568,7 +617,8 @@ class Bodega extends Component {
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
                                     'prestamos': { function: this.openModalPrestamo },
-                                    'see': { function: this.openModalSee }
+                                    'see': { function: this.openModalSee },
+                                    'historial':{ function: this.openModalHistorial },
                             } } accessToken = { this.props.authUser.access_token } setter = { this.setBodega }
                             urlRender = { `${URL_DEV}v1/proyectos/bodegas?tipo=material` } idTable = 'kt_datatable_materiales' cardTable = 'cardTable_materiales'
                             cardTableHeader = 'cardTableHeader_materiales' cardBody = 'cardBody_materiales' isTab = { true } />
@@ -582,7 +632,8 @@ class Bodega extends Component {
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
                                     'prestamos': { function: this.openModalPrestamo },
-                                    'see': { function: this.openModalSee }
+                                    'see': { function: this.openModalSee },
+                                    'historial':{ function: this.openModalHistorial },
                             } }
                             urlRender = { `${URL_DEV}v1/proyectos/bodegas?tipo=herramienta` } idTable = 'kt_datatable_herramientas'
                             cardTable = 'cardTable_herramientas' cardTableHeader = 'cardTableHeader_herramientas' cardBody = 'cardBody_herramientas'
@@ -646,6 +697,9 @@ class Bodega extends Component {
                 </Modal>
                 <Modal size="lg" title={`Detalles ${key === 'materiales'?'del material':'de la herramienta'}`} show={modalSee} handleClose={this.handleCloseSee} >
                     <BodegaCard bodega={bodega} />
+                </Modal>
+                <Modal size="lg" title={'Historial'} show={modalHistorial} handleClose={this.handleCloseHistorial} >
+                    <HistorialHM form={formHistorial} onChange={this.onChangeHistorial} onSubmit={this.onSubmitHistorial}/>
                 </Modal>
             </Layout>
         );
