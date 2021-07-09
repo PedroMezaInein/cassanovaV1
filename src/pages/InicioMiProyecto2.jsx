@@ -872,7 +872,7 @@ class InicioMiProyecto extends Component {
     getTicketsPage = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { tickets_info, form, proyecto } = this.state
+        const { tickets_info, proyecto } = this.state
         await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
@@ -1002,7 +1002,7 @@ class InicioMiProyecto extends Component {
         })
     }
     render() {
-        const { options, form, proyecto, showSelect, primeravista, defaultactivekey, subActiveKey, adjuntos, showadjuntos, tickets, data, ticket, modal, modalDetalles, modalLevantamiento, formeditado, tickets_info,
+        const { options, form, proyecto, showSelect, primeravista, defaultactivekey, subActiveKey, adjuntos, showadjuntos, tickets, ticket, modal, modalDetalles, modalLevantamiento, formeditado, tickets_info,
                 showCalendario, events, link_url} = this.state
         const { user } = this.props.authUser
         return (

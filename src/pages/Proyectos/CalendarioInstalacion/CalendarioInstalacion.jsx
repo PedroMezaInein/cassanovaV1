@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
-import { renderToString } from 'react-dom/server'
 import axios from 'axios';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -17,10 +16,8 @@ import { setFormHeader, setSingleHeader } from '../../../functions/routers';
 import { FormCalendarioIEquipos, DetailsInstalacion } from '../../../components/forms';
 import { setMoneyTable, setOptions } from '../../../functions/setters'
 // import { SelectSearchGray } from '../../../components/form-components'
-import moment from 'moment'
-import TableForModals from '../../../components/tables/TableForModals'
 import { MANTENIMIENTOS } from '../../../constants'
-import { setDateTable, setTextTable, setLabelTable, setArrayTable } from '../../../functions/setters'
+import { setDateTable, setTextTable } from '../../../functions/setters'
 import { NewTable } from '../../../components/NewTables';
 import $ from "jquery";
 import InputGray from '../../../components/form-components/Gray/InputGray';
