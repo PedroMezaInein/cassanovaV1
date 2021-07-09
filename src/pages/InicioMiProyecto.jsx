@@ -848,6 +848,10 @@ class InicioMiProyecto extends Component {
             form
         })
     }
+    nameAdjunto(name){
+        var nombre_adjunto = name.slice(11, -4);
+        return nombre_adjunto;
+    }
     render() {
         const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento } = this.state
         const { user } = this.props.authUser
@@ -1160,22 +1164,47 @@ class InicioMiProyecto extends Component {
                                                                             return (
                                                                                 <Tab.Pane key={key} eventKey={adjunto.value}>
                                                                                     {
-                                                                                        proyecto ?
-                                                                                            proyecto[adjunto.value].length ?
-                                                                                                <div className="mb-5 d-flex justify-content-center">
-                                                                                                    <span className='btn btn-sm font-weight-bolder text-success align-self-center font-size-lg box-shadow-button' 
-                                                                                                        onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                                        <i className="la la-file-archive icon-xl text-success"></i> Descargar ZIP
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                                : ''
-                                                                                            : ''
+                                                                                        adjunto.value === 'propuestas_arquitectonicas_preliminares'?
+                                                                                        <>
+                                                                                            <div className="font-weight-bolder text-center mb-5 font-size-h5 listado-planos d-flex align-items-center place-content-center ">Listado de planos</div>
+                                                                                            <div className="row justify-content-center d-grid">
+                                                                                            
+                                                                                                {
+                                                                                                    proyecto[adjunto.value].map((adjunto, index) => {
+                                                                                                        return (
+                                                                                                            <div className="mb-1" key={index}>
+                                                                                                                <i className="fa fa-genderless text-primary icon-md mr-3"></i>
+                                                                                                                <a href={adjunto.url} target='_blank' rel="noopener noreferrer" className="font-weight-normal font-size-h6 text-dark-75 text-hover-primary a-name-planos">
+                                                                                                                    {this.nameAdjunto(adjunto.name)}
+                                                                                                                </a>
+                                                                                                            </div>
+                                                                                                        )
+                                                                                                    })
+                                                                                                }
+                                                                                            </div>
+                                                                                        </>
+                                                                                        :
+                                                                                        <>
+                                                                                            {
+                                                                                                proyecto ?
+                                                                                                    proyecto[adjunto.value].length ?
+                                                                                                        <div className="mb-5 d-flex justify-content-center">
+                                                                                                            <span className='btn btn-sm font-weight-bolder text-success align-self-center font-size-lg box-shadow-button' 
+                                                                                                                onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
+                                                                                                                <i className="la la-file-archive icon-xl text-success"></i> Descargar ZIP
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                        : ''
+                                                                                                    : ''
+                                                                                            }
+                                                                                            {
+                                                                                                proyecto ?
+                                                                                                    <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
+                                                                                                    : ''
+                                                                                            }
+                                                                                        </>
                                                                                     }
-                                                                                    {
-                                                                                        proyecto ?
-                                                                                            <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
-                                                                                            : ''
-                                                                                    }
+                                                                                    
                                                                                 </Tab.Pane>
                                                                             )
                                                                         }

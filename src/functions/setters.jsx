@@ -1000,21 +1000,28 @@ export function getQuincena(){
 }
 export function getMeses(){
     return [
-        { name: 'Enero', value: 'Enero' },
-        { name: 'Febrero', value: 'Febrero' },
-        { name: 'Marzo', value: 'Marzo' },
-        { name: 'Abril', value: 'Abril' },
-        { name: 'Mayo', value: 'Mayo' },
-        { name: 'Junio', value: 'Junio' },
-        { name: 'Julio', value: 'Julio' },
-        { name: 'Agosto', value: 'Agosto' },
-        { name: 'Septiembre', value: 'Septiembre' },
-        { name: 'Octubre', value: 'Octubre' },
-        { name: 'Noviembre', value: 'Noviembre' },
-        { name: 'Diciembre', value: 'Diciembre' }
+        { name: 'Enero', value: 'Enero', label: 'Enero' },
+        {  name: 'Febrero', value: 'Febrero', label: 'Febrero' },
+        { name: 'Marzo', value: 'Marzo', label: 'Marzo' },
+        { name: 'Abril', value: 'Abril', label: 'Abril' },
+        { name: 'Mayo', value: 'Mayo', label: 'Mayo' },
+        { name: 'Junio', value: 'Junio', label: 'Junio' },
+        { name: 'Julio', value: 'Julio', label: 'Julio' },
+        { name: 'Agosto', value: 'Agosto', label: 'Agosto' },
+        { name: 'Septiembre', value: 'Septiembre', label: 'Septiembre' },
+        { name: 'Octubre', value: 'Octubre', label: 'Octubre' },
+        { name: 'Noviembre', value: 'Noviembre', label: 'Noviembre' },
+        { name: 'Diciembre', value: 'Diciembre', label: 'Diciembre' }
     ]
 }
-
+export function getFases(){
+    return [
+        { name: 'Fase 1', value: '1', label: 'Fase 1' },
+        { name: 'Fase 2', value: '2', label: 'Fase 2' },
+        { name: 'Fase 3', value: '3', label: 'Fase 3' },
+        { name: 'Todas', value: 'todas', label: 'Todas' }
+    ]
+}
 export const getAños = () => {
     let fecha = new Date().getFullYear()
     let mes = new Date().getMonth()
