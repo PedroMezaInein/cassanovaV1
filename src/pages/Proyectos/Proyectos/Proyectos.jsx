@@ -2027,7 +2027,7 @@ class Proyectos extends Component {
                                                                                         <label htmlFor="file-upload" className="btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50">
                                                                                             <i className="flaticon2-clip-symbol text-primary"></i> Adjuntar archivo
                                                                                         </label>
-                                                                                        <input id="file-upload" type="file" placeholder={form.adjuntos.adjunto_comentario.placeholder}
+                                                                                        <input id="file-upload" type="file" multiple placeholder={form.adjuntos.adjunto_comentario.placeholder}
                                                                                             onChange={ (e) => { e.preventDefault(); this.handleChange(e.target.files, subActiveKey) }}
                                                                                             value={form.adjuntos.adjunto_comentario.value} name='adjunto_comentario' accept="image/*, application/pdf" />
                                                                                     </span>
