@@ -71,21 +71,10 @@ class RangeCalendar extends Component {
         return (
             <DateRange 
                 locale = { es }
-                // className
-                // months
                 showSelectionPreview = { true }
-                // showMonthAndYearPickers
                 rangeColors = {["#357ec7"]}
-                /* shownDate = { end } */
-                // minDate
-                // maxDate
                 direction = "horizontal"
                 disabledDates = { disabledDates }
-                // disabledDay
-                // scroll
-                // showMonthArrow
-                // navigatorRenderer
-                // ranges = { range }
                 ranges = { [
                     {
                         startDate: start,
@@ -94,29 +83,14 @@ class RangeCalendar extends Component {
                         key: 'selection'
                     }
                 ] }
-                // moveRangeOnFirstSelection = { false }
                 onChange={ (item) => { this.updateRange(item)} }
-                // color
-                // date
-                // showDateDisplay = { true }
-                // onShownDateChange
                 initialFocusedRange = { [0,0] }
-                // focusedRange = { [0,0] }
-                // onRangeFocusChange
-                // preview
                 showPreview = { true }
                 editableDateInputs = { false }
-                // dragSelectionEnabled
-                // onPreviewChange
                 dateDisplayFormat = 'dd-MMM-yyyy'
-                // dayDisplayFormat
-                // weekdayDisplayFormat
-                // monthDisplayFormat
                 weekStartsOn	 = { 1 }
                 startDatePlaceholder = "Fecha de inicio"
                 endDatePlaceholder = "Fecha Final"
-                // fixedHeight
-                // renderStaticRangeLabel
                 staticRanges = {
                     [
                         {
@@ -175,7 +149,6 @@ class RangeCalendar extends Component {
                         }
                     ]
                 }
-                // inputRanges
             />
         );
     }
