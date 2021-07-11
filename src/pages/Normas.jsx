@@ -12,6 +12,7 @@ import { setOptions } from '../functions/setters'
 import { setSingleHeader } from '../functions/routers'
 import { MoneyTransaction } from '../components/Lottie'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 class Normas extends Component {
 
     state = {
@@ -37,8 +38,41 @@ class Normas extends Component {
                 isActive: false,
             }
         ],
-        datos: null
+        datos: null,
+        items:[]
     };
+    getItems = count =>
+        Array.from({ length: count }, (v, k) => k).map(k => ({
+        id: `item-${k}`,
+        content: `item ${k}`
+    }));
+    reorder = (list, startIndex, endIndex) => {
+        console.log(list,'list')
+        console.log(startIndex,'startIndex')
+        console.log(endIndex,'endIndex')
+        
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+    };
+    
+    onDragEnd(result) {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+        console.log(result, 'result')
+        const items = this.reorder( 
+            this.state.items,
+            result.source.index,
+            result.destination.index
+        );
+    
+        this.setState({
+            items
+        });
+    }
 
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -51,6 +85,13 @@ class Normas extends Component {
         if (!estado_resultado)
             history.push('/')
         this.getOptionsAxios()
+        
+        let { items } = this.state
+        items = this.getItems(10)
+        this.setState({
+            items
+        });
+        this.onDragEnd = this.onDragEnd.bind(this);
     }
 
     async getOptionsAxios() {
@@ -320,12 +361,8 @@ class Normas extends Component {
     }
 
     render() {
-        const { form, options, datos } = this.state
-        const getItems = count =>
-            Array.from({ length: count }, (v, k) => k).map(k => ({
-                id: `item-${k}`,
-                content: `item ${k}`
-            }));
+        const { form, options, datos, items } = this.state
+        console.log(items)
         return (
             <Layout {...this.props}>
                 <table>
@@ -338,32 +375,32 @@ class Normas extends Component {
                         <Droppable droppableId="droppable">
                             {(provided, snapshot) => (
                                 <tbody
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
                                 >
-                                {getItems(5).map((item, index) => (
-                                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                                        {(provided, snapshot) => (
-                                        <tr
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        >
-                                            <td>
-                                                {item.content}
-                                            </td>
-                                        
-                                        </tr>
-                                    )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
+                                    {this.state.items.map((item, index) => (
+                                        <Draggable key={item.id} draggableId={item.id} index={index}>
+                                            {console.log(item, 'item')}
+                                            {(provided, snapshot) => (
+                                            <tr
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            >
+                                                <td>
+                                                    {item.content}
+                                                </td>
+                                            
+                                            </tr>
+                                        )}
+                                        </Draggable>
+                                    ))}
                                 </tbody>
                             )}
                         </Droppable>
                     </DragDropContext>
                 </table>
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-lg-4">
                         <Card className="card-custom card-stretch gutter-b">
                             <Card.Header>
@@ -397,7 +434,7 @@ class Normas extends Component {
                             </Card.Body>
                         </Card>
                     </div>
-                </div>
+                </div> */}
             </Layout >
         )
     }
