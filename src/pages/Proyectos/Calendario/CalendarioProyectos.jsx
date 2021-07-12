@@ -497,20 +497,29 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        {
-                            <div className="d-flex justify-content-center">
-                                <span className="label-fase" style={{backgroundColor:'#A16793'}}>
-                                    FASE 1
-                                </span>
-                                <span className="label-fase" style={{backgroundColor:'#308EA8'}}>
-                                    FASE 2
-                                </span>
-                                <span className="label-fase" style={{backgroundColor:'#E88F6B'}}>
-                                    FASE 3
-                                </span>
-                            </div>
-                        }
-                        
+                        <div className="d-flex justify-content-center">
+                            {
+                                fase === '1' || fase === 'todas' ?
+                                    <span className="label-fase" style={{backgroundColor:'#A16793'}}>
+                                        FASE 1
+                                    </span>
+                                : ''
+                            }
+                            {
+                                fase === '2' || fase === 'todas' ?
+                                    <span className="label-fase" style={{backgroundColor:'#308EA8'}}>
+                                        FASE 2
+                                    </span>
+                                : ''
+                            }
+                            {
+                                fase === '3' || fase === 'todas' ?
+                                    <span className="label-fase" style={{backgroundColor:'#E88F6B'}}>
+                                        FASE 3
+                                    </span>
+                                : ''
+                            }
+                        </div>
                         <div className='d-flex justify-content-between mt-8'>
                             <div className=''>
                                 <h2 className="font-weight-bolder text-dark">{`${mes} ${año}`}</h2>
