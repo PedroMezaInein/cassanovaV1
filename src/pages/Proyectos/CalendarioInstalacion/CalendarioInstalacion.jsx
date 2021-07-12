@@ -299,7 +299,6 @@ class CalendarioInstalacion extends Component {
 
     deleteMantenimientoAxios = async (id) => {
         const { access_token } = this.props.authUser
-        const { mantenimiento } = this.state
         await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 $('#mantenimientos').DataTable().search({}).draw();
@@ -380,7 +379,7 @@ class CalendarioInstalacion extends Component {
                 </Dropdown>,
                 costo: setMoneyTable(mante.costo),
                 presupuesto: mante.cotizacion ? <div className = 'text-center'>
-                    <a href = { mante.cotizacion } target = '_blank' className="btn btn-icon btn-light btn-hover-primary btn-sm">
+                    <a href = { mante.cotizacion } target = '_blank' rel="noreferrer" className="btn btn-icon btn-light btn-hover-primary btn-sm">
                         <i className="la la-file-invoice-dollar text-primary icon-xl"/>
                     </a>
                 </div> : '',
