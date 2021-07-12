@@ -300,8 +300,9 @@ class CalendarioInstalacion extends Component {
     deleteMantenimientoAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { mantenimiento } = this.state
-        await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/${mantenimiento.id}/mantenimiento/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                $('#mantenimientos').DataTable().search({}).draw();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Mantenimiento eliminado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -329,8 +330,8 @@ class CalendarioInstalacion extends Component {
     }
 
     changeActive = value => { 
-        /* if(value === 'tabla')
-            this.getMantenimientos() */
+        if(value === 'tabla')
+            $('#mantenimientos').DataTable().search({}).draw();
         this.setState({...this.state, activeKey: value}) 
     }
 
@@ -398,7 +399,6 @@ class CalendarioInstalacion extends Component {
                         <i className = 'flaticon2-rubbish-bin' />
                     </button>
                 </OverlayTrigger>
-                
             </div>
         )
     }
@@ -460,9 +460,9 @@ class CalendarioInstalacion extends Component {
                             </Card.Body>
                         </Card>
                     : 
-                        <NewTable tableName = 'mantenimientos' subtitle = 'Listado de Mantenimientos' title = 'Mantenimientos' abrirModal = { true } onClick={this.openModal} 
-                            columns = { MANTENIMIENTOS } accessToken = { access_token } urlRender = {`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos`} 
-                            setter = { this.setMantenimientos } filterClick = { this.openModalFiltros } />
+                        <NewTable tableName = 'mantenimientos' subtitle = 'Listado de Mantenimientos' title = 'Mantenimientos' abrirModal = { true } 
+                            onClick = { this.openModal } columns = { MANTENIMIENTOS } accessToken = { access_token } setter = { this.setMantenimientos } 
+                            urlRender = {`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos`} filterClick = { this.openModalFiltros } />
                 }
                 <Modal size="lg" title={title} show={modal.form} handleClose={this.handleClose} >
                     <FormCalendarioIEquipos form = { form } options = { options } onChange = { this.onChange } onSubmit = { this.onSubmitInstalacion } />
