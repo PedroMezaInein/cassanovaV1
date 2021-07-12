@@ -11,6 +11,7 @@ import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
 import Swal from 'sweetalert2'
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 class CalendarioProyectos extends Component {
@@ -59,7 +60,6 @@ class CalendarioProyectos extends Component {
             }
         }
     }
-
     getContentCalendarAxios = async (mes, año, fase) => {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}&fase=${fase}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -107,6 +107,7 @@ class CalendarioProyectos extends Component {
                 })
                 
                 let dias = this.diasEnUnMes(mes, año)
+                
                 this.setState({
                     ...this.state,
                     mes: mes,
@@ -115,6 +116,8 @@ class CalendarioProyectos extends Component {
                     proyectos: proyectos,
                     colorProyecto
                 })
+                
+                this.onDragEnd = this.onDragEnd.bind(this);
             },
             (error) => {
                 console.log(error, 'error')
@@ -125,6 +128,30 @@ class CalendarioProyectos extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+    reorder = (list, startIndex, endIndex) => {
+        // console.log(list, 'list')
+        // console.log(startIndex, 'startIndex')
+        // console.log(endIndex, 'endIndex')
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        // console.log(result, 'result')
+        return result;
+    };
+
+    onDragEnd(result) {
+        if (!result.destination) {
+            return;
+        }
+        const proyectos = this.reorder( 
+            this.state.proyectos,
+            result.source.index,
+            result.destination.index
+        );
+        this.setState({
+            proyectos
+        });
     }
 
     diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
@@ -483,6 +510,7 @@ class CalendarioProyectos extends Component {
                                 </span>
                             </div>
                         }
+                        
                         <div className='d-flex justify-content-between mt-8'>
                             <div className=''>
                                 <h2 className="font-weight-bolder text-dark">{`${mes} ${año}`}</h2>
@@ -514,7 +542,7 @@ class CalendarioProyectos extends Component {
                         </div>
                         <div className="col-md-12 px-0">
                         <div className="table-responsive mt-5">
-                            <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
+                            {/* <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
                                 <thead className="text-center">
                                     <tr>
                                         <th className="font-weight-bolder border-0">PROYECTO</th>
@@ -568,6 +596,79 @@ class CalendarioProyectos extends Component {
                                             })
                                     }
                                 </tbody>
+                            </table> */}
+                            <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
+                                <thead className="text-center">
+                                    <tr>
+                                        <th className="font-weight-bolder border-0">PROYECTO</th>
+                                        {
+                                            [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
+                                                return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
+                                            })
+                                        }
+                                    </tr>
+                                </thead>
+                                <DragDropContext onDragEnd={this.onDragEnd}>
+                                    <Droppable droppableId="droppable">
+                                        {(provided, snapshot) => (
+                                            <tbody
+                                                {...provided.droppableProps}
+                                                ref={provided.innerRef}
+                                            >
+                                                {
+                                                    proyectos.length === 0 ?
+                                                        <tr>
+                                                            <td colSpan={this.diasEnUnMes(mes, año) + 1} className="text-center font-weight-bolder font-size-h6 py-6 border-0">
+                                                                NO HAY PROYECTOS
+                                                            </td>
+                                                        </tr>
+                                                        :
+                                                        proyectos.map((proyecto, index) => {
+                                                            let fechaInicio = ''
+                                                            let fechaFin = ''
+                                                            if (proyecto.fecha_fin === null) {
+                                                                fechaInicio = moment(proyecto.fecha_inicio);
+                                                                fechaFin = moment(proyecto.fecha_inicio);
+                                                            } else {
+                                                                fechaInicio = moment(proyecto.fecha_inicio);
+                                                                fechaFin = moment(proyecto.fecha_fin);
+                                                            }
+                                                            return (
+                                                                <Draggable key={proyecto.id.toString()} draggableId={proyecto.id.toString()} index={index}>
+                                                                    {(provided, snapshot) => (
+                                                                        <tr
+                                                                            ref={provided.innerRef}
+                                                                            {...provided.draggableProps}
+                                                                            {...provided.dragHandleProps}
+                                                                            className='h-30px'
+                                                                        >
+                                                                            <td className="text-center font-weight-bolder white-space-nowrap py-8px">
+                                                                                <span className="d-block font-size-13px">
+                                                                                    {proyecto.nombre}
+                                                                                </span>
+                                                                                <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
+                                                                                    color: `${proyecto.estatus.letra}`,
+                                                                                    backgroundColor: `${proyecto.estatus.fondo}`,
+                                                                                    fontSize: "8.5px",
+                                                                                }} >
+                                                                                    {proyecto.estatus.estatus}
+                                                                                </span>
+                                                                            </td>
+                                                                            {
+                                                                                [...Array(dias)].map((element, diaActual) => {
+                                                                                    return (<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
+                                                                                })
+                                                                            }
+                                                                        </tr>
+                                                                    )}
+                                                                </Draggable>
+                                                            )
+                                                        })
+                                                }
+                                            </tbody>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext> 
                             </table>
                         </div>
                         </div>
