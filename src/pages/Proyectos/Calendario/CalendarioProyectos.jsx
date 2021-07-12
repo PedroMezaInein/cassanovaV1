@@ -6,7 +6,7 @@ import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
 import { SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños, getFases } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
@@ -69,7 +69,7 @@ class CalendarioProyectos extends Component {
             { proyecto: draggableId, destino: destino, origen: origen }, 
             { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { data } = response
+                Swal.close()
                 this.getContentCalendarAxios(mes, año, fase)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -83,7 +83,6 @@ class CalendarioProyectos extends Component {
             (response) => {
                 const { proyectos } = response.data
                 let { colorProyecto } = this.state
-                console.log('proyectos', proyectos)
                 proyectos.forEach((proyecto) => {
                     let esigual = false
                     let colorexistente = ''
@@ -570,8 +569,6 @@ class CalendarioProyectos extends Component {
                                                         </tr>
                                                         :
                                                         proyectos.map((proyecto, index) => {
-                                                            /* console.log(snapshot) */
-                                                            console.log(`proyecto: `, proyecto)
                                                             let fechaInicio = ''
                                                             let fechaFin = ''
                                                             if (proyecto.fecha_fin === null) {
