@@ -555,11 +555,11 @@ class CalendarioProyectos extends Component {
                                                 {...provided.droppableProps}
                                                 ref={provided.innerRef}
                                             >
-                                                <tr className="d-none">
+                                                {/* <tr className="d-none">
                                                     <td className="d-none">
                                                         {provided.placeholder}
                                                     </td>
-                                                </tr>
+                                                </tr> */}
                                                 {
                                                     proyectos.length === 0 ?
                                                         <tr>
