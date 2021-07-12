@@ -10,7 +10,7 @@ import moment from 'moment';
 import Swal from 'sweetalert2'
 import 'moment/locale/es';
 import SVG from "react-inlinesvg";
-import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
+import { setSingleHeader, toAbsoluteUrl, setFormHeader } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import { DetailsInstalacion } from '../components/forms'
 import Moment from 'react-moment'
@@ -762,7 +762,8 @@ class InicioMiProyecto extends Component {
             }
         })
         data.append('proyecto', proyecto.id)
-        await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        //await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/mi-proyecto/tickets`, data, { headers : setFormHeader(access_token) }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ticket fue solicitado con éxito.')
                 this.getMiProyectoAxios(proyecto.id)

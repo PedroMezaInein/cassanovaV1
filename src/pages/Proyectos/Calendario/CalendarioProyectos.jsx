@@ -4,7 +4,7 @@ import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
-import { SelectSearchGray, Single } from '../../../components/form-components'
+import { SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños, getFases } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import moment from 'moment'
@@ -498,21 +498,30 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        {/* {
-                            <div className="d-flex justify-content-center">
-                                <span className="label-fase" style={{backgroundColor:'#A16793'}}>
-                                    FASE 1
-                                </span>
-                                <span className="label-fase" style={{backgroundColor:'#308EA8'}}>
-                                    FASE 2
-                                </span>
-                                <span className="label-fase" style={{backgroundColor:'#E88F6B'}}>
-                                    FASE 3
-                                </span>
-                            </div>
-                        } */}
-                        
-                        <div className='d-flex justify-content-between'>
+                        <div className="d-flex justify-content-center">
+                            {
+                                fase === '1' || fase === 'todas' ?
+                                    <span className="label-fase" style={{backgroundColor:'#A16793'}}>
+                                        FASE 1
+                                    </span>
+                                : ''
+                            }
+                            {
+                                fase === '2' || fase === 'todas' ?
+                                    <span className="label-fase" style={{backgroundColor:'#308EA8'}}>
+                                        FASE 2
+                                    </span>
+                                : ''
+                            }
+                            {
+                                fase === '3' || fase === 'todas' ?
+                                    <span className="label-fase" style={{backgroundColor:'#E88F6B'}}>
+                                        FASE 3
+                                    </span>
+                                : ''
+                            }
+                        </div>
+                        <div className='d-flex justify-content-between mt-8'>
                             <div className=''>
                                 <h2 className="font-weight-bolder text-dark">{`${mes} ${año}`}</h2>
                             </div>
@@ -543,61 +552,6 @@ class CalendarioProyectos extends Component {
                         </div>
                         <div className="col-md-12 px-0">
                         <div className="table-responsive mt-5">
-                            {/* <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
-                                <thead className="text-center">
-                                    <tr>
-                                        <th className="font-weight-bolder border-0">PROYECTO</th>
-                                        {
-                                            [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
-                                                return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
-                                            })
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        proyectos.length === 0 ?
-                                            <tr>
-                                                <td colSpan={this.diasEnUnMes(mes, año) + 1} className="text-center font-weight-bolder font-size-h6 py-6 border-0">
-                                                    NO HAY PROYECTOS
-                                                </td>
-                                            </tr>
-                                            :
-                                            proyectos.map((proyecto, index) => {
-                                                let fechaInicio = ''
-                                                let fechaFin = ''
-                                                if(proyecto.fecha_fin === null){
-                                                    fechaInicio = moment(proyecto.fecha_inicio);
-                                                    fechaFin = moment(proyecto.fecha_inicio);
-                                                }else{
-                                                    fechaInicio = moment(proyecto.fecha_inicio);
-                                                    fechaFin = moment(proyecto.fecha_fin);
-                                                }
-                                                return (
-                                                    <tr key={index} className='h-30px'>
-                                                        <td className="text-center font-weight-bolder white-space-nowrap py-8px">
-                                                            <span className="d-block font-size-13px">
-                                                                {proyecto.nombre}
-                                                            </span>
-                                                            <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
-                                                                color: `${proyecto.estatus.letra}`,
-                                                                backgroundColor: `${proyecto.estatus.fondo}`,
-                                                                fontSize: "8.5px",
-                                                                }} >
-                                                                {proyecto.estatus.estatus}
-                                                            </span>
-                                                        </td>
-                                                        {
-                                                            [...Array(dias)].map((element, diaActual) => {
-                                                                return (<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
-                                                            })
-                                                        }
-                                                    </tr>
-                                                )
-                                            })
-                                    }
-                                </tbody>
-                            </table> */}
                             <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
                                 <thead className="text-center">
                                     <tr>

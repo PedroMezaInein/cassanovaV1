@@ -24,7 +24,6 @@ class NewTable extends Component{
     componentDidMount = () => {
         const { data } = this.props
         this.setState({...this.state, stateData: data})
-        let componente = this
         $.event.special.touchstart = {
             setup: function( _, ns, handle ){
                 if ( ns.includes("noPreventDefault") ) {
@@ -54,7 +53,7 @@ class NewTable extends Component{
     }
 
     runAjax = (request) => {
-        const { accessToken, urlRender, setter, tableName } = this.props
+        const { accessToken, urlRender, setter } = this.props
         var deferred = new $.Deferred();
         $.ajax({
             data: request,
@@ -228,7 +227,7 @@ class NewTable extends Component{
     reloadTableData = (props) => {
         const { data } = props
         this.setState({...this.state, stateData: data})
-        var table = $(this.refs.main).DataTable().destroy();
+        $(this.refs.main).DataTable().destroy();
         this.initTableData()
         this.reloadHeader();
     }
