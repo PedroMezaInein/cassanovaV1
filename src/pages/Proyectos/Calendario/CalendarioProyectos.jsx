@@ -579,7 +579,7 @@ class CalendarioProyectos extends Component {
                                                                 fechaFin = moment(proyecto.fecha_fin);
                                                             }
                                                             return (
-                                                                <Draggable key={proyecto.id.toString()} draggableId={proyecto.id.toString()} index={index}>
+                                                                <Draggable key={proyecto.id} draggableId={proyecto.id.toString()} index={index}>
                                                                     {(provided, snapshot) => (
                                                                         <tr
                                                                             ref={provided.innerRef}
@@ -601,7 +601,11 @@ class CalendarioProyectos extends Component {
                                                                             </td>
                                                                             {
                                                                                 [...Array(dias)].map((element, diaActual) => {
-                                                                                    return (<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
+                                                                                    return(
+                                                                                        <RenderTd key = {`${proyecto.id}-${diaActual}`} >
+                                                                                            {this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}
+                                                                                        </RenderTd>
+                                                                                    )
                                                                                 })
                                                                             }
                                                                         </tr>
@@ -638,11 +642,20 @@ class CalendarioProyectos extends Component {
                 } handleClose = { this.handleClose } >
                     <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario = { this.addComentarioAxios } form = { form } onChange = { this.onChange } handleChange = { this.handleChangeComentario } tipo = { tipo } urls={true} />
                 </Modal>
-            </Layout>
-            
+            </Layout>       
         )
     }
+}
 
+class RenderTd extends Component{
+    render(){
+        const { children } = this.props
+        return(
+            <>
+                {children}
+            </>
+        )
+    }
 }
 
 const mapStateToProps = (state) => { return { authUser: state.authUser } }
