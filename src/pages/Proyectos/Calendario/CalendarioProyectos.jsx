@@ -463,6 +463,7 @@ class CalendarioProyectos extends Component {
         })
         return form
     }
+    
     render() {
         const { mes, año, fase, proyectos, dias, modal, proyecto, form, tipo } = this.state
         return (
@@ -497,7 +498,7 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        {
+                        {/* {
                             <div className="d-flex justify-content-center">
                                 <span className="label-fase" style={{backgroundColor:'#A16793'}}>
                                     FASE 1
@@ -509,9 +510,9 @@ class CalendarioProyectos extends Component {
                                     FASE 3
                                 </span>
                             </div>
-                        }
+                        } */}
                         
-                        <div className='d-flex justify-content-between mt-8'>
+                        <div className='d-flex justify-content-between'>
                             <div className=''>
                                 <h2 className="font-weight-bolder text-dark">{`${mes} ${año}`}</h2>
                             </div>
@@ -611,10 +612,16 @@ class CalendarioProyectos extends Component {
                                 <DragDropContext onDragEnd={this.onDragEnd}>
                                     <Droppable droppableId="droppable">
                                         {(provided, snapshot) => (
+                                            
                                             <tbody
                                                 {...provided.droppableProps}
                                                 ref={provided.innerRef}
                                             >
+                                                <tr className="d-none">
+                                                    <td className="d-none">
+                                                        {provided.placeholder}
+                                                    </td>
+                                                </tr>
                                                 {
                                                     proyectos.length === 0 ?
                                                         <tr>
@@ -624,6 +631,7 @@ class CalendarioProyectos extends Component {
                                                         </tr>
                                                         :
                                                         proyectos.map((proyecto, index) => {
+                                                            console.log(snapshot)
                                                             let fechaInicio = ''
                                                             let fechaFin = ''
                                                             if (proyecto.fecha_fin === null) {
