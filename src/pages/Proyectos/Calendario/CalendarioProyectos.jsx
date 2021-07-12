@@ -12,10 +12,10 @@ import { Modal } from '../../../components/singles'
 import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
 import Swal from 'sweetalert2'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { setSingleHeader } from '../../../functions/routers'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 class CalendarioProyectos extends Component {
-
     state = {
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
@@ -42,7 +42,6 @@ class CalendarioProyectos extends Component {
         },
         tipo: ''
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -60,15 +59,32 @@ class CalendarioProyectos extends Component {
             }
         }
     }
+    onDragEnd = async (result) => {
+        if(!result.destination){ return ; }
+        waitAlert()
+        const { draggableId, destination: { index: destino }, source: { index: origen } } = result
+        const { access_token } = this.props.authUser
+        const { mes, año, fase } = this.state
+        await axios.post(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}&fase=${fase}`, 
+            { proyecto: draggableId, destino: destino, origen: origen }, 
+            { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { data } = response
+                this.getContentCalendarAxios(mes, año, fase)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     getContentCalendarAxios = async (mes, año, fase) => {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}&fase=${fase}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
                 let { colorProyecto } = this.state
-                
+                console.log('proyectos', proyectos)
                 proyectos.forEach((proyecto) => {
-                    // console.log(proyecto)
                     let esigual = false
                     let colorexistente = ''
                     if(proyecto.fase1){
@@ -95,35 +111,16 @@ class CalendarioProyectos extends Component {
                             }
                         }
                     });
-                    if(!esigual){
-                        // Object.assign(proyecto, { color: COLORES_CALENDARIO_PROYECTOS[Math.floor(Math.random() * COLORES_CALENDARIO_PROYECTOS.length)]});
-                        colorProyecto.push({
-                            id: proyecto.id,
-                            color: proyecto.color
-                        })
-                    }else{
-                        Object.assign(proyecto, { color: colorexistente });
-                    }
+                    if(!esigual){ colorProyecto.push({ id: proyecto.id, color: proyecto.color })
+                    }else{ Object.assign(proyecto, { color: colorexistente }); }
                 })
                 
                 let dias = this.diasEnUnMes(mes, año)
                 
-                this.setState({
-                    ...this.state,
-                    mes: mes,
-                    año: año,
-                    dias: dias,
-                    proyectos: proyectos,
-                    colorProyecto
-                })
+                this.setState({ ...this.state, mes: mes, año: año, dias: dias, proyectos: proyectos, colorProyecto })
                 
-                this.onDragEnd = this.onDragEnd.bind(this);
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() }
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
-            }
+                //this.onDragEnd = this.onDragEnd.bind(this);
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -137,25 +134,20 @@ class CalendarioProyectos extends Component {
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
         // console.log(result, 'result')
+        console.log(list)
+        console.log(result)
         return result;
     };
-
-    onDragEnd(result) {
-        if (!result.destination) {
-            return;
-        }
+    /* onDragEnd = (result) => {
+        if (!result.destination) { return; }
         const proyectos = this.reorder( 
             this.state.proyectos,
             result.source.index,
             result.destination.index
         );
-        this.setState({
-            proyectos
-        });
-    }
-
+        this.setState({ ...this.state, proyectos });
+    } */
     diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
-
     updateMes = value => {
         const { año, fase } = this.state
         this.setState({
@@ -164,7 +156,6 @@ class CalendarioProyectos extends Component {
         })
         this.getContentCalendarAxios(value, año, fase)
     }
-
     updateAño = value => {
         const { mes, fase } = this.state
         this.setState({
@@ -197,7 +188,6 @@ class CalendarioProyectos extends Component {
         }
         return true
     }
-
     isActiveForwardButton = () => {
         const { mes, año } = this.state
         let actualMonth = meses.indexOf(mes)
@@ -214,7 +204,6 @@ class CalendarioProyectos extends Component {
         }
         return true
     }
-
     changeMonth = (direction) => {
         const { mes, año, fase } = this.state
         let actualMonth = meses.indexOf(mes)
@@ -266,9 +255,7 @@ class CalendarioProyectos extends Component {
             </OverlayTrigger>
         )
     }
-
     handleClose = () => { this.setState({...this.state, modal: false, tipo: ''}) }
-
     printDates = dato => {
         let fechaInicio = ''
         let fechaFin = ''
@@ -294,7 +281,6 @@ class CalendarioProyectos extends Component {
                 </span>
             )
     }
-
     printTd = (proyecto, index, diaActual, fechaInicio, fechaFin) => {
         const { mes, año } = this.state
         fechaInicio.startOf('day')
@@ -360,7 +346,6 @@ class CalendarioProyectos extends Component {
             </td>
         )
     }
-
     openModal = async(proy) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -463,6 +448,7 @@ class CalendarioProyectos extends Component {
         })
         return form
     }
+    
     render() {
         const { mes, año, fase, proyectos, dias, modal, proyecto, form, tipo } = this.state
         return (
@@ -551,61 +537,6 @@ class CalendarioProyectos extends Component {
                         </div>
                         <div className="col-md-12 px-0">
                         <div className="table-responsive mt-5">
-                            {/* <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
-                                <thead className="text-center">
-                                    <tr>
-                                        <th className="font-weight-bolder border-0">PROYECTO</th>
-                                        {
-                                            [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
-                                                return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
-                                            })
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        proyectos.length === 0 ?
-                                            <tr>
-                                                <td colSpan={this.diasEnUnMes(mes, año) + 1} className="text-center font-weight-bolder font-size-h6 py-6 border-0">
-                                                    NO HAY PROYECTOS
-                                                </td>
-                                            </tr>
-                                            :
-                                            proyectos.map((proyecto, index) => {
-                                                let fechaInicio = ''
-                                                let fechaFin = ''
-                                                if(proyecto.fecha_fin === null){
-                                                    fechaInicio = moment(proyecto.fecha_inicio);
-                                                    fechaFin = moment(proyecto.fecha_inicio);
-                                                }else{
-                                                    fechaInicio = moment(proyecto.fecha_inicio);
-                                                    fechaFin = moment(proyecto.fecha_fin);
-                                                }
-                                                return (
-                                                    <tr key={index} className='h-30px'>
-                                                        <td className="text-center font-weight-bolder white-space-nowrap py-8px">
-                                                            <span className="d-block font-size-13px">
-                                                                {proyecto.nombre}
-                                                            </span>
-                                                            <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
-                                                                color: `${proyecto.estatus.letra}`,
-                                                                backgroundColor: `${proyecto.estatus.fondo}`,
-                                                                fontSize: "8.5px",
-                                                                }} >
-                                                                {proyecto.estatus.estatus}
-                                                            </span>
-                                                        </td>
-                                                        {
-                                                            [...Array(dias)].map((element, diaActual) => {
-                                                                return (<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
-                                                            })
-                                                        }
-                                                    </tr>
-                                                )
-                                            })
-                                    }
-                                </tbody>
-                            </table> */}
                             <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
                                 <thead className="text-center">
                                     <tr>
@@ -620,10 +551,16 @@ class CalendarioProyectos extends Component {
                                 <DragDropContext onDragEnd={this.onDragEnd}>
                                     <Droppable droppableId="droppable">
                                         {(provided, snapshot) => (
+                                            
                                             <tbody
                                                 {...provided.droppableProps}
                                                 ref={provided.innerRef}
                                             >
+                                                <tr className="d-none">
+                                                    <td className="d-none">
+                                                        {provided.placeholder}
+                                                    </td>
+                                                </tr>
                                                 {
                                                     proyectos.length === 0 ?
                                                         <tr>
@@ -633,6 +570,8 @@ class CalendarioProyectos extends Component {
                                                         </tr>
                                                         :
                                                         proyectos.map((proyecto, index) => {
+                                                            /* console.log(snapshot) */
+                                                            console.log(`proyecto: `, proyecto)
                                                             let fechaInicio = ''
                                                             let fechaFin = ''
                                                             if (proyecto.fecha_fin === null) {
