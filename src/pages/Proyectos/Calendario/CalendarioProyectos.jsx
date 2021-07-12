@@ -125,27 +125,6 @@ class CalendarioProyectos extends Component {
             console.log(error, 'error')
         })
     }
-    reorder = (list, startIndex, endIndex) => {
-        // console.log(list, 'list')
-        // console.log(startIndex, 'startIndex')
-        // console.log(endIndex, 'endIndex')
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-        // console.log(result, 'result')
-        console.log(list)
-        console.log(result)
-        return result;
-    };
-    /* onDragEnd = (result) => {
-        if (!result.destination) { return; }
-        const proyectos = this.reorder( 
-            this.state.proyectos,
-            result.source.index,
-            result.destination.index
-        );
-        this.setState({ ...this.state, proyectos });
-    } */
     diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
     updateMes = value => {
         const { año, fase } = this.state
@@ -456,28 +435,23 @@ class CalendarioProyectos extends Component {
                     <Card.Header>
                         <div className="d-flex align-items-center">
                             <h3 className="card-title align-items-start flex-column">
-                                <span className="font-weight-bolder text-dark">
-                                    Calendario de proyectos
-                                </span>
+                                <span className="font-weight-bolder text-dark"> Calendario de proyectos </span>
                             </h3>
                         </div>
                         <div className="card-toolbar row mx-0 row-paddingless d-flex justify-content-end ">
                             <div className="col-md-4 mr-4">
                                 {/* <Single textlabel={false} placeholder = 'Selecciona el mes' defaultvalue = { mes } iconclass='las la-tools icon-xl'
                                     options={getMeses()}  onChange={this.updateMes}  /> */}
-                                <SelectSearchGray name='fase' options={getFases()} value={fase} customdiv='mb-0'
-                                    onChange={this.updateFase} iconclass="fas fa-calendar-day"
-                                    messageinc="Incorrecto. Selecciona la fase." requirevalidation={1} withicon={1}/>
+                                <SelectSearchGray name = 'fase' options = { getFases() } value = { fase } customdiv = 'mb-0' onChange = { this.updateFase } 
+                                    iconclass = "fas fa-calendar-day" messageinc = "Incorrecto. Selecciona la fase." requirevalidation = { 1 } withicon = { 1 }/>
                             </div>
                             <div className="col-md-4 mr-4">
-                                <SelectSearchGray name='mes' options={getMeses()} value={mes} customdiv='mb-0'
-                                    onChange={this.updateMes} iconclass="fas fa-calendar-day"
-                                    messageinc="Incorrecto. Selecciona el mes." requirevalidation={1} withicon={1}/>
+                                <SelectSearchGray name = 'mes' options = { getMeses() } value = { mes } customdiv = 'mb-0' onChange = { this.updateMes } 
+                                    iconclass = "fas fa-calendar-day" messageinc = "Incorrecto. Selecciona el mes." requirevalidation = { 1 } withicon = { 1 } />
                             </div>
                             <div className="col-md-3">
-                                <SelectSearchGray name='año' options={getAños()} customdiv='mb-0'
-                                    value={año} onChange={this.updateAño}
-                                    iconclass="fas fa-calendar-day" withicon={1}/>
+                                <SelectSearchGray name = 'año' options = { getAños() } customdiv = 'mb-0' value = { año } onChange = { this.updateAño }
+                                    iconclass = "fas fa-calendar-day" withicon = { 1 } />
                             </div>
                         </div>
                     </Card.Header>
@@ -485,23 +459,17 @@ class CalendarioProyectos extends Component {
                         <div className="d-flex justify-content-center">
                             {
                                 fase === '1' || fase === 'todas' ?
-                                    <span className="label-fase" style={{backgroundColor:'#A16793'}}>
-                                        FASE 1
-                                    </span>
+                                    <span className="label-fase" style={{backgroundColor:'#A16793'}}> FASE 1 </span>
                                 : ''
                             }
                             {
                                 fase === '2' || fase === 'todas' ?
-                                    <span className="label-fase" style={{backgroundColor:'#308EA8'}}>
-                                        FASE 2
-                                    </span>
+                                    <span className="label-fase" style={{backgroundColor:'#308EA8'}}> FASE 2 </span>
                                 : ''
                             }
                             {
                                 fase === '3' || fase === 'todas' ?
-                                    <span className="label-fase" style={{backgroundColor:'#E88F6B'}}>
-                                        FASE 3
-                                    </span>
+                                    <span className="label-fase" style={{backgroundColor:'#E88F6B'}}> FASE 3 </span>
                                 : ''
                             }
                         </div>
@@ -512,114 +480,86 @@ class CalendarioProyectos extends Component {
                             <div className=''>
                                 <div className="btn-group">
                                     <span className={`btn btn-icon btn-xs btn-light-primary mr-2 my-1 ${this.isActiveBackButton() ? 'enabled' : 'disabled'}`}
-                                        onClick={
-                                            (e) => {
-                                                e.preventDefault();
-                                                if (this.isActiveBackButton())
-                                                    this.changeMonth('back')
-                                            }
-                                        }>
+                                        onClick = { (e) => { e.preventDefault(); if (this.isActiveBackButton()) this.changeMonth('back') } } >
                                         <i className="fa fa-chevron-left icon-xs" />
                                     </span>
-                                    <span className={`btn btn-icon btn-xs btn-light-primary my-1 ${this.isActiveForwardButton() ? 'enabled' : 'disabled'}`}
-                                        onClick={
-                                            (e) => {
-                                                e.preventDefault();
-                                                if (this.isActiveForwardButton())
-                                                    this.changeMonth('forward')
-                                            }
-                                        }>
+                                    <span className = { `btn btn-icon btn-xs btn-light-primary my-1 ${this.isActiveForwardButton() ? 'enabled' : 'disabled'}` }
+                                        onClick={ (e) => { e.preventDefault(); if (this.isActiveForwardButton()) this.changeMonth('forward') } }>
                                         <i className="fa fa-chevron-right icon-xs" />
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div className="col-md-12 px-0">
-                        <div className="table-responsive mt-5">
-                            <table className="table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" id="calendario-proyectos">
-                                <thead className="text-center">
-                                    <tr>
-                                        <th className="font-weight-bolder border-0">PROYECTO</th>
-                                        {
-                                            [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
-                                                return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
-                                            })
-                                        }
-                                    </tr>
-                                </thead>
-                                <DragDropContext onDragEnd={this.onDragEnd}>
-                                    <Droppable droppableId="droppable">
-                                        {(provided, snapshot) => (
-                                            
-                                            <tbody
-                                                {...provided.droppableProps}
-                                                ref={provided.innerRef}
-                                            >
-                                                {/* <tr className="d-none">
-                                                    <td className="d-none">
-                                                        {provided.placeholder}
-                                                    </td>
-                                                </tr> */}
-                                                {
-                                                    proyectos.length === 0 ?
-                                                        <tr>
-                                                            <td colSpan={this.diasEnUnMes(mes, año) + 1} className="text-center font-weight-bolder font-size-h6 py-6 border-0">
-                                                                NO HAY PROYECTOS
-                                                            </td>
-                                                        </tr>
-                                                        :
-                                                        proyectos.map((proyecto, index) => {
-                                                            let fechaInicio = ''
-                                                            let fechaFin = ''
-                                                            if (proyecto.fecha_fin === null) {
-                                                                fechaInicio = moment(proyecto.fecha_inicio);
-                                                                fechaFin = moment(proyecto.fecha_inicio);
-                                                            } else {
-                                                                fechaInicio = moment(proyecto.fecha_inicio);
-                                                                fechaFin = moment(proyecto.fecha_fin);
-                                                            }
-                                                            return (
-                                                                <Draggable key={proyecto.id} draggableId={proyecto.id.toString()} index={index}>
-                                                                    {(provided, snapshot) => (
-                                                                        <tr
-                                                                            ref={provided.innerRef}
-                                                                            {...provided.draggableProps}
-                                                                            {...provided.dragHandleProps}
-                                                                            className='h-30px'
-                                                                        >
-                                                                            <td className="text-center font-weight-bolder white-space-nowrap py-8px">
-                                                                                <span className="d-block font-size-13px">
-                                                                                    {proyecto.nombre}
-                                                                                </span>
-                                                                                <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
-                                                                                    color: `${proyecto.estatus.letra}`,
-                                                                                    backgroundColor: `${proyecto.estatus.fondo}`,
-                                                                                    fontSize: "8.5px",
-                                                                                }} >
-                                                                                    {proyecto.estatus.estatus}
-                                                                                </span>
-                                                                            </td>
-                                                                            {
-                                                                                [...Array(dias)].map((element, diaActual) => {
-                                                                                    return(
-                                                                                        <RenderTd key = {`${proyecto.id}-${diaActual}`} >
-                                                                                            {this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}
-                                                                                        </RenderTd>
-                                                                                    )
-                                                                                })
-                                                                            }
-                                                                        </tr>
-                                                                    )}
-                                                                </Draggable>
-                                                            )
-                                                        })
-                                                }
-                                            </tbody>
-                                        )}
-                                    </Droppable>
-                                </DragDropContext> 
-                            </table>
-                        </div>
+                            <div className="table-responsive mt-5">
+                                <table className = "table table-responsive table-bordered table-vertical-center border-0 bg-gray-100 border-radius-10px" 
+                                    id = "calendario-proyectos">
+                                    <thead className="text-center">
+                                        <tr>
+                                            <th className="font-weight-bolder border-0">PROYECTO</th>
+                                            {
+                                                [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
+                                                    return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
+                                                })
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <DragDropContext onDragEnd={this.onDragEnd}>
+                                        <Droppable droppableId="droppable">
+                                            {(provided, snapshot) => (
+                                                <tbody {...provided.droppableProps} ref = { provided.innerRef } >
+                                                    {
+                                                        proyectos.length === 0 ?
+                                                            <tr>
+                                                                <td colSpan={this.diasEnUnMes(mes, año) + 1} className="text-center font-weight-bolder font-size-h6 py-6 border-0">
+                                                                    NO HAY PROYECTOS
+                                                                </td>
+                                                            </tr>
+                                                            :
+                                                            proyectos.map((proyecto, index) => {
+                                                                let fechaInicio = ''
+                                                                let fechaFin = ''
+                                                                if (proyecto.fecha_fin === null) {
+                                                                    fechaInicio = moment(proyecto.fecha_inicio);
+                                                                    fechaFin = moment(proyecto.fecha_inicio);
+                                                                } else {
+                                                                    fechaInicio = moment(proyecto.fecha_inicio);
+                                                                    fechaFin = moment(proyecto.fecha_fin);
+                                                                }
+                                                                return (
+                                                                    <Draggable key={proyecto.id} draggableId={proyecto.id.toString()} index={index}>
+                                                                        {(provided, snapshot) => (
+                                                                            <tr ref = { provided.innerRef } {...provided.draggableProps} {...provided.dragHandleProps} className='h-30px' >
+                                                                                <td className="text-center font-weight-bolder white-space-nowrap py-8px">
+                                                                                    <span className="d-block font-size-13px"> { proyecto.nombre } </span>
+                                                                                    <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
+                                                                                        color: `${proyecto.estatus.letra}`,
+                                                                                        backgroundColor: `${proyecto.estatus.fondo}`,
+                                                                                        fontSize: "8.5px", }} >
+                                                                                        {proyecto.estatus.estatus}
+                                                                                    </span>
+                                                                                </td>
+                                                                                {
+                                                                                    [...Array(dias)].map((element, diaActual) => {
+                                                                                        return(
+                                                                                            <RenderTd key = {`${proyecto.id}-${diaActual}`} >
+                                                                                                {this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}
+                                                                                            </RenderTd>
+                                                                                        )
+                                                                                    })
+                                                                                }
+                                                                            </tr>
+                                                                        )}
+                                                                    </Draggable>
+                                                                )
+                                                            })
+                                                    }
+                                                </tbody>
+                                            )}
+                                        </Droppable>
+                                    </DragDropContext> 
+                                </table>
+                            </div>
                         </div>
                     </Card.Body>
                 </Card>
@@ -640,7 +580,8 @@ class CalendarioProyectos extends Component {
                         : <span>-</span>
                     :''
                 } handleClose = { this.handleClose } >
-                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario = { this.addComentarioAxios } form = { form } onChange = { this.onChange } handleChange = { this.handleChangeComentario } tipo = { tipo } urls={true} />
+                    <InformacionProyecto proyecto = { proyecto } printDates = { this.printDates } addComentario = { this.addComentarioAxios } form = { form } 
+                        onChange = { this.onChange } handleChange = { this.handleChangeComentario } tipo = { tipo } urls = { true } />
                 </Modal>
             </Layout>       
         )
@@ -650,11 +591,7 @@ class CalendarioProyectos extends Component {
 class RenderTd extends Component{
     render(){
         const { children } = this.props
-        return(
-            <>
-                {children}
-            </>
-        )
+        return( <> {children} </> )
     }
 }
 
