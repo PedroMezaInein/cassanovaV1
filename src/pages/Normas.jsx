@@ -4,13 +4,9 @@ import Swal from 'sweetalert2'
 import { URL_DEV } from '../constants'
 import Layout from '../components/layout/layout'
 import { connect } from 'react-redux'
-import { Card } from 'react-bootstrap'
-import { TreeGrid } from '../components/form-components'
-import { FormEstadoResultados } from '../components/forms'
 import { waitAlert, errorAlert, printResponseErrorAlert } from '../functions/alert'
 import { setOptions } from '../functions/setters'
 import { setSingleHeader } from '../functions/routers'
-import { MoneyTransaction } from '../components/Lottie'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 class Normas extends Component {
@@ -361,8 +357,6 @@ class Normas extends Component {
     }
 
     render() {
-        const { form, options, datos, items } = this.state
-        console.log(items)
         return (
             <Layout {...this.props}>
                 <table>

@@ -23,8 +23,7 @@ import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
 import $ from "jquery";
-import { v4 as uuidv4 } from "uuid";
-import { setFormHeader, setSingleHeader, setSingleHeaderJson } from '../../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraForm'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import SVG from "react-inlinesvg";
