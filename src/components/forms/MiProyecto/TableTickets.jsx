@@ -58,24 +58,12 @@ class TableTickets extends Component {
                                 tickets.map((ticket, key) => {
                                     return (
                                         <tr className="text-dark-75 font-weight-normal text-center" key={key}>
-                                            <td>
-                                                {setLabelTable(ticket.estatus_ticket)}
-                                            </td>
-                                            <td>
-                                                {this.formatDay(ticket.created_at)}
-                                            </td>
-                                            <td>
-                                                {ticket.partida.nombre}
-                                            </td>
-                                            <td>
-                                                {ticket.tipo_trabajo.tipo}
-                                            </td>
-                                            <td>
-                                                {ticket.motivo_cancelacion}
-                                            </td>
-                                            <td className="text-justify">
-                                                {ticket.descripcion}
-                                            </td>
+                                            <td> { setLabelTable(ticket.estatus_ticket) } </td>
+                                            <td> { this.formatDay(ticket.created_at) } </td>
+                                            <td> { ticket.partida ? ticket.partida.nombre : '' } </td>
+                                            <td> { ticket.tipo_trabajo ? ticket.tipo_trabajo.tipo : '' } </td>
+                                            <td> { ticket.motivo_cancelacion } </td>
+                                            <td className="text-justify"> { ticket.descripcion } </td>
                                             <td>
                                                 {
                                                     ticket.presupuesto.length ?
