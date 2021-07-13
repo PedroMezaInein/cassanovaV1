@@ -1061,7 +1061,7 @@ class Crm extends Component {
             (response) => {
                 const { lead } = response.data
                 this.setState({...this.state, formHistorial: this.clearForm(), lead: lead })
-                doneAlert('Historial actualizado con éxito');
+                doneAlert('Nuevo contacto agregado con éxito');
                 // this.getUltimosIngresados()
                 // this.getSinContactar()
                 // this.getUltimosContactos()
