@@ -35516,7 +35516,7 @@ button {
 }
 
 .nav .nav-link .nav-icon i {
-  color: #B5B5C3;
+  color: #7e8299;
   -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
   transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
   transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
@@ -35527,7 +35527,7 @@ button {
 .nav .nav-link .nav-icon svg g [fill] {
   -webkit-transition: fill 0.3s ease;
   transition: fill 0.3s ease;
-  fill: #B5B5C3;
+  fill: #7e8299;
 }
 
 .nav .nav-link .nav-icon svg:hover g [fill] {

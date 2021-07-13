@@ -16,6 +16,7 @@ import NumberFormat from 'react-number-format';
 import Swal from 'sweetalert2'
 class TicketDetails extends Component {
     state = {
+        formeditado: 0,
         ticket: '',
         form: {
             adjuntos: {
@@ -44,10 +45,29 @@ class TicketDetails extends Component {
             equipo: '',
             tipo_trabajo:''
         },
-        options: { empleados: [], equipos: [], tiposTrabajo:[] },
+        formPresupuesto: {
+            proyecto: "",
+            area: "",
+            empresa: "",
+            fecha: new Date(),
+            tiempo_ejecucion: "",
+            partida: "",
+            subpartida: "",
+            conceptos: {}
+        },
+        options: {
+            empleados: [],
+            equipos: [],
+            tiposTrabajo:[],
+            partidas: [],
+            subpartidas: [],
+        },
         modal: false,
         data: {
-            mantenimientos: []
+            mantenimientos: [],
+            partidas: [],
+            subpartidas: [],
+            conceptos: []
         },
     }
     componentDidMount() {
@@ -269,13 +289,20 @@ class TicketDetails extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, estatus, tiposTrabajo, proyectos } = response.data
-                const { options } = this.state
+                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos} = response.data
+                const { options, formPresupuesto, data } = this.state
+                data.partidas = partidas
+                let aux = {}
+                conceptos.map((concepto) => {
+                    return aux[concepto.clave] = false
+                })
+                formPresupuesto.conceptos = aux;
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
                 options['estatus'] = this.setOptionsEstatus(estatus, 'estatus', 'id')
                 options['tiposTrabajo'] = setOptions(tiposTrabajo, 'nombre', 'id')
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                this.setState({ ...this.state, options })
+                options["partidas"] = setOptions(partidas, "nombre", "id")
+                this.setState({ ...this.state, options, data })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -301,7 +328,7 @@ class TicketDetails extends Component {
                 }
                 options.equipos = aux
                 data.mantenimientos = ticket.mantenimientos
-                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket), options, data })
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket), options })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -453,15 +480,107 @@ class TicketDetails extends Component {
             console.log(error, 'error')
         })
     }
+    /* ============== CONCEPTOS Y VOLUMETRIAS ============== */
+    onChangePresupuesto = (e) => {
+        const { name, value } = e.target;
+        const { data } = this.state
+        switch (name) {
+            case 'partida':
+                data.partidas.map((partida) => {
+                    data.conceptos = []
+                    if (partida.id.toString() === value) {
+                        data.subpartidas = partida.subpartidas
+                    }
+                    return false
+                })
+                break;
+            case 'subpartida':
+                data.subpartidas.map((subpartida) => {
+                    if (subpartida.id.toString() === value) {
+                        console.log(subpartida.conceptos, 'subpartida.conceptos')
+                        data.conceptos = subpartida.conceptos
+                    }
+                    return false
+                })
+                break;
+            default:
+                break;
+        }
+        const { formPresupuesto } = this.state;
+        formPresupuesto[name] = value;
+        this.setState({
+            ...this.state,
+            formPresupuesto,
+            data
+        });
+    };
+    checkButton = e => {
+        const { name, checked } = e.target
+        const { formPresupuesto } = this.state
+        formPresupuesto.conceptos[name] = checked
+        this.setState({
+            ...this.state,
+            formPresupuesto
+        })
+    }
+    setOptions = (name, array) => {
+        const { options } = this.state;
+        options[name] = setOptions(array, "nombre", "id");
+        this.setState({
+            ...this.state,
+            options,
+        });
+    };
+    onSubmitPresupuesto = e => {
+        e.preventDefault()
+        waitAlert()
+        this.addPresupuestosAxios()
+    }
+    async addPresupuestosAxios() {
+        const { access_token } = this.props.authUser
+        const { formPresupuesto } = this.state
+        await axios.post(URL_DEV + 'presupuestos', formPresupuesto, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                // const { presupuesto } = response.data
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue registrado con éxito.')
+                // const { history } = this.props
+                // history.push({
+                //     pathname: '/presupuesto/presupuesto/update',
+                //     state: { presupuesto: presupuesto }
+                // });
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { ticket, form, options, modal, data } = this.state
+        const { ticket, form, options, modal, data, formPresupuesto, formeditado } = this.state
         return (
             <Layout active={'calidad'}  {...this.props}>
                 <TicketView
-                    data = { ticket }form = { form } options = { options } handleChange = { this.handleChange }
-                    changeEstatus = { this.changeEstatus } onChange = { this.onChange } onSubmit = { this.onSubmit }
-                    generateEmail = { this.generateEmail } openModalWithInput = { this.openModalWithInput}
-                    deleteFile = { this.deleteFile } openModalMantenimiento = { this.openModalMantenimiento }
+                    data = { ticket }
+                    form = { form }
+                    options = { options }
+                    handleChange = { this.handleChange }
+                    changeEstatus = { this.changeEstatus }
+                    onChange = { this.onChange }
+                    onSubmit = { this.onSubmit }
+                    generateEmail = { this.generateEmail }
+                    openModalWithInput = { this.openModalWithInput}
+                    deleteFile = { this.deleteFile }
+                    openModalMantenimiento = { this.openModalMantenimiento }
+                    /* ============== CONCEPTOS Y VOLUMETRIAS ============== */
+                    formeditado={formeditado}
+                    formPresupuesto={formPresupuesto}
+                    onChangePresupuesto={this.onChangePresupuesto}
+                    checkButton={this.checkButton}
+                    setOptions={this.setOptions}
+                    onSubmit={this.onSubmitPresupuesto}
+                    dataPresupuesto={data}
                 />
                 <Modal size = "lg" title = 'Mantenimiento correctivo' show = { modal } handleClose = { this.handleCloseLevantamiento } customcontent = { true } contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <Tabs defaultActiveKey="formulario_mantenimiento" className="nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
