@@ -92,10 +92,22 @@ class PresupuestoForm extends Component {
             return true
         return false
     }
+    getSubpartida = (key, conceptos) => {
+        if(key === 0)
+            return true
+        if(conceptos[key].subpartida.id !== conceptos[key-1].subpartida.id)
+            return true
+        return false
+    }
     getPartidaClave = clave => {
         let aux = clave.split('.')
         if(aux.length)
             return aux[0]
+    }
+    getSubpartidaClave = clave => {
+        let aux = clave.split('.')
+        if(aux.length)
+            return aux[1]
     }
     render() {
         const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad } = this.props
@@ -430,6 +442,30 @@ class PresupuestoForm extends Component {
                                                                                         </div>
                                                                                         :''
                                                                                     }
+                                                                                    {/* {
+                                                                                        this.getSubpartida(key3, subpartida.conceptos )?
+                                                                                        <div className="font-size-lg font-weight-bolder">
+                                                                                                <b  className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
+                                                                                                {
+                                                                                                    this.getPartidaClave(concepto.clave)
+                                                                                                }
+                                                                                                .
+                                                                                                {
+                                                                                                    this.getSubpartidaClave(concepto.clave)
+                                                                                                }
+                                                                                                </b>
+                                                                                                &nbsp;
+                                                                                                {
+                                                                                                    concepto ? 
+                                                                                                        concepto.subpartida ?
+                                                                                                            concepto.subpartida.nombre
+                                                                                                        : ''
+                                                                                                    : ''
+                                                                                                }
+                                                                                        </div>
+                                                                                    :
+                                                                                        ''
+                                                                                    } */}
                                                                                     <div key={concepto.clave} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
                                                                                         <div className="d-flex align-items-center col-1">
                                                                                             <div className="d-flex align-items-center" data-inbox="actions">
