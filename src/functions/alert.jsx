@@ -114,13 +114,21 @@ export async function doneAlert(texto) {
 }
 
 export function errorAlert(text) {
-    Swal.fire({
+    let newText = ''
+    let cantidad = 0
+    cantidad = text.split('\\n').length
+    if(cantidad){
+        text.split('\\n').forEach((element, index) => {
+            newText += element.trim()
+            if(index < cantidad - 1)
+                newText += '<br />'
+        })
+    }else{ newText = text }
+    MySwal.fire({
         title: '¡UPS!',
-        text: text,
+        html: newText,
         icon: 'error',
-        customClass: {
-            actions: 'd-none'
-        }
+        customClass: { actions: 'd-none' }
     })
 }
 
