@@ -662,7 +662,7 @@ class Crm extends Component {
 
     /* ---------------- ANCHOR CRM TABLE PUT LEADS DE PÁGINAS WEB --------------- */
     getLeadsWeb = async () => {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         const { lead_web, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-web/' + lead_web.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1062,10 +1062,6 @@ class Crm extends Component {
                 const { lead } = response.data
                 this.setState({...this.state, formHistorial: this.clearForm(), lead: lead })
                 doneAlert('Nuevo contacto agregado con éxito');
-                // this.getUltimosIngresados()
-                // this.getSinContactar()
-                // this.getUltimosContactos()
-                // this.getLeadsWeb()
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1551,6 +1547,10 @@ class Crm extends Component {
             lead: '',
             formHistorial: this.clearForm(),
         })
+        this.getUltimosIngresados()
+        this.getSinContactar()
+        this.getUltimosContactos()
+        this.getLeadsWeb()
     }
 
     clearForm = () => {
