@@ -1,19 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV } from '../../constants'
-import { setOptions } from '../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2 } from '../../functions/alert'
-import Layout from '../../components/layout/layout'
-import { CalidadView } from '../../components/forms'
+import { URL_DEV } from '../../../constants'
+import { setOptions } from '../../../functions/setters'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2, customInputAlert } from '../../../functions/alert'
+import Layout from '../../../components/layout/layout'
+import { TicketView } from '../../../components/forms'
 import { Form, Tabs, Tab } from 'react-bootstrap'
-import { setFormHeader, setSingleHeader } from '../../functions/routers'
-import { Modal } from '../../components/singles'
-import { SelectSearchGray, CalendarDay, InputMoneyGray, Button } from '../../components/form-components'
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { Modal } from '../../../components/singles'
+import { SelectSearchGray, CalendarDay, InputMoneyGray, Button } from '../../../components/form-components'
 import moment from 'moment'
 import 'moment/locale/es' 
 import NumberFormat from 'react-number-format';
-class CalidadForm extends Component {
+import Swal from 'sweetalert2'
+class TicketDetails extends Component {
     state = {
         ticket: '',
         form: {
@@ -41,42 +42,29 @@ class CalidadForm extends Component {
             motivo: '',
             costo: 0.0,
             equipo: '',
+            tipo_trabajo:''
         },
-        options: { empleados: [], equipos: [] },
+        options: { empleados: [], equipos: [], tiposTrabajo:[] },
         modal: false,
         data: {
             mantenimientos: []
         },
     }
     componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action } } } = this.props
-        const { history, location: { state } } = this.props
-        const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url } } = element
-            return pathname === url + '/' + action
-        });
-        this.getTicketsOptions()
-        switch (action) {
-            case 'see':
-                if (state) {
-                    if (state.calidad) {
-                        const { calidad } = state
-                        if (calidad.estatus_ticket.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
-                        else {
-                            console.log(calidad, 'CALIDAD')
-                            this.getOneTicketAxios(calidad.id)
-                            //this.setState({ ...this.state, ticket: calidad, form: this.setForm(calidad) }) 
-                        }
-                        //window.history.replaceState(null, '')
-                    } else history.push('/calidad/tickets')
-                } else history.push('/calidad/tickets')
-                break;
-            default:
-                break;
-        }
-        if (!remisiones) history.push('/')
+        const { location: { state } } = this.props
+        const { history } = this.props
+        this.getOptionsAxios()
+        if (state) {
+            if (state.calidad) {
+                const { calidad } = state
+                if (calidad.estatus_ticket.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
+                else {
+                    this.getOneTicketAxios(calidad.id)
+                    //this.setState({ ...this.state, ticket: calidad, form: this.setForm(calidad) }) 
+                }
+                //window.history.replaceState(null, '')
+            } else history.push('/calidad/tickets')
+        } else history.push('/calidad/tickets')
     }
     setForm = ticket => {
         const { form } = this.state
@@ -130,7 +118,7 @@ class CalidadForm extends Component {
     openModalWithInput = estatus => {
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
-        questionAlert2('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.cancelTicket({ id: ticket.id, estatus: estatus }),
+        questionAlert2('¿ESTÁS SEGURO DE RECHAZAR EL TICKET?', '¡NO PODRÁS REVERTIR ESTO!', () => this.cancelTicket({ id: ticket.id, estatus: estatus }),
             <div>
                 <Form.Control placeholder='MOTIVO DE CANCELACIÓN' className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
                     id='motivo' as="textarea" rows="3" />
@@ -277,14 +265,16 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
-    getTicketsOptions = async() => {
+    getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, estatus } = response.data
+                const { empleados, estatus, tiposTrabajo, proyectos } = response.data
                 const { options } = this.state
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
                 options['estatus'] = this.setOptionsEstatus(estatus, 'estatus', 'id')
+                options['tiposTrabajo'] = setOptions(tiposTrabajo, 'nombre', 'id')
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 this.setState({ ...this.state, options })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -326,13 +316,28 @@ class CalidadForm extends Component {
         return aux
     }
     changeEstatus = estatus => {
-        const { ticket } = this.state
+        const { ticket, options, form } = this.state
         switch(estatus){
             case 'Rechazado':
                 this.openModalWithInput('Rechazado');
                 break;
             case 'Aceptado':
-                questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR ACEPTADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                // questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR ACEPTADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                customInputAlert(
+                    <div className="row mx-0">
+                        <h5 className="mb-4 font-weight-bold text-dark col-md-12 mt-4">SELECCIONA EL TIPO DE TRABAJO</h5>
+                        <div className="row mx-0 col-md-12 px-0 form-group-marginless d-flex justify-content-center">
+                            <div className="col-md-10">
+                                <SelectSearchGray withtaglabel={0} withtextlabel={0} options={options.tiposTrabajo} onChange={(value) => { this.onChangeSwal(value, 'tipo_trabajo') }}
+                                    name='tipo_trabajo' value={form.tipo_trabajo} customdiv="mb-2 text-left" requirevalidation={1}
+                                    placeholder='TIPO DE TRABAJO' withicon={0} customclass='text-center px-2' />
+                            </div>
+                        </div>
+                    </div>,
+                    '',
+                    () => { this.addTipoTrabajo() },
+                    () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+                )
                 break;
             case 'Terminado':
                 questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TERMINADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
@@ -351,6 +356,62 @@ class CalidadForm extends Component {
                 break;
             default: break;
         }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    addTipoTrabajo = async() => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/calidad/tickets/`, form , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El tipo de trabajo fue agregado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'fechaProgramada':
+                case 'fechaMantenimiento':
+                    form[element] = new Date()
+                    break;
+                case 'adjuntos':
+                    form[element] = {
+                        presupuesto: {
+                            value: '',
+                            placeholder: 'Presupuesto',
+                            files: []
+                        },
+                        reporte_problema_reportado: {
+                            value: '',
+                            placeholder: 'Reporte fotográfico del problema reportado',
+                            files: []
+                        },
+                        reporte_problema_solucionado: {
+                            value: '',
+                            placeholder: 'Reporte fotográfico del problema solucionado',
+                            files: []
+                        }
+                    }
+                    break;
+                case 'costo':
+                    form[element] = 0
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
     }
     updateSelect = (value, name) => {
         const { form } = this.state
@@ -394,78 +455,77 @@ class CalidadForm extends Component {
     }
     render() {
         const { ticket, form, options, modal, data } = this.state
-        
-        console.log(data.mantenimientos)
         return (
             <Layout active={'calidad'}  {...this.props}>
-                <CalidadView data = { ticket } form = { form } options = { options } handleChange = { this.handleChange }
+                <TicketView
+                    data = { ticket }form = { form } options = { options } handleChange = { this.handleChange }
                     changeEstatus = { this.changeEstatus } onChange = { this.onChange } onSubmit = { this.onSubmit }
                     generateEmail = { this.generateEmail } openModalWithInput = { this.openModalWithInput}
-                    deleteFile = { this.deleteFile } openModalMantenimiento = { this.openModalMantenimiento } />
-                <Modal size = "lg" title = 'Mantenimiento correctivo' show = { modal } handleClose = { this.handleCloseLevantamiento } customcontent = { true } 
-                    contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
-                    <Tabs defaultActiveKey = "formulario_mantenimiento" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
-                        <Tab eventKey = "formulario_mantenimiento" title = "Agregar mantenimiento">
-                            <Form onSubmit = { (e) => { e.preventDefault(); this.onSubmitMantenimiento(e) } } >
+                    deleteFile = { this.deleteFile } openModalMantenimiento = { this.openModalMantenimiento }
+                />
+                <Modal size = "lg" title = 'Mantenimiento correctivo' show = { modal } handleClose = { this.handleCloseLevantamiento } customcontent = { true } contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                    <Tabs defaultActiveKey="formulario_mantenimiento" className="nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
+                        <Tab eventKey="formulario_mantenimiento" title="Agregar mantenimiento">
+                            <Form onSubmit={(e) => { e.preventDefault(); this.onSubmitMantenimiento(e) }} >
                                 <div className="row mx-0 justify-content-center">
                                     <div className="col-md-4">
-                                        <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 }
-                                            requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } prefix = '$' name = "costo"
-                                            value = { form.costo } onChange = { this.onChange } placeholder = "COSTO" iconclass = "la la-money-bill icon-xl" />
+                                        <InputMoneyGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={1}
+                                            requirevalidation={0} formeditado={0} thousandseparator={true} prefix='$' name="costo"
+                                            value={form.costo} onChange={this.onChange} placeholder="COSTO" iconclass="la la-money-bill icon-xl" />
                                     </div>
                                     <div className="col-md-8">
-                                        <SelectSearchGray withtaglabel={1} withtextlabel={1} withicon={1} options = { options.equipos } 
-                                            placeholder = 'SELECCIONA EL EQUIPO INSTALADO' name = "equipo" 
-                                            value = { form.equipo } onChange = { (value) => this.updateSelect(value, 'equipo') }
+                                        <SelectSearchGray withtaglabel={1} withtextlabel={1} withicon={1} options={options.equipos}
+                                            placeholder='SELECCIONA EL EQUIPO INSTALADO' name="equipo"
+                                            value={form.equipo} onChange={(value) => this.updateSelect(value, 'equipo')}
                                             iconclass="la la-toolbox icon-xl" formeditado={0} messageinc="Incorrecto. Selecciona el técnico que asiste" />
                                     </div>
                                 </div>
-                                <div className = 'text-center'>
+                                <div className='text-center'>
                                     <div className="d-flex justify-content-center pt-5" style={{ height: '14px' }}>
                                         <label className="text-center font-weight-bolder text-dark-60">Fecha del mantenimiento</label>
                                     </div>
-                                    <CalendarDay value = { form.fechaMantenimiento } name = 'fechaMantenimiento' date = { form.fechaMantenimiento } withformgroup = { 1 } 
-                                        onChange = { this.onChange } placeholder = 'Fecha del mantenimiento' requirevalidation = { 1 } />
+                                    <CalendarDay value={form.fechaMantenimiento} name='fechaMantenimiento' date={form.fechaMantenimiento} withformgroup={1}
+                                        onChange={this.onChange} placeholder='Fecha del mantenimiento' requirevalidation={1} />
                                 </div>
                                 <div className="card-footer py-3 pr-1 text-right">
-                                    <Button icon = '' className = "btn btn-primary mr-2" text = "ENVIAR"
-                                        type = 'submit'/>
+                                    <Button icon='' className="btn btn-primary mr-2" text="ENVIAR"
+                                        type='submit' />
                                 </div>
                             </Form>
                         </Tab>
                         {
                             data.mantenimientos.length > 0 &&
-                                <Tab eventKey = "historial" title = "Historial de mantenimientos">
-                                    <table className="table table-responsive-lg table-vertical-center text-center w-100">
-                                        <thead>
-                                            <tr className="bg-gray-200">
-                                                <th></th>
-                                                <th style={{minWidth:'200px'}}>Equipo</th>
-                                                <th>Fecha de mantenimiento</th>
-                                                <th>Costo</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                data.mantenimientos.map((mantenimiento, index) => {
-                                                    return(
-                                                        <tr key = { index }>
-                                                            <td className = 'px-2'>
-                                                                <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger' 
-                                                                    onClick = { (e) => {e.preventDefault(); this.openModalDeleteMantenimiento(mantenimiento)}} >
-                                                                    <i className='flaticon2-rubbish-bin' />
-                                                                </button>
-                                                            </td>
-                                                            <td className = 'px-2 text-break'>{mantenimiento.instalacion.equipo.texto}</td>
-                                                            <td className = 'px-2 text-break'> {this.formatDay(mantenimiento.fecha)} </td>
-                                                            <td className = 'px-2 text-break'> {this.setMoneyTable(mantenimiento.costo)} </td>
-                                                        </tr>
-                                                    )
-                                                })
-                                            }
-                                        </tbody>
-                                    </table>
-                                </Tab>
+                            <Tab eventKey="historial" title="Historial de mantenimientos">
+                                <table className="table table-responsive-lg table-vertical-center text-center w-100">
+                                    <thead>
+                                        <tr className="bg-gray-200">
+                                            <th></th>
+                                            <th style={{ minWidth: '200px' }}>Equipo</th>
+                                            <th>Fecha de mantenimiento</th>
+                                            <th>Costo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            data.mantenimientos.map((mantenimiento, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td className='px-2'>
+                                                            <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
+                                                                onClick={(e) => { e.preventDefault(); this.openModalDeleteMantenimiento(mantenimiento) }} >
+                                                                <i className='flaticon2-rubbish-bin' />
+                                                            </button>
+                                                        </td>
+                                                        <td className='px-2 text-break'>{mantenimiento.instalacion.equipo.texto}</td>
+                                                        <td className='px-2 text-break'> {this.formatDay(mantenimiento.fecha)} </td>
+                                                        <td className='px-2 text-break'> {this.setMoneyTable(mantenimiento.costo)} </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                            </Tab>
                         }
                     </Tabs>
                 </Modal>
@@ -483,4 +543,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CalidadForm);
+export default connect(mapStateToProps, mapDispatchToProps)(TicketDetails);
