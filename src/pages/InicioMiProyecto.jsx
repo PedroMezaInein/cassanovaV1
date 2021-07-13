@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { URL_DEV, URL_ASSETS } from '../constants'
+import { URL_DEV, URL_ASSETS, S3_CONFIG } from '../constants'
 import { setOptions, setEmpresaLogo } from '../functions/setters'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, questionAlert, doneAlert } from '../functions/alert'
 import { connect } from 'react-redux'
@@ -25,6 +25,8 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
+import S3 from 'react-aws-s3';
+const ReactS3Client = new S3(S3_CONFIG);
 class InicioMiProyecto extends Component {
     state = {
         activeFlag: 'calendario',
@@ -736,7 +738,60 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    addTicketAxios = async () =>{
+    addTicketAxios = async() => {
+        waitAlert()
+        let { form } = this.state
+        const { access_token } = this.props.authUser
+        await axios.post(`${URL_DEV}v2/mi-proyecto/tickets`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { ticket, proyecto } = response.data
+                if(form.adjuntos.fotos.value){
+                    this.addFotosS3(form.adjuntos.fotos.files, ticket.id, proyecto.id)
+                }else{
+                    doneAlert('Ticket creado con éxito')
+                    this.getTicketsPage()
+                    this.handleClose()
+                }
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    addFotosS3 = async(arreglo, id, proyecto) => {
+        let filePath = `proyecto/${proyecto}/tickets/${id}/`
+        let auxPromises  = arreglo.map((file) => {
+            return new Promise((resolve, reject) => {
+                ReactS3Client.uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                    .then((data) =>{
+                        const { location,status } = data
+                        if(status === 204) resolve({ name: file.name, url: location })
+                        else reject(data)
+                    }).catch(err => reject(err))
+            })
+        })
+        Promise.all(auxPromises).then(values => { this.addFotosToTicket(values, id)}).catch(err => console.error(err))
+    }
+
+    addFotosToTicket = async(values, id) => {
+        const { access_token } = this.props.authUser
+        let form = {}
+        form.archivos = values
+        form.type = 'fotos'
+        await axios.post(`${URL_DEV}v3/calidad/tickets/${id}/s3`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Ticket creado con éxito')
+                this.getTicketsPage()
+                this.handleClose()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* addTicketAxios = async () =>{
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
@@ -762,7 +817,6 @@ class InicioMiProyecto extends Component {
             }
         })
         data.append('proyecto', proyecto.id)
-        //await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
         await axios.post(`${URL_DEV}v2/mi-proyecto/tickets`, data, { headers : setFormHeader(access_token) }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ticket fue solicitado con éxito.')
@@ -773,7 +827,7 @@ class InicioMiProyecto extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
+    } */
 
     getTicketsPage = async () => {
         waitAlert()
@@ -1315,21 +1369,6 @@ class InicioMiProyecto extends Component {
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
                     customcontent = { true } contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <Form id="form-miproyecto" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.addTicketAxios, e, 'form-miproyecto') } } >
-                        {/* <div className="form-group row form-group-marginless">
-                            <div className="col-md-6">
-                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } customdiv = "mb-0" formeditado = { formeditado }
-                                    options = { this.updateOptions(options.tiposTrabajo) } placeholder = "SELECCIONA EL TIPO DE TRABAJO" name = "tipo_trabajo" 
-                                    value = { form.tipo_trabajo } onChange = { (value) => { this.updateSelect(value, 'tipo_trabajo') } } iconclass = "fas fa-book"
-                                    messageinc="Incorrecto. Selecciona el tipo de trabajo" />
-                            </div>
-                            <div className="col-md-6">
-                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } customdiv = "mb-0" formeditado = { formeditado }
-                                    options = { options.partidas } placeholder = "SELECCIONA LA PARTIDA" name = "partida" value = { form.partida }
-                                    onChange = { (value) => { this.updateSelect(value, 'partida') } } iconclass = " fas fa-book" 
-                                    messageinc = "Incorrecto. Selecciona la partida" />
-                            </div>
-                        </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div> */}
                         <div className="form-group row form-group-marginless mx-0 mt-3">
                             <div className="col-md-12">
                                 <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
