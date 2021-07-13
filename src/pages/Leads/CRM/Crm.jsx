@@ -1059,13 +1059,13 @@ class Crm extends Component {
         })
         await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getUltimosIngresados()
-                this.getSinContactar()
-                this.getUltimosContactos()
                 const { lead } = response.data
                 this.setState({...this.state, formHistorial: this.clearForm(), lead: lead })
-                doneAlert('Historial actualizado con éxito');
-                this.getLeadsWeb()
+                doneAlert('Nuevo contacto agregado con éxito');
+                // this.getUltimosIngresados()
+                // this.getSinContactar()
+                // this.getUltimosContactos()
+                // this.getLeadsWeb()
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
