@@ -791,44 +791,6 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    /* addTicketAxios = async () =>{
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { form, proyecto } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.forEach((element) => {
-            switch (element) {
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, form[element]);
-                    break
-            }
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.forEach((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-        })
-        data.append('proyecto', proyecto.id)
-        await axios.post(`${URL_DEV}v2/mi-proyecto/tickets`, data, { headers : setFormHeader(access_token) }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ticket fue solicitado con éxito.')
-                this.getMiProyectoAxios(proyecto.id)
-                this.handleClose()
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    } */
-
     getTicketsPage = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
