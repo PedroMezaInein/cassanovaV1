@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-import Layout from '../../components/layout/layout'
+import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
-import { URL_DEV, PROYECTOS_TICKETS } from '../../constants'
-import { setTextTable, setLabelTable, setTextTableCenter, setDateTableReactDom } from '../../functions/setters'
-import NewTableServerRender from '../../components/tables/NewTableServerRender'
-import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, customInputAlert, waitAlert } from '../../functions/alert'
-import { setSingleHeader } from '../../functions/routers'
+import { URL_DEV, PROYECTOS_TICKETS } from '../../../constants'
+import { setTextTable, setLabelTable, setTextTableCenter, setDateTableReactDom } from '../../../functions/setters'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, customInputAlert, waitAlert } from '../../../functions/alert'
+import { setSingleHeader } from '../../../functions/routers'
 import axios from 'axios'
-import { printSwalHeader } from '../../functions/printers'
-import { CalendarDaySwal } from '../../components/form-components'
-import { Update } from '../../components/Lottie'
+import { printSwalHeader } from '../../../functions/printers'
+import { CalendarDaySwal } from '../../../components/form-components'
+import { Update } from '../../../components/Lottie'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import $ from "jquery";
-class Calidad extends Component {
+class TicketTable extends Component {
     state = {
         calidad: '',
         form: { fecha: new Date() }
@@ -30,14 +30,6 @@ class Calidad extends Component {
         });
         if (!leads)
             history.push('/')
-    }
-    changePageSee = calidad => {
-        const { history } = this.props
-        history.push({
-            pathname: '/calidad/tickets/see',
-            state: { calidad: calidad },
-            formeditado: 1
-        });
     }
 
     openModalDelete = calidad => {
@@ -149,17 +141,26 @@ class Calidad extends Component {
             console.log(error, 'error')
         })
     }
-
+    
+    changePageSee = calidad => {
+        const { history } = this.props
+        history.push({
+            pathname: '/calidad/tickets/detalles-ticket',
+            state: { calidad: calidad },
+            formeditado: 1
+        });
+    }
     render() {
         return (
             <Layout active={'calidad'}  {...this.props}>
                 <NewTableServerRender
                     columns={PROYECTOS_TICKETS}
-                    title='Calidad'
+                    title='Tickets'
                     subtitle='Listado de tickets levantados'
-                    mostrar_boton={false}
-                    abrir_modal={false}
-                    mostrar_acciones={true}
+                    mostrar_boton = { true }
+                    abrir_modal = { false }
+                    url = '/calidad/tickets/nuevo-ticket'
+                    mostrar_acciones = { true }
                     actions={{
                         'see': { function: this.changePageSee },
                         'delete': { function: this.openModalDelete },
@@ -186,4 +187,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Calidad);
+export default connect(mapStateToProps, mapDispatchToProps)(TicketTable);

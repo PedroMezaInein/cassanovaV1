@@ -1319,13 +1319,13 @@ class InicioMiProyecto extends Component {
                             <div className="col-md-6">
                                 <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } customdiv = "mb-0" formeditado = { formeditado }
                                     options = { this.updateOptions(options.tiposTrabajo) } placeholder = "SELECCIONA EL TIPO DE TRABAJO" name = "tipo_trabajo" 
-                                    value = { form.tipo_trabajo } onChange = { (value) => { this.updateSelect(value, 'tipo_trabajo') } } iconclassName = "fas fa-book"
+                                    value = { form.tipo_trabajo } onChange = { (value) => { this.updateSelect(value, 'tipo_trabajo') } } iconclass = "fas fa-book"
                                     messageinc="Incorrecto. Selecciona el tipo de trabajo" />
                             </div>
                             <div className="col-md-6">
                                 <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } customdiv = "mb-0" formeditado = { formeditado }
                                     options = { options.partidas } placeholder = "SELECCIONA LA PARTIDA" name = "partida" value = { form.partida }
-                                    onChange = { (value) => { this.updateSelect(value, 'partida') } } iconclassName = " fas fa-book" 
+                                    onChange = { (value) => { this.updateSelect(value, 'partida') } } iconclass = " fas fa-book" 
                                     messageinc = "Incorrecto. Selecciona la partida" />
                             </div>
                         </div>

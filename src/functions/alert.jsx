@@ -492,6 +492,7 @@ export function questionAlertY(title, text, action) {
 }
 
 export function questionAlert2(title, text, action, html) {
+    console.log(text, 'text')
     MySwal.fire({
         title: title,
         text: text,

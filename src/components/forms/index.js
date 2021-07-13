@@ -52,7 +52,7 @@ import presupuestoDiseñoForm from './presupuesto/PresupuestoDiseñoForm'
 import partidasDiseñoForm from './catalogos/PartidasDiseñoForm'
 import diseñoForm from './catalogos/DiseñoForm'
 import obraForm from './catalogos/ObraForm'
-import calidadView from './calidad/CalidadView' 
+import ticketView from './calidad/Tickets/TicketView' 
 import procesoTicketForm from './calidad/ProcesoTicketForm'
 import CartasCalidadForm from './calidad/CartasCalidadForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
@@ -116,7 +116,7 @@ import FormCalendarioIEquipos from './proyectos/FormCalendarioIEquipos'
 import DetailsInstalacion from './proyectos/DetailsInstalacion'
 import TableTickets from './MiProyecto/TableTickets'
 import HistorialHM from './proyectos/HistorialHM'
-
+import FormNuevoTicket from './calidad/Tickets/FormNuevoTicket'
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
@@ -170,7 +170,7 @@ export const PresupuestoDiseñoForm = presupuestoDiseñoForm
 export const PartidasDiseñoForm = partidasDiseñoForm
 export const DiseñoForm = diseñoForm
 export const ObraForm = obraForm
-export const CalidadView = calidadView
+export const TicketView = ticketView
 export const AgregarVacacionesForm = agregarVacacionesForm
 export const ProcesoTicketForm = procesoTicketForm
 export const FlujosReportesVentas = flujosReportesVentas
@@ -222,4 +222,4 @@ export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
-    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM }
+    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket}

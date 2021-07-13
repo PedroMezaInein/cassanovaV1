@@ -175,8 +175,9 @@ const PrestamosForm = React.lazy(() => import('./pages/RecursosHumanos/Prestamos
 
 const Vacaciones = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
 
-const Calidad = React.lazy(() => import('./pages/Calidad/Calidad') )
-const CalidadForm = React.lazy(() => import('./pages/Calidad/CalidadForm') )
+const TicketTable = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketTable') )
+const AddTicket = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/AddTicket') )
+const TicketDetails = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails') )
 
 const CartasGarantia = React.lazy(() => import('./pages/Calidad/CartasGarantia/CartasGarantia') )
 
@@ -479,10 +480,13 @@ class App extends Component{
 
                     {/* ANCHOR Routes for calidad */}
 
-                    <Route path = "/calidad/tickets" exact component ={ Calidad } />
-                    <Route path = "/calidad/tickets/:action" exact component = { CalidadForm } />
+                    <Route path = "/calidad/tickets" exact component ={ TicketTable } />
+                    <Route path = "/calidad/tickets/nuevo-ticket" exact component = { AddTicket } />
+                    <Route path = "/calidad/tickets/detalles-ticket" exact component = { TicketDetails } />
 
                     <Route path = "/calidad/cartas-garantia" exact component = { CartasGarantia } />
+
+
 
                     {/* ANCHOR Routes for mercadotécnia */}
                     
