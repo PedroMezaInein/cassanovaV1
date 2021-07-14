@@ -10,7 +10,7 @@ import moment from 'moment';
 import Swal from 'sweetalert2'
 import 'moment/locale/es';
 import SVG from "react-inlinesvg";
-import { setSingleHeader, toAbsoluteUrl, setFormHeader } from "../functions/routers"
+import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import { DetailsInstalacion } from '../components/forms'
 import Moment from 'react-moment'
