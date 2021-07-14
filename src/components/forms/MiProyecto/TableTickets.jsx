@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { setLabelTable } from '../../../functions/setters'
+import { showFilesAlert } from '../../../functions/alert'
 import moment from 'moment';
 import 'moment/locale/es';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -65,6 +66,17 @@ class TableTickets extends Component {
                                             <td> { ticket.motivo_cancelacion } </td>
                                             <td className="text-justify"> { ticket.descripcion } </td>
                                             <td>
+                                                {console.log(ticket, 'TICKET')}
+                                                {
+                                                    ticket.fotos ? ticket.fotos.length ?
+                                                        <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>FOTOS</span></Tooltip>}>
+                                                            <span className="btn btn-icon btn-bg-light btn-text-info btn-hover-info btn-sm ml-3" 
+                                                                onClick={(e) => { showFilesAlert( ticket.fotos, '') }}>
+                                                                <i className="fas fa-photo-video text-info icon-md"></i>
+                                                            </span>
+                                                        </OverlayTrigger>
+                                                    : '' : ''
+                                                }
                                                 {
                                                     ticket.presupuesto.length ?
                                                         <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>PRESUPUESTO</span></Tooltip>}>
