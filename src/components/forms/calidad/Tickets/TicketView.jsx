@@ -26,8 +26,8 @@ class TicketView extends Component {
     render() {
 
         const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile, openModalWithInput, openModalMantenimiento,
-                formeditado, formPresupuesto, onChangePresupuesto, checkButton, setOptions, onSubmitPresupuesto, dataPresupuesto,
-                formPPreeliminar, onChangePPreeliminar, checkButtonPPreeliminar, onSubmitPPreeliminar, presupuesto, openModalPPConcepto } = this.props
+                formeditado, formPresupuesto, onChangePresupuesto, checkButton, setOptions, onSubmitPresupuesto, dataPresupuesto, onClickVolumetrias,
+                presupuesto, formPPreeliminar, onChangePPreeliminar, checkButtonPPreeliminar, onSubmitPPreeliminar, openModalPPConcepto  } = this.props
         return (
             <>
                 
@@ -86,8 +86,14 @@ class TicketView extends Component {
                                                                                 {
                                                                                     options.estatus ?
                                                                                         options.estatus.map((estatus, key) => {
-                                                                                            if (estatus.name === 'Rechazado' || estatus.name === 'Aceptado' || estatus.name === 'Terminado' ||
-                                                                                                estatus.name === 'En proceso' || estatus.name === 'Respuesta pendiente' || estatus.name === 'En revisión' || estatus.name === 'En espera')
+                                                                                            if (
+                                                                                                estatus.name === 'Rechazado' || 
+                                                                                                //estatus.name === 'Aceptado' || 
+                                                                                                //estatus.name === 'Terminado' ||
+                                                                                                //estatus.name === 'En proceso' || 
+                                                                                                //estatus.name === 'Respuesta pendiente' || 
+                                                                                                estatus.name === 'En revisión' || 
+                                                                                                estatus.name === 'En espera')
                                                                                                 return (
                                                                                                     <div key={key}>
                                                                                                         <Dropdown.Item className="p-0" key={key} onClick={() => { changeEstatus(estatus.name) }} >
@@ -181,14 +187,14 @@ class TicketView extends Component {
                                                     }
                                                     {
                                                         data.estatus_ticket.estatus !== 'Rechazado' ?
-                                                        <Nav.Item>
-                                                            <Nav.Link eventKey="presupuesto">
-                                                                <span className="nav-icon">
-                                                                    <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
-                                                                </span>
-                                                                <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
-                                                            </Nav.Link>
-                                                        </Nav.Item>
+                                                            <Nav.Item onClick = { onClickVolumetrias } >
+                                                                <Nav.Link eventKey="presupuesto">
+                                                                    <span className="nav-icon">
+                                                                        <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
+                                                                    </span>
+                                                                    <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
                                                         :<></>
                                                     }
                                                 </Nav>
@@ -213,27 +219,23 @@ class TicketView extends Component {
                                             </Row>
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="presupuesto">
-                                            <PresupuestoForm
-                                                formeditado={formeditado}
-                                                form={formPresupuesto}
-                                                onChange={onChangePresupuesto}
-                                                checkButton={checkButton}
-                                                options={options}
-                                                setOptions={setOptions}
-                                                onSubmit={onSubmitPresupuesto}
-                                                data={dataPresupuesto}
-                                                showFormCalidad={true}
-                                            />
-                                            <ActualizarPresupuestoForm
-                                                formeditado={formeditado}
-                                                form={formPPreeliminar}
-                                                onChange={onChangePPreeliminar}
-                                                checkButton={checkButtonPPreeliminar}
-                                                onSubmit={onSubmitPPreeliminar}
-                                                presupuesto={presupuesto}
-                                                openModal={openModalPPConcepto}
-                                                showInputsCalidad={true}
-                                            />
+                                            {
+                                                presupuesto === '' ?
+                                                    <PresupuestoForm formeditado = { formeditado } form = { formPresupuesto } onChange = { onChangePresupuesto }
+                                                        checkButton = { checkButton } options = { options } setOptions = { setOptions } 
+                                                        onSubmit = { onSubmitPresupuesto } data = { dataPresupuesto } showFormCalidad = { true } />
+                                                : 
+                                                    <ActualizarPresupuestoForm
+                                                        formeditado={formeditado}
+                                                        form={formPPreeliminar}
+                                                        onChange={onChangePPreeliminar}
+                                                        checkButton={checkButtonPPreeliminar}
+                                                        onSubmit={onSubmitPPreeliminar}
+                                                        presupuesto={presupuesto}
+                                                        openModal={openModalPPConcepto}
+                                                        showInputsCalidad={true}
+                                                    />
+                                            }
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </Tab.Container>
