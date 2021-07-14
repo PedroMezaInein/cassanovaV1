@@ -579,7 +579,7 @@ class TicketDetails extends Component {
                     onChangePresupuesto={this.onChangePresupuesto}
                     checkButton={this.checkButton}
                     setOptions={this.setOptions}
-                    onSubmit={this.onSubmitPresupuesto}
+                    onSubmitPresupuesto={this.onSubmitPresupuesto}
                     dataPresupuesto={data}
                 />
                 <Modal size = "lg" title = 'Mantenimiento correctivo' show = { modal } handleClose = { this.handleCloseLevantamiento } customcontent = { true } contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">

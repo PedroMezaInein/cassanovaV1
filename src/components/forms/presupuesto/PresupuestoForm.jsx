@@ -85,33 +85,37 @@ class PresupuestoForm extends Component {
         })
         return aux
     }
-    getPartida = (key, conceptos) => {
-        if(key === 0)
-            return true
-        if(conceptos[key].subpartida.partida.id !== conceptos[key-1].subpartida.partida.id)
-            return true
-        return false
-    }
-    getSubpartida = (key, conceptos) => {
-        if(key === 0)
-            return true
-        if(conceptos[key].subpartida.id !== conceptos[key-1].subpartida.id)
-            return true
-        return false
-    }
-    getPartidaClave = clave => {
-        let aux = clave.split('.')
-        if(aux.length)
-            return aux[0]
-    }
-    getSubpartidaClave = clave => {
-        let aux = clave.split('.')
-        if(aux.length)
-            return aux[1]
+    getPartidaClave = tipo => {
+        const { data } = this.props
+        let clave = 0
+        data.partidas.forEach((partida) => {
+            partida.subpartidas.forEach((subpartida) => {
+                subpartida.conceptos.forEach((concepto) => {
+                    if(concepto.subpartida.partida.nombre === tipo){
+                        clave = concepto.subpartida.partida.id
+                    }
+                })
+            })
+        })
+        return clave
     }
     render() {
         const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad } = this.props
-        // console.log(data, 'data')
+        let options_conceptos  = {}
+        data.partidas.forEach((partida) => {
+            partida.subpartidas.forEach((subpartida) => {
+                subpartida.conceptos.forEach((concepto) => {
+                    if (form.conceptos[concepto.clave]) {
+                        let tipo = concepto.subpartida.partida.nombre
+                        if (!options_conceptos[tipo]) {
+                            options_conceptos[tipo] = []
+                        }
+                        options_conceptos[tipo].push(concepto)
+                    }
+                    return false
+                })
+            })
+        })
         return (
             <div className="row">
                 <div className="col-lg-12">
@@ -413,60 +417,23 @@ class PresupuestoForm extends Component {
                                                 }
                                                 <div className="list list-hover min-w-500px" data-inbox="list">
                                                     {
-                                                        data.partidas.map((partida, key1) => {
+                                                        Object.keys(options_conceptos).map((tipo, key1) => {
                                                             return (
-                                                                partida.subpartidas.map((subpartida, key2) => {
-                                                                    return (
-                                                                        subpartida.conceptos.map((concepto, key3) => {
-                                                                            if (form.conceptos[concepto.clave]) {
+                                                                <div key={key1} >
+                                                                    {
+                                                                        tipo !== '' ?
+                                                                            <div className="bg-light text-primary font-size-lg font-weight-bolder border-0 card-spacer-x py-2">
+                                                                                <b className="font-weight-boldest text-primary font-size-h6">
+                                                                                    {this.getPartidaClave(tipo)}.{tipo}
+                                                                                </b>
+                                                                            </div>
+                                                                            : <></>
+                                                                    }
+                                                                    <div>
+                                                                        {
+                                                                            options_conceptos[tipo].map((concepto, key2) => {
                                                                                 return (
-                                                                                    <React.Fragment key={key3}>
-                                                                                    {
-                                                                                        this.getPartida(key3, subpartida.conceptos)?
-                                                                                        <div className="bg-light text-primary font-size-lg font-weight-bolder border-0 card-spacer-x py-2">
-                                                                                            <b className="font-weight-boldest text-primary font-size-h6">
-                                                                                            {
-                                                                                                this.getPartidaClave(concepto.clave)
-                                                                                            }.
-                                                                                            </b>
-                                                                                            &nbsp;&nbsp; 
-                                                                                                {
-                                                                                                    concepto ? 
-                                                                                                        concepto.subpartida ?
-                                                                                                            concepto.subpartida.partida ?
-                                                                                                                concepto.subpartida.partida.nombre
-                                                                                                            : ''
-                                                                                                        : ''
-                                                                                                    : ''
-                                                                                                }
-                                                                                        </div>
-                                                                                        :''
-                                                                                    }
-                                                                                    {/* {
-                                                                                        this.getSubpartida(key3, subpartida.conceptos )?
-                                                                                        <div className="font-size-lg font-weight-bolder">
-                                                                                                <b  className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
-                                                                                                {
-                                                                                                    this.getPartidaClave(concepto.clave)
-                                                                                                }
-                                                                                                .
-                                                                                                {
-                                                                                                    this.getSubpartidaClave(concepto.clave)
-                                                                                                }
-                                                                                                </b>
-                                                                                                &nbsp;
-                                                                                                {
-                                                                                                    concepto ? 
-                                                                                                        concepto.subpartida ?
-                                                                                                            concepto.subpartida.nombre
-                                                                                                        : ''
-                                                                                                    : ''
-                                                                                                }
-                                                                                        </div>
-                                                                                    :
-                                                                                        ''
-                                                                                    } */}
-                                                                                    <div key={concepto.clave} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
+                                                                                    <div key={key2} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
                                                                                         <div className="d-flex align-items-center col-1">
                                                                                             <div className="d-flex align-items-center" data-inbox="actions">
                                                                                                 <label className="checkbox checkbox-single checkbox-danger flex-shrink-0 mr-3">
@@ -502,13 +469,11 @@ class PresupuestoForm extends Component {
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    </React.Fragment>
                                                                                 )
-                                                                            }
-                                                                            return false
-                                                                        })
-                                                                    )
-                                                                })
+                                                                            })
+                                                                        }
+                                                                    </div>
+                                                                </div>
                                                             )
                                                         })
                                                     }
