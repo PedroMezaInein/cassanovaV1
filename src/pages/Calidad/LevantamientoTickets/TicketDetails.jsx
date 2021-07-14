@@ -5,7 +5,7 @@ import { URL_DEV } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { TicketView } from '../../../components/forms'
+import { TicketView, AgregarConcepto } from '../../../components/forms'
 import { Form, Tabs, Tab } from 'react-bootstrap'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 import { Modal } from '../../../components/singles'
@@ -55,6 +55,30 @@ class TicketDetails extends Component {
             subpartida: "",
             conceptos: {}
         },
+        formPPreeliminar: {
+            unidad: '',
+            partida: '',
+            subpartida: '',
+            descripcion: '',
+            costo: '',
+            proveedor: '',
+            conceptos: [{
+                unidad: '',
+                descipcion: '',
+                costo: '',
+                cantidad_preliminar: '',
+                desperdicio: '',
+                active: true,
+                cantidad: 0,
+                importe: 0,
+                id: '',
+                mensajes: {
+                    active: false,
+                    mensaje: ''
+                }
+            }],
+            conceptosNuevos: []
+        },
         options: {
             empleados: [],
             equipos: [],
@@ -69,6 +93,8 @@ class TicketDetails extends Component {
             subpartidas: [],
             conceptos: []
         },
+        presupuesto: '',
+        key: 'nuevo',
     }
     componentDidMount() {
         const { location: { state } } = this.props
@@ -85,6 +111,71 @@ class TicketDetails extends Component {
                 //window.history.replaceState(null, '')
             } else history.push('/calidad/tickets')
         } else history.push('/calidad/tickets')
+    }
+    getOptionsAxios = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos} = response.data
+                const { options, formPresupuesto, data } = this.state
+                data.partidas = partidas
+                let aux = {}
+                conceptos.map((concepto) => {
+                    return aux[concepto.clave] = false
+                })
+                formPresupuesto.conceptos = aux;
+                options['empleados'] = setOptions(empleados, 'nombre', 'id')
+                options['estatus'] = this.setOptionsEstatus(estatus, 'estatus', 'id')
+                options['tiposTrabajo'] = setOptions(tiposTrabajo, 'nombre', 'id')
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
+                options["partidas"] = setOptions(partidas, "nombre", "id")
+                this.setState({ ...this.state, options, data })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    getOneTicketAxios = async(id) => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/calidad/tickets/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { ticket } = response.data
+                const { options, data } = this.state
+                let aux = []
+                if(ticket.proyecto){
+                    if(ticket.proyecto.equipos_instalados){
+                        ticket.proyecto.equipos_instalados.forEach((element) => {
+                            if(element.equipo){
+                                const { texto } = element.equipo
+                                aux.push({ value: element.id.toString(), name: `${element.fecha} - (${element.cantidad}) ${texto}` })
+                            }
+                        })
+                    }
+                }
+                options.equipos = aux
+                data.mantenimientos = ticket.mantenimientos
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket), options })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    changeEstatusAxios = async(data) =>{
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { ticket } = response.data
+                window.history.replaceState(ticket, 'calidad')
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
+                if (data.estatus)
+                    doneAlert('El ticket fue actualizado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     setForm = ticket => {
         const { form } = this.state
@@ -254,21 +345,6 @@ class TicketDetails extends Component {
             console.log(error, 'error')
         })
     }
-    changeEstatusAxios = async(data) =>{
-        const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { ticket } = response.data
-                window.history.replaceState(ticket, 'calidad')
-                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
-                if (data.estatus)
-                    doneAlert('El ticket fue actualizado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     cancelTicket = async(data) => {
         const { access_token } = this.props.authUser
         data.motivo = document.getElementById('motivo').value
@@ -279,56 +355,6 @@ class TicketDetails extends Component {
                 this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
                 if (data.estatus) 
                     doneAlert('El ticket fue actualizado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    getOptionsAxios = async() => {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos} = response.data
-                const { options, formPresupuesto, data } = this.state
-                data.partidas = partidas
-                let aux = {}
-                conceptos.map((concepto) => {
-                    return aux[concepto.clave] = false
-                })
-                formPresupuesto.conceptos = aux;
-                options['empleados'] = setOptions(empleados, 'nombre', 'id')
-                options['estatus'] = this.setOptionsEstatus(estatus, 'estatus', 'id')
-                options['tiposTrabajo'] = setOptions(tiposTrabajo, 'nombre', 'id')
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                options["partidas"] = setOptions(partidas, "nombre", "id")
-                this.setState({ ...this.state, options, data })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    getOneTicketAxios = async(id) => {
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/calidad/tickets/${id}`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { ticket } = response.data
-                const { options, data } = this.state
-                let aux = []
-                if(ticket.proyecto){
-                    if(ticket.proyecto.equipos_instalados){
-                        ticket.proyecto.equipos_instalados.forEach((element) => {
-                            if(element.equipo){
-                                const { texto } = element.equipo
-                                aux.push({ value: element.id.toString(), name: `${element.fecha} - (${element.cantidad}) ${texto}` })
-                            }
-                        })
-                    }
-                }
-                options.equipos = aux
-                data.mantenimientos = ticket.mantenimientos
-                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket), options })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -557,8 +583,304 @@ class TicketDetails extends Component {
             console.log(error, 'error')
         })
     }
+
+    /* ============== PRESUPUESTO PREELIMINAR ============== */
+    onChangePPreeliminar = (key, e, name) => {
+        let { value } = e.target
+        const { formPPreeliminar, presupuesto } = this.state
+        if (name === 'desperdicio') {
+            value = value.replace('%', '')
+        }
+        formPPreeliminar['conceptos'][key][name] = value
+        let cantidad = formPPreeliminar['conceptos'][key]['cantidad_preliminar'] * (1 + (formPPreeliminar['conceptos'][key]['desperdicio'] / 100))
+        cantidad = cantidad.toFixed(2)
+        let importe = cantidad * formPPreeliminar['conceptos'][key]['costo']
+        importe = importe.toFixed(2)
+        formPPreeliminar['conceptos'][key]['cantidad'] = cantidad
+        formPPreeliminar['conceptos'][key]['importe'] = importe
+        if (name !== 'mensajes' && name !== 'desperdicio')
+            if (presupuesto.conceptos[key][name] !== formPPreeliminar.conceptos[key][name]) {
+                formPPreeliminar.conceptos[key].mensajes.active = true
+            } else {
+                formPPreeliminar.conceptos[key].mensajes.active = false
+            }
+        if (name === 'desperdicio')
+            if (presupuesto.conceptos[key][name].toString() !== formPPreeliminar.conceptos[key][name].toString()) {
+                formPPreeliminar.conceptos[key].mensajes.active = true
+                formPPreeliminar.conceptos[key].mensajes.mensaje = ('Actualización del desperdicio a un ' + value + '%').toUpperCase()
+            } else {
+                formPPreeliminar.conceptos[key].mensajes.active = false
+                formPPreeliminar.conceptos[key].mensajes.mensaje = ''
+            }
+        this.setState({
+            ...this.state,
+            formPPreeliminar
+        })
+    }
+    
+    checkButtonPPreeliminar = (key, e) => {
+        const { name, checked } = e.target
+        const { formPPreeliminar, presupuesto } = this.state
+        formPPreeliminar.conceptos[key][name] = checked
+        if (!checked) {
+            let pre = presupuesto.conceptos[key]
+            let aux = { active: false, mensaje: '' }
+            this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
+            this.onChange(key, { target: { value: pre.costo } }, 'costo')
+            this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
+            this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
+            this.onChange(key, { target: { value: aux } }, 'mensajes')
+        }
+        this.setState({
+            ...this.state,
+            formPPreeliminar
+        })
+    }
+    onSubmitPPreeliminar = e => {
+        e.preventDefault()
+        waitAlert()
+        this.updatePPreeliminarAxios()
+    }
+    async updatePPreeliminarAxios() {
+        const { access_token } = this.props.authUser
+        const { formPPreeliminar, presupuesto } = this.state
+        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id, formPPreeliminar, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { presupuesto } = response.data
+                this.getOnePresupuestoAxios(presupuesto.id)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue modificado con éxito.')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    openModalPPConcepto = () => {
+        const { options } = this.state
+        options.subpartidas = []
+        this.setState({
+            ...this.state,
+            options,
+            modalPPConcepto: true,
+            formPPreeliminar: this.clearForm(),
+            formeditado: 0
+        })
+    }
+    handleClosePPConcepto = () => {
+        const { modalPPConcepto, options } = this.state
+        options.subpartidas = []
+        this.setState({
+            ...this.state,
+            modalPPConcepto: !modalPPConcepto,
+            options,
+            concepto: '',
+            formPPreeliminar: this.clearFormPPConceptos()
+        })
+    }
+    clearFormPPConceptos = () => {
+        const { formPPreeliminar } = this.state
+        let aux = Object.keys(formPPreeliminar)
+        aux.map((element) => {
+            if (element !== 'conceptos' && element !== 'conceptosNuevos')
+            formPPreeliminar[element] = ''
+            return false
+        })
+        return formPPreeliminar
+    }
+    onChangeConceptos = (e) => {
+        const { name, value } = e.target;
+        const { data, formPPreeliminar, presupuesto } = this.state
+        switch (name) {
+            case 'partida':
+                data.partidas.map((partida) => {
+                    data.conceptos = []
+                    if (partida.id.toString() === value) {
+                        data.subpartidas = partida.subpartidas
+                    }
+                    return false
+                })
+                break;
+            case 'subpartida':
+                data.subpartidas.map((subpartida) => {
+                    if (subpartida.id.toString() === value) {
+                        data.conceptos = subpartida.conceptos
+                    }
+                    return false
+                })
+                let array = []
+                data.conceptos.map((concepto) => {
+                    let aux = false
+                    presupuesto.conceptos.map((concepto_form) => {
+                        if (concepto) {
+                            if (concepto.clave === concepto_form.concepto.clave) {
+                                aux = true
+                            }
+                        }
+                        return false
+                    })
+                    if (!aux) {
+                        array.push(concepto)
+                    }
+                    return false
+                })
+                formPPreeliminar.conceptosNuevos = []
+                array.map((element, key) => {
+                    formPPreeliminar.conceptosNuevos.push(element)
+                    formPPreeliminar.conceptosNuevos[key].active = false
+                    return false
+                })
+                break;
+            default:
+                break;
+        }
+        formPPreeliminar[name] = value;
+        this.setState({
+            ...this.state,
+            formPPreeliminar,
+            data
+        });
+    };
+    
+    checkButtonConceptos = (e, key) => {
+        const { checked } = e.target
+        const { formPPreeliminar } = this.state
+        formPPreeliminar.conceptosNuevos[key].active = checked
+        this.setState({
+            ...this.state,
+            formPPreeliminar
+        })
+    }
+    controlledTab = value => {
+        this.setState({
+            ...this.state,
+            formPPreeliminar: this.clearForm(),
+            key: value
+        })
+    }
+    onSubmitConceptos = e => {
+        e.preventDefault()
+        const { key, formPPreeliminar } = this.state
+        waitAlert()
+        if (key === 'nuevo')
+            this.addConceptoAxios()
+        else {
+            let aux = []
+            formPPreeliminar.conceptosNuevos.map((concepto) => {
+                if (concepto.active)
+                    aux.push(concepto)
+                return false
+            })
+            this.addConceptoToPresupuestoAxios(aux)
+        }
+    }
+    
+    async addConceptoAxios() {
+        const { access_token } = this.props.authUser
+        const { formPPreeliminar } = this.state
+        await axios.post(URL_DEV + 'conceptos', formPPreeliminar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { concepto } = response.data
+                this.addConceptoToPresupuestoAxios([concepto])
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async addConceptoToPresupuestoAxios(conceptos) {
+        const { access_token } = this.props.authUser
+        const { presupuesto } = this.state
+        let aux = {
+            conceptos: conceptos
+        }
+        await axios.post(URL_DEV + 'presupuestos/' + presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { presupuesto } = response.data
+                this.getOnePresupuestoAxios(presupuesto.id)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue registrado con éxito.')
+                this.setState({
+                    modalPPConcepto: false
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async getOnePresupuestoAxios(id) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { formPPreeliminar } = this.state
+                const { presupuesto } = response.data
+                let aux = []
+                presupuesto.conceptos.map((concepto) => {
+                    let mensajeAux = {}
+                    if (concepto.mensaje) {
+                        mensajeAux = {
+                            active: true,
+                            mensaje: concepto.mensaje
+                        }
+                    } else {
+                        mensajeAux = {
+                            active: false,
+                            mensaje: ''
+                        }
+                    }
+                    let bandera = false
+                    formPPreeliminar.conceptos.map((elemento) => {
+                        if (concepto.id === elemento.id) {
+                            bandera = elemento
+                        }
+                        return false
+                    })
+                    if (bandera) {
+                        aux.push(
+                            bandera
+                        )
+                    } else {
+                        aux.push({
+                            descripcion: concepto.descripcion,
+                            costo: concepto.costo.toFixed(2),
+                            cantidad_preliminar: concepto.cantidad_preliminar,
+                            desperdicio: concepto.desperdicio,
+                            cantidad: (concepto.cantidad_preliminar * (1 + (concepto.desperdicio / 100))).toFixed(2),
+                            importe: ((concepto.cantidad_preliminar * (1 + (concepto.desperdicio / 100))) * concepto.costo).toFixed(2),
+                            active: concepto.active ? true : false,
+                            id: concepto.id,
+                            mensajes: mensajeAux,
+                            unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : ''
+                        })
+                    }
+                    return false
+                })
+                formPPreeliminar.conceptos = aux
+                this.setState({
+                    ...this.state,
+                    presupuesto: presupuesto,
+                    formPPreeliminar,
+                    formeditado: 1
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { ticket, form, options, modal, data, formPresupuesto, formeditado } = this.state
+        const { ticket, form, options, modal, data, formPresupuesto, formeditado, formPPreeliminar, modalPPConcepto, presupuesto, key } = this.state
         return (
             <Layout active={'calidad'}  {...this.props}>
                 <TicketView
@@ -581,6 +903,13 @@ class TicketDetails extends Component {
                     setOptions={this.setOptions}
                     onSubmitPresupuesto={this.onSubmitPresupuesto}
                     dataPresupuesto={data}
+                    /* ============== PRESUPUESTO PREELIMINAR ============== */
+                    formPPreeliminar={formPPreeliminar}
+                    onChange={this.onChangePPreeliminar}
+                    checkButtonPPreeliminar={this.checkButtonPPreeliminar}
+                    onSubmitPPreeliminar = { this.onSubmitPPreeliminar }
+                    presupuesto={presupuesto}
+                    openModalPPConcepto={this.openModalPPConcepto}
                 />
                 <Modal size = "lg" title = 'Mantenimiento correctivo' show = { modal } handleClose = { this.handleCloseLevantamiento } customcontent = { true } contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <Tabs defaultActiveKey="formulario_mantenimiento" className="nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
@@ -647,6 +976,20 @@ class TicketDetails extends Component {
                             </Tab>
                         }
                     </Tabs>
+                </Modal>
+                <Modal size="xl" title='AGREGAR CONCEPTO' show={modalPPConcepto} handleClose={this.handleClosePPConcepto}>
+                    <AgregarConcepto
+                        options={options}
+                        formeditado={formeditado}
+                        form={form}
+                        onChange={this.onChangeConceptos}
+                        setOptions={this.setOptions}
+                        checkButtonConceptos={this.checkButtonConceptos}
+                        data={data}
+                        onSelect={this.controlledTab}
+                        activeKey={key}
+                        onSubmit={this.onSubmitConceptos}
+                    />
                 </Modal>
             </Layout>
         )

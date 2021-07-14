@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Row, Col} from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { ProcesoTicketForm, PresupuestoForm } from '../../../../components/forms';
+import { ProcesoTicketForm, PresupuestoForm, ActualizarPresupuestoForm } from '../../../../components/forms';
 import { Button } from '../../../form-components'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -26,7 +26,8 @@ class TicketView extends Component {
     render() {
 
         const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile, openModalWithInput, openModalMantenimiento,
-                formeditado, formPresupuesto, onChangePresupuesto, checkButton, setOptions, onSubmitPresupuesto, dataPresupuesto } = this.props
+                formeditado, formPresupuesto, onChangePresupuesto, checkButton, setOptions, onSubmitPresupuesto, dataPresupuesto,
+                formPPreeliminar, onChangePPreeliminar, checkButtonPPreeliminar, onSubmitPPreeliminar, presupuesto, openModalPPConcepto } = this.props
         return (
             <>
                 
@@ -222,6 +223,16 @@ class TicketView extends Component {
                                                 onSubmit={onSubmitPresupuesto}
                                                 data={dataPresupuesto}
                                                 showFormCalidad={true}
+                                            />
+                                            <ActualizarPresupuestoForm
+                                                formeditado={formeditado}
+                                                form={formPPreeliminar}
+                                                onChange={onChangePPreeliminar}
+                                                checkButton={checkButtonPPreeliminar}
+                                                onSubmit={onSubmitPPreeliminar}
+                                                presupuesto={presupuesto}
+                                                openModal={openModalPPConcepto}
+                                                showInputsCalidad={true}
                                             />
                                         </Tab.Pane>
                                     </Tab.Content>
