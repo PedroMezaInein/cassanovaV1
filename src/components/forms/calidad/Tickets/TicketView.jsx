@@ -5,7 +5,6 @@ import { ProcesoTicketForm, PresupuestoForm } from '../../../../components/forms
 import { Button } from '../../../form-components'
 import moment from 'moment'
 import 'moment/locale/es'
-
 class TicketView extends Component {
 
     getIniciales = nombre => {
@@ -175,7 +174,7 @@ class TicketView extends Component {
                                                                 <span className="nav-icon">
                                                                     <i className="las la-photo-video icon-lg mr-2"></i>
                                                                 </span>
-                                                                <span className="nav-text font-weight-bolder font-size-14px">ADJUNTOS</span>
+                                                                <span className="nav-text font-weight-bolder font-size-14px">FOTOS INCIDENTE</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                     }
@@ -198,7 +197,7 @@ class TicketView extends Component {
                                     <Tab.Content>
                                         <Tab.Pane eventKey="adjuntos">
                                             <Row>
-                                                <Col lg="6">
+                                                <Col lg="12">
                                                     <Card className="card-custom gutter-b card-stretch">
                                                         <Card.Header>
                                                             <Card.Title className="mb-0">
@@ -207,18 +206,6 @@ class TicketView extends Component {
                                                         </Card.Header>
                                                         <Card.Body className="p-9 pt-3">
                                                             <ItemSlider items={data.fotos} item={'fotos'} />
-                                                        </Card.Body>
-                                                    </Card>
-                                                </Col>
-                                                <Col lg="6">
-                                                <Card className="card-custom gutter-b card-stretch">
-                                                        <Card.Header>
-                                                            <Card.Title className="mb-0">
-                                                                <div className="font-weight-bolder font-size-h5">PRESUPUESTO</div>
-                                                            </Card.Title>
-                                                        </Card.Header>
-                                                        <Card.Body className="p-9 pt-3 d-flex align-items-center">
-                                                            <ItemSlider multiple={false} items={form.adjuntos.presupuesto.files} item='presupuesto' handleChange={handleChange} />
                                                         </Card.Body>
                                                     </Card>
                                                 </Col>
@@ -242,21 +229,6 @@ class TicketView extends Component {
                                 : ''
                             : ''
                     }
-                {/* <div className="card card-custom gutter-b">
-                    <div className="card-body d-flex align-items-center justify-content-between flex-wrap py-3">
-                        <div className="d-flex align-items-center mr-2 py-2">
-                            <div className="d-flex mr-3">
-                                <div className="navi navi-hover navi-active navi-link-rounded navi-bold d-flex flex-row">
-                                    <div className="navi-item mr-2">
-                                        <a href="custom/apps/todo/tasks.html" className="navi-link active">
-                                            <span className="navi-text">Adjuntos</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
                 <div className="row gutter-b">
                     {/* {
                         data ?
