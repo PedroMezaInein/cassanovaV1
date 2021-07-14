@@ -4,7 +4,9 @@ import { InputGray, Button, CalendarDay, SelectSearchGray } from '../../form-com
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 class PresupuestoForm extends Component {
-
+    state = {
+        showForm:false
+    }
     updateProyecto = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'proyecto' } })
@@ -41,12 +43,11 @@ class PresupuestoForm extends Component {
     }
 
     mostrarFormulario() {
-        var element = document.getElementById("form-presupuesto");
-        if (element.style.display === "none") {
-            element.style.display = "block";
-        } else {
-            element.style.display = "none";
-        }
+        const { showForm } = this.state
+        this.setState({
+            ...this.state,
+            showForm: !showForm
+        })
     }
 
     onChange = e => {
@@ -101,6 +102,7 @@ class PresupuestoForm extends Component {
     }
     render() {
         const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad } = this.props
+        const { showForm } = this.state
         let options_conceptos  = {}
         data.partidas.forEach((partida) => {
             partida.subpartidas.forEach((subpartida) => {
@@ -245,33 +247,31 @@ class PresupuestoForm extends Component {
                                 <div className="col-xl-6 pt-4 pt-xl-0">
                                     <div className="card card-custom card-stretch" id="kt_todo_view">
                                         <div className="card-body p-0">
-                                            <div
-                                                className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
-                                                <div className="d-flex flex-column mr-2 py-2">
-                                                    <span className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</span>
-                                                </div>
+                                            <div className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
+                                                <div className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</div>
                                                 <div className="d-flex py-2">
                                                     <Button
                                                         icon=''
                                                         className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
                                                         onClick={() => { this.mostrarFormulario() }}
-                                                        only_icon = "las la-clipboard-list icon-lg mr-3 px-0"
+                                                        only_icon="las la-clipboard-list icon-lg mr-3 px-0"
                                                         type="button"
                                                         text="LLENAR FORMULARIO"
                                                     />
                                                 </div>
-                                                <Form id="form-presupuesto"
-                                                    onSubmit={
-                                                        (e) => {
-                                                            e.preventDefault();
-                                                            validateAlert(onSubmit, e, 'form-presupuesto')
-                                                        }
+                                            </div>
+                                            <Form id="form-presupuesto" className={`${!showForm ? 'd-none' : 'card-spacer pt-0'}`}
+                                                onSubmit={
+                                                    (e) => {
+                                                        e.preventDefault();
+                                                        validateAlert(onSubmit, e, 'form-presupuesto')
                                                     }
-                                                >
-                                                    <div className="col-md-12">
-                                                        <div className="form-group row form-group-marginless pt-4 justify-content-center">
-                                                            {
-                                                                !showFormCalidad?
+                                                }
+                                            >
+                                                <div className="col-md-12">
+                                                    <div className="form-group row form-group-marginless pt-4 justify-content-center">
+                                                        {
+                                                            !showFormCalidad ?
                                                                 <>
                                                                     <div className="col-md-6">
                                                                         <SelectSearchGray
@@ -341,57 +341,56 @@ class PresupuestoForm extends Component {
                                                                         />
                                                                     </div>
                                                                 </>
-                                                                :''
-                                                            }
-                                                            <div className="col-md-6">
-                                                                <InputGray
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    placeholder="TIEMPO DE EJECUCIÓN"
-                                                                    value={form.tiempo_ejecucion}
-                                                                    name="tiempo_ejecucion"
-                                                                    onChange={onChange}
-                                                                    iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                                                    customdiv="mb-0"
-                                                                    iconvalid={1}
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    withicon={1}
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
-                                                            <div className="col-md-12 text-center align-self-center mt-5">
-                                                                <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                                                    <label className="text-center font-weight-bolder">Fecha del presupuesto</label>
-                                                                </div>
-                                                                <CalendarDay
-                                                                    value={form.fecha}
-                                                                    date={form.fecha}
-                                                                    onChange={onChange}
-                                                                    name='fecha'
-                                                                    withformgroup={0}
-                                                                    requirevalidation={1}
-                                                                />
-                                                            </div>
+                                                                : ''
+                                                        }
+                                                        <div className="col-md-6">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                formeditado={formeditado}
+                                                                placeholder="TIEMPO DE EJECUCIÓN"
+                                                                value={form.tiempo_ejecucion}
+                                                                name="tiempo_ejecucion"
+                                                                onChange={onChange}
+                                                                iconclass={"flaticon-calendar-with-a-clock-time-tools"}
+                                                                customdiv="mb-0"
+                                                                iconvalid={1}
+                                                                withtaglabel={1}
+                                                                withtextlabel={1}
+                                                                withicon={1}
+                                                            />
                                                         </div>
-                                                    </div>
-                                                    <div className="card-footer px-0 pt-4">
-                                                        <div className="col-lg-12 text-right px-0">
-                                                            <Button icon=''
-                                                                onClick={
-                                                                    (e) => {
-                                                                        e.preventDefault();
-                                                                        validateAlert(onSubmit, e, 'form-presupuesto')
-                                                                    }
-                                                                }
-                                                                className="btn btn-sm btn-light-primary font-weight-bolder btn-hover-bg-light text-hover-primary font-size-13px"
-                                                                text='ENVIAR Y CONTINUAR'
-                                                                only_icon="las la-arrow-right icon-lg mr-2 px-0"
+                                                        <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
+                                                        <div className="col-md-12 text-center align-self-center mt-5">
+                                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                                <label className="text-center font-weight-bolder">Fecha del presupuesto</label>
+                                                            </div>
+                                                            <CalendarDay
+                                                                value={form.fecha}
+                                                                date={form.fecha}
+                                                                onChange={onChange}
+                                                                name='fecha'
+                                                                withformgroup={0}
+                                                                requirevalidation={1}
                                                             />
                                                         </div>
                                                     </div>
-                                                </Form>
-                                            </div>
+                                                </div>
+                                                <div className="card-footer px-0 pt-4 pb-0">
+                                                    <div className="col-lg-12 text-right px-0">
+                                                        <Button icon=''
+                                                            onClick={
+                                                                (e) => {
+                                                                    e.preventDefault();
+                                                                    validateAlert(onSubmit, e, 'form-presupuesto')
+                                                                }
+                                                            }
+                                                            className="btn btn-sm btn-light-primary font-weight-bolder btn-hover-bg-light text-hover-primary font-size-13px"
+                                                            text='ENVIAR Y CONTINUAR'
+                                                            only_icon="las la-arrow-right icon-lg mr-2 px-0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </Form>
                                             <div className="table-responsive">
                                                 {
                                                     form.partida ?

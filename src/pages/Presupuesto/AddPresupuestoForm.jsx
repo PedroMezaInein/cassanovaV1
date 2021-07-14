@@ -35,8 +35,6 @@ class AddPresupuestoForm extends Component {
         },
     };
     componentDidMount() {
-        var elemento = document.getElementById("form-presupuesto");
-        elemento.style.display = 'none';
         const { authUser: { user: { permisos } } } = this.props;
         const { history: { location: { pathname } } } = this.props;
         const { history } = this.props;
