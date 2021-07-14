@@ -534,22 +534,22 @@ class TicketDetails extends Component {
         waitAlert()
         this.addPresupuestosAxios()
     }
-    async addPresupuestosAxios() {
+    addPresupuestosAxios = async() => {
         const { access_token } = this.props.authUser
-        const { formPresupuesto } = this.state
-        await axios.post(URL_DEV + 'presupuestos', formPresupuesto, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+        const { formPresupuesto, ticket } = this.state
+        if(ticket.proyecto){
+            formPresupuesto.proyecto = ticket.proyecto.id
+            if(ticket.proyecto.empresa)
+                formPresupuesto.empresa = ticket.proyecto.empresa.id
+        }
+        if(ticket.subarea){
+            formPresupuesto.area = ticket.subarea.area_id
+        }
+        await axios.post(`${URL_DEV}presupuestos`, formPresupuesto, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                // const { presupuesto } = response.data
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue registrado con éxito.')
-                // const { history } = this.props
-                // history.push({
-                //     pathname: '/presupuesto/presupuesto/update',
-                //     state: { presupuesto: presupuesto }
-                // });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                const { presupuesto } = response.data
+                this.patchTicket('presupuesto', presupuesto.id)
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
