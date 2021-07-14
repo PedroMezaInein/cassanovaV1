@@ -2,10 +2,7 @@ import React, { Component } from 'react'
 import { Form, Card } from 'react-bootstrap'
 import { InputMoneySinText, InputNumberSinText, InputSinText, Button } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { setMoneyTableForNominas } from '../../../functions/setters'
-import Moment from 'react-moment'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
+import { setMoneyTableForNominas, dayDMY } from '../../../functions/setters'
 class ActualizarPresupuestoForm extends Component {
 
     state = {
@@ -92,7 +89,8 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit} = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad} = this.props
+        // console.log(presupuesto, '')
         const { desperdicio } = this.state
         if (presupuesto)
             return (
@@ -100,94 +98,84 @@ class ActualizarPresupuestoForm extends Component {
                     < Card className="card-custom" >
                         <Card.Body className="p-0">
                             <div className="table-responsive">
-                                <div className="list min-w-1000px" data-inbox="list">
-                                    <div className=" col-md-12 d-flex justify-content-center align-items-center list-item card-spacer-x py-4" data-inbox="message">
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Bulb1.svg')} />
-                                                    </span>
+                                <div className="list min-w-1000px">
+                                    <div className="px-9 py-6">
+                                        <div>
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <div className="text-dark font-size-h4 font-weight-bold">
+                                                    {presupuesto.proyecto.nombre}
                                                 </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">{presupuesto.proyecto.nombre}</div>
-                                                <span className="text-muted">Proyecto</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Layout-top-panel-6.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">{presupuesto.area.nombre}</div>
-                                                <span className="text-muted">ÁREA</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">{presupuesto.empresa.name}</div>
-                                                <span className="text-muted">Empresa</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">{presupuesto.tiempo_ejecucion}</div>
-                                                <span className="text-muted">Tiempo de ejecución</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">
-                                                    <Moment format="DD/MM/YYYY">
-                                                        {presupuesto.fecha}
-                                                    </Moment>
-                                                </div>
-                                                <span className="text-muted">Fecha</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                            <div className="text-dark mb-1">
-                                                    No. {
-                                                        this.getIdentificador()
+                                                <div>
+                                                    {
+                                                        presupuesto.empresa ?
+                                                            presupuesto.empresa.isotipos ?
+                                                                presupuesto.empresa.isotipos.length > 0 ?
+                                                                    presupuesto.empresa.isotipos.map((isotipo, key) => {
+                                                                        return (
+                                                                            <img alt="Pic" src={isotipo.url} style={{ height: '55px' }} key={key} />
+                                                                        )
+                                                                    })
+                                                                    : ''
+                                                                : ''
+                                                            : ''
                                                     }
                                                 </div>
-                                                <span className="text-muted">                                                    
-                                                    PRESUPUESTO
-                                                </span>
+                                            </div>
+                                            <div>
+                                                <div className="d-flex flex-wrap justify-content-center">
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="las la-toolbox icon-2x text-primary"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                {presupuesto.area.nombre}
+                                                                <div className="font-weight-normal font-size-lg text-muted">ÁREA</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="flaticon-calendar-with-a-clock-time-tools icon-xl text-info"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                {presupuesto.tiempo_ejecucion}
+                                                                <div className="font-weight-normal font-size-lg text-muted">Tiempo de ejecución</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="flaticon2-calendar-8 icon-xl text-primary"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                {dayDMY(presupuesto.fecha)}
+                                                                <div className="font-weight-normal font-size-lg text-muted">Fecha</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="las la-file-invoice-dollar icon-2x text-info"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                No. {this.getIdentificador()}
+                                                                <div className="font-weight-normal font-size-lg text-muted">Presupuesto</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -230,14 +218,17 @@ class ActualizarPresupuestoForm extends Component {
                                             <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Unidad</div>
                                             </th>
-                                            <th className="border-0 center_content">
-                                                <div className="font-size-sm text-center">Costo</div>
-                                            </th>
+                                            {
+                                                !showInputsCalidad &&
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-sm text-center">Costo</div>
+                                                </th>
+                                            }
                                             <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Cantidad Preliminar</div>
                                             </th>
                                             <th className="border-0">
-                                                <div className="font-size-sm text-center">% Despercicio</div>
+                                                <div className="font-size-sm text-center white-space-nowrap">% Despercicio</div>
                                                 <div className="d-flex justify-content-center">
                                                     <InputNumberSinText
                                                         identificador = { "desperdicio-global" }
@@ -246,7 +237,7 @@ class ActualizarPresupuestoForm extends Component {
                                                         name = " desperdicio "
                                                         value = { desperdicio }
                                                         onChange = { this.onChangeDesperdicio }
-                                                        thousandseparator = { 1 }
+                                                        thousandseparator={true}
                                                         prefix = { '%' } 
                                                         customstyle={{borderColor: "#e5eaee"}}
                                                     />
@@ -255,14 +246,17 @@ class ActualizarPresupuestoForm extends Component {
                                             <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Cantidad</div>
                                             </th>
-                                            <th className="border-0 center_content">
-                                                <div className="font-size-sm text-center">Importe</div>
-                                                <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
-                                                    {
-                                                        setMoneyTableForNominas(this.getTotalImport())
-                                                    }
-                                                </div>
-                                            </th>
+                                            {
+                                                !showInputsCalidad &&
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-sm text-center">Importe</div>
+                                                    <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
+                                                        {
+                                                            setMoneyTableForNominas(this.getTotalImport())
+                                                        }
+                                                    </div>
+                                                </th>
+                                            }
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -273,8 +267,8 @@ class ActualizarPresupuestoForm extends Component {
                                                         {
                                                             this.getPartida(key)?
                                                                 <tr>
-                                                                    <td colSpan={9} className="bg-primary-o-20 text-primary font-size-lg font-weight-bolder border-0 ">
-                                                                        <b className="font-weight-boldest text-primary font-size-h6">
+                                                                    <td colSpan={9} className="bg-light text-primary font-size-lg font-weight-bolder border-0 ">
+                                                                        <b className="font-weight-boldest text-primary font-size-h6 ml-2">
                                                                         {
                                                                             this.getPartidaClave(concepto.concepto.clave)
                                                                         }.
@@ -291,8 +285,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                             } 
                                                                     </td>
                                                                 </tr>
-                                                            :
-                                                                ''
+                                                            :<></>
                                                         }
                                                         {
                                                             this.getSubpartida(key)?
@@ -317,8 +310,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                         }
                                                                     </td>
                                                                 </tr>
-                                                            :
-                                                                ''
+                                                            :<></>
                                                         }
                                                         <tr data-tip data-for = { key + '-th' } className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
                                                             <td className="check_desc text-center">
@@ -339,7 +331,7 @@ class ActualizarPresupuestoForm extends Component {
                                                             </td>
                                                             <td className="descripcion text-center">
                                                                 <InputSinText
-                                                                    identificador={"descipcion"}
+                                                                    // identificador={"descipcion"}
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
                                                                     name="descipcion"
@@ -354,22 +346,26 @@ class ActualizarPresupuestoForm extends Component {
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
                                                             </td>
-                                                            <td className="text-center">
-                                                                <InputMoneySinText identificador={"costo"}
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    name="costo"
-                                                                    value={form['conceptos'][key]['costo']}
-                                                                    onChange={e => onChange(key, e, 'costo')}
-                                                                    thousandseparator={true}
-                                                                    typeformat="###########" 
-                                                                    disabled = { !form.conceptos[key].active }
-                                                                    customstyle={{borderColor: "#e5eaee"}}
-                                                                />
-                                                            </td>
+                                                            {
+                                                                !showInputsCalidad &&
+                                                                <td className="text-center">
+                                                                    <InputMoneySinText
+                                                                        // identificador={"costo"}
+                                                                        requirevalidation={1}
+                                                                        formeditado={formeditado}
+                                                                        name="costo"
+                                                                        value={form['conceptos'][key]['costo']}
+                                                                        onChange={e => onChange(key, e, 'costo')}
+                                                                        thousandseparator={true}
+                                                                        typeformat="###########" 
+                                                                        disabled = { !form.conceptos[key].active }
+                                                                        customstyle={{borderColor: "#e5eaee"}}
+                                                                    />
+                                                                </td>
+                                                            }
                                                             <td className="text-center">
                                                                 <InputMoneySinText
-                                                                    identificador={"cantidad_preliminar"}
+                                                                    // identificador={"cantidad_preliminar"}
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
                                                                     name="cantidad_preliminar"
@@ -383,7 +379,7 @@ class ActualizarPresupuestoForm extends Component {
                                                             </td>
                                                             <td className="text-center">
                                                                 <InputNumberSinText
-                                                                    identificador={"desperdicio" + key}
+                                                                    // identificador={"desperdicio" + key}
                                                                     requirevalidation={0}
                                                                     formeditado={formeditado}
                                                                     name="desperdicio"
@@ -398,16 +394,19 @@ class ActualizarPresupuestoForm extends Component {
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
                                                             </td>
-                                                            <td className="text-center">
-                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
-                                                            </td>
+                                                            {
+                                                                !showInputsCalidad &&
+                                                                <td className="text-center">
+                                                                    <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
+                                                                </td>
+                                                            }
                                                         </tr>
                                                         {
                                                             form.conceptos[key].mensajes.active ?
-                                                                <tr >
+                                                                <tr>
                                                                     <td className="px-3 mx-2" colSpan = { 9 }>
                                                                         <InputSinText
-                                                                            identificador = { "mensaje" + key }
+                                                                            // identificador = { "mensaje" + key }
                                                                             requirevalidation = { 1 }
                                                                             formeditado = { formeditado }
                                                                             name = "mensaje"
@@ -419,8 +418,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                             />
                                                                     </td>
                                                                 </tr>
-                                                            :
-                                                                ''
+                                                            :<></>
                                                         }
                                                     </>
                                                 )
