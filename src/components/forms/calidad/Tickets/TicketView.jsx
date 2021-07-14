@@ -86,8 +86,14 @@ class TicketView extends Component {
                                                                                 {
                                                                                     options.estatus ?
                                                                                         options.estatus.map((estatus, key) => {
-                                                                                            if (estatus.name === 'Rechazado' || estatus.name === 'Aceptado' || estatus.name === 'Terminado' ||
-                                                                                                estatus.name === 'En proceso' || estatus.name === 'Respuesta pendiente' || estatus.name === 'En revisión' || estatus.name === 'En espera')
+                                                                                            if (
+                                                                                                estatus.name === 'Rechazado' || 
+                                                                                                //estatus.name === 'Aceptado' || 
+                                                                                                //estatus.name === 'Terminado' ||
+                                                                                                //estatus.name === 'En proceso' || 
+                                                                                                //estatus.name === 'Respuesta pendiente' || 
+                                                                                                estatus.name === 'En revisión' || 
+                                                                                                estatus.name === 'En espera')
                                                                                                 return (
                                                                                                     <div key={key}>
                                                                                                         <Dropdown.Item className="p-0" key={key} onClick={() => { changeEstatus(estatus.name) }} >
