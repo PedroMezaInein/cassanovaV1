@@ -3,6 +3,7 @@ import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { UploadingFile } from '../assets/animate'
+import { ItemSlider } from '../components/singles'
 
 const MySwal = withReactContent(Swal)
 
@@ -78,7 +79,25 @@ const sendFileAlert = ( elemento, action ) => {
     })
 }
 
-export{ userWarningAlert, waitAlert, sendFileAlert }
+const showFilesAlert = (files, title) => {
+    MySwal.fire({
+        title: title,
+        html: 
+            <div className="row mx-0">
+                <div className="col-md-12">
+                    <ItemSlider items = { files } />
+                </div>
+            </div>,
+        showCloseButton: true,
+        showConfirmButton: false,
+        target: 'table',
+        customClass: {
+            closeButton: 'm-3'
+        }
+    })
+}
+
+export{ userWarningAlert, waitAlert, sendFileAlert, showFilesAlert }
 
 export async function commentAlert() {
     MySwal.fire({

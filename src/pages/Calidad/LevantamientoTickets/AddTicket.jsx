@@ -31,9 +31,8 @@ class AddTicket extends Component {
             tiposTrabajo: []
         }
     }
-    componentDidMount() {
-        this.getOptionsAxios()
-    }
+
+    componentDidMount() { this.getOptionsAxios() }
 
     getOptionsAxios = async () => {
         waitAlert()
@@ -127,31 +126,6 @@ class AddTicket extends Component {
         form['adjuntos'][name].files = aux
         this.setState({ ...this.state, form })
     }
-
-    /* onSubmit = () => {
-        const { form } = this.state
-        if(form.proyecto === '' || form.proyecto === null){
-            errorAlert('Selecciona un proyecto')
-            return ;
-        }
-        waitAlert()
-        if(form.adjuntos.fotos.value){
-            let filePath = `proyecto/${form.proyecto}/tickets/`
-            let auxPromises  = form.adjuntos.fotos.files.map((file) => {
-                return new Promise((resolve, reject) => {
-                    ReactS3Client.uploadFile(file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
-                        .then((data) =>{
-                            const { location,status } = data
-                            if(status === 204)
-                                resolve({ name: file.name, url: location })
-                            else
-                                reject(data)
-                        }).catch(err => reject(err))
-                })
-            })
-            Promise.all(auxPromises).then(values => { this.addTicket(values)}).catch(err => console.error(err))
-        }else{ this.addTicket([]); }
-    } */
 
     render() {
         const { form, options } = this.state

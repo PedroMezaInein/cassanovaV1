@@ -343,7 +343,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
                                                                     name="descipcion"
-                                                                    rows="3"
+                                                                    rows="5"
                                                                     as="textarea"
                                                                     value={form['conceptos'][key]['descripcion']}
                                                                     onChange={(e) => { onChange(key, e, 'descripcion')} } 
