@@ -78,14 +78,11 @@ class TicketDetails extends Component {
             if (state.calidad) {
                 const { calidad } = state
                 if (calidad.estatus_ticket.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
-                else {
-                    this.getOneTicketAxios(calidad.id)
-                    //this.setState({ ...this.state, ticket: calidad, form: this.setForm(calidad) }) 
-                }
-                //window.history.replaceState(null, '')
+                else { this.getOneTicketAxios(calidad.id) }
             } else history.push('/calidad/tickets')
         } else history.push('/calidad/tickets')
     }
+
     setForm = ticket => {
         const { form } = this.state
         let aux = []
@@ -104,8 +101,6 @@ class TicketDetails extends Component {
         })
         form.adjuntos.reporte_problema_solucionado.files = aux
         form.fechaProgramada = new Date(ticket.created_at)
-        /* if (ticket.tecnico)
-            form.empleado = ticket.tecnico.id.toString() */
         form.empleado = ticket.tecnico_asiste
         form.descripcion = ticket.descripcion_solucion
         form.recibe = ticket.recibe
@@ -335,6 +330,22 @@ class TicketDetails extends Component {
             console.log(error, 'error')
         })
     }
+
+    patchTicket = async(type, value) => {
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        waitAlert()
+        await axios.patch(`${URL_DEV}v3/calidad/tickets/${ticket.id}`, { type: type, value: value }, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Ticket actualizado con éxito')
+                this.getOneTicketAxios(ticket.id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     setOptionsEstatus = (arreglo) => {
         let aux = []
         arreglo.forEach((element) => {
@@ -362,7 +373,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    () => { this.addTipoTrabajo() },
+                    () => { this.patchTicket('tipo_trabajo', form.tipo_trabajo) },
                     () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
                 )
                 break;
@@ -388,19 +399,6 @@ class TicketDetails extends Component {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
-    }
-    addTipoTrabajo = async() => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/calidad/tickets/`, form , { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El tipo de trabajo fue agregado con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
     }
     clearForm = () => {
         const { form } = this.state
@@ -653,13 +651,7 @@ class TicketDetails extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TicketDetails);
