@@ -49,7 +49,8 @@ class InputGray extends Component {
     }
     
     render() {
-        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, withformgroup, swal, value, ...props } = this.props
+        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, 
+                withplaceholder, customdiv, withformgroup, swal, value, iconvalid, ...props } = this.props
         const { inputValido, valor } =  this.state
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
@@ -81,11 +82,13 @@ class InputGray extends Component {
                     }
                     
                     <Form.Control placeholder = { withplaceholder ? placeholder :'' } style = { customstyle }
-                        className = {`form-control text-dark-50 font-weight-bold text-justify ${customclass}` }
+                        className = {`form-control text-dark-50 font-weight-bold text-justify ${customclass} ${inputValido ? 'is-valid sin_icono' : `is-invalid ${iconvalid?'':'sin_icono'}`}`}
                         onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}
                         value = { swal === true ? valor : value } {...props} />
                 </div>
-                <span className={ inputValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }> {messageinc} </span>
+                {
+                    iconvalid? '': <span className={`${inputValido ? 'form-text text-danger hidden' :'form-text text-danger is-invalid'}`}>{messageinc}</span>
+                }
             </div>
         )
     }

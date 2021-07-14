@@ -1,19 +1,13 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, Calendar, SelectSearchSinText } from '../../form-components'
+import { InputGray, Button, CalendarDay, SelectSearchGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { DATE } from '../../../constants'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 class PresupuestoForm extends Component {
 
     updateProyecto = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'proyecto' } })
-    }
-
-    handleChangeDate = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fecha' } })
     }
 
     updateEmpresa = value => {
@@ -91,13 +85,37 @@ class PresupuestoForm extends Component {
         })
         return aux
     }
-
+    getPartida = (key, conceptos) => {
+        if(key === 0)
+            return true
+        if(conceptos[key].subpartida.partida.id !== conceptos[key-1].subpartida.partida.id)
+            return true
+        return false
+    }
+    getSubpartida = (key, conceptos) => {
+        if(key === 0)
+            return true
+        if(conceptos[key].subpartida.id !== conceptos[key-1].subpartida.id)
+            return true
+        return false
+    }
+    getPartidaClave = clave => {
+        let aux = clave.split('.')
+        if(aux.length)
+            return aux[0]
+    }
+    getSubpartidaClave = clave => {
+        let aux = clave.split('.')
+        if(aux.length)
+            return aux[1]
+    }
     render() {
-        const { options, form, onChange, onSubmit, formeditado, data, checkButton } = this.props
+        const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad } = this.props
+        // console.log(data, 'data')
         return (
             <div className="row">
                 <div className="col-lg-12">
-                    <div className="flex-row-fluid ml-lg-8">
+                    <div className="flex-row-fluid">
                         <div className="d-flex flex-column flex-grow-1">
                             <div className="row">
                                 <div className="col-xl-6">
@@ -120,7 +138,7 @@ class PresupuestoForm extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column mr-2 py-2 d-flex justify-content-end ">
-                                                <SelectSearchSinText
+                                                <SelectSearchGray
                                                     formeditado={formeditado}
                                                     options={options.partidas}
                                                     placeholder="SELECCIONA LA PARTIDA"
@@ -128,6 +146,12 @@ class PresupuestoForm extends Component {
                                                     value={form.partida}
                                                     onChange={this.updatePartida}
                                                     customstyle={{ width: "250px" }}
+                                                    withtaglabel={0}
+                                                    withtextlabel={0}
+                                                    withicon={1}
+                                                    customclass="form-control-sm"
+                                                    customdiv="mb-0"
+                                                    iconvalid={1}
                                                 />
                                             </div>
                                         </div>
@@ -139,7 +163,7 @@ class PresupuestoForm extends Component {
                                                             <div className="d-flex align-items-start list-item card-spacer-x  pb-3" data-inbox="message">
                                                                 <div className="d-flex align-items-center col-1">
                                                                 </div>
-                                                                <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                <div className="flex-grow-1 col-1 pl-0 white-space-nowrap" data-toggle="view">
                                                                     <div className="font-weight-bold font-size-lg text-center">CLAVE</div>
                                                                 </div>
                                                                 <div className="flex-grow-1 col-6 p-0" data-toggle="view">
@@ -153,14 +177,13 @@ class PresupuestoForm extends Component {
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                         <div className="list list-hover min-w-500px" data-inbox="list">
                                                             {
                                                                 data.subpartidas.map((subpartida, key) => {
                                                                     return (
                                                                         <div key={key}>
-                                                                            <div className="d-flex align-items-center bg-primary-o-20">
-                                                                                <div className="ml-4 font-weight-bolder text-primary font-size-lg mb-1 py-2">{subpartida.nombre}</div>
+                                                                            <div className="d-flex align-items-center bg-light">
+                                                                                <div className="ml-6 font-weight-bolder text-primary font-size-lg py-2">{subpartida.nombre}</div>
                                                                             </div>
                                                                             {
                                                                                 subpartida.conceptos.map((concepto, key) => {
@@ -180,7 +203,7 @@ class PresupuestoForm extends Component {
                                                                                                     </label>
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                                            <div className="flex-grow-1 col-1 pl-0 white-space-nowrap" data-toggle="view">
                                                                                                 <div className="font-size-xs font-weight-bold">
                                                                                                     {concepto.clave}
                                                                                                 </div>
@@ -225,12 +248,12 @@ class PresupuestoForm extends Component {
                                                 </div>
                                                 <div className="d-flex py-2">
                                                     <Button
-                                                        type="button"
-                                                        className="btn btn-light-primary font-weight-bold mr-2"
-                                                        onClick={() => { this.mostrarFormulario() }}
-                                                        tooltip={{ text: 'Mostrar formulario' }}
-                                                        text={"SIGUIENTE"}
                                                         icon=''
+                                                        className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
+                                                        onClick={() => { this.mostrarFormulario() }}
+                                                        only_icon = "las la-clipboard-list icon-lg mr-3 px-0"
+                                                        type="button"
+                                                        text="LLENAR FORMULARIO"
                                                     />
                                                 </div>
                                                 <Form id="form-presupuesto"
@@ -242,58 +265,82 @@ class PresupuestoForm extends Component {
                                                     }
                                                 >
                                                     <div className="col-md-12">
-                                                        <div className="form-group row form-group-marginless pt-4">
-                                                            <div className="col-md-6">
-                                                                <SelectSearch
-                                                                    formeditado={formeditado}
-                                                                    options={options.proyectos}
-                                                                    placeholder="SELECCIONA EL PROYECTO"
-                                                                    name="proyecto"
-                                                                    value={form.proyecto}
-                                                                    onChange={this.updateProyecto}
-                                                                    iconclass={"far fa-folder-open"}
-                                                                    messageinc="Incorrecto. Selecciona el proyecto"
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <SelectSearch
-                                                                    formeditado={formeditado}
-                                                                    options={options.areas}
-                                                                    placeholder="SELECCIONA EL ÁREA"
-                                                                    name="areas"
-                                                                    value={form.area}
-                                                                    onChange={this.updateArea}
-                                                                    iconclass={"far fa-window-maximize"}
-                                                                    messageinc="Incorrecto. Selecciona el área"
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
-                                                            <div className="col-md-6">
-                                                                {
-                                                                    form.facturaObject ?
-                                                                        <Input
-                                                                            placeholder="EMPRESA"
-                                                                            name="empresa"
-                                                                            readOnly
-                                                                            value={form.empresa}
-                                                                            onChange={onChange}
-                                                                            iconclass={"far fa-building"}
-                                                                        />
-                                                                        :
-                                                                        <SelectSearch
+                                                        <div className="form-group row form-group-marginless pt-4 justify-content-center">
+                                                            {
+                                                                !showFormCalidad?
+                                                                <>
+                                                                    <div className="col-md-6">
+                                                                        <SelectSearchGray
                                                                             formeditado={formeditado}
-                                                                            options={options.empresas}
-                                                                            placeholder="SELECCIONA LA EMPRESA"
-                                                                            name="empresas"
-                                                                            value={form.empresa}
-                                                                            onChange={this.updateEmpresa}
-                                                                            iconclass={"far fa-building"}
-                                                                            messageinc="Incorrecto. Selecciona la empresa"
+                                                                            options={options.proyectos}
+                                                                            placeholder="SELECCIONA EL PROYECTO"
+                                                                            name="proyecto"
+                                                                            value={form.proyecto}
+                                                                            onChange={this.updateProyecto}
+                                                                            iconclass="las la-swatchbook icon-2x"
+                                                                            customdiv="mb-0"
+                                                                            iconvalid={1}
+                                                                            withtaglabel={1}
+                                                                            withtextlabel={1}
+                                                                            withicon={1}
                                                                         />
-                                                                }
-                                                            </div>
+                                                                    </div>
+                                                                    <div className="col-md-6">
+                                                                        {
+                                                                            form.facturaObject ?
+                                                                                <InputGray
+                                                                                    placeholder="EMPRESA"
+                                                                                    name="empresa"
+                                                                                    readOnly
+                                                                                    value={form.empresa}
+                                                                                    onChange={onChange}
+                                                                                    iconclass="las la-building icon-xl"
+                                                                                    withtaglabel={1}
+                                                                                    withtextlabel={1}
+                                                                                    withplaceholder={1}
+                                                                                    withicon={1}
+                                                                                    withformgroup={1}
+                                                                                    requirevalidation={1}
+                                                                                />
+                                                                                :
+                                                                                <SelectSearchGray
+                                                                                    formeditado={formeditado}
+                                                                                    options={options.empresas}
+                                                                                    placeholder="SELECCIONA LA EMPRESA"
+                                                                                    name="empresas"
+                                                                                    value={form.empresa}
+                                                                                    onChange={this.updateEmpresa}
+                                                                                    iconclass="las la-building icon-xl"
+                                                                                    customdiv="mb-0"
+                                                                                    iconvalid={1}
+                                                                                    withtaglabel={1}
+                                                                                    withtextlabel={1}
+                                                                                    withicon={1}
+                                                                                />
+                                                                        }
+                                                                    </div>
+                                                                    <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
+                                                                    <div className="col-md-6">
+                                                                        <SelectSearchGray
+                                                                            formeditado={formeditado}
+                                                                            options={options.areas}
+                                                                            placeholder="SELECCIONA EL ÁREA"
+                                                                            name="areas"
+                                                                            value={form.area}
+                                                                            onChange={this.updateArea}
+                                                                            iconclass="las la-toolbox icon-xl"
+                                                                            customdiv="mb-0"
+                                                                            iconvalid={1}
+                                                                            withtaglabel={1}
+                                                                            withtextlabel={1}
+                                                                            withicon={1}
+                                                                        />
+                                                                    </div>
+                                                                </>
+                                                                :''
+                                                            }
                                                             <div className="col-md-6">
-                                                                <Input
+                                                                <InputGray
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
                                                                     placeholder="TIEMPO DE EJECUCIÓN"
@@ -301,35 +348,42 @@ class PresupuestoForm extends Component {
                                                                     name="tiempo_ejecucion"
                                                                     onChange={onChange}
                                                                     iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                                                    messageinc="Incorrecto. Ingresa un tiempo de ejecución."
+                                                                    customdiv="mb-0"
+                                                                    iconvalid={1}
+                                                                    withtaglabel={1}
+                                                                    withtextlabel={1}
+                                                                    withicon={1}
                                                                 />
                                                             </div>
                                                             <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
-                                                            <div className="col-md-6">
-                                                                <Calendar
-                                                                    formeditado={formeditado}
-                                                                    onChangeCalendar={this.handleChangeDate}
-                                                                    placeholder="FECHA"
-                                                                    name="fecha"
+                                                            <div className="col-md-12 text-center align-self-center mt-5">
+                                                                <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                                    <label className="text-center font-weight-bolder">Fecha del presupuesto</label>
+                                                                </div>
+                                                                <CalendarDay
                                                                     value={form.fecha}
-                                                                    patterns={DATE}
+                                                                    date={form.fecha}
+                                                                    onChange={onChange}
+                                                                    name='fecha'
+                                                                    withformgroup={0}
+                                                                    requirevalidation={1}
                                                                 />
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="card-footer py-3 pr-1">
-                                                        <div className="row mx-0">
-                                                            <div className="col-lg-12 text-right pr-0 pb-0">
-                                                                <Button icon=''
-                                                                    onClick={
-                                                                        (e) => {
-                                                                            e.preventDefault();
-                                                                            validateAlert(onSubmit, e, 'form-presupuesto')
-                                                                        }
+                                                    <div className="card-footer px-0 pt-4">
+                                                        <div className="col-lg-12 text-right px-0">
+                                                            <Button icon=''
+                                                                onClick={
+                                                                    (e) => {
+                                                                        e.preventDefault();
+                                                                        validateAlert(onSubmit, e, 'form-presupuesto')
                                                                     }
-                                                                    className="btn btn-primary mr-2" text='ENVIAR Y CONTINUAR'
-                                                                />
-                                                            </div>
+                                                                }
+                                                                className="btn btn-sm btn-light-primary font-weight-bolder btn-hover-bg-light text-hover-primary font-size-13px"
+                                                                text='ENVIAR Y CONTINUAR'
+                                                                only_icon="las la-arrow-right icon-lg mr-2 px-0"
+                                                            />
                                                         </div>
                                                     </div>
                                                 </Form>
@@ -337,11 +391,11 @@ class PresupuestoForm extends Component {
                                             <div className="table-responsive">
                                                 {
                                                     form.partida ?
-                                                        <div className="list min-w-500px" data-inbox="list">
+                                                        <div className="list min-w-500px mb-2" data-inbox="list">
                                                             <div className="d-flex align-items-start list-item card-spacer-x pt-4" data-inbox="message">
                                                                 <div className="d-flex align-items-center col-1">
                                                                 </div>
-                                                                <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                <div className="flex-grow-1 col-1 pl-0 white-space-nowrap" data-toggle="view">
                                                                     <div className="font-weight-bold font-size-lg text-center">CLAVE</div>
                                                                 </div>
                                                                 <div className="flex-grow-1 col-6 p-0" data-toggle="view">
@@ -366,6 +420,52 @@ class PresupuestoForm extends Component {
                                                                         subpartida.conceptos.map((concepto, key3) => {
                                                                             if (form.conceptos[concepto.clave]) {
                                                                                 return (
+                                                                                    <React.Fragment key={key3}>
+                                                                                    {
+                                                                                        this.getPartida(key3, subpartida.conceptos)?
+                                                                                        <div className="bg-light text-primary font-size-lg font-weight-bolder border-0 card-spacer-x py-2">
+                                                                                            <b className="font-weight-boldest text-primary font-size-h6">
+                                                                                            {
+                                                                                                this.getPartidaClave(concepto.clave)
+                                                                                            }.
+                                                                                            </b>
+                                                                                            &nbsp;&nbsp; 
+                                                                                                {
+                                                                                                    concepto ? 
+                                                                                                        concepto.subpartida ?
+                                                                                                            concepto.subpartida.partida ?
+                                                                                                                concepto.subpartida.partida.nombre
+                                                                                                            : ''
+                                                                                                        : ''
+                                                                                                    : ''
+                                                                                                }
+                                                                                        </div>
+                                                                                        :''
+                                                                                    }
+                                                                                    {/* {
+                                                                                        this.getSubpartida(key3, subpartida.conceptos )?
+                                                                                        <div className="font-size-lg font-weight-bolder">
+                                                                                                <b  className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
+                                                                                                {
+                                                                                                    this.getPartidaClave(concepto.clave)
+                                                                                                }
+                                                                                                .
+                                                                                                {
+                                                                                                    this.getSubpartidaClave(concepto.clave)
+                                                                                                }
+                                                                                                </b>
+                                                                                                &nbsp;
+                                                                                                {
+                                                                                                    concepto ? 
+                                                                                                        concepto.subpartida ?
+                                                                                                            concepto.subpartida.nombre
+                                                                                                        : ''
+                                                                                                    : ''
+                                                                                                }
+                                                                                        </div>
+                                                                                    :
+                                                                                        ''
+                                                                                    } */}
                                                                                     <div key={concepto.clave} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
                                                                                         <div className="d-flex align-items-center col-1">
                                                                                             <div className="d-flex align-items-center" data-inbox="actions">
@@ -381,7 +481,7 @@ class PresupuestoForm extends Component {
                                                                                                 </label>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                                        <div className="flex-grow-1 col-1 pl-0 white-space-nowrap" data-toggle="view">
                                                                                             <div className="font-size-xs font-weight-bold">
                                                                                                 {concepto.clave}
                                                                                             </div>
@@ -402,6 +502,7 @@ class PresupuestoForm extends Component {
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
+                                                                                    </React.Fragment>
                                                                                 )
                                                                             }
                                                                             return false

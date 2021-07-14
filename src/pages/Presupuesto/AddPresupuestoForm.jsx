@@ -10,11 +10,6 @@ import { PresupuestoForm } from "../../components/forms"
 class AddPresupuestoForm extends Component {
     state = {
         formeditado: 0,
-        modal: {
-            form: false,
-            delete: false,
-            adjuntos: false,
-        },
         title: "Nuevo presupuesto",
         form: {
             proyecto: "",
@@ -108,7 +103,7 @@ class AddPresupuestoForm extends Component {
         await axios.post(URL_DEV + 'presupuestos', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { presupuesto } = response.data
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue registrado con éxito.')
                 const { history } = this.props
                 history.push({
                     pathname: '/presupuesto/presupuesto/update',
