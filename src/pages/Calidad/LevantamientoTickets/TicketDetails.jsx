@@ -69,6 +69,7 @@ class TicketDetails extends Component {
             subpartidas: [],
             conceptos: []
         },
+        presupuesto: ''
     }
     componentDidMount() {
         const { location: { state } } = this.props
@@ -534,6 +535,7 @@ class TicketDetails extends Component {
         waitAlert()
         this.addPresupuestosAxios()
     }
+    
     addPresupuestosAxios = async() => {
         const { access_token } = this.props.authUser
         const { formPresupuesto, ticket } = this.state
@@ -555,31 +557,39 @@ class TicketDetails extends Component {
             console.log(error, 'error')
         })
     }
+
+    getPresupuestoAxios = async (id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { presupuesto } = response.data
+                this.setState({ ...this.state, presupuesto: presupuesto })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onClickVolumetrias = () => {
+        const { ticket } = this.state
+        if(ticket.presupuesto_id)
+            this.getPresupuestoAxios(ticket.presupuesto_id)
+    }
+
     render() {
-        const { ticket, form, options, modal, data, formPresupuesto, formeditado } = this.state
+        const { ticket, form, options, modal, data, formPresupuesto, formeditado, presupuesto } = this.state
         return (
             <Layout active={'calidad'}  {...this.props}>
-                <TicketView
-                    data = { ticket }
-                    form = { form }
-                    options = { options }
-                    handleChange = { this.handleChange }
-                    changeEstatus = { this.changeEstatus }
-                    onChange = { this.onChange }
-                    onSubmit = { this.onSubmit }
-                    generateEmail = { this.generateEmail }
-                    openModalWithInput = { this.openModalWithInput}
-                    deleteFile = { this.deleteFile }
-                    openModalMantenimiento = { this.openModalMantenimiento }
+                <TicketView data = { ticket } form = { form } options = { options } handleChange = { this.handleChange } changeEstatus = { this.changeEstatus }
+                    onChange = { this.onChange } onSubmit = { this.onSubmit } generateEmail = { this.generateEmail } deleteFile = { this.deleteFile }
+                    openModalWithInput = { this.openModalWithInput } openModalMantenimiento = { this.openModalMantenimiento }
                     /* ============== CONCEPTOS Y VOLUMETRIAS ============== */
-                    formeditado={formeditado}
-                    formPresupuesto={formPresupuesto}
-                    onChangePresupuesto={this.onChangePresupuesto}
-                    checkButton={this.checkButton}
-                    setOptions={this.setOptions}
-                    onSubmitPresupuesto={this.onSubmitPresupuesto}
-                    dataPresupuesto={data}
-                />
+                    formeditado = { formeditado } formPresupuesto = { formPresupuesto } onChangePresupuesto = { this.onChangePresupuesto }
+                    checkButton = { this.checkButton } setOptions = { this.setOptions } onSubmitPresupuesto = { this.onSubmitPresupuesto }
+                    dataPresupuesto = { data } onClickVolumetrias = { this.onClickVolumetrias } presupuesto = { presupuesto } />
                 <Modal size = "lg" title = 'Mantenimiento correctivo' show = { modal } handleClose = { this.handleCloseLevantamiento } customcontent = { true } contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <Tabs defaultActiveKey="formulario_mantenimiento" className="nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
                         <Tab eventKey="formulario_mantenimiento" title="Agregar mantenimiento">

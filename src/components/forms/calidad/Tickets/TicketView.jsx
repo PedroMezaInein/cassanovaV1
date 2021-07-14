@@ -26,7 +26,8 @@ class TicketView extends Component {
     render() {
 
         const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile, openModalWithInput, openModalMantenimiento,
-                formeditado, formPresupuesto, onChangePresupuesto, checkButton, setOptions, onSubmitPresupuesto, dataPresupuesto } = this.props
+                formeditado, formPresupuesto, onChangePresupuesto, checkButton, setOptions, onSubmitPresupuesto, dataPresupuesto, onClickVolumetrias,
+                presupuesto } = this.props
         return (
             <>
                 
@@ -180,14 +181,14 @@ class TicketView extends Component {
                                                     }
                                                     {
                                                         data.estatus_ticket.estatus !== 'Rechazado' ?
-                                                        <Nav.Item>
-                                                            <Nav.Link eventKey="presupuesto">
-                                                                <span className="nav-icon">
-                                                                    <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
-                                                                </span>
-                                                                <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
-                                                            </Nav.Link>
-                                                        </Nav.Item>
+                                                            <Nav.Item onClick = { onClickVolumetrias } >
+                                                                <Nav.Link eventKey="presupuesto">
+                                                                    <span className="nav-icon">
+                                                                        <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
+                                                                    </span>
+                                                                    <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
                                                         :<></>
                                                     }
                                                 </Nav>
@@ -212,17 +213,25 @@ class TicketView extends Component {
                                             </Row>
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="presupuesto">
-                                            <PresupuestoForm
-                                                formeditado={formeditado}
-                                                form={formPresupuesto}
-                                                onChange={onChangePresupuesto}
-                                                checkButton={checkButton}
-                                                options={options}
-                                                setOptions={setOptions}
-                                                onSubmit={onSubmitPresupuesto}
-                                                data={dataPresupuesto}
-                                                showFormCalidad={true}
-                                            />
+                                            {
+                                                presupuesto === '' ?
+                                                    <PresupuestoForm formeditado = { formeditado } form = { formPresupuesto } onChange = { onChangePresupuesto }
+                                                        checkButton = { checkButton } options = { options } setOptions = { setOptions } 
+                                                        onSubmit = { onSubmitPresupuesto } data = { dataPresupuesto } showFormCalidad = { true } />
+                                                : 
+                                                    <Card className="card-custom gutter-b card-stretch">
+                                                        <Card.Header>
+                                                            <Card.Title className="mb-0">
+                                                                <div className="font-weight-bolder font-size-h5">
+                                                                    CONCEPTOS Y VOLUMETRÍAS
+                                                                </div>
+                                                            </Card.Title>
+                                                        </Card.Header>
+                                                        <Card.Body className="p-9 pt-3">
+                                                            
+                                                        </Card.Body>
+                                                    </Card>
+                                            }
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </Tab.Container>
