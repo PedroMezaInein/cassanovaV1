@@ -189,7 +189,7 @@ class ActualizarPresupuestoForm extends Component {
                                 <h3 className="card-label">Presupuesto Preliminar</h3>
                             </div>
                             <div className="card-toolbar" >
-                                <button className="btn btn-sm btn-light-primary font-weight-bold" onClick={openModal}>
+                                <button type="button" className="btn btn-sm btn-light-info font-weight-bolder font-size-13px" onClick={openModal}>
                                     AGREGAR CONCEPTO
                                 </button>
                             </div>                    
@@ -277,8 +277,14 @@ class ActualizarPresupuestoForm extends Component {
                                                             this.getSubpartida(key)?
                                                                 <tr>
                                                                     <td colSpan={9} className="font-size-lg font-weight-bolder">
-                                                                        <b  className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
-                                                                            { this.getPartidaClave(concepto.concepto.clave) } . { this.getSubpartidaClave(concepto.concepto.clave) }
+                                                                        <b  className="font-size-h6 label label-light-info label-pill label-inline mr-2 font-weight-bolder label-rounded">
+                                                                        {
+                                                                            this.getPartidaClave(concepto.concepto.clave)
+                                                                        }
+                                                                        .
+                                                                        {
+                                                                            this.getSubpartidaClave(concepto.concepto.clave)
+                                                                        }
                                                                         </b>
                                                                         &nbsp;
                                                                         {
