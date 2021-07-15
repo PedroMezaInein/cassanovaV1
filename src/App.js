@@ -68,6 +68,7 @@ const ActualizarPresupuesto = React.lazy(() => import('./pages/Presupuesto/Actua
 const UltimoPresupuesto = React.lazy(() => import('./pages/Presupuesto/UltimoPresupuesto') )
 const PresupuestoDiseño = React.lazy(() => import('./pages/Presupuesto/PresupuestoDiseño/PresupuestoDiseño') )
 const PresupuestoDiseñoForm = React.lazy(() => import('./pages/Presupuesto/PresupuestoDiseño/PresupuestoDiseñoForm') )
+const PresupuestosEnviados = React.lazy(() => import('./pages/Presupuesto/PresupuestosEnviados/PresupuestosEnviados') )
 
 const Ingresos = React.lazy(() => import('./pages/Administracion/Ingresos/Ingresos') )
 const IngresosForm = React.lazy(() => import('./pages/Administracion/Ingresos/IngresosForm') )
@@ -319,7 +320,8 @@ class App extends Component{
                     <Route path = "/presupuesto/presupuesto/finish" exact component ={ UltimoPresupuesto } />
 
                     <Route path = "/presupuesto/presupuesto-diseño" exact component ={ PresupuestoDiseño } />  
-                    <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />            
+                    <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />   
+                    <Route path = "/presupuesto/presupuestos-enviados" exact component = {PresupuestosEnviados} />    
 
                     {/*  ANCHOR Routes for proyectos */}
 

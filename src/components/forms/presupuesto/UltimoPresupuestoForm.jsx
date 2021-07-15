@@ -7,7 +7,7 @@ import Moment from 'react-moment'
 import { DATE } from '../../../constants'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
-class ActualizarPresupuestoForm extends Component {
+class UltimoPresupuesto extends Component {
     
     state = {
         margen: 0,
@@ -478,4 +478,4 @@ class ActualizarPresupuestoForm extends Component {
     }
 }
 
-export default ActualizarPresupuestoForm
+export default UltimoPresupuesto
