@@ -65,7 +65,7 @@ class AgregarConcepto extends Component {
                 <Tabs defaultActiveKey="nuevo" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={activeKey} onSelect={onSelect}>
                     <Tab eventKey="nuevo" title="Nuevo concepto">
                         <div className="form-group row form-group-marginless pt-4">
-                            <div className={form.partida.length ?'col-md-4':'col-md-6'}>
+                            <div className={form.partida !== '' ?'col-md-4':'col-md-6'}>
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.partidas}
@@ -79,7 +79,7 @@ class AgregarConcepto extends Component {
                             </div>
                             {
                                 form.partida ?
-                                    <div className={form.partida.length ?'col-md-4':'col-md-6'}>
+                                    <div className={form.partida !== '' ?'col-md-4':'col-md-6'}>
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.subpartidas}
@@ -93,7 +93,7 @@ class AgregarConcepto extends Component {
                                     </div>
                                 :''
                             }
-                            <div className={form.partida.length ?'col-md-4':'col-md-6'}>
+                            <div className={form.partida !== '' ?'col-md-4':'col-md-6'}>
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.unidades}
@@ -165,7 +165,7 @@ class AgregarConcepto extends Component {
                     </Tab>
                     <Tab eventKey="existente" title="Concepto existente">
                         <div className="form-group row form-group-marginless pt-4">
-                            <div className={form.partida.length ?'col-md-6':'col-md-12'}>
+                            <div className={form.partida !== '' ?'col-md-6':'col-md-12'}>
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.partidas}
@@ -179,7 +179,7 @@ class AgregarConcepto extends Component {
                             </div>
                             {
                                 form.partida ?
-                                    <div className={form.partida.length ?'col-md-6':'col-md-12'}>
+                                    <div className={form.partida !== '' ?'col-md-6':'col-md-12'}>
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.subpartidas}
