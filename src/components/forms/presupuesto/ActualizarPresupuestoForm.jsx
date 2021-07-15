@@ -12,10 +12,9 @@ class ActualizarPresupuestoForm extends Component {
     getTotalImport = () => {
         const { form } = this.props
         let aux = parseFloat(0);
-        form.conceptos.map( (concepto) => {
+        form.conceptos.forEach( (concepto) => {
             if(concepto.active)
                 aux = aux + parseFloat(concepto.importe)
-            return false
         })
         return aux.toFixed(2)
     }
@@ -34,13 +33,12 @@ class ActualizarPresupuestoForm extends Component {
         const { value } = e.target
         const { form, onChange } = this.props
         if(value)
-            form.conceptos.map( (concepto, key) => {
+            form.conceptos.forEach( (concepto, key) => {
                 if(concepto.active)
                     if(!(concepto.unidad === 'VIAJE' || concepto.unidad === 'SAL' || concepto.unidad === 'PZA' || concepto.unidad === 'LOTE'
                         || concepto.unidad === 'JGO' || concepto.unidad === 'EQUIPO' || concepto.unidad === 'BULTO')){
                         onChange(key, e, 'desperdicio')
                     }
-                return false
             })
         this.setState({
             ...this.state,
@@ -79,17 +77,16 @@ class ActualizarPresupuestoForm extends Component {
     getIdentificador = () => {
         const { presupuesto } = this.props
         let identificador = 100
-        presupuesto.pdfs.map( (pdf, key) => {
+        presupuesto.pdfs.forEach( (pdf, key) => {
             if( pdf.pivot.identificador >  identificador)
                 identificador = pdf.pivot.identificador
-            return false
         })
         identificador++
         return identificador.toString()
     }
 
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad} = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children } = this.props
         // console.log(presupuesto, '')
         const { desperdicio } = this.state
         if (presupuesto)
@@ -189,6 +186,7 @@ class ActualizarPresupuestoForm extends Component {
                                 <h3 className="card-label">Presupuesto Preliminar</h3>
                             </div>
                             <div className="card-toolbar" >
+                                {children}
                                 <button type="button" className="btn btn-sm btn-light-info font-weight-bolder font-size-13px" onClick={openModal}>
                                     AGREGAR CONCEPTO
                                 </button>

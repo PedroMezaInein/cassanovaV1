@@ -664,6 +664,7 @@ export function forbiddenAccessAlert() {
 
 export function validateAlert(success, e, name) {
     var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid");
+    console.log(elementsInvalid, 'elementsInvalid')
     if (elementsInvalid.length === 0) {
         success(e)
     } else {

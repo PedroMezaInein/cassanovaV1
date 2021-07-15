@@ -5,7 +5,7 @@ import { URL_DEV, S3_CONFIG } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { TicketView, AgregarConcepto } from '../../../components/forms'
+import { TicketView2, AgregarConcepto } from '../../../components/forms'
 import { Form, Tabs, Tab } from 'react-bootstrap'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 import { Modal } from '../../../components/singles'
@@ -30,10 +30,26 @@ class TicketDetails extends Component {
                 motivo: '',
                 costo: 0.0,
                 tipo_trabajo:''
+            },
+            preeliminar: {
+                conceptos: [{
+                    unidad: '',
+                    descipcion: '',
+                    costo: '',
+                    cantidad_preliminar: '',
+                    desperdicio: '',
+                    active: true,
+                    cantidad: 0,
+                    importe: 0,
+                    id: '',
+                    mensajes: { active: false, mensaje: '' }
+                }],
+                conceptosNuevos: []
             }
         },
-        data: { partidas: [] },
-        ticket: ''
+        data: { partidas: [],subpartidas: [], conceptos: [] },
+        ticket: '',
+        presupuesto: ''
     }
 
     componentDidMount() {
@@ -183,6 +199,81 @@ class TicketDetails extends Component {
         })
     }
 
+    getPresupuestoAxios = async (id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { presupuesto } = response.data
+                const { formularios } = this.state
+                let aux = []
+                presupuesto.conceptos.forEach((concepto) => {
+                    aux.push({
+                        active: concepto.active,
+                        descripcion: concepto.descripcion,
+                        cantidad_preliminar: concepto.cantidad_preliminar,
+                        desperdicio: concepto.desperdicio,
+                        cantidad: concepto.cantidad,
+                        mensajes: {
+                            active: concepto.mensaje ? true : false,
+                            mensaje: concepto.mensaje
+                        },
+                        id: concepto.id,
+                        costo: concepto.costo,
+                        importe: concepto.importe
+                    })
+                })
+                formularios.preeliminar.conceptos = aux
+                this.setState({ ...this.state, presupuesto: presupuesto, formularios })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    addPresupuestosAxios = async() => {
+        const { access_token } = this.props.authUser
+        const { formularios, ticket } = this.state
+        if(ticket.proyecto){
+            formularios.presupuesto.proyecto = ticket.proyecto.id
+            if(ticket.proyecto.empresa)
+                formularios.presupuesto.empresa = ticket.proyecto.empresa.id
+        }
+        if(ticket.subarea){
+            formularios.presupuesto.area = ticket.subarea.area_id
+        }
+        await axios.post(`${URL_DEV}presupuestos`, formularios.presupuesto, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { presupuesto } = response.data
+                this.patchTicket('presupuesto', presupuesto.id)
+                this.getPresupuestoAxios(presupuesto.id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    updatePresupuestoAxios = async() => {
+        const { access_token } = this.props.authUser
+        const { formularios, presupuesto } = this.state
+        await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { presupuesto } = response.data
+                this.getPresupuestoAxios(presupuesto.id)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue modificado con éxito.')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR SETTERS                               */
     /* -------------------------------------------------------------------------- */
@@ -206,6 +297,18 @@ class TicketDetails extends Component {
         });
         return aux
     }
+
+    setOptions = (name, array) => {
+        const { options } = this.state;
+        options[name] = setOptions(array, "nombre", "id");
+        this.setState({ ...this.state, options });
+    };
+
+    setData = (value) => {
+        let { data } = this.state;
+        data = value
+        this.setState({ ...this.state, data });
+    };
 
     /* -------------------------------------------------------------------------- */
     /*                                ANCHOR MODALS                               */
@@ -272,16 +375,48 @@ class TicketDetails extends Component {
             default: break;
         }
     }
+
+    onSubmit = type => {
+        waitAlert()
+        switch(type){
+            case 'presupuesto':
+                this.addPresupuestosAxios()
+                break;
+            case 'preeliminar':
+                this.updatePresupuestoAxios()
+                break;
+        }
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                               ANCHOR ONCLICK                               */
+    /* -------------------------------------------------------------------------- */
+    
+    onClickVolumetrias = () => {
+        const { ticket } = this.state
+        if(ticket.presupuesto_id)
+            this.getPresupuestoAxios(ticket.presupuesto_id)
+    }
+
+    onClick = (type) => {
+        switch(type){
+            case 'volumetrias':
+                this.onClickVolumetrias()
+                break;
+        }
+    }
     
     render() {
-        const { ticket, options } = this.state
+        const { ticket, options, formularios, presupuesto, data } = this.state
         return (
             <Layout active = 'calidad'  {...this.props}>
-                <TicketView 
+                <TicketView2
                     /* ---------------------------------- DATOS --------------------------------- */
-                    data = { ticket } options = { options } 
+                    data = { ticket } options = { options } formulario = { formularios } presupuesto = { presupuesto } datos = { data }
                     /* -------------------------------- FUNCIONES ------------------------------- */
-                    openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } />
+                    openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
+                    onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
+                    onSubmit = { this.onSubmit } />
             </Layout>
         )
     }
