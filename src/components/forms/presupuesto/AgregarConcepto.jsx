@@ -59,8 +59,8 @@ class AgregarConcepto extends Component {
                     }
                 }
             >
-                <Tabs defaultActiveKey="nuevo" className="nav nav-tabs nav-tabs-line font-weight-bolder mb-3 justify-content-center border-0 mt-5 nav-tabs-line-2x nav nav-tabs" activeKey={activeKey} onSelect={onSelect}>
-                    <Tab eventKey="nuevo" title="Nuevo concepto" className="px-5">
+                <Tabs defaultActiveKey="nuevo" className="nav nav-pills nav-pills-sm nav-light-info mb-3 justify-content-center mt-5 font-weight-bolder border-0" activeKey={activeKey} onSelect={onSelect}>
+                    <Tab eventKey="nuevo" title="Nuevo concepto" className="px-5 border-0">
                         <div className="form-group row form-group-marginless pt-4">
                             <div className='col-md-4'>
                                 <SelectSearchGray
@@ -168,7 +168,7 @@ class AgregarConcepto extends Component {
                                 />
                             </div>
                         </div>
-                        <div className="card-footer py-3 pr-1">
+                        <div className="card-footer py-3 px-0">
                             <div className="row mx-0">
                                 <div className="col-lg-12 text-right pr-0 pb-0">
                                     <Button icon=''
@@ -178,12 +178,13 @@ class AgregarConcepto extends Component {
                                                 validateAlert(onSubmit, e, 'form-presupuesto')
                                             }
                                         }
-                                        className="btn btn-primary mr-2" text='AGREGAR' />
+                                        className="btn btn-light-info font-weight-bolder" text='AGREGAR'
+                                    />
                                 </div>
                             </div>
                         </div>
                     </Tab>
-                    <Tab eventKey="existente" title="Concepto existente" className="px-5">
+                    <Tab eventKey="existente" title="Concepto existente" className="px-5 border-0">
                         <div className="form-group row form-group-marginless pt-4">
                             <div className='col-md-6'>
                                 <SelectSearchGray
@@ -297,7 +298,7 @@ class AgregarConcepto extends Component {
                                             }
                                         </div>
                                     </div>
-                                    <div className="card-footer py-3 px-1">
+                                    <div className="card-footer py-3 px-0">
                                         <div className="col-lg-12 text-right px-0">
                                             <Button icon=''
                                                 onClick={
@@ -306,7 +307,7 @@ class AgregarConcepto extends Component {
                                                         validateAlert(onSubmit, e, 'form-presupuesto')
                                                     }
                                                 }
-                                                className="btn btn-primary" text='AGREGAR'
+                                                className="btn btn-light-info font-weight-bolder" text='AGREGAR'
                                             />
                                         </div>
                                     </div>
