@@ -37,11 +37,8 @@ class TicketView extends Component {
                 }
                 return new Promise((resolve, reject) => {
                     imageCompression(file, options).then(function (compressedFile) {
-                        /* console.log(`===============`) */
                         compressedFile.lastModifiedDate = new Date()
                         compressedFile.path = compressedFile.name
-                        /* console.log(file, 'FILE')
-                        console.log(compressedFile, 'compressedFILE') */
                         resolve(compressedFile)
                     }).catch(function (error) {
                         console.log(reject(error));
@@ -50,14 +47,100 @@ class TicketView extends Component {
             })
             Promise.all(compressed).then( values => { addingFotos(values, data.id, data.proyecto_id) } ).catch(err => console.error(err))
         })
-        
+    }
+
+    checkButton = e => {
+        const { name, checked } = e.target
+        const { onChange, formulario } = this.props
+        let value = formulario.presupuesto.conceptos
+        value[name] = checked
+        onChange(value, 'conceptos', 'presupuesto')
+    }
+
+    checkButtonPreeliminar = (key, e) => {
+        const { name, checked } = e.target
+        const { formulario, onChange } = this.props
+        let valor = formulario.preeliminar.conceptos
+        valor[key][name] = checked ? 1 : 0
+        onChange(valor, 'conceptos', 'preeliminar')
+    }
+
+    onChangePresupuesto = (e) => {
+        const { name, value } = e.target;
+        const { datos, onChange, setData } = this.props
+        onChange(value, name, 'presupuesto')
+        switch (name) {
+            case 'partida':
+                datos.partidas.map((partida) => {
+                    datos.conceptos = []
+                    if (partida.id.toString() === value) {
+                        datos.subpartidas = partida.subpartidas
+                    }
+                    return false
+                })
+                break;
+            case 'subpartida':
+                datos.subpartidas.map((subpartida) => {
+                    if (subpartida.id.toString() === value) {
+                        datos.conceptos = subpartida.conceptos
+                    }
+                    return false
+                })
+                break;
+            default:
+                break;
+        }
+        setData(datos)
+    };
+
+    onChangePreeliminar = (key, e, name) => {
+        let { value } = e.target
+        const { formulario, onChange, presupuesto } = this.props
+        if (name === 'desperdicio') {
+            value = value.replace('%', '')
+        }
+        let valor = formulario.preeliminar.conceptos
+        valor[key][name] = value
+        let cantidad = valor[key].cantidad_preliminar * (1 + (valor[key].desperdicio / 100))
+        cantidad = cantidad.toFixed(2)
+        let importe = cantidad * valor[key].costo
+        importe = importe.toFixed(2)
+        valor[key].cantidad = cantidad
+        valor[key].importe = importe
+        if (name !== 'mensajes' && name !== 'desperdicio')
+            if (presupuesto.conceptos[key][name] !== valor[key][name]) {
+                valor[key].mensajes.active = true
+            } else {
+                valor[key].mensajes.active = false
+            }
+        if (name === 'desperdicio')
+            if (presupuesto.conceptos[key][name].toString() !== valor[key][name].toString()) {
+                valor[key].mensajes.active = true
+                valor[key].mensajes.mensaje = ('Actualización del desperdicio a un ' + value + '%').toUpperCase()
+            } else {
+                valor[key].mensajes.active = false
+                valor[key].mensajes.mensaje = ''
+            }
+        onChange(valor, 'conceptos', 'preeliminar')
+    }
+
+    calcularCantidades = () => {
+        const { presupuesto } = this.props
+        let suma = 0
+        presupuesto.conceptos.forEach((con) => {
+            if(con.active)
+                suma += con.cantidad
+        })
+        if(suma)
+            return true
+        return false
     }
 
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options } = this.props
+        const { data, options, formulario, presupuesto, datos } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
-        const { openModalWithInput, changeEstatus, onClickVolumetrias } = this.props
+        const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit } = this.props
         return (
             <div className="p-0">
                 {/* ------------------------ { ANCHOR TAB CONTAINER } ------------------------ */}
@@ -181,7 +264,7 @@ class TicketView extends Component {
                                                 </Nav.Item>
                                                 {
                                                     data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revision' ?
-                                                        <Nav.Item onClick = { onClickVolumetrias } >
+                                                        <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); } } >
                                                             <Nav.Link eventKey="presupuesto">
                                                                 <span className="nav-icon"> <i className="las la-file-invoice-dollar icon-lg mr-2" /> </span>
                                                                 <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
@@ -209,6 +292,28 @@ class TicketView extends Component {
                                                 </Card>
                                             </div>
                                         </div>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="presupuesto">
+                                        {
+                                            presupuesto === '' ?
+                                                <PresupuestoForm form = { formulario.presupuesto } options = { options } showFormCalidad = { true } 
+                                                    data = { datos } checkButton = { this.checkButton } onChange = { this.onChangePresupuesto } 
+                                                    setOptions = { setOptions } onSubmit = { (e) => { onSubmit('presupuesto') } } />
+                                            :
+                                                <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } 
+                                                    presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
+                                                    checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } >
+                                                    { 
+                                                        this.calcularCantidades() ?
+                                                            <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2" 
+                                                                onClick = { (e) => { e.preventDefault(); onClick('enviar_compras'); } } >
+                                                                ENVIAR A COMPRAS
+                                                            </button>    
+                                                        : <></>
+                                                    }
+                                                    
+                                                </ActualizarPresupuestoForm>
+                                        }
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>
