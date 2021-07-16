@@ -145,7 +145,7 @@ class TicketTable extends Component {
     changePageSee = calidad => {
         const { history } = this.props
         history.push({
-            pathname: '/calidad/tickets/detalles-ticket2',
+            pathname: '/calidad/tickets/detalles-ticket',
             state: { calidad: calidad },
             formeditado: 1
         });

@@ -179,7 +179,7 @@ const Vacaciones = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/V
 const TicketTable = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketTable') )
 const AddTicket = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/AddTicket') )
 const TicketDetails = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails') )
-const TicketDetails2 = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails2') )
+//const TicketDetails2 = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails2') )
 
 const CartasGarantia = React.lazy(() => import('./pages/Calidad/CartasGarantia/CartasGarantia') )
 
@@ -486,7 +486,7 @@ class App extends Component{
                     <Route path = "/calidad/tickets" exact component ={ TicketTable } />
                     <Route path = "/calidad/tickets/nuevo-ticket" exact component = { AddTicket } />
                     <Route path = "/calidad/tickets/detalles-ticket" exact component = { TicketDetails } />
-                    <Route path = "/calidad/tickets/detalles-ticket2" exact component = { TicketDetails2 } />
+                    {/* <Route path = "/calidad/tickets/detalles-ticket2" exact component = { TicketDetails2 } /> */}
 
                     <Route path = "/calidad/cartas-garantia" exact component = { CartasGarantia } />
 

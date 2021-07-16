@@ -135,7 +135,7 @@ class UltimoPresupuesto extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4">
                                                         <div className="d-flex align-items-center">
                                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                                 <div className="symbol-label">
@@ -143,8 +143,8 @@ class UltimoPresupuesto extends Component {
                                                                 </div>
                                                             </div>
                                                             <div className="font-size-h5 font-weight-bold">
-                                                                {dayDMY(presupuesto.created_at)}
-                                                                <div className="font-weight-normal font-size-lg text-muted">Creación</div>
+                                                                {dayDMY(presupuesto.fecha)}
+                                                                <div className="font-weight-normal font-size-lg text-muted">Fecha</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -157,19 +157,6 @@ class UltimoPresupuesto extends Component {
                                                             </div>
                                                             <div className="font-size-h5 font-weight-bold">
                                                                 No. {this.getIdentificador()}
-                                                                <div className="font-weight-normal font-size-lg text-muted">Presupuesto</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4">
-                                                        <div className="d-flex align-items-center">
-                                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                                <div className="symbol-label">
-                                                                    <i className="flaticon2-calendar-8 icon-xl text-primary"></i>
-                                                                </div>
-                                                            </div>
-                                                            <div className="font-size-h5 font-weight-bold">
-                                                                {dayDMY(presupuesto.created_at)}
                                                                 <div className="font-weight-normal font-size-lg text-muted">Presupuesto</div>
                                                             </div>
                                                         </div>
