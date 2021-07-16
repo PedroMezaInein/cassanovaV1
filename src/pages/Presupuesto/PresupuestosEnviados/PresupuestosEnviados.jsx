@@ -7,6 +7,8 @@ import { setOptions } from "../../../functions/setters"
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../../functions/alert"
 import Layout from "../../../components/layout/layout"
 import { UltimoPresupuestoForm } from "../../../components/forms"
+import FloatButtons from '../../../components/singles/FloatButtons'
+import { save, deleteForm } from '../../../redux/reducers/formulario'
 class PresupuestosEnviados extends Component {
     state = {
         formeditado: 0,
@@ -55,14 +57,14 @@ class PresupuestosEnviados extends Component {
             const { modulo: { url } } = element;
             return pathname === url + "/finish";
         });
-        // if (state) {
-        //     if (state.presupuesto) {
-        //         const { presupuesto } = state
-        //         this.getOnePresupuestoAxios(presupuesto.id);
-        //     }
-        // }
-        // if (!presupuesto) history.push("/");
-        // this.getOptionsAxios()
+        if (state) {
+            if (state.presupuesto) {
+                const { presupuesto } = state
+                this.getOnePresupuestoAxios(presupuesto.id);
+            }
+        }
+        if (!presupuesto) history.push("/");
+        this.getOptionsAxios()
     }
     async getOptionsAxios() {
         waitAlert()
@@ -221,10 +223,10 @@ class PresupuestosEnviados extends Component {
             form
         })
     }
-    onSubmit = e => {
+    generarPDF = e => {
         e.preventDefault()
         waitAlert()
-        this.updatePresupuestosAxios()
+        this.generarPDFAxios()
     }
     aceptarPresupuesto = e => {
         e.preventDefault()
@@ -304,7 +306,7 @@ class PresupuestosEnviados extends Component {
             console.log(error, 'error')
         })
     }
-    async updatePresupuestosAxios() {
+    async generarPDFAxios() {
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
         await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
@@ -322,6 +324,28 @@ class PresupuestosEnviados extends Component {
             console.log(error, 'error')
         })
     }
+    save = () => {
+        const { form } = this.state
+        const { save } = this.props
+        let auxObject = {}
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            auxObject[element] = form[element]
+            return false
+        })
+        save({
+            form: auxObject,
+            page: 'presupuesto/presupuesto/finish'
+        })
+    }
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        this.setState({
+            ...this.state,
+            form: formulario.form
+        })
+        deleteForm()
+    }
     onChangeInput = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -331,33 +355,69 @@ class PresupuestosEnviados extends Component {
             form
         })
     }
+    sendPresupuesto = e => {
+        e.preventDefault()
+        waitAlert()
+        this.sendPresupuestoAxios()
+    }
+    async sendPresupuestoAxios() {
+        // const { access_token } = this.props.authUser
+        // const { form, presupuesto } = this.state
+        // await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+        //     (response) => {
+        //         const { history } = this.props
+        //         history.push({
+        //             pathname: '/presupuesto/presupuesto'
+        //         });
+        //     },
+        //     (error) => {
+        //         printResponseErrorAlert(error)
+        //     }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.log(error, 'error')
+        // })
+    }
     render() {
         const { form, formeditado, presupuesto } = this.state;
+        const { formulario } = this.props
         return (
             <Layout active={"presupuesto"} {...this.props}>
-                sjja
-                {/* <UltimoPresupuestoForm
+                <UltimoPresupuestoForm
                     formeditado={formeditado}
                     form={form}
                     onChange={this.onChange}
                     checkButton={this.checkButton}
-                    onSubmit={this.onSubmit}
+                    onSubmit={this.generarPDF}
                     presupuesto={presupuesto}
                     {...this.props}
                     onChangeInput={this.onChangeInput}
-                    aceptarPresupuesto={this.aceptarPresupuesto}
-                />*/}
+                    // aceptarPresupuesto={this.aceptarPresupuesto}
+                    sendPresupuestoAxios={this.sendPresupuesto}
+                />
+                <FloatButtons
+                    save={this.save}
+                    recover={this.recover}
+                    formulario={formulario}
+                    descargar={() => this.generarPDFAxios()}
+                    url={'presupuesto/presupuesto/finish'}
+                    exportar={true}
+                />
             </Layout>
         );
     }
 }
+
 const mapStateToProps = state => {
     return {
         authUser: state.authUser,
+        formulario: state.formulario
     }
 }
 
 const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PresupuestosEnviados);

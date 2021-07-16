@@ -1,35 +1,12 @@
 import React, { Component } from 'react'
 import { Form, Card } from 'react-bootstrap'
-import { InputMoneySinText, InputNumberSinText, InputSinText, Button, Calendar } from '../../form-components'
+import { InputMoneySinText, InputNumberSinText, InputSinText, Button, InputGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { setMoneyTableForNominas } from '../../../functions/setters'
-import Moment from 'react-moment'
-import { DATE } from '../../../constants'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
+import { setMoneyTableForNominas, dayDMY } from '../../../functions/setters'
 class UltimoPresupuesto extends Component {
     
     state = {
-        margen: 0,
-        showFechas:false
-    }
-
-    mostrarFormulario() {
-        const { showFechas } = this.state
-        this.setState({
-            ...this.state,
-            showFechas: !showFechas
-        })
-    } 
-
-    handleChangeDateCreacion = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fecha_creacion' } })
-    }
-
-    handleChangeDateAceptado = date => {
-        const { onChangeInput } = this.props
-        onChangeInput({ target: { value: date, name: 'fecha_aceptacion' } })
+        margen: 0
     }
 
     getTotalImport = () => {
@@ -99,102 +76,105 @@ class UltimoPresupuesto extends Component {
     }
 
     render() {
-        const { aceptarPresupuesto, onChange, formeditado, checkButton, form, presupuesto, onSubmit, onChangeInput} = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, onChangeInput, sendPresupuesto, generarPDF } = this.props
         const { margen } = this.state
         if (presupuesto)
             return (
                 <>
                     < Card className="card-custom" >
                         <Card.Body className="p-0">
-                            <div className="table-responsive">
-                                <div className="list min-w-1000px" data-inbox="list">
-                                    <div className="col-md-12 d-flex justify-content-center align-items-center list-item card-spacer-x py-4" data-inbox="message">
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Bulb1.svg')} />
-                                                    </span>
+                        <div className="table-responsive">
+                                <div className="list min-w-1000px">
+                                    <div className="px-9 py-6">
+                                        <div>
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <div className="text-dark font-size-h4 font-weight-bold">
+                                                    {presupuesto.proyecto.nombre}
                                                 </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">{presupuesto.proyecto.nombre}</div>
-                                                <span className="text-muted">Proyecto</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Layout-top-panel-6.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">{presupuesto.area.nombre}</div>
-                                                <span className="text-muted">ÁREA</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">{presupuesto.empresa.name}</div>
-                                                <span className="text-muted">Empresa</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">{presupuesto.tiempo_ejecucion}</div>
-                                                <span className="text-muted">Tiempo de ejecución</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">
-                                                    <Moment format="DD/MM/YYYY">
-                                                        {presupuesto.fecha}
-                                                    </Moment>
-                                                </div>
-                                                <span className="text-muted">Fecha</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2 d-flex align-items-center justify-content-center">
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">
-                                                    No. {
-                                                        this.getIdentificador()
+                                                <div>
+                                                    {
+                                                        presupuesto.empresa ?
+                                                            presupuesto.empresa.isotipos ?
+                                                                presupuesto.empresa.isotipos.length > 0 ?
+                                                                    presupuesto.empresa.isotipos.map((isotipo, key) => {
+                                                                        return (
+                                                                            <img alt="Pic" src={isotipo.url} style={{ height: '55px' }} key={key} />
+                                                                        )
+                                                                    })
+                                                                    : ''
+                                                                : ''
+                                                            : ''
                                                     }
                                                 </div>
-                                                <span className="text-muted">                                                    
-                                                    PRESUPUESTO
-                                                </span>
+                                            </div>
+                                            <div>
+                                                <div className="d-flex flex-wrap justify-content-center">
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="las la-toolbox icon-2x text-primary"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                {presupuesto.area.nombre}
+                                                                <div className="font-weight-normal font-size-lg text-muted">ÁREA</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="flaticon-calendar-with-a-clock-time-tools icon-xl text-info"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                {presupuesto.tiempo_ejecucion}
+                                                                <div className="font-weight-normal font-size-lg text-muted">Tpo. de ejecución</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="flaticon2-calendar-8 icon-xl text-primary"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                {dayDMY(presupuesto.created_at)}
+                                                                <div className="font-weight-normal font-size-lg text-muted">Creación</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="las la-file-invoice-dollar icon-2x text-info"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                No. {this.getIdentificador()}
+                                                                <div className="font-weight-normal font-size-lg text-muted">Presupuesto</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <i className="flaticon2-calendar-8 icon-xl text-primary"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div className="font-size-h5 font-weight-bold">
+                                                                {dayDMY(presupuesto.created_at)}
+                                                                <div className="font-weight-normal font-size-lg text-muted">Presupuesto</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -206,70 +186,35 @@ class UltimoPresupuesto extends Component {
                         onSubmit={
                             (e) => {
                                 e.preventDefault();
-                                validateAlert(onSubmit, e, 'form-presupuesto')
+                                validateAlert(generarPDF, e, 'form-presupuesto')
                             }
                         }
                     >
                         <Card className="mt-4 card-custom">
                             <Card.Header>
                                 <div className="card-title">
-                                    <h3 className="card-label">Presupuesto Preliminar</h3>
+                                    <h3 className="card-label">Presupuesto preeliminar</h3>
                                 </div>
                                 <div className="card-toolbar" >
-                                    <InputSinText
+                                    <InputGray
+                                        withtaglabel = { 0 }
+                                        withtextlabel = { 0 }
+                                        withplaceholder = { 1 }
+                                        withicon = { 1 }
+                                        withformgroup = { 0 }
+                                        iconclass = 'flaticon-calendar-with-a-clock-time-tools icon-xl'
+                                        iconvalid= { 1 }
                                         placeholder='PERÍODO DE VALIDEZ'
                                         requirevalidation={1}
                                         formeditado={formeditado}
                                         name='tiempo_valido'
                                         value={form.tiempo_valido}
                                         onChange={onChangeInput}
+                                        inputsolid='bg-white border'
                                     />
                                 </div>
                             </Card.Header>
-
                             <Card.Body className="pt-2">
-                                <div className="d-flex justify-content-start">
-                                <div className="d-flex align-items-center">
-                                        <Button 
-                                            icon=''
-                                            className={"btn btn-icon btn-light-primary"}
-                                            onClick={() => { this.mostrarFormulario() }}
-                                            only_icon={"flaticon2-calendar-9"}
-                                            tooltip={{text:'MOSTRAR FECHAS'}}                                        
-                                        />
-                                </div>
-                                <div className={this.state.showFechas ? 'w-100 formulario-escondido' : 'w-0 overflow-hidden formulario-escondido'}>
-                                    <div className="form-group row form-group-marginless m-0 mb-3 d-flex justify-content-end">
-                                        {/* <div className="col-md-5">
-                                            <Calendar
-                                                formeditado={formeditado}
-                                                onChangeCalendar={this.handleChangeDateCreacion}
-                                                placeholder="FECHA DE CREACIÓN"
-                                                name="fecha_creacion"
-                                                value={form.fecha_creacion}
-                                                patterns={DATE}
-                                            />
-                                        </div> */}
-                                        <div className="col-md-2 pr-0">
-                                            <Calendar
-                                                // requirevalidation={0}
-                                                formeditado={formeditado}
-                                                onChangeCalendar={this.handleChangeDateAceptado}
-                                                placeholder="FECHA DE ACEPTACIÓN"
-                                                name="fecha_aceptacion"
-                                                value={form.fecha_aceptacion}
-                                                patterns={DATE}
-                                            />
-                                        </div>
-                                        <div className="px-3 align-self-end d-flex justify-content-center pb-1">
-                                            <Button icon='' onClick = { aceptarPresupuesto } className="text-center mx-auto" text='ENVIAR' />
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                    
-                                </div>
-
                                 <table className="table table-separate table-responsive-sm">
                                     <thead>
                                         <tr>
@@ -289,7 +234,7 @@ class UltimoPresupuesto extends Component {
                                                 <div className="font-size-sm text-center">Costo</div>
                                             </th>
                                             <th className="border-0 center_content">
-                                                <div className="font-size-sm text-center">% Margen</div>
+                                                <div className="font-size-sm text-center white-space-nowrap">% Margen</div>
                                                 <div className="d-flex justify-content-center">
                                                     <InputNumberSinText
                                                         identificador={"margen-global"}
@@ -299,8 +244,8 @@ class UltimoPresupuesto extends Component {
                                                         value={margen}
                                                         onChange={this.onChangeDesperdicio}
                                                         thousandseparator={true}
-                                                        prefix={'%'} 
-                                                        customstyle={{borderColor: "#e5eaee", width: "57px"}}
+                                                        prefix='%'
+                                                        customclass='rounded-pill px-2 text-center border'
                                                     />
                                                 </div>
                                             </th>
@@ -392,26 +337,26 @@ class UltimoPresupuesto extends Component {
                                                             <td className="clave text-center">
                                                                 <div className="font-weight-bold font-size-sm">{concepto.concepto.clave}</div>
                                                             </td>
-
                                                             <td className="descripcion text-center">
                                                                 <InputSinText
-                                                                    identificador={"descipcion"}
+                                                                    identificador={"descipcion" + key}
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
                                                                     name="descipcion"
-                                                                    rows="3"
+                                                                    rows="4"
                                                                     as="textarea"
                                                                     value={form['conceptos'][key]['descripcion']}
                                                                     onChange={(e) => { onChange(key, e, 'descripcion') }}
                                                                     disabled={!form.conceptos[key].active}
-                                                                    customstyle={{borderColor: "#e5eaee"}}
+                                                                    customclass='rounded-pill px-2 border text-justify'
                                                                 />
                                                             </td>
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
                                                             </td>
                                                             <td className="text-center">
-                                                                <InputMoneySinText identificador={"costo"}
+                                                                <InputMoneySinText
+                                                                    identificador={"costo" + key}
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
                                                                     name="costo"
@@ -420,8 +365,8 @@ class UltimoPresupuesto extends Component {
                                                                     thousandseparator={true}
                                                                     typeformat="###########"
                                                                     disabled={!form.conceptos[key].active} 
-                                                                    customstyle={{borderColor: "#e5eaee"}}
-                                                                    prefix={"$"}
+                                                                    prefix="$"
+                                                                    customclass='rounded-pill px-2 text-center border'
                                                                 />
                                                             </td>
                                                             <td className="text-center">
@@ -433,9 +378,9 @@ class UltimoPresupuesto extends Component {
                                                                     value={form['conceptos'][key]['margen']}
                                                                     onChange={e => onChange(key, e, 'margen')}
                                                                     thousandseparator={true}
-                                                                    prefix={'%'}
+                                                                    prefix='%'
                                                                     disabled={!form.conceptos[key].active}
-                                                                    customstyle={{borderColor: "#e5eaee", width: "57px"}}
+                                                                    customclass='rounded-pill px-2 text-center border'
                                                                 />
                                                             </td>
                                                             <td className="text-center">
@@ -454,18 +399,29 @@ class UltimoPresupuesto extends Component {
                                         }
                                     </tbody>
                                 </table>
-                                <div className="mt-3 text-center">
-                                    <Button icon='' className="mx-auto" 
+                            </Card.Body>
+                            <Card.Footer class="card-footer">
+                                <div class="d-flex justify-content-end">
+                                    <Button icon='' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px px-2"
+                                        only_icon="flaticon2-email icon-lg mr-2 px-0 text-primary" text="ENVIAR CORREO"
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();
-                                                validateAlert(onSubmit, e, 'form-presupuesto')
+                                                validateAlert(sendPresupuesto, e, 'form-presupuesto')
                                             }
                                         }
-                                        text="ENVIAR Y GENERAR PDF" />
+                                    />
+                                    <Button icon='' className="btn btn-bg-light btn-hover-light-success font-weight-bolder text-success align-self-center font-size-13px ml-2 px-2"
+                                        only_icon="las la-file-pdf icon-xl mr-1 px-0 text-success" text="GENERAR PDF"
+                                        onClick={
+                                            (e) => {
+                                                e.preventDefault();
+                                                validateAlert(generarPDF, e, 'form-presupuesto')
+                                            }
+                                        }
+                                    />
                                 </div>
-
-                            </Card.Body>
+                            </Card.Footer>
                         </Card>
                     </Form>
                 </>

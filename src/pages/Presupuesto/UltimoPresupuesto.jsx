@@ -223,10 +223,10 @@ class UltimoPresupuesto extends Component {
             form
         })
     }
-    onSubmit = e => {
+    generarPDF = e => {
         e.preventDefault()
         waitAlert()
-        this.updatePresupuestosAxios()
+        this.generarPDFAxios()
     }
     aceptarPresupuesto = e => {
         e.preventDefault()
@@ -306,7 +306,7 @@ class UltimoPresupuesto extends Component {
             console.log(error, 'error')
         })
     }
-    async updatePresupuestosAxios() {
+    async generarPDFAxios() {
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
         await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
@@ -355,6 +355,29 @@ class UltimoPresupuesto extends Component {
             form
         })
     }
+    sendPresupuesto = e => {
+        e.preventDefault()
+        waitAlert()
+        this.sendPresupuestoAxios()
+    }
+    async sendPresupuestoAxios() {
+        // const { access_token } = this.props.authUser
+        // const { form, presupuesto } = this.state
+        // await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+        //     (response) => {
+        //         const { history } = this.props
+        //         history.push({
+        //             pathname: '/presupuesto/presupuesto'
+        //         });
+        //     },
+        //     (error) => {
+        //         printResponseErrorAlert(error)
+        //     }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.log(error, 'error')
+        // })
+    }
     render() {
         const { form, formeditado, presupuesto } = this.state;
         const { formulario } = this.props
@@ -365,17 +388,18 @@ class UltimoPresupuesto extends Component {
                     form={form}
                     onChange={this.onChange}
                     checkButton={this.checkButton}
-                    onSubmit={this.onSubmit}
+                    onSubmit={this.generarPDF}
                     presupuesto={presupuesto}
                     {...this.props}
                     onChangeInput={this.onChangeInput}
-                    aceptarPresupuesto={this.aceptarPresupuesto}
+                    // aceptarPresupuesto={this.aceptarPresupuesto}
+                    sendPresupuestoAxios={this.sendPresupuesto}
                 />
                 <FloatButtons
                     save={this.save}
                     recover={this.recover}
                     formulario={formulario}
-                    descargar={() => this.updatePresupuestosAxios()}
+                    descargar={() => this.generarPDFAxios()}
                     url={'presupuesto/presupuesto/finish'}
                     exportar={true}
                 />
