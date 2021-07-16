@@ -298,7 +298,7 @@ class UltimoPresupuesto extends Component {
                                                             this.getSubpartida(key) ?
                                                                 <tr>
                                                                     <td colSpan={9} className="font-size-lg font-weight-bolder">
-                                                                        <b className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
+                                                                        <b className="font-size-h6 label label-light-info label-pill label-inline mr-2 font-weight-bolder label-rounded">
                                                                             {
                                                                                 this.getPartidaClave(concepto.concepto.clave)
                                                                             }
