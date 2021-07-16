@@ -211,8 +211,8 @@ class Presupuesto extends Component {
                 aux.push(
                     {
                         actions: this.setActions(presupuesto),
-                        estatus: renderToString(setLabelTable('presupuesto')),
-                        tipo_presupuesto:renderToString(this.label('ticket')),
+                        estatus: renderToString( presupuesto.estatus ? setLabelTable(presupuesto.estatus) : ''),
+                        tipo_presupuesto:renderToString(this.label(presupuesto.hasTickets ? 'ticket' : 'presupuesto')),
                         empresa: renderToString(setTextTableCenter(presupuesto.empresa ? presupuesto.empresa.name : '')),
                         proyecto: renderToString(setTextTableCenter(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
                         area: renderToString(setTextTableCenter(presupuesto.area ? presupuesto.area.nombre : '')),
@@ -229,7 +229,7 @@ class Presupuesto extends Component {
     label(text){
         return(
             <div className='d-flex align-items-center justify-content-center'>
-                <i style={{ color: `${text === 'ticket' ? '#9E9D24;' : '#EF6C00'}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+                <i style={{ color: `${text === 'ticket' ? "#9E9D24;" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
             </div>
         )
     }
