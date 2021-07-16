@@ -16,7 +16,6 @@ export default class InformacionProyecto extends Component {
 
     render() {
         const { proyecto, form, addComentario, onChange, handleChange, tipo, urls } = this.props
-        console.log(proyecto)
         return (
             <div className="col-md-12 mt-4">
                 {

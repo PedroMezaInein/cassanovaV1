@@ -591,22 +591,6 @@ class TicketDetails extends Component {
         })
     }
 
-    changeEstatusAxios = async(data) =>{
-        const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}calidad/estatus/${data.id}`, data, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { ticket } = response.data
-                window.history.replaceState(ticket, 'calidad')
-                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
-                if (data.estatus)
-                    doneAlert('El ticket fue actualizado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
     /* ============== PRESUPUESTO PREELIMINAR ============== */
     onChangePPreeliminar = (key, e, name) => {
         let { value } = e.target

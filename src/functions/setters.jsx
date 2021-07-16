@@ -6,6 +6,8 @@ import { questionAlert } from './alert';
 import { SingleTagify } from '../components/singles';
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import $ from "jquery";
+import moment from 'moment'
+import 'moment/locale/es' 
 
 function compare( a, b ) {
     if ( a.name < b.name ){
@@ -634,7 +636,7 @@ export function setLabelTable(text) {
                 color: `${text.letra}`,
                 border: 'transparent', padding: '0.3rem 0.6rem',
                 width:text.estatus==='Respuesta pendiente'?'min-content':'auto', 
-                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '9.5px',
+                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '8.5px',
                 fontWeight: 500, borderRadius:'0.42rem'
             }} >
                 {text.estatus}
@@ -1081,4 +1083,10 @@ export function setEmpresaLogo(lead) {
                 if(lead.empresa.logo_principal.length)
                     return lead.empresa.logo_principal[0].url
     return ''
+}
+
+export function dayDMY (fecha){
+    let fecha_moment = moment(fecha);
+    let format = fecha_moment.locale('es').format("DD MMM YYYY");
+    return format.replace('.', '');
 }

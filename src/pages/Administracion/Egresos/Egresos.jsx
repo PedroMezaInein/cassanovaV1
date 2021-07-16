@@ -545,7 +545,6 @@ class egresos extends Component {
         }
     }
     onChangeSwal = (value, tipo) => {
-        console.log(value, tipo)
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})

@@ -349,7 +349,7 @@ class CalendarioInstalacion extends Component {
                 estatus: <Dropdown className = 'text-center'>
                     <Dropdown.Toggle 
                         style = { { backgroundColor: mante.status.fondo, color: mante.status.letra, border: 'transparent', padding: '0.3rem 0.6rem',
-                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10px',
+                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '8.5px',
                                 fontWeight: 600 }}>
                         {mante.status.estatus.toUpperCase()}
                     </Dropdown.Toggle>
@@ -366,7 +366,7 @@ class CalendarioInstalacion extends Component {
                                         <span className="navi-link w-100">
                                             <span className="navi-text">
                                                 <span style = { { backgroundColor: status.fondo, color: status.letra } }
-                                                    className="label label-xl label-inline rounded-0 w-100 font-size-12px">
+                                                    className="label label-xl label-inline rounded-0 w-100">
                                                     {status.estatus}
                                                 </span>
                                             </span>
@@ -503,13 +503,9 @@ class CalendarioInstalacion extends Component {
                                     onChange = { (value) => { this.onChangeFilter({target:{name:'fecha',value:{start: value.startDate, end: value.endDate}}}) } } />
                             </div>
                         </div>
-                        <div className="mx-0 row justify-content-between">
-                            <div className="col-auto">
-                                <Button only_icon='fas fa-redo' className="btn btn-danger" type = 'button' text="LIMPIAR" onClick = { this.clearFiltros } />
-                            </div>
-                            <div className="col-auto text-right">
-                                <Button only_icon='fas fa-filter' className="btn btn-info mr-3" type = 'submit' text="FILTRAR"  />
-                            </div>
+                        <div className="mx-0 row justify-content-between border-top pt-4">
+                            <Button only_icon='las la-redo-alt icon-lg' className="btn btn-light-danger btn-sm font-weight-bold" type = 'button' text="LIMPIAR" onClick = { this.clearFiltros } />
+                            <Button only_icon='las la-filter icon-xl' className="btn btn-light-info btn-sm font-weight-bold" type = 'submit' text="FILTRAR"  />
                         </div>
                     </form>
                 </Modal>

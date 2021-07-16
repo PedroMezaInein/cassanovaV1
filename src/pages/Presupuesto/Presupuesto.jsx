@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, PRESUPUESTO_COLUMNS, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../constants'
-import { setOptions, setTextTable, setDateTable, setAdjuntosList, setTextTableCenter } from '../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setAdjuntosList, setTextTableCenter, setLabelTable } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
@@ -53,6 +53,15 @@ class Presupuesto extends Component {
         if (!presupuesto)
             history.push('/')
         this.getOptionsAxios()
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                const { history } = this.props
+                history.push({ pathname: '/presupuesto/presupuesto/update', state: { presupuesto: {id: id} } });
+            }
+        }
     }
     setOptions = (name, array) => {
         const { options } = this.state
@@ -202,6 +211,8 @@ class Presupuesto extends Component {
                 aux.push(
                     {
                         actions: this.setActions(presupuesto),
+                        estatus: renderToString(setLabelTable('presupuesto')),
+                        tipo_presupuesto:renderToString(this.label('ticket')),
                         empresa: renderToString(setTextTableCenter(presupuesto.empresa ? presupuesto.empresa.name : '')),
                         proyecto: renderToString(setTextTableCenter(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
                         area: renderToString(setTextTableCenter(presupuesto.area ? presupuesto.area.nombre : '')),
@@ -214,6 +225,13 @@ class Presupuesto extends Component {
                 return false
             })
         return aux
+    }
+    label(text){
+        return(
+            <div className='d-flex align-items-center justify-content-center'>
+                <i style={{ color: `${text === 'ticket' ? '#9E9D24;' : '#EF6C00'}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+            </div>
+        )
     }
     setActions = presupuesto => {
         let aux = []

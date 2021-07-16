@@ -53,6 +53,7 @@ import partidasDiseñoForm from './catalogos/PartidasDiseñoForm'
 import diseñoForm from './catalogos/DiseñoForm'
 import obraForm from './catalogos/ObraForm'
 import ticketView from './calidad/Tickets/TicketView' 
+import ticketView2 from './calidad/Tickets/TicketView2' 
 import procesoTicketForm from './calidad/ProcesoTicketForm'
 import CartasCalidadForm from './calidad/CartasCalidadForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
@@ -171,6 +172,7 @@ export const PartidasDiseñoForm = partidasDiseñoForm
 export const DiseñoForm = diseñoForm
 export const ObraForm = obraForm
 export const TicketView = ticketView
+export const TicketView2 = ticketView2
 export const AgregarVacacionesForm = agregarVacacionesForm
 export const ProcesoTicketForm = procesoTicketForm
 export const FlujosReportesVentas = flujosReportesVentas

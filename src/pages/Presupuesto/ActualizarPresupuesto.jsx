@@ -386,7 +386,7 @@ class ActualizarPresupuesto extends Component {
             (response) => {
                 const { presupuesto } = response.data
                 this.getOnePresupuestoAxios(presupuesto.id)
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue modificado con éxito.')
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -438,6 +438,7 @@ class ActualizarPresupuesto extends Component {
                     onSubmit={this.onSubmit}
                     presupuesto={presupuesto}
                     openModal={this.openModal}
+                    showInputsCalidad={false}
                     {...this.props}
                 />
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>

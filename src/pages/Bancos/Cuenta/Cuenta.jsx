@@ -236,7 +236,6 @@ class Cuenta extends Component {
         })
     }
     doubleClick = (data, tipo) => {
-        // console.log(data)
         const { form } = this.state
         switch(tipo){
             case 'empresa_principal':

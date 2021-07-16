@@ -83,7 +83,6 @@ class FormularioContrato extends Component {
                                 <tbody>
                                     {
                                         empleado.contratos.map((contrato, key) => {
-                                            // console.log(contrato)
                                             return (
                                                 <tr key={key}>
                                                     <td className="text-center">

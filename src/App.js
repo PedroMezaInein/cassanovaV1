@@ -68,6 +68,7 @@ const ActualizarPresupuesto = React.lazy(() => import('./pages/Presupuesto/Actua
 const UltimoPresupuesto = React.lazy(() => import('./pages/Presupuesto/UltimoPresupuesto') )
 const PresupuestoDiseño = React.lazy(() => import('./pages/Presupuesto/PresupuestoDiseño/PresupuestoDiseño') )
 const PresupuestoDiseñoForm = React.lazy(() => import('./pages/Presupuesto/PresupuestoDiseño/PresupuestoDiseñoForm') )
+const PresupuestosEnviados = React.lazy(() => import('./pages/Presupuesto/PresupuestosEnviados/PresupuestosEnviados') )
 
 const Ingresos = React.lazy(() => import('./pages/Administracion/Ingresos/Ingresos') )
 const IngresosForm = React.lazy(() => import('./pages/Administracion/Ingresos/IngresosForm') )
@@ -178,6 +179,7 @@ const Vacaciones = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/V
 const TicketTable = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketTable') )
 const AddTicket = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/AddTicket') )
 const TicketDetails = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails') )
+const TicketDetails2 = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails2') )
 
 const CartasGarantia = React.lazy(() => import('./pages/Calidad/CartasGarantia/CartasGarantia') )
 
@@ -319,7 +321,8 @@ class App extends Component{
                     <Route path = "/presupuesto/presupuesto/finish" exact component ={ UltimoPresupuesto } />
 
                     <Route path = "/presupuesto/presupuesto-diseño" exact component ={ PresupuestoDiseño } />  
-                    <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />            
+                    <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />   
+                    <Route path = "/presupuesto/presupuestos-enviados" exact component = {PresupuestosEnviados} />    
 
                     {/*  ANCHOR Routes for proyectos */}
 
@@ -483,10 +486,9 @@ class App extends Component{
                     <Route path = "/calidad/tickets" exact component ={ TicketTable } />
                     <Route path = "/calidad/tickets/nuevo-ticket" exact component = { AddTicket } />
                     <Route path = "/calidad/tickets/detalles-ticket" exact component = { TicketDetails } />
+                    <Route path = "/calidad/tickets/detalles-ticket2" exact component = { TicketDetails2 } />
 
                     <Route path = "/calidad/cartas-garantia" exact component = { CartasGarantia } />
-
-
 
                     {/* ANCHOR Routes for mercadotécnia */}
                     

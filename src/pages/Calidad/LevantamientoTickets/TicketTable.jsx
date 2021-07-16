@@ -75,12 +75,12 @@ class TicketTable extends Component {
                 {
                     actions: this.setActions(calidad),
                     estatus: renderToString(setLabelTable(calidad.estatus_ticket)),
-                    proyectos: renderToString(setTextTableCenter(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
+                    proyectos: renderToString(setTextTable(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
                     cliente: renderToString(setTextTableCenter(calidad.usuario ? calidad.usuario.name : '')),
                     tipo_trabajo: renderToString(setTextTableCenter(calidad.tipo_trabajo ? calidad.tipo_trabajo.tipo : '')),
                     fecha: setDateTableReactDom(calidad.created_at, this.doubleClick, calidad, 'fecha', 'text-center'),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
-                    motivo: renderToString(setTextTableCenter(calidad.motivo_cancelacion)),
+                    motivo: renderToString(setTextTable(calidad.motivo_cancelacion)),
                     id: calidad.id
                 }
             )
@@ -145,7 +145,7 @@ class TicketTable extends Component {
     changePageSee = calidad => {
         const { history } = this.props
         history.push({
-            pathname: '/calidad/tickets/detalles-ticket',
+            pathname: '/calidad/tickets/detalles-ticket2',
             state: { calidad: calidad },
             formeditado: 1
         });

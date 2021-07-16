@@ -24,11 +24,13 @@ class ChangePasswordFrom extends Component {
 		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendCorreo, empresas, onClickEmpresa, activeKey, formeditado, cropped } = this.props
 		
 		return (<>
+		{
+			user&&
 			<Tab.Container defaultActiveKey="1" className="p-5">
 				<div className="card mb-6 mb-xl-9">
 					<div className="card-body pt-9 pb-0">
 						<div className="d-flex flex-wrap flex-sm-nowrap mb-3">
-							<div className="d-flex flex-center flex-shrink-0 bg-light rounded mr-7">
+							<div className="d-flex flex-center flex-shrink-0 rounded mr-7">
 								<img alt='avatar' className="rounded w-100px h-100px w-lg-150px h-lg-150px" src={user.avatar ? user.avatar : "/default.jpg"} />
 							</div>
 							<div className="flex-grow-1 align-self-center">
@@ -163,7 +165,6 @@ class ChangePasswordFrom extends Component {
 														clearAvatar={clearAvatar}
 														cropped={cropped}
 													/>
-													{/* {console.log(form)} */}
 													{
 														form.foto ?
 															<div className="form-group row form-group-marginless justify-content-center mb-0 mt-5">
@@ -369,6 +370,8 @@ class ChangePasswordFrom extends Component {
 						</Col>
 					</Row >
 			</Tab.Container>
+		
+		}
 		</>
 			)
 	}
