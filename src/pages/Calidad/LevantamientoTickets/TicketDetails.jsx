@@ -36,7 +36,7 @@ class TicketDetails extends Component {
                     unidad: '',
                     descipcion: '',
                     costo: '',
-                    cantidad_preliminar: '',
+                    cantidad_preliminar: 0,
                     desperdicio: '',
                     active: true,
                     cantidad: 0,
@@ -435,7 +435,7 @@ class TicketDetails extends Component {
                 this.onClickVolumetrias()
                 break;
             case 'enviar_compras':
-                questionAlertY(`¿Deseas continuar?`, 'Enviarás a compras tus volumetrías para la estimación de costos', () => this.patchPresupuesto('estatus', 'Costos'))
+                questionAlertY(`¿Deseas enviar a compras?`, 'Enviarás a compras tus volumetrías para la estimación de costos', () => this.patchPresupuesto('estatus', 'Costos'))
                 break;
         }
     }

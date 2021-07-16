@@ -97,26 +97,29 @@ class ActualizarPresupuestoForm extends Component {
                                 <div className="list min-w-1000px">
                                     <div className="px-9 py-6">
                                         <div>
-                                            <div className="d-flex justify-content-between align-items-center">
-                                                <div className="text-dark font-size-h4 font-weight-bold">
-                                                    {presupuesto.proyecto.nombre}
-                                                </div>
-                                                <div>
-                                                    {
-                                                        presupuesto.empresa ?
-                                                            presupuesto.empresa.isotipos ?
-                                                                presupuesto.empresa.isotipos.length > 0 ?
-                                                                    presupuesto.empresa.isotipos.map((isotipo, key) => {
-                                                                        return (
-                                                                            <img alt="Pic" src={isotipo.url} style={{ height: '55px' }} key={key} />
-                                                                        )
-                                                                    })
+                                            {
+                                                !showInputsCalidad &&
+                                                <div className="d-flex justify-content-between align-items-center">
+                                                    <div className="text-dark font-size-h4 font-weight-bold">
+                                                        {presupuesto.proyecto.nombre}
+                                                    </div>
+                                                    <div>
+                                                        {
+                                                            presupuesto.empresa ?
+                                                                presupuesto.empresa.isotipos ?
+                                                                    presupuesto.empresa.isotipos.length > 0 ?
+                                                                        presupuesto.empresa.isotipos.map((isotipo, key) => {
+                                                                            return (
+                                                                                <img alt="Pic" src={isotipo.url} style={{ height: '55px' }} key={key} />
+                                                                            )
+                                                                        })
+                                                                        : ''
                                                                     : ''
                                                                 : ''
-                                                            : ''
-                                                    }
+                                                        }
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }
                                             <div>
                                                 <div className="d-flex flex-wrap justify-content-center">
                                                     <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
@@ -229,7 +232,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 <div className="d-flex justify-content-center">
                                                     <InputNumberSinText identificador = "desperdicio-global" requirevalidation = { 0 } formeditado = { 1 }
                                                         name = " desperdicio " value = { desperdicio } onChange = { this.onChangeDesperdicio }
-                                                        thousandseparator = { true } prefix = '%' customstyle = { {borderColor: "#e5eaee"} } />
+                                                        thousandseparator = { true } prefix = '%'  customclass='rounded-pill px-2 border text-center' />
                                                 </div>
                                             </th>
                                             <th className="border-0 center_content"> <div className="font-size-sm text-center">Cantidad</div> </th>
@@ -309,7 +312,7 @@ class ActualizarPresupuestoForm extends Component {
                                                             <td className="descripcion text-center">
                                                                 <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "descipcion" rows = "5" as = "textarea"
                                                                     value = { form['conceptos'][key]['descripcion'] } onChange = { (e) => { onChange(key, e, 'descripcion')} }  
-                                                                    disabled = { !form.conceptos[key].active } customstyle = { { borderColor: "#e5eaee" } } />
+                                                                    disabled = { !form.conceptos[key].active } customclass='rounded-pill px-2 border text-justify' />
                                                             </td>
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
@@ -320,20 +323,20 @@ class ActualizarPresupuestoForm extends Component {
                                                                         <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "costo" 
                                                                             value = { form['conceptos'][key]['costo'] } onChange = { e => onChange(key, e, 'costo') }
                                                                             thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active }
-                                                                            customstyle = { { borderColor: "#e5eaee" } } />
+                                                                            customclass='rounded-pill px-2 border text-justify' />
                                                                     </td>
                                                             }
                                                             <td className="text-center">
                                                                 <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "cantidad_preliminar"
                                                                     value = { form['conceptos'][key]['cantidad_preliminar'] } onChange = { e => onChange(key, e, 'cantidad_preliminar') }
                                                                     thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active } 
-                                                                    customstyle = { { borderColor: "#e5eaee" } } />
+                                                                    customclass='rounded-pill px-2 border text-center' />
                                                             </td>
                                                             <td className="text-center">
                                                                 <InputNumberSinText requirevalidation = { 0 } formeditado = { formeditado } name = "desperdicio" 
                                                                     value = { form['conceptos'][key]['desperdicio'] } onChange = { e => onChange(key, e, 'desperdicio') }
                                                                     thousandseparator = { true } prefix = '%' disabled = { !form.conceptos[key].active } 
-                                                                    customstyle = { { borderColor: "#e5eaee" } } />
+                                                                    customclass='rounded-pill px-2 border text-center' />
                                                             </td>
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>

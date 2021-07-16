@@ -515,7 +515,7 @@ export function questionAlertY(title, text, action, cancel) {
                 </div>
             </div>
             <div className="row row-paddingless form-group-marginless">
-                <div className="col-md-12 font-weight-light text-center font-size-lg">
+                <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins">
                     {text}
                 </div>
             </div>
