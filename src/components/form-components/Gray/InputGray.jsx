@@ -50,7 +50,7 @@ class InputGray extends Component {
     
     render() {
         const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, 
-                withplaceholder, customdiv, withformgroup, swal, value, iconvalid, ...props } = this.props
+                withplaceholder, customdiv, withformgroup, swal, value, iconvalid, inputsolid, ...props } = this.props
         const { inputValido, valor } =  this.state
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
@@ -70,7 +70,7 @@ class InputGray extends Component {
                     <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{withtextlabel?placeholder:''}</label>
                     :''
                 }
-                <div className="input-group input-group-solid rounded-0">
+                <div className={`input-group input-group-solid rounded-0 ${inputsolid}`}>
                     {
                         withicon?
                         <div className="input-group-prepend">
