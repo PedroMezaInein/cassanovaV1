@@ -64,7 +64,7 @@ class AddTicket extends Component {
                 }else{
                     doneAlert('Ticket creado con éxito')
                     const { history } = this.props
-                    history.push({ pathname: '/calidad/tickets/detalles-ticket2' }); 
+                    history.push({ pathname: '/calidad/tickets/detalles-ticket' }); 
                 }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -97,7 +97,7 @@ class AddTicket extends Component {
             (response) => {
                 doneAlert('Ticket creado con éxito')
                 const { history } = this.props
-                history.push({ pathname: '/calidad/tickets/detalles-ticket2' }); 
+                history.push({ pathname: '/calidad/tickets/detalles-ticket' }); 
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
