@@ -282,13 +282,13 @@ class Bodega extends Component {
                 action: 'prestamos',
                 tooltip: { id: 'prestamos', text: 'Préstamos' }
             },
-            {
-                text: 'Historial',
-                btnclass: 'warning',
-                iconclass: 'flaticon-list-1',
-                action: 'historial',
-                tooltip: { id: 'historial', text: 'Historial' }
-            }
+            // {
+            //     text: 'Historial',
+            //     btnclass: 'warning',
+            //     iconclass: 'flaticon-list-1',
+            //     action: 'historial',
+            //     tooltip: { id: 'historial', text: 'Historial' }
+            // }
         )
         return aux
     }
