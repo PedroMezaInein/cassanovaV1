@@ -79,7 +79,6 @@ class BodegaForm extends Component {
                             form.unidad = bodega.unidad.id.toString()
                         form.cantidad = bodega.cantidad
                         form.ubicacion = bodega.ubicacion
-                        console.log(form, bodega)
                         if (bodega.adjuntos) {
                             let aux = []
                             bodega.adjuntos.forEach((adjunto) => { aux.push({ name: adjunto.name, url: adjunto.url, id: adjunto.id }) })

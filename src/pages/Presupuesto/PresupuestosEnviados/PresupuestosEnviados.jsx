@@ -2,14 +2,14 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import axios from "axios"
 import Swal from 'sweetalert2'
-import { URL_DEV } from "../../constants"
-import { setOptions } from "../../functions/setters"
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../functions/alert"
-import Layout from "../../components/layout/layout"
-import { UltimoPresupuestoForm } from "../../components/forms"
-import FloatButtons from '../../components/singles/FloatButtons'
-import { save, deleteForm } from '../../redux/reducers/formulario'
-class UltimoPresupuesto extends Component {
+import { URL_DEV } from "../../../constants"
+import { setOptions } from "../../../functions/setters"
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../../functions/alert"
+import Layout from "../../../components/layout/layout"
+import { UltimoPresupuestoForm } from "../../../components/forms"
+import FloatButtons from '../../../components/singles/FloatButtons'
+import { save, deleteForm } from '../../../redux/reducers/formulario'
+class PresupuestosEnviados extends Component {
     state = {
         formeditado: 0,
         presupuesto: '',
@@ -420,4 +420,4 @@ const mapDispatchToProps = dispatch => ({
     deleteForm: () => dispatch(deleteForm()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(UltimoPresupuesto);
+export default connect(mapStateToProps, mapDispatchToProps)(PresupuestosEnviados);

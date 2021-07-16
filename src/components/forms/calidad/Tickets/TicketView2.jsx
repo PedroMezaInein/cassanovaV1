@@ -7,6 +7,7 @@ import moment from 'moment'
 import 'moment/locale/es'
 import imageCompression from 'browser-image-compression';
 import { questionAlert, waitAlert } from '../../../../functions/alert';
+import { dayDMY } from '../../../../functions/setters'
 
 class TicketView extends Component {
 
@@ -167,9 +168,16 @@ class TicketView extends Component {
                                                         <div className="d-flex flex-wrap mt-2">
                                                             {
                                                                 data.usuario &&
-                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg">
-                                                                        <i className="la la-user-tie icon-lg text-info mr-2" />
+                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg mr-3 d-flex align-items-center">
+                                                                        <i className="la la-user-tie icon-lg text-info mr-1" />
                                                                         {data.usuario.name}
+                                                                    </div>
+                                                            }
+                                                            {
+                                                                data.created_at &&
+                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center">
+                                                                        <i className="la la-calendar-check icon-lg text-info mr-1" />
+                                                                        {dayDMY(data.created_at)}
                                                                     </div>
                                                             }
                                                         </div>

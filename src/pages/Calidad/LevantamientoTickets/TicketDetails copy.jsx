@@ -499,7 +499,6 @@ class TicketDetails extends Component {
             case 'subpartida':
                 data.subpartidas.map((subpartida) => {
                     if (subpartida.id.toString() === value) {
-                        console.log(subpartida.conceptos, 'subpartida.conceptos')
                         data.conceptos = subpartida.conceptos
                     }
                     return false

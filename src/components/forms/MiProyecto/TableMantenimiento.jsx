@@ -189,7 +189,6 @@ class TableMantenimiento extends Component {
                                         }
                                         {
                                             mantenimientos.map((mantenimiento, index) => {
-                                                console.log(mantenimiento)
                                                 return(
                                                     <tr className="text-dark-75 font-weight-light text-center" key = { index } >
                                                         <td>

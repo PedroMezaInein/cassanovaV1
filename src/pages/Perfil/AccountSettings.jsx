@@ -41,7 +41,6 @@ class AccountSettings extends Component {
         const { form } = this.state
         const { name, value } = e.target
         form[name] = value
-        // console.log(name, value, 'ON CHANGE')
         this.setState({ ...this.state, form })
     }
 
