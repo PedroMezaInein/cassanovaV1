@@ -53,6 +53,15 @@ class Presupuesto extends Component {
         if (!presupuesto)
             history.push('/')
         this.getOptionsAxios()
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                const { history } = this.props
+                history.push({ pathname: '/presupuesto/presupuesto/update', state: { presupuesto: {id: id} } });
+            }
+        }
     }
     setOptions = (name, array) => {
         const { options } = this.state

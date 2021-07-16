@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, S3_CONFIG } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2, customInputAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2, customInputAlert, questionAlertY } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { TicketView2, AgregarConcepto } from '../../../components/forms'
 import { Form, Tabs, Tab } from 'react-bootstrap'
@@ -261,13 +261,44 @@ class TicketDetails extends Component {
         const { formularios, presupuesto } = this.state
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { presupuesto } = response.data
+                doneAlert('Presupuesto actualizado con éxito',
+                    () => questionAlertY(`¡Listo!`, '¿Deseas enviar a compras tus volumetrías para la estimación de costos?', 
+                        () => this.patchPresupuesto('estatus', 'Costos'),
+                        () => this.getPresupuestoAxios(presupuesto.id))
+                )
+                
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    patchPresupuesto = async(type, value) => {
+        const { access_token } = this.props.authUser
+        const { presupuesto } = this.state
+        waitAlert()
+        await axios.patch(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}`, { type: type, value: value }, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                if(type === 'estatus')
+                    doneAlert('Presupuesto actualizado con éxito', () => this.sendCorreoAxios(value))
+                else
+                    doneAlert('Presupuesto actualizado con éxito', () => this.getPresupuestoAxios(presupuesto.id))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    sendCorreoAxios = async(value) => {
+        const { access_token } = this.props.authUser
+        const { presupuesto } = this.state
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/correo?estatus=${value}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
                 this.getPresupuestoAxios(presupuesto.id)
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue modificado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -402,6 +433,9 @@ class TicketDetails extends Component {
         switch(type){
             case 'volumetrias':
                 this.onClickVolumetrias()
+                break;
+            case 'enviar_compras':
+                questionAlertY(`¿Deseas continuar?`, 'Enviarás a compras tus volumetrías para la estimación de costos', () => this.patchPresupuesto('estatus', 'Costos'))
                 break;
         }
     }
