@@ -170,7 +170,7 @@ class NewTable extends Component{
                                     <CommonLottie animationData = { NoData } />
                                 </div>
                                 <div className="col-12 text-center">
-                                    <h3 class="card-label font-weight-bolder undefined">
+                                    <h3 className="card-label font-weight-bolder undefined">
                                         No hay datos disponibles
                                     </h3>
                                 </div>

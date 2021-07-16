@@ -400,8 +400,8 @@ class UltimoPresupuesto extends Component {
                                     </tbody>
                                 </table>
                             </Card.Body>
-                            <Card.Footer class="card-footer">
-                                <div class="d-flex justify-content-end">
+                            <Card.Footer className="card-footer">
+                                <div className="d-flex justify-content-end">
                                     <Button icon='' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px px-2"
                                         only_icon="flaticon2-email icon-lg mr-2 px-0 text-primary" text="ENVIAR CORREO"
                                         onClick={
