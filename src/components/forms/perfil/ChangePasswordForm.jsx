@@ -165,7 +165,6 @@ class ChangePasswordFrom extends Component {
 														clearAvatar={clearAvatar}
 														cropped={cropped}
 													/>
-													{/* {console.log(form)} */}
 													{
 														form.foto ?
 															<div className="form-group row form-group-marginless justify-content-center mb-0 mt-5">

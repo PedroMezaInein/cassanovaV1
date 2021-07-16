@@ -519,7 +519,6 @@ export function questionAlertY(title, text, action) {
 }
 
 export function questionAlert2(title, text, action, html) {
-    console.log(text, 'text')
     MySwal.fire({
         title: title,
         text: text,
@@ -664,7 +663,6 @@ export function forbiddenAccessAlert() {
 
 export function validateAlert(success, e, name) {
     var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid");
-    console.log(elementsInvalid, 'elementsInvalid')
     if (elementsInvalid.length === 0) {
         success(e)
     } else {

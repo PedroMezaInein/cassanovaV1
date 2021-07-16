@@ -12,7 +12,6 @@ class ClienteForm extends Component {
 
     render() {
         const { form, onChange, changeCP, estado, municipio, colonias, formeditado, onSubmit, ...props } = this.props
-        console.log('FORM', form)
         return (
             <Form id="form-cliente"
                 onSubmit={

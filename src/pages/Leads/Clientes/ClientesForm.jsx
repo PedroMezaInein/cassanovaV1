@@ -163,7 +163,6 @@ class ClientesForm extends Component {
                 const { form, options } = this.state
                 if (estatus  === 'si') {
                     const { municipio, estado, asentamientos } = response.data.data
-                    console.log(response.data.data, 'DATA')
                     form['municipio'] = municipio.toUpperCase()
                     form['estado'] = estado.toUpperCase()
                     let aux = []

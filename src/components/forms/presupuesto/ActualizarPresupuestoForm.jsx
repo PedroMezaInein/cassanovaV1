@@ -87,7 +87,6 @@ class ActualizarPresupuestoForm extends Component {
 
     render() {
         const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children } = this.props
-        // console.log(presupuesto, '')
         const { desperdicio } = this.state
         if (presupuesto)
             return (

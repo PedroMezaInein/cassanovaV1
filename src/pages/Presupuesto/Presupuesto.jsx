@@ -196,7 +196,6 @@ class Presupuesto extends Component {
         $('#kt_datatable2_presupuesto').DataTable().ajax.reload();
     }
     setPresupuestos = presupuestos => {
-        console.log(presupuestos, 'presupuesto')
         let aux = []
         if (presupuestos)
             presupuestos.map((presupuesto) => {
