@@ -115,7 +115,7 @@ export async function commentAlert() {
     })
 }
 
-export async function doneAlert(texto) {
+export async function doneAlert(texto, cancel) {
     MySwal.fire({
         title: '¡FELICIDADES!',
         html:
@@ -129,6 +129,12 @@ export async function doneAlert(texto) {
             actions: 'd-none'
         },
         timer: 2500,
+    }).then((result) => {
+        if(result.dismiss){
+            if(cancel)
+                cancel()
+        }
+            
     })
 }
 
@@ -496,7 +502,7 @@ export function confirmarCita(title, form, lead, action, e, name) {
     })
 }
 
-export function questionAlertY(title, text, action) {
+export function questionAlertY(title, text, action, cancel) {
     MySwal.fire({
         title: title,
         text: text,
@@ -526,42 +532,9 @@ export function questionAlertY(title, text, action) {
             cancelButton:'btn-light-gray-sweetalert2'
         }
     }).then((result) => {
-        if (result.value) {
-            action()
-        }
-    })
-}
-
-export function questionAlertY2(title, text, action, cancel) {
-    MySwal.fire({
-        title: title,
-        text: text,
-        html: <div>
-            <div className="row mx-0 justify-content-center">
-                <div className="col-md-8">
-                    <CommonLottie animationData = { QuestionBoy } />
-                </div>
-            </div>
-            <div className="row row-paddingless form-group-marginless">
-                <div className="col-md-12 font-weight-light text-center font-size-lg">
-                    {text}
-                </div>
-            </div>
-        </div>,
-        showCancelButton: true,
-        confirmButtonText: "SI",
-        cancelButtonText: "NO",
-        reverseButtons: true,
-        customClass: {
-            icon: 'icono',
-            title:'text-uppercase',
-            content: text?text:'d-none',
-            confirmButton: 'btn-light-success-sweetalert2',
-            cancelButton:'btn-light-gray-sweetalert2'
-        }
-    }).then((result) => {
-        if(result.dismiss){
-            cancel()
+        if(cancel){
+            if(result.dismiss)
+                cancel()
         }
         if (result.value) {
             action()
