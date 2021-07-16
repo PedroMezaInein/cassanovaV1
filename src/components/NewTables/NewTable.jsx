@@ -104,11 +104,11 @@ class NewTable extends Component{
                     let cellIndex = columns[index].accessor
                     if(cellIndex !== 'actions'){
                         if(columns[index].searchable === false){
-                            $(this).append(`<div class="mt-2 separator separator-dashed separator-border-2"></div>`+
-                                `<div class="mt-2"><input type="text" id='${cellIndex}-${tableName}' class="form-control form-control-sm d-none" disabled/></div>`);
+                            $(this).append(`<div class="mt-2 separator separator-dashed separator-border-2 d-none"></div>`+
+                                `<div class="mt-2 d-none"><input type="text" id='${cellIndex}-${tableName}' class="form-control form-control-sm d-none" disabled/></div>`);
                         }else{
-                            $(this).append(`<div class="mt-2 separator separator-dashed separator-border-2"></div>`+
-                                `<div class="mt-2"><input type="text" id='${cellIndex}-${tableName}' class="form-control form-control-sm d-none" /></div>`);
+                            $(this).append(`<div class="mt-2 separator separator-dashed separator-border-2 d-none"></div>`+
+                                `<div class="mt-2 d-none"><input type="text" id='${cellIndex}-${tableName}' class="form-control form-control-sm d-none" /></div>`);
                         }
                     }
                 });
@@ -302,7 +302,7 @@ class NewTable extends Component{
                     </div>
                     <div className="card-toolbar">
                         <button onClick = { filterClick } className="btn btn-info mr-2 font-weight-bold">
-                            <i className="fas fa-filter"></i> Filtrar
+                            <i className="fas fa-filter"></i> FILTRAR
                         </button>
                         {
                             customButton ? 
