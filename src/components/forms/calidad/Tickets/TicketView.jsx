@@ -142,6 +142,7 @@ class TicketView extends Component {
         const { data, options, formulario, presupuesto, datos } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit } = this.props
+        console.log(presupuesto, 'presupuesto')
         return (
             <div className="p-0">
                 {/* ------------------------ { ANCHOR TAB CONTAINER } ------------------------ */}
@@ -271,7 +272,7 @@ class TicketView extends Component {
                                                     </Nav.Link>
                                                 </Nav.Item>
                                                 {
-                                                    data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revision' ?
+                                                    data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revisión' ?
                                                         <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); } } >
                                                             <Nav.Link eventKey="presupuesto">
                                                                 <span className="nav-icon"> <i className="las la-file-invoice-dollar icon-lg mr-2" /> </span>

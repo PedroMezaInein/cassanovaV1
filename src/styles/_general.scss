@@ -88,15 +88,17 @@ $l-black-gold: #423b28;
 }
 .nav-full-height{
 
-    /* height: calc(100vh  ); 
+    /* height: calc(100vh  ); font-family: Poppins, Helvetica, sans-serif;
 }*/
 .symbol.symbol-light-success2 .symbol-label {
     background-color: #d1e3d7;
 }
-
+.font-family-poppins{
+    font-family: Poppins, Helvetica, sans-serif;
+}
 body {
     text-transform: uppercase;
-    font-family: Poppins, Helvetica, "sans-serif";
+    font-family: Poppins, Helvetica, sans-serif !important;
 }
 
 .border-nav {
