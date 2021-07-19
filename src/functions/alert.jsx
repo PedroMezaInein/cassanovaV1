@@ -529,7 +529,8 @@ export function questionAlertY(title, text, action, cancel) {
             title:'text-uppercase',
             content: text?text:'d-none',
             confirmButton: 'btn-light-success-sweetalert2',
-            cancelButton:'btn-light-gray-sweetalert2'
+            cancelButton:'btn-light-gray-sweetalert2',
+            htmlContainer:'d-contents'
         }
     }).then((result) => {
         if(cancel){
@@ -541,7 +542,6 @@ export function questionAlertY(title, text, action, cancel) {
         }
     })
 }
-
 export function questionAlert2(title, text, action, html) {
     MySwal.fire({
         title: title,

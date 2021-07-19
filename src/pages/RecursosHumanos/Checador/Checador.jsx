@@ -9,7 +9,7 @@ import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { SelectSearchGray } from '../../../components/form-components'
 import Echo from 'laravel-echo';
 /* import Pusher from 'pusher-js'; */
-import moment from 'moment'
+// import moment from 'moment'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 // const day = moment().format('YYYY-MM-DD')
