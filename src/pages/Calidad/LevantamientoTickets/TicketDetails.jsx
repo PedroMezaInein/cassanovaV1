@@ -3,16 +3,14 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, S3_CONFIG } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2, customInputAlert, questionAlertY } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { TicketView, AgregarConcepto } from '../../../components/forms'
-import { Form, Tabs, Tab } from 'react-bootstrap'
-import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import { Modal } from '../../../components/singles'
-import { SelectSearchGray, CalendarDay, InputMoneyGray, Button } from '../../../components/form-components'
+import { TicketView } from '../../../components/forms'
+import { Form } from 'react-bootstrap'
+import { setSingleHeader } from '../../../functions/routers'
+import { SelectSearchGray } from '../../../components/form-components'
 import moment from 'moment'
 import 'moment/locale/es' 
-import NumberFormat from 'react-number-format';
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
 
@@ -305,6 +303,21 @@ class TicketDetails extends Component {
         })
     }
 
+    deleteAdjuntoAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.delete(`${URL_DEV}v3/calidad/tickets/${ticket.id}/adjuntos/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Foto eliminada con éxito')
+                this.getOneTicketAxios(ticket.id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR SETTERS                               */
     /* -------------------------------------------------------------------------- */
@@ -419,6 +432,10 @@ class TicketDetails extends Component {
         }
     }
 
+    deleteFile = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => { this.deleteAdjuntoAxios(element.id) } )
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR ONCLICK                               */
     /* -------------------------------------------------------------------------- */
@@ -450,7 +467,7 @@ class TicketDetails extends Component {
                     /* -------------------------------- FUNCIONES ------------------------------- */
                     openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
-                    onSubmit = { this.onSubmit } />
+                    onSubmit = { this.onSubmit } deleteFile = { this.deleteFile } />
             </Layout>
         )
     }
