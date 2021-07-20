@@ -298,7 +298,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                 </tr>
                                                             :<></>
                                                         }
-                                                        <tr data-tip data-for = { key + '-th' } className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
+                                                        <tr data-tip data-for = { key + '-th' } className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-info-o-30' } key = { key }>
                                                             <td className="check_desc text-center">
                                                                 <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-primary mr-3">
                                                                     <input name = 'active' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
@@ -352,8 +352,8 @@ class ActualizarPresupuestoForm extends Component {
                                                             form.conceptos[key].mensajes.active ?
                                                                 <tr>
                                                                     <td className="px-3 mx-2" colSpan = { 9 }>
-                                                                        <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "mensaje"
-                                                                            rows = "1" as = "textarea" className="form-control form-control-lg form-control-solid"
+                                                                        <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "mensaje" placeholder="AGREGA UN COMENTARIO"
+                                                                            rows = "1" as = "textarea" className="form-control form-control-lg form-control-solid font-size-12px"
                                                                             value = { form.conceptos[key].mensajes.mensaje } onChange = { (e) => { this.onChangeMensaje(e, key) } }
                                                                             />
                                                                     </td>
