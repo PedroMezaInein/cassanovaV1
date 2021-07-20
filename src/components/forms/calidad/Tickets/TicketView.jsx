@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Card, Nav, Tab, Dropdown, Row, Col} from 'react-bootstrap'
+import { Card, Nav, Tab, Dropdown } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { ProcesoTicketForm, PresupuestoForm, ActualizarPresupuestoForm } from '../../../../components/forms';
+import { PresupuestoForm, ActualizarPresupuestoForm } from '../../../../components/forms';
 import { Button } from '../../../form-components'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -136,13 +136,11 @@ class TicketView extends Component {
             return true
         return false
     }
-
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
-        const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit } = this.props
-        console.log(presupuesto, 'presupuesto')
+        const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos } = this.props
         return (
             <div className="p-0">
                 {/* ------------------------ { ANCHOR TAB CONTAINER } ------------------------ */}
@@ -288,7 +286,7 @@ class TicketView extends Component {
                                 <Tab.Content>
                                     <Tab.Pane eventKey="adjuntos">
                                         <div className="row mx-0">
-                                            <div className="col-lg-12">
+                                            <div className="col-lg-12 px-0">
                                                 <Card className="card-custom gutter-b card-stretch">
                                                     <Card.Header>
                                                         <Card.Title className="mb-0">
@@ -296,7 +294,8 @@ class TicketView extends Component {
                                                         </Card.Title>
                                                     </Card.Header>
                                                     <Card.Body className="p-9 pt-3">
-                                                        <ItemSlider items={data.fotos} item = 'fotos' handleChange = { this.onChange } accept = 'image/*' />
+                                                        <ItemSlider items={data.fotos} item = 'fotos' handleChange = { this.onChange } accept = 'image/*' 
+                                                            deleteFile = { deleteFile } />
                                                     </Card.Body>
                                                 </Card>
                                             </div>
@@ -307,20 +306,21 @@ class TicketView extends Component {
                                             presupuesto === '' ?
                                                 <PresupuestoForm form = { formulario.presupuesto } options = { options } showFormCalidad = { true } 
                                                     data = { datos } checkButton = { this.checkButton } onChange = { this.onChangePresupuesto } 
-                                                    setOptions = { setOptions } onSubmit = { (e) => { onSubmit('presupuesto') } } />
+                                                    setOptions = { setOptions } onSubmit = { (e) => { onSubmit('presupuesto') } }  />
                                             :
-                                                <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } 
+                                                <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
-                                                    checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } >
+                                                    checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } openModal={openModalConceptos}>
                                                     { 
-                                                        this.calcularCantidades() ?
-                                                            <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2" 
-                                                                onClick = { (e) => { e.preventDefault(); onClick('enviar_compras'); } } >
-                                                                ENVIAR A COMPRAS
-                                                            </button>    
+                                                        presupuesto.estatus.estatus = 'Conceptos'?
+                                                            this.calcularCantidades() ?
+                                                                <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2" 
+                                                                    onClick = { (e) => { e.preventDefault(); onClick('enviar_compras'); } } >
+                                                                    ENVIAR A COMPRAS
+                                                                </button>    
+                                                            : <></>
                                                         : <></>
                                                     }
-                                                    
                                                 </ActualizarPresupuestoForm>
                                         }
                                     </Tab.Pane>

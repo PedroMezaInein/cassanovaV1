@@ -13,6 +13,7 @@ import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 import { ProyectoCard } from '../../../components/cards'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
+import { setSingleHeader } from '../../../functions/routers'
 class Contratar extends Component {
     state = {
         modal: false,
@@ -484,9 +485,12 @@ class Contratar extends Component {
         })
     }
     async cpAxios(value) {
-        await axios.get(`${CP_URL}${TOKEN_CP}/${value}`).then(
+        //https://apisgratis.com/api/codigospostales/v2/colonias/cp/?valor=03810
+        //https://mexico-zip-codes.p.rapidapi.com/codigo_postal/64630
+        await axios.get(`https://apisgratis.com/api/codigospostales/v2/entidades`).then(
             (response) => {
-                const { estatus } = response.data
+                console.log(response.data)
+                /* const { estatus } = response.data
                 const { form, options } = this.state
                 if (estatus  === 'si') {
                     const { municipio, estado, asentamientos } = response.data.data
@@ -503,10 +507,8 @@ class Contratar extends Component {
                         form,
                         options
                     })
-                }
-            },
-            (error) => {
-            }
+                } */
+            }, (error) => { errorAlert('MESSAGE') }
         ).catch((error) => {
             console.log('error catch', error)
         })

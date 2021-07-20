@@ -229,7 +229,7 @@ class Presupuesto extends Component {
     label(text){
         return(
             <div className='d-flex align-items-center justify-content-center'>
-                <i style={{ color: `${text === 'ticket' ? "#9E9D24;" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
             </div>
         )
     }

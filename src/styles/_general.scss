@@ -2417,7 +2417,7 @@ div#tag-tagify {
 }
 
 .d-contents {
-    display: contents;
+    display: contents !important;
 }
 
 .line-break-anywhere {
@@ -3085,4 +3085,12 @@ table#calendario-proyectos tr:last-child td {
     -ms-flex-positive: 1;
     flex-grow: 1;
     margin-left: 11px;
+}
+
+.unidad-tickets{
+    .select-search.has-focus{
+        .select-search__option{
+            font-size: 12px!important;
+        }
+    }
 }

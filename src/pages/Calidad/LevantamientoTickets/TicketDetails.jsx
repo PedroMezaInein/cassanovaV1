@@ -3,16 +3,15 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, S3_CONFIG } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, deleteAlert, questionAlert2, customInputAlert, questionAlertY } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { TicketView, AgregarConcepto } from '../../../components/forms'
-import { Form, Tabs, Tab } from 'react-bootstrap'
-import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { Form } from 'react-bootstrap'
+import { setSingleHeader } from '../../../functions/routers'
 import { Modal } from '../../../components/singles'
-import { SelectSearchGray, CalendarDay, InputMoneyGray, Button } from '../../../components/form-components'
+import { SelectSearchGray } from '../../../components/form-components'
 import moment from 'moment'
-import 'moment/locale/es' 
-import NumberFormat from 'react-number-format';
+import 'moment/locale/es'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
 
@@ -20,7 +19,7 @@ const ReactS3Client = new S3(S3_CONFIG);
 class TicketDetails extends Component {
 
     state = {
-        options: { empleados: [], estatus: [], tiposTrabajo: [], proyectos: [], partidas: [], subpartidas: [], proveedores: [] },
+        options: { empleados: [], estatus: [], tiposTrabajo: [], proyectos: [], partidas: [], subpartidas: [], proveedores: [], unidades: [] },
         formularios: {
             presupuesto: { fecha: new Date(), tiempo_ejecucion: "", conceptos: {} },
             ticket: {
@@ -42,16 +41,20 @@ class TicketDetails extends Component {
                     cantidad: 0,
                     importe: 0,
                     id: '',
-                    mensajes: { active: false, mensaje: '' }
+                    mensajes: { active: false, mensaje: '' },
+                    unidad_id:''
                 }],
                 conceptosNuevos: []
             }
         },
         data: { partidas: [],subpartidas: [], conceptos: [] },
         ticket: '',
-        presupuesto: ''
+        presupuesto: '',
+        modal_conceptos: false,
+        formeditado: 0,
+        key: 'nuevo',
     }
-
+    
     componentDidMount() {
         const { location: { state } } = this.props
         const { history } = this.props
@@ -73,7 +76,7 @@ class TicketDetails extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos, proveedores } = response.data
+                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos, proveedores, unidades } = response.data
                 const { options, formularios, data } = this.state
                 data.partidas = partidas
                 let aux = {}
@@ -85,6 +88,7 @@ class TicketDetails extends Component {
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, "nombre", "id")
                 options.proveedores = setOptions(proveedores, "razon_social", "id")
+                options.unidades = setOptions(unidades, 'nombre', 'id')
                 this.setState({ ...this.state, options, data, formularios })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -199,7 +203,7 @@ class TicketDetails extends Component {
         })
     }
 
-    getPresupuestoAxios = async (id) => {
+    getPresupuestoAxios = async (id, conceptosNuevos) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
@@ -207,8 +211,17 @@ class TicketDetails extends Component {
                 Swal.close()
                 const { presupuesto } = response.data
                 const { formularios } = this.state
+                
                 let aux = []
                 presupuesto.conceptos.forEach((concepto) => {
+                    let active = false
+                    if (conceptosNuevos !== undefined){
+                        conceptosNuevos.forEach((conceptoNuevo) => {
+                            if(conceptoNuevo.id === concepto.concepto.id) {
+                                active = true
+                            }
+                        })
+                    }
                     aux.push({
                         active: concepto.active,
                         descripcion: concepto.descripcion,
@@ -216,23 +229,26 @@ class TicketDetails extends Component {
                         desperdicio: concepto.desperdicio,
                         cantidad: concepto.cantidad,
                         mensajes: {
-                            active: concepto.mensaje ? true : false,
+                            active: active ? true : concepto.mensaje ? true : false,
                             mensaje: concepto.mensaje
                         },
                         id: concepto.id,
                         costo: concepto.costo,
-                        importe: concepto.importe
+                        importe: concepto.importe,
+                        unidad: concepto.concepto.unidad.nombre,
+                        unidad_id: concepto.concepto.unidad.id.toString()
                     })
                 })
                 formularios.preeliminar.conceptos = aux
-                this.setState({ ...this.state, presupuesto: presupuesto, formularios })
+                
+                this.setState({ ...this.state, presupuesto: presupuesto, formularios, formeditado: 1 })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
+    
     addPresupuestosAxios = async() => {
         const { access_token } = this.props.authUser
         const { formularios, ticket } = this.state
@@ -305,6 +321,21 @@ class TicketDetails extends Component {
         })
     }
 
+    deleteAdjuntoAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.delete(`${URL_DEV}v3/calidad/tickets/${ticket.id}/adjuntos/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Foto eliminada con éxito')
+                this.getOneTicketAxios(ticket.id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR SETTERS                               */
     /* -------------------------------------------------------------------------- */
@@ -353,7 +384,38 @@ class TicketDetails extends Component {
             </div>
         )
     }
-
+    openModalConceptos = () => {
+        const { options } = this.state
+        options.subpartidas = []
+        this.setState({
+            ...this.state,
+            options,
+            modal_conceptos: true,
+            formularios: this.clearForm(),
+            formeditado: 0
+        })
+    }
+    handleCloseConceptos = () => {
+        const { modal_conceptos, options } = this.state
+        options.subpartidas = []
+        this.setState({
+            ...this.state,
+            modal_conceptos: !modal_conceptos,
+            options,
+            concepto: '',
+            formularios: this.clearForm()
+        })
+    }
+    clearForm = () => {
+        const { formularios } = this.state
+        let aux = Object.keys(formularios.preeliminar)
+        aux.map((element) => {
+            if (element !== 'conceptos' && element !== 'conceptosNuevos')
+                formularios.preeliminar[element] = ''
+            return false
+        })
+        return formularios
+    }
     /* -------------------------------------------------------------------------- */
     /*                             ANCHOR FORMULARIOS                             */
     /* -------------------------------------------------------------------------- */
@@ -416,9 +478,131 @@ class TicketDetails extends Component {
             case 'preeliminar':
                 this.updatePresupuestoAxios()
                 break;
+            default: break;
         }
     }
+    /* ---------------------- FORMULARIO CONCEPTOS ---------------------- */
+    onChangeConceptos = (e) => {
+        const { name, value } = e.target;
+        const { data, formularios, presupuesto } = this.state
+        switch (name) {
+            case 'partida':
+                data.partidas.map((partida) => {
+                    data.conceptos = []
+                    if (partida.id.toString() === value) {
+                        data.subpartidas = partida.subpartidas
+                    }
+                    return false
+                })
+                break;
+            case 'subpartida':
+                data.subpartidas.map((subpartida) => {
+                    if (subpartida.id.toString() === value) {
+                        data.conceptos = subpartida.conceptos
+                    }
+                    return false
+                })
+                let array = []
+                data.conceptos.map((concepto) => {
+                    let aux = false
+                    presupuesto.conceptos.map((concepto_form) => {
+                        if (concepto) {
+                            if (concepto.clave === concepto_form.concepto.clave) {
+                                aux = true
+                            }
+                        }
+                        return false
+                    })
+                    if (!aux) {
+                        array.push(concepto)
+                    }
+                    return false
+                })
+                formularios.preeliminar.conceptosNuevos = []
+                array.map((element, key) => {
+                    formularios.preeliminar.conceptosNuevos.push(element)
+                    formularios.preeliminar.conceptosNuevos[key].active = false
+                    return false
+                })
+                break;
+            default:
+                break;
+        }
+        formularios.preeliminar[name] = value;
+        this.setState({
+            ...this.state,
+            formularios,
+            data
+        });
+    };
 
+    checkButtonConceptos = (e, key) => {
+        const { checked } = e.target
+        const { formularios } = this.state
+        formularios.preeliminar.conceptosNuevos[key].active = checked
+        this.setState({
+            ...this.state,
+            formularios
+        })
+    }
+    onSubmitConcept = e => {
+        e.preventDefault()
+        const { key, formularios } = this.state
+        waitAlert()
+        if (key === 'nuevo')
+            this.addConceptoAxios()
+        else {
+            let aux = []
+            formularios.preeliminar.conceptosNuevos.map((concepto) => {
+                if (concepto.active)
+                    aux.push(concepto)
+                return false
+            })
+            this.addConceptoToPresupuestoAxios(aux)
+        }
+    }
+    async addConceptoAxios() {
+        const { access_token } = this.props.authUser
+        const { formularios } = this.state
+        await axios.post(URL_DEV + 'conceptos', formularios.preeliminar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { concepto } = response.data
+                this.addConceptoToPresupuestoAxios([concepto])
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async addConceptoToPresupuestoAxios(conceptos) {
+        const { access_token } = this.props.authUser
+        const { presupuesto } = this.state
+        let aux = {
+            conceptos: conceptos
+        }
+        await axios.post(URL_DEV + 'presupuestos/' + presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { presupuesto } = response.data
+                this.getPresupuestoAxios(presupuesto.id, conceptos );
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El concepto fue agregado con éxito.')
+                this.setState({
+                    modal_conceptos: false
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    deleteFile = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => { this.deleteAdjuntoAxios(element.id) } )
+    }
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR ONCLICK                               */
     /* -------------------------------------------------------------------------- */
@@ -437,11 +621,19 @@ class TicketDetails extends Component {
             case 'enviar_compras':
                 questionAlertY(`¿Deseas enviar a compras?`, 'Enviarás a compras tus volumetrías para la estimación de costos', () => this.patchPresupuesto('estatus', 'Costos'))
                 break;
+            default: break;
         }
     }
     
+    controlledTab = value => {
+        this.setState({
+            ...this.state,
+            formularios: this.clearForm(),
+            key: value
+        })
+    }
     render() {
-        const { ticket, options, formularios, presupuesto, data } = this.state
+        const { ticket, options, formularios, presupuesto, data, modal_conceptos, formeditado, key } = this.state
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
@@ -450,7 +642,21 @@ class TicketDetails extends Component {
                     /* -------------------------------- FUNCIONES ------------------------------- */
                     openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
-                    onSubmit = { this.onSubmit } />
+                    onSubmit = { this.onSubmit } openModalConceptos={this.openModalConceptos} deleteFile = { this.deleteFile } />
+                <Modal size="xl" title='Agregar concepto' show={modal_conceptos} handleClose={this.handleCloseConceptos}>
+                    <AgregarConcepto
+                        options={options}
+                        formeditado={formeditado}
+                        form={formularios.preeliminar}
+                        onChange={this.onChangeConceptos}
+                        setOptions={this.setOptions}
+                        checkButtonConceptos={this.checkButtonConceptos}
+                        data={data}
+                        onSelect={this.controlledTab}
+                        activeKey={key}
+                        onSubmit={this.onSubmitConcept}
+                    />
+                </Modal>
             </Layout>
         )
     }
