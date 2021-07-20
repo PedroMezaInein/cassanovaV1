@@ -202,6 +202,49 @@ class TicketDetails extends Component {
         })
     }
 
+    getPresupuestoAxiosIdConcepto = async (id, conceptosNuevos) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { presupuesto } = response.data
+                const { formularios } = this.state
+                
+                let aux = []
+                presupuesto.conceptos.forEach((concepto) => {
+                    let active = false
+                    conceptosNuevos.forEach((conceptoNuevo) => {
+                        if(conceptoNuevo.id === concepto.concepto.id) {
+                            active = true
+                        }
+                    })
+                    aux.push({
+                        active: concepto.active,
+                        descripcion: concepto.descripcion,
+                        cantidad_preliminar: concepto.cantidad_preliminar,
+                        desperdicio: concepto.desperdicio,
+                        cantidad: concepto.cantidad,
+                        mensajes: {
+                            active:active,
+                            mensaje: concepto.mensaje
+                        },
+                        id: concepto.id,
+                        costo: concepto.costo,
+                        importe: concepto.importe,
+                        unidad: concepto.concepto.unidad.nombre
+                    })
+                })
+                formularios.preeliminar.conceptos = aux
+                
+                this.setState({ ...this.state, presupuesto: presupuesto, formularios, formeditado: 1 })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
     getPresupuestoAxios = async (id) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -576,26 +619,7 @@ class TicketDetails extends Component {
         await axios.post(URL_DEV + 'presupuestos/' + presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { presupuesto } = response.data
-                
-                console.log(conceptos, 'conceptos')
-                console.log(presupuesto, 'presupuesto')
-                this.getPresupuestoAxios(presupuesto.id)
-                presupuesto.conceptos.forEach((concepto1) => {
-                    if(conceptos[0].id === concepto1.concepto.id){
-                        console.log(conceptos[0].id , 'conceptos[0].id ')
-                        console.log(concepto1.concepto.id , 'concepto1.concepto.id ')
-                        console.log(formularios, 'formularios')
-                        formularios.preeliminar.conceptos.forEach((conceptoSeleccionado) => {
-                            // console.log(conceptoSeleccionado)
-                            console.log(conceptoSeleccionado.id, 'conceptoSeleccionado.id')
-                            // if(conceptoSeleccionado.id === concepto1.id){
-                            //     console.log('soy igual')
-                            // }
-                        })
-                    }
-                })
-
-
+                this.getPresupuestoAxiosIdConcepto(presupuesto.id, conceptos );
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El concepto fue agregado con éxito.')
                 this.setState({
                     modal_conceptos: false
