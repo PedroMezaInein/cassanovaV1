@@ -3086,3 +3086,11 @@ table#calendario-proyectos tr:last-child td {
     flex-grow: 1;
     margin-left: 11px;
 }
+
+.unidad-tickets{
+    .select-search.has-focus{
+        .select-search__option{
+            font-size: 12px!important;
+        }
+    }
+}

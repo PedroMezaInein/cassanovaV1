@@ -41,7 +41,8 @@ class TicketDetails extends Component {
                     cantidad: 0,
                     importe: 0,
                     id: '',
-                    mensajes: { active: false, mensaje: '' }
+                    mensajes: { active: false, mensaje: '' },
+                    unidad_id:''
                 }],
                 conceptosNuevos: []
             }

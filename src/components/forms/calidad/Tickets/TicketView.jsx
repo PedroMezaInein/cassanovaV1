@@ -308,7 +308,7 @@ class TicketView extends Component {
                                                     data = { datos } checkButton = { this.checkButton } onChange = { this.onChangePresupuesto } 
                                                     setOptions = { setOptions } onSubmit = { (e) => { onSubmit('presupuesto') } }  />
                                             :
-                                                <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } 
+                                                <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
                                                     checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } openModal={openModalConceptos}>
                                                     { 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Card } from 'react-bootstrap'
-import { InputMoneySinText, InputNumberSinText, InputSinText, Button } from '../../form-components'
+import { InputMoneySinText, InputNumberSinText, InputSinText, Button, SelectSearchGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas, dayDMY } from '../../../functions/setters'
 class ActualizarPresupuestoForm extends Component {
@@ -85,8 +85,12 @@ class ActualizarPresupuestoForm extends Component {
         return identificador.toString()
     }
 
+    updateUnidad = (value, key) => {
+        const { onChange } = this.props
+        onChange(key, { target: { value: value, name: 'unidad_id' } }, 'unidad_id')
+    }
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options } = this.props
         const { desperdicio } = this.state
         if (presupuesto)
             return (
@@ -315,7 +319,26 @@ class ActualizarPresupuestoForm extends Component {
                                                                     disabled = { !form.conceptos[key].active } customclass='rounded-pill px-2 border text-justify' />
                                                             </td>
                                                             <td className="text-center">
-                                                                <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
+                                                                {
+                                                                    showInputsCalidad ?
+                                                                    <div className="unidad-tickets">
+                                                                        <SelectSearchGray
+                                                                            customstyle={{color:'#464E5F!important', fontWeight:'400!important'}}
+                                                                            formeditado={formeditado}
+                                                                            withtaglabel={0}
+                                                                            withtextlabel={0}
+                                                                            withicon={0}
+                                                                            customdiv = "mb-0"
+                                                                            customclass="form-control-sm rounded-pill px-2 border text-center bg-white"
+                                                                            options={options.unidades}
+                                                                            name="unidad_id"
+                                                                            value={form.unidad_id}
+                                                                            onChange={(e) => this.updateUnidad(e, key)}
+                                                                        />
+                                                                    </div>
+                                                                    :
+                                                                    <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
+                                                                }
                                                             </td>
                                                             {
                                                                 !showInputsCalidad &&
