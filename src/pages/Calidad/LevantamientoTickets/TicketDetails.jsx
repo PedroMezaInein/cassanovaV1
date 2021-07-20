@@ -202,7 +202,7 @@ class TicketDetails extends Component {
         })
     }
 
-    getPresupuestoAxiosIdConcepto = async (id, conceptosNuevos) => {
+    getPresupuestoAxios = async (id, conceptosNuevos) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
@@ -214,11 +214,13 @@ class TicketDetails extends Component {
                 let aux = []
                 presupuesto.conceptos.forEach((concepto) => {
                     let active = false
-                    conceptosNuevos.forEach((conceptoNuevo) => {
-                        if(conceptoNuevo.id === concepto.concepto.id) {
-                            active = true
-                        }
-                    })
+                    if (conceptosNuevos !== undefined){
+                        conceptosNuevos.forEach((conceptoNuevo) => {
+                            if(conceptoNuevo.id === concepto.concepto.id) {
+                                active = true
+                            }
+                        })
+                    }
                     aux.push({
                         active: concepto.active,
                         descripcion: concepto.descripcion,
@@ -226,7 +228,7 @@ class TicketDetails extends Component {
                         desperdicio: concepto.desperdicio,
                         cantidad: concepto.cantidad,
                         mensajes: {
-                            active:active,
+                            active: active ? true : concepto.mensaje ? true : false,
                             mensaje: concepto.mensaje
                         },
                         id: concepto.id,
@@ -245,43 +247,6 @@ class TicketDetails extends Component {
         })
     }
     
-    getPresupuestoAxios = async (id) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                Swal.close()
-                const { presupuesto } = response.data
-                const { formularios } = this.state
-                
-                let aux = []
-                presupuesto.conceptos.forEach((concepto) => {
-                    aux.push({
-                        active: concepto.active,
-                        descripcion: concepto.descripcion,
-                        cantidad_preliminar: concepto.cantidad_preliminar,
-                        desperdicio: concepto.desperdicio,
-                        cantidad: concepto.cantidad,
-                        mensajes: {
-                            active: concepto.mensaje ? true : false,
-                            mensaje: concepto.mensaje
-                        },
-                        id: concepto.id,
-                        costo: concepto.costo,
-                        importe: concepto.importe,
-                        unidad: concepto.concepto.unidad.nombre
-                    })
-                })
-                formularios.preeliminar.conceptos = aux
-                
-                this.setState({ ...this.state, presupuesto: presupuesto, formularios, formeditado: 1 })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
     addPresupuestosAxios = async() => {
         const { access_token } = this.props.authUser
         const { formularios, ticket } = this.state
@@ -612,14 +577,14 @@ class TicketDetails extends Component {
     }
     async addConceptoToPresupuestoAxios(conceptos) {
         const { access_token } = this.props.authUser
-        const { presupuesto, formularios} = this.state
+        const { presupuesto } = this.state
         let aux = {
             conceptos: conceptos
         }
         await axios.post(URL_DEV + 'presupuestos/' + presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { presupuesto } = response.data
-                this.getPresupuestoAxiosIdConcepto(presupuesto.id, conceptos );
+                this.getPresupuestoAxios(presupuesto.id, conceptos );
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El concepto fue agregado con éxito.')
                 this.setState({
                     modal_conceptos: false
