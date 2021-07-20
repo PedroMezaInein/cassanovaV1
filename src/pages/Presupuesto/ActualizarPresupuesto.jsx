@@ -4,7 +4,7 @@ import axios from "axios"
 import Swal from 'sweetalert2'
 import { URL_DEV } from "../../constants"
 import { setOptions } from "../../functions/setters"
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../functions/alert"
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlertY } from "../../functions/alert"
 import Layout from "../../components/layout/layout"
 import { ActualizarPresupuestoForm, AgregarConcepto } from "../../components/forms"
 import { Modal } from '../../components/singles'
@@ -36,7 +36,8 @@ class ActualizarPresupuesto extends Component {
                 mensajes: {
                     active: false,
                     mensaje: ''
-                }
+                },
+                unidad_id:''
             }],
             conceptosNuevos: []
         },
@@ -358,7 +359,8 @@ class ActualizarPresupuesto extends Component {
                             active: concepto.active ? true : false,
                             id: concepto.id,
                             mensajes: mensajeAux,
-                            unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : ''
+                            unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : '',
+                            unidad_id: concepto.concepto.unidad.id.toString()
                         })
                     }
                     return false
@@ -385,8 +387,11 @@ class ActualizarPresupuesto extends Component {
         await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id, form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { presupuesto } = response.data
-                this.getOnePresupuestoAxios(presupuesto.id)
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue modificado con éxito.')
+                doneAlert('Presupuesto actualizado con éxito', 
+                    presupuesto.hasTickets ?
+                        () => questionAlertY(`¡Presupuesto actualizado!`, '¿Deseas enviar a calidad la estimación de costos?', () => this.sendCalidad(), () => this.getOnePresupuestoAxios(presupuesto.id))
+                    :''
+                )
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -395,6 +400,9 @@ class ActualizarPresupuesto extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+    sendCalidad = async() => {
+        waitAlert()
     }
     controlledTab = value => {
         this.setState({
@@ -439,6 +447,7 @@ class ActualizarPresupuesto extends Component {
                     presupuesto={presupuesto}
                     openModal={this.openModal}
                     showInputsCalidad={false}
+                    options={options}
                     {...this.props}
                 />
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>

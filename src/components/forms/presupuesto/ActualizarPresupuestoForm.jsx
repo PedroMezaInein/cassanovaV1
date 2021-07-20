@@ -319,26 +319,21 @@ class ActualizarPresupuestoForm extends Component {
                                                                     disabled = { !form.conceptos[key].active } customclass='rounded-pill px-2 border text-justify' />
                                                             </td>
                                                             <td className="text-center">
-                                                                {
-                                                                    showInputsCalidad ?
-                                                                    <div className="unidad-tickets">
-                                                                        <SelectSearchGray
-                                                                            customstyle={{color:'#464E5F!important', fontWeight:'400!important'}}
-                                                                            formeditado={formeditado}
-                                                                            withtaglabel={0}
-                                                                            withtextlabel={0}
-                                                                            withicon={0}
-                                                                            customdiv = "mb-0"
-                                                                            customclass="form-control-sm rounded-pill px-2 border text-center bg-white"
-                                                                            options={options.unidades}
-                                                                            name="unidad_id"
-                                                                            value={form['conceptos'][key]['unidad_id']}
-                                                                            onChange={(e) => this.updateUnidad(e, key)}
-                                                                        />
-                                                                    </div>
-                                                                    :
-                                                                    <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
-                                                                }
+                                                                <div className="unidad-tickets">
+                                                                    <SelectSearchGray
+                                                                        customstyle={{ color: '#464E5F!important', fontWeight: '400!important' }}
+                                                                        formeditado={formeditado}
+                                                                        withtaglabel={0}
+                                                                        withtextlabel={0}
+                                                                        withicon={0}
+                                                                        customdiv="mb-0"
+                                                                        customclass="form-control-sm rounded-pill px-2 border text-center bg-white"
+                                                                        options={options.unidades}
+                                                                        name="unidad_id"
+                                                                        value={form['conceptos'][key]['unidad_id']}
+                                                                        onChange={(e) => this.updateUnidad(e, key)}
+                                                                    />
+                                                                </div>
                                                             </td>
                                                             {
                                                                 !showInputsCalidad &&
