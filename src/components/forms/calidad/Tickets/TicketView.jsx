@@ -140,7 +140,7 @@ class TicketView extends Component {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
-        const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, openModalConceptos } = this.props
+        const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos } = this.props
         return (
             <div className="p-0">
                 {/* ------------------------ { ANCHOR TAB CONTAINER } ------------------------ */}
@@ -294,7 +294,8 @@ class TicketView extends Component {
                                                         </Card.Title>
                                                     </Card.Header>
                                                     <Card.Body className="p-9 pt-3">
-                                                        <ItemSlider items={data.fotos} item = 'fotos' handleChange = { this.onChange } accept = 'image/*' />
+                                                        <ItemSlider items={data.fotos} item = 'fotos' handleChange = { this.onChange } accept = 'image/*' 
+                                                            deleteFile = { deleteFile } />
                                                     </Card.Body>
                                                 </Card>
                                             </div>

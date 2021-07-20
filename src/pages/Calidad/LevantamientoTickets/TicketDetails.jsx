@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, S3_CONFIG } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { TicketView, AgregarConcepto } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
@@ -311,6 +311,21 @@ class TicketDetails extends Component {
         })
     }
 
+    deleteAdjuntoAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.delete(`${URL_DEV}v3/calidad/tickets/${ticket.id}/adjuntos/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Foto eliminada con éxito')
+                this.getOneTicketAxios(ticket.id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR SETTERS                               */
     /* -------------------------------------------------------------------------- */
@@ -594,6 +609,9 @@ class TicketDetails extends Component {
             console.log(error, 'error')
         })
     }
+    deleteFile = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => { this.deleteAdjuntoAxios(element.id) } )
+    }
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR ONCLICK                               */
     /* -------------------------------------------------------------------------- */
@@ -633,7 +651,7 @@ class TicketDetails extends Component {
                     /* -------------------------------- FUNCIONES ------------------------------- */
                     openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
-                    onSubmit = { this.onSubmit } openModalConceptos={this.openModalConceptos} />
+                    onSubmit = { this.onSubmit } openModalConceptos={this.openModalConceptos} deleteFile = { this.deleteFile } />
                 <Modal size="xl" title='Agregar concepto' show={modal_conceptos} handleClose={this.handleCloseConceptos}>
                     <AgregarConcepto
                         options={options}
