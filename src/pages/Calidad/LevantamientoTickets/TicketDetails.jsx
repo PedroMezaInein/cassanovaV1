@@ -235,7 +235,8 @@ class TicketDetails extends Component {
                         id: concepto.id,
                         costo: concepto.costo,
                         importe: concepto.importe,
-                        unidad: concepto.concepto.unidad.nombre
+                        unidad: concepto.concepto.unidad.nombre,
+                        unidad_id: concepto.concepto.unidad.id.toString()
                     })
                 })
                 formularios.preeliminar.conceptos = aux
