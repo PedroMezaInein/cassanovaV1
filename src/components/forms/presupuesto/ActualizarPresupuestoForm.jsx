@@ -332,7 +332,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                             customclass="form-control-sm rounded-pill px-2 border text-center bg-white"
                                                                             options={options.unidades}
                                                                             name="unidad_id"
-                                                                            value={form.unidad_id}
+                                                                            value={form['conceptos'][key]['unidad_id']}
                                                                             onChange={(e) => this.updateUnidad(e, key)}
                                                                         />
                                                                     </div>
