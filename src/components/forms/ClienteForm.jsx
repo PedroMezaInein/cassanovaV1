@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SelectSearch, Input, InputNumber, Button, InputPhone } from '../form-components'
+import { Input, InputNumber, Button, InputPhone } from '../form-components'
 import { RFC, TEL } from '../../constants'
 import Form from 'react-bootstrap/Form'
 import { validateAlert } from '../../functions/alert'
@@ -11,7 +11,7 @@ class ClienteForm extends Component {
     }
 
     render() {
-        const { form, onChange, changeCP, estado, municipio, colonias, formeditado, onSubmit, ...props } = this.props
+        const { form, onChange, estado, municipio, colonias, formeditado, onSubmit, ...props } = this.props
         return (
             <Form id="form-cliente"
                 onSubmit={
@@ -100,7 +100,7 @@ class ClienteForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             name="cp"
-                            onChange={changeCP}
+                            onChange={onChange}
                             value={form.cp}
                             type="text"
                             placeholder="CÓDIGO POSTAL"
@@ -110,69 +110,50 @@ class ClienteForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="separator separator-dashed mt-1 mb-2" hidden={form.colonias.length <= 0 ? true : false}></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4" hidden={form.colonias.length <= 0 ? true : false}>
+                    <div className="col-md-4">
                         <Input
                             requirevalidation={0}
                             formeditado={formeditado}
-                            readOnly={form.colonias.length <= 0 ? true : false}
                             value={form.estado}
                             name="estado"
+                            onChange={onChange}
                             type="text"
                             placeholder="ESTADO"
                             iconclass={"fas fa-map-marked-alt"}
-                            disabled
                         />
                     </div>
-                    <div className="col-md-4" hidden={form.colonias.length <= 0 ? true : false}>
+                    <div className="col-md-4">
                         <Input
                             requirevalidation={0}
                             formeditado={formeditado}
-                            readOnly={form.colonias.length <= 0 ? true : false}
                             value={form.municipio}
                             name="municipio"
+                            onChange={onChange}
                             type="text"
                             placeholder="MUNICIPIO/DELEGACIÓN"
                             iconclass={"fas fa-map-marker-alt"}
-                            disabled
                         />
                     </div>
-                    <div className="col-md-4" hidden={form.colonias.length <= 0 ? true : false}>
-                        {
-                            form.colonias.length > 0 &&
-                            <SelectSearch
-                                formeditado={formeditado}
-                                options={form.colonias}
-                                placeholder="SELECCIONA LA COLONIA"
-                                name="colonia"
-                                value={form.colonia}
-                                defaultValue={form.colonia}
-                                onChange = { this.updateColonia }
-                                iconclass={"fas fa-map-pin"}
-                                messageinc="Incorrecto. Selecciona la colonia"
-                            />
-                        }
-                        {
-                            form.colonias.length <= 0 &&
-                            <Input
-                                requirevalidation={1}
-                                formeditado={formeditado}
-                                readOnly
-                                value={form.colonia}
-                                name="colonia"
-                                type="text"
-                                placeholder="SELECCIONA LA COLONIA"
-                                iconclass={"fas fa-map-pin"}
-                            />
-                        }
+                    <div className="col-md-4">
+                        <Input
+                            requirevalidation={0}
+                            formeditado={formeditado}
+                            value={form.colonia}
+                            name="colonia"
+                            onChange={onChange}
+                            type="text"
+                            placeholder="COLONIA"
+                            iconclass={"fas fa-map-pin"}
+                        />
                     </div>
                 </div>
-                <div className="separator separator-dashed mt-1 mb-2" hidden={form.colonias.length <= 0 ? true : false}></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-12" hidden={form.colonias.length <= 0 ? true : false}>
+                    <div className="col-md-12">
                         <Input
-                            requirevalidation={1}
+                            requirevalidation={0}
                             formeditado={formeditado}
                             name="calle"
                             value={form.calle}

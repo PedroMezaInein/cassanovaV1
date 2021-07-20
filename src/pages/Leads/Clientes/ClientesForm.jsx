@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Card } from 'react-bootstrap';
 import { ClienteForm } from '../../../components/forms'
 import Layout from '../../../components/layout/layout';
-import { URL_DEV, CP_URL, TOKEN_CP } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 class ClientesForm extends Component {
     state = {
@@ -56,8 +56,9 @@ class ClientesForm extends Component {
                         const { form } = this.state
                         const { cliente } = state
                         if (cliente.cp) {
-                            this.cpAxios(cliente.cp)
                             form['cp'] = cliente.cp
+                            form['estado'] = cliente.estado
+                            form['municipio'] = cliente.municipio
                         }
                         if (cliente.colonia) {
                             form['colonia'] = cliente.colonia
@@ -150,31 +151,6 @@ class ClientesForm extends Component {
             form
         })
     }
-    changeCP = event => {
-        const { value, name } = event.target
-        this.onChange({ target: { name: name, value: value } })
-        if (value.length === 5)
-            this.cpAxios(value)
-    }
-    async cpAxios(value) {
-        await axios.get(`${CP_URL}${TOKEN_CP}/${value}`).then(
-            (response) => {
-                const { estatus } = response.data
-                const { form, options } = this.state
-                if (estatus  === 'si') {
-                    const { municipio, estado, asentamientos } = response.data.data
-                    form['municipio'] = municipio.toUpperCase()
-                    form['estado'] = estado.toUpperCase()
-                    let aux = []
-                    asentamientos.forEach((element) => {
-                        aux.push({ name: element.nombre.toString().toUpperCase(), value: element.nombre.toString().toUpperCase() })
-                    })
-                    form['colonias'] = aux
-                    this.setState({ ...this.state, form, options })
-                }
-            }, (error) => { }
-        ).catch((error) => { console.log('error catch', error) })
-    }
     render() {
         const { form, formeditado, estado, municipio, colonias, title } = this.state
         return (
@@ -186,12 +162,10 @@ class ClientesForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-
                         <ClienteForm
                             formeditado={formeditado}
                             onChange={this.onChange}
                             form={form}
-                            changeCP={this.changeCP}
                             estado={estado}
                             municipio={municipio}
                             colonias={colonias}
