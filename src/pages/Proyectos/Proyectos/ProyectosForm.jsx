@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import Layout from '../../../components/layout/layout'
 import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
-import { URL_DEV, CP_URL, TOKEN_CP } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { Button } from '../../../components/form-components'
 import { ProyectoCard, ProyectosCard } from '../../../components/cards'
 import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlert, createAlertSA2WithClose } from '../../../functions/alert'
@@ -27,7 +27,12 @@ class ProyectosForm extends Component {
             colonias: [],
             estatus: [],
             tipos:[],
-            cp_clientes: []
+            cp_clientes: [],
+            // fases: [
+            //     { label: 'FASE 1', value: 'fase1', name:'FASE 1' },
+            //     { label: 'FASE 2', value: 'fase2', name:'FASE 2' },
+            //     { label: 'FASE 3', value: 'fase3', name:'FASE 3' }
+            // ],
         },
         data: {
             proyectos: []
@@ -42,6 +47,7 @@ class ProyectosForm extends Component {
             fase1_relacionado: false,
             fase2_relacionado: false,
             fase3_relacionado: false,
+            // fases: [],
             proyecto: '',
             semana: '',
             nombre: '',
@@ -120,8 +126,10 @@ class ProyectosForm extends Component {
                     if (state.proyecto) {
                         const { proyecto } = state
                         const { form } = this.state
-                        form.cp = proyecto.cp;
-                        this.cpAxios(proyecto.cp)
+                        form.cp = proyecto.cp
+                        form.estado = proyecto.estado
+                        form.municipio = proyecto.municipio
+                        form.colonia = proyecto.colonia
                         form.calle = proyecto.calle
                         form.nombre = proyecto.nombre
                         if(proyecto.fase2 === 1){
@@ -340,12 +348,6 @@ class ProyectosForm extends Component {
             form
         })
     }
-    onChangeCP = event => {
-        const { value, name } = event.target
-        this.onChange({ target: { name: name, value: value } })
-        if (value.length === 5)
-            this.cpAxios(value)
-    }
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -472,8 +474,10 @@ class ProyectosForm extends Component {
             (response) => {
                 const { form, options } = this.state
                 const { proyecto } = response.data
-                form.cp = proyecto.cp;
-                this.cpAxios(proyecto.cp)
+                form.cp = proyecto.cp
+                form.estado = proyecto.estado
+                form.municipio = proyecto.municipio
+                form.colonia = proyecto.colonia
                 form.calle = proyecto.calle
                 form.nombre = proyecto.nombre
                 form.contacto = proyecto.contacto
@@ -771,9 +775,11 @@ class ProyectosForm extends Component {
                     if(prospecto.cliente){
                         if (prospecto.cliente.cp) {
                             form.cp = prospecto.cliente.cp
-                            this.cpAxios(prospecto.cliente.cp)
+                            form.estado = prospecto.cliente.estado
+                            form.municipio = prospecto.cliente.municipio
+                            form.colonia = prospecto.cliente.colonia
+                            form.calle = prospecto.cliente.calle
                         }
-                        form.calle = prospecto.cliente.calle
                         form.cliente = prospecto.cliente.id.toString()
                     }
                 }
@@ -795,34 +801,6 @@ class ProyectosForm extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-        })
-    }
-    async cpAxios(value) {
-        await axios.get(`${CP_URL}${TOKEN_CP}/${value}`).then(
-            (response) => {
-                const { estatus } = response.data
-                const { form, options } = this.state
-                if (estatus  === 'si') {
-                    const { municipio, estado, asentamientos } = response.data.data
-                    console.log(response.data.data, 'DATA')
-                    form['municipio'] = municipio.toUpperCase()
-                    form['estado'] = estado.toUpperCase()
-                    let aux = []
-                    asentamientos.forEach((element) => {
-                        aux.push({ name: element.nombre.toString().toUpperCase(), value: element.nombre.toString().toUpperCase() })
-                    })
-                    options['colonias'] = aux
-                    this.setState({
-                        ...this.state,
-                        form,
-                        options
-                    })
-                }
-            },
-            (error) => {
-            }
-        ).catch((error) => {
-            console.log('error catch', error)
         })
     }
     handleChange = (files, item) => {
@@ -895,16 +873,17 @@ class ProyectosForm extends Component {
         const { options } = this.state
             options.cp_clientes.forEach((cliente) => {
                 if(form.cp_ubicacion === cliente.value){
-                    let coloniaM = cliente.colonia.toUpperCase()
                     form.cp = cliente.cp
-                    this.cpAxios(cliente.cp)
-                    form.colonia = coloniaM
+                    form.estado = cliente.estado
+                    form.municipio = cliente.municipio
+                    form.colonia = cliente.colonia
                     form.calle = cliente.calle
+
                 }else if(options.cp_clientes.length === 1){
-                    let coloniaM = cliente.colonia.toUpperCase()
                     form.cp = cliente.cp
-                    this.cpAxios(cliente.cp)
-                    form.colonia = coloniaM
+                    form.estado = cliente.estado
+                    form.municipio = cliente.municipio
+                    form.colonia = cliente.colonia
                     form.calle = cliente.calle
                 }
             })
@@ -1049,7 +1028,7 @@ class ProyectosForm extends Component {
                     <Card.Body className="pt-0">
                         <ProyectoFormulario action = { action } title = { title } form = { form } options = { options } formeditado = { formeditado }
                             onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } deleteOption = { this.deleteOption }
-                            onChangeOptions = { this.onChangeOptions } clearFiles = { this.clearFiles } onChangeCP = { this.onChangeCP }
+                            onChangeOptions = { this.onChangeOptions } clearFiles = { this.clearFiles }
                             onSubmit = { this.onSubmit } onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } clearFilesGrupo = { this.clearFilesGrupo }
                             removeCorreo = { this.removeCorreo } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange }
                             className = "px-3" tagInputChange = { (e) => this.tagInputChange(e) } setOptions = { this.setOptions } openModalCP={this.openModalCP} showModal={showModal}>

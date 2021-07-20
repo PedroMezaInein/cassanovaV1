@@ -109,7 +109,7 @@ class ProyectosForm extends Component {
     //     onChange({target: { value: value, name: 'fases'}}, true)
     // }
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, 
+        const { title, children, form, onChange, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, 
             removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange, setOptions, openModalCP, showModal, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -204,7 +204,7 @@ class ProyectosForm extends Component {
                                         </div>
                                         {
                                             form.fase1 || form.fase2 || form.fase3 ? <></>:
-                                            <span class="form-text text-danger text-center is-invalid"> Selecciona una fase </span>
+                                            <span className="form-text text-danger text-center is-invalid"> Selecciona una fase </span>
                                         }
                                     </div>
                                     <div className="col-md-4">
@@ -256,42 +256,28 @@ class ProyectosForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Escribe la ubicación</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <InputNumber requirevalidation = { 1 } formeditado = { formeditado } name = "cp" onChange = { onChangeCP }
-                                            value = { form.cp } type = "text" placeholder = "CÓDIGO POSTAL" iconclass = "far fa-envelope"
-                                            maxLength = "5" messageinc = "Ingresa el código postal." />
+                                        <InputNumber requirevalidation = { 0 } formeditado = { formeditado } value = { form.cp }
+                                            name = "cp" type = "text" placeholder = "CÓDIGO POSTAL" iconclass = "far fa-envelope"
+                                            maxLength = "5" messageinc = "Ingresa el código postal." onChange = { onChange }  />
                                     </div>
-                                    <div className="col-md-4" hidden={ form.cp === '' ? true : false}>
-                                        <Input requirevalidation = { 0 } formeditado = { formeditado } name = "estado" type = "text"
-                                            readOnly = { form.cp === '' ? true : false } value = { form.estado } 
-                                            iconclass = "fas fa-map-marked-alt" disabled placeholder = "ESTADO" />
+                                    <div className="col-md-4">
+                                        <Input requirevalidation = { 0 } formeditado = { formeditado } value = { form.estado }
+                                            name = "estado" type = "text" placeholder = "ESTADO" iconclass = "fas fa-map-marked-alt" onChange = { onChange }/>
                                     </div>
-                                    <div className="col-md-4" hidden={form.cp === '' ? true : false}>
+                                    <div className="col-md-4">
                                         <Input requirevalidation = { 0 } formeditado = { formeditado } value = { form.municipio }
-                                            readOnly = { form.cp === '' ? true : false } name = "municipio" type = "text"
-                                            placeholder = "MUNICIPIO/DELEGACIÓN" iconclass = "fas fa-map-marker-alt" disabled />
+                                            name = "municipio" type = "text" placeholder = "MUNICIPIO/DELEGACIÓN" iconclass = "fas fa-map-marker-alt" onChange = { onChange } />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2" hidden={form.cp === '' ? true : false}></div>
+                                <div className="separator separator-dashed mt-1 mb-2" ></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-5" hidden={form.cp === '' ? true : false}>
-                                        {
-                                            options.colonias.length > 0 &&
-                                                <SelectSearch formeditado = { formeditado } options = { options.colonias }
-                                                    placeholder = "SELECCIONA LA COLONIA" name = "colonia" iconclass = "fas fa-map-pin"
-                                                    value = { form.colonia } defaultValue = { form.colonia } onChange = { this.updateColonia }
-                                                    messageinc = "Selecciona la colonia" />
-                                        }
-                                        {
-                                            form.cp === '' &&
-                                                <Input requirevalidation = { 1 } formeditado = { formeditado } readOnly
-                                                    value = { form.colonia } name = "colonia" type = "text"
-                                                    placeholder = "SELECCIONA LA COLONIA" iconclass = "fas fa-map-pin" />
-                                        }
+                                    <div className="col-md-5" >
+                                        <Input requirevalidation = { 0 } formeditado = { formeditado } value = { form.colonia }
+                                            name = "colonia" type = "text" placeholder = "COLONIA" iconclass = "fas fa-map-pin" onChange = { onChange }/>
                                     </div>
-                                    <div className="col-md-7" hidden={form.cp === '' ? true : false}>
-                                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "calle"
-                                            value = { form.calle } onChange = { onChange } type = "text" placeholder = "CALLE Y NÚMERO"
-                                            iconclass = "fas fa-map-signs" messageinc = "Ingresa la calle y número." />
+                                    <div className="col-md-7" >
+                                        <Input requirevalidation = { 0 } formeditado = { formeditado } value = { form.calle }
+                                            name = "calle" type = "text" placeholder = "CALLE Y NÚMERO" iconclass = "fas fa-map-signs" onChange = { onChange } />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">

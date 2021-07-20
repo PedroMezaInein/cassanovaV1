@@ -131,7 +131,7 @@ class ProyectosForm extends Component {
         onChange({ target: { name: 'tipoProyecto', value: value } })
     }
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action, handleChange, onChangeRange, tagInputChange,
+        const { title, children, form, onChange, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action, handleChange, onChangeRange, tagInputChange,
             openModalCP, showModal,  ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -194,7 +194,7 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={1}
-                                            withformgroup={1}
+                                            withformgroup={0}
                                             formeditado={formeditado}
                                             name="nombre"
                                             value={form.nombre}
@@ -231,7 +231,7 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={1}
-                                            withformgroup={1}
+                                            withformgroup={0}
                                             formeditado={formeditado}
                                             name="contacto"
                                             value={form.contacto}
@@ -282,19 +282,20 @@ class ProyectosForm extends Component {
                                     <div className="col-md-4">
                                         <InputNumberGray
                                             withicon={1}
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             name="cp"
-                                            onChange={onChangeCP}
+                                            onChange={onChange}
                                             value={form.cp}
                                             type="text"
                                             placeholder="CÓDIGO POSTAL"
                                             iconclass={"far fa-envelope"}
                                             maxLength="5"
                                             messageinc="Incorrecto. Ingresa el código postal."
+                                            formgroup="mb-0"
                                         />
                                     </div>
-                                    <div className="col-md-4" hidden={form.cp === '' ? true : false}>
+                                    <div className="col-md-4">
                                         <InputGray
                                             letterCase={true}
                                             withtaglabel={1}
@@ -302,18 +303,17 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={0}
-                                            withformgroup={1}
+                                            withformgroup={0}
                                             formeditado={formeditado}
-                                            readOnly={form.cp === '' ? true : false}
                                             value={form.estado}
+                                            onChange={onChange}
                                             name="estado"
                                             type="text"
                                             placeholder="ESTADO"
                                             iconclass={"fas fa-map-marked-alt"}
-                                            disabled
                                         />
                                     </div>
-                                    <div className="col-md-4" hidden={form.cp === '' ? true : false}>
+                                    <div className="col-md-4">
                                         <InputGray
                                             letterCase={false}
                                             withtaglabel={1}
@@ -321,66 +321,46 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={0}
                                             requirevalidation={0}
-                                            withformgroup={1}
+                                            withformgroup={0}
                                             formeditado={formeditado}
-                                            readOnly={form.cp === '' ? true : false}
                                             value={form.municipio}
+                                            onChange={onChange}
                                             name="municipio"
                                             type="text"
                                             placeholder="MUNICIPIO/DELEGACIÓN"
                                             iconclass={"fas fa-map-marker-alt"}
-                                            disabled
                                         />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2" hidden={form.cp === '' ? true : false}></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-5" hidden={form.cp === '' ? true : false}>
-                                        {
-                                            options.colonias.length > 0 &&
-                                            <SelectSearchGray
-                                                formeditado={formeditado}
-                                                options={options.colonias}
-                                                placeholder="SELECCIONA LA COLONIA"
-                                                name="colonia"
-                                                iconclass={"fas fa-map-pin"}
-                                                value={form.colonia}
-                                                defaultValue={form.colonia}
-                                                onChange={this.updateColonia}
-                                                messageinc="Incorrecto. Selecciona la colonia"
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withicon={1}
-                                            />
-                                        }
-                                        {
-                                            form.cp === '' &&
-                                            <InputGray
-                                                letterCase={true}
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withplaceholder={1}
-                                                withicon={1}
-                                                requirevalidation={1}
-                                                withformgroup={1}
-                                                formeditado={formeditado}
-                                                readOnly
-                                                value={form.colonia}
-                                                name="colonia" type="text"
-                                                placeholder="SELECCIONA LA COLONIA"
-                                                iconclass={"fas fa-map-pin"}
-                                            />
-                                        }
-                                    </div>
-                                    <div className="col-md-7" hidden={form.cp === '' ? true : false}>
+                                    <div className="col-md-5">
                                         <InputGray
                                             letterCase={true}
                                             withtaglabel={1}
                                             withtextlabel={1}
                                             withplaceholder={1}
                                             withicon={1}
-                                            requirevalidation={1}
-                                            withformgroup={1}
+                                            requirevalidation={0}
+                                            withformgroup={0}
+                                            formeditado={formeditado}
+                                            value={form.colonia}
+                                            onChange={onChange}
+                                            name="colonia"
+                                            type="text"
+                                            placeholder="COLONIA"
+                                            iconclass={"fas fa-map-pin"}
+                                        />
+                                    </div>
+                                    <div className="col-md-7">
+                                        <InputGray
+                                            letterCase={true}
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            requirevalidation={0}
+                                            withformgroup={0}
                                             formeditado={formeditado}
                                             name="calle"
                                             value={form.calle}
