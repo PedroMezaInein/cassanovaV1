@@ -5,7 +5,7 @@ import { Button } from '../../../components/form-components'
 import ClienteForm from '../../../components/forms/ClienteForm'
 import Layout from '../../../components/layout/layout'
 import { Modal } from '../../../components/singles'
-import { CP_URL, URL_DEV, TOKEN_CP } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import axios from 'axios'
 import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAlert, createAlertSA2WithCloseAndHtml } from '../../../functions/alert'
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
@@ -13,7 +13,6 @@ import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 import { ProyectoCard } from '../../../components/cards'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
-import { setSingleHeader } from '../../../functions/routers'
 class Contratar extends Component {
     state = {
         modal: false,
@@ -265,20 +264,6 @@ class Contratar extends Component {
         })
     }
 
-    changeCP = event => {
-        const { value, name } = event.target
-        this.onChange({ target: { name: name, value: value } })
-        if (value.length === 5)
-            this.cpAxios(value)
-    }
-
-    onChangeCPProyecto = event => {
-        const { value, name } = event.target
-        this.onChangeProyecto({ target: { name: name, value: value } })
-        if (value.length === 5)
-            this.cpProyectosAxios(value)
-    }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -405,14 +390,14 @@ class Contratar extends Component {
                     const { history } = this.props;
                     createAlertSA2WithCloseAndHtml(
                         <div>
-                            <h2 className = 'swal2-title mb-4 mt-2'>
+                            <h2 className = 'swal2-title mb-10 mt-2'>
                                 <span className="text-primary">¡FELICIDADES!</span> CREASTE EL PROYECTO <span className="text-success">{proyecto.nombre}</span>
                             </h2>
                             <span className = 'mb-2'>
                                 ¿DESEAS CREAR LA CAJA CHICA?
                             </span>
                             <form id = 'formulario_swal' name = 'formulario_swal'>
-                                <div className="form-group">
+                                <div className="my-5">
                                     <div className="radio-inline">
                                         <label className="radio">
                                             <input type = "radio" name = 'caja' value = { true } />Si
@@ -484,64 +469,7 @@ class Contratar extends Component {
             console.log(error, 'error')
         })
     }
-    async cpAxios(value) {
-        //https://apisgratis.com/api/codigospostales/v2/colonias/cp/?valor=03810
-        //https://mexico-zip-codes.p.rapidapi.com/codigo_postal/64630
-        await axios.get(`https://apisgratis.com/api/codigospostales/v2/entidades`).then(
-            (response) => {
-                console.log(response.data)
-                /* const { estatus } = response.data
-                const { form, options } = this.state
-                if (estatus  === 'si') {
-                    const { municipio, estado, asentamientos } = response.data.data
-                    form['municipio'] = municipio.toUpperCase()
-                    form['estado'] = estado.toUpperCase()
-                    let aux = []
-                    asentamientos.forEach((element) => {
-                        aux.push({ name: element.nombre.toString().toUpperCase(), value: element.nombre.toString().toUpperCase() })
-                    })
-                    options['colonias'] = aux
-                    form.colonias = aux
-                    this.setState({
-                        ...this.state,
-                        form,
-                        options
-                    })
-                } */
-            }, (error) => { errorAlert('MESSAGE') }
-        ).catch((error) => {
-            console.log('error catch', error)
-        })
-    }
 
-    async cpProyectosAxios(value) {
-        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
-            (response) => {
-                const { error } = response.data
-                const { formProyecto, options } = this.state
-                if (!error) {
-                    const { municipio, estado, asentamiento } = response.data.response
-                    formProyecto['municipio'] = municipio.toUpperCase()
-                    formProyecto['estado'] = estado.toUpperCase()
-                    let aux = []
-                    asentamiento.map((element) => {
-                        aux.push({ name: element.toString().toUpperCase(), value: element.toString().toUpperCase() })
-                        return false
-                    })
-                    options['colonias'] = aux
-                    this.setState({
-                        ...this.state,
-                        formProyecto,
-                        options
-                    })
-                }
-            },
-            (error) => {
-            }
-        ).catch((error) => {
-            console.log('error catch', error)
-        })
-    }
     tagInputChange = (nuevosCorreos) => {
         const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
         const { formProyecto } = this.state 
@@ -589,16 +517,16 @@ class Contratar extends Component {
         const { options } = this.state
         options.cp_clientes.forEach((cliente) => {
             if (formProyecto.cp_ubicacion === cliente.value) {
-                let coloniaM = cliente.colonia.toUpperCase()
                 formProyecto.cp = cliente.cp
-                this.cpProyectosAxios(cliente.cp)
-                formProyecto.colonia = coloniaM
+                formProyecto.estado = cliente.estado
+                formProyecto.municipio = cliente.municipio
+                formProyecto.colonia = cliente.colonia
                 formProyecto.calle = cliente.calle
             }else if(options.cp_clientes.length === 1){
-                let coloniaM = cliente.colonia.toUpperCase()
                 formProyecto.cp = cliente.cp
-                this.cpProyectosAxios(cliente.cp)
-                formProyecto.colonia = coloniaM
+                formProyecto.estado = cliente.estado
+                formProyecto.municipio = cliente.municipio
+                formProyecto.colonia = cliente.colonia
                 formProyecto.calle = cliente.calle
             }
         })
@@ -708,8 +636,7 @@ class Contratar extends Component {
                             onChange = { this.onChangeProyecto } 
                             onChangeOptions = { this.onChangeOptions } 
                             removeCorreo = { this.removeCorreo } 
-                            deleteOption = { this.deleteOption } 
-                            onChangeCP = { this.onChangeCPProyecto }
+                            deleteOption = { this.deleteOption }
                             tagInputChange={(e) => this.tagInputChange(e)}
                             onChangeRange = { this.onChangeRange }
                             onSubmit = { this.onSubmit }
@@ -747,7 +674,7 @@ class Contratar extends Component {
                 </Card>
                 <Modal size = 'xl' title = 'Nuevo cliente' show = { modal }
                     handleClose = { this.handleClose }>
-                        <ClienteForm formeditado = { 0 } form = { form } onChange = { this.onChange } changeCP = { this.changeCP } onSubmit = { this.onSubmitCliente } 
+                        <ClienteForm formeditado = { 0 } form = { form } onChange = { this.onChange } onSubmit = { this.onSubmitCliente } 
                             className="mt-4" />
                 </Modal>
                 <Modal size="lg" show = { modalCP } title = 'ACTUALIZAR DATOS DEL CLIENTE' handleClose = { this.handleCloseCP } >

@@ -716,7 +716,7 @@ class LeadLlamadaSalida extends Component {
                                             (e) => {
                                                 e.preventDefault();
                                                 questionAlert2(
-                                                    '¿Deseas enviar correo al cliente?',
+                                                    '¿DESEAS ENVIAR CORREO AL CLIENTE?',
                                                     '',
                                                     () => { this.onSubmit() },
                                                     <form id = 'sendCorreoForm' name = 'sendCorreoForm' >
