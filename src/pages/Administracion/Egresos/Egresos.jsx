@@ -1011,7 +1011,7 @@ class egresos extends Component {
         })
         waitAlert();
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'exportar/egresos', { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'v2/exportar/administracion/egresos', { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
