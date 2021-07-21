@@ -238,12 +238,9 @@ class ActualizarPresupuestoForm extends Component {
                                             <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Unidad</div>
                                             </th>
-                                            {
-                                                presupuesto.estatus.estatus === 'Costos' &&
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-sm text-center">Costo</div>
-                                                </th>
-                                            }
+                                            <th className="border-0 center_content">
+                                                <div className="font-size-sm text-center">Costo</div>
+                                            </th>
                                             <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Cantidad Preliminar</div>
                                             </th>
@@ -375,12 +372,9 @@ class ActualizarPresupuestoForm extends Component {
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
                                                             </td>
-                                                            {
-                                                                presupuesto.estatus.estatus === 'Costos' &&
-                                                                    <td className="text-center">
-                                                                        <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
-                                                                    </td>
-                                                            }
+                                                            <td className="text-center">
+                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
+                                                            </td>
                                                         </tr>
                                                         {
                                                             form.conceptos[key].mensajes.active ?
