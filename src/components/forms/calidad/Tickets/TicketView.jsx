@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
-import { Card, Nav, Tab, Dropdown } from 'react-bootstrap'
+import { Card, Nav, Tab, Dropdown, Col, Row } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm } from '../../../../components/forms';
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudCompraForm, SolicitudVentaForm } from '../../../../components/forms';
 import { Button } from '../../../form-components'
 import moment from 'moment'
 import 'moment/locale/es'
 import imageCompression from 'browser-image-compression';
 import { questionAlert, waitAlert } from '../../../../functions/alert';
 import { dayDMY } from '../../../../functions/setters'
-
+import { Modal } from '../../../../components/singles'
 class TicketView extends Component {
+    state ={
+        activeKeyNav:'adjuntos'
+    }
 
     getIniciales = nombre => {
         let aux = nombre.split(' ');
@@ -136,18 +139,27 @@ class TicketView extends Component {
             return true
         return false
     }
+    controlledNav = value => {
+        this.setState({
+            ...this.state,
+            activeKeyNav: value
+        })
+    }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
-        const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos } = this.props
+        const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
+            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud } = this.props
+        
+        const { activeKeyNav } = this.state
         return (
             <div className="p-0">
                 {/* ------------------------ { ANCHOR TAB CONTAINER } ------------------------ */}
                 {
                     data ? 
                         data.proyecto ?
-                            <Tab.Container defaultActiveKey="adjuntos">
+                            <Tab.Container defaultActiveKey={activeKeyNav}>
                                 <Card className = 'card card-custom gutter-b'>
                                     <Card.Body className="pb-0">
                                         <div className="d-flex">
@@ -261,7 +273,7 @@ class TicketView extends Component {
                                         <div className="separator separator-solid mt-6" />
                                         <div className="d-flex overflow-auto h-55px">
                                             <Nav className="nav nav-tabs nav-tabs-line-info nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end ">
-                                                <Nav.Item>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); this.controlledNav("adjuntos") }}>
                                                     <Nav.Link eventKey="adjuntos">
                                                         <span className="nav-icon">
                                                             <i className="las la-photo-video icon-lg mr-2"></i>
@@ -271,26 +283,42 @@ class TicketView extends Component {
                                                 </Nav.Item>
                                                 {
                                                     data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revisión' ?
-                                                        <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); } } >
+                                                        <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); this.controlledNav("presupuesto") } } >
                                                             <Nav.Link eventKey="presupuesto">
-                                                                <span className="nav-icon"> <i className="las la-file-invoice-dollar icon-lg mr-2" /> </span>
+                                                                <span className="nav-icon"> <i className="las la-file-invoice icon-lg mr-2" /> </span>
                                                                 <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                     : <></>
                                                 }
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); this.controlledNav("solicitud-compra") }}>
+                                                    <Nav.Link eventKey="solicitud-compra">
+                                                        <span className="nav-icon">
+                                                            <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
+                                                        </span>
+                                                        <span className="nav-text font-weight-bolder font-size-14px">Solicitud de compra</span>
+                                                    </Nav.Link>
+                                                </Nav.Item>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); this.controlledNav("solicitud-venta") }}>
+                                                    <Nav.Link eventKey="solicitud-venta">
+                                                        <span className="nav-icon">
+                                                            <i className="las la-clipboard-list icon-lg mr-2"></i>
+                                                        </span>
+                                                        <span className="nav-text font-weight-bolder font-size-14px">Solicitud de venta</span>
+                                                    </Nav.Link>
+                                                </Nav.Item>
                                             </Nav>
                                         </div>
                                     </Card.Body>
                                 </Card>
                                 <Tab.Content>
                                     <Tab.Pane eventKey="adjuntos">
-                                        <div className="row mx-0">
-                                            <div className="col-lg-12 px-0">
+                                        <Row className="mx-0">
+                                            <Col lg="12" className="px-0">
                                                 <Card className="card-custom gutter-b card-stretch">
-                                                    <Card.Header>
+                                                    <Card.Header className="border-0">
                                                         <Card.Title className="mb-0">
-                                                            <div className="font-weight-bolder font-size-h5">FOTOS DEL INCIDENTE</div>
+                                                            <div className="font-weight-bold font-size-h5">FOTOS DEL INCIDENTE</div>
                                                         </Card.Title>
                                                     </Card.Header>
                                                     <Card.Body className="p-9 pt-3">
@@ -298,8 +326,8 @@ class TicketView extends Component {
                                                             deleteFile = { deleteFile } />
                                                     </Card.Body>
                                                 </Card>
-                                            </div>
-                                        </div>
+                                            </Col>
+                                        </Row>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="presupuesto">
                                         {
@@ -324,11 +352,49 @@ class TicketView extends Component {
                                                 </ActualizarPresupuestoForm>
                                         }
                                     </Tab.Pane>
+                                    <Tab.Pane eventKey="solicitud-compra">
+                                        <SolicitudTabla type="compra" title="Historial de solicitud de compras" btn_title="SOLICITUD DE COMPRA" openModalAdd={openModalSolicitud}
+                                            openModalEditar={openModalEditarSolicitud} deleteSolicitud={deleteSolicitud}/>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="solicitud-venta">
+                                        <SolicitudTabla type="venta" title="Historial de solicitud de ventas" btn_title="SOLICITUD DE VENTA" openModalAdd={openModalSolicitud}
+                                            openModalEditar={openModalEditarSolicitud} deleteSolicitud={deleteSolicitud}/>
+                                    </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>
                         : <> </>
                     : <> </>
                 }
+                <Modal size="xl" title={title} show={modal.solicitud} handleClose={handleCloseSolicitud} >
+                    {
+                        activeKeyNav === 'solicitud-compra'?
+                        <SolicitudCompraForm
+                            form={formulario.solicitud}
+                            onChange={onChangeSolicitud}
+                            options={options}
+                            setOptions={setOptions}
+                            onSubmit={this.onSubmitSCompra}
+                            clearFiles={clearFiles}
+                            formeditado={formeditado}
+                            className="px-3"
+                            handleChange={handleChange}
+                        />
+                        : activeKeyNav === 'solicitud-venta' ?
+                        <SolicitudVentaForm
+                            title={title}
+                            form={formulario.solicitud}
+                            options={options}
+                            setOptions={setOptions}
+                            onChange={onChangeSolicitud}
+                            clearFiles={clearFiles}
+                            onSubmit={this.onSubmit}
+                            formeditado={formeditado}
+                            className="px-3"
+                            handleChange={handleChange}
+                        />
+                        :<></>
+                    }
+                </Modal>
             </div>
         )
     }
