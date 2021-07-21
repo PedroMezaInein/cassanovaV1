@@ -136,6 +136,46 @@ class TicketView extends Component {
             return true
         return false
     }
+
+    showStepOfPresupuesto = () => {
+        const { presupuesto } = this.props
+        if( presupuesto ){
+            if(presupuesto.estatus)
+                switch(presupuesto.estatus.estatus){
+                    case 'Conceptos':
+                    case 'Volumetrías':
+                        return <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
+                    case 'Costos':
+                        return <span className="nav-text font-weight-bolder font-size-14px">Estimación de costos</span>
+                    case 'Utilidad':
+                        return <span className="nav-text font-weight-bolder font-size-14px">Calculando utilidad</span>
+                    case 'En revisión':
+                        return <span className="nav-text font-weight-bolder font-size-14px">En revisión</span>
+                    case 'En espera':
+                        return <span className="nav-text font-weight-bolder font-size-14px">En espera del cliente</span>
+                }
+            return <span className="nav-text font-weight-bolder font-size-14px">No</span>
+        }
+        return <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
+    }
+
+    isButtonEnabled = () => {
+        const { presupuesto } = this.props
+        if( presupuesto ){
+            if(presupuesto.estatus)
+                switch(presupuesto.estatus.estatus){
+                    case 'Conceptos':
+                    case 'Volumetrías':
+                    case 'En revisión':
+                        return true
+                    default:
+                        return false
+                }
+            return true
+        }
+        return true
+    }
+
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos } = this.props
@@ -274,7 +314,7 @@ class TicketView extends Component {
                                                         <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); } } >
                                                             <Nav.Link eventKey="presupuesto">
                                                                 <span className="nav-icon"> <i className="las la-file-invoice-dollar icon-lg mr-2" /> </span>
-                                                                <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
+                                                                { this.showStepOfPresupuesto() }
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                     : <></>
@@ -310,9 +350,20 @@ class TicketView extends Component {
                                             :
                                                 <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
-                                                    checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } openModal={openModalConceptos}>
+                                                    checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
+                                                    openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } >
                                                     { 
-                                                        presupuesto.estatus.estatus = 'Conceptos'?
+                                                        presupuesto.estatus.estatus === 'En revisión'?
+                                                            this.calcularCantidades() ?
+                                                                <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2" 
+                                                                    onClick = { (e) => { e.preventDefault(); onClick('enviar_finanzas'); } } >
+                                                                    ENVIAR A FINANZAS
+                                                                </button>    
+                                                            : <></>
+                                                        : <></>
+                                                    }
+                                                    { 
+                                                        presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías' ?
                                                             this.calcularCantidades() ?
                                                                 <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2" 
                                                                     onClick = { (e) => { e.preventDefault(); onClick('enviar_compras'); } } >
