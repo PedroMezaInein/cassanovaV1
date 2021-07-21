@@ -120,6 +120,7 @@ class TicketDetails extends Component {
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
                 this.setState({ ...this.state, ticket: ticket, formularios, options })
+                if(ticket.presupuesto_preeliminar){ this.getPresupuestoAxios(ticket.presupuesto_id) }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -237,8 +238,8 @@ class TicketDetails extends Component {
                         id: concepto.id,
                         costo: concepto.costo,
                         importe: concepto.importe,
-                        unidad: concepto.concepto.unidad.nombre,
-                        unidad_id: concepto.concepto.unidad.id.toString()
+                        unidad: concepto.unidad.nombre,
+                        unidad_id: concepto.unidad.id.toString()
                     })
                 })
                 formularios.preeliminar.conceptos = aux
@@ -280,8 +281,10 @@ class TicketDetails extends Component {
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('Presupuesto actualizado con éxito',
-                    () => questionAlertY(`¡Listo!`, '¿Deseas enviar a compras tus volumetrías para la estimación de costos?', 
-                        () => this.patchPresupuesto('estatus', 'Costos'),
+                    () => questionAlertY(`¡Listo!`, 
+                        `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?' 
+                            : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
+                        () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
                         () => this.getPresupuestoAxios(presupuesto.id))
                 )
                 
@@ -622,6 +625,10 @@ class TicketDetails extends Component {
                 break;
             case 'enviar_compras':
                 questionAlertY(`¿Deseas enviar a compras?`, 'Enviarás a compras tus volumetrías para la estimación de costos', () => this.patchPresupuesto('estatus', 'Costos'))
+                break;
+            case 'enviar_finanzas':
+                questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
+                    () => this.patchPresupuesto('estatus', 'Utilidad'))
                 break;
             default: break;
         }
