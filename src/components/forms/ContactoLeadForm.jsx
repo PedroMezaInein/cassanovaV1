@@ -65,7 +65,7 @@ class ContactoLeadForm extends Component {
                             onChange={onChangeContacto}
                             value={formContacto.descripcion}
                             rows='2'
-                            style={{ paddingLeft: "10px" }}
+                            customclass="px-2"
                             messageinc="Incorrecto. Ingresa una descripción."
                         />
                     </div>

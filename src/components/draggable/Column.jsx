@@ -108,7 +108,7 @@ class Column extends Component {
                                         value={form.titulo}
                                         name='titulo'
                                         onChange={onChange}
-                                        style={{ paddingLeft: "10px" }}
+                                        customclass="px-2"
                                     />
                                 </div>
                                 <div className="col-md-2 px-0 text-center">

@@ -165,7 +165,7 @@ class ActualizarPresupuestoForm extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4">
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
                                                         <div className="d-flex align-items-center">
                                                             <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
                                                                 <div className="symbol-label">
@@ -178,6 +178,22 @@ class ActualizarPresupuestoForm extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    {
+                                                        typeof presupuesto.estatus.estatus === 'string' &&
+                                                        <div className="border border-gray-300 border-dashed rounded py-3 px-4">
+                                                            <div className="d-flex align-items-center">
+                                                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                                    <div className="symbol-label">
+                                                                        <i className="las la-check-circle icon-2x text-primary"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="font-size-h5 font-weight-bold">
+                                                                    { presupuesto.estatus.estatus }
+                                                                    <div className="font-weight-normal font-size-lg text-muted">Estatus</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -188,9 +204,9 @@ class ActualizarPresupuestoForm extends Component {
                     </Card>
                     <Card className="mt-4 card-custom">
                         <Card.Header>
-                            <div className="card-title">
-                                <h3 className="card-label">Presupuesto Preliminar</h3>
-                            </div>
+                            <Card.Title>
+                                <div className="font-weight-bold font-size-h5">Presupuesto Preliminar</div>
+                            </Card.Title>
                             <div className="card-toolbar" >
                                 {children}
                                 <button type="button" className="btn btn-sm btn-light-info font-weight-bolder font-size-13px" onClick={openModal}>
@@ -222,12 +238,9 @@ class ActualizarPresupuestoForm extends Component {
                                             <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Unidad</div>
                                             </th>
-                                            {
-                                                !showInputsCalidad &&
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-sm text-center">Costo</div>
-                                                </th>
-                                            }
+                                            <th className="border-0 center_content">
+                                                <div className="font-size-sm text-center">Costo</div>
+                                            </th>
                                             <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Cantidad Preliminar</div>
                                             </th>
@@ -359,12 +372,9 @@ class ActualizarPresupuestoForm extends Component {
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
                                                             </td>
-                                                            {
-                                                                !showInputsCalidad &&
-                                                                    <td className="text-center">
-                                                                        <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
-                                                                    </td>
-                                                            }
+                                                            <td className="text-center">
+                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
+                                                            </td>
                                                         </tr>
                                                         {
                                                             form.conceptos[key].mensajes.active ?

@@ -154,7 +154,7 @@ class AvanceForm extends Component {
                                                                                             value={form['avances'][key]['descripcion']}
                                                                                             onChange={e => onChangeAvance(key, e, 'descripcion')}
                                                                                             messageinc="Ingresa la descripción."
-                                                                                            style={{ paddingLeft: "10px" }}
+                                                                                            customclass="px-2"
                                                                                             customstyle={{ borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
                                                                                         />
                                                                                     </td>

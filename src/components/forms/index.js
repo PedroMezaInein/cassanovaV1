@@ -54,6 +54,7 @@ import diseñoForm from './catalogos/DiseñoForm'
 import obraForm from './catalogos/ObraForm'
 import ticketView from './calidad/Tickets/TicketView' 
 //import ticketView2 from './calidad/Tickets/TicketView2' 
+import SolicitudTabla from './calidad/Tickets/SolicitudTabla'
 import procesoTicketForm from './calidad/ProcesoTicketForm'
 import CartasCalidadForm from './calidad/CartasCalidadForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
@@ -224,4 +225,4 @@ export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
-    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket}
+    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla}

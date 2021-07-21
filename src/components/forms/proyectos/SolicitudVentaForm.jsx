@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
-import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup } from '../../form-components'
+import { Form, Row, Col } from 'react-bootstrap'
+import { Input, Select, SelectSearch, Button, InputMoney, RadioGroup, CalendarDay } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import { ItemSlider } from '../../../components/singles';
@@ -47,12 +47,6 @@ class SolicitudVentaForm extends Component {
         onChange({ target: { name: 'subarea', value: value.toString() } })
     }
 
-
-    handleChangeDate = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fecha' } })
-    }
-
     render() {
         const { title, options, form, onChange, children, clearFiles, onSubmit, formeditado, setOptions,handleChange, ...props } = this.props
         return (
@@ -95,7 +89,6 @@ class SolicitudVentaForm extends Component {
                         >
                             {children}
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
-                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
                                         <SelectSearch
@@ -117,6 +110,7 @@ class SolicitudVentaForm extends Component {
                                             value={form.empresa}
                                             onChange={this.updateEmpresa}
                                             messageinc="Incorrecto. Selecciona la empresa"
+                                            iconclass='far fa-building'
                                         />
                                     </div>
                                 </div>
@@ -156,31 +150,27 @@ class SolicitudVentaForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
-                                <div className="form-group row form-group-marginless">
-                                    <div className={form.area.length ?'col-md-4':'col-md-6'}>
-                                        <Calendar
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="FECHA"
-                                            name="fecha"
-                                            value={form.fecha}
-                                        />
-                                    </div>
-                                    <div className={form.area.length ?'col-md-4':'col-md-6'}>
-                                        <SelectSearch
-                                            formeditado={formeditado}
-                                            options={options.areas}
-                                            placeholder="SELECCIONA EL ÁREA"
-                                            name="areas"
-                                            value={form.area}
-                                            onChange={this.updateArea}
-                                            messageinc="Incorrecto. Selecciona el área"
-                                        />
-                                    </div>
-                                    {
-                                        form.area ?
-                                            <div className={form.area.length ?'col-md-4':'col-md-6'}>
+                                <Row className="mx-0">
+                                    <Col md="4" className="text-center">
+                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                            <label className="text-center font-weight-bolder">Fecha</label>
+                                        </div>
+                                        <CalendarDay value={form.fecha} name='fecha' onChange={onChange} date={form.fecha} withformgroup={0} requirevalidation={0}/>
+                                    </Col>
+                                    <Col md="8" className="align-self-center">
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-6">
+                                                <SelectSearch
+                                                    formeditado={formeditado}
+                                                    options={options.areas}
+                                                    placeholder="SELECCIONA EL ÁREA"
+                                                    name="areas"
+                                                    value={form.area}
+                                                    onChange={this.updateArea}
+                                                    messageinc="Incorrecto. Selecciona el área"
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.subareas}
@@ -191,26 +181,26 @@ class SolicitudVentaForm extends Component {
                                                     messageinc="Incorrecto. Selecciona el subárea"
                                                 />
                                             </div>
-                                            : ''
-                                    }
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            as="textarea"
-                                            placeholder="DESCRIPCIÓN"
-                                            rows="3"
-                                            value={form.descripcion}
-                                            name="descripcion"
-                                            onChange={onChange}
-                                            style={{ paddingLeft: "10px" }}
-                                            messageinc="Incorrecto. Ingresa la descripción."
-                                        />
-                                    </div>
-                                </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="row form-group-marginless">
+                                            <div className="col-md-12">
+                                                <Input
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    as="textarea"
+                                                    placeholder="DESCRIPCIÓN"
+                                                    rows="3"
+                                                    value={form.descripcion}
+                                                    name="descripcion"
+                                                    onChange={onChange}
+                                                    customclass="px-2"
+                                                    messageinc="Incorrecto. Ingresa la descripción."
+                                                />
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
@@ -221,7 +211,6 @@ class SolicitudVentaForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Selecciona el presupuesto</h5>
                                 <div className="form-group row form-group-marginless mb-0">
                                     <div className="col-md-6 d-flex align-items-center d-flex justify-content-center">
                                         <RadioGroup
@@ -243,7 +232,7 @@ class SolicitudVentaForm extends Component {
                                             value={form.factura}
                                         />
                                     </div>
-                                    <div className="col-md-4 text-center">
+                                    <div className="col-md-6 text-center">
                                         <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
                                         <ItemSlider
                                             items={form.adjuntos.adjunto.files}

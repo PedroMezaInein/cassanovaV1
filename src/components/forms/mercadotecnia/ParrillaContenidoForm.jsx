@@ -261,7 +261,7 @@ class ParrillaContenidoForm extends Component {
                                         <div className="col-md-12">
                                             <Input requirevalidation={0} formeditado={formeditado} name="copy" value={form.copy}
                                                 onChange={onChange} type="text" placeholder="COPY" messageinc="Incorrecto. Ingresa el copy."
-                                                spellCheck={true} letterCase={false} as="textarea" rows="5" style={{ paddingLeft: "10px" }}
+                                                spellCheck={true} letterCase={false} as="textarea" rows="5" customclass="px-2"
                                                 customicon="d-none" />
                                         </div>
                                     </div>
