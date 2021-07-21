@@ -140,7 +140,7 @@ class ProspectoForm extends Component {
                                             name="descripcion"
                                             onChange={onChange}
                                             value={form.descripcion}
-                                            style={{ paddingLeft: "10px" }}
+                                            customclass="px-2"
                                             messageinc="Incorrecto. Ingresa una descripción."
                                         />
                                     </div>
@@ -154,7 +154,7 @@ class ProspectoForm extends Component {
                                             name="motivo"
                                             onChange={onChange}
                                             value={form.motivo}
-                                            style={{ paddingLeft: "10px" }}
+                                            customclass="px-2"
                                             messageinc="Incorrecto. Ingresa el motivo."
                                         />
                                     </div>

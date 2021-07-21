@@ -449,7 +449,7 @@ class ProyectosForm extends Component {
                                                     name="descripcion"
                                                     onChange={onChange}
                                                     value={form.descripcion}
-                                                    style={{ paddingLeft: "10px" }}
+                                                    customclass="px-2"
                                                     messageinc="Incorrecto. Ingresa una descripción."
                                                 />
                                             </div>

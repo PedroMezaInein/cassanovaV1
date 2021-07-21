@@ -171,7 +171,7 @@ class SolicitudEgresosForm extends Component {
                                                         value={form.descripcion}
                                                         name="descripcion"
                                                         onChange={onChange}
-                                                        style={{ paddingLeft: "10px" }}
+                                                        customclass="px-2"
                                                         messageinc="Incorrecto. Ingresa la descripción."
                                                     />
                                                 </div>

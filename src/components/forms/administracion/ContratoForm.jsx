@@ -121,7 +121,7 @@ class ContratoForm extends Component {
                             onChange={onChange}
                             value={form.descripcion}
                             messageinc="Incorrecto. Ingresa la descripción."
-                            style={{ paddingLeft: "10px" }}
+                            customclass="px-2"
                         />
                     </div>
                 </div>

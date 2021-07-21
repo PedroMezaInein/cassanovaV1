@@ -299,7 +299,7 @@ class EgresosForm extends Component {
                                             name="descripcion"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa la descripción."
-                                            style={{ paddingLeft: "10px" }}
+                                            customclass="px-2"
                                         />
                                     </div>
                                 </div>

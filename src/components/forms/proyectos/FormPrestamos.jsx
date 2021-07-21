@@ -85,7 +85,7 @@ class FormPrestamos extends Component {
                                         name="comentario"
                                         value={form.comentario}
                                         onChange={onChange}
-                                        style={{ paddingLeft: "10px" }}
+                                        customclass="px-2"
                                         messageinc="Incorrecto. Ingresa tu comentario."
                                     />
                                 </div>

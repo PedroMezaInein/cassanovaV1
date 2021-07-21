@@ -115,7 +115,7 @@ class ConceptoForm extends Component {
                             name="descripcion"
                             onChange={onChange}
                             messageinc="Incorrecto. Ingresa una descripción."
-                            style={{ paddingLeft: "10px" }}
+                            customclass="px-2"
                         />
                     </div>
                 </div>
