@@ -90,7 +90,7 @@ class ActualizarPresupuestoForm extends Component {
         onChange(key, { target: { value: value, name: 'unidad_id' } }, 'unidad_id')
     }
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options, isButtonEnabled } = this.props
         const { desperdicio } = this.state
         if (presupuesto)
             return (
@@ -384,9 +384,14 @@ class ActualizarPresupuestoForm extends Component {
                                         }
                                     </tbody>
                                 </table>
-                                <div className="mt-3 text-center">
-                                    <Button icon = '' className = "mx-auto" onClick={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } text="ENVIAR" />
-                                </div>
+                                {
+                                    isButtonEnabled !== false ?
+                                        <div className="mt-3 text-center">
+                                            <Button icon = '' className = "mx-auto" onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } 
+                                                text="ENVIAR" />
+                                        </div>
+                                    : <></>
+                                }
                             </Form>
                         </Card.Body>
                     </Card>
