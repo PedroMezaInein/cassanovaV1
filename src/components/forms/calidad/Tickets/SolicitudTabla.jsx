@@ -3,7 +3,6 @@ import { Card } from 'react-bootstrap'
 export default class SolicitudesTabla extends Component {
     render() {
         const { type, title, btn_title, openModalAdd, openModalEditar, deleteSolicitud } = this.props
-        // console.log(type, 'type')
         return (
             <>
                 <Card className="card-custom gutter-b card-stretch">

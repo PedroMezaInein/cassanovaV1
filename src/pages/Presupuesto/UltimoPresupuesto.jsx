@@ -4,7 +4,7 @@ import axios from "axios"
 import Swal from 'sweetalert2'
 import { URL_DEV } from "../../constants"
 import { setOptions } from "../../functions/setters"
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../functions/alert"
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlertY } from "../../functions/alert"
 import Layout from "../../components/layout/layout"
 import { UltimoPresupuestoForm } from "../../components/forms"
 import FloatButtons from '../../components/singles/FloatButtons'
@@ -223,11 +223,6 @@ class UltimoPresupuesto extends Component {
             form
         })
     }
-    generarPDF = e => {
-        e.preventDefault()
-        waitAlert()
-        this.generarPDFAxios()
-    }
     aceptarPresupuesto = e => {
         e.preventDefault()
         waitAlert()
@@ -306,6 +301,12 @@ class UltimoPresupuesto extends Component {
             console.log(error, 'error')
         })
     }
+    
+    generarPDF = e => {
+        e.preventDefault()
+        waitAlert()
+        this.generarPDFAxios()
+    }
     async generarPDFAxios() {
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
@@ -358,7 +359,7 @@ class UltimoPresupuesto extends Component {
     sendPresupuesto = e => {
         e.preventDefault()
         waitAlert()
-        this.sendPresupuestoAxios()
+        questionAlertY(`¿DESEAS ENVIAR EL PRESUPUESTO AL CLIENTE?`, '¡NO PODRÁS REVERTIR ESTO!', () => this.sendPresupuestoAxios())
     }
     async sendPresupuestoAxios() {
         // const { access_token } = this.props.authUser
@@ -388,12 +389,12 @@ class UltimoPresupuesto extends Component {
                     form={form}
                     onChange={this.onChange}
                     checkButton={this.checkButton}
-                    onSubmit={this.generarPDF}
+                    generarPDF={this.generarPDF}
                     presupuesto={presupuesto}
                     {...this.props}
                     onChangeInput={this.onChangeInput}
                     // aceptarPresupuesto={this.aceptarPresupuesto}
-                    sendPresupuestoAxios={this.sendPresupuesto}
+                    sendPresupuesto={this.sendPresupuesto}
                 />
                 <FloatButtons
                     save={this.save}

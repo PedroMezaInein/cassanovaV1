@@ -464,12 +464,92 @@ class TicketDetails extends Component {
             console.log(error, 'error')
         })
     }
-    deleteSolicitud = solicitud => {
-        deleteAlert('¿DESEAS ELIMINAR LA SOLICITUD DE COMPRA?', '', () => this.deleteSolicitudAxios(solicitud.id))
-    }
-    deleteSolicitudAxios = async(id) => {
+    async addSolicitudVentaAxios() {
         const { access_token } = this.props.authUser
-        await axios.delete(`${URL_DEV}solicitud-compra/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        await axios.post(URL_DEV + 'solicitud-venta', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async editSolicitudVentaAxios() {
+        const { access_token } = this.props.authUser
+        const { form, solicitud } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+            }
+            data.append('adjuntos[]', element)
+            return false
+        })
+        await axios.post(URL_DEV + 'solicitud-venta/update/' + solicitud.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue editada con éxito.')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    deleteSolicitud = (type, solicitud) => {
+        deleteAlert(`¿DESEAS ELIMINAR LA SOLICITUD DE ${type}?`, '', () => this.deleteSolicitudAxios(solicitud.id, type))
+    }
+    deleteSolicitudAxios = async(id, type) => {
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}solicitud-${type}/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue eliminada con éxito.')
                 
@@ -556,14 +636,14 @@ class TicketDetails extends Component {
         const { modal, formularios, ticket } = this.state
         let { title } = this.state
         switch(type){
-            case 'compra':
+            case 'COMPRA':
                 title = 'Nueva solicitud de compra'
                 this.getOptionsAxios()
                 modal.solicitud = true
                 formularios.solicitud.empresa = ticket.proyecto.empresa.name
                 formularios.solicitud.proyecto = ticket.proyecto.id.toString()
                 break;
-            case 'venta':
+            case 'VENTA':
                 title = 'Nueva solicitud de venta'
                 this.getOptionsAxios()
                 modal.solicitud = true
@@ -674,12 +754,12 @@ class TicketDetails extends Component {
         const { modal } = this.state
         let { title } = this.state
         switch(type){
-            case 'compra':
+            case 'COMPRA':
                 title = 'Editar solicitud de compra'
                 this.getOptionsAxios()
                 modal.solicitud = true
                 break;
-            case 'venta':
+            case 'VENTA':
                 title = 'Editar solicitud de venta'
                 this.getOptionsAxios()
                 modal.solicitud = true
@@ -901,6 +981,15 @@ class TicketDetails extends Component {
         else
             this.addSolicitudCompraAxios()
     }
+    onSubmitSVenta = e => {
+        e.preventDefault()
+        const { title } = this.state
+        waitAlert()
+        if (title === 'Editar solicitud de venta')
+            this.editSolicitudVentaAxios()
+        else
+            this.addSolicitudVentaAxios()
+    }
 
     deleteFile = element => {
         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => { this.deleteAdjuntoAxios(element.id) } )
@@ -949,8 +1038,9 @@ class TicketDetails extends Component {
                     openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
                     onSubmit = { this.onSubmit } openModalConceptos={this.openModalConceptos} deleteFile = { this.deleteFile } 
-                    openModalSolicitud={this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} 
-                    onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} openModalEditarSolicitud = { this.openModalEditarSolicitud} deleteSolicitud={this.deleteSolicitud}
+                    openModalSolicitud={this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} formeditado={formeditado}
+                    onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} openModalEditarSolicitud = { this.openModalEditarSolicitud}
+                    deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} onSubmitSVenta={this.onSubmitSVenta}
                 />
                 <Modal size="xl" title='Agregar concepto' show={modal.conceptos} handleClose={this.handleCloseConceptos} >
                     <AgregarConcepto
