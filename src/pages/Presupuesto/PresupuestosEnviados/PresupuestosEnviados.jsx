@@ -1,423 +1,222 @@
 import React, { Component } from "react"
+import { renderToString } from "react-dom/server";
 import { connect } from "react-redux"
-import axios from "axios"
-import Swal from 'sweetalert2'
-import { URL_DEV } from "../../../constants"
-import { setOptions } from "../../../functions/setters"
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../../functions/alert"
 import Layout from "../../../components/layout/layout"
-import { UltimoPresupuestoForm } from "../../../components/forms"
-import FloatButtons from '../../../components/singles/FloatButtons'
-import { save, deleteForm } from '../../../redux/reducers/formulario'
-class PresupuestosEnviados extends Component {
-    state = {
-        formeditado: 0,
-        presupuesto: '',
-        form: {
-            unidad: '',
-            partida: '',
-            subpartida: '',
-            descripcion: '',
-            costo: '',
-            proveedor: '',
-            tiempo_valido: '',
-            conceptos: [{
-                descipcion: '',
-                costo: '',
-                cantidad_preliminar: '',
-                desperdicio: '',
-                active: true,
-                cantidad: 0,
-                importe: 0,
-                id: '',
-                margen: '',
-                precio_unitario: ''
-            }],
-            fecha_creacion: new Date(),
-            fecha_aceptacion: '',
-        },
-        options: {
-            unidades: [],
-            partidas: [],
-            subpartidas: [],
-            proveedores: [],
-        },
-        data: {
-            partidas: [],
-            subpartidas: [],
-            conceptos: []
-        },
-    };
+import { NewTable } from '../../../components/NewTables';
+import { PRESUPUESTO_UTILIDAD_COLUMNS, URL_DEV } from "../../../constants";
+import { setTextTable, setLabelTable, setTextTableCenter, setDateTable, setOptions } from "../../../functions/setters";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from "../../../functions/alert";
+import { setSingleHeader } from "../../../functions/routers";
+import axios from 'axios'
+import $ from "jquery";
+import { Modal } from '../../../components/singles'
+import { InputGray, SelectSearchGray, RangeCalendar, Button } from "../../../components/form-components";
+import Swal from 'sweetalert2'
 
+const DatatableName = 'presupuestos'
+class PresupuestosEnviados extends Component {
+
+    state = { 
+        modal: false,
+        filters: {
+            proyecto: '',
+            fecha: { start: null, end: null },
+            empresa: '',
+            area: '',
+            tiempo_ejecucion: ''
+        },
+        options: { empresas: [], areas: [] }
+    }
+    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props;
         const { history: { location: { pathname } } } = this.props;
         const { history, location: { state } } = this.props;
         const presupuesto = permisos.find(function (element, index) {
             const { modulo: { url } } = element;
-            return pathname === url + "/finish";
+            return pathname === url;
         });
-        if (state) {
-            if (state.presupuesto) {
-                const { presupuesto } = state
-                this.getOnePresupuestoAxios(presupuesto.id);
-            }
-        }
-        if (!presupuesto) history.push("/");
         this.getOptionsAxios()
     }
-    async getOptionsAxios() {
+
+    /* -------------------------------------------------------------------------- */
+    /*                             ANCHOR CALL TO BACK                            */
+    /* -------------------------------------------------------------------------- */
+
+    reloadTable = () => {
+        const { filters } = this.state
+        $(`#${DatatableName}`).DataTable().search(JSON.stringify(filters)).draw();
+    }
+
+    deletePresupuestoAxios = async (id) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuestos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                this.reloadTable()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getOptionsAxios = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'presupuestos/options', { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { empresas, proyectos, areas, partidas, proveedores, unidades, conceptos } = response.data
-                const { options, data } = this.state
-                data.partidas = partidas
-                let aux = {}
-                conceptos.map((concepto) => {
-                    return aux[concepto.clave] = false
-                })
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
+                const { empresas, areas } = response.data
+                const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['partidas'] = setOptions(partidas, 'nombre', 'id')
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                options['unidades'] = setOptions(unidades, 'nombre', 'id')
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async addConceptoAxios() {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { concepto } = response.data
-                this.addConceptoToPresupuestoAxios([concepto])
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, options })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async addConceptoToPresupuestoAxios(conceptos) {
-        const { access_token } = this.props.authUser
-        const { presupuesto } = this.state
-        let aux = {
-            conceptos: conceptos
-        }
-        await axios.post(URL_DEV + 'presupuestos/' + presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { presupuesto } = response.data
-                this.getOnePresupuestoAxios(presupuesto.id)
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-                this.setState({
-                    modal: false
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+    openModalFiltros = () => {
+        this.setState({...this.state, modal: true})
     }
-    setOptions = (name, array) => {
-        const { options } = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ...this.state,
-            options
-        })
-    }
-    onChangeConceptos = (e) => {
-        const { name, value } = e.target;
-        const { data, form, presupuesto } = this.state
-        switch (name) {
-            case 'partida':
-                data.partidas.map((partida) => {
-                    data.conceptos = []
-                    if (partida.id.toString() === value) 
-                        data.subpartidas = partida.subpartidas
-                    return false
-                })
-                break;
-            case 'subpartida':
-                data.subpartidas.map((subpartida) => {
-                    if (subpartida.id.toString() === value) 
-                        data.conceptos = subpartida.conceptos
-                    return false
-                })
-                let array = []
-                data.conceptos.map((concepto) => {
-                    let aux = false
-                    presupuesto.conceptos.map((concepto_form) => {
-                        if (concepto) {
-                            if (concepto.clave === concepto_form.concepto.clave) {
-                                aux = true
-                            }
-                        }
-                        return false
-                    })
-                    if (!aux) {
-                        array.push(concepto)
-                    }
-                    return false
-                })
-                break;
-            default:
-                break;
-        }
 
-        form[name] = value;
-        this.setState({
-            ...this.state,
-            form,
-            data
-        });
-    };
+    /* -------------------------------------------------------------------------- */
+    /*                               ANCHOR SETTERS                               */
+    /* -------------------------------------------------------------------------- */
 
-    onChange = (key, e, name) => {
-        let { value } = e.target
-        const { form } = this.state
-        if (name === 'margen') {
-            value = value.replace('%', '')
-        }
-        form.conceptos[key][name] = value
-        form.conceptos[key].precio_unitario = (form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100))).toFixed(2)
-        form.conceptos[key].importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad).toFixed(2)
-        this.setState({
-            ...this.state,
-            form
+    setPresupuestos = presupuestos => {
+        let aux = []
+        presupuestos.forEach((presupuesto) => {
+            aux.push(
+                {
+                    actions: this.setActions(presupuesto),
+                    estatus: renderToString( presupuesto.estatus ? setLabelTable(presupuesto.estatus) : ''),
+                    tipo_presupuesto:renderToString(this.label(presupuesto.hasTickets ? 'ticket' : 'presupuesto')),
+                    empresa: renderToString(setTextTableCenter(presupuesto.empresa ? presupuesto.empresa.name : '')),
+                    proyecto: renderToString(setTextTableCenter(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
+                    area: renderToString(setTextTableCenter(presupuesto.area ? presupuesto.area.nombre : '')),
+                    fecha: renderToString(setDateTable(presupuesto.fecha)),
+                    tiempo_ejecucion: renderToString(setTextTableCenter(presupuesto.tiempo_ejecucion))
+                }
+            )
         })
+        return aux
     }
-    checkButton = (key, e) => {
-        const { name, checked } = e.target
-        const { form, presupuesto } = this.state
-        form.conceptos[key][name] = checked
-        if (!checked) {
-            let pre = presupuesto.conceptos[key]
-            this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
-            this.onChange(key, { target: { value: pre.costo } }, 'costo')
-            this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
-            this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
-        }
-        this.setState({
-            ...this.state,
-            form
-        })
+
+    label(text){
+        return(
+            <div className='d-flex align-items-center justify-content-center'>
+                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+            </div>
+        )
     }
-    generarPDF = e => {
-        e.preventDefault()
-        waitAlert()
-        this.generarPDFAxios()
+
+    setActions = (element) => {
+        const { history } = this.props
+        return(
+            <div className="w-100 d-flex justify-content-center">
+                <OverlayTrigger overlay = { <Tooltip>Editar</Tooltip> }  >
+                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-success btn-hover-success`} 
+                        onClick = { (e) => { e.preventDefault(); history.push({ pathname: '/presupuesto/presupuestos-enviados/finish', 
+                            state: { presupuesto: element } }) } }>
+                        <i className = 'fas flaticon2-pen' />
+                    </button>
+                </OverlayTrigger>
+                <OverlayTrigger overlay = { <Tooltip>Eliminar</Tooltip> }  >
+                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
+                        onClick = { (e) => { e.preventDefault(); deleteAlert('¿Deseas continuar?', 'Eliminarás el presupuesto', 
+                        () => this.deletePresupuestoAxios(element.id))} }>
+                        <i className = 'flaticon2-rubbish-bin' />
+                    </button>
+                </OverlayTrigger>
+            </div>
+        )
     }
-    aceptarPresupuesto = e => {
-        e.preventDefault()
-        waitAlert()
-        this.aceptarPresupuestoAxios()
-    }
-    async aceptarPresupuestoAxios() {
-        const { access_token } = this.props.authUser
-        const { form, presupuesto } = this.state
-        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/aceptar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { presupuesto } = response.data
-                this.getOnePresupuestoAxios(presupuesto.id)
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-                const { history } = this.props
-                history.push({
-                    pathname: '/presupuesto/presupuesto'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async getOnePresupuestoAxios(id) {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { form } = this.state
-                const { presupuesto } = response.data
-                let aux = []
-                let mensajeAux = {}
-                presupuesto.conceptos.map((concepto) => {
-                    if (concepto.mensaje) {
-                        mensajeAux.active = true
-                        mensajeAux.mensaje = concepto.mensaje
-                    } else {
-                        mensajeAux.active = false
-                        mensajeAux.mensaje = ''
-                    }
-                    let precio_unitario = concepto.precio_unitario
-                    if (concepto.margen === 0) {
-                        precio_unitario = (concepto.costo / (1 - (concepto.margen / 100))).toFixed(2)
-                    }
-                    let importe = concepto.importe
-                    if (precio_unitario !== 0) {
-                        importe = (concepto.cantidad * precio_unitario).toFixed(2)
-                    }
-                    aux.push({
-                        descripcion: concepto.descripcion,
-                        costo: concepto.costo,
-                        margen: concepto.margen,
-                        cantidad: concepto.cantidad,
-                        precio_unitario: precio_unitario,
-                        importe: importe,
-                        active: concepto.active ? true : false,
-                        id: concepto.id,
-                    })
-                    return false
-                })
-                form.conceptos = aux
-                this.setState({
-                    ...this.state,
-                    presupuesto: presupuesto,
-                    form,
-                    formeditado: 1
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async generarPDFAxios() {
-        const { access_token } = this.props.authUser
-        const { form, presupuesto } = this.state
-        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { history } = this.props
-                history.push({
-                    pathname: '/presupuesto/presupuesto'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    save = () => {
-        const { form } = this.state
-        const { save } = this.props
-        let auxObject = {}
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            auxObject[element] = form[element]
-            return false
-        })
-        save({
-            form: auxObject,
-            page: 'presupuesto/presupuesto/finish'
-        })
-    }
-    recover = () => {
-        const { formulario, deleteForm } = this.props
-        this.setState({
-            ...this.state,
-            form: formulario.form
-        })
-        deleteForm()
-    }
-    onChangeInput = e => {
+
+    /* -------------------------------------------------------------------------- */
+    /*                             ANCHOR FORMULARIOS                             */
+    /* -------------------------------------------------------------------------- */
+
+    onChangeFilter = e => {
         const { name, value } = e.target
-        const { form } = this.state
-        form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        const { filters } = this.state
+        filters[name] = value
+        this.setState({...this.state, filters})
     }
-    sendPresupuesto = e => {
+
+    clearFiltros = (e) => {
         e.preventDefault()
-        waitAlert()
-        this.sendPresupuestoAxios()
+        const { filters } = this.state
+        filters.proyecto = ''
+        filters.area = ''
+        filters.empresa = ''
+        filters.fecha = { start: null, end: null }
+        filters.tiempo_ejecucion = ''
+        this.setState({...this.state, modal:false, filters})
+        this.reloadTable()
     }
-    async sendPresupuestoAxios() {
-        // const { access_token } = this.props.authUser
-        // const { form, presupuesto } = this.state
-        // await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-        //     (response) => {
-        //         const { history } = this.props
-        //         history.push({
-        //             pathname: '/presupuesto/presupuesto'
-        //         });
-        //     },
-        //     (error) => {
-        //         printResponseErrorAlert(error)
-        //     }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.log(error, 'error')
-        // })
+
+    onSubmitFilter = (e) => {
+        e.preventDefault()
+        this.setState({...this.state, modal:false})
+        this.reloadTable()
     }
+
     render() {
-        const { form, formeditado, presupuesto } = this.state;
-        const { formulario } = this.props
+        const { access_token } = this.props.authUser
+        const { modal, filters, options } = this.state
         return (
-            <Layout active={"presupuesto"} {...this.props}>
-                <UltimoPresupuestoForm
-                    formeditado={formeditado}
-                    form={form}
-                    onChange={this.onChange}
-                    checkButton={this.checkButton}
-                    onSubmit={this.generarPDF}
-                    presupuesto={presupuesto}
-                    {...this.props}
-                    onChangeInput={this.onChangeInput}
-                    // aceptarPresupuesto={this.aceptarPresupuesto}
-                    sendPresupuestoAxios={this.sendPresupuesto}
-                />
-                <FloatButtons
-                    save={this.save}
-                    recover={this.recover}
-                    formulario={formulario}
-                    descargar={() => this.generarPDFAxios()}
-                    url={'presupuesto/presupuesto/finish'}
-                    exportar={true}
-                />
+            <Layout active = "presupuesto" {...this.props}>
+                <NewTable tableName = { DatatableName } subtitle = 'Listado de Presupuestos a agregar utilidad' title = 'Presupuestos' 
+                    url = '/presupuesto/presupuesto/add' accessToken = { access_token } columns = { PRESUPUESTO_UTILIDAD_COLUMNS }  
+                    setter = { this.setPresupuestos } urlRender = {`${URL_DEV}v2/presupuesto/presupuestos/utilidad`} 
+                    filterClick = { this.openModalFiltros } />
+                <Modal size = 'lg' title = 'Filtros' show = { modal } handleClose = { this.handleCloseFiltros } customcontent = { true }
+                    contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                    <form onSubmit = { this.onSubmitFilter } >
+                        <div className="row justify-content-center mx-0">
+                            <div className="col-md-6">
+                                <InputGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
+                                    withformgroup = { 0 } name = 'proyecto' placeholder = 'PROYECTO' value = { filters.proyecto } 
+                                    onChange = { this.onChangeFilter } />
+                            </div>
+                            <div className="col-md-6">
+                                <SelectSearchGray options = { options.empresas } placeholder = 'EMPRESA' value = { filters.empresa } 
+                                    withtaglabel = { 1 } withtextlabel = { 0 } withicon={0} customdiv = 'mb-0' 
+                                    onChange = { (value) => { this.onChangeFilter({target:{name:'empresa',value:value}}) } } />
+                            </div>
+                            <div className="col-md-6">
+                                <SelectSearchGray options = { options.areas } placeholder = 'ÁREA' value = { filters.area } 
+                                    withtaglabel = { 1 } withtextlabel = { 0 } withicon={0} customdiv = 'mb-0' 
+                                    onChange = { (value) => { this.onChangeFilter({target:{name:'area',value:value}}) } } />
+                            </div>
+                            <div className="col-md-6">
+                                <InputGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
+                                    withformgroup = { 0 } name = 'tiempo_ejecucion' placeholder = 'TIEMPO EJECUCIÓN' value = { filters.tiempo_ejecucion } 
+                                    onChange = { this.onChangeFilter } />
+                            </div>
+                            <div className="col-md-9 my-6 text-center">
+                                <RangeCalendar start = { filters.fecha.start } end = { filters.fecha.end } 
+                                    onChange = { (value) => { this.onChangeFilter({target:{name:'fecha',value:{start: value.startDate, end: value.endDate}}}) } } />
+                            </div>
+                        </div>
+                        <div className="mx-0 row justify-content-between border-top pt-4">
+                            <Button only_icon='las la-redo-alt icon-lg' className="btn btn-light-danger btn-sm font-weight-bold" type = 'button' text="LIMPIAR" onClick = { this.clearFiltros } />
+                            <Button only_icon='las la-filter icon-xl' className="btn btn-light-info btn-sm font-weight-bold" type = 'submit' text="FILTRAR"  />
+                        </div>
+                    </form>
+                </Modal>
             </Layout>
         );
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser,
-        formulario: state.formulario
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-    save: payload => dispatch(save(payload)),
-    deleteForm: () => dispatch(deleteForm()),
-})
+const mapStateToProps = state => { return { authUser: state.authUser} }
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(PresupuestosEnviados);

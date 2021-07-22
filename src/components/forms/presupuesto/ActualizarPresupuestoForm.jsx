@@ -90,7 +90,7 @@ class ActualizarPresupuestoForm extends Component {
         onChange(key, { target: { value: value, name: 'unidad_id' } }, 'unidad_id')
     }
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options, isButtonEnabled } = this.props
         const { desperdicio } = this.state
         if (presupuesto)
             return (
@@ -165,7 +165,7 @@ class ActualizarPresupuestoForm extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4">
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4 mr-5">
                                                         <div className="d-flex align-items-center">
                                                             <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
                                                                 <div className="symbol-label">
@@ -178,6 +178,22 @@ class ActualizarPresupuestoForm extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    {
+                                                        typeof presupuesto.estatus.estatus === 'string' &&
+                                                        <div className="border border-gray-300 border-dashed rounded py-3 px-4">
+                                                            <div className="d-flex align-items-center">
+                                                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                                    <div className="symbol-label">
+                                                                        <i className="las la-check-circle icon-2x text-primary"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="font-size-h5 font-weight-bold">
+                                                                    { presupuesto.estatus.estatus }
+                                                                    <div className="font-weight-normal font-size-lg text-muted">Estatus</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -188,9 +204,9 @@ class ActualizarPresupuestoForm extends Component {
                     </Card>
                     <Card className="mt-4 card-custom">
                         <Card.Header>
-                            <div className="card-title">
-                                <h3 className="card-label">Presupuesto Preliminar</h3>
-                            </div>
+                            <Card.Title>
+                                <div className="font-weight-bold font-size-h5">Presupuesto Preliminar</div>
+                            </Card.Title>
                             <div className="card-toolbar" >
                                 {children}
                                 <button type="button" className="btn btn-sm btn-light-info font-weight-bolder font-size-13px" onClick={openModal}>
@@ -223,7 +239,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 <div className="font-size-sm text-center">Unidad</div>
                                             </th>
                                             {
-                                                !showInputsCalidad &&
+                                                (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
                                                 <th className="border-0 center_content">
                                                     <div className="font-size-sm text-center">Costo</div>
                                                 </th>
@@ -241,7 +257,7 @@ class ActualizarPresupuestoForm extends Component {
                                             </th>
                                             <th className="border-0 center_content"> <div className="font-size-sm text-center">Cantidad</div> </th>
                                             {
-                                                !showInputsCalidad &&
+                                                (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
                                                     <th className="border-0 center_content">
                                                         <div className="font-size-sm text-center">Importe</div>
                                                         <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
@@ -319,29 +335,24 @@ class ActualizarPresupuestoForm extends Component {
                                                                     disabled = { !form.conceptos[key].active } customclass='rounded-pill px-2 border text-justify' />
                                                             </td>
                                                             <td className="text-center">
-                                                                {
-                                                                    showInputsCalidad ?
-                                                                    <div className="unidad-tickets">
-                                                                        <SelectSearchGray
-                                                                            customstyle={{color:'#464E5F!important', fontWeight:'400!important'}}
-                                                                            formeditado={formeditado}
-                                                                            withtaglabel={0}
-                                                                            withtextlabel={0}
-                                                                            withicon={0}
-                                                                            customdiv = "mb-0"
-                                                                            customclass="form-control-sm rounded-pill px-2 border text-center bg-white"
-                                                                            options={options.unidades}
-                                                                            name="unidad_id"
-                                                                            value={form['conceptos'][key]['unidad_id']}
-                                                                            onChange={(e) => this.updateUnidad(e, key)}
-                                                                        />
-                                                                    </div>
-                                                                    :
-                                                                    <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
-                                                                }
+                                                                <div className="unidad-tickets">
+                                                                    <SelectSearchGray
+                                                                        customstyle={{ color: '#464E5F!important', fontWeight: '400!important' }}
+                                                                        formeditado={formeditado}
+                                                                        withtaglabel={0}
+                                                                        withtextlabel={0}
+                                                                        withicon={0}
+                                                                        customdiv="mb-0"
+                                                                        customclass="form-control-sm rounded-pill px-2 border text-center bg-white"
+                                                                        options={options.unidades}
+                                                                        name="unidad_id"
+                                                                        value={form['conceptos'][key]['unidad_id']}
+                                                                        onChange={(e) => this.updateUnidad(e, key)}
+                                                                    />
+                                                                </div>
                                                             </td>
                                                             {
-                                                                !showInputsCalidad &&
+                                                                (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
                                                                     <td className="text-center">
                                                                         <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "costo" 
                                                                             value = { form['conceptos'][key]['costo'] } onChange = { e => onChange(key, e, 'costo') }
@@ -365,10 +376,10 @@ class ActualizarPresupuestoForm extends Component {
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
                                                             </td>
                                                             {
-                                                                !showInputsCalidad &&
-                                                                    <td className="text-center">
-                                                                        <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
-                                                                    </td>
+                                                                (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
+                                                                <td className="text-center">
+                                                                    <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
+                                                                </td>
                                                             }
                                                         </tr>
                                                         {
@@ -389,9 +400,14 @@ class ActualizarPresupuestoForm extends Component {
                                         }
                                     </tbody>
                                 </table>
-                                <div className="mt-3 text-center">
-                                    <Button icon = '' className = "mx-auto" onClick={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } text="ENVIAR" />
-                                </div>
+                                {
+                                    isButtonEnabled !== false ?
+                                        <div className="mt-3 text-center">
+                                            <Button icon = '' className = "mx-auto" onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } 
+                                                text="ENVIAR" />
+                                        </div>
+                                    : <></>
+                                }
                             </Form>
                         </Card.Body>
                     </Card>

@@ -112,7 +112,7 @@ class BodegaForm extends Component {
                                 name="descripcion"
                                 value={form.descripcion}
                                 onChange={onChange}
-                                style={{ paddingLeft: "10px" }}
+                                customclass="px-2"
                                 messageinc="Ingresa la descripción."
                             />
                         </div>

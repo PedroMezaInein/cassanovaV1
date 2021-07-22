@@ -30,6 +30,15 @@ class TicketTable extends Component {
         });
         if (!leads)
             history.push('/')
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                const { history } = this.props
+                history.push({ pathname: '/calidad/tickets/detalles-ticket', state: { calidad: {id: id} } });
+            }
+        }
     }
 
     openModalDelete = calidad => {
@@ -74,6 +83,7 @@ class TicketTable extends Component {
             aux.push(
                 {
                     actions: this.setActions(calidad),
+                    identificador: renderToString(setTextTable(calidad.identificador)),
                     estatus: renderToString(setLabelTable(calidad.estatus_ticket)),
                     proyectos: renderToString(setTextTable(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
                     cliente: renderToString(setTextTableCenter(calidad.usuario ? calidad.usuario.name : '')),

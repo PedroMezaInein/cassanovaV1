@@ -2,7 +2,7 @@ import { Message, Done, Sending, Robot404, UserWarning, CommonLottie } from '../
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { QuestionBoy, UploadingFile } from '../assets/animate'
+import { QuestionBoy, Trash, UploadingFile } from '../assets/animate'
 import { ItemSlider } from '../components/singles'
 
 const MySwal = withReactContent(Swal)
@@ -198,6 +198,18 @@ export function deleteAlert(title,text,action, text_button) {
     MySwal.fire({
         title: title,
         text:text,
+        html: <div>
+            <div className="row mx-0 justify-content-center">
+                <div className="col-md-8">
+                    <CommonLottie animationData = { Trash } />
+                </div>
+            </div>
+            <div className="row row-paddingless form-group-marginless">
+                <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins" style = {{ textTransform: 'none' }} >
+                    {text}
+                </div>
+            </div>
+        </div>,
         showConfirmButton: true,
         showCancelButton: true,
         confirmButtonText: text_button? text_button: 'ELIMINAR',
