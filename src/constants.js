@@ -674,6 +674,17 @@ export const PRESUPUESTO_COLUMNS = [
     
 ]
 
+export const PRESUPUESTO_UTILIDAD_COLUMNS = [
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
+    { Header: 'Estatus', accessor: 'estatus' },
+    { Header: 'Tipo', accessor: 'tipo_presupuesto', orderable: false },
+    { Header: 'Empresa', accessor: 'empresa' },
+    { Header: 'Proyecto', accessor: 'proyecto' },
+    { Header: 'Área', accessor: 'area' },
+    { Header: 'Fecha del presupuesto', accessor: 'fecha' },
+    { Header: 'Tiempo de ejecución', accessor: 'tiempo_ejecucion' }   
+]
+
 export const USUARIOS = [                
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Nombre', accessor: 'name', customRender: true },
