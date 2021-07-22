@@ -33,10 +33,21 @@ class PresupuestosEnviados extends Component {
         const { authUser: { user: { permisos } } } = this.props;
         const { history: { location: { pathname } } } = this.props;
         const { history, location: { state } } = this.props;
-        const presupuesto = permisos.find(function (element, index) {
+        const modulo = permisos.find(function (element, index) {
             const { modulo: { url } } = element;
             return pathname === url;
         });
+        if (!modulo)
+            history.push('/')
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                const { history } = this.props
+                history.push({ pathname: '/presupuesto/presupuestos-enviados/finish', state: { presupuesto: {id: id} } });
+            }
+        }
         this.getOptionsAxios()
     }
 
