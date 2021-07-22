@@ -190,7 +190,7 @@ class TicketView extends Component {
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
-            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud } = this.props
+            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta } = this.props
         
         const { activeKeyNav } = this.state
         return (
@@ -404,11 +404,11 @@ class TicketView extends Component {
                                         }
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="solicitud-compra">
-                                        <SolicitudTabla type="compra" title="Historial de solicitud de compras" btn_title="SOLICITUD DE COMPRA" openModalAdd={openModalSolicitud}
+                                        <SolicitudTabla type="COMPRA" title="Historial de solicitud de compras" btn_title="SOLICITUD DE COMPRA" openModalAdd={openModalSolicitud}
                                             openModalEditar={openModalEditarSolicitud} deleteSolicitud={deleteSolicitud}/>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="solicitud-venta">
-                                        <SolicitudTabla type="venta" title="Historial de solicitud de ventas" btn_title="SOLICITUD DE VENTA" openModalAdd={openModalSolicitud}
+                                        <SolicitudTabla type="VENTA" title="Historial de solicitud de ventas" btn_title="SOLICITUD DE VENTA" openModalAdd={openModalSolicitud}
                                             openModalEditar={openModalEditarSolicitud} deleteSolicitud={deleteSolicitud}/>
                                     </Tab.Pane>
                                 </Tab.Content>
@@ -424,7 +424,7 @@ class TicketView extends Component {
                             onChange={onChangeSolicitud}
                             options={options}
                             setOptions={setOptions}
-                            onSubmit={this.onSubmitSCompra}
+                            onSubmit={onSubmitSCompra}
                             clearFiles={clearFiles}
                             formeditado={formeditado}
                             className="px-3"
@@ -438,7 +438,7 @@ class TicketView extends Component {
                             setOptions={setOptions}
                             onChange={onChangeSolicitud}
                             clearFiles={clearFiles}
-                            onSubmit={this.onSubmit}
+                            onSubmit={onSubmitSVenta}
                             formeditado={formeditado}
                             className="px-3"
                             handleChange={handleChange}
