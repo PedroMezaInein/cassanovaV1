@@ -135,7 +135,7 @@ class UltimoPresupuesto extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4">
+                                                    <div className="border border-gray-300 border-dashed rounded py-3 px-4  mr-5">
                                                         <div className="d-flex align-items-center">
                                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                                 <div className="symbol-label">
@@ -161,6 +161,22 @@ class UltimoPresupuesto extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    {
+                                                        typeof presupuesto.estatus.estatus === 'string' &&
+                                                        <div className="border border-gray-300 border-dashed rounded py-3 px-4">
+                                                            <div className="d-flex align-items-center">
+                                                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                                    <div className="symbol-label">
+                                                                        <i className="las la-check-circle icon-2x text-primary"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="font-size-h5 font-weight-bold">
+                                                                    { presupuesto.estatus.estatus }
+                                                                    <div className="font-weight-normal font-size-lg text-muted">Estatus</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -389,7 +405,7 @@ class UltimoPresupuesto extends Component {
                             </Card.Body>
                             <Card.Footer className="card-footer">
                                 <div className="d-flex justify-content-end">
-                                    <Button icon='' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px px-2"
+                                    <Button icon='' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px px-2 btn-sm"
                                         only_icon="flaticon2-email icon-lg mr-2 px-0 text-primary" text="ENVIAR CORREO"
                                         onClick={
                                             (e) => {
@@ -398,8 +414,8 @@ class UltimoPresupuesto extends Component {
                                             }
                                         }
                                     />
-                                    <Button icon='' className="btn btn-bg-light btn-hover-light-success font-weight-bolder text-success align-self-center font-size-13px ml-2 px-2"
-                                        only_icon="las la-file-pdf icon-xl mr-1 px-0 text-success" text="GENERAR PDF"
+                                    <Button icon='' className="btn btn-bg-light btn-hover-light-success font-weight-bolder text-success align-self-center font-size-13px ml-2 px-2 btn-sm"
+                                        only_icon="las la-file-pdf icon-lg mr-1 px-0 text-success" text="GENERAR PDF"
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();
