@@ -95,6 +95,9 @@ class PresupuestosEnviados extends Component {
     openModalFiltros = () => {
         this.setState({...this.state, modal: true})
     }
+    handleCloseFiltros = () => {
+        this.setState({...this.state, modal:false})
+    }
 
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR SETTERS                               */

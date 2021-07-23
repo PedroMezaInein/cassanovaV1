@@ -90,7 +90,7 @@ class ActualizarPresupuestoForm extends Component {
         onChange(key, { target: { value: value, name: 'unidad_id' } }, 'unidad_id')
     }
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options, isButtonEnabled } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options, isButtonEnabled, modulo_calidad } = this.props
         const { desperdicio } = this.state
         if (presupuesto)
             return (
@@ -209,9 +209,14 @@ class ActualizarPresupuestoForm extends Component {
                             </Card.Title>
                             <div className="card-toolbar" >
                                 {children}
-                                <button type="button" className="btn btn-sm btn-light-info font-weight-bolder font-size-13px" onClick={openModal}>
-                                    AGREGAR CONCEPTO
-                                </button>
+                                {
+                                    (!modulo_calidad) || (presupuesto.estatus.estatus === 'En revisión' || presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías')?
+                                    <button type="button" className="btn btn-sm btn-light-info font-weight-bolder font-size-13px" onClick={openModal}>
+                                        AGREGAR CONCEPTO
+                                    </button>
+                                    :
+                                    <></>
+                                }
                             </div>                    
                         </Card.Header>
                         <Card.Body className="pt-2">
