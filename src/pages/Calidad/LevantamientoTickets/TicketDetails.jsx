@@ -139,7 +139,6 @@ class TicketDetails extends Component {
                 options.proveedores = setOptions(proveedores, "razon_social", "id")
                 options.unidades = setOptions(unidades, 'nombre', 'id')
                 options.tiposPagos = setSelectOptions(tiposPago, 'tipo')
-                options.empresas = setOptions(empresas, 'name', 'id')
                 if(title === 'Nueva solicitud de compra' || title === 'Editar solicitud de compra'){
                     options.areas = setOptions(areasCompras, 'nombre', 'id')
                 }else{ 
