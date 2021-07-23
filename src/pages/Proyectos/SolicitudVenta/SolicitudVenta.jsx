@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, SOLICITUD_VENTA_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setTextTable } from '../../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray, DoubleSelectSearchGray } from '../../../components/form-components'
@@ -179,7 +179,7 @@ class SolicitudVenta extends Component {
     }
     setSolicitudes = solicitudes => {
         let aux = []
-        solicitudes.map((solicitud) => {
+        solicitudes.forEach((solicitud) => {
             aux.push(
                 {
                     actions: this.setActions(solicitud),
@@ -192,13 +192,22 @@ class SolicitudVenta extends Component {
                     area: solicitud.subarea ? solicitud.subarea.area ? setTextTableReactDom(solicitud.subarea.area.nombre, this.doubleClick, solicitud, 'area', 'text-center') : '' : '',
                     subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
                     fecha: setDateTableReactDom(solicitud.created_at, this.doubleClick, solicitud, 'fecha', 'text-center'),
+                    tipo: this.label(solicitud.hasTicket ? 'ticket' : 'obra'),
                     id: solicitud.id
                 }
             )
-            return false
         })
         return aux
     }
+
+    label(text){
+        return(
+            <div className='d-flex align-items-center justify-content-center'>
+                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+            </div>
+        )
+    }
+
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
         switch(tipo){
