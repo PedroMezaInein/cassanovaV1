@@ -131,14 +131,14 @@ class PresupuestosEnviados extends Component {
         const { history } = this.props
         return(
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger overlay = { <Tooltip>Editar</Tooltip> }  >
+                <OverlayTrigger overlay = { <Tooltip>EDITAR</Tooltip> }  >
                     <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-success btn-hover-success`} 
                         onClick = { (e) => { e.preventDefault(); history.push({ pathname: '/presupuesto/presupuestos-enviados/finish', 
                             state: { presupuesto: element } }) } }>
                         <i className = 'fas flaticon2-pen' />
                     </button>
                 </OverlayTrigger>
-                <OverlayTrigger overlay = { <Tooltip>Eliminar</Tooltip> }  >
+                <OverlayTrigger overlay = { <Tooltip>ELIMINAR</Tooltip> }  >
                     <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
                         onClick = { (e) => { e.preventDefault(); deleteAlert('¿Deseas continuar?', 'Eliminarás el presupuesto', 
                         () => this.deletePresupuestoAxios(element.id))} }>
