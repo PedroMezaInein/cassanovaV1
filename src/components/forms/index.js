@@ -33,6 +33,7 @@ import conceptoForm from './presupuesto/ConceptoForm'
 import rendimientoForm from './presupuesto/RendimientoForm'
 import presupuestoForm from './presupuesto/PresupuestoForm'
 import actualizarPresupuestoForm from './presupuesto/ActualizarPresupuestoForm'
+import presupuestoGeneradoCalidad from './presupuesto/PresupuestoGeneradoCalidad'
 import remisionForm from './proyectos/RemisionForm'
 import devolucionesForm from './proyectos/DevolucionesForm'
 import contabilidadForm from './reportes/ContabilidadForm'
@@ -153,6 +154,7 @@ export const ConceptoForm = conceptoForm
 export const RendimientoForm = rendimientoForm
 export const PresupuestoForm = presupuestoForm
 export const ActualizarPresupuestoForm = actualizarPresupuestoForm
+export const PresupuestoGeneradoCalidad = presupuestoGeneradoCalidad
 export const RemisionForm = remisionForm
 export const DevolucionesForm = devolucionesForm
 export const ContabilidadForm = contabilidadForm

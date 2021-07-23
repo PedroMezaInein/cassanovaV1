@@ -83,7 +83,7 @@ class TicketTable extends Component {
             aux.push(
                 {
                     actions: this.setActions(calidad),
-                    identificador: renderToString(setTextTable(calidad.identificador)),
+                    identificador: renderToString(setTextTableCenter(calidad.identificador)),
                     estatus: renderToString(setLabelTable(calidad.estatus_ticket)),
                     proyectos: renderToString(setTextTable(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
                     cliente: renderToString(setTextTableCenter(calidad.usuario ? calidad.usuario.name : '')),

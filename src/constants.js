@@ -733,7 +733,7 @@ export const CARTAS_GARANTIAS_TICKETS = [
 ]
 export const PROYECTOS_TICKETS = [
     { Header: 'Opciones', accessor: 'actions' },
-    { Header: 'Identificador', accessor: 'identificador' },
+    { Header: 'ID', accessor: 'identificador' },
     { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Proyecto', accessor: 'proyectos' },
     { Header: 'Cliente', accessor: 'cliente' },

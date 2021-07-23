@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, S3_CONFIG } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, sendFileAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { TicketView, AgregarConcepto } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
-import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { setSingleHeader, setFormHeader } from '../../../functions/routers'
 import { Modal } from '../../../components/singles'
 import { SelectSearchGray } from '../../../components/form-components'
 import moment from 'moment'
@@ -78,6 +78,15 @@ class TicketDetails extends Component {
                     }
                 }
             },
+            presupuesto_generado:{
+                adjuntos: {
+                    adjunto_evidencia: {
+                        value: '',
+                        placeholder: 'Subir archivo',
+                        files: []
+                    }
+                }
+            }
         },
         data: { partidas: [],subpartidas: [], conceptos: [] },
         ticket: '',
@@ -933,7 +942,29 @@ class TicketDetails extends Component {
         else
             this.addSolicitudVentaAxios()
     }
-
+    onChangeAdjunto = valor => {
+        let tipo = valor.target.id
+        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success, tipo);})
+    }
+    
+    async addAdjuntoAxios(valor, tipo) {
+        waitAlert()
+        const { name, file } = valor.target
+        const { access_token } = this.props.authUser
+        const { presupuesto } = this.state
+        let data = new FormData();
+        if(file){
+            data.append(`file`, file)
+            await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/adjuntos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
+                (response) => {
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{ errorAlert('Adjunta solo un archivo') }
+    }
     deleteFile = element => {
         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => { this.deleteAdjuntoAxios(element.id) } )
     }
@@ -986,10 +1017,9 @@ class TicketDetails extends Component {
                     openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
                     onSubmit = { this.onSubmit } openModalConceptos={this.openModalConceptos} deleteFile = { this.deleteFile } 
-                    openModalSolicitud={this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} 
-                    formeditado={formeditado} onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} 
-                    openModalEditarSolicitud = { this.openModalEditarSolicitud}
-                    deleteSolicitud={this.deleteSolicitudAxios} onSubmitSCompra={this.onSubmitSCompra} onSubmitSVenta={this.onSubmitSVenta}
+                    openModalSolicitud={this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} formeditado={formeditado}
+                    onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} openModalEditarSolicitud = { this.openModalEditarSolicitud}
+                    deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto}
                 />
                 <Modal size = "xl" title = 'Agregar concepto' show = { modal.conceptos } handleClose = { this.handleCloseConceptos } >
                     <AgregarConcepto options = { options } formeditado = { formeditado } form = { formularios.preeliminar } onChange = { this.onChangeConceptos }

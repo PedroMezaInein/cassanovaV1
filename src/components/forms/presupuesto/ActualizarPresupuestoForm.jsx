@@ -245,7 +245,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 </th>
                                             }
                                             <th className="border-0 center_content">
-                                                <div className="font-size-sm text-center">Cantidad Preliminar</div>
+                                                <div className="font-size-sm text-center">Cantidad <br/> Preliminar</div>
                                             </th>
                                             <th className="border-0">
                                                 <div className="font-size-sm text-center white-space-nowrap">% Despercicio</div>
