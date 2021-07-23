@@ -327,6 +327,7 @@ export const VENTAS_COLUMNS = [
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
 ]
 
 export const COMPRAS_COLUMNS = [
@@ -345,7 +346,8 @@ export const COMPRAS_COLUMNS = [
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
     { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
-    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
 ]
 
 export const DEVOLUCIONES_COLUMNS = [
@@ -378,7 +380,8 @@ export const SOLICITUD_COMPRA_COLUMNS = [
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },    
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Área', accessor: 'area', customRender: true },
-    { Header: 'Sub-Área', accessor: 'subarea', customRender: true }
+    { Header: 'Sub-Área', accessor: 'subarea', customRender: true },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
 ]
 export const SOLICITUD_EGRESO_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
@@ -418,7 +421,8 @@ export const SOLICITUD_VENTA_COLUMNS = [
     { Header: 'Área', accessor: 'area',customRender: true },
     { Header: 'Sub-Área', accessor: 'subarea',customRender: true },
     { Header: 'Fecha', accessor: 'fecha',customRender: true },
-    { Header: 'Descripción', accessor: 'descripcion',customRender: true }
+    { Header: 'Descripción', accessor: 'descripcion',customRender: true },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
 ]
 
 export const CONCEPTOS_COLUMNS = [
@@ -733,7 +737,7 @@ export const CARTAS_GARANTIAS_TICKETS = [
 ]
 export const PROYECTOS_TICKETS = [
     { Header: 'Opciones', accessor: 'actions' },
-    { Header: 'Identificador', accessor: 'identificador' },
+    { Header: 'ID', accessor: 'identificador' },
     { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Proyecto', accessor: 'proyectos' },
     { Header: 'Cliente', accessor: 'cliente' },

@@ -44,6 +44,7 @@ thead{
 }*/
 thead{
     text-align-last:center;
+    white-space: nowrap;
 }
 
 .card-toolbar a.btn.btn-icon{

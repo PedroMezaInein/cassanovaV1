@@ -417,22 +417,16 @@ class Ventas extends Component {
             data
         })
         let aux = []
-        ventas.map((venta) => {
+        ventas.forEach((venta) => {
             _aux = []
             if (venta.presupuestos) {
-                venta.presupuestos.map((presupuesto) => {
-                    _aux.push({
-                        name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
-                    })
-                    return false
+                venta.presupuestos.forEach((presupuesto) => {
+                    _aux.push({ name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url })
                 })
             }
             if (venta.pagos) {
-                venta.pagos.map((pago) => {
-                    _aux.push({
-                        name: 'Pago', text: pago.name, url: pago.url
-                    })
-                    return false
+                venta.pagos.forEach((pago) => {
+                    _aux.push({ name: 'Pago', text: pago.name, url: pago.url })
                 })
             }
             aux.push(
@@ -458,14 +452,23 @@ class Ventas extends Component {
                     estatusCompra: setTextTableReactDom(venta.estatus_compra ? venta.estatus_compra.estatus : '', this.doubleClick, venta, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(venta.total)),
                     fecha: setDateTableReactDom(venta.created_at, this.doubleClick, venta, 'fecha', 'text-center'),
+                    tipo: this.label(venta.hasTickets ? 'ticket' : 'obra'),
                     id: venta.id,
                     objeto: venta
                 }
             )
-            return false
         })
         return aux
     }
+
+    label(text){
+        return(
+            <div className='d-flex align-items-center justify-content-center'>
+                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+            </div>
+        )
+    }
+    
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
         let busqueda = undefined

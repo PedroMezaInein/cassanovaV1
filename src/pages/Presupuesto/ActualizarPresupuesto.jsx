@@ -451,6 +451,7 @@ class ActualizarPresupuesto extends Component {
                     openModal={this.openModal}
                     showInputsCalidad={false}
                     options={options}
+                    modulo_calidad={false}
                     {...this.props}
                 />
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>

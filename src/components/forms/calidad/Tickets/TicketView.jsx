@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudCompraForm, SolicitudVentaForm } from '../../../../components/forms';
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudCompraForm, SolicitudVentaForm, PresupuestoGeneradoCalidad } from '../../../../components/forms';
 import { Button } from '../../../form-components'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -156,6 +156,8 @@ class TicketView extends Component {
                         return <span className="nav-text font-weight-bolder font-size-14px">En revisión</span>
                     case 'En espera':
                         return <span className="nav-text font-weight-bolder font-size-14px">En espera del cliente</span>
+                    default:
+                        break;
                 }
             return <span className="nav-text font-weight-bolder font-size-14px">No</span>
         }
@@ -187,11 +189,10 @@ class TicketView extends Component {
     }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos, title, modal, formeditado } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
-            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta } = this.props
-        
+            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta, onChangeAdjunto } = this.props
         const { activeKeyNav } = this.state
         return (
             <div className="p-0">
@@ -210,7 +211,7 @@ class TicketView extends Component {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="flex-grow-1">
+                                            <div className="flex-grow-1 align-self-center">
                                                 <div className="d-flex align-items-start justify-content-between flex-wrap mt-2">
                                                     <div className="mr-3">
                                                         <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">
@@ -318,7 +319,7 @@ class TicketView extends Component {
                                                         <span className="nav-icon">
                                                             <i className="las la-photo-video icon-lg mr-2"></i>
                                                         </span>
-                                                        <span className="nav-text font-weight-bolder font-size-14px">FOTOS INCIDENTE</span>
+                                                        <span className="nav-text font-weight-bolder font-size-14px">FOTOS</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
                                                 {
@@ -331,7 +332,7 @@ class TicketView extends Component {
                                                         </Nav.Item>
                                                     : <></>
                                                 }
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); this.controlledNav("solicitud-compra") }}>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); this.controlledNav("solicitud-compra") }}>
                                                     <Nav.Link eventKey="solicitud-compra">
                                                         <span className="nav-icon">
                                                             <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
@@ -339,7 +340,7 @@ class TicketView extends Component {
                                                         <span className="nav-text font-weight-bolder font-size-14px">Solicitud de compra</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); this.controlledNav("solicitud-venta") }}>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); this.controlledNav("solicitud-venta") }}>
                                                     <Nav.Link eventKey="solicitud-venta">
                                                         <span className="nav-icon">
                                                             <i className="las la-clipboard-list icon-lg mr-2"></i>
@@ -375,11 +376,11 @@ class TicketView extends Component {
                                                 <PresupuestoForm form = { formulario.presupuesto } options = { options } showFormCalidad = { true } 
                                                     data = { datos } checkButton = { this.checkButton } onChange = { this.onChangePresupuesto } 
                                                     setOptions = { setOptions } onSubmit = { (e) => { onSubmit('presupuesto') } }  />
-                                            :
+                                            : presupuesto.estatus.estatus !== 'En espera'?
                                                 <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
                                                     checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
-                                                    openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } >
+                                                    openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } modulo_calidad={true}>
                                                     { 
                                                         presupuesto.estatus.estatus === 'En revisión'?
                                                             this.calcularCantidades() ?
@@ -401,15 +402,22 @@ class TicketView extends Component {
                                                         : <></>
                                                     }
                                                 </ActualizarPresupuestoForm>
+                                            
+                                            : presupuesto.estatus.estatus === 'En espera'?
+                                                <PresupuestoGeneradoCalidad presupuesto={presupuesto} form={formulario.presupuesto_generado} onChangeAdjunto={onChangeAdjunto}/>
+                                            :<></>
+                                                
                                         }
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="solicitud-compra">
-                                        <SolicitudTabla type="COMPRA" title="Historial de solicitud de compras" btn_title="SOLICITUD DE COMPRA" openModalAdd={openModalSolicitud}
-                                            openModalEditar={openModalEditarSolicitud} deleteSolicitud={deleteSolicitud}/>
+                                        <SolicitudTabla type = "compra" title = "Historial de solicitud de compras" btn_title = "SOLICITUD DE COMPRA" 
+                                            openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
+                                            deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="solicitud-venta">
-                                        <SolicitudTabla type="VENTA" title="Historial de solicitud de ventas" btn_title="SOLICITUD DE VENTA" openModalAdd={openModalSolicitud}
-                                            openModalEditar={openModalEditarSolicitud} deleteSolicitud={deleteSolicitud}/>
+                                        <SolicitudTabla type = "venta" title = "Historial de solicitud de ventas" btn_title = "SOLICITUD DE VENTA" 
+                                            openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
+                                            deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>

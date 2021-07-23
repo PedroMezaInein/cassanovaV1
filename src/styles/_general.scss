@@ -3094,3 +3094,17 @@ table#calendario-proyectos tr:last-child td {
         }
     }
 }
+.drop-files{
+    background-color: #f1faff;
+    border-style: dashed;
+    border-radius: .475rem;
+    border-color: #009ef7;
+    border-width: 1px;
+    padding: 0.9rem;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+}
