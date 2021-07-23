@@ -39,6 +39,7 @@ class PresupuestosEnviados extends Component {
         });
         if (!modulo)
             history.push('/')
+        this.getOptionsAxios()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
@@ -48,7 +49,6 @@ class PresupuestosEnviados extends Component {
                 history.push({ pathname: '/presupuesto/presupuestos-enviados/finish', state: { presupuesto: {id: id} } });
             }
         }
-        this.getOptionsAxios()
     }
 
     /* -------------------------------------------------------------------------- */
