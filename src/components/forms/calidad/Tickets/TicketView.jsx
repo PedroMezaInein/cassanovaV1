@@ -189,7 +189,7 @@ class TicketView extends Component {
     }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos, title, modal, formeditado } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
             openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta, onChangeAdjunto } = this.props
@@ -332,7 +332,7 @@ class TicketView extends Component {
                                                         </Nav.Item>
                                                     : <></>
                                                 }
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); this.controlledNav("solicitud-compra") }}>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); this.controlledNav("solicitud-compra") }}>
                                                     <Nav.Link eventKey="solicitud-compra">
                                                         <span className="nav-icon">
                                                             <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
@@ -340,7 +340,7 @@ class TicketView extends Component {
                                                         <span className="nav-text font-weight-bolder font-size-14px">Solicitud de compra</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); this.controlledNav("solicitud-venta") }}>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); this.controlledNav("solicitud-venta") }}>
                                                     <Nav.Link eventKey="solicitud-venta">
                                                         <span className="nav-icon">
                                                             <i className="las la-clipboard-list icon-lg mr-2"></i>
@@ -410,12 +410,14 @@ class TicketView extends Component {
                                         }
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="solicitud-compra">
-                                        <SolicitudTabla type="COMPRA" title="Historial de solicitud de compras" btn_title="SOLICITUD DE COMPRA" openModalAdd={openModalSolicitud}
-                                            openModalEditar={openModalEditarSolicitud} deleteSolicitud={deleteSolicitud}/>
+                                        <SolicitudTabla type = "compra" title = "Historial de solicitud de compras" btn_title = "SOLICITUD DE COMPRA" 
+                                            openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
+                                            deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="solicitud-venta">
-                                        <SolicitudTabla type="VENTA" title="Historial de solicitud de ventas" btn_title="SOLICITUD DE VENTA" openModalAdd={openModalSolicitud}
-                                            openModalEditar={openModalEditarSolicitud} deleteSolicitud={deleteSolicitud}/>
+                                        <SolicitudTabla type = "venta" title = "Historial de solicitud de ventas" btn_title = "SOLICITUD DE VENTA" 
+                                            openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
+                                            deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>

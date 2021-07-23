@@ -1090,3 +1090,12 @@ export function dayDMY (fecha){
     let format = fecha_moment.locale('es').format("DD MMM YYYY");
     return format.replace('.', '');
 }
+
+export function setDateText(dato){
+    let fecha = new Date(moment(dato))
+    let day = fecha.getDate()
+    let anio = fecha.getFullYear()
+    let mes = fecha.getMonth()
+    const meses = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC']
+    return `${day} ${meses[mes]} ${anio}`
+}
