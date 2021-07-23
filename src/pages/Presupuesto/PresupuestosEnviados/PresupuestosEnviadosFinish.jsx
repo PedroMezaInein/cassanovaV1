@@ -4,11 +4,10 @@ import axios from "axios"
 import Swal from 'sweetalert2'
 import { URL_DEV } from "../../../constants"
 import { setOptions } from "../../../functions/setters"
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlertY } from "../../../functions/alert"
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, sendFileByMailAlert } from "../../../functions/alert"
 import Layout from "../../../components/layout/layout"
 import { UltimoPresupuestoForm } from "../../../components/forms"
-import FloatButtons from '../../../components/singles/FloatButtons'
-import { save, deleteForm } from '../../../redux/reducers/formulario'
+import { TagInputGray } from '../../../components/form-components'
 class PresupuestosEnviadosFinish extends Component {
     state = {
         formeditado: 0,
@@ -35,6 +34,7 @@ class PresupuestosEnviadosFinish extends Component {
             }],
             fecha_creacion: new Date(),
             fecha_aceptacion: '',
+            correos_presupuesto: []
         },
         options: {
             unidades: [],
@@ -65,6 +65,58 @@ class PresupuestosEnviadosFinish extends Component {
         }
         if (!presupuesto) history.push("/");
         this.getOptionsAxios()
+    }
+    async getOnePresupuestoAxios(id) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { form } = this.state
+                const { presupuesto } = response.data
+                let aux = []
+                let mensajeAux = {}
+                presupuesto.conceptos.map((concepto) => {
+                    if (concepto.mensaje) {
+                        mensajeAux.active = true
+                        mensajeAux.mensaje = concepto.mensaje
+                    } else {
+                        mensajeAux.active = false
+                        mensajeAux.mensaje = ''
+                    }
+                    let precio_unitario = concepto.precio_unitario
+                    if (concepto.margen === 0) {
+                        precio_unitario = (concepto.costo / (1 - (concepto.margen / 100))).toFixed(2)
+                    }
+                    let importe = concepto.importe
+                    if (precio_unitario !== 0) {
+                        importe = (concepto.cantidad * precio_unitario).toFixed(2)
+                    }
+                    aux.push({
+                        descripcion: concepto.descripcion,
+                        costo: concepto.costo,
+                        margen: concepto.margen,
+                        cantidad: concepto.cantidad,
+                        precio_unitario: precio_unitario,
+                        importe: importe,
+                        active: concepto.active ? true : false,
+                        id: concepto.id,
+                    })
+                    return false
+                })
+                form.conceptos = aux
+                this.setState({
+                    ...this.state,
+                    presupuesto: presupuesto,
+                    form,
+                    formeditado: 1
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     async getOptionsAxios() {
         waitAlert()
@@ -223,129 +275,7 @@ class PresupuestosEnviadosFinish extends Component {
             form
         })
     }
-    generarPDF = e => {
-        e.preventDefault()
-        waitAlert()
-        this.generarPDFAxios()
-    }
-    aceptarPresupuesto = e => {
-        e.preventDefault()
-        waitAlert()
-        this.aceptarPresupuestoAxios()
-    }
-    async aceptarPresupuestoAxios() {
-        const { access_token } = this.props.authUser
-        const { form, presupuesto } = this.state
-        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/aceptar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { presupuesto } = response.data
-                this.getOnePresupuestoAxios(presupuesto.id)
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-                const { history } = this.props
-                history.push({
-                    pathname: '/presupuesto/presupuesto'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async getOnePresupuestoAxios(id) {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { form } = this.state
-                const { presupuesto } = response.data
-                let aux = []
-                let mensajeAux = {}
-                presupuesto.conceptos.map((concepto) => {
-                    if (concepto.mensaje) {
-                        mensajeAux.active = true
-                        mensajeAux.mensaje = concepto.mensaje
-                    } else {
-                        mensajeAux.active = false
-                        mensajeAux.mensaje = ''
-                    }
-                    let precio_unitario = concepto.precio_unitario
-                    if (concepto.margen === 0) {
-                        precio_unitario = (concepto.costo / (1 - (concepto.margen / 100))).toFixed(2)
-                    }
-                    let importe = concepto.importe
-                    if (precio_unitario !== 0) {
-                        importe = (concepto.cantidad * precio_unitario).toFixed(2)
-                    }
-                    aux.push({
-                        descripcion: concepto.descripcion,
-                        costo: concepto.costo,
-                        margen: concepto.margen,
-                        cantidad: concepto.cantidad,
-                        precio_unitario: precio_unitario,
-                        importe: importe,
-                        active: concepto.active ? true : false,
-                        id: concepto.id,
-                    })
-                    return false
-                })
-                form.conceptos = aux
-                this.setState({
-                    ...this.state,
-                    presupuesto: presupuesto,
-                    form,
-                    formeditado: 1
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async generarPDFAxios() {
-        const { access_token } = this.props.authUser
-        const { form, presupuesto } = this.state
-        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { history } = this.props
-                history.push({
-                    pathname: '/presupuesto/presupuesto'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    save = () => {
-        const { form } = this.state
-        const { save } = this.props
-        let auxObject = {}
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            auxObject[element] = form[element]
-            return false
-        })
-        save({
-            form: auxObject,
-            page: 'presupuesto/presupuesto/finish'
-        })
-    }
-    recover = () => {
-        const { formulario, deleteForm } = this.props
-        this.setState({
-            ...this.state,
-            form: formulario.form
-        })
-        deleteForm()
-    }
+    
     onChangeInput = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -355,10 +285,87 @@ class PresupuestosEnviadosFinish extends Component {
             form
         })
     }
+    
+    // aceptarPresupuesto = e => {
+    //     e.preventDefault()
+    //     waitAlert()
+    //     this.aceptarPresupuestoAxios()
+    // }
+    // async aceptarPresupuestoAxios() {
+    //     const { access_token } = this.props.authUser
+    //     const { form, presupuesto } = this.state
+    //     await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/aceptar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+    //         (response) => {
+    //             const { presupuesto } = response.data
+    //             this.getOnePresupuestoAxios(presupuesto.id)
+    //             doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+    //             const { history } = this.props
+    //             history.push({
+    //                 pathname: '/presupuesto/presupuesto'
+    //             });
+    //         },
+    //         (error) => {
+    //             printResponseErrorAlert(error)
+    //         }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.log(error, 'error')
+    //     })
+    // }
+
+    tagInputChange = (nuevosCorreos) => {
+        const { form } = this.state 
+        let unico = {};
+        nuevosCorreos.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        form.correos_presupuesto = nuevosCorreos ? Object.keys(unico) : [];
+        this.setState({ ...this.state, form })
+    }
+
+    generarPDF = e => {
+        e.preventDefault()
+        waitAlert()
+        this.generarPDFAxios()
+    }
+    async generarPDFAxios() {
+        const { access_token } = this.props.authUser
+        const { form, presupuesto } = this.state
+        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                sendFileByMailAlert(`¡PRESUPUESTO GENERADO!`, 'PRESUPUESTO_PDF', 'CLIENTE',
+                    <div>
+                        <TagInputGray tags={ form.correos_presupuesto } placeholder="CORREO(S)" iconclass="flaticon-email" uppercase={false} onChange = { (e) => { this.tagInputChange(e.target.value) } } /> 
+                    </div>,
+                    () => this.sendMail()
+                )
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    async sendMail() {
+        waitAlert();
+        const { access_token } = this.props.authUser
+        const { form, presupuesto } = this.state
+        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/enviar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => { doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue enviado con éxito.') }, 
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     sendPresupuesto = e => {
         e.preventDefault()
         waitAlert()
-        questionAlertY(`¿DESEAS ENVIAR EL PRESUPUESTO AL CLIENTE?`, '¡NO PODRÁS REVERTIR ESTO!', () => this.sendPresupuestoAxios())
+        this.sendPresupuestoAxios()
     }
     async sendPresupuestoAxios() {
         // const { access_token } = this.props.authUser
@@ -380,7 +387,6 @@ class PresupuestosEnviadosFinish extends Component {
     }
     render() {
         const { form, formeditado, presupuesto } = this.state;
-        const { formulario } = this.props
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm
@@ -395,29 +401,12 @@ class PresupuestosEnviadosFinish extends Component {
                     // aceptarPresupuesto={this.aceptarPresupuesto}
                     sendPresupuesto={this.sendPresupuesto}
                 />
-                <FloatButtons
-                    save={this.save}
-                    recover={this.recover}
-                    formulario={formulario}
-                    descargar={() => this.generarPDFAxios()}
-                    url={'presupuesto/presupuesto/finish'}
-                    exportar={true}
-                />
             </Layout>
         );
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser,
-        formulario: state.formulario
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-    save: payload => dispatch(save(payload)),
-    deleteForm: () => dispatch(deleteForm()),
-})
+const mapStateToProps = state => { return { authUser: state.authUser} }
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(PresupuestosEnviadosFinish);
