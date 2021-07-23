@@ -68,7 +68,7 @@ class FormularioContrato extends Component {
                 {
                     empleado ?
                         empleado.contratos.length > 0 &&
-                        <div className={`table-responsive-lg mt-8  ${showHistorial ? '' : 'd-none'}`}>
+                        <div className={`table-responsive mt-8 ${showHistorial ? '' : 'd-none'}`}>
                             <table className="table table-responsive-lg table-head-custom table-vertical-center w-100">
                                 <thead>
                                     <tr>
