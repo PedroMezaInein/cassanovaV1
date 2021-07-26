@@ -63,7 +63,7 @@ class Select extends Component {
     }
 
     render() {
-        const { options, placeholder, value, name, onChange, iconclass, messageinc, ...props } = this.props
+        const { options, placeholder, value, name, onChange, iconclass, messageinc, customclass,...props } = this.props
         const { selectValido } = this.state
         return (
             <>
@@ -76,7 +76,7 @@ class Select extends Component {
                         </span>
                     </span>
                     <Form.Control
-                        className={selectValido ? " form-control is-valid text-uppercase sin_icono" : " form-control is-invalid text-uppercase sin_icono"}
+                        className={`form-control text-uppercase ${selectValido ? "is-valid sin_icono" : "is-invalid sin_icono"} ${customclass}`}
                         onChange={(e) => { e.preventDefault(); this.validarSelect(e); onChange(e) }}
                         name={name}
                         value={value}

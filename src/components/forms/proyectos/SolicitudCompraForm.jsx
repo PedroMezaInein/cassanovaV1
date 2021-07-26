@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap' 
-import { Input, Select, SelectSearch, Button, InputMoney, RadioGroup, CalendarDay } from '../../form-components'
+import { InputGray, Select, SelectSearchGray, Button, InputMoneyGray, RadioGroup, CalendarDay } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import { ItemSlider } from '../../../components/singles';
@@ -97,7 +97,13 @@ class SolicitudCompraForm extends Component {
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
-                                        <SelectSearch
+                                        <SelectSearchGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            withformgroup={0}
+                                            customdiv="mb-0"
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             options={options.proyectos}
@@ -109,7 +115,13 @@ class SolicitudCompraForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-6">
-                                        <SelectSearch
+                                        <SelectSearchGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            withformgroup={0}
+                                            customdiv="mb-0"
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             options={options.proveedores}
@@ -124,7 +136,13 @@ class SolicitudCompraForm extends Component {
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <SelectSearch
+                                        <SelectSearchGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            withformgroup={0}
+                                            customdiv="mb-0"
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             options={options.empresas}
@@ -137,7 +155,12 @@ class SolicitudCompraForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <InputMoney
+                                        <InputMoneyGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            withformgroup={0}
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             thousandseparator={true}
@@ -157,8 +180,9 @@ class SolicitudCompraForm extends Component {
                                             value={form.tipoPago}
                                             onChange={onChange}
                                             messageinc="Incorrecto. Selecciona el tipo de pago."
-                                            iconclass={"fas fa-coins"}
+                                            iconclass="fas fa-coins text-dark-50"
                                             required
+                                            customclass="bg-light border-0 text-dark-50 font-weight-bold"
                                         />
                                     </div>
                                 </div>
@@ -180,7 +204,13 @@ class SolicitudCompraForm extends Component {
                                     <Col md="8" className="align-self-center">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-6">
-                                                <SelectSearch
+                                                <SelectSearchGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
+                                                    withicon={1}
+                                                    withformgroup={1}
+                                                    customdiv="mb-0"
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     options={options.areas}
@@ -192,7 +222,13 @@ class SolicitudCompraForm extends Component {
                                                 />
                                             </div>
                                             <div className="col-md-6">
-                                                <SelectSearch
+                                                <SelectSearchGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
+                                                    withicon={1}
+                                                    withformgroup={1}
+                                                    customdiv="mb-0"
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     options={options.subareas}
@@ -207,7 +243,12 @@ class SolicitudCompraForm extends Component {
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="row form-group-marginless">
                                             <div className="col-md-12">
-                                                <Input
+                                                <InputGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
+                                                    withicon={0}
+                                                    withformgroup={0}
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     as="textarea"
