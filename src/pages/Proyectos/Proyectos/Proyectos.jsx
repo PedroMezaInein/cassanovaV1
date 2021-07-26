@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
+import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL, S3_CONFIG } from '../../../constants'
 import { Small } from '../../../components/texts'
 import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -28,14 +28,7 @@ import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraFo
 import { toAbsoluteUrl } from "../../../functions/routers"
 import SVG from "react-inlinesvg";
 import S3 from 'react-aws-s3';
-const config = {
-    bucketName: 'admin-proyectos',
-    region: 'us-east-2',
-    accessKeyId: 'AKIAJPBN556AJO7KB2RA',
-    secretAccessKey: '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'
-}
-
-const ReactS3Client = new S3(config);
+const ReactS3Client = new S3(S3_CONFIG);
 
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;

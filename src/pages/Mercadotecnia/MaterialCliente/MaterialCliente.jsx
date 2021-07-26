@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
+import { URL_DEV, S3_CONFIG } from '../../../constants'
 import { connect } from 'react-redux'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
@@ -13,15 +13,7 @@ import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../co
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
 import S3 from 'react-aws-s3';
-const config = {
-    bucketName: 'admin-proyectos',
-    region: 'us-east-2',
-    accessKeyId: 'AKIAJPBN556AJO7KB2RA',
-    secretAccessKey: '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'
-}
-
-const ReactS3Client = new S3(config);
-
+const ReactS3Client = new S3(S3_CONFIG);
 /* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
