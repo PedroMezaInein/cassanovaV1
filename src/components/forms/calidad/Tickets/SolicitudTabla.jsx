@@ -34,7 +34,7 @@ export default class SolicitudesTabla extends Component {
                         <table className="table table-vertical-center">
                             <thead>
                                 <tr className="font-weight-bolder text-info text-center white-space-nowrap bg-light-info">
-                                    { type === 'compra' ? <th>Proveedor</th> : '' }
+                                    { type === 'compra' ? <th>Proveedor</th> : <></> }
                                     <th>Tipo de pago</th>
                                     <th>Monto</th>
                                     <th>Factura</th>
@@ -59,7 +59,7 @@ export default class SolicitudesTabla extends Component {
                                                                 <td className="text-dark font-weight-light font-size-sm">
                                                                     { sol.proveedor ? sol.proveedor.razon_social : '' }    
                                                                 </td>
-                                                            : ''
+                                                            : <></>
                                                         }
                                                         <td className="text-dark font-weight-light font-size-sm">
                                                             { sol.tipo_pago ? sol.tipo_pago.tipo : '' }
