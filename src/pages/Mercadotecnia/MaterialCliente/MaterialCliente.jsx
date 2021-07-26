@@ -253,7 +253,7 @@ class MaterialCliente extends Component {
         if(proyecto === ''){
             parametros = { tipo: tipo }
         }else{
-            parametros = { tipo: tipo, proyecto: proyecto }
+            parametros = { tipo: proyecto, proyecto: tipo }
         }
         waitAlert()
         try{
