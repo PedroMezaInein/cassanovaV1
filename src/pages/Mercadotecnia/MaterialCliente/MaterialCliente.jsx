@@ -275,8 +275,55 @@ class MaterialCliente extends Component {
         } catch (error) { console.log("error", error); }   
     }
 
-    /* ANCHOR ADD ADJUNTO RENDER */
     addAdjuntoInRender = async() => {
+        const { url, submenuactive, empresa, form } = this.state
+        let tipo = ''
+        if(url.length > 2)
+            tipo = url[url.length - 2]
+        let filePath = `empresas/${empresa.id}/tipo-proyecto/${submenuactive}/renders/${tipo}/`;
+        let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+            return new Promise((resolve, reject) => {
+                ReactS3Client.uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                    .then((data) =>{
+                        const { location,status } = data
+                        if(status === 204)
+                            resolve({ name: file.name, url: location })
+                        else
+                            reject(data)
+                    }).catch(err => reject(err))
+            })
+        })
+        Promise.all(auxPromises).then(values => { this.addS3FilesInRendersAxios(values, tipo, submenuactive)}).catch(err => console.error(err))
+    }
+
+    addS3FilesInRendersAxios = async(arreglo, tipo, categoria) => {
+        const { access_token } = this.props.authUser
+        const { empresa, form, levelItem } = this.state
+        let parametros = { tipo: tipo, categoria: categoria}
+        waitAlert()
+        try{
+            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/s3/renders/${levelItem.id}`, { empresa: empresa.id, archivos: arreglo }, 
+            { 
+                params: parametros, 
+                headers: setSingleHeader(access_token)
+            }).then(
+                (response) => {
+                    doneAlert('Adjunto generado con éxito')
+                    const { empresa, carpeta } = response.data
+                    let { levelItem } = this.state
+                    levelItem = carpeta
+                    form.adjuntos.adjuntos.files = []
+                    this.setState({...this.state, form, empresa:empresa, levelItem, modal: false})
+            }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        } catch (error) { console.log("error", error); }  
+    }
+
+    /* ANCHOR ADD ADJUNTO RENDER */
+    /* addAdjuntoInRender = async() => {
         const { url, levelItem, form, submenuactive, empresa } = this.state
         const { access_token } = this.props.authUser
         const data = new FormData();
@@ -308,7 +355,7 @@ class MaterialCliente extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
+    } */
 
     /* ANCHOR ADD ADJUNTO RENDER */
     addAdjuntoInFotografias = async() => {

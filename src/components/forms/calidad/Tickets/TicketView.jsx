@@ -9,6 +9,7 @@ import imageCompression from 'browser-image-compression';
 import { questionAlert, waitAlert } from '../../../../functions/alert';
 import { dayDMY } from '../../../../functions/setters'
 import { Modal } from '../../../../components/singles'
+import { ProcesoTicketForm } from '../../../../components/forms';
 class TicketView extends Component {
     state ={
         activeKeyNav:'adjuntos'
@@ -187,12 +188,29 @@ class TicketView extends Component {
             activeKeyNav: value
         })
     }
+    showTabTicketProceso = () => {
+        const { data } = this.props
+        if( data ){
+            if(data.estatus_ticket){
+                switch(data.estatus_ticket.estatus){
+                    case 'En proceso':
+                        return <span>Ticket en proceso</span>
+                    case 'Terminado':
+                        return <span>Ticket terminado</span>
+                    default:
+                        break;
+                }
+            }
+        }
+    }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
-            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta, onChangeAdjunto } = this.props
+            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta, onChangeAdjunto,
+            onChangeTicketProceso, onSubmitTicketProceso, handleChangeTicketProceso, generateEmailTicketProceso
+        } = this.props
         const { activeKeyNav } = this.state
         return (
             <div className="p-0">
@@ -348,6 +366,20 @@ class TicketView extends Component {
                                                         <span className="nav-text font-weight-bolder font-size-14px">Solicitud de venta</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
+                                                {
+                                                    presupuesto?
+                                                        presupuesto.estatus.estatus === "Aceptado" ?
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('ticket-proceso'); this.controlledNav("ticket-proceso") }}>
+                                                                <Nav.Link eventKey="ticket-proceso">
+                                                                    <span className="nav-icon">
+                                                                        <i className="las la-tools icon-lg mr-2"></i>
+                                                                    </span>
+                                                                    <span className="nav-text font-weight-bolder font-size-14px">{this.showTabTicketProceso()}</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
+                                                        :<></>
+                                                    :<></>
+                                                }
                                             </Nav>
                                         </div>
                                     </Card.Body>
@@ -418,6 +450,20 @@ class TicketView extends Component {
                                         <SolicitudTabla type = "venta" title = "Historial de solicitud de ventas" btn_title = "SOLICITUD DE VENTA" 
                                             openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
                                             deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="ticket-proceso">
+                                        <Card className="card-custom gutter-b card-stretch">
+                                            <Card.Header className="border-0">
+                                                <Card.Title className="mb-0">
+                                                    <div className="font-weight-bold font-size-h5">{this.showTabTicketProceso()}</div>
+                                                </Card.Title>
+                                            </Card.Header>
+                                            <Card.Body className="pt-0">
+                                                <ProcesoTicketForm form = { formulario.ticket } options = { options } onChange = { onChangeTicketProceso } formeditado = { 1 }
+                                                    handleChange = { handleChangeTicketProceso } onSubmit = { onSubmitTicketProceso } generateEmail = { generateEmailTicketProceso } 
+                                                    estatus = { data.estatus_ticket.estatus } deleteFile = { deleteFile } />
+                                            </Card.Body>
+                                        </Card>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>

@@ -39,9 +39,22 @@ class TicketDetails extends Component {
                 fechaProgramada: new Date(),
                 empleado: '',
                 recibe: '',
+                descripcion_solucion:'',
                 motivo: '',
                 costo: 0.0,
-                tipo_trabajo:''
+                tipo_trabajo:'',
+                adjuntos: {
+                    reporte_problema_reportado: {
+                        value: '',
+                        placeholder: 'Reporte fotográfico del problema reportado',
+                        files: []
+                    },
+                    reporte_problema_solucionado: {
+                        value: '',
+                        placeholder: 'Reporte fotográfico del problema solucionado',
+                        files: []
+                    }
+                },
             },
             preeliminar: {
                 conceptos: [{
@@ -125,7 +138,7 @@ class TicketDetails extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos, proveedores, unidades, tiposPago, areasCompras, areasVentas, empresas } = response.data
+                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos, proveedores, unidades, tiposPago, areasCompras, areasVentas } = response.data
                 const { options, formularios, data, title, ticket } = this.state
                 data.partidas = partidas
                 let aux = {}
@@ -224,9 +237,12 @@ class TicketDetails extends Component {
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}calidad/estatus/${data.id}`, data, { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                const { formularios } = this.state
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
-                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
+                
+                formularios.ticket = this.setForm(ticket)
+                this.setState({ ...this.state, ticket: ticket, formularios })
                 if (data.estatus)
                     doneAlert('El ticket fue actualizado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
@@ -522,16 +538,30 @@ class TicketDetails extends Component {
     /*                               ANCHOR SETTERS                               */
     /* -------------------------------------------------------------------------- */
     setForm = ticket => {
-        let formulario = {}
-        formulario.fechaProgramada = new Date( moment(ticket.created_at) )
-        formulario.empleado = ticket.tecnico_asiste
-        formulario.descripcion = ticket.descripcion_solucion
-        formulario.recibe = ticket.recibe
+        const { formularios } = this.state
+        let aux = []
+
+        formularios.ticket.fechaProgramada = new Date( moment(ticket.created_at) )
+        formularios.ticket.empleado = ticket.tecnico_asiste === null || ticket.tecnico_asiste === 'null' ? '' : ticket.tecnico_asiste
+        formularios.ticket.descripcion_solucion = ticket.descripcion_solucion === null || ticket.descripcion_solucion === 'null' ? '' : ticket.descripcion_solucion
+        formularios.ticket.recibe = ticket.recibe === null || ticket.recibe === 'null' ? '' : ticket.recibe
+        
+        ticket.reporte_problema_reportado.forEach((element) => {
+            aux.push({ name: element.name, url: element.url, file: '', id: element.id })
+        })
+        formularios.ticket.adjuntos.reporte_problema_reportado.files = aux
+        aux = []
+
+        ticket.reporte_problema_solucionado.forEach((element) => {
+            aux.push({ name: element.name, url: element.url, file: '', id: element.id })
+        })
+        formularios.ticket.adjuntos.reporte_problema_solucionado.files = aux
+
         if(ticket.subarea)
-            formulario.tipo_trabajo = ticket.subarea.id.toString()
+            formularios.ticket.tipo_trabajo = ticket.subarea.id.toString()
         else
-            formulario.tipo_trabajo = ''
-        return formulario
+            formularios.ticket.tipo_trabajo = ''
+        return formularios.ticket
     }
 
     setOptionsEstatus = (arreglo) => {
@@ -619,7 +649,6 @@ class TicketDetails extends Component {
 
     openModalEditarSolicitud = (type, solicitud) => {
         const { history } = this.props
-        console.log(type, `TYPE`)
         switch(type){
             case 'compra':
                 history.push({ pathname: '/proyectos/solicitud-compra/edit', state: { solicitud: solicitud } });
@@ -964,9 +993,89 @@ class TicketDetails extends Component {
             })
         }else{ errorAlert('Adjunta solo un archivo') }
     }
+    
+    /* ---------------------- FORMULARIO TICKET EN PROCESO ---------------------- */
+    onChangeTicketProceso = e => {
+        const { name, value } = e.target
+        const { formularios } = this.state
+        formularios.ticket[name] = value
+        this.setState({ ...this.state, formularios })
+    }
+    onSubmitTicketProceso = e => {
+        e.preventDefault();
+        this.saveProcesoTicketAxios('')
+    }
+    handleChangeTicketProceso = (files, item) => {
+        this.onChangeAdjuntoTicketProceso({ target: { name: item, value: files, files: files } })
+    }
+    onChangeAdjuntoTicketProceso = e => {
+        const { formularios } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push( { name: files[counter].name, file: files[counter], url: URL.createObjectURL(files[counter]), key: counter } )
+        }
+        formularios.ticket['adjuntos'][name].value = value
+        formularios.ticket['adjuntos'][name].files = aux
+        this.setState({ ...this.state, formularios })
+    }
+    generateEmailTicketProceso = value => { this.saveProcesoTicketAxios(value) }
+
+    saveProcesoTicketAxios = async(email) =>{
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket, formularios } = this.state
+        
+        const data = new FormData();
+        let aux = Object.keys(formularios.ticket)
+        aux.forEach((element) => {
+            switch (element) {
+                case 'fechaProgramada':
+                    data.append(element, (new Date(formularios.ticket[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formularios.ticket[element]);
+                    break
+            }
+        })
+        aux = Object.keys(formularios.ticket.adjuntos)
+        aux.forEach((element) => {
+            if (formularios.ticket.adjuntos[element].value !== '' && element !== 'presupuesto') {
+                for (var i = 0; i < formularios.ticket.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, formularios.ticket.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, formularios.ticket.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+        if (email !== '')
+            data.append('email', email)
+        await axios.post(`${URL_DEV}calidad/proceso/${ticket.id}`, data, { headers: setFormHeader(access_token) }).then(
+            (response) => {
+                const { ticket } = response.data
+                window.history.replaceState(ticket, 'calidad')
+                
+                formularios.ticket = this.setForm(ticket)
+                this.setState({ ...this.state, ticket: ticket, formularios })
+                doneAlert('Presupuesto adjuntado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+
+
+
     deleteFile = element => {
         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => { this.deleteAdjuntoAxios(element.id) } )
     }
+
+
+
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR ONCLICK                               */
     /* -------------------------------------------------------------------------- */
@@ -1019,6 +1128,8 @@ class TicketDetails extends Component {
                     openModalSolicitud={this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} formeditado={formeditado}
                     onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} openModalEditarSolicitud = { this.openModalEditarSolicitud}
                     deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto}
+                    onChangeTicketProceso={this.onChangeTicketProceso} onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso}
+                    generateEmailTicketProceso={this.generateEmailTicketProceso}
                 />
                 <Modal size = "xl" title = 'Agregar concepto' show = { modal.conceptos } handleClose = { this.handleCloseConceptos } >
                     <AgregarConcepto options = { options } formeditado = { formeditado } form = { formularios.preeliminar } onChange = { this.onChangeConceptos }
