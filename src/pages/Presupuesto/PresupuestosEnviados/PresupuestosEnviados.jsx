@@ -3,9 +3,8 @@ import { renderToString } from "react-dom/server";
 import { connect } from "react-redux"
 import Layout from "../../../components/layout/layout"
 import { NewTable } from '../../../components/NewTables';
-import { PRESUPUESTO_UTILIDAD_COLUMNS, URL_DEV } from "../../../constants";
-import { setTextTable, setLabelTable, setTextTableCenter, setDateTable, setOptions } from "../../../functions/setters";
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { PRESUPUESTO_UTILIDAD_COLUMNS, URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from "../../../constants";
+import { setTextTable, setLabelTable, setTextTableCenter, setDateTable, setOptions, setAdjuntosList } from "../../../functions/setters";
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from "../../../functions/alert";
 import { setSingleHeader } from "../../../functions/routers";
 import axios from 'axios'
@@ -13,12 +12,15 @@ import $ from "jquery";
 import { Modal } from '../../../components/singles'
 import { InputGray, SelectSearchGray, RangeCalendar, Button } from "../../../components/form-components";
 import Swal from 'sweetalert2'
+import { Dropdown, DropdownButton  } from 'react-bootstrap'
+import TableForModals from '../../../components/tables/TableForModals'
 
 const DatatableName = 'presupuestos'
 class PresupuestosEnviados extends Component {
 
     state = { 
         modal: false,
+        modal_adjuntos:false,
         filters: {
             proyecto: '',
             fecha: { start: null, end: null },
@@ -26,13 +28,17 @@ class PresupuestosEnviados extends Component {
             area: '',
             tiempo_ejecucion: ''
         },
-        options: { empresas: [], areas: [] }
+        options: { empresas: [], areas: [] },
+        data: {
+            adjuntos: []
+        },
+        adjuntos: []
     }
     
     componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props;
-        const { history: { location: { pathname } } } = this.props;
-        const { history, location: { state } } = this.props;
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { history } = this.props
         const modulo = permisos.find(function (element, index) {
             const { modulo: { url } } = element;
             return pathname === url;
@@ -130,24 +136,31 @@ class PresupuestosEnviados extends Component {
         )
     }
 
+    setNaviIcon(icon, text) {
+        return (
+            <span className="navi-icon">
+                <i className={`${icon} mr-2`} />
+                <span className="navi-text">
+                    {text}
+                </span>
+            </span>
+        )
+    }
     setActions = (element) => {
         const { history } = this.props
-        return(
+        return (
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger overlay = { <Tooltip>EDITAR</Tooltip> }  >
-                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-success btn-hover-success`} 
-                        onClick = { (e) => { e.preventDefault(); history.push({ pathname: '/presupuesto/presupuestos-enviados/finish', 
-                            state: { presupuesto: element } }) } }>
-                        <i className = 'fas flaticon2-pen' />
-                    </button>
-                </OverlayTrigger>
-                <OverlayTrigger overlay = { <Tooltip>ELIMINAR</Tooltip> }  >
-                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
-                        onClick = { (e) => { e.preventDefault(); deleteAlert('¿Deseas continuar?', 'Eliminarás el presupuesto', 
-                        () => this.deletePresupuestoAxios(element.id))} }>
-                        <i className = 'flaticon2-rubbish-bin' />
-                    </button>
-                </OverlayTrigger>
+                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); history.push({ pathname: '/presupuesto/presupuestos-enviados/finish', state: { presupuesto: element } }) }} >
+                        {this.setNaviIcon('flaticon2-pen', 'editar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', 'ELIMINARÁS EL PRESUPUESTO', () => this.deletePresupuestoAxios(element.id)) }}>
+                        {this.setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalDownloadPDF(element) }} >
+                        {this.setNaviIcon('flaticon2-download-1', 'descargar presupuesto')}
+                    </Dropdown.Item>
+                </DropdownButton>
             </div>
         )
     }
@@ -180,10 +193,44 @@ class PresupuestosEnviados extends Component {
         this.setState({...this.state, modal:false})
         this.reloadTable()
     }
+    openModalDownloadPDF = presupuesto => {
+        const { data } = this.state
+        data.adjuntos = presupuesto.pdfs
+        this.setState({
+            ...this.state,
+            modal_adjuntos:true,
+            adjuntos: this.setAdjuntosTable(presupuesto.pdfs),
+            data
+        })
+    }
+    handleCloseModalDownloadPDF = () => {
+        const { data } = this.state
+        data.adjuntos = []
+        this.setState({
+            ...this.state,
+            modal_adjuntos:false,
+            adjuntos: [],
+            data
+        })
+    }
 
+    setAdjuntosTable = adjuntos => {
+        let aux = []
+        adjuntos.map((adjunto) => {
+            aux.push({
+                url: renderToString(
+                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
+                ),
+                identificador: renderToString(setTextTableCenter(adjunto.pivot.identificador)),
+                id: adjunto.id
+            })
+            return false
+        })
+        return aux
+    }
     render() {
         const { access_token } = this.props.authUser
-        const { modal, filters, options } = this.state
+        const { modal, filters, options, modal_adjuntos, data, adjuntos } = this.state
         return (
             <Layout active = "presupuesto" {...this.props}>
                 <NewTable tableName = { DatatableName } subtitle = 'Listado de Presupuestos a agregar utilidad' title = 'Presupuestos' 
@@ -224,6 +271,16 @@ class PresupuestosEnviados extends Component {
                             <Button only_icon='las la-filter icon-xl' className="btn btn-light-info btn-sm font-weight-bold" type = 'submit' text="FILTRAR"  />
                         </div>
                     </form>
+                </Modal>
+                <Modal show={modal_adjuntos} handleClose={this.handleCloseModalDownloadPDF} title="Listado de presupuestos" >
+                    <TableForModals
+                        columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
+                        data={adjuntos}
+                        hideSelector={true}
+                        mostrar_acciones={false}
+                        dataID='adjuntos'
+                        elements={data.adjuntos}
+                    />
                 </Modal>
             </Layout>
         );

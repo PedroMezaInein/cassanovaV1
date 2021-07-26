@@ -405,8 +405,8 @@ class UltimoPresupuesto extends Component {
                             </Card.Body>
                             <Card.Footer className="card-footer">
                                 <div className="d-flex justify-content-end">
-                                    <Button icon='' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px px-2 btn-sm"
-                                        only_icon="flaticon2-email icon-lg mr-2 px-0 text-primary" text="ENVIAR CORREO"
+                                    <Button icon='' className="btn btn-bg-light btn-hover-light-success font-weight-bolder text-success align-self-center font-size-13px px-2 btn-sm"
+                                        only_icon="las la-paper-plane icon-lg mr-2 px-0 text-success" text="ENVIAR"
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();
@@ -414,8 +414,8 @@ class UltimoPresupuesto extends Component {
                                             }
                                         }
                                     />
-                                    <Button icon='' className="btn btn-bg-light btn-hover-light-success font-weight-bolder text-success align-self-center font-size-13px ml-2 px-2 btn-sm"
-                                        only_icon="las la-file-pdf icon-lg mr-1 px-0 text-success" text="GENERAR PDF"
+                                    <Button icon='' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px ml-2 px-2 btn-sm"
+                                        only_icon="las la-file-pdf icon-lg mr-1 px-0 text-primary" text="GENERAR PDF"
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();

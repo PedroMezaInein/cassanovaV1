@@ -740,3 +740,39 @@ export const printResponseErrorAlert = (error) => {
         }
     }
 }
+export const sendFileByMailAlert = ( title, file_name, destinatario, input, action ) => {
+    MySwal.fire({
+        title: title,
+        html: 
+            <div className = 'row mx-0 justify-content-center'>
+                <div className="col-md-12 text-center py-2">
+                    <div className="text-primary font-weight-bolder font-size-lg">
+                        Documento generado:
+                    </div>
+                    <div>
+                        <a className="text-muted font-weight-bold text-hover-success" target= '_blank' rel="noreferrer" href = "#">
+                            {file_name}
+                        </a>
+                    </div>
+                </div>
+                <div className="col-md-11 font-weight-light mt-5">
+                    Si deseas enviar el presupuesto agrega el o los correos del {destinatario}, de lo contario da clic en <span className="font-weight-bold">cancelar</span>.
+                </div>
+                <div className="col-md-11 mt-5">
+                    {input}
+                </div>
+            </div>,
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: "SI, ENVIAR",
+        cancelButtonText: 'CANCELAR',
+        customClass: {
+            confirmButton: 'btn-light-success-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2'
+        }
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
+}

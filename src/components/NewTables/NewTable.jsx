@@ -132,12 +132,12 @@ class NewTable extends Component{
                                 if(renderedHeader.includes(i)){
                                     arregloRendered.push(col)
                                     return `<tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}">`+
-                                        `<td>${col.title}:</td>`+
+                                        `<td class='responsive-td'>${col.title}:</td>`+
                                         `<td>${col.data.value}</td>`+
                                     `</tr>`
                                 }else{
                                     return `<tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}">`+
-                                        `<td>${col.title}:</td>`+
+                                        `<td class='responsive-td'>${col.title}:</td>`+
                                         `<td>${col.data}</td>`+
                                     `</tr>`
                                 }
