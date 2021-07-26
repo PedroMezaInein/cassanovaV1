@@ -256,3 +256,22 @@ div#cardList div:last-child{
 .border-botton-2px{
     border-bottom: 1px solid #ebedf3;
 }
+
+.dataTable{
+    table{
+        width: 100%;
+        .responsive-td{
+            width: 1%;
+            flex-wrap: nowrap;
+            font-weight: bolder;
+        }
+        td{
+            .justify-content-center{
+                justify-content: left!important;
+            }
+            .text-center{
+                text-align: left!important;
+            }
+        }
+    }
+}

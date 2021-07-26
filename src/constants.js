@@ -24,8 +24,8 @@ export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_L
 export const S3_CONFIG = {
     bucketName: 'admin-proyectos',
     region: 'us-east-2',
-    accessKeyId: 'AKIAJPBN556AJO7KB2RA',
-    secretAccessKey: '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'
+    accessKeyId: 'AKIA6N4IN4J6OCL472TN',
+    secretAccessKey: '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'
 }
 /* export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://demo.proyectosadmin.com' : 'http://127.0.0.1:8000' */
 export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proyectosadmin.xyz' : 'http://127.0.0.1:8000'
