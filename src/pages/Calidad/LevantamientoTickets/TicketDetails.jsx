@@ -99,9 +99,14 @@ class TicketDetails extends Component {
                         files: []
                     }
                 }
+            },
+            mantenimientos:{
+                costo: 0.0,
+                equipo: '',
+                fechaMantenimiento: new Date()
             }
         },
-        data: { partidas: [],subpartidas: [], conceptos: [] },
+        data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [] },
         ticket: '',
         presupuesto: '',
         modal: {
@@ -138,7 +143,7 @@ class TicketDetails extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos, proveedores, unidades, tiposPago, areasCompras, areasVentas } = response.data
+                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos, proveedores, unidades, tiposPago, areasCompras, areasVentas, empresas } = response.data
                 const { options, formularios, data, title, ticket } = this.state
                 data.partidas = partidas
                 let aux = {}
@@ -152,6 +157,7 @@ class TicketDetails extends Component {
                 options.proveedores = setOptions(proveedores, "razon_social", "id")
                 options.unidades = setOptions(unidades, 'nombre', 'id')
                 options.tiposPagos = setSelectOptions(tiposPago, 'tipo')
+                options.empresas = setOptions(empresas, 'name', 'id')
                 if(title === 'Nueva solicitud de compra' || title === 'Editar solicitud de compra'){
                     options.areas = setOptions(areasCompras, 'nombre', 'id')
                 }else{ 
@@ -193,7 +199,7 @@ class TicketDetails extends Component {
                 options.equipos = aux
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
-                this.setState({ ...this.state, ticket: ticket, formularios, options })
+                this.setState({ ...this.state, ticket: ticket, formularios, options, data })
                 if(ticket.presupuesto_preeliminar){ this.getPresupuestoAxios(ticket.presupuesto_id) }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -534,6 +540,23 @@ class TicketDetails extends Component {
             console.log(error, 'error')
         })
     }
+    
+    async deleteMantenimientoAxios(mantenimiento) {
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.delete(`${URL_DEV}v2/calidad/tickets/${mantenimiento.id}?ticket=${ticket.id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { ticket } = response.data
+                const { data } = this.state
+                data.mantenimientos = ticket.notas
+                this.setState({ ...this.state, data })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El mantenimiento fue eliminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR SETTERS                               */
     /* -------------------------------------------------------------------------- */
@@ -690,6 +713,9 @@ class TicketDetails extends Component {
             ...this.state,
             formularios
         })
+    }
+    openModalDeleteMantenimiento = mantenimiento => {
+        deleteAlert(`¿DESEAS ELIMINAR EL MANTENIMIENTO?`, '', () => this.deleteMantenimientoAxios(mantenimiento))
     }
     /* -------------------------------------------------------------------------- */
     /*                                CLEAR MODALS                               */
@@ -1067,7 +1093,32 @@ class TicketDetails extends Component {
         })
     }
 
-
+    /* ---------------------- FORMULARIO MANTENIMIENTO CORRECTIVO ---------------------- */
+    onChangeMantenimientos = e => {
+        const { name, value } = e.target
+        const { formularios } = this.state
+        formularios.mantenimientos[name] = value
+        this.setState({ ...this.state, formularios })
+    }
+    onSubmitMantenimiento = async(e) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket, formularios, data } = this.state
+        await axios.post(`${URL_DEV}v2/calidad/tickets/${ticket.id}/mantenimiento`, formularios.mantenimientos, { headers: setSingleHeader(access_token) }).then(
+            (response) => { 
+                doneAlert('Mantenimiento correctivo generado con éxito.') 
+                this.getOneTicketAxios(ticket.id)
+                data.mantenimientos = ticket.mantenimientos
+                this.setState({
+                    ...this.state,
+                    data
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
 
 
     deleteFile = element => {
@@ -1129,7 +1180,8 @@ class TicketDetails extends Component {
                     onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} openModalEditarSolicitud = { this.openModalEditarSolicitud}
                     deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto}
                     onChangeTicketProceso={this.onChangeTicketProceso} onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso}
-                    generateEmailTicketProceso={this.generateEmailTicketProceso}
+                    generateEmailTicketProceso={this.generateEmailTicketProceso} onChangeMantenimientos={this.onChangeMantenimientos} onSubmitMantenimiento={this.onSubmitMantenimiento}
+                    openModalDeleteMantenimiento={this.openModalDeleteMantenimiento}
                 />
                 <Modal size = "xl" title = 'Agregar concepto' show = { modal.conceptos } handleClose = { this.handleCloseConceptos } >
                     <AgregarConcepto options = { options } formeditado = { formeditado } form = { formularios.preeliminar } onChange = { this.onChangeConceptos }

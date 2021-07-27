@@ -87,7 +87,7 @@ class UltimoPresupuesto extends Component {
                                 <div className="list min-w-1000px">
                                     <div className="px-9 py-6">
                                         <div>
-                                            <div className="d-flex justify-content-between align-items-center">
+                                            <div className="d-flex justify-content-between align-items-center mb-4">
                                                 <div className="text-dark font-size-h4 font-weight-bold">
                                                     {presupuesto.proyecto.nombre}
                                                 </div>

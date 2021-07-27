@@ -53,7 +53,8 @@ import presupuestoDiseñoForm from './presupuesto/PresupuestoDiseñoForm'
 import partidasDiseñoForm from './catalogos/PartidasDiseñoForm'
 import diseñoForm from './catalogos/DiseñoForm'
 import obraForm from './catalogos/ObraForm'
-import ticketView from './calidad/Tickets/TicketView' 
+import ticketView from './calidad/Tickets/TicketView'
+import mantenimientoCorrectivo from './calidad/Tickets/MantenimientoCorrectivo'
 //import ticketView2 from './calidad/Tickets/TicketView2' 
 import SolicitudTabla from './calidad/Tickets/SolicitudTabla'
 import procesoTicketForm from './calidad/ProcesoTicketForm'
@@ -175,6 +176,7 @@ export const PartidasDiseñoForm = partidasDiseñoForm
 export const DiseñoForm = diseñoForm
 export const ObraForm = obraForm
 export const TicketView = ticketView
+export const MantenimientoCorrectivo = mantenimientoCorrectivo
 //export const TicketView2 = ticketView2
 export const AgregarVacacionesForm = agregarVacacionesForm
 export const ProcesoTicketForm = procesoTicketForm

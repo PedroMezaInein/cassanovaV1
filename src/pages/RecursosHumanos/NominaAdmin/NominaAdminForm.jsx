@@ -77,44 +77,14 @@ class NominaAdminForm extends Component {
                 if (state) {
                     if (state.nomina) {
                         const { nomina } = state
-                        const { form, options } = this.state
-                        form.periodo = nomina.periodo
-                        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
-                        form.fechaInicio = new Date(nomina.fecha_inicio)
-                        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
-
-                        let aux = []
-                        nomina.nominas_administrativas.forEach((nom, key) => {
-                            aux.push(
-                                {
-                                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
-                                    nominImss: nom.nomina_imss,
-                                    restanteNomina: nom.restante_nomina,
-                                    extras: nom.extras,
-                                    id: nom.id
-                                }
-                            )
-                        })
-
-                        if (aux.length) { form.nominasAdmin = aux } 
-                        else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
-
-                        if(nomina.egresos){
-                            if(nomina.egresos.length){
-                                if(nomina.cuentaImss){ form.cuentaImss = nomina.cuentaImss.id.toString() }
-                                if(nomina.cuentaRestante){ form.cuentaRestante = nomina.cuentaRestante.id.toString() }
-                                if(nomina.cuentaExtras){ form.cuentaExtras = nomina.cuentaExtras.id.toString() }
-                            }
-                        }
                         this.setState({
                             ...this.state,
                             title: 'Editar nómina administrativa',
-                            nomina: nomina,
-                            form,
-                            options,
                             formeditado: 1,
                             action: 'edit'
                         })
+                        this.getOneNominaAdminAxios(nomina.id)
+                        
                     }
                     else
                         history.push('/rh/nomina-obras')
@@ -133,6 +103,57 @@ class NominaAdminForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({ ...this.state, options })
+    }
+
+    getOneNominaAdminAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/nomina-administrativa/${id}`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { nomina } = response.data
+                const { form, options } = this.state
+
+                form.periodo = nomina.periodo
+                form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+                form.fechaInicio = new Date(moment(nomina.fecha_inicio))
+                form.fechaFin = nomina.fecha_fin ? new Date(moment(nomina.fecha_fin)) : ''
+
+                let aux = []
+                nomina.nominas_administrativas.forEach((nom, key) => {
+                    aux.push(
+                        {
+                            usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                            nominImss: nom.nomina_imss,
+                            restanteNomina: nom.restante_nomina,
+                            extras: nom.extras,
+                            id: nom.id
+                        }
+                    )
+                })
+
+                if (aux.length) { form.nominasAdmin = aux } 
+                else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+
+                if(nomina.egresos){
+                    if(nomina.egresos.length){
+                        if(nomina.cuentaImss){ form.cuentaImss = nomina.cuentaImss.id.toString() }
+                        if(nomina.cuentaRestante){ form.cuentaRestante = nomina.cuentaRestante.id.toString() }
+                        if(nomina.cuentaExtras){ form.cuentaExtras = nomina.cuentaExtras.id.toString() }
+                    }
+                }
+                this.setState({
+                    ...this.state,
+                    nomina: nomina,
+                    form,
+                    options
+                })
+
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async getOptionsAxios() {

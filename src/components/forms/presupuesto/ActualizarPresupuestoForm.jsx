@@ -103,7 +103,7 @@ class ActualizarPresupuestoForm extends Component {
                                         <div>
                                             {
                                                 !showInputsCalidad &&
-                                                <div className="d-flex justify-content-between align-items-center">
+                                                <div className="d-flex justify-content-between align-items-center mb-4">
                                                     <div className="text-dark font-size-h4 font-weight-bold">
                                                         {presupuesto.proyecto.nombre}
                                                     </div>
