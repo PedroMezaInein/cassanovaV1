@@ -544,7 +544,8 @@ class TicketDetails extends Component {
     async deleteMantenimientoAxios(mantenimiento) {
         const { access_token } = this.props.authUser
         const { ticket } = this.state
-        await axios.delete(`${URL_DEV}v2/calidad/tickets/${mantenimiento.id}?ticket=${ticket.id}`, { headers: setSingleHeader(access_token) }).then(
+        //await axios.delete(`${URL_DEV}v2/calidad/tickets/${mantenimiento.id}?ticket=${ticket.id}`, { headers: setSingleHeader(access_token) }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos/${mantenimiento.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
                 const { data } = this.state
@@ -1120,12 +1121,9 @@ class TicketDetails extends Component {
         })
     }
 
-
     deleteFile = element => {
         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => { this.deleteAdjuntoAxios(element.id) } )
     }
-
-
 
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR ONCLICK                               */
