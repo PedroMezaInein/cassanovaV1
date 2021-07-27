@@ -436,7 +436,7 @@ class TicketView extends Component {
                                                 </ActualizarPresupuestoForm>
                                             
                                             : presupuesto.estatus.estatus === 'En espera'?
-                                                <PresupuestoGeneradoCalidad presupuesto={presupuesto} form={formulario.presupuesto_generado} onChangeAdjunto={onChangeAdjunto}/>
+                                                <PresupuestoGeneradoCalidad presupuesto={presupuesto} ticket = {data} form={formulario.presupuesto_generado} onChangeAdjunto={onChangeAdjunto}/>
                                             :<></>
                                                 
                                         }

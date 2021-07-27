@@ -8,8 +8,11 @@ import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, sendFileByMa
 import Layout from "../../../components/layout/layout"
 import { UltimoPresupuestoForm } from "../../../components/forms"
 import { TagInputGray } from '../../../components/form-components'
+import { setSingleHeader } from "../../../functions/routers"
+import { Modal } from "react-bootstrap"
 class PresupuestosEnviadosFinish extends Component {
     state = {
+        modal: false,
         formeditado: 0,
         presupuesto: '',
         form: {
@@ -47,9 +50,15 @@ class PresupuestosEnviadosFinish extends Component {
             subpartidas: [],
             conceptos: []
         },
+        modalObject: {
+            file: {},
+        }
     };
 
     componentDidMount() {
+        this.setState({
+            ...this.state, modal:false
+        })
         const { authUser: { user: { permisos } } } = this.props;
         const { history: { location: { pathname } } } = this.props;
         const { history, location: { state } } = this.props;
@@ -66,9 +75,10 @@ class PresupuestosEnviadosFinish extends Component {
         if (!presupuesto) history.push("/");
         this.getOptionsAxios()
     }
-    async getOnePresupuestoAxios(id) {
+
+    getOnePresupuestoAxios = async(id) => {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { form } = this.state
                 const { presupuesto } = response.data
@@ -109,28 +119,24 @@ class PresupuestosEnviadosFinish extends Component {
                     form,
                     formeditado: 1
                 })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async getOptionsAxios() {
+
+    getOptionsAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuestos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}presupuestos/options`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { empresas, proyectos, areas, partidas, proveedores, unidades, conceptos } = response.data
                 const { options, data } = this.state
                 data.partidas = partidas
                 let aux = {}
-                conceptos.map((concepto) => {
-                    return aux[concepto.clave] = false
-                })
+                conceptos.map((concepto) => { return aux[concepto.clave] = false })
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
@@ -141,55 +147,44 @@ class PresupuestosEnviadosFinish extends Component {
                     ...this.state,
                     options
                 })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async addConceptoAxios() {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { concepto } = response.data
-                this.addConceptoToPresupuestoAxios([concepto])
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async addConceptoToPresupuestoAxios(conceptos) {
+    addConceptoAxios = async() => {
         const { access_token } = this.props.authUser
-        const { presupuesto } = this.state
-        let aux = {
-            conceptos: conceptos
-        }
-        await axios.post(URL_DEV + 'presupuestos/' + presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form } = this.state
+        await axios.post(`${URL_DEV}conceptos`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { presupuesto } = response.data
-                this.getOnePresupuestoAxios(presupuesto.id)
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-                this.setState({
-                    modal: false
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                const { concepto } = response.data
+                this.addConceptoToPresupuestoAxios([concepto])
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
+    addConceptoToPresupuestoAxios = async (conceptos) => {
+        const { access_token } = this.props.authUser
+        const { presupuesto } = this.state
+        let aux = { conceptos: conceptos }
+        await axios.post(`${URL_DEV}presupuestos/${presupuesto.id}/conceptos`, aux, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { presupuesto } = response.data
+                this.getOnePresupuestoAxios(presupuesto.id)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                this.setState({ ...this.state, modal: false })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -198,6 +193,7 @@ class PresupuestosEnviadosFinish extends Component {
             options
         })
     }
+    
     onChangeConceptos = (e) => {
         const { name, value } = e.target;
         const { data, form, presupuesto } = this.state
@@ -259,6 +255,7 @@ class PresupuestosEnviadosFinish extends Component {
             form
         })
     }
+    
     checkButton = (key, e) => {
         const { name, checked } = e.target
         const { form, presupuesto } = this.state
@@ -325,82 +322,133 @@ class PresupuestosEnviadosFinish extends Component {
 
     generarPDF = e => {
         e.preventDefault()
-        waitAlert()
-        this.generarPDFAxios()
+        const { form } = this.state
+        if(form.tiempo_valido !== ''){
+            waitAlert()
+            this.generarPDFAxios() 
+        }else{
+            errorAlert('Ingresa el periodo de validez')
+        }
     }
-    async generarPDFAxios() {
+
+    generarPDFAxios = async() =>{
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
-        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}/generar`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                sendFileByMailAlert(`¡PRESUPUESTO GENERADO!`, 'PRESUPUESTO_PDF', 'CLIENTE',
-                    <div>
-                        <TagInputGray tags={ form.correos_presupuesto } placeholder="CORREO(S)" iconclass="flaticon-email" uppercase={false} onChange = { (e) => { this.tagInputChange(e.target.value) } } /> 
-                    </div>,
-                    () => this.sendMail()
-                )
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                const { adjunto } = response.data
+                const { form } = this.state
+                const { user } = this.props.authUser
+                if(user.email)
+                    form.correos_presupuesto.push(user.email)
+                Swal.close()
+                this.setState({...this.state, modalObject: {adjunto: adjunto}, modal: true, form })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
     
-    async sendMail() {
+    sendMail = async () => {
         waitAlert();
         const { access_token } = this.props.authUser
-        const { form, presupuesto } = this.state
-        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/enviar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => { doneAlert(response.data.message !== undefined ? response.data.message : 'El presupuesto fue enviado con éxito.') }, 
-            (error) => { printResponseErrorAlert(error) }
+        const { form, presupuesto, modalObject } = this.state
+        form.presupuestoAdjunto = modalObject.adjunto
+        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/correo`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => { 
+                doneAlert('Correo enviado con éxito', () => { this.handleCloseModal() } ) 
+            },  (error) => { this.handleCloseModal(); printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    sendPresupuesto = e => {
+    /* sendPresupuesto = e => {
         e.preventDefault()
         waitAlert()
         this.sendPresupuestoAxios()
+    } */
+
+    sendPresupuestoAxios = async () => {
+        /* -------------------------------------------------------------------------- */
+        /*                         ANCHOR Sending presupuesto                         */
+        /* -------------------------------------------------------------------------- */
+        const { access_token } = this.props.authUser
+        const { form, presupuesto } = this.state
+        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/finish`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { presupuesto } = response.data
+                doneAlert('Márgenes actualizados actualizado con éxito', 
+                    () => this.getOnePresupuestoAxios(presupuesto.id))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
-    async sendPresupuestoAxios() {
-        // const { access_token } = this.props.authUser
-        // const { form, presupuesto } = this.state
-        // await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-        //     (response) => {
-        //         const { history } = this.props
-        //         history.push({
-        //             pathname: '/presupuesto/presupuesto'
-        //         });
-        //     },
-        //     (error) => {
-        //         printResponseErrorAlert(error)
-        //     }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.log(error, 'error')
-        // })
+
+    handleCloseModal = () => {
+        const { form, modalObject, presupuesto } = this.state
+        form.correos_presupuesto = []
+        modalObject.adjunto = {}
+        this.setState({...this.state,modal: false, modalObject, form })
+        this.getOnePresupuestoAxios(presupuesto.id)
     }
+
     render() {
-        const { form, formeditado, presupuesto } = this.state;
+        
+        const { form, formeditado, presupuesto, modal, modalObject } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
-                <UltimoPresupuestoForm
-                    formeditado={formeditado}
-                    form={form}
-                    onChange={this.onChange}
-                    checkButton={this.checkButton}
-                    generarPDF={this.generarPDF}
-                    presupuesto={presupuesto}
-                    {...this.props}
-                    onChangeInput={this.onChangeInput}
+                <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}
+                    presupuesto={presupuesto} {...this.props} onChangeInput={this.onChangeInput}
                     // aceptarPresupuesto={this.aceptarPresupuesto}
-                    sendPresupuesto={this.sendPresupuesto}
-                />
+                    sendPresupuesto={ (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(); } } />
+                <Modal show = { modal } 
+                    //onHide = { () => this.setState({...this.state, modal:false})}
+                    onHide = { this.handleCloseModal }
+                    centered
+                    contentClassName = 'swal2-popup d-flex'
+                    >
+                    <Modal.Header className = 'border-0 justify-content-center'>
+                        <h2 className="swal2-title text-center">¡PRESUPUESTO GENERADO!</h2>
+                    </Modal.Header>
+                    <Modal.Body className = 'py-0'>
+                        <div className = 'row mx-0 justify-content-center'>
+                            <div className="col-md-12 text-center py-2">
+                                <div className="text-primary font-weight-bolder font-size-lg">
+                                    Documento generado:
+                                </div>
+                                <div>
+                                    {
+                                        modalObject.adjunto !== undefined ?
+                                            <a className="text-muted font-weight-bold text-hover-success" target= '_blank' rel="noreferrer" href = {modalObject.adjunto.url}>
+                                                {modalObject.adjunto.name}
+                                            </a>
+                                        : <></>
+                                    }
+                                </div>
+                            </div>
+                            <div className="col-md-11 font-weight-light mt-5 text-justify">
+                                Si deseas enviar el presupuesto agrega el o los correos del {'destinatario'}, de lo contario da clic en <span className="font-weight-bold">cancelar</span>.
+                            </div>
+                            <div className="col-md-11 mt-5">
+                                <div>
+                                    <TagInputGray swal = { true } tags = { form.correos_presupuesto } placeholder = "CORREO(S)" iconclass = "flaticon-email" 
+                                        uppercase = { false } onChange = { this.tagInputChange } /> 
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer className = 'border-0 justify-content-center'>
+                        <button type="button" class="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex"
+                            onClick = { this.handleCloseModal }>CANCELAR</button>
+                        <button type="button" class="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex"
+                            onClick = { this.sendMail } >SI, ENVIAR</button>
+                    </Modal.Footer>
+                </Modal>
             </Layout>
         );
     }

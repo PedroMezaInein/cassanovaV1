@@ -740,7 +740,7 @@ export const printResponseErrorAlert = (error) => {
         }
     }
 }
-export const sendFileByMailAlert = ( title, file_name, destinatario, input, action ) => {
+export const sendFileByMailAlert = ( title, file_name, file_url, destinatario, input, action, dismiss ) => {
     MySwal.fire({
         title: title,
         html: 
@@ -750,7 +750,7 @@ export const sendFileByMailAlert = ( title, file_name, destinatario, input, acti
                         Documento generado:
                     </div>
                     <div>
-                        <a className="text-muted font-weight-bold text-hover-success" target= '_blank' rel="noreferrer" href = "#">
+                        <a className="text-muted font-weight-bold text-hover-success" target= '_blank' rel="noreferrer" href = {file_url}>
                             {file_name}
                         </a>
                     </div>
@@ -771,6 +771,8 @@ export const sendFileByMailAlert = ( title, file_name, destinatario, input, acti
             cancelButton:'btn-light-gray-sweetalert2'
         }
     }).then((result) => {
+        if(result.dismiss)
+            dismiss()
         if (result.value) {
             action()
         }

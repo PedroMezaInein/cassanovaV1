@@ -6,7 +6,7 @@ import { dayDMY, setLabelVentas } from "../../../functions/setters"
 
 class PresupuestoGeneradoCalidad extends Component {
     render() {
-        const { presupuesto, form, onChangeAdjunto } = this.props
+        const { presupuesto, form, onChangeAdjunto, ticket } = this.props
         return (
             <Row className="mx-0">
                 <Col md="6" className="pl-0">
@@ -27,7 +27,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">8</div>
+                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.identificador}</div>
                                                 <span className="text-muted font-weight-light">IDENTIFICADOR</span>
                                             </div>
                                         </div>
@@ -83,7 +83,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <a rel="noopener noreferrer" href={presupuesto.presupuesto_pdf!==null?presupuesto.presupuesto_pdf:'#'} target="_blank" className="text-dark mb-1 font-size-lg">ADJUNTO</a>
+                                                <a rel="noopener noreferrer" href={ticket.presupuestoAdjunto} target="_blank" className="text-dark mb-1 font-size-lg">ADJUNTO</a>
                                                 <span className="text-muted font-weight-light">PRESUPUESTO</span>
                                             </div>
                                         </div>
