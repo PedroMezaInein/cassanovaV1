@@ -261,6 +261,11 @@ class PresupuestosEnviados extends Component {
                                     withformgroup = { 0 } name = 'tiempo_ejecucion' placeholder = 'TIEMPO EJECUCIÓN' value = { filters.tiempo_ejecucion } 
                                     onChange = { this.onChangeFilter } />
                             </div>
+                            <div className="col-md-6">
+                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 0 } withicon={0} customdiv = 'mb-0' placeholder = 'ESTATUS' value = { filters.estatus } 
+                                    options = { [ { value: 'Utilidad', name: 'Utilidad'}, { value: 'En espera', name: 'En espera'}, { value: 'Aceptado', name: 'Aceptado'}, { value: 'Rechazado', name: 'Rechazado'} ] } 
+                                    onChange = { (value) => { this.onChangeFilter({target:{name:'estatus',value:value}}) } } />
+                            </div>
                             <div className="col-md-9 my-6 text-center">
                                 <RangeCalendar start = { filters.fecha.start } end = { filters.fecha.end } 
                                     onChange = { (value) => { this.onChangeFilter({target:{name:'fecha',value:{start: value.startDate, end: value.endDate}}}) } } />
