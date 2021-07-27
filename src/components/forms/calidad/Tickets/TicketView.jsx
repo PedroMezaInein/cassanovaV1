@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudCompraForm, SolicitudVentaForm, PresupuestoGeneradoCalidad } from '../../../../components/forms';
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudCompraForm, SolicitudVentaForm, PresupuestoGeneradoCalidad, MantenimientoCorrectivo } from '../../../../components/forms';
 import { Button } from '../../../form-components'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -209,7 +209,7 @@ class TicketView extends Component {
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
             openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta, onChangeAdjunto,
-            onChangeTicketProceso, onSubmitTicketProceso, handleChangeTicketProceso, generateEmailTicketProceso
+            onChangeTicketProceso, onSubmitTicketProceso, handleChangeTicketProceso, generateEmailTicketProceso, onChangeMantenimientos, onSubmitMantenimiento, openModalDeleteMantenimiento
         } = this.props
         const { activeKeyNav } = this.state
         return (
@@ -369,6 +369,7 @@ class TicketView extends Component {
                                                 {
                                                     presupuesto?
                                                         presupuesto.estatus.estatus === "Aceptado" ?
+                                                        <>
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('ticket-proceso'); this.controlledNav("ticket-proceso") }}>
                                                                 <Nav.Link eventKey="ticket-proceso">
                                                                     <span className="nav-icon">
@@ -377,6 +378,16 @@ class TicketView extends Component {
                                                                     <span className="nav-text font-weight-bolder font-size-14px">{this.showTabTicketProceso()}</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
+                                                            
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('mantenimiento'); this.controlledNav("mantenimiento") }}>
+                                                                <Nav.Link eventKey="mantenimiento">
+                                                                    <span className="nav-icon">
+                                                                        <i className="las la-tools icon-lg mr-2"></i>
+                                                                    </span>
+                                                                    <span className="nav-text font-weight-bolder font-size-14px">Mantenimiento</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
+                                                            </>
                                                         :<></>
                                                     :<></>
                                                 }
@@ -462,6 +473,25 @@ class TicketView extends Component {
                                                 <ProcesoTicketForm form = { formulario.ticket } options = { options } onChange = { onChangeTicketProceso } formeditado = { 1 }
                                                     handleChange = { handleChangeTicketProceso } onSubmit = { onSubmitTicketProceso } generateEmail = { generateEmailTicketProceso } 
                                                     estatus = { data.estatus_ticket.estatus } deleteFile = { deleteFile } />
+                                            </Card.Body>
+                                        </Card>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="mantenimiento">
+                                    <Card className="card-custom gutter-b card-stretch">
+                                            <Card.Header className="border-0">
+                                                <Card.Title className="mb-0">
+                                                    <div className="font-weight-bold font-size-h5">Mantenimiento correctivo</div>
+                                                </Card.Title>
+                                            </Card.Header>
+                                            <Card.Body className="pt-0">
+                                                <MantenimientoCorrectivo
+                                                    form={formulario.mantenimientos}
+                                                    options = { options }
+                                                    onChangeMantenimientos={onChangeMantenimientos}
+                                                    data={data}
+                                                    onSubmitMantenimiento={onSubmitMantenimiento}
+                                                    openModalDeleteMantenimiento={openModalDeleteMantenimiento}
+                                                />
                                             </Card.Body>
                                         </Card>
                                     </Tab.Pane>

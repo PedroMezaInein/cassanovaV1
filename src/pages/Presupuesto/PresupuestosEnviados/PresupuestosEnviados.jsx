@@ -157,9 +157,12 @@ class PresupuestosEnviados extends Component {
                     <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', 'ELIMINARÁS EL PRESUPUESTO', () => this.deletePresupuestoAxios(element.id)) }}>
                         {this.setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalDownloadPDF(element) }} >
+                    {
+                        element.pdfs.length > 0 &&
+                        <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalDownloadPDF(element) }} >
                         {this.setNaviIcon('flaticon2-download-1', 'descargar presupuesto')}
-                    </Dropdown.Item>
+                        </Dropdown.Item>
+                    }
                 </DropdownButton>
             </div>
         )
