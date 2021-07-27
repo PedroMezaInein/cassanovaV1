@@ -41,7 +41,7 @@ export default class SolicitudesTabla extends Component {
                                     <th>Fecha</th>
                                     <th>Área</th>
                                     <th>Sub área</th>
-                                    <th style={{ minWidth: '195px' }}>Descripción</th>
+                                    <th>Descripción</th>
                                     <th></th>
                                 </tr>
                             </thead>
