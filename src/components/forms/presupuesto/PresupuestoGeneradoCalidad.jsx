@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Row, Col, Card } from 'react-bootstrap'
 import { dayDMY, setLabelVentas } from "../../../functions/setters"
 // import ItemSlider from '../../singles/ItemSlider'
+import { Button } from '../../../components/form-components'
 
 class PresupuestoGeneradoCalidad extends Component {
     render() {
@@ -15,6 +16,22 @@ class PresupuestoGeneradoCalidad extends Component {
                                 <div className="d-flex flex-center flex-column mb-5">
                                     <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1">DATOS DEL PRESUPUESTO</div>
                                     <div className="badge badge-light-info d-inline">{setLabelVentas(presupuesto.estatus)}</div>
+                                    <div className="d-flex mt-2">
+                                        <Button
+                                            icon=''
+                                            onClick={() => { openAlertChangeStatusP('Aceptado', presupuesto) }}
+                                            className={"btn btn-icon btn-light-success btn-xs mr-2 ml-auto"}
+                                            only_icon={"flaticon2-check-mark icon-sm"}
+                                            tooltip={{ text: 'SE ACEPTÓ PRESUPUESTO' }}
+                                        />
+                                        <Button
+                                            icon=''
+                                            onClick={() => { openAlertChangeStatusP('Rechazado', presupuesto) }}
+                                            className={"btn btn-icon btn-light-danger btn-xs pulse pulse-danger"}
+                                            only_icon={"flaticon2-cross icon-sm"}
+                                            tooltip={{ text: 'SE RECHAZÓ PRESUPUESTO' }}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
                                 <div className="form-group row form-group-marginless mt-8">
@@ -86,20 +103,6 @@ class PresupuestoGeneradoCalidad extends Component {
                                                 <span className="text-muted font-weight-light">ADJUNTO</span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <a className="d-inline-flex bg-change-status a-hover" onClick={(e) => { e.preventDefault(); openAlertChangeStatusP(presupuesto) }}>
-                                            <div className="symbol symbol-40 pulse pulse-warning mr-5">
-                                                <span className="symbol-label" style={{color:'#FF8B00 ', backgroundColor:'#FFECD7'}}>
-                                                    <i className="las la-sync-alt icon-2x" style={{color:'#FF8B00 '}}></i>
-                                                    <span className="pulse-ring"></span>
-                                                </span>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <span className="text-dark mb-1 font-size-lg">CAMBIAR ESTATUS</span>
-                                                <span className="text-muted font-weight-light">PRESUPUESTO</span>
-                                            </div>
-                                        </a>
                                     </div>
                                 </div>
                             </div>

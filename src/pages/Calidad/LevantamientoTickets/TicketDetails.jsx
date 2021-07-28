@@ -726,38 +726,41 @@ class TicketDetails extends Component {
     openModalDeleteMantenimiento = mantenimiento => {
         deleteAlert(`¿DESEAS ELIMINAR EL MANTENIMIENTO?`, '', () => this.deleteMantenimientoAxios(mantenimiento))
     }
-    openAlertChangeStatusP = presupuesto => {
-        const { formularios, options } = this.state;
-        customInputAlert(
+    openAlertChangeStatusP = (estatus, presupuesto) => {
+        const { formularios, ticket } = this.state;
+        switch(estatus){
+            case 'Rechazado':
+                customInputAlert(
                     <div>
-                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">¿A CUÁL ESTATUS DEL PRESUPUESTO DESEAS CAMBIAR?</h5>
-                        <div className="mx-auto col-md-11">
+                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">ESCRIBE EL MOTIVO DE RECHAZO</h5>
+                        <div className="mx-auto col-md-11 mt-5">
                             <form id='sendStatusForm' name='sendStatusForm'>
-                                <div className="d-inline-flex mt-3">
-                                    {
-                                        options.estatus_final.map((option, key) => {
-                                            return (
-                                                <Form.Check key={key} id={`estatus-${option.id}`}
-                                                    type="radio" label={option.estatus} name='estatus'
-                                                    className={`${option.estatus === 'Aceptado' ?'mr-5':'mr-0'}`} value={option.estatus}
-                                                    onChange={this.onChangeEstatus}
-                                                />
-                                            )
-                                        })
-                                    }
-                                </div>
-                                <div id='customInputRechazado' className='d-none'>
+                                <div id='customInputRechazado'>
                                     <Form.Control
-                                        placeholder='ESCRIBE EL MOTIVO DE RECHAZO'
+                                        placeholder='MOTIVO DE RECHAZO'
                                         className="form-control form-control-solid p-3 text-uppercase"
                                         id='motivo_rechazo'
                                         as="textarea"
                                         rows="3"
                                     />
                                 </div>
-                                <div id='customInputAceptado' className='d-none'>
+                            </form>
+                        </div>
+                    </div>,
+                    '',
+                    () => { this.updateStatus(presupuesto) },
+                    () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); }
+                )
+                break;
+            case 'Aceptado':
+                customInputAlert(
+                    <div>
+                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">INGRESA LOS SIGUIENTES DATOS</h5>
+                        <div className="mx-auto col-md-11 mt-6">
+                            <form id='sendStatusForm' name='sendStatusForm'>
+                                <div id='customInputAceptado'>
                                     <label htmlFor="adjunto_evidencia" className="drop-files">
-                                        <span className="svg-icon svg-icon-3x svg-icon-primary">
+                                        <span className="svg-icon svg-icon-2x svg-icon-primary">
                                             <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')}/>
                                         </span>
                                         <input
@@ -767,9 +770,7 @@ class TicketDetails extends Component {
                                             name='adjunto_evidencia'
                                             accept="image/*, application/pdf"
                                         />
-                                        <div className="font-weight-bold">
-                                            <div className="text-gray-900 font-weight-bolder font-size-lg" id="info">Subir evidencia</div>
-                                        </div>
+                                        <div className="font-weight-bolder font-size-md ml-2" id="info">Subir evidencia</div>
                                     </label>
                                     <div className="mt-6">
                                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
@@ -781,15 +782,16 @@ class TicketDetails extends Component {
                                 </div>
                             </form>
                         </div>
-                    </div>
-                
-            ,
-            '',
-            () => { this.updateStatus(presupuesto) },
-            () => { '' },
-            ''
-        )
+                    </div>,
+                    '',
+                    () => { this.updateStatus(presupuesto) },
+                    () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); },
+                )
+                break;
+            default: break;
+        }
     }
+
     async updateStatus(presupuesto){
         const { access_token } = this.props.authUser
         let { formularios } = this.state
@@ -815,20 +817,6 @@ class TicketDetails extends Component {
     changeNameFile(){
         var pdrs = document.getElementById('adjunto_evidencia').files[0].name;
         document.getElementById('info').innerHTML = pdrs;
-    }
-    onChangeEstatus = e => {
-        const { value } = e.target
-        var customRechazado = document.getElementById("customInputRechazado");
-        var customAceptado = document.getElementById("customInputAceptado");
-        if(value === 'Rechazado'){
-            customAceptado.classList.add("d-none");
-            customRechazado.classList.remove("d-none");
-            customRechazado.classList.add("mt-3");
-        }else if (value === 'Aceptado'){
-            customRechazado.classList.add("d-none");
-            customAceptado.classList.remove("d-none");
-            customAceptado.classList.add("mt-3");
-        }
     }
     /* -------------------------------------------------------------------------- */
     /*                                CLEAR MODALS                               */

@@ -3101,7 +3101,7 @@ table#calendario-proyectos tr:last-child td {
     border-radius: .475rem;
     border-color: #009ef7;
     border-width: 1px;
-    padding: 0.9rem;
+    padding: 0.5rem;
     display: flex;
     align-items: center;
     width: fit-content;
@@ -3111,14 +3111,4 @@ table#calendario-proyectos tr:last-child td {
 }
 .box-shadow-36{
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-}
-
-.bg-change-status:hover{
-    transition: all 0.15s ease;
-    background-color: #f3f6f9e6 !important;
-    padding: 6px;
-    border-radius: 7px;
-    .pulse{
-        margin-right: 0.75rem !important;
-    }
 }
