@@ -2,9 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout' 
 import NewTable from '../../../components/tables/NewTable';
-import { NOMINA_ADMIN_SINGLE_COLUMNS } from '../../../constants';
+import { NOMINA_ADMIN_SINGLE_COLUMNS, URL_DEV } from '../../../constants';
 import { renderToString } from 'react-dom/server';
 import { setTextTableCenter, setMoneyTable,setMoneyTableForNominas } from '../../../functions/setters'
+import { errorAlert, waitAlert, printResponseErrorAlert } from '../../../functions/alert'
+import axios from 'axios'
+import { setSingleHeader } from '../../../functions/routers'
+import Swal from 'sweetalert2';
 
 class NominaAdminSingle extends Component {
     state = {  
@@ -31,18 +35,34 @@ class NominaAdminSingle extends Component {
             history.push('/')
 
         const { state } = this.props.location
-        const { data } = this.state
         if(state) {
             if(state.nomina) {
-                data.nominaData = state.nomina
-                this.setState({
-                    nomina: state.nomina,
-                    nominaData: this.setNominasAdministrativas(state.nomina.nominas_administrativas),
-                    totales: this.setTotales(state.nomina),
-                    data
-                })
+                const { nomina } = state
+                this.getOneNominaAdminAxios(nomina.id)
             }
         }
+    }
+
+    getOneNominaAdminAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/nomina-administrativa/${id}`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { nomina } = response.data
+                const { data } = this.state
+                data.nominaData = nomina
+                this.setState({
+                    nomina: nomina,
+                    nominaData: this.setNominasAdministrativas(nomina.nominas_administrativas),
+                    totales: this.setTotales(nomina),
+                    data
+                })
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     setNominasAdministrativas = nominas => {
