@@ -1,25 +1,58 @@
 import React, { Component } from 'react'
 import { Row, Col, Card } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
 import { dayDMY, setLabelVentas } from "../../../functions/setters"
+import ItemSlider from '../../singles/ItemSlider'
+import { Button } from '../../../components/form-components'
 
 class PresupuestoGeneradoCalidad extends Component {
+
+    getVobo = () => {
+        const { presupuesto, ticket } = this.props
+        let aux = []
+        presupuesto.pdfs_accepeted.forEach((pdf) => {
+            if(pdf.pivot.url)
+                aux.push({url: pdf.pivot.url, name: pdf.pivot.url})
+        })
+        return aux
+    }
+
     render() {
-        const { presupuesto, form, onChangeAdjunto, ticket } = this.props
+        const { presupuesto, ticket, openAlertChangeStatusP } = this.props
         return (
             <Row className="mx-0">
-                <Col md="6" className="pl-0">
+                <Col md='12' className="p-0 mb-5">
                     <Card className="card-custom card-stretch">
                         <Card.Body>
                             <div className="">
                                 <div className="d-flex flex-center flex-column mb-5">
                                     <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1">DATOS DEL PRESUPUESTO</div>
                                     <div className="badge badge-light-info d-inline">{setLabelVentas(presupuesto.estatus)}</div>
+                                    <div className="d-flex mt-2">
+                                        {
+                                            presupuesto.estatus ? 
+                                                presupuesto.estatus.estatus !== 'Aceptado' ?
+                                                    <Button icon = '' only_icon = "flaticon2-check-mark icon-sm"
+                                                        onClick = { () => { openAlertChangeStatusP('Aceptado') } }
+                                                        className = "btn btn-icon btn-light-success btn-xs mr-2 ml-auto"
+                                                        tooltip = { { text: 'SE ACEPTÓ PRESUPUESTO' } } />
+                                                : ''
+                                            : ''
+                                        }
+                                        {
+                                            presupuesto.estatus ? 
+                                                presupuesto.estatus.estatus !== 'Rechazado' ?
+                                                    <Button icon = '' only_icon = "flaticon2-cross icon-sm"
+                                                        onClick = { () => { openAlertChangeStatusP('Rechazado') } }
+                                                        className = "btn btn-icon btn-light-danger btn-xs pulse pulse-danger"
+                                                        tooltip = { { text: 'SE RECHAZÓ PRESUPUESTO' } } />
+                                                : ''
+                                            : ''
+                                        }
+                                    </div>
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
                                 <div className="form-group row form-group-marginless mt-8">
-                                    <div className="col-md-6">
+                                    <div className="col-md-3">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -32,7 +65,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-3">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
                                                 <span className="symbol-label">
@@ -45,9 +78,9 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6">
+                                {/* </div>
+                                <div className="form-group row form-group-marginless"> */}
+                                    <div className="col-md-3">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
                                                 <span className="symbol-label">
@@ -60,7 +93,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-3">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -73,9 +106,9 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6">
+                                {/* </div>
+                                <div className="form-group row form-group-marginless"> */}
+                                    {/* <div className="col-md-3 mt-8">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -83,52 +116,41 @@ class PresupuestoGeneradoCalidad extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <a rel="noopener noreferrer" href={ticket.presupuestoAdjunto} target="_blank" className="text-dark mb-1 font-size-lg">ADJUNTO</a>
-                                                <span className="text-muted font-weight-light">PRESUPUESTO</span>
+                                                <a rel="noopener noreferrer" href={ticket.presupuestoAdjunto} target="_blank" className="text-dark mb-1 font-size-lg">PRESUPUESTO</a>
+                                                <span className="text-muted font-weight-light">ADJUNTO</span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md="6" className="pr-0">
+                <Col md='12' className="px-0 py-4">
                     <Card className="card-custom card-stretch">
-                        <Card.Header className="border-0 pb-0">
-                            <div className="mb-0 card-title h5">
-                                <div className="font-weight-bold font-size-h5">Evidencia del visto bueno</div>
-                            </div>
-                        </Card.Header>
-                        <Card.Body className="pt-0 d-flex flex-direction-column justify-content-center">
-                            <div className="d-flex justify-content-center mb-8">
-                                <div className="p-6 border w-fit-content text-center rounded">
-                                    <span className="svg-icon svg-icon-5x svg-icon-primary">
-                                        <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')}/>
-                                    </span>
-                                    <div className="font-weight-bold mt-5">
-                                        <a className="font-size-lg font-weight-bolder text-dark">Captura de pantalla</a>
-                                        <div className="text-gray-400">02 JULIO 2021</div>
-                                    </div>
+                        <Card.Body className="py-5 d-flex flex-direction-column justify-content-center">
+                            <div className="row mx-0">
+                                <div className = { `col-md-${presupuesto.estatus.estatus === 'Aceptado' ? 6 : 12}` }>
+                                    <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-2 text-center">PRESUPUESTO</div>
+                                    {
+                                        ticket ? 
+                                            <ItemSlider items = { [ {name: ticket.presupuestoAdjunto, url: ticket.presupuestoAdjunto} ] } item='adjuntoEvidencia' />
+                                        : <></>
+                                    }
                                 </div>
+                                {
+                                    presupuesto.estatus.estatus === 'Aceptado' ? 
+                                        <div className = { `col-md-6` }>
+                                            <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-2 text-center">Evidencias Vo.Bo.</div>
+                                            {
+                                                ticket ? 
+                                                    <ItemSlider items = { this.getVobo() } item='adjuntoEvidencia' />
+                                                : <></>
+                                            }
+                                        </div>
+                                    : <></>
+                                }
                             </div>
-                            <label htmlFor="adjunto" className="drop-files">
-                                <span className="svg-icon svg-icon-3x svg-icon-primary mr-4">
-                                    <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')}/>
-                                </span>
-                                <input
-                                    id="adjunto"
-                                    type="file"
-                                    onChange={onChangeAdjunto}
-                                    placeholder={form.adjuntos.adjunto_evidencia.placeholder}
-                                    value={form.adjuntos.adjunto_evidencia.value}
-                                    name='adjunto_evidencia'
-                                    accept="image/*, application/pdf"
-                                />
-                                <div className="font-weight-bold">
-                                    <div className="text-gray-900 font-weight-bolder font-size-lg">{form.adjuntos.adjunto_evidencia.placeholder}</div>
-                                </div>
-                            </label>
                         </Card.Body>
                     </Card>
                 </Col>

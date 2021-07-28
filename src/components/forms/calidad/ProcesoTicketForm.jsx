@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
-import { validateAlert } from '../../../functions/alert'
+import { validateAlert, questionAlert } from '../../../functions/alert'
 import { InputGray, Button, CalendarDay } from '../../form-components'
 import ItemSlider from '../../singles/ItemSlider'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
@@ -19,7 +19,7 @@ class ProcesoTicketForm extends Component {
     }
 
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, generarReporteFotografico, ticket, ...props } = this.props
         return (
             <>
                 {
@@ -164,7 +164,7 @@ class ProcesoTicketForm extends Component {
                                                                     <Button icon='' className="btn btn-light-primary font-weight-bold text-uppercase mr-2" text="GUARDAR"
                                                                         onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') }} />
                                                                     <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="TERMINAR"
-                                                                        onClick={(e) => { e.preventDefault(); generateEmail(true) }} />
+                                                                        onClick = { (e) => { questionAlert('¿ESTÁS SEGURO QUE DESEAS ENVIAR LOS DATOS?', '¡NO PODRÁS REVERTIR ESTO!, DARÁS POR TERMINADO EL TICKET.', () => generateEmail(true)) } } />
                                                                 </div>
                                                                 : ''
                                                         }
@@ -208,6 +208,13 @@ class ProcesoTicketForm extends Component {
                             </Row>
                             <div className="separator separator-dashed my-10"></div>
                             <div className="font-weight-light text-center font-size-lg mt-10"><span className="font-weight-bolder">Solución del problema: </span>{form.descripcion_solucion}</div>
+                            {
+                                // ticket.reporte_problema_pdf === '' &&
+                                <div className="text-center mt-5">
+                                    <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px"  onClick={(e) => { e.preventDefault(); generarReporteFotografico() }} 
+                                    text = 'GENERAR PDF' only_icon = "las la-file-pdf icon-xl mr-2 px-0 text-success" />
+                                </div>
+                            }
                         </div>
                         :<></>
                 }

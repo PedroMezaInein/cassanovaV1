@@ -2389,7 +2389,8 @@ input[type="file"]#file-upload,
 #contrato,
 #carta,
 .avance,
-.file-input {
+.file-input,
+#adjunto_evidencia {
     display: none !important;
 }
 
@@ -3100,7 +3101,7 @@ table#calendario-proyectos tr:last-child td {
     border-radius: .475rem;
     border-color: #009ef7;
     border-width: 1px;
-    padding: 0.9rem;
+    padding: 0.5rem;
     display: flex;
     align-items: center;
     width: fit-content;

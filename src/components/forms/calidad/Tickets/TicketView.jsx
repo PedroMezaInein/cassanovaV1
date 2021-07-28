@@ -11,9 +11,6 @@ import { dayDMY } from '../../../../functions/setters'
 import { Modal } from '../../../../components/singles'
 import { ProcesoTicketForm } from '../../../../components/forms';
 class TicketView extends Component {
-    state ={
-        activeKeyNav:'adjuntos'
-    }
 
     getIniciales = nombre => {
         let aux = nombre.split(' ');
@@ -157,6 +154,10 @@ class TicketView extends Component {
                         return <span className="nav-text font-weight-bolder font-size-14px">En revisión</span>
                     case 'En espera':
                         return <span className="nav-text font-weight-bolder font-size-14px">En espera del cliente</span>
+                    case 'Aceptado':
+                        return <span className="nav-text font-weight-bolder font-size-14px">Presupuesto Aceptado</span>
+                    case 'Rechazado':
+                        return <span className="nav-text font-weight-bolder font-size-14px">Presupuesto Rechazado</span>
                     default:
                         break;
                 }
@@ -182,12 +183,6 @@ class TicketView extends Component {
         return true
     }
 
-    controlledNav = value => {
-        this.setState({
-            ...this.state,
-            activeKeyNav: value
-        })
-    }
     showTabTicketProceso = () => {
         const { data } = this.props
         if( data ){
@@ -208,10 +203,10 @@ class TicketView extends Component {
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
-            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta, onChangeAdjunto,
-            onChangeTicketProceso, onSubmitTicketProceso, handleChangeTicketProceso, generateEmailTicketProceso, onChangeMantenimientos, onSubmitMantenimiento, openModalDeleteMantenimiento
+            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta,
+            onChangeTicketProceso, onSubmitTicketProceso, handleChangeTicketProceso, generateEmailTicketProceso, onChangeMantenimientos, onSubmitMantenimiento, openModalDeleteMantenimiento, activeKeyNav,
+            controlledNav, openAlertChangeStatusP, generarReporteFotografico
         } = this.props
-        const { activeKeyNav } = this.state
         return (
             <div className="p-0">
                 {/* ------------------------ { ANCHOR TAB CONTAINER } ------------------------ */}
@@ -332,7 +327,7 @@ class TicketView extends Component {
                                         <div className="separator separator-solid mt-6" />
                                         <div className="d-flex overflow-auto h-55px">
                                             <Nav className="nav nav-tabs nav-tabs-line-info nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end ">
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); this.controlledNav("adjuntos") }}>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); controlledNav("adjuntos") }}>
                                                     <Nav.Link eventKey="adjuntos">
                                                         <span className="nav-icon">
                                                             <i className="las la-photo-video icon-lg mr-2"></i>
@@ -342,7 +337,7 @@ class TicketView extends Component {
                                                 </Nav.Item>
                                                 {
                                                     data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revisión' ?
-                                                        <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); this.controlledNav("presupuesto") } } >
+                                                        <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); controlledNav("presupuesto") } } >
                                                             <Nav.Link eventKey="presupuesto">
                                                                 <span className="nav-icon"> <i className="las la-file-invoice-dollar icon-lg mr-2" /> </span>
                                                                 { this.showStepOfPresupuesto() }
@@ -350,7 +345,7 @@ class TicketView extends Component {
                                                         </Nav.Item>
                                                     : <></>
                                                 }
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); this.controlledNav("solicitud-compra") }}>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); controlledNav("solicitud-compra") }}>
                                                     <Nav.Link eventKey="solicitud-compra">
                                                         <span className="nav-icon">
                                                             <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
@@ -358,7 +353,7 @@ class TicketView extends Component {
                                                         <span className="nav-text font-weight-bolder font-size-14px">Solicitud de compra</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); this.controlledNav("solicitud-venta") }}>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); controlledNav("solicitud-venta") }}>
                                                     <Nav.Link eventKey="solicitud-venta">
                                                         <span className="nav-icon">
                                                             <i className="las la-clipboard-list icon-lg mr-2"></i>
@@ -370,7 +365,7 @@ class TicketView extends Component {
                                                     presupuesto?
                                                         presupuesto.estatus.estatus === "Aceptado" ?
                                                         <>
-                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('ticket-proceso'); this.controlledNav("ticket-proceso") }}>
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('ticket-proceso'); controlledNav("ticket-proceso") }}>
                                                                 <Nav.Link eventKey="ticket-proceso">
                                                                     <span className="nav-icon">
                                                                         <i className="las la-tools icon-lg mr-2"></i>
@@ -379,7 +374,7 @@ class TicketView extends Component {
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                             
-                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('mantenimiento'); this.controlledNav("mantenimiento") }}>
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('mantenimiento'); controlledNav("mantenimiento") }}>
                                                                 <Nav.Link eventKey="mantenimiento">
                                                                     <span className="nav-icon">
                                                                         <i className="las la-tools icon-lg mr-2"></i>
@@ -419,7 +414,7 @@ class TicketView extends Component {
                                                 <PresupuestoForm form = { formulario.presupuesto } options = { options } showFormCalidad = { true } 
                                                     data = { datos } checkButton = { this.checkButton } onChange = { this.onChangePresupuesto } 
                                                     setOptions = { setOptions } onSubmit = { (e) => { onSubmit('presupuesto') } }  />
-                                            : presupuesto.estatus.estatus !== 'En espera'?
+                                            : presupuesto.estatus.estatus !== 'En espera' && presupuesto.estatus.estatus !== 'Aceptado' && presupuesto.estatus.estatus !== 'Rechazado'?
                                                 <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
                                                     checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
@@ -446,8 +441,8 @@ class TicketView extends Component {
                                                     }
                                                 </ActualizarPresupuestoForm>
                                             
-                                            : presupuesto.estatus.estatus === 'En espera'?
-                                                <PresupuestoGeneradoCalidad presupuesto={presupuesto} ticket = {data} form={formulario.presupuesto_generado} onChangeAdjunto={onChangeAdjunto}/>
+                                            : presupuesto.estatus.estatus === 'En espera' || presupuesto.estatus.estatus === 'Aceptado' || presupuesto.estatus.estatus === 'Rechazado'?
+                                                <PresupuestoGeneradoCalidad presupuesto={presupuesto} ticket = {data} openAlertChangeStatusP={openAlertChangeStatusP} form={formulario.presupuesto_generado}/>
                                             :<></>
                                                 
                                         }
@@ -472,7 +467,9 @@ class TicketView extends Component {
                                             <Card.Body className="pt-0">
                                                 <ProcesoTicketForm form = { formulario.ticket } options = { options } onChange = { onChangeTicketProceso } formeditado = { 1 }
                                                     handleChange = { handleChangeTicketProceso } onSubmit = { onSubmitTicketProceso } generateEmail = { generateEmailTicketProceso } 
-                                                    estatus = { data.estatus_ticket.estatus } deleteFile = { deleteFile } />
+                                                    estatus = { data.estatus_ticket.estatus } deleteFile = { deleteFile } generarReporteFotografico={generarReporteFotografico}
+                                                    ticket={data}
+                                                />
                                             </Card.Body>
                                         </Card>
                                     </Tab.Pane>

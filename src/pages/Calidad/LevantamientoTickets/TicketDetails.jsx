@@ -7,13 +7,14 @@ import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAler
 import Layout from '../../../components/layout/layout'
 import { TicketView, AgregarConcepto } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
-import { setSingleHeader, setFormHeader } from '../../../functions/routers'
+import { setSingleHeader, setFormHeader, toAbsoluteUrl } from '../../../functions/routers'
 import { Modal } from '../../../components/singles'
-import { SelectSearchGray } from '../../../components/form-components'
+import { SelectSearchGray, CalendarDaySwal } from '../../../components/form-components'
 import moment from 'moment'
 import 'moment/locale/es'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
+import SVG from "react-inlinesvg";
 
 const ReactS3Client = new S3(S3_CONFIG);
 class TicketDetails extends Component {
@@ -31,7 +32,15 @@ class TicketDetails extends Component {
             empresas: [],
             areas: [],
             subareas: [],
-            tiposPagos: []
+            tiposPagos: [],
+            estatus_final:[
+                {
+                    id: 1, estatus: "Aceptado"
+                },
+                {
+                    id: 2, estatus: "Rechazado"
+                }
+            ]
         },
         formularios: {
             presupuesto: { fecha: new Date(), tiempo_ejecucion: "", conceptos: {} },
@@ -55,6 +64,7 @@ class TicketDetails extends Component {
                         files: []
                     }
                 },
+                estatus_final:''
             },
             preeliminar: {
                 conceptos: [{
@@ -92,13 +102,10 @@ class TicketDetails extends Component {
                 }
             },
             presupuesto_generado:{
-                adjuntos: {
-                    adjunto_evidencia: {
-                        value: '',
-                        placeholder: 'Subir archivo',
-                        files: []
-                    }
-                }
+                estatus_final:'',
+                fechaEvidencia: new Date(),
+                adjuntoEvidencia: '',
+                motivo_rechazo:'',
             },
             mantenimientos:{
                 costo: 0.0,
@@ -117,7 +124,8 @@ class TicketDetails extends Component {
         formeditado: 0,
         key: 'nuevo',
         title:'',
-        solicitudes: []
+        solicitudes: [],
+        activeKeyNav:'adjuntos',
     }
     
     componentDidMount() {
@@ -718,6 +726,110 @@ class TicketDetails extends Component {
     openModalDeleteMantenimiento = mantenimiento => {
         deleteAlert(`¿DESEAS ELIMINAR EL MANTENIMIENTO?`, '', () => this.deleteMantenimientoAxios(mantenimiento))
     }
+    openAlertChangeStatusP = (estatus) => {
+        const { formularios, ticket } = this.state;
+        switch(estatus){
+            case 'Rechazado':
+                customInputAlert(
+                    <div>
+                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">ESCRIBE EL MOTIVO DE RECHAZO</h5>
+                        <div className="mx-auto col-md-11 mt-5">
+                            <form id='sendStatusForm' name='sendStatusForm'>
+                                <div id='customInputRechazado'>
+                                    <Form.Control
+                                        placeholder='MOTIVO DE RECHAZO'
+                                        className="form-control form-control-solid p-3 text-uppercase"
+                                        id='motivo_rechazo'
+                                        as="textarea"
+                                        rows="3"
+                                    />
+                                </div>
+                            </form>
+                        </div>
+                    </div>,
+                    '',
+                    () => { this.updateStatus(estatus) },
+                    () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); }
+                )
+                break;
+            case 'Aceptado':
+                customInputAlert(
+                    <div>
+                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">INGRESA LOS SIGUIENTES DATOS</h5>
+                        <div className="mx-auto col-md-11 mt-6">
+                            <form id='sendStatusForm' name='sendStatusForm'>
+                                <div id='customInputAceptado'>
+                                    <label htmlFor="adjunto_evidencia" className="drop-files">
+                                        <span className="svg-icon svg-icon-2x svg-icon-primary">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')}/>
+                                        </span>
+                                        <input
+                                            id="adjunto_evidencia"
+                                            type="file"
+                                            onChange={(e) => {this.onChangeSwal(e.target.files[0], 'adjuntoEvidencia', 'presupuesto_generado'); this.changeNameFile()}}
+                                            name='adjunto_evidencia'
+                                            accept="image/*, application/pdf"
+                                        />
+                                        <div className="font-weight-bolder font-size-md ml-2" id="info">Subir evidencia</div>
+                                    </label>
+                                    <div className="mt-6">
+                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                            <label className="text-center font-weight-bolder">Fecha de entrega</label>
+                                        </div>
+                                        <CalendarDaySwal value = { formularios.presupuesto_generado.fechaEvidencia } onChange = { (e) => {  this.onChangeSwal(e.target.value, 'fechaEvidencia', 'presupuesto_generado' )} } name = { 'fechaEvidencia' } 
+                                        date = { formularios.presupuesto_generado.fechaEvidencia } withformgroup={0} />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>,
+                    '',
+                    () => { this.updateStatus(estatus) },
+                    () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); },
+                )
+                break;
+            default: break;
+        }
+    }
+
+    updateStatus = async (estatus) => {
+        const { presupuesto, ticket } = this.state
+        let { formularios } = this.state
+        const { access_token } = this.props.authUser
+        if(estatus === 'Rechazado'){
+            formularios.presupuesto_generado.estatus_final=estatus
+            let motivo = document.sendStatusForm.motivo_rechazo.value
+            formularios.presupuesto_generado.motivo_rechazo = motivo
+        }else{
+            formularios.presupuesto_generado.estatus_final=estatus
+        }
+        let data = new FormData()
+        Object.keys(formularios['presupuesto_generado']).map((element) => {
+            if(element === 'fechaEvidencia'){
+                data.append(element, (new Date(formularios['presupuesto_generado'][element])).toDateString())
+            }else{
+                data.append(element, formularios['presupuesto_generado'][element])
+            }
+            
+        })
+        Swal.close()
+        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, 
+            { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('El estatus fue actualizado con éxito.')
+                this.getOneTicketAxios(ticket.id)
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    changeNameFile(){
+        var pdrs = document.getElementById('adjunto_evidencia').files[0].name;
+        document.getElementById('info').innerHTML = pdrs;
+    }
     /* -------------------------------------------------------------------------- */
     /*                                CLEAR MODALS                               */
     /* -------------------------------------------------------------------------- */
@@ -786,6 +898,7 @@ class TicketDetails extends Component {
 
     onChangeSwal = (value, tipo, form) => {
         const { formularios } = this.state
+        console.log(formularios[form], 'formularios[form]')
         formularios[form][tipo] = value
         this.setState({...this.state, form})
     }
@@ -1048,6 +1161,14 @@ class TicketDetails extends Component {
     }
     generateEmailTicketProceso = value => { this.saveProcesoTicketAxios(value) }
 
+    generarReporteFotografico = () => {
+        const { ticket, formularios } = this.state
+        questionAlertY('¿DESEAS GENERAR EL REPORTE?',
+            'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DEL PROBLEMA REPORTADO Y SOLUCIONADO',
+            () => this.generarReporteFotograficoAxios(),
+            () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
+        )
+    }
     saveProcesoTicketAxios = async(email) =>{
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1086,14 +1207,33 @@ class TicketDetails extends Component {
                 
                 formularios.ticket = this.setForm(ticket)
                 this.setState({ ...this.state, ticket: ticket, formularios })
-                doneAlert('Presupuesto adjuntado con éxito.')
+                doneAlert('Presupuesto adjuntado con éxito.', () => this.generarReporteFotografico())
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
+    generarReporteFotograficoAxios = async() => {
+        console.log('entre')
+        // waitAlert()
+        // const { access_token } = this.props.authUser
+        // const { ticket } = this.state
+        // await axios.get(`${URL_DEV}calidad/proceso/pdf?ticket=${ticket.id}`, { headers: setSingleHeader(access_token) }).then(
+        //     (response) => {
+        //         const { ticket } = response.data
+        //         doneAlert('PDF GENERADO CON ÉXITO')
+        //         // window.open(ticket.reporte_problema_pdf, '_blank').focus();
+        //         this.setState({ 
+        //             ...this.state,
+        //             ticket:ticket
+        //         })
+        //     }, (error) => { printResponseErrorAlert(error) }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.log(error, 'error')
+        // })
+    }
     /* ---------------------- FORMULARIO MANTENIMIENTO CORRECTIVO ---------------------- */
     onChangeMantenimientos = e => {
         const { name, value } = e.target
@@ -1162,8 +1302,14 @@ class TicketDetails extends Component {
             key: value
         })
     }
+    controlledNav = value => {
+        this.setState({
+            ...this.state,
+            activeKeyNav: value
+        })
+    }
     render() {
-        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes } = this.state
+        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav } = this.state
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
@@ -1178,8 +1324,9 @@ class TicketDetails extends Component {
                     onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} openModalEditarSolicitud = { this.openModalEditarSolicitud}
                     deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto}
                     onChangeTicketProceso={this.onChangeTicketProceso} onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso}
-                    generateEmailTicketProceso={this.generateEmailTicketProceso} onChangeMantenimientos={this.onChangeMantenimientos} onSubmitMantenimiento={this.onSubmitMantenimiento}
-                    openModalDeleteMantenimiento={this.openModalDeleteMantenimiento}
+                    generateEmailTicketProceso={this.generateEmailTicketProceso} generarReporteFotografico={this.generarReporteFotografico} onChangeMantenimientos={this.onChangeMantenimientos}
+                    onSubmitMantenimiento={this.onSubmitMantenimiento} openModalDeleteMantenimiento={this.openModalDeleteMantenimiento} controlledNav={this.controlledNav} activeKeyNav={activeKeyNav}
+                    openAlertChangeStatusP={this.openAlertChangeStatusP}
                 />
                 <Modal size = "xl" title = 'Agregar concepto' show = { modal.conceptos } handleClose = { this.handleCloseConceptos } >
                     <AgregarConcepto options = { options } formeditado = { formeditado } form = { formularios.preeliminar } onChange = { this.onChangeConceptos }

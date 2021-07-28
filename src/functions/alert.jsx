@@ -521,11 +521,11 @@ export function questionAlertY(title, text, action, cancel) {
         //icon: "question",
         //iconHtml: <CommonLottie animationData = { QuestionBoy } />,
         html: <div>
-            <div className="row mx-0 justify-content-center">
+            {/* <div className="row mx-0 justify-content-center">
                 <div className="col-md-8">
                     <CommonLottie animationData = { QuestionBoy } />
                 </div>
-            </div>
+            </div> */}
             <div className="row row-paddingless form-group-marginless">
                 <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins">
                     {text}
@@ -570,7 +570,6 @@ export function questionAlert2(title, text, action, html) {
         }
     })
 }
-
 export function customInputAlert(html, iconHtml, success, cancel, htmlClass){
     MySwal.fire({
         title: '',
@@ -582,9 +581,9 @@ export function customInputAlert(html, iconHtml, success, cancel, htmlClass){
         reverseButtons: true,
         customClass: { 
             htmlContainer:`overflow-hidden ${htmlClass} `,
-            cancelButton: 'bg-transparent bg-hover-danger text-danger text-hover-white', 
-            confirmButton: 'bg-transparent bg-hover-primary text-primary text-hover-white',
-            actions: 'd-flex justify-content-between px-0 mt-0'
+            confirmButton: 'btn-light-success-sweetalert2 p-2 font-size-13px w-90px',
+            cancelButton:'btn-light-gray-sweetalert2 p-2 font-size-13px w-90px',
+            actions: 'mt-3 mb-0'
         }
     }).then((result) => {
         if(result.dismiss)
