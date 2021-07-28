@@ -1161,6 +1161,14 @@ class TicketDetails extends Component {
     }
     generateEmailTicketProceso = value => { this.saveProcesoTicketAxios(value) }
 
+    generarReporteFotografico = () => {
+        const { ticket, formularios } = this.state
+        questionAlertY('¿DESEAS GENERAR EL REPORTE?',
+            'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DEL PROBLEMA REPORTADO Y SOLUCIONADO',
+            () => this.generarReporteFotograficoAxios(),
+            () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
+        )
+    }
     saveProcesoTicketAxios = async(email) =>{
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1199,14 +1207,33 @@ class TicketDetails extends Component {
                 
                 formularios.ticket = this.setForm(ticket)
                 this.setState({ ...this.state, ticket: ticket, formularios })
-                doneAlert('Presupuesto adjuntado con éxito.')
+                doneAlert('Presupuesto adjuntado con éxito.', () => this.generarReporteFotografico())
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
+    generarReporteFotograficoAxios = async() => {
+        console.log('entre')
+        // waitAlert()
+        // const { access_token } = this.props.authUser
+        // const { ticket } = this.state
+        // await axios.get(`${URL_DEV}calidad/proceso/pdf?ticket=${ticket.id}`, { headers: setSingleHeader(access_token) }).then(
+        //     (response) => {
+        //         const { ticket } = response.data
+        //         doneAlert('PDF GENERADO CON ÉXITO')
+        //         // window.open(ticket.reporte_problema_pdf, '_blank').focus();
+        //         this.setState({ 
+        //             ...this.state,
+        //             ticket:ticket
+        //         })
+        //     }, (error) => { printResponseErrorAlert(error) }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.log(error, 'error')
+        // })
+    }
     /* ---------------------- FORMULARIO MANTENIMIENTO CORRECTIVO ---------------------- */
     onChangeMantenimientos = e => {
         const { name, value } = e.target
@@ -1297,8 +1324,9 @@ class TicketDetails extends Component {
                     onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} openModalEditarSolicitud = { this.openModalEditarSolicitud}
                     deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto}
                     onChangeTicketProceso={this.onChangeTicketProceso} onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso}
-                    generateEmailTicketProceso={this.generateEmailTicketProceso} onChangeMantenimientos={this.onChangeMantenimientos} onSubmitMantenimiento={this.onSubmitMantenimiento}
-                    openModalDeleteMantenimiento={this.openModalDeleteMantenimiento} controlledNav={this.controlledNav} activeKeyNav={activeKeyNav} openAlertChangeStatusP={this.openAlertChangeStatusP}
+                    generateEmailTicketProceso={this.generateEmailTicketProceso} generarReporteFotografico={this.generarReporteFotografico} onChangeMantenimientos={this.onChangeMantenimientos}
+                    onSubmitMantenimiento={this.onSubmitMantenimiento} openModalDeleteMantenimiento={this.openModalDeleteMantenimiento} controlledNav={this.controlledNav} activeKeyNav={activeKeyNav}
+                    openAlertChangeStatusP={this.openAlertChangeStatusP}
                 />
                 <Modal size = "xl" title = 'Agregar concepto' show = { modal.conceptos } handleClose = { this.handleCloseConceptos } >
                     <AgregarConcepto options = { options } formeditado = { formeditado } form = { formularios.preeliminar } onChange = { this.onChangeConceptos }

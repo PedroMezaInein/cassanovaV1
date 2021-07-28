@@ -201,7 +201,7 @@ class TicketView extends Component {
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
             openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta,
             onChangeTicketProceso, onSubmitTicketProceso, handleChangeTicketProceso, generateEmailTicketProceso, onChangeMantenimientos, onSubmitMantenimiento, openModalDeleteMantenimiento, activeKeyNav,
-            controlledNav, openAlertChangeStatusP
+            controlledNav, openAlertChangeStatusP, generarReporteFotografico
         } = this.props
         return (
             <div className="p-0">
@@ -463,7 +463,9 @@ class TicketView extends Component {
                                             <Card.Body className="pt-0">
                                                 <ProcesoTicketForm form = { formulario.ticket } options = { options } onChange = { onChangeTicketProceso } formeditado = { 1 }
                                                     handleChange = { handleChangeTicketProceso } onSubmit = { onSubmitTicketProceso } generateEmail = { generateEmailTicketProceso } 
-                                                    estatus = { data.estatus_ticket.estatus } deleteFile = { deleteFile } />
+                                                    estatus = { data.estatus_ticket.estatus } deleteFile = { deleteFile } generarReporteFotografico={generarReporteFotografico}
+                                                    ticket={data}
+                                                />
                                             </Card.Body>
                                         </Card>
                                     </Tab.Pane>

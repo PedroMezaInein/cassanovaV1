@@ -521,11 +521,11 @@ export function questionAlertY(title, text, action, cancel) {
         //icon: "question",
         //iconHtml: <CommonLottie animationData = { QuestionBoy } />,
         html: <div>
-            <div className="row mx-0 justify-content-center">
+            {/* <div className="row mx-0 justify-content-center">
                 <div className="col-md-8">
                     <CommonLottie animationData = { QuestionBoy } />
                 </div>
-            </div>
+            </div> */}
             <div className="row row-paddingless form-group-marginless">
                 <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins">
                     {text}
