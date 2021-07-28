@@ -154,6 +154,10 @@ class TicketView extends Component {
                         return <span className="nav-text font-weight-bolder font-size-14px">En revisión</span>
                     case 'En espera':
                         return <span className="nav-text font-weight-bolder font-size-14px">En espera del cliente</span>
+                    case 'Aceptado':
+                        return <span className="nav-text font-weight-bolder font-size-14px">Presupuesto Aceptado</span>
+                    case 'Rechazado':
+                        return <span className="nav-text font-weight-bolder font-size-14px">Presupuesto Rechazado</span>
                     default:
                         break;
                 }
@@ -410,7 +414,7 @@ class TicketView extends Component {
                                                 <PresupuestoForm form = { formulario.presupuesto } options = { options } showFormCalidad = { true } 
                                                     data = { datos } checkButton = { this.checkButton } onChange = { this.onChangePresupuesto } 
                                                     setOptions = { setOptions } onSubmit = { (e) => { onSubmit('presupuesto') } }  />
-                                            : presupuesto.estatus.estatus !== 'En espera'?
+                                            : presupuesto.estatus.estatus !== 'En espera' && presupuesto.estatus.estatus !== 'Aceptado' && presupuesto.estatus.estatus !== 'Rechazado'?
                                                 <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
                                                     checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
@@ -437,7 +441,7 @@ class TicketView extends Component {
                                                     }
                                                 </ActualizarPresupuestoForm>
                                             
-                                            : presupuesto.estatus.estatus === 'En espera'?
+                                            : presupuesto.estatus.estatus === 'En espera' || presupuesto.estatus.estatus === 'Aceptado' || presupuesto.estatus.estatus === 'Rechazado'?
                                                 <PresupuestoGeneradoCalidad presupuesto={presupuesto} ticket = {data} openAlertChangeStatusP={openAlertChangeStatusP} form={formulario.presupuesto_generado}/>
                                             :<></>
                                                 

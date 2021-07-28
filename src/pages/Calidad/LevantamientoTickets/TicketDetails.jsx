@@ -726,7 +726,7 @@ class TicketDetails extends Component {
     openModalDeleteMantenimiento = mantenimiento => {
         deleteAlert(`¿DESEAS ELIMINAR EL MANTENIMIENTO?`, '', () => this.deleteMantenimientoAxios(mantenimiento))
     }
-    openAlertChangeStatusP = (estatus, presupuesto) => {
+    openAlertChangeStatusP = (estatus) => {
         const { formularios, ticket } = this.state;
         switch(estatus){
             case 'Rechazado':
@@ -748,7 +748,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    () => { this.updateStatus(presupuesto) },
+                    () => { this.updateStatus(estatus) },
                     () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); }
                 )
                 break;
@@ -784,7 +784,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    () => { this.updateStatus(presupuesto) },
+                    () => { this.updateStatus(estatus) },
                     () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); },
                 )
                 break;
@@ -792,10 +792,10 @@ class TicketDetails extends Component {
         }
     }
 
-    async updateStatus(presupuesto){
-        const { access_token } = this.props.authUser
+    updateStatus = async (estatus) => {
+        const { presupuesto, ticket } = this.state
         let { formularios } = this.state
-        let estatus = document.sendStatusForm.estatus.value;
+        const { access_token } = this.props.authUser
         if(estatus === 'Rechazado'){
             formularios.presupuesto_generado.estatus_final=estatus
             let motivo = document.sendStatusForm.motivo_rechazo.value
@@ -803,9 +803,21 @@ class TicketDetails extends Component {
         }else{
             formularios.presupuesto_generado.estatus_final=estatus
         }
-        await axios.put(` `, formularios, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        let data = new FormData()
+        Object.keys(formularios['presupuesto_generado']).map((element) => {
+            if(element === 'fechaEvidencia'){
+                data.append(element, (new Date(formularios['presupuesto_generado'][element])).toDateString())
+            }else{
+                data.append(element, formularios['presupuesto_generado'][element])
+            }
+            
+        })
+        Swal.close()
+        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, 
+            { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('El estatus fue actualizado con éxito.')
+                this.getOneTicketAxios(ticket.id)
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
