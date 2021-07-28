@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
 import { Row, Col, Card } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
 import { dayDMY, setLabelVentas } from "../../../functions/setters"
+// import ItemSlider from '../../singles/ItemSlider'
 
 class PresupuestoGeneradoCalidad extends Component {
     render() {
-        const { presupuesto, form, onChangeAdjunto, ticket } = this.props
+        const { presupuesto, ticket, openAlertChangeStatusP, /*form*/ } = this.props
         return (
             <Row className="mx-0">
                 <Col md="6" className="pl-0">
@@ -83,10 +82,24 @@ class PresupuestoGeneradoCalidad extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <a rel="noopener noreferrer" href={ticket.presupuestoAdjunto} target="_blank" className="text-dark mb-1 font-size-lg">ADJUNTO</a>
-                                                <span className="text-muted font-weight-light">PRESUPUESTO</span>
+                                                <a rel="noopener noreferrer" href={ticket.presupuestoAdjunto} target="_blank" className="text-dark mb-1 font-size-lg">PRESUPUESTO</a>
+                                                <span className="text-muted font-weight-light">ADJUNTO</span>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <a className="d-inline-flex bg-change-status a-hover" onClick={(e) => { e.preventDefault(); openAlertChangeStatusP(presupuesto) }}>
+                                            <div className="symbol symbol-40 pulse pulse-warning mr-5">
+                                                <span className="symbol-label" style={{color:'#FF8B00 ', backgroundColor:'#FFECD7'}}>
+                                                    <i className="las la-sync-alt icon-2x" style={{color:'#FF8B00 '}}></i>
+                                                    <span className="pulse-ring"></span>
+                                                </span>
+                                            </div>
+                                            <div className="d-flex flex-column font-weight-bold">
+                                                <span className="text-dark mb-1 font-size-lg">CAMBIAR ESTATUS</span>
+                                                <span className="text-muted font-weight-light">PRESUPUESTO</span>
+                                            </div>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -101,34 +114,7 @@ class PresupuestoGeneradoCalidad extends Component {
                             </div>
                         </Card.Header>
                         <Card.Body className="pt-0 d-flex flex-direction-column justify-content-center">
-                            <div className="d-flex justify-content-center mb-8">
-                                <div className="p-6 border w-fit-content text-center rounded">
-                                    <span className="svg-icon svg-icon-5x svg-icon-primary">
-                                        <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')}/>
-                                    </span>
-                                    <div className="font-weight-bold mt-5">
-                                        <a className="font-size-lg font-weight-bolder text-dark">Captura de pantalla</a>
-                                        <div className="text-gray-400">02 JULIO 2021</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <label htmlFor="adjunto" className="drop-files">
-                                <span className="svg-icon svg-icon-3x svg-icon-primary mr-4">
-                                    <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')}/>
-                                </span>
-                                <input
-                                    id="adjunto"
-                                    type="file"
-                                    onChange={onChangeAdjunto}
-                                    placeholder={form.adjuntos.adjunto_evidencia.placeholder}
-                                    value={form.adjuntos.adjunto_evidencia.value}
-                                    name='adjunto_evidencia'
-                                    accept="image/*, application/pdf"
-                                />
-                                <div className="font-weight-bold">
-                                    <div className="text-gray-900 font-weight-bolder font-size-lg">{form.adjuntos.adjunto_evidencia.placeholder}</div>
-                                </div>
-                            </label>
+                            {/* <ItemSlider items={form.adjuntoEvidencia} item='adjuntoEvidencia' /> */}
                         </Card.Body>
                     </Card>
                 </Col>
