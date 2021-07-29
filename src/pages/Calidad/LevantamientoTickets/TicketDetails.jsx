@@ -513,7 +513,7 @@ class TicketDetails extends Component {
             (response) => {
                 const { modal } = this.state
                 modal.solicitud = false
-                this.setState({...this.state, modal})
+                this.setState({...this.state, modal, formularios:this.clearFormSolicitud()})
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.',
                     () => { this.getSolicitudesAxios(`solicitud-compra`) }
                 )
@@ -556,7 +556,7 @@ class TicketDetails extends Component {
             (response) => {
                 const { modal } = this.state
                 modal.solicitud = false
-                this.setState({...this.state, modal})
+                this.setState({...this.state, modal, formularios:this.clearFormSolicitud()})
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.')
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.',
                     () => { this.getSolicitudesAxios(`solicitud-venta`) }
@@ -758,7 +758,7 @@ class TicketDetails extends Component {
     openModalDeleteMantenimiento = mantenimiento => {
         deleteAlert(`¿DESEAS ELIMINAR EL MANTENIMIENTO?`, '', () => this.deleteMantenimientoAxios(mantenimiento))
     }
-    openAlertChangeStatusP = (estatus) => {
+    openAlertChangeStatusP = (estatus, presupuesto) => {
         const { formularios, ticket } = this.state;
         switch(estatus){
             case 'Rechazado':
@@ -780,7 +780,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    () => { this.updateStatus(estatus) },
+                    () => { this.updateStatus(presupuesto) },
                     () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); }
                 )
                 break;
@@ -816,7 +816,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    () => { this.updateStatus(estatus) },
+                    () => { this.updateStatus(presupuesto) },
                     () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); },
                 )
                 break;
@@ -824,10 +824,10 @@ class TicketDetails extends Component {
         }
     }
 
-    updateStatus = async (estatus) => {
-        const { presupuesto, ticket } = this.state
-        let { formularios } = this.state
+    async updateStatus(presupuesto){
         const { access_token } = this.props.authUser
+        let { formularios } = this.state
+        let estatus = document.sendStatusForm.estatus.value;
         if(estatus === 'Rechazado'){
             formularios.presupuesto_generado.estatus_final=estatus
             let motivo = document.sendStatusForm.motivo_rechazo.value
@@ -835,21 +835,9 @@ class TicketDetails extends Component {
         }else{
             formularios.presupuesto_generado.estatus_final=estatus
         }
-        let data = new FormData()
-        Object.keys(formularios['presupuesto_generado']).map((element) => {
-            if(element === 'fechaEvidencia'){
-                data.append(element, (new Date(formularios['presupuesto_generado'][element])).toDateString())
-            }else{
-                data.append(element, formularios['presupuesto_generado'][element])
-            }
-            
-        })
-        Swal.close()
-        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, 
-            { headers: setSingleHeader(access_token) }).then(
+        await axios.put(` `, formularios, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('El estatus fue actualizado con éxito.')
-                this.getOneTicketAxios(ticket.id)
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1125,22 +1113,12 @@ class TicketDetails extends Component {
     
     onSubmitSCompra = e => {
         e.preventDefault()
-        const { title } = this.state
-        waitAlert()
-        if (title === 'Editar solicitud de compra')
-            this.editSolicitudCompraAxios()
-        else
-            this.addSolicitudCompraAxios()
+        this.addSolicitudCompraAxios()
     }
     
     onSubmitSVenta = e => {
         e.preventDefault()
-        const { title } = this.state
-        waitAlert()
-        if (title === 'Editar solicitud de venta')
-            this.editSolicitudVentaAxios()
-        else
-            this.addSolicitudVentaAxios()
+        this.addSolicitudVentaAxios()
     }
     onChangeAdjunto = valor => {
         let tipo = valor.target.id

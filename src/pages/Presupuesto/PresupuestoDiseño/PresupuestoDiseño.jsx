@@ -74,7 +74,7 @@ class PresupuestoDiseño extends Component {
                 url: renderToString(
                     setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
                 ),
-                identificador: renderToString(setTextTable(adjunto.pivot.identificador)),
+                identificador: renderToString(setTextTableCenter(adjunto.pivot.identificador)),
                 id: adjunto.id
             })
             return false
