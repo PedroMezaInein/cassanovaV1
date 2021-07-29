@@ -458,18 +458,29 @@ class TicketView extends Component {
                                             deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
-                                        <Card className="card-custom gutter-b card-stretch">
-                                            <Card.Header className="border-0">
+                                        <Card className="card-custom gutter-b card-stretch mb-8">
+                                            <Card.Header className="">
                                                 <Card.Title className="mb-0">
                                                     <div className="font-weight-bold font-size-h5">{this.showTabTicketProceso()}</div>
                                                 </Card.Title>
                                             </Card.Header>
-                                            <Card.Body className="pt-0">
-                                                <ProcesoTicketForm form = { formulario.ticket } options = { options } onChange = { onChangeTicketProceso } formeditado = { 1 }
-                                                    handleChange = { handleChangeTicketProceso } onSubmit = { onSubmitTicketProceso } generateEmail = { generateEmailTicketProceso } 
-                                                    estatus = { data.estatus_ticket.estatus } deleteFile = { deleteFile } generarReporteFotografico={generarReporteFotografico}
-                                                    ticket={data}
-                                                />
+                                            <Card.Body className="pt-3">
+                                                <div className="row mx-0">
+                                                    <div className={`col-md-${data.reporte_url === null ? 12 : 8 } border-right`}>
+                                                        <ProcesoTicketForm form = { formulario.ticket } options = { options } onChange = { onChangeTicketProceso }
+                                                            formeditado = { 1 } handleChange = { handleChangeTicketProceso } onSubmit = { onSubmitTicketProceso } 
+                                                            generateEmail = { generateEmailTicketProceso } estatus = { data.estatus_ticket.estatus } 
+                                                            deleteFile = { deleteFile } generarReporteFotografico={generarReporteFotografico} ticket={data} />
+                                                    </div>
+                                                    {
+                                                        data.reporte_url !== null ?
+                                                            <div className="col-md-4">
+                                                                <ItemSlider items = { [ { url: data.reporte_url, name: 'reporte.pdf' } ] } item = '' />
+                                                            </div>
+                                                        : ''
+                                                    }
+                                                </div>
+                                                
                                             </Card.Body>
                                         </Card>
                                     </Tab.Pane>
