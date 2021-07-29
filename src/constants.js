@@ -611,7 +611,7 @@ export const NOTAS_COLUMNS = [
 ]
 export const ADJUNTOS_PRESUPUESTOS_COLUMNS = [
     { Header: 'Adjunto', accessor: 'url' },
-    { Header: 'Identificador', accessor: 'identificador' }
+    { Header: 'ID', accessor: 'identificador' }
 ]
 
 export const NOMINA_ADMIN_COLUMNS = [
