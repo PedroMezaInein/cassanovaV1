@@ -163,10 +163,10 @@ class ProcesoTicketForm extends Component {
                                                                 <div className="">
                                                                     <Button icon='' className="btn btn-light-primary font-weight-bold text-uppercase mr-2" text="GUARDAR"
                                                                         onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') }} />
-                                                                    <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="TERMINAR"
-                                                                        onClick = { (e) => { questionAlert('¿ESTÁS SEGURO QUE DESEAS ENVIAR LOS DATOS?', '¡NO PODRÁS REVERTIR ESTO!, DARÁS POR TERMINADO EL TICKET.', () => generateEmail(true)) } } />
+                                                                    <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="Generar PDF"
+                                                                        onClick = { (e) => { questionAlert('¿DESEAS GENERAR EL REPORTE?', 'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DEL PROBLEMA REPORTADO Y SOLUCIONADO', () => generateEmail(true)) } } />
                                                                 </div>
-                                                                : ''
+                                                            : ''
                                                         }
                                                     </div>
                                                 </div>

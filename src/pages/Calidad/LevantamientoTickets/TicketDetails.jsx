@@ -297,6 +297,38 @@ class TicketDetails extends Component {
         })
     }
 
+    addS3Images = async(arreglo) => {
+        const { ticket } = this.state
+        let filePath = `proyecto/${ticket.proyecto_id}/tickets/${ticket.id}/`
+        let auxPromises  = arreglo.map((file) => {
+            return new Promise((resolve, reject) => {
+                ReactS3Client.uploadFile(file.file, `${filePath}${file.type}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+                    .then((data) =>{
+                        const { location,status } = data
+                        if(status === 204) resolve({ name: file.file.name, url: location, type: file.type })
+                        else reject(data)
+                    }).catch(err => reject(err))
+            })
+        })
+        Promise.all(auxPromises).then(values => { this.addImagesToReporte(values)}).catch(err => console.error(err))
+    }
+
+    addImagesToReporte = async(values) => {
+        const { access_token } = this.props.authUser
+        const { id } = this.state.ticket
+        let form = {}
+        form.archivos = values
+        await axios.post(`${URL_DEV}v3/calidad/tickets/${id}/s3/reporte_fotografico`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Fotos adjuntadas con éxito', () => { this.saveProcesoTicketAxios() })
+                this.getOneTicketAxios(id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     getPresupuestoAxios = async (id, conceptosNuevos) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -573,7 +605,7 @@ class TicketDetails extends Component {
         const { formularios } = this.state
         let aux = []
 
-        formularios.ticket.fechaProgramada = new Date( moment(ticket.created_at) )
+        formularios.ticket.fechaProgramada = new Date( moment(ticket.fecha_programada) )
         formularios.ticket.empleado = ticket.tecnico_asiste === null || ticket.tecnico_asiste === 'null' ? '' : ticket.tecnico_asiste
         formularios.ticket.descripcion_solucion = ticket.descripcion_solucion === null || ticket.descripcion_solucion === 'null' ? '' : ticket.descripcion_solucion
         formularios.ticket.recibe = ticket.recibe === null || ticket.recibe === 'null' ? '' : ticket.recibe
@@ -1143,7 +1175,21 @@ class TicketDetails extends Component {
     }
     onSubmitTicketProceso = e => {
         e.preventDefault();
-        this.saveProcesoTicketAxios('')
+        const { adjuntos } = this.state.formularios.ticket
+        let aux = []
+        adjuntos.reporte_problema_reportado.files.forEach((file) => {
+            if(file.id === undefined)
+                aux.push({'file': file.file, type: 'reportado'})
+        })
+        adjuntos.reporte_problema_solucionado.files.forEach((file) => {
+            if(file.id === undefined)
+                aux.push({'file': file.file, type: 'solucionado'})
+        })
+        if(aux.length > 0 ){
+            this.addS3Images(aux)
+        }else{
+            this.saveProcesoTicketAxios()
+        }
     }
     handleChangeTicketProceso = (files, item) => {
         this.onChangeAdjuntoTicketProceso({ target: { name: item, value: files, files: files } })
@@ -1159,7 +1205,9 @@ class TicketDetails extends Component {
         formularios.ticket['adjuntos'][name].files = aux
         this.setState({ ...this.state, formularios })
     }
-    generateEmailTicketProceso = value => { this.saveProcesoTicketAxios(value) }
+    generateEmailTicketProceso = value => {
+        this.saveProcesoTicketAxios(value) 
+    }
 
     generarReporteFotografico = () => {
         const { ticket, formularios } = this.state
@@ -1173,41 +1221,12 @@ class TicketDetails extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket, formularios } = this.state
-        
-        const data = new FormData();
-        let aux = Object.keys(formularios.ticket)
-        aux.forEach((element) => {
-            switch (element) {
-                case 'fechaProgramada':
-                    data.append(element, (new Date(formularios.ticket[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, formularios.ticket[element]);
-                    break
-            }
-        })
-        aux = Object.keys(formularios.ticket.adjuntos)
-        aux.forEach((element) => {
-            if (formularios.ticket.adjuntos[element].value !== '' && element !== 'presupuesto') {
-                for (var i = 0; i < formularios.ticket.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, formularios.ticket.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, formularios.ticket.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-        })
-        if (email !== '')
-            data.append('email', email)
-        await axios.post(`${URL_DEV}calidad/proceso/${ticket.id}`, data, { headers: setFormHeader(access_token) }).then(
+        await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { ticket } = response.data
-                window.history.replaceState(ticket, 'calidad')
-                
-                formularios.ticket = this.setForm(ticket)
-                this.setState({ ...this.state, ticket: ticket, formularios })
-                doneAlert('Presupuesto adjuntado con éxito.', () => this.generarReporteFotografico())
+                if(email)
+                    this.generarReporteFotograficoAxios()
+                else
+                    doneAlert('Presupuesto adjuntado con éxito.', () => this.generarReporteFotografico())
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1215,24 +1234,19 @@ class TicketDetails extends Component {
         })
     }
     generarReporteFotograficoAxios = async() => {
-        console.log('entre')
-        // waitAlert()
-        // const { access_token } = this.props.authUser
-        // const { ticket } = this.state
-        // await axios.get(`${URL_DEV}calidad/proceso/pdf?ticket=${ticket.id}`, { headers: setSingleHeader(access_token) }).then(
-        //     (response) => {
-        //         const { ticket } = response.data
-        //         doneAlert('PDF GENERADO CON ÉXITO')
-        //         // window.open(ticket.reporte_problema_pdf, '_blank').focus();
-        //         this.setState({ 
-        //             ...this.state,
-        //             ticket:ticket
-        //         })
-        //     }, (error) => { printResponseErrorAlert(error) }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.log(error, 'error')
-        // })
+        const { access_token } = this.props.authUser
+        const { ticket, formularios } = this.state
+        await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/reporte`, {}, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { ticket } = this.state
+                doneAlert('PDF GENERADO CON ÉXITO')
+                window.open(ticket.reporte_url, '_blank').focus();
+                this.getOneTicketAxios(ticket.id)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     /* ---------------------- FORMULARIO MANTENIMIENTO CORRECTIVO ---------------------- */
     onChangeMantenimientos = e => {
