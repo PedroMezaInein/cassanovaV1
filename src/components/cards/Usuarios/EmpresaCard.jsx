@@ -2,41 +2,41 @@ import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
-import { ItemSlider } from '../../../components/singles'
+// import { ItemSlider } from '../../../components/singles'
 export default class EmpresaCard extends Component {
-    setAdjuntosLogos = () => {
-        const { empresa } = this.props
-        let aux = [];
-        empresa.isotipos.map((isotipo) => {
-            aux.push({
-                name: isotipo.name,
-                url: isotipo.url
-            })
-            return false
-        })
-        empresa.letras.map((letra) => {
-            aux.push({
-                name: letra.name,
-                url: letra.url
-            })
-            return false
-        })
-        empresa.logos.map((logo) => {
-            aux.push({
-                name: logo.name,
-                url: logo.url
-            })
-            return false
-        })
-        empresa.logos_blanco.map((logo_blanco) => {
-            aux.push({
-                name: logo_blanco.name,
-                url: logo_blanco.url
-            })
-            return false
-        })
-        return aux
-    }
+    // setAdjuntosLogos = () => {
+    //     const { empresa } = this.props
+    //     let aux = [];
+    //     empresa.isotipos.map((isotipo) => {
+    //         aux.push({
+    //             name: isotipo.name,
+    //             url: isotipo.url
+    //         })
+    //         return false
+    //     })
+    //     empresa.letras.map((letra) => {
+    //         aux.push({
+    //             name: letra.name,
+    //             url: letra.url
+    //         })
+    //         return false
+    //     })
+    //     empresa.logos.map((logo) => {
+    //         aux.push({
+    //             name: logo.name,
+    //             url: logo.url
+    //         })
+    //         return false
+    //     })
+    //     empresa.logos_blanco.map((logo_blanco) => {
+    //         aux.push({
+    //             name: logo_blanco.name,
+    //             url: logo_blanco.url
+    //         })
+    //         return false
+    //     })
+    //     return aux
+    // }
     render() {
         const { empresa } = this.props
         return (
@@ -76,12 +76,6 @@ export default class EmpresaCard extends Component {
                                     : ''
                             }
                         </div>
-                        <div className="separator separator-solid mb-3"></div>
-                        {
-                            empresa ?
-                                <ItemSlider items={this.setAdjuntosLogos()} item='' />
-                                : ''
-                        }
                     </div>
                 </Card>
             </div>
