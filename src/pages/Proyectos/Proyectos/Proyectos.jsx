@@ -1835,6 +1835,27 @@ class Proyectos extends Component {
         form.correos_avances = nuevosCorreos ? Object.keys(unico) : [];
         this.setState({ ...this.state, form })
     }
+
+    exportAxios = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/exportar/proyectos`, { responseType: 'blob', headers: setSingleHeader(access_token) }).then(
+        //await axios.get(`${URL_DEV}v2/export/proyectos/proyectos`, { responseType:'blob'}).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'proyectos.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead,
                 modalComentarios, tipo, modalNotaObra, options, formBitacora, data } = this.state
@@ -1854,7 +1875,8 @@ class Proyectos extends Component {
                                     mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/proyectos/add' mostrar_acciones = { true }
                                     actions = { tableActions } accessToken = { this.props.authUser.access_token } setter = { this.setProyectos }
                                     urlRender = { `${URL_DEV}proyectos/proyectos` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader'
-                                    cardBody = 'cardBody' idTable = 'proyecto' isTab = { true } />
+                                    cardBody = 'cardBody' idTable = 'proyecto' isTab = { true } exportar_boton = { true } 
+                                    onClickExport = { () => this.exportAxios() } />
                             : ''
                         }
                     </Tab>
