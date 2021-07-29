@@ -1216,7 +1216,7 @@ class TicketDetails extends Component {
         const { ticket, formularios } = this.state
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/reporte`, {}, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { ticket } = this.state
+                const { ticket } = response.data
                 doneAlert('PDF GENERADO CON ÉXITO')
                 window.open(ticket.reporte_url, '_blank').focus();
                 this.getOneTicketAxios(ticket.id)
