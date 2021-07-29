@@ -233,7 +233,7 @@ class Empresas extends Component {
             },
             {
                 text: 'Inhabilitar&nbsp;empresa',
-                btnclass: 'error',
+                btnclass: 'warning',
                 iconclass: 'flaticon2-lock',
                 action: 'inhabilitar',
                 tooltip: { id: 'inhabilitar', text: 'Inhabilitar empresa', type: 'error' },
