@@ -368,7 +368,7 @@ class TicketView extends Component {
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('ticket-proceso'); controlledNav("ticket-proceso") }}>
                                                                 <Nav.Link eventKey="ticket-proceso">
                                                                     <span className="nav-icon">
-                                                                        <i className="las la-tools icon-lg mr-2"></i>
+                                                                        <i className="las la-ticket-alt icon-lg mr-2"></i>
                                                                     </span>
                                                                     <span className="nav-text font-weight-bolder white-space-nowrap">{this.showTabTicketProceso()}</span>
                                                                 </Nav.Link>
