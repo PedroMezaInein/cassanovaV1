@@ -399,10 +399,10 @@ class PresupuestosEnviadosFinish extends Component {
 
     render() {
         
-        const { form, formeditado, presupuesto, modal, modalObject } = this.state;
+        const { form, presupuesto, modal, modalObject } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
-                <UltimoPresupuestoForm formeditado={formeditado} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}
+                <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}
                     presupuesto={presupuesto} {...this.props} onChangeInput={this.onChangeInput}
                     // aceptarPresupuesto={this.aceptarPresupuesto}
                     sendPresupuesto={ (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(); } } />
