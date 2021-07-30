@@ -19,8 +19,8 @@ export default class SolicitudesTabla extends Component {
         const { type, title, btn_title, openModalAdd, openModalEditar, deleteSolicitud, solicitudes } = this.props
         return (
             <Card className="card-custom gutter-b card-stretch">
-                <Card.Header className="border-0">
-                    <Card.Title className="mb-0 ">
+                <Card.Header className="border-0 pt-8 pt-md-0">
+                    <Card.Title className="m-0">
                         <div className="font-weight-bold font-size-h5">{title}</div>
                     </Card.Title>
                     <div className="card-toolbar">

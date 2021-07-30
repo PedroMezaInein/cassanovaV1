@@ -4,7 +4,7 @@ import axios from "axios"
 import Swal from 'sweetalert2'
 import { URL_DEV } from "../../../constants"
 import { setOptions } from "../../../functions/setters"
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, sendFileByMailAlert } from "../../../functions/alert"
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../../functions/alert"
 import Layout from "../../../components/layout/layout"
 import { UltimoPresupuestoForm } from "../../../components/forms"
 import { TagInputGray } from '../../../components/form-components'
@@ -399,7 +399,7 @@ class PresupuestosEnviadosFinish extends Component {
 
     render() {
         
-        const { form, formeditado, presupuesto, modal, modalObject } = this.state;
+        const { form, presupuesto, modal, modalObject } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}

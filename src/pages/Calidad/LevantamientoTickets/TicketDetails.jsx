@@ -5,16 +5,17 @@ import { URL_DEV, S3_CONFIG } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, sendFileAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { TicketView, AgregarConcepto } from '../../../components/forms'
+import { TicketView } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
 import { setSingleHeader, setFormHeader, toAbsoluteUrl } from '../../../functions/routers'
-import { Modal } from '../../../components/singles'
 import { SelectSearchGray, CalendarDaySwal } from '../../../components/form-components'
 import moment from 'moment'
 import 'moment/locale/es'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
 import SVG from "react-inlinesvg";
+import { TagInputGray } from '../../../components/form-components'
+import { Modal } from "react-bootstrap"
 
 const ReactS3Client = new S3(S3_CONFIG);
 class TicketDetails extends Component {
@@ -106,6 +107,7 @@ class TicketDetails extends Component {
                 fechaEvidencia: new Date(),
                 adjuntoEvidencia: '',
                 motivo_rechazo:'',
+                correos_reporte: []
             },
             mantenimientos:{
                 costo: 0.0,
@@ -119,13 +121,14 @@ class TicketDetails extends Component {
         modal: {
             conceptos: false,
             solicitud: false,
-            solicitud_venta:false
+            solicitud_venta:false,
+            reporte:false
         },
         formeditado: 0,
         key: 'nuevo',
         title:'',
         solicitudes: [],
-        activeKeyNav:'adjuntos',
+        activeKeyNav:'adjuntos'
     }
     
     componentDidMount() {
@@ -823,7 +826,11 @@ class TicketDetails extends Component {
             default: break;
         }
     }
-
+    openModalReporte = () => {
+        const { modal } = this.state
+        modal.reporte = true
+        this.setState({ ...this.state, modal })
+    }
     async updateStatus(presupuesto){
         const { access_token } = this.props.authUser
         let { formularios } = this.state
@@ -1300,6 +1307,35 @@ class TicketDetails extends Component {
             activeKeyNav: value
         })
     }
+    handleCloseModalReporte = () => {
+        const { formularios, modal } = this.state
+        formularios.presupuesto_generado.correos_reporte = []
+        modal.reporte = false
+        this.setState({...this.state, modal, formularios })
+    }
+    tagInputChange = (nuevosCorreos) => {
+        const { formularios } = this.state 
+        let unico = {};
+        nuevosCorreos.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        formularios.presupuesto_generado.correos_reporte = nuevosCorreos ? Object.keys(unico) : [];
+        this.setState({ ...this.state, formularios })
+    }
+    sendMail = async () => {
+        waitAlert();
+        const { access_token } = this.props.authUser
+        const { formularios, ticket } = this.state
+        formularios.presupuesto_generado.presupuestoAdjunto = ticket.reporte_url
+        await axios.post(`${URL_DEV}v2/calidad/tickets/${ticket.id}/correo`, formularios.presupuesto_generado, { headers: setSingleHeader(access_token) }).then(
+            (response) => { 
+                doneAlert('Correo enviado con éxito', () => { this.handleCloseModalReporte() } ) 
+            },  (error) => { this.handleCloseModalReporte(); printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav } = this.state
         return (
@@ -1318,12 +1354,39 @@ class TicketDetails extends Component {
                     onChangeTicketProceso={this.onChangeTicketProceso} onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso}
                     generateEmailTicketProceso={this.generateEmailTicketProceso} generarReporteFotografico={this.generarReporteFotografico} onChangeMantenimientos={this.onChangeMantenimientos}
                     onSubmitMantenimiento={this.onSubmitMantenimiento} openModalDeleteMantenimiento={this.openModalDeleteMantenimiento} controlledNav={this.controlledNav} activeKeyNav={activeKeyNav}
-                    openAlertChangeStatusP={this.openAlertChangeStatusP}
+                    openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } checkButtonConceptos = { this.checkButtonConceptos } controlledTab={this.controlledTab}
+                    key={key} onSubmitConcept = { this.onSubmitConcept } handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte}
                 />
-                <Modal size = "xl" title = 'Agregar concepto' show = { modal.conceptos } handleClose = { this.handleCloseConceptos } >
-                    <AgregarConcepto options = { options } formeditado = { formeditado } form = { formularios.preeliminar } onChange = { this.onChangeConceptos }
-                        setOptions = { this.setOptions } checkButtonConceptos = { this.checkButtonConceptos } data = { data } onSelect = { this.controlledTab }
-                        activeKey = { key } onSubmit = { this.onSubmitConcept } />
+                <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
+                    <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
+                    <Modal.Body className = 'p-0'>
+                        <div className = 'row mx-0 justify-content-center'>
+                            <div className="col-md-12 text-center py-2">
+                                <div>
+                                    {
+                                        ticket.reporte_url !== undefined ?
+                                                <a className="font-weight-bold text-hover-success text-primary" target= '_blank' rel="noreferrer" href = {ticket.reporte_url}>
+                                                REPORTE GENERADO
+                                            </a>
+                                        : <></>
+                                    }
+                                </div>
+                            </div>
+                            <div className="col-md-11 font-weight-light mt-5 text-justify">
+                                Si deseas enviar el reporte fotográfico agrega el o los correos del destinatario, de lo contario da clic en <span className="font-weight-bold">cancelar</span>.
+                            </div>
+                            <div className="col-md-11 mt-5">
+                                <div>
+                                    <TagInputGray swal = { true } tags = { formularios.presupuesto_generado.correos_reporte } placeholder = "CORREO(S)" iconclass = "flaticon-email" 
+                                        uppercase = { false } onChange = { this.tagInputChange } /> 
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer className = 'border-0 justify-content-center'>
+                        <button type="button" class="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex" onClick = { this.handleCloseModalReporte }>CANCELAR</button>
+                        <button type="button" class="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { this.sendMail } >SI, ENVIAR</button>
+                    </Modal.Footer>
                 </Modal>
             </Layout>
         )

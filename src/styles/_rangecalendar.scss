@@ -242,6 +242,24 @@ div#info.rdrMonths.rdrMonthsVertical{
         }
     }
 }
+
+.col-md-6{
+    .calendar-tickets{
+        @media screen and (min-width: 768px){
+            .rdrCalendarWrapper, .rdrMonth{
+                width: -webkit-fill-available;
+            }
+        }
+        @media screen and  (min-width: 992px){
+            .rdrCalendarWrapper, .rdrMonth{
+                width: auto;
+            }
+        }
+    }
+}
 .rdrCalendarWrapper.rdrDateRangeWrapper{
     margin-top: 0px;
+}
+.rdrMonth{
+    padding: 0 0.833em 0 0.833em;
 }
