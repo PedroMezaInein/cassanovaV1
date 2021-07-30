@@ -51,8 +51,8 @@ class PresupuestoGeneradoCalidad extends Component {
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
-                                <div className="form-group row form-group-marginless mt-8">
-                                    <div className="col-md-3">
+                                <div className="row form-group-marginless mt-8">
+                                    <div className="col-md-3 mb-4 mb-md-0">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -65,7 +65,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className="col-md-3 mb-4 mb-md-0">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
                                                 <span className="symbol-label">
@@ -80,7 +80,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                     </div>
                                 {/* </div>
                                 <div className="form-group row form-group-marginless"> */}
-                                    <div className="col-md-3">
+                                    <div className="col-md-3 mb-4 mb-md-0">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
                                                 <span className="symbol-label">
@@ -131,7 +131,7 @@ class PresupuestoGeneradoCalidad extends Component {
                         <Card.Body className="py-5 d-flex flex-direction-column justify-content-center">
                             <div className="row mx-0">
                                 <div className = { `col-md-${presupuesto.estatus.estatus === 'Aceptado' ? 6 : 12}` }>
-                                    <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-2 text-center">PRESUPUESTO</div>
+                                    <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-5 text-center">PRESUPUESTO</div>
                                     {
                                         ticket ? 
                                             <ItemSlider items = { [ {name: ticket.presupuestoAdjunto, url: ticket.presupuestoAdjunto} ] } item='adjuntoEvidencia' />
@@ -141,7 +141,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                 {
                                     presupuesto.estatus.estatus === 'Aceptado' ? 
                                         <div className = { `col-md-6` }>
-                                            <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-2 text-center">Evidencias Vo.Bo.</div>
+                                            <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-5 text-center">Evidencias Vo.Bo.</div>
                                             {
                                                 ticket ? 
                                                     <ItemSlider items = { this.getVobo() } item='adjuntoEvidencia' />

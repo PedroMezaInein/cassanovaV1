@@ -208,7 +208,7 @@ class UltimoPresupuesto extends Component {
                                         iconclass = 'flaticon-calendar-with-a-clock-time-tools icon-xl'
                                         iconvalid= { 1 }
                                         placeholder='PERÍODO DE VALIDEZ'
-                                        requirevalidation={0}
+                                        requirevalidation={1}
                                         formeditado={formeditado}
                                         name='tiempo_valido'
                                         value={form.tiempo_valido}
