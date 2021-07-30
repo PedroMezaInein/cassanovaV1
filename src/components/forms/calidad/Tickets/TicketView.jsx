@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudCompraForm, SolicitudVentaForm, PresupuestoGeneradoCalidad, MantenimientoCorrectivo } from '../../../../components/forms';
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudCompraForm, SolicitudVentaForm, PresupuestoGeneradoCalidad, MantenimientoCorrectivo, AgregarConcepto } from '../../../../components/forms';
 import { Button } from '../../../form-components'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -145,25 +145,25 @@ class TicketView extends Component {
                 switch(presupuesto.estatus.estatus){
                     case 'Conceptos':
                     case 'Volumetrías':
-                        return <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
+                        return <span className="nav-text font-weight-bolder white-space-nowrap">Conceptos y volumetrías</span>
                     case 'Costos':
-                        return <span className="nav-text font-weight-bolder font-size-14px">Estimación de costos</span>
+                        return <span className="nav-text font-weight-bolder white-space-nowrap">Estimación de costos</span>
                     case 'Utilidad':
-                        return <span className="nav-text font-weight-bolder font-size-14px">Calculando utilidad</span>
+                        return <span className="nav-text font-weight-bolder white-space-nowrap">Calculando utilidad</span>
                     case 'En revisión':
-                        return <span className="nav-text font-weight-bolder font-size-14px">En revisión</span>
+                        return <span className="nav-text font-weight-bolder white-space-nowrap">En revisión</span>
                     case 'En espera':
-                        return <span className="nav-text font-weight-bolder font-size-14px">En espera del cliente</span>
+                        return <span className="nav-text font-weight-bolder white-space-nowrap">En espera del cliente</span>
                     case 'Aceptado':
-                        return <span className="nav-text font-weight-bolder font-size-14px">Presupuesto Aceptado</span>
+                        return <span className="nav-text font-weight-bolder white-space-nowrap">Presupuesto Aceptado</span>
                     case 'Rechazado':
-                        return <span className="nav-text font-weight-bolder font-size-14px">Presupuesto Rechazado</span>
+                        return <span className="nav-text font-weight-bolder white-space-nowrap">Presupuesto Rechazado</span>
                     default:
                         break;
                 }
-            return <span className="nav-text font-weight-bolder font-size-14px">No</span>
+            return <span className="nav-text font-weight-bolder">No</span>
         }
-        return <span className="nav-text font-weight-bolder font-size-14px">Conceptos y volumetrías</span>
+        return <span className="nav-text font-weight-bolder white-space-nowrap">Conceptos y volumetrías</span>
     }
 
     isButtonEnabled = () => {
@@ -205,7 +205,7 @@ class TicketView extends Component {
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
             openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta,
             onChangeTicketProceso, onSubmitTicketProceso, handleChangeTicketProceso, generateEmailTicketProceso, onChangeMantenimientos, onSubmitMantenimiento, openModalDeleteMantenimiento, activeKeyNav,
-            controlledNav, openAlertChangeStatusP, generarReporteFotografico
+            controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, key, controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte
         } = this.props
         return (
             <div className="p-0">
@@ -217,7 +217,7 @@ class TicketView extends Component {
                                 <Card className = 'card card-custom gutter-b'>
                                     <Card.Body className="pb-0">
                                         <div className="d-flex">
-                                            <div className="mr-4 align-self-center">
+                                            <div className="mr-4 align-self-center d-none d-sm-none d-md-none d-lg-block">
                                                 <div className="symbol symbol-50 symbol-lg-120 symbol-light-info">
                                                     <span className="font-size-h6 symbol-label font-weight-boldest ">
                                                         {this.getIniciales(data.proyecto.nombre)}
@@ -325,14 +325,14 @@ class TicketView extends Component {
                                             </div>
                                         </div>
                                         <div className="separator separator-solid mt-6" />
-                                        <div className="d-flex overflow-auto h-55px">
+                                        <div className="d-flex overflow-auto">
                                             <Nav className="nav nav-tabs nav-tabs-line-info nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end ">
                                                 <Nav.Item onClick={(e) => { e.preventDefault(); controlledNav("adjuntos") }}>
                                                     <Nav.Link eventKey="adjuntos">
                                                         <span className="nav-icon">
                                                             <i className="las la-photo-video icon-lg mr-2"></i>
                                                         </span>
-                                                        <span className="nav-text font-weight-bolder font-size-14px">FOTOS</span>
+                                                        <span className="nav-text font-weight-bolder">FOTOS</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
                                                 {
@@ -350,7 +350,7 @@ class TicketView extends Component {
                                                         <span className="nav-icon">
                                                             <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
                                                         </span>
-                                                        <span className="nav-text font-weight-bolder font-size-14px">Solicitud de compra</span>
+                                                        <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de compra</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
                                                 <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); controlledNav("solicitud-venta") }}>
@@ -358,7 +358,7 @@ class TicketView extends Component {
                                                         <span className="nav-icon">
                                                             <i className="las la-clipboard-list icon-lg mr-2"></i>
                                                         </span>
-                                                        <span className="nav-text font-weight-bolder font-size-14px">Solicitud de venta</span>
+                                                        <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de venta</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
                                                 {
@@ -370,7 +370,7 @@ class TicketView extends Component {
                                                                     <span className="nav-icon">
                                                                         <i className="las la-tools icon-lg mr-2"></i>
                                                                     </span>
-                                                                    <span className="nav-text font-weight-bolder font-size-14px">{this.showTabTicketProceso()}</span>
+                                                                    <span className="nav-text font-weight-bolder white-space-nowrap">{this.showTabTicketProceso()}</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                             
@@ -379,7 +379,7 @@ class TicketView extends Component {
                                                                     <span className="nav-icon">
                                                                         <i className="las la-tools icon-lg mr-2"></i>
                                                                     </span>
-                                                                    <span className="nav-text font-weight-bolder font-size-14px">Mantenimiento</span>
+                                                                    <span className="nav-text font-weight-bolder">Mantenimiento</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                             </>
@@ -395,8 +395,8 @@ class TicketView extends Component {
                                         <Row className="mx-0">
                                             <Col lg="12" className="px-0">
                                                 <Card className="card-custom gutter-b card-stretch">
-                                                    <Card.Header className="border-0">
-                                                        <Card.Title className="mb-0">
+                                                    <Card.Header className="border-0 pt-8 pt-md-0">
+                                                        <Card.Title className="m-0">
                                                             <div className="font-weight-bold font-size-h5">FOTOS DEL INCIDENTE</div>
                                                         </Card.Title>
                                                     </Card.Header>
@@ -458,36 +458,57 @@ class TicketView extends Component {
                                             deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
-                                        <Card className="card-custom gutter-b card-stretch mb-8">
-                                            <Card.Header className="">
-                                                <Card.Title className="mb-0">
-                                                    <div className="font-weight-bold font-size-h5">{this.showTabTicketProceso()}</div>
-                                                </Card.Title>
-                                            </Card.Header>
-                                            <Card.Body className="pt-3">
-                                                <div className="row mx-0">
-                                                    <div className={`col-md-${data.reporte_url === null ? 12 : 8 } border-right`}>
-                                                        <ProcesoTicketForm form = { formulario.ticket } options = { options } onChange = { onChangeTicketProceso }
-                                                            formeditado = { 1 } handleChange = { handleChangeTicketProceso } onSubmit = { onSubmitTicketProceso } 
-                                                            generateEmail = { generateEmailTicketProceso } estatus = { data.estatus_ticket.estatus } 
-                                                            deleteFile = { deleteFile } generarReporteFotografico={generarReporteFotografico} ticket={data} />
-                                                    </div>
-                                                    {
-                                                        data.reporte_url !== null ?
-                                                            <div className="col-md-4">
-                                                                <ItemSlider items = { [ { url: data.reporte_url, name: 'reporte.pdf' } ] } item = '' />
-                                                            </div>
-                                                        : ''
-                                                    }
-                                                </div>
-                                                
-                                            </Card.Body>
-                                        </Card>
+                                        <Row>
+                                            <Col md={`${data.reporte_url === null ? 12 : 7 }`}>
+                                                <Card className="card-custom gutter-b card-stretch mb-8">
+                                                    <Card.Header className="border-0 pt-8 pt-md-0">
+                                                        <Card.Title className="mb-0">
+                                                            <div className="font-weight-bold font-size-h5">{this.showTabTicketProceso()}</div>
+                                                        </Card.Title>
+                                                    </Card.Header>
+                                                    <Card.Body className={`pt-3 ${data.estatus_ticket.estatus === 'Terminado' ? 'd-flex align-items-center justify-content-center' : '' }`}>
+                                                        <ProcesoTicketForm form={formulario.ticket} options={options} onChange={onChangeTicketProceso}
+                                                            formeditado={1} handleChange={handleChangeTicketProceso} onSubmit={onSubmitTicketProceso}
+                                                            generateEmail={generateEmailTicketProceso} estatus={data.estatus_ticket.estatus}
+                                                            deleteFile={deleteFile} ticket={data}
+                                                        />
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
+                                            {
+                                                data.reporte_url !== null &&
+                                                <Col md="5">
+                                                    <Card className="card-custom gutter-b card-stretch mb-8">
+                                                        <Card.Header className="border-0 pt-8 pt-md-0">
+                                                            <Card.Title className="mb-0">
+                                                                <div className="font-weight-bold font-size-h5">REPORTE FOTOGRÁFICO</div>
+                                                            </Card.Title>
+                                                        </Card.Header>
+                                                        <Card.Body className="pt-3 d-flex align-items-center justify-content-center flex-column">
+                                                            {
+                                                                data.reporte_url !== null ?
+                                                                    <>  
+                                                                        <div className="d-block">
+                                                                            <ItemSlider items={[{ url: data.reporte_url, name: 'reporte.pdf' }]} item='' />
+                                                                        </div>
+                                                                        <div className="text-center mt-5">
+                                                                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px"  onClick={(e) => { e.preventDefault(); openModalReporte() }} 
+                                                                            text = 'ENVIAR AL CLIENTE' only_icon = "flaticon-mail icon-xl mr-2 px-0 text-success" />
+                                                                        </div>
+                                                                    </>
+                                                                : ''
+                                                            }
+                                                        </Card.Body>
+                                                    </Card>
+                                                </Col>
+                                            }
+                                        </Row>
+                                        
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="mantenimiento">
                                     <Card className="card-custom gutter-b card-stretch">
-                                            <Card.Header className="border-0">
-                                                <Card.Title className="mb-0">
+                                            <Card.Header className="border-0 pt-8 pt-md-0">
+                                                <Card.Title className="m-0">
                                                     <div className="font-weight-bold font-size-h5">Mantenimiento correctivo</div>
                                                 </Card.Title>
                                             </Card.Header>
@@ -537,6 +558,20 @@ class TicketView extends Component {
                         />
                         :<></>
                     }
+                </Modal>
+                <Modal size = "xl" title = 'Agregar concepto' show = { modal.conceptos } handleClose = { handleCloseConceptos } >
+                    <AgregarConcepto 
+                        options = { options }
+                        formeditado = { formeditado }
+                        form = { formulario.preeliminar }
+                        onChange = { onChangeConceptos }
+                        setOptions = { setOptions }
+                        checkButtonConceptos = { checkButtonConceptos }
+                        data = { data }
+                        onSelect = { controlledTab }
+                        activeKey = { key }
+                        onSubmit = { onSubmitConcept }
+                    />
                 </Modal>
             </div>
         )

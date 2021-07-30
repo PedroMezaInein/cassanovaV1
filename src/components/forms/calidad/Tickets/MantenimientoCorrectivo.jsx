@@ -21,7 +21,7 @@ export default class SolicitudesTabla extends Component {
         const { form, options, onChangeMantenimientos, data, onSubmitMantenimiento, openModalDeleteMantenimiento } = this.props
         return (
             <div>
-                <Tabs defaultActiveKey="formulario_mantenimiento" className="nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
+                <Tabs defaultActiveKey="formulario_mantenimiento" className="nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 nav-tabs-line-2x">
                     <Tab eventKey="formulario_mantenimiento" title="Agregar mantenimiento">
                         <Form onSubmit={(e) => { e.preventDefault(); onSubmitMantenimiento(e) }} >
                             <Row className="mx-0 d-flex align-items-center justify-content-center">

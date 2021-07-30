@@ -19,23 +19,23 @@ class ProcesoTicketForm extends Component {
     }
 
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, generarReporteFotografico, ticket, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props
         return (
             <>
                 {
                     estatus === 'En proceso' ?
                         <div className="wizard wizard-3" id="for2-wizardP" data-wizard-state="step-first">
-                            <div className="wizard-nav">
+                            <div className="wizard-nav px-6 px-md-0">
                                 <div className="wizard-steps">
                                     <div id="for2-wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
-                                        <div className="wizard-label">
+                                        <div className="wizard-label pt-0 pb-6 pb-md-5">
                                             <h3 className="wizard-title">
                                                 <span>1.</span> Datos de solicitud</h3>
                                             <div className="wizard-bar"></div>
                                         </div>
                                     </div>
                                     <div id="for2-wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
-                                        <div className="wizard-label">
+                                        <div className="wizard-label pt-0 pb-6 pb-md-5">
                                             <h3 className="wizard-title">
                                                 <span>2.</span> Reporte de archivos</h3>
                                             <div className="wizard-bar"></div>
@@ -56,19 +56,23 @@ class ProcesoTicketForm extends Component {
                                     >
                                         <div id="for2-wizard-1-content" className="px-2" data-wizard-type="step-content" data-wizard-state="current">
                                             <Row className="mx-0">
-                                                <Col md="6" className="align-self-center">
-                                                    <div className="col-md-12 text-center px-0" style={{ height: '1px' }}>
-                                                        <label className="text-center font-weight-bold text-dark-60">Fecha programada</label>
-                                                    </div>
-                                                    <div className="col-md-12 text-center px-0">
-                                                        <CalendarDay
-                                                            value={form.fechaProgramada}
-                                                            date={form.fechaProgramada}
-                                                            onChange={onChange}
-                                                            name='fechaProgramada'
-                                                            withformgroup={0}
-                                                            requirevalidation={0}
-                                                        />
+                                                <Col md="6" className="align-self-center px-0 d-flex justify-content-center">
+                                                    <div>
+                                                        <div className="col-md-12 text-center px-0" style={{ height: '1px' }}>
+                                                            <label className="text-center font-weight-bold text-dark-60">Fecha programada</label>
+                                                        </div>
+                                                        <div className="col-md-12 text-center px-0">
+                                                            <div className="calendar-tickets">
+                                                                <CalendarDay
+                                                                    value={form.fechaProgramada}
+                                                                    date={form.fechaProgramada}
+                                                                    onChange={onChange}
+                                                                    name='fechaProgramada'
+                                                                    withformgroup={0}
+                                                                    requirevalidation={0}
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </Col>
                                                 <Col md="6" className="align-self-center">
@@ -126,7 +130,7 @@ class ProcesoTicketForm extends Component {
                                                     </div>
                                                 </Col>
                                             </Row>
-                                            <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                            <div className="d-flex justify-content-between border-top mt-3 pt-3 card-footer pb-0">
                                                 <div className="mr-2"></div>
                                                 <div>
                                                     <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard2_for2_wizard() }} data-wizard-type="action-next">Siguiente</button>
@@ -163,7 +167,7 @@ class ProcesoTicketForm extends Component {
                                                                 <div className="">
                                                                     <Button icon='' className="btn btn-light-primary font-weight-bold text-uppercase mr-2" text="GUARDAR"
                                                                         onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') }} />
-                                                                    <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="Generar PDF"
+                                                                    <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="GENERAR PDF"
                                                                         onClick = { (e) => { questionAlert('¿DESEAS GENERAR EL REPORTE?', 'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DEL PROBLEMA REPORTADO Y SOLUCIONADO', () => generateEmail(true)) } } />
                                                                 </div>
                                                             : ''
@@ -198,22 +202,20 @@ class ProcesoTicketForm extends Component {
                             <div className="separator separator-dashed my-10"></div>
                             <Row className="mx-0 d-flex justify-content-center">
                                 <Col md="4" className="text-center">
-                                    <div className="mb-4 font-weight-bolder font-size-lg">PROBLEMA REPORTADO</div>
+                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PROBLEMA REPORTADO</div>
                                     <ItemSlider items={form.adjuntos.reporte_problema_reportado.files} item='reporte_problema_reportado' />
                                 </Col>
                                 <Col md="4" className="text-center">
-                                    <div className="mb-4 font-weight-bolder font-size-lg">PROBLEMA SOLUCIONADO</div>
+                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PROBLEMA SOLUCIONADO</div>
                                     <ItemSlider items={form.adjuntos.reporte_problema_solucionado.files} item='reporte_problema_solucionado' />
                                 </Col>
                             </Row>
-                            <div className="separator separator-dashed my-10"></div>
-                            <div className="font-weight-light text-center font-size-lg mt-10"><span className="font-weight-bolder">Solución del problema: </span>{form.descripcion_solucion}</div>
                             {
-                                // ticket.reporte_problema_pdf === '' &&
-                                <div className="text-center mt-5">
-                                    <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px"  onClick={(e) => { e.preventDefault(); generarReporteFotografico() }} 
-                                    text = 'GENERAR PDF' only_icon = "las la-file-pdf icon-xl mr-2 px-0 text-success" />
-                                </div>
+                                form.descripcion_solucion &&
+                                <>
+                                    <div className="separator separator-dashed my-10"></div>
+                                    <div className="font-weight-light text-center font-size-lg mt-10"><span className="font-weight-bolder">Solución del problema: </span>{form.descripcion_solucion}</div>
+                                </>
                             }
                         </div>
                         :<></>
