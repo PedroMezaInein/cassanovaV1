@@ -1206,6 +1206,19 @@ class TicketDetails extends Component {
         this.setState({ ...this.state, formularios })
     }
     generateEmailTicketProceso = value => {
+        const { adjuntos } = this.state.formularios.ticket
+        let aux = []
+        adjuntos.reporte_problema_reportado.files.forEach((file) => {
+            if(file.id === undefined)
+                aux.push({'file': file.file, type: 'reportado'})
+        })
+        adjuntos.reporte_problema_solucionado.files.forEach((file) => {
+            if(file.id === undefined)
+                aux.push({'file': file.file, type: 'solucionado'})
+        })
+        if(aux.length > 0 ){
+            this.addS3Images(aux)
+        }
         this.saveProcesoTicketAxios(value) 
     }
 
@@ -1236,7 +1249,8 @@ class TicketDetails extends Component {
     generarReporteFotograficoAxios = async() => {
         const { access_token } = this.props.authUser
         const { ticket, formularios } = this.state
-        await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/reporte`, {}, { headers: setSingleHeader(access_token) }).then(
+        waitAlert()
+        await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/reporte`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
                 doneAlert('PDF GENERADO CON ÉXITO')
