@@ -21,12 +21,24 @@ export const DEV_LINK = 'http://localhost:8000/api/'
 /* export const DEV_LINK = 'https://proyectosadmin.xyz/api/' */
 
 export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_LINK
-export const S3_CONFIG = {
+/* export const S3_CONFIG = {
     bucketName: 'admin-proyectos',
     region: 'us-east-2',
     accessKeyId: 'AKIAVGBIVGHBWHS6RXRD',
     secretAccessKey: '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'
+} */
+export const S3_CONFIG = {
+    bucketName: 'admin-proyectos-aws',
+    region: 'us-east-2',
+    accessKeyId: 'AKIAVGBIVGHB6KKDIT7O',
+    secretAccessKey: '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'
 }
+/* export const S3_CONFIG = {
+    bucketName: 'admin-proyectos',
+    region: 'us-east-2',
+    accessKeyId: 'AKIA6N4IN4J6OCL472TN',
+    secretAccessKey: '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'
+} */
 /* export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://demo.proyectosadmin.com' : 'http://127.0.0.1:8000' */
 export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proyectosadmin.xyz' : 'http://127.0.0.1:8000'
 
