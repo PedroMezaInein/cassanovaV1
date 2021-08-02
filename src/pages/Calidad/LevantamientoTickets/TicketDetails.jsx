@@ -608,7 +608,11 @@ class TicketDetails extends Component {
         const { formularios } = this.state
         let aux = []
 
-        formularios.ticket.fechaProgramada = new Date( moment(ticket.fecha_programada) )
+        console.log(ticket, 'TICKET')
+        if(ticket.fecha_programada)
+            formularios.ticket.fechaProgramada = new Date( moment(ticket.fecha_programada) )
+        else 
+            formularios.ticket.fechaProgramada = new Date()
         formularios.ticket.empleado = ticket.tecnico_asiste === null || ticket.tecnico_asiste === 'null' ? '' : ticket.tecnico_asiste
         formularios.ticket.descripcion_solucion = ticket.descripcion_solucion === null || ticket.descripcion_solucion === 'null' ? '' : ticket.descripcion_solucion
         formularios.ticket.recibe = ticket.recibe === null || ticket.recibe === 'null' ? '' : ticket.recibe
@@ -783,7 +787,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    (e) => { this.updateStatus(presupuesto, estatus) },
+                    (e) => { this.updateStatus(estatus) },
                     () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); }
                 )
                 break;
@@ -819,7 +823,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    () => { this.updateStatus(presupuesto, estatus) },
+                    () => { this.updateStatus(estatus) },
                     () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); },
                 )
                 break;
@@ -831,9 +835,10 @@ class TicketDetails extends Component {
         modal.reporte = true
         this.setState({ ...this.state, modal })
     }
-    async updateStatus(presupuesto, estatus){
-        const { access_token } = this.props.authUser
+    updateStatus = async (estatus) => {
+        const { presupuesto, ticket } = this.state
         let { formularios } = this.state
+        const { access_token } = this.props.authUser
         if(estatus === 'Rechazado'){
             formularios.presupuesto_generado.estatus_final=estatus
             let motivo = document.sendStatusForm.motivo_rechazo.value
@@ -841,9 +846,21 @@ class TicketDetails extends Component {
         }else{
             formularios.presupuesto_generado.estatus_final=estatus
         }
-        await axios.put(` `, formularios, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        let data = new FormData()
+        Object.keys(formularios['presupuesto_generado']).map((element) => {
+            if(element === 'fechaEvidencia'){
+                data.append(element, (new Date(formularios['presupuesto_generado'][element])).toDateString())
+            }else{
+                data.append(element, formularios['presupuesto_generado'][element])
+            }
+            
+        })
+        Swal.close()
+        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, 
+            { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('El estatus fue actualizado con éxito.')
+                this.getOneTicketAxios(ticket.id)
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
