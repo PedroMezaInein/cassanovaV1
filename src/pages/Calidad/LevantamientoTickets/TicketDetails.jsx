@@ -1186,8 +1186,6 @@ class TicketDetails extends Component {
         }else{
             this.saveProcesoTicketAxios( false )
         }
-        
-        console.log(aux, 'aux')
     }
     handleChangeTicketProceso = (files, item) => {
         this.onChangeAdjuntoTicketProceso({ target: { name: item, value: files, files: files } })
@@ -1236,7 +1234,6 @@ class TicketDetails extends Component {
         const { ticket, formularios } = this.state
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                console.log('FLAG')
                 if(flag === true)
                     this.generarReporteFotograficoAxios()
                 else
