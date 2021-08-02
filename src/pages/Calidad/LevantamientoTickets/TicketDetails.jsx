@@ -1255,6 +1255,7 @@ class TicketDetails extends Component {
     generarReporteFotograficoAxios = async() => {
         const { access_token } = this.props.authUser
         const { ticket, formularios } = this.state
+        
         waitAlert()
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/reporte`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
