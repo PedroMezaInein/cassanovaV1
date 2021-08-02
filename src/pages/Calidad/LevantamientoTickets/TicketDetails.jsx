@@ -257,11 +257,11 @@ class TicketDetails extends Component {
                 const { formularios } = this.state
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
-                
                 formularios.ticket = this.setForm(ticket)
-                this.setState({ ...this.state, ticket: ticket, formularios })
+                this.setState({ ...this.state, formularios })
                 if (data.estatus)
                     doneAlert('El ticket fue actualizado con éxito.')
+                this.getOneTicketAxios(ticket.id)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
