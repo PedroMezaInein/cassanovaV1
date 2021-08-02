@@ -56,12 +56,12 @@ class TicketDetails extends Component {
                 adjuntos: {
                     reporte_problema_reportado: {
                         value: '',
-                        placeholder: 'Reporte fotográfico del problema reportado',
+                        placeholder: 'Problema reportado',
                         files: []
                     },
                     reporte_problema_solucionado: {
                         value: '',
-                        placeholder: 'Reporte fotográfico del problema solucionado',
+                        placeholder: 'Problema solucionado',
                         files: []
                     }
                 },
@@ -1190,6 +1190,8 @@ class TicketDetails extends Component {
         }else{
             this.saveProcesoTicketAxios()
         }
+        
+        console.log(aux, 'aux')
     }
     handleChangeTicketProceso = (files, item) => {
         this.onChangeAdjuntoTicketProceso({ target: { name: item, value: files, files: files } })
@@ -1219,6 +1221,7 @@ class TicketDetails extends Component {
         if(aux.length > 0 ){
             this.addS3Images(aux)
         }
+        console.log(aux, 'aux')
         this.saveProcesoTicketAxios(value) 
     }
 
