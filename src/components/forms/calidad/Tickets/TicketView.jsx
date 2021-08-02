@@ -488,7 +488,7 @@ class TicketView extends Component {
                                                             {
                                                                 data.reporte_url !== null ?
                                                                     <>  
-                                                                        <div className="d-block">
+                                                                        <div className="d-block w-100">
                                                                             <ItemSlider items={[{ url: data.reporte_url, name: 'reporte.pdf' }]} item='' />
                                                                         </div>
                                                                         <div className="text-center mt-5">
