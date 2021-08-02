@@ -878,7 +878,7 @@ class InicioMiProyecto extends Component {
                     <header id="header" className="header-cliente fixed-top header-cliente-mobile">
                         <div className="container-fluid padding-container mx-auto container-mobile">
                             <Navbar expand="lg" className="navbar-cliente ">
-                                <Navbar.Brand href="https://infraestructuramedica.mx/" target="_blank" rel="noopener noreferrer" className="logo d-flex align-items-center">
+                                <Navbar.Brand href={proyecto?proyecto.empresa.pagina_web:''} target="_blank" rel="noopener noreferrer" className="logo d-flex align-items-center">
                                     { setEmpresaLogo(proyecto) !== '' ? <img alt="" className="img-logo" src={setEmpresaLogo(proyecto)} /> : '' }
                                 </Navbar.Brand>
                                 {
