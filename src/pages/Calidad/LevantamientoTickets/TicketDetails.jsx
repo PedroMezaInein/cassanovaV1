@@ -606,8 +606,6 @@ class TicketDetails extends Component {
     setForm = ticket => {
         const { formularios } = this.state
         let aux = []
-
-        console.log(ticket, 'TICKET')
         if(ticket.fecha_programada)
             formularios.ticket.fechaProgramada = new Date( moment(ticket.fecha_programada) )
         else 
@@ -615,18 +613,15 @@ class TicketDetails extends Component {
         formularios.ticket.empleado = ticket.tecnico_asiste === null || ticket.tecnico_asiste === 'null' ? '' : ticket.tecnico_asiste
         formularios.ticket.descripcion_solucion = ticket.descripcion_solucion === null || ticket.descripcion_solucion === 'null' ? '' : ticket.descripcion_solucion
         formularios.ticket.recibe = ticket.recibe === null || ticket.recibe === 'null' ? '' : ticket.recibe
-        
         ticket.reporte_problema_reportado.forEach((element) => {
             aux.push({ name: element.name, url: element.url, file: '', id: element.id })
         })
         formularios.ticket.adjuntos.reporte_problema_reportado.files = aux
         aux = []
-
         ticket.reporte_problema_solucionado.forEach((element) => {
             aux.push({ name: element.name, url: element.url, file: '', id: element.id })
         })
         formularios.ticket.adjuntos.reporte_problema_solucionado.files = aux
-
         if(ticket.subarea)
             formularios.ticket.tipo_trabajo = ticket.subarea.id.toString()
         else
@@ -830,9 +825,12 @@ class TicketDetails extends Component {
         }
     }
     openModalReporte = () => {
-        const { modal } = this.state
+        const { modal, formularios } = this.state
+        const { email } = this.props.authUser.user
         modal.reporte = true
-        this.setState({ ...this.state, modal })
+        formularios.presupuesto_generado.correos_reporte = []
+        formularios.presupuesto_generado.correos_reporte.push(email)
+        this.setState({ ...this.state, modal, formularios })
     }
     updateStatus = async (estatus) => {
         const { presupuesto, ticket } = this.state
@@ -1188,8 +1186,6 @@ class TicketDetails extends Component {
         }else{
             this.saveProcesoTicketAxios( false )
         }
-        
-        console.log(aux, 'aux')
     }
     handleChangeTicketProceso = (files, item) => {
         this.onChangeAdjuntoTicketProceso({ target: { name: item, value: files, files: files } })
@@ -1238,7 +1234,6 @@ class TicketDetails extends Component {
         const { ticket, formularios } = this.state
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                console.log('FLAG')
                 if(flag === true)
                     this.generarReporteFotograficoAxios()
                 else
@@ -1355,20 +1350,23 @@ class TicketDetails extends Component {
         formularios.presupuesto_generado.correos_reporte = nuevosCorreos ? Object.keys(unico) : [];
         this.setState({ ...this.state, formularios })
     }
+    
     sendMail = async () => {
         waitAlert();
         const { access_token } = this.props.authUser
         const { formularios, ticket } = this.state
         formularios.presupuesto_generado.presupuestoAdjunto = ticket.reporte_url
-        await axios.post(`${URL_DEV}v2/calidad/tickets/${ticket.id}/correo`, formularios.presupuesto_generado, { headers: setSingleHeader(access_token) }).then(
+        await axios.put(`${URL_DEV}v2/calidad/tickets/${ticket.id}/correo`, formularios.presupuesto_generado, { headers: setSingleHeader(access_token) }).then(
             (response) => { 
-                doneAlert('Correo enviado con éxito', () => { this.handleCloseModalReporte() } ) 
+                this.handleCloseModalReporte()
+                doneAlert('Correo enviado con éxito', () => { this.getOneTicketAxios(ticket.id) } ) 
             },  (error) => { this.handleCloseModalReporte(); printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav } = this.state
         return (
@@ -1406,7 +1404,8 @@ class TicketDetails extends Component {
                                 </div>
                             </div>
                             <div className="col-md-11 font-weight-light mt-5 text-justify">
-                                Si deseas enviar el reporte fotográfico agrega el o los correos del destinatario, de lo contario da clic en <span className="font-weight-bold">cancelar</span>.
+                                Si deseas enviar el reporte fotográfico agrega el o los correos del destinatario, de lo contario da clic en 
+                                <span onClick = { this.handleCloseModalReporte } className="font-weight-bold">cancelar</span>.
                             </div>
                             <div className="col-md-11 mt-5">
                                 <div>
@@ -1417,8 +1416,8 @@ class TicketDetails extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer className = 'border-0 justify-content-center'>
-                        <button type="button" class="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex" onClick = { this.handleCloseModalReporte }>CANCELAR</button>
-                        <button type="button" class="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { this.sendMail } >SI, ENVIAR</button>
+                        <button type="button" className="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex" onClick = { this.handleCloseModalReporte }>CANCELAR</button>
+                        <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { this.sendMail } >SI, ENVIAR</button>
                     </Modal.Footer>
                 </Modal>
             </Layout>

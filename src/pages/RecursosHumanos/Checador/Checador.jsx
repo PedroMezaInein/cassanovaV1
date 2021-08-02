@@ -55,9 +55,6 @@ class Checador extends Component {
         }
     }
     getEmpleadosChecador = async(quincena, mes, año) => {
-        // console.log (day, 'day')
-        // console.log (horasPorTrabajar, 'horasPorTrabajar')
-        // console.log(validador, 'validador')
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/rh/checador/${quincena}/${mes}/${año}`, { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

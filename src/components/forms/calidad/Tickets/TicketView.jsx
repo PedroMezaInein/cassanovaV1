@@ -491,10 +491,15 @@ class TicketView extends Component {
                                                                         <div className="d-block w-100">
                                                                             <ItemSlider items={[{ url: data.reporte_url, name: 'reporte.pdf' }]} item='' />
                                                                         </div>
-                                                                        <div className="text-center mt-5">
-                                                                            <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px"  onClick={(e) => { e.preventDefault(); openModalReporte() }} 
-                                                                            text = 'ENVIAR AL CLIENTE' only_icon = "flaticon-mail icon-xl mr-2 px-0 text-success" />
-                                                                        </div>
+                                                                        {
+                                                                            data.estatus_ticket.estatus !== 'Terminado' ?
+                                                                                <div className="text-center mt-5">
+                                                                                    <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px"  
+                                                                                        onClick={(e) => { e.preventDefault(); openModalReporte() }} text = 'ENVIAR AL CLIENTE' 
+                                                                                        only_icon = "flaticon-mail icon-xl mr-2 px-0 text-success" />
+                                                                                </div>
+                                                                            : <></>
+                                                                        }
                                                                     </>
                                                                 : ''
                                                             }

@@ -438,7 +438,6 @@ class NotificacionesCorreos extends Component {
                                                 <tbody>
                                                     {
                                                         notificaciones.map((element) => {
-                                                            console.log(element)
                                                             return (
                                                                 <tr key={element.id}>
                                                                     <td className="text-center">
