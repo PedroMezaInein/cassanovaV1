@@ -783,7 +783,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    () => { this.updateStatus(presupuesto) },
+                    (e) => { this.updateStatus(presupuesto, estatus) },
                     () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); }
                 )
                 break;
@@ -791,7 +791,7 @@ class TicketDetails extends Component {
                 customInputAlert(
                     <div>
                         <h5 className="mb-2 font-weight-bold text-dark col-md-12">INGRESA LOS SIGUIENTES DATOS</h5>
-                        <div className="mx-auto col-md-11 mt-6">
+                        <div className="mx-auto col-md-11 mt-6 text-break">
                             <form id='sendStatusForm' name='sendStatusForm'>
                                 <div id='customInputAceptado'>
                                     <label htmlFor="adjunto_evidencia" className="drop-files">
@@ -819,7 +819,7 @@ class TicketDetails extends Component {
                         </div>
                     </div>,
                     '',
-                    () => { this.updateStatus(presupuesto) },
+                    () => { this.updateStatus(presupuesto, estatus) },
                     () => { formularios.ticket = this.setForm(ticket); this.setState({...this.state,formularios }); Swal.close(); },
                 )
                 break;
@@ -831,10 +831,9 @@ class TicketDetails extends Component {
         modal.reporte = true
         this.setState({ ...this.state, modal })
     }
-    async updateStatus(presupuesto){
+    async updateStatus(presupuesto, estatus){
         const { access_token } = this.props.authUser
         let { formularios } = this.state
-        let estatus = document.sendStatusForm.estatus.value;
         if(estatus === 'Rechazado'){
             formularios.presupuesto_generado.estatus_final=estatus
             let motivo = document.sendStatusForm.motivo_rechazo.value
@@ -925,7 +924,6 @@ class TicketDetails extends Component {
 
     onChangeSwal = (value, tipo, form) => {
         const { formularios } = this.state
-        console.log(formularios[form], 'formularios[form]')
         formularios[form][tipo] = value
         this.setState({...this.state, form})
     }
