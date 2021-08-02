@@ -300,7 +300,8 @@ class TicketDetails extends Component {
         })
     }
 
-    addS3Images = async(arreglo) => {
+    addS3Images = async(arreglo, flag) => {
+        waitAlert()
         const { ticket } = this.state
         let filePath = `proyecto/${ticket.proyecto_id}/tickets/${ticket.id}/`
         let auxPromises  = arreglo.map((file) => {
@@ -313,18 +314,18 @@ class TicketDetails extends Component {
                     }).catch(err => reject(err))
             })
         })
-        Promise.all(auxPromises).then(values => { this.addImagesToReporte(values)}).catch(err => console.error(err))
+        Promise.all(auxPromises).then(values => { this.addImagesToReporte(values, flag)}).catch(err => console.error(err))
     }
 
-    addImagesToReporte = async(values) => {
+    addImagesToReporte = async(values, flag) => {
         const { access_token } = this.props.authUser
         const { id } = this.state.ticket
         let form = {}
         form.archivos = values
         await axios.post(`${URL_DEV}v3/calidad/tickets/${id}/s3/reporte_fotografico`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                doneAlert('Fotos adjuntadas con éxito', () => { this.saveProcesoTicketAxios() })
-                this.getOneTicketAxios(id)
+                doneAlert('Fotos adjuntadas con éxito', () => { this.saveProcesoTicketAxios(flag) })
+                /* this.getOneTicketAxios(id) */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1186,9 +1187,9 @@ class TicketDetails extends Component {
                 aux.push({'file': file.file, type: 'solucionado'})
         })
         if(aux.length > 0 ){
-            this.addS3Images(aux)
+            this.addS3Images(aux, false)
         }else{
-            this.saveProcesoTicketAxios()
+            this.saveProcesoTicketAxios( false )
         }
     }
     handleChangeTicketProceso = (files, item) => {
@@ -1205,7 +1206,8 @@ class TicketDetails extends Component {
         formularios.ticket['adjuntos'][name].files = aux
         this.setState({ ...this.state, formularios })
     }
-    generateEmailTicketProceso = value => {
+
+    generateEmailTicketProceso = () => {
         const { adjuntos } = this.state.formularios.ticket
         let aux = []
         adjuntos.reporte_problema_reportado.files.forEach((file) => {
@@ -1217,9 +1219,10 @@ class TicketDetails extends Component {
                 aux.push({'file': file.file, type: 'solucionado'})
         })
         if(aux.length > 0 ){
-            this.addS3Images(aux)
+            this.addS3Images(aux, true)
+        }else{
+            this.saveProcesoTicketAxios( true ) 
         }
-        this.saveProcesoTicketAxios(value) 
     }
 
     generarReporteFotografico = () => {
@@ -1230,13 +1233,14 @@ class TicketDetails extends Component {
             () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
         )
     }
-    saveProcesoTicketAxios = async(email) =>{
+    saveProcesoTicketAxios = async(flag) =>{
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket, formularios } = this.state
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                if(email)
+                console.log('FLAG')
+                if(flag === true)
                     this.generarReporteFotograficoAxios()
                 else
                     doneAlert('Presupuesto adjuntado con éxito.', () => this.generarReporteFotografico())
