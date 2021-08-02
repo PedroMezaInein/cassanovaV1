@@ -174,7 +174,6 @@ class ContratosRhForm extends Component {
             case 'empleado':
                 options.empleados.forEach((empleado)=>{
                     if(empleado.value === form.empleado){
-                        console.log(empleado)
                         if (empleado.contratos.length === 0) {
                             form.fechaInicio = new Date(moment(empleado.fecha_inicio))
                         } else {
@@ -196,7 +195,6 @@ class ContratosRhForm extends Component {
             default:
                 break;
         }
-        console.log(form)
         this.setState({ 
             ...this.state,
             form

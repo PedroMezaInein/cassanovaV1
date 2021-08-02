@@ -66,7 +66,6 @@ class TableTickets extends Component {
                                             <td> { ticket.motivo_cancelacion } </td>
                                             <td className="text-justify"> { ticket.descripcion } </td>
                                             <td>
-                                                {console.log(ticket, 'TICKET')}
                                                 {
                                                     ticket.fotos ? ticket.fotos.length ?
                                                         <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>FOTOS</span></Tooltip>}>
