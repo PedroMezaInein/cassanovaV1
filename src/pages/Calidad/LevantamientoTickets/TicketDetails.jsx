@@ -587,8 +587,6 @@ class TicketDetails extends Component {
     
     async deleteMantenimientoAxios(mantenimiento) {
         const { access_token } = this.props.authUser
-        const { ticket } = this.state
-        //await axios.delete(`${URL_DEV}v2/calidad/tickets/${mantenimiento.id}?ticket=${ticket.id}`, { headers: setSingleHeader(access_token) }).then(
         await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos/${mantenimiento.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
@@ -848,13 +846,12 @@ class TicketDetails extends Component {
             formularios.presupuesto_generado.estatus_final=estatus
         }
         let data = new FormData()
-        Object.keys(formularios['presupuesto_generado']).map((element) => {
+        Object.keys(formularios['presupuesto_generado']).forEach((element) => {
             if(element === 'fechaEvidencia'){
                 data.append(element, (new Date(formularios['presupuesto_generado'][element])).toDateString())
             }else{
                 data.append(element, formularios['presupuesto_generado'][element])
             }
-            
         })
         Swal.close()
         await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, 

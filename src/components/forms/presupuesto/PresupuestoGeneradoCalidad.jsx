@@ -7,7 +7,7 @@ import { Button } from '../../../components/form-components'
 class PresupuestoGeneradoCalidad extends Component {
 
     getVobo = () => {
-        const { presupuesto, ticket } = this.props
+        const { presupuesto } = this.props
         let aux = []
         presupuesto.pdfs_accepeted.forEach((pdf) => {
             if(pdf.pivot.url)
