@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
-import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Form, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstrap'
 import { InputGray, RangeCalendar, InputNumberGray, FileInput, CalendarDay } from '../../form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
@@ -39,7 +39,7 @@ class FormularioContrato extends Component {
         })
     }
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato, regeneratePdf } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato, regeneratePdf, formeditado } = this.props
         const { renovar, showForm, showHistorial } = this.state
         return (
             <>
@@ -210,61 +210,84 @@ class FormularioContrato extends Component {
                             >
                                 {
                                     empleado.tipo_empleado === 'Administrativo' ?
-                                        <div className="form-group row form-group-marginless mt-8 align-items-center">
-                                            <div className={form.periodo === true ? 'col-md-6' : 'col-md-12'}>
-                                                <div className="mx-auto w-fit-content">
-                                                    <label className="font-weight-bolder">Periodo del contrato</label>
-                                                    <div className="radio-list">
-                                                        <label className="radio radio-outline radio-success">
-                                                            <input
-                                                                type="radio"
-                                                                name='periodo'
-                                                                value={true}
-                                                                onChange={onChangeContrato}
-                                                                checked={form.periodo === true ? true : false}
-                                                            />
-                                                            <span></span>DÍAS</label>
-                                                        <label className="radio radio-outline radio-success">
-                                                            <input
-                                                                type="radio"
-                                                                name='periodo'
-                                                                value={false}
-                                                                onChange={onChangeContrato}
-                                                                checked={form.periodo === false ? true : false}
-                                                            />
-                                                            <span></span>INDEFINIDO</label>
+                                        <Row className="mx-0 my-5">
+                                            <Col md="6" className={form.periodo === true ? '' : 'd-none'}>
+                                                <div className="text-center">
+                                                    <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                        <label className="text-center font-weight-bolder">Fecha de contrato</label>
                                                     </div>
+                                                    <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
                                                 </div>
-                                            </div>
-                                            {
-                                                form.periodo === true &&
-                                                <>
-                                                    <div className="col-md-6">
-                                                        <InputNumberGray
-                                                            withicon={1}
-                                                            formgroup="mb-0"
-                                                            requirevalidation={1}
-                                                            onChange={onChangeContrato}
-                                                            name="dias"
-                                                            type="text"
-                                                            value={form.dias}
-                                                            placeholder="DÍAS"
-                                                            iconclass="flaticon2-calendar-6"
-                                                            messageinc="Incorrecto. Ingresa el número de días."
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-12 text-center align-self-center mt-10">
-                                                        <div className="text-center">
-                                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                                                <label className="text-center font-weight-bolder">Fecha de contrato</label>
-                                                            </div>
-                                                            <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
+                                            </Col>
+                                            <Col md={form.periodo === true ? '6' : '12'} className="align-self-center row mx-0">
+                                                <div className={form.periodo === true ? 'col-md-12' : 'col-md-6'}>
+                                                    <div className="mx-auto w-fit-content">
+                                                        <label className="font-weight-bold col-form-label text-dark-60">Periodo del contrato</label>
+                                                        <div className="radio-list">
+                                                            <label className="radio radio-outline radio-success">
+                                                                <input
+                                                                    type="radio"
+                                                                    name='periodo'
+                                                                    value={true}
+                                                                    onChange={onChangeContrato}
+                                                                    checked={form.periodo === true ? true : false}
+                                                                />
+                                                                <span></span>DÍAS
+                                                            </label>
+                                                            <label className="radio radio-outline radio-success">
+                                                                <input
+                                                                    type="radio"
+                                                                    name='periodo'
+                                                                    value={false}
+                                                                    onChange={onChangeContrato}
+                                                                    checked={form.periodo === false ? true : false}
+                                                                />
+                                                                <span></span>INDEFINIDO
+                                                            </label>
                                                         </div>
                                                     </div>
-                                                </>
-                                            }
-                                        </div>
-                                        :
+                                                </div>
+                                                {
+                                                    form.periodo === true &&
+                                                        <div className="col-md-12 mb-4">
+                                                            <InputNumberGray
+                                                                withicon={1}
+                                                                formgroup="mb-0"
+                                                                requirevalidation={1}
+                                                                onChange={onChangeContrato}
+                                                                name="dias"
+                                                                type="text"
+                                                                value={form.dias}
+                                                                placeholder="DÍAS"
+                                                                iconclass="flaticon2-calendar-6"
+                                                                messageinc="Incorrecto. Ingresa el número de días."
+                                                            />
+                                                        </div>
+                                                }
+                                                <div className={form.periodo === true ? 'col-md-12' : 'col-md-6'}>
+                                                    <InputGray
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={0}
+                                                        withformgroup={0}
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}
+                                                        onChange={onChangeContrato}
+                                                        name="direccion_contrato"
+                                                        type="text"
+                                                        as="textarea"
+                                                        rows="2"
+                                                        value={form.direccion_contrato}
+                                                        placeholder="DIRECCIÓN DEL CONTRATO"
+                                                        iconclass="las la-map-marked-alt icon-xl p-0"
+                                                        messageinc="Incorrecto. Ingresa la dirección del contrato."
+                                                        customclass="px-2"
+                                                    />
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    :
                                         <div className="form-group row form-group-marginless mt-8">
                                             <div className="col-md-6 text-align-last-center align-self-center">
                                                 <label className="text-center font-weight-bolder text-bodymb-2">Fecha de inicio - Fecha final</label><br />
@@ -322,7 +345,7 @@ class FormularioContrato extends Component {
                                                         thousandseparator = { true }
                                                     />
                                                 </div>
-                                                <div className="form-group col-md-12">
+                                                <div className="form-group col-md-12 mb-4">
                                                     <InputNumberGray
                                                         withicon={1}
                                                         formgroup="mb-0"
@@ -355,7 +378,7 @@ class FormularioContrato extends Component {
                                                 </div>
                                             </div>
                                             <div className="col-md-12 mb-4">
-                                                <div className="col-md-12">
+                                                <div className="col-md-12 mb-4">
                                                     <InputGray
                                                         withtaglabel={1}
                                                         withtextlabel={1}
@@ -370,6 +393,24 @@ class FormularioContrato extends Component {
                                                         placeholder="UBICACIÓN DE LA OBRA"
                                                         iconclass="flaticon2-map"
                                                         messageinc="Incorrecto. Ingresa la ubicación de la obra."
+                                                    />
+                                                </div>
+                                                <div className="col-md-12">
+                                                    <InputGray
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={1}
+                                                        withformgroup={0}
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}
+                                                        onChange={onChangeContrato}
+                                                        name="direccion_contrato"
+                                                        type="text"
+                                                        value={form.direccion_contrato}
+                                                        placeholder="DIRECCIÓN DEL CONTRATO"
+                                                        iconclass="las la-map-marked-alt icon-xl p-0"
+                                                        messageinc="Incorrecto. Ingresa la dirección del contrato."
                                                     />
                                                 </div>
                                             </div>

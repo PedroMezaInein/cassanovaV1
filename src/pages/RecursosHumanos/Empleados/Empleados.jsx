@@ -101,7 +101,8 @@ class Empleados extends Component {
                     placeholder: 'Carta',
                     files: []
                 }
-            }
+            },
+            direccion_contrato:''
         },
     }
     componentDidMount() {
@@ -158,12 +159,14 @@ class Empleados extends Component {
         })
     }
     openModalContrato = colaborador => {
-        const { modal } = this.state
+        const { modal, formContrato } = this.state
         modal.contrato = true
+        formContrato.direccion_contrato = colaborador.empresa.direccion
         this.setState({
             ...this.state,
             modal,
-            empleado: colaborador
+            empleado: colaborador,
+            formeditado:1
         })
     }
     handleCloseModalDelete = () => {
@@ -927,7 +930,7 @@ class Empleados extends Component {
         })
     }
     render() {
-        const { modal, form, key, adjuntos, data, empleado, formContrato } = this.state
+        const { modal, form, key, adjuntos, data, empleado, formContrato, formeditado } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -983,7 +986,7 @@ class Empleados extends Component {
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
                         generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
-                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } />
+                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } formeditado={formeditado}/>
                 </Modal>
             </Layout>
         )
