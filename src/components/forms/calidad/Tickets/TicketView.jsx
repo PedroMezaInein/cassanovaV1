@@ -345,26 +345,26 @@ class TicketView extends Component {
                                                         </Nav.Item>
                                                     : <></>
                                                 }
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); controlledNav("solicitud-compra") }}>
-                                                    <Nav.Link eventKey="solicitud-compra">
-                                                        <span className="nav-icon">
-                                                            <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
-                                                        </span>
-                                                        <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de compra</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); controlledNav("solicitud-venta") }}>
-                                                    <Nav.Link eventKey="solicitud-venta">
-                                                        <span className="nav-icon">
-                                                            <i className="las la-clipboard-list icon-lg mr-2"></i>
-                                                        </span>
-                                                        <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de venta</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
                                                 {
                                                     presupuesto?
                                                         presupuesto.estatus.estatus === "Aceptado" ?
                                                         <>
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); controlledNav("solicitud-compra") }}>
+                                                                <Nav.Link eventKey="solicitud-compra">
+                                                                    <span className="nav-icon">
+                                                                        <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
+                                                                    </span>
+                                                                    <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de compra</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); controlledNav("solicitud-venta") }}>
+                                                                <Nav.Link eventKey="solicitud-venta">
+                                                                    <span className="nav-icon">
+                                                                        <i className="las la-clipboard-list icon-lg mr-2"></i>
+                                                                    </span>
+                                                                    <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de venta</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('ticket-proceso'); controlledNav("ticket-proceso") }}>
                                                                 <Nav.Link eventKey="ticket-proceso">
                                                                     <span className="nav-icon">
