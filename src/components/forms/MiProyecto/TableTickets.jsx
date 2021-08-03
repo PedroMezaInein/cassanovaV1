@@ -38,9 +38,7 @@ class TableTickets extends Component {
                             <tr className="text-center bg-blue-proyecto text-proyecto">
                                 <th>Estatus</th>
                                 <th style={{ minWidth: '100px' }}>Fecha</th>
-                                <th>Partida</th>
                                 <th style={{ minWidth: '125px' }}>Tipo de trabajo</th>
-                                <th style={{ minWidth: '176px' }}>Motivo de cancelación</th>
                                 <th style={{ minWidth: '209px' }}>Descripción</th>
                                 <th style={{ minWidth: '90px' }}></th>
                             </tr>
@@ -61,26 +59,25 @@ class TableTickets extends Component {
                                         <tr className="text-dark-75 font-weight-normal text-center" key={key}>
                                             <td> { setLabelTable(ticket.estatus_ticket) } </td>
                                             <td> { this.formatDay(ticket.created_at) } </td>
-                                            <td> { ticket.partida ? ticket.partida.nombre : '' } </td>
-                                            <td> { ticket.tipo_trabajo ? ticket.tipo_trabajo.tipo : '' } </td>
-                                            <td> { ticket.motivo_cancelacion } </td>
+                                            <td> { ticket.subarea ? ticket.subarea.nombre : '-' } </td>
                                             <td className="text-justify"> { ticket.descripcion } </td>
-                                            <td>
+                                            <td className="white-space-nowrap">
+                                                <div className="d-flex justify-content-evenly">
                                                 {
                                                     ticket.fotos ? ticket.fotos.length ?
                                                         <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>FOTOS</span></Tooltip>}>
-                                                            <span className="btn btn-icon btn-bg-light btn-text-info btn-hover-info btn-sm ml-3" 
+                                                            <span className="btn btn-icon btn-bg-light btn-text-info btn-hover-info btn-sm" 
                                                                 onClick={(e) => { showFilesAlert( ticket.fotos, '') }}>
-                                                                <i className="fas fa-photo-video text-info icon-md"></i>
+                                                                <i className="las la-photo-video text-info icon-lg"></i>
                                                             </span>
                                                         </OverlayTrigger>
-                                                    : '' : ''
+                                                    :<></> :<></>
                                                 }
                                                 {
                                                     ticket.presupuesto.length ?
                                                         <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>PRESUPUESTO</span></Tooltip>}>
                                                             <span className={`btn btn-icon btn-sm ${ticket.estatus_ticket.estatus === "Respuesta pendiente" ? 'btn-light-warning pulse pulse-warning' : 'btn-light  btn-hover-primary'}`} onClick={(e) => { openModalSee(ticket) }}>
-                                                                <i className={`la la-file-invoice-dollar icon-xl text-${ticket.estatus_ticket.estatus === "Respuesta pendiente" ? '' : 'primary'} `}></i>
+                                                                <i className={`las la-file-invoice-dollar icon-xl text-${ticket.estatus_ticket.estatus === "Respuesta pendiente" ? '' : 'primary'} `}></i>
                                                                 {
                                                                     ticket.estatus_ticket.estatus === "Respuesta pendiente" ?
                                                                     <span className="pulse-ring"></span>
@@ -88,17 +85,38 @@ class TableTickets extends Component {
                                                                 }
                                                             </span>
                                                         </OverlayTrigger>
-                                                        : ''
+                                                    :<></>
                                                 }
                                                 {
                                                     ticket.estatus_ticket.estatus === "Terminado" ?
                                                         <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>DETALLES DEL LEVANTAMIENTO</span></Tooltip>}>
-                                                            <span className="btn btn-icon btn-light btn-hover-primary btn-sm ml-3" onClick={(e) => { openModalDetalles(ticket) }}>
+                                                            <span className="btn btn-icon btn-light btn-hover-primary btn-sm" onClick={(e) => { openModalDetalles(ticket) }}>
                                                                 <i className="la la-list-alt text-primary icon-xl"></i>
                                                             </span>
                                                         </OverlayTrigger>
-                                                    : ''
+                                                    :<></>
                                                 }
+                                                {
+                                                    ticket.motivo_cancelacion !== null ?
+                                                    <OverlayTrigger overlay={<Tooltip className="tool-card-motivo">
+                                                            <div className="tool-titulo text-warning font-weight-bolder letter-spacing-0-4 bg-light-warning">
+                                                                MOTIVO DE CANCELACIÓN
+                                                            </div>
+                                                            <div className="p-2">
+                                                                <div className="tool-contenido">
+                                                                    <div className="p-3 text-justify text-uppercase">
+                                                                        {ticket.motivo_cancelacion}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </Tooltip>}>
+                                                        <span className="btn btn-icon btn-bg-light btn-text-warning btn-hover-warning btn-sm">
+                                                            <i className="las la-exclamation-triangle text-warning icon-lg"></i>
+                                                        </span>
+                                                    </OverlayTrigger>
+                                                    :<></>
+                                                }
+                                                </div>
                                             </td>
                                         </tr>
                                     )
