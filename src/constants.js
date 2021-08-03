@@ -262,6 +262,13 @@ export const AREAS_COLUMNS = [
     { Header: 'Sub áreas', accessor: 'subareas', customRender: true }
 ]
 
+export const AREAS_COMPRAS_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Área', accessor: 'area', customRender: true },
+    { Header: 'Sub áreas', accessor: 'subareas', customRender: true },
+    { Header: 'Partida', accessor: 'partida' }
+]
+
 export const PARTIDAS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Clave', accessor: 'clave' },

@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { AreasForm } from '../../components/forms'
-import { URL_DEV, AREAS_COLUMNS, PUSHER_OBJECT } from '../../constants'
+import { URL_DEV, AREAS_COLUMNS, AREAS_COMPRAS_COLUMNS, PUSHER_OBJECT } from '../../constants'
 import { Modal } from '../../components/singles'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { AreaCard } from '../../components/cards'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert, deleteAlert } from '../../functions/alert'
-import { setOptions, setTextTableReactDom, setTagLabelAreaReactDom } from '../../functions/setters'
+import { setOptions, setTextTableReactDom, setTagLabelAreaReactDom, setTextTable } from '../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
 import { Update } from '../../components/Lottie'
 import { InputGray, DoubleSelectSearchGray, SelectSearchGray } from '../../components/form-components'
@@ -17,6 +17,7 @@ import { printSwalHeader } from '../../functions/printers'
 import Echo from 'laravel-echo';
 import { setSingleHeader } from '../../functions/routers'
 import $ from "jquery";
+import { renderToString } from 'react-dom/server'
 
 class Areas extends Component {
 
@@ -35,7 +36,7 @@ class Areas extends Component {
         area: '',
         tipo: 'compras',
         key: 'compras',
-        options: { areas: [], subareas: []}
+        options: { areas: [], subareas: [], partidas: []}
     }
     
     componentDidMount() {
@@ -58,6 +59,7 @@ class Areas extends Component {
                             this.controlledTab(key)
             })
         }
+        this.getOptionsAxios()
     }
 
     addSubarea = () => {
@@ -105,6 +107,7 @@ class Areas extends Component {
                 actions: this.setActions(area),
                 area: setTextTableReactDom(area.nombre, this.doubleClick, area, 'nombre', 'text-center'),
                 subareas: setTagLabelAreaReactDom(area, area.subareas, 'subareas', this.openModalDeleteSubarea),
+                partida: renderToString(setTextTable(area.partida ? area.partida.nombre : '')),
                 id: area.id
             })
             return false
@@ -239,6 +242,8 @@ class Areas extends Component {
         this.setState({ ...this.state, form })
         await axios.post(URL_DEV + 'areas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { key } = this.state
+                this.controlledTab(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
                 this.setState({ ...this.state, modal: false, form: this.clearForm(), })
             }, (error) => { printResponseErrorAlert(error) }
@@ -253,6 +258,8 @@ class Areas extends Component {
         const { form, area } = this.state
         await axios.put(`${URL_DEV}v2/catalogos/areas/${area.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { key } = this.state
+                this.controlledTab(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
                 this.setState({ ...this.state, modal: false, form: this.clearForm(), area: '' })
             }, (error) => { printResponseErrorAlert(error) }
@@ -268,6 +275,8 @@ class Areas extends Component {
         await axios.delete(`${URL_DEV}v2/catalogos/areas/${area.id}?area=${form.area}&subarea=${form.subarea}`, 
             { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                const { key } = this.state
+                this.controlledTab(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
                 this.setState({ ...this.state, modalDelete: false, form: this.clearForm(), area: '', })
             }, (error) => { printResponseErrorAlert(error) }
@@ -404,6 +413,21 @@ class Areas extends Component {
         }
     }
 
+    getOptionsAxios = async() => {
+        const { access_token } = this.props.authUser
+        await axios.options(`${URL_DEV}v2/catalogos/areas/options`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { partidas } = response.data
+                const { options } = this.state
+                options.partidas = setOptions(partidas, 'nombre', 'id')
+                this.setState({...this.state, options})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onChangeSwal = (value, tipo) => {
         const { form, options } = this.state
         if(tipo === 'area'){
@@ -468,6 +492,8 @@ class Areas extends Component {
         form.subareas = []
         form.subareasEditable = []
         form.subarea = ''
+        if(area.partida)
+            form.partida = area.partida.id.toString()
         this.setState({ ...this.state, modal: true, title: `Editar área`, area: area, form, tipo: key, formeditado:1 })
     }
 
@@ -486,21 +512,32 @@ class Areas extends Component {
     }
 
     render() {
-        const { form, modal, title, formeditado, key, modalSee, area} = this.state
+        const { form, modal, title, formeditado, key, modalSee, area, options } = this.state
         const { access_token } = this.props.authUser
-        const tabs = [ 'compras', 'ventas', 'egresos', 'ingresos']
+        const tabs = [ 'ventas', 'egresos', 'ingresos']
         return (
             <Layout active = 'catalogos'  {...this.props}>
 
                 <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
+                    <Tab eventKey = { 'compras' } title = { 'compras' }>
+                        <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
+                            subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
+                            onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
+                            urlRender = { `${URL_DEV}areas/compras` } idTable = {`kt_datatable_compras`} 
+                            cardTable = {`card_table_compras`} cardTableHeader = {`card_table_header_compras`} 
+                            cardBody = {`card_body_compras`} isTab = { true }
+                            actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
+                    </Tab>
                     {
                         tabs.map((elemento) => {
                             return(
                                 <Tab eventKey = { elemento } title = { elemento }>
-                                    <NewTableServerRender columns = { AREAS_COLUMNS } title = 'ÁREAS' subtitle = 'Listado de áreas' mostrar_boton = { true } 
-                                        abrir_modal = { true } mostrar_acciones = { true } onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } 
-                                        accessToken = { access_token } urlRender = { `${URL_DEV}areas/${elemento}` } idTable = {`kt_datatable_${elemento}`} 
-                                        cardTable = {`card_table_${elemento}`} cardTableHeader = {`card_table_header_${elemento}`} cardBody = {`card_body_${elemento}`} isTab = { true }
+                                    <NewTableServerRender columns = { AREAS_COLUMNS } title = 'ÁREAS' 
+                                        subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
+                                        onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
+                                        urlRender = { `${URL_DEV}areas/${elemento}` } idTable = {`kt_datatable_${elemento}`} 
+                                        cardTable = {`card_table_${elemento}`} cardTableHeader = {`card_table_header_${elemento}`} 
+                                        cardBody = {`card_body_${elemento}`} isTab = { true }
                                         actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
                                 </Tab>
                             )
@@ -510,7 +547,8 @@ class Areas extends Component {
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
                     <AreasForm area = {area} form = { form } onChange = { this.onChange } addSubarea = { this.addSubarea } editSubarea = { this.editSubarea } 
-                        deleteSubarea = { this.openModalDeleteSubarea } title = { title } onSubmit = { this.onSubmit } formeditado = { formeditado } />
+                        deleteSubarea = { this.openModalDeleteSubarea } title = { title } onSubmit = { this.onSubmit } formeditado = { formeditado } 
+                        tipo = { key } options = { options } />
                 </Modal>
 
                 <Modal title={key === 'egresos' ?'Egreso' : key === 'compras' ? 'Compra' : key === 'ventas' ? 'Venta/Ingreso' :''} show = { modalSee } handleClose = { this.handleCloseSee } >
