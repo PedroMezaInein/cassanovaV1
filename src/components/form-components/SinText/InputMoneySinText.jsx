@@ -58,7 +58,7 @@ class InputMoneySinText extends Component {
         onChange({ target: { value: values.value, name: name } })
     }
     render() {
-        const { placeholder, value, prefix, thousandseparator, customstyle, identificador, customclass } = this.props
+        const { placeholder, value, prefix, thousandseparator, customstyle, identificador, customclass, disabled } = this.props
         const { inputMoneyValido } = this.state
         return (
             <NumberFormat
@@ -72,6 +72,7 @@ class InputMoneySinText extends Component {
                 onValueChange={(values) => this.onChange(values)}
                 placeholder={placeholder}
                 style={customstyle}
+                disabled={disabled}
             />
         )
     }
