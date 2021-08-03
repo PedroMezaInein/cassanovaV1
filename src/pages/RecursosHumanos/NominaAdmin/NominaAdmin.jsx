@@ -12,6 +12,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import { renderToString } from 'react-dom/server'
 import TableForModals from '../../../components/tables/TableForModals'
 import $ from "jquery";
+import { setSingleHeader } from '../../../functions/routers'
 class NominaAdmin extends Component {
     state = {  
         formeditado:0,
@@ -174,27 +175,14 @@ class NominaAdmin extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { nomina} = this.state
-        
-        await axios.delete(URL_DEV + 'rh/nomina-administrativa/' + nomina.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modal } = this.state
                 this.getNominasAxios()
-
                 modal.delete = false
-
-                this.setState({                    
-                    ...this.state,
-                    modal,
-                    nomina: '',
-                    form: this.clearForm()
-                })
-
+                this.setState({ ...this.state, modal, nomina: '', form: this.clearForm() })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.')
-                
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
