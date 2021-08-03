@@ -234,6 +234,9 @@ class UltimoPresupuesto extends Component {
                                                 <div className="font-size-sm text-center">Unidad</div>
                                             </th>
                                             <th className="border-0 center_content">
+                                                <div className="font-size-sm text-center">Cantidad</div>
+                                            </th>
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Costo</div>
                                             </th>
                                             <th className="border-0 center_content">
@@ -251,9 +254,6 @@ class UltimoPresupuesto extends Component {
                                                         customclass='rounded-pill px-2 text-center border'
                                                     />
                                                 </div>
-                                            </th>
-                                            <th className="border-0 center_content">
-                                                <div className="font-size-sm text-center">Cantidad</div>
                                             </th>
                                             <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Precio Unitario</div>
@@ -357,6 +357,10 @@ class UltimoPresupuesto extends Component {
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
                                                             </td>
+                                                            
+                                                            <td className="text-center">
+                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
+                                                            </td>
                                                             <td className="text-center">
                                                                 <InputMoneySinText
                                                                     identificador={"costo" + key}
@@ -387,9 +391,6 @@ class UltimoPresupuesto extends Component {
                                                                 />
                                                             </td>
                                                             <td className="text-center">
-                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
-                                                            </td>
-                                                            <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['precio_unitario']}</div>
                                                             </td>
                                                             <td className="text-center">
@@ -406,7 +407,7 @@ class UltimoPresupuesto extends Component {
                             <Card.Footer className="card-footer">
                                 <div className="d-flex justify-content-end">
                                     <Button icon='' className="btn btn-bg-light btn-hover-light-success font-weight-bolder text-success align-self-center font-size-13px px-2 btn-sm"
-                                        only_icon="las la-paper-plane icon-lg mr-2 px-0 text-success" text="ENVIAR"
+                                        only_icon="las la-save icon-lg mr-2 px-0 text-success" text="GUARDAR"
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();
