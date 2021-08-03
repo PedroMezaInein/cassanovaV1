@@ -38,7 +38,8 @@ class ActualizarPresupuesto extends Component {
                     active: false,
                     mensaje: ''
                 },
-                unidad_id:''
+                unidad_id:'',
+                bg_costo:true
             }],
             conceptosNuevos: []
         },
@@ -198,7 +199,8 @@ class ActualizarPresupuesto extends Component {
                             id: concepto.id,
                             mensajes: mensajeAux,
                             unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : '',
-                            unidad_id: concepto.concepto.unidad.id.toString()
+                            unidad_id: concepto.concepto.unidad.id.toString(),
+                            bg_costo:concepto.bg_costo ? true : false
                         })
                     }
                 })
@@ -338,6 +340,11 @@ class ActualizarPresupuesto extends Component {
     onChange = (key, e, name) => {
         let { value } = e.target
         const { form, presupuesto } = this.state
+        if (name === 'costo' && value > 0){
+            form['conceptos'][key]['bg_costo'] = false
+        }else{
+            form['conceptos'][key]['bg_costo'] = true
+        }
         if (name === 'desperdicio') {
             value = value.replace('%', '')
         }
