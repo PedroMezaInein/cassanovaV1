@@ -53,7 +53,7 @@ class ActualizarPresupuesto extends Component {
             partidas: [],
             subpartidas: [],
             conceptos: []
-        },
+        }
     };
     openModal = () => {
         const { options } = this.state
@@ -172,6 +172,7 @@ class ActualizarPresupuesto extends Component {
             (response) => {
                 const { form } = this.state
                 const { presupuesto } = response.data
+                let { bg_costo } = this.state
                 let aux = []
                 presupuesto.conceptos.forEach((concepto) => {
                     let mensajeAux = {}
@@ -200,12 +201,12 @@ class ActualizarPresupuesto extends Component {
                             mensajes: mensajeAux,
                             unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : '',
                             unidad_id: concepto.concepto.unidad.id.toString(),
-                            bg_costo:concepto.bg_costo ? true : false
+                            bg_costo:concepto.costo>0?false:true
                         })
                     }
                 })
                 form.conceptos = aux
-                this.setState({ ...this.state, presupuesto: presupuesto, form, formeditado: 1 })
+                this.setState({ ...this.state, presupuesto: presupuesto, form, formeditado: 1, bg_costo })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -340,13 +341,15 @@ class ActualizarPresupuesto extends Component {
     onChange = (key, e, name) => {
         let { value } = e.target
         const { form, presupuesto } = this.state
-        if (name === 'costo' && value > 0){
-            form['conceptos'][key]['bg_costo'] = false
-        }else{
-            form['conceptos'][key]['bg_costo'] = true
-        }
         if (name === 'desperdicio') {
             value = value.replace('%', '')
+        }
+        if (name === 'costo'){
+            if(value <= 0){
+                form['conceptos'][key]['bg_costo'] = true
+            }else{
+                form['conceptos'][key]['bg_costo'] = false
+            }
         }
         form['conceptos'][key][name] = value
         let cantidad = form['conceptos'][key]['cantidad_preliminar'] * (1 + (form['conceptos'][key]['desperdicio'] / 100))
