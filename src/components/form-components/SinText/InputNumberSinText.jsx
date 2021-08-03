@@ -55,7 +55,7 @@ class InputNumberSinText extends Component {
         }
     }
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, identificador, typeformat, customstyle, customclass, thousandseparator, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, identificador, typeformat, customstyle, customclass, thousandseparator, disabled, ...props } = this.props
         const { inputValido } = this.state
         return (
             <div >
@@ -68,6 +68,7 @@ class InputNumberSinText extends Component {
                     format={typeformat}
                     style={customstyle}
                     thousandSeparator={thousandseparator}
+                    disabled={disabled}
                 />
             </div>
         )
