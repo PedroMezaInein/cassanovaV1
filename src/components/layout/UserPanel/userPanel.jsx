@@ -97,8 +97,8 @@ class UserPanel extends Component {
 		const { showProfile, showNotif, notificaciones } = this.state
 		return (
 			<>   
-				<div className="scroll scroll-pull offcanvas offcanvas-right p-10">
-					<div className="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+				<div className='offcanvas offcanvas-right px-10 pt-0'>
+					<div className='offcanvas-header d-flex align-items-center justify-content-between pt-10 pb-5 notify-p-stiky'>
 						<div className="font-weight-bolder m-0 font-size-h3">{showProfile ? 'Perfil de usuario' : 'Notificaciones'}</div>
 						<div>
 							<button className={`btn btn-xs btn-icon btn-light btn-hover-primary mr-2 ${showNotif ? '' : 'd-none'}`} onClick={() => { this.mostrarPerfil() }} >
