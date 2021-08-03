@@ -807,7 +807,7 @@ class TicketDetails extends Component {
                                     </label>
                                     <div className="mt-6">
                                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                            <label className="text-center font-weight-bolder">Fecha de entrega</label>
+                                            <label className="text-center font-weight-bolder">Fecha de visto bueno</label>
                                         </div>
                                         <CalendarDaySwal value = { formularios.presupuesto_generado.fechaEvidencia } onChange = { (e) => {  this.onChangeSwal(e.target.value, 'fechaEvidencia', 'presupuesto_generado' )} } name = { 'fechaEvidencia' } 
                                         date = { formularios.presupuesto_generado.fechaEvidencia } withformgroup={0} />
