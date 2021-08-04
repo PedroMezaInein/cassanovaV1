@@ -40,7 +40,17 @@ class Presupuesto extends Component {
         data: {
             adjuntos: []
         },
-        adjuntos: []
+        adjuntos: [],
+        estatus_ticket: [
+            { bg: '#EFEBE9', color: '#8D6E63', text: 'CONCEPTOS', num: 1 },
+            { bg: '#E3F4FC', color: '#009EF7', text: 'VOLUMETRÍAS', num: 2 },
+            { bg: '#EDE7F6', color: '#BA68C8', text: 'COSTOS', num: 3 },
+            { bg: '#FFF7DB', color: '#F1C40F', text: 'EN REVISIÓN', num: 4 },
+            { bg: '#FFECD7', color: '#FF8B00', text: 'UTILIDAD', num: 5 },
+            { bg: '#ECEFF1', color: '#78909C', text: 'EN ESPERA', num: 6 },
+            { bg: '#E0F2F1', color: '#4DB6AC', text: 'ACEPTADO', num: 7 },
+            { bg: '#FFEBEE', color: '#F64E60', text: 'RECHAZADO', num: 7 },
+        ]
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -212,7 +222,7 @@ class Presupuesto extends Component {
                     {
                         actions: this.setActions(presupuesto),
                         estatus: renderToString( presupuesto.estatus ? setLabelTable(presupuesto.estatus) : ''),
-                        tipo_presupuesto:renderToString(this.label(presupuesto.hasTickets ? 'ticket' : 'presupuesto')),
+                        tipo_presupuesto:renderToString(this.label(presupuesto)),
                         empresa: renderToString(setTextTableCenter(presupuesto.empresa ? presupuesto.empresa.name : '')),
                         proyecto: renderToString(setTextTableCenter(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
                         area: renderToString(setTextTableCenter(presupuesto.area ? presupuesto.area.nombre : '')),
@@ -226,7 +236,9 @@ class Presupuesto extends Component {
             })
         return aux
     }
-    label(text){
+    label(presupuesto){
+        console.log(presupuesto, 'presupuesto')
+        let text = presupuesto.hasTickets ? 'ticket' : 'presupuesto'
         return(
             <div className='d-flex align-items-center justify-content-center'>
                 <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
@@ -293,7 +305,7 @@ class Presupuesto extends Component {
     }
     render() {
 
-        const { modal, data, adjuntos } = this.state
+        const { modal, data, adjuntos, estatus_ticket } = this.state
         return (
             <Layout active={'presupuesto'}  {...this.props}>
                 <NewTableServerRender
@@ -316,8 +328,39 @@ class Presupuesto extends Component {
                     urlRender = { `${URL_DEV}v2/presupuesto/presupuestos` }
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
+                    cardBody='cardBody'>
+                    {
+                        <div className="col-md-12 px-0 mt-12 mb-8 d-flex align-items-center justify-content-center">
+                            <div className="d-flex">
+                                {
+                                    estatus_ticket.slice(0, 6).map((estatus, key) => {
+                                        return (
+                                            <div className="d-flex mr-2" key={key}>
+                                                <span className="label font-weight-bolder mr-2" style={{ backgroundColor: estatus.bg, color: estatus.color, height: '24px', width: '24px', fontSize: '0.9rem' }}>{estatus.num}</span>
+                                                <div className="align-self-center font-weight-bolder">{estatus.text}</div>
+                                                <div className='align-self-center ml-2'>
+                                                    <i className="las la-arrow-right" style={{ color: estatus.color }}></i>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                            <div className="d-flex flex-column">
+                                {
+                                    estatus_ticket.slice(6, 8).map((estatus, key) => {
+                                        return (
+                                            <div className="d-flex mr-2 mb-1" key={key}>
+                                                <span className="label font-weight-bolder mr-2" style={{ backgroundColor: estatus.bg, color: estatus.color, height: '24px', width: '24px', fontSize: '0.9rem' }}>{estatus.num}</span>
+                                                <div className="align-self-center font-weight-bolder">{estatus.text}</div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
+                    }
+                </NewTableServerRender>
                 <ModalDelete
                     title={"¿Estás seguro que deseas eliminar el presupuesto?"}
                     show={modal.delete}
