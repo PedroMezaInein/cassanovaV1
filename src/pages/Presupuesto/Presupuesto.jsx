@@ -237,11 +237,13 @@ class Presupuesto extends Component {
         return aux
     }
     label(presupuesto){
-        console.log(presupuesto, 'presupuesto')
-        let text = presupuesto.hasTickets ? 'ticket' : 'presupuesto'
+        let tipo = presupuesto.hasTickets ? 'ticket' : 'presupuesto'
+        let identificador = tipo === 'ticket' && (presupuesto.ticketIdentificador !== null || presupuesto.ticketIdentificador !== '')
         return(
-            <div className='d-flex align-items-center justify-content-center'>
-                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+            <div className='d-flex align-items-center justify-content-center white-space-nowrap'>
+                <i style={{ color: `${tipo === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${tipo === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`}/>
+                {setTextTable(tipo)}
+                { identificador && <span className="font-size-11px">- {presupuesto.ticketIdentificador}</span> }
             </div>
         )
     }
