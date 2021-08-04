@@ -51,7 +51,7 @@ class SelectSearchGray extends Component {
         return (
             <>
                 {
-                    options.length > 0 ?
+                    options.length >= 0 ?
                         <>
                             {   withtaglabel ?
                                     <label className = { `col-form-label font-weight-bold text-dark-60  ${customlabel}` } >

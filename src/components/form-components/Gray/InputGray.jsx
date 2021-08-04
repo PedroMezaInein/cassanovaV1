@@ -27,17 +27,13 @@ class InputGray extends Component {
     }
     
     componentDidUpdate(nextProps) {
-        if (nextProps.value !== this.props.value)
+        if (nextProps.value !== this.props.value){
             if (!nextProps.requirevalidation) {
-                this.setState({
-                    ...this.state,
-                    inputValido: true
-                })
+                this.setState({ ...this.state, inputValido: true })
             } else {
-                if (this.props.value !== '') {
-                    this.validarInput({ target: { value: this.props.value } })
-                }
+                this.validarInput({ target: { value: this.props.value } })
             }
+        }
     }
     
     componentDidMount(){
@@ -45,6 +41,9 @@ class InputGray extends Component {
         this.setState({...this.state, valor: value})
         if(formeditado){
             this.validarInput({ target: { value: value } })
+        }else{
+            if(value !== '')
+                this.validarInput({ target: { value: value } })
         }
     }
     

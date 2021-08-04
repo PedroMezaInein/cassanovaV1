@@ -113,7 +113,10 @@ class TicketDetails extends Component {
                 costo: 0.0,
                 equipo: '',
                 fechaMantenimiento: new Date()
-            }
+            },
+            conceptos:[{
+                area: '', subarea: '', descripcion: ''
+            }]
         },
         data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [] },
         ticket: '',
@@ -341,9 +344,23 @@ class TicketDetails extends Component {
                 Swal.close()
                 const { presupuesto } = response.data
                 const { formularios } = this.state
-                
                 let aux = []
+                if(presupuesto.conceptos.length === 0){
+                    formularios.conceptos = [{area: '', subarea: '', descripcion: ''}]
+                }else{ formularios.conceptos = [] }
                 presupuesto.conceptos.forEach((concepto) => {
+                    let objeto = { area: '', subarea: '', descripcion: ''}
+                    objeto.descripcion = concepto.descripcion
+                    objeto.concepto = concepto
+                    if(concepto.concepto)
+                        if(concepto.concepto.subpartida)
+                            if(concepto.concepto.subpartida.partida)
+                                if(concepto.concepto.subpartida.partida.areas)
+                                    if(concepto.concepto.subpartida.partida.areas.length){
+                                        if(concepto.concepto.subpartida.partida.areas.length === 1)
+                                            objeto.area = concepto.concepto.subpartida.partida.areas[0].id.toString()
+                                    }
+                    formularios.conceptos.push(objeto)
                     let active = false
                     if (conceptosNuevos !== undefined){
                         conceptosNuevos.forEach((conceptoNuevo) => {
@@ -477,6 +494,27 @@ class TicketDetails extends Component {
                 Swal.close()
                 const { solicitudes } = response.data
                 this.setState({...this.state, solicitudes: solicitudes})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    submitSolicitudesCompras = async() => {
+        const { access_token } = this.props.authUser
+        const { formularios, ticket } = this.state
+        console.log('formularios.conceptos', formularios.conceptos)
+        await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-compra`, { solicitudes: formularios.conceptos }, 
+            { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { modal, formularios } = this.state
+                modal.solicitud = false
+                formularios.conceptos = this.clearFormConceptos()
+                this.setState({...this.state, modal, formularios})
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.',
+                    () => { this.getSolicitudesAxios(`solicitud-compra`) }
+                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -695,12 +733,14 @@ class TicketDetails extends Component {
         switch(type){
             case 'compra':
                 title = 'Nueva solicitud de compra'
+                formularios.conceptos = this.clearFormConceptos()
                 break;
             case 'venta':
                 title = 'Nueva solicitud de venta'
-                if(ticket.subarea)
+                if(ticket.subarea){
                     formularios.solicitud.area = ticket.subarea.area_id.toString()
                     formularios.solicitud.subarea = ticket.subarea.id.toString()
+                }
                 break;
             default:
                 break;
@@ -708,7 +748,7 @@ class TicketDetails extends Component {
         modal.solicitud = true
         formularios.solicitud.empresa = ticket.proyecto.empresa.id.toString()
         formularios.solicitud.proyecto = ticket.proyecto.id.toString()
-        this.setState({ ...this.state, modal, formeditado: 1, title:title })
+        this.setState({ ...this.state, modal, formeditado: 1, title:title, formularios })
         this.getOptionsAxios()
     }
 
@@ -899,6 +939,29 @@ class TicketDetails extends Component {
             formularios
         })
     }
+
+    clearFormConceptos = () => {
+        const { formularios, presupuesto } = this.state
+        if(presupuesto.conceptos.length === 0){
+            formularios.conceptos = [{area: '', subarea: '', descripcion: ''}]
+        }else{ formularios.conceptos = [] }
+        presupuesto.conceptos.forEach((concepto) => {
+            let objeto = { area: '', subarea: '', descripcion: '', concepto: concepto}
+            objeto.descripcion = concepto.descripcion
+            objeto.concepto = concepto
+            if(concepto.concepto)
+                if(concepto.concepto.subpartida)
+                    if(concepto.concepto.subpartida.partida)
+                        if(concepto.concepto.subpartida.partida.areas)
+                            if(concepto.concepto.subpartida.partida.areas.length){
+                                if(concepto.concepto.subpartida.partida.areas.length === 1)
+                                    objeto.area = concepto.concepto.subpartida.partida.areas[0].id.toString()
+                            }
+            formularios.conceptos.push(objeto)
+        })
+        return formularios.conceptos
+    }
+
     clearFormSolicitud = () => {
         const { formularios } = this.state
         let aux = Object.keys(formularios.solicitud)
@@ -996,6 +1059,14 @@ class TicketDetails extends Component {
             default: break;
         }
     }
+
+    onChangeSolicitudCompra = (value, name, index) => {
+        let { formularios } = this.state
+        formularios.conceptos[index][name] = value
+        console.log(`-`)
+        this.setState({ ...this.state, formularios })
+    }
+
     /* ---------------------- FORMULARIO CONCEPTOS ---------------------- */
     onChangeConceptos = (e) => {
         const { name, value } = e.target;
@@ -1367,6 +1438,15 @@ class TicketDetails extends Component {
         })
     }
 
+    changeTypeSolicitudes = value => {
+        const { formularios } = this.state
+        if(value)
+            formularios.conceptos = this.clearFormConceptos()
+        else
+            formularios.conceptos = [{area: '', subarea: '', descripcion: ''}]
+        this.setState({formularios})
+    }
+
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav } = this.state
         return (
@@ -1379,15 +1459,18 @@ class TicketDetails extends Component {
                     openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
                     onSubmit = { this.onSubmit } openModalConceptos={this.openModalConceptos} deleteFile = { this.deleteFile } 
-                    openModalSolicitud={this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} formeditado={formeditado}
-                    onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} openModalEditarSolicitud = { this.openModalEditarSolicitud}
-                    deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto}
-                    onChangeTicketProceso={this.onChangeTicketProceso} onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso}
-                    generateEmailTicketProceso={this.generateEmailTicketProceso} generarReporteFotografico={this.generarReporteFotografico} onChangeMantenimientos={this.onChangeMantenimientos}
-                    onSubmitMantenimiento={this.onSubmitMantenimiento} openModalDeleteMantenimiento={this.openModalDeleteMantenimiento} controlledNav={this.controlledNav} activeKeyNav={activeKeyNav}
-                    openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } checkButtonConceptos = { this.checkButtonConceptos } controlledTab={this.controlledTab}
-                    key={key} onSubmitConcept = { this.onSubmitConcept } handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte}
-                />
+                    openModalSolicitud = {this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} formeditado={formeditado}
+                    onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} 
+                    openModalEditarSolicitud = { this.openModalEditarSolicitud} deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} 
+                    onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto} onChangeTicketProceso={this.onChangeTicketProceso} 
+                    onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso} 
+                    generateEmailTicketProceso={this.generateEmailTicketProceso} generarReporteFotografico={this.generarReporteFotografico} 
+                    onChangeMantenimientos={this.onChangeMantenimientos} onSubmitMantenimiento={this.onSubmitMantenimiento} 
+                    openModalDeleteMantenimiento={this.openModalDeleteMantenimiento} controlledNav={this.controlledNav} activeKeyNav={activeKeyNav}
+                    openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } checkButtonConceptos = { this.checkButtonConceptos } 
+                    controlledTab={this.controlledTab} key={key} onSubmitConcept = { this.onSubmitConcept } handleCloseConceptos={this.handleCloseConceptos} 
+                    openModalReporte={this.openModalReporte} onChangeSolicitudCompra = { this.onChangeSolicitudCompra } 
+                    submitSolicitudesCompras = { this.submitSolicitudesCompras } changeTypeSolicitudes = { this.changeTypeSolicitudes } />
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
                     <Modal.Body className = 'p-0'>
