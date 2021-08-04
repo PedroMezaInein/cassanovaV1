@@ -34,10 +34,9 @@ export default class SolicitudesTabla extends Component {
                         <table className="table table-vertical-center">
                             <thead>
                                 <tr className="font-weight-bolder text-info text-center white-space-nowrap bg-light-info">
-                                    { type === 'compra' ? <th>Proveedor</th> : <></> }
-                                    <th>Tipo de pago</th>
-                                    <th>Monto</th>
-                                    <th>Factura</th>
+                                    { type !== 'compra' ? <th>Tipo de pago</th> : <></> }
+                                    { type !== 'compra' ? <th>Monto</th> : <></> }
+                                    { type !== 'compra' ? <th>Factura</th> : <></> }
                                     <th>Fecha</th>
                                     <th>Área</th>
                                     <th>Sub área</th>
@@ -49,27 +48,32 @@ export default class SolicitudesTabla extends Component {
                                 {
                                     solicitudes ?
                                         solicitudes.length === 0 ?
-                                            this.printEmptyTable( type === 'compra' ? 9 : 8 )
+                                            this.printEmptyTable( type === 'compra' ? 5 : 8 )
                                         :
                                             solicitudes.map((sol) => {
                                                 return(
                                                     <tr key = { sol.id } className = 'text-center'>
                                                         {
-                                                            type === 'compra' ?
+                                                            type !== 'compra' ?
                                                                 <td className="text-dark font-weight-light font-size-sm">
-                                                                    { sol.proveedor ? sol.proveedor.razon_social : '' }    
+                                                                    { sol.tipo_pago ? sol.tipo_pago.tipo : '' }
                                                                 </td>
                                                             : <></>
                                                         }
-                                                        <td className="text-dark font-weight-light font-size-sm">
-                                                            { sol.tipo_pago ? sol.tipo_pago.tipo : '' }
-                                                        </td>
-                                                        <td className="text-dark font-weight-light font-size-sm">
-                                                            { setMoneyTable(sol.monto) }
-                                                        </td>
-                                                        <td className="text-dark font-weight-light font-size-sm">
-                                                            { sol.factura ? 'Con factura' : 'Sin factura' }
-                                                        </td>
+                                                        {
+                                                            type !== 'compra' ?
+                                                                <td className="text-dark font-weight-light font-size-sm">
+                                                                    { setMoneyTable(sol.monto) }
+                                                                </td>
+                                                            : <></>
+                                                        }
+                                                        {
+                                                            type !== 'compra' ?
+                                                                <td className="text-dark font-weight-light font-size-sm">
+                                                                    { sol.factura ? 'Con factura' : 'Sin factura' }
+                                                                </td>
+                                                            : <></>
+                                                        }
                                                         <td className="text-dark font-weight-light font-size-sm">
                                                             { setDateText(sol.created_at) }
                                                         </td>
