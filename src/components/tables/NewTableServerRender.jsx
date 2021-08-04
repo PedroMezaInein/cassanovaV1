@@ -569,8 +569,7 @@ class NewTableServerRender extends Component {
         }
     }
     render() {
-
-        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, habilitar, text_habilitar, customcard, customheader, customtitle, customsubtitle, customlabel, icon_habilitar} = this.props
+        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, habilitar, text_habilitar, customcard, customheader, customtitle, customsubtitle, customlabel, icon_habilitar, children} = this.props
         return (
             <>
                 <Card id={cardTable} className={`card-custom card-sticky ${customcard}`}>
@@ -630,6 +629,7 @@ class NewTableServerRender extends Component {
                     </Card.Header>
 
                     <Card.Body id={cardBody} className="pt-0">
+                        {children}
                         <table ref={'main'} className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
                     </Card.Body>
                 </Card>
