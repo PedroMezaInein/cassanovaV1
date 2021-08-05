@@ -201,10 +201,11 @@ const NotificacionesCorreos = React.lazy(() => import('./pages/Plataforma/Notifi
 
 const Etiquetas = React.lazy( () => import('./pages/Catalogos/Etiquetas') )
 class App extends Component{
+
     async componentDidMount(){
         const { history } = this.props
         let queryString = history.location.search
-        let token = ''
+        let token = null
         if (queryString) {
             let params = new URLSearchParams(queryString)
             token = params.get("token")
@@ -214,22 +215,16 @@ class App extends Component{
             (response) => {
                 const { data } = response
                 login(data)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error){
-                    if(error.response){
-                        if(error.response.status){
-                            if (error.response.status === 401) {
-                                if(token === '')
-                                    this.logoutUser()
-                            }else {
-                                errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                            }
-                        }else {
-                            errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                        }
+            }, (error) => {
+                //console.log(`ERROR`, error.response)
+                const { status } = error.response
+                if(status === 401){
+                    if(token){
+                        console.log(`TOKEN`)
                     }
+                    else{ history.push('/login') }
+                }else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
@@ -255,6 +250,7 @@ class App extends Component{
     }
 
     async logoutUser(){
+        console.log('LOGOUT')
         const { logout, authUser : {access_token }, history } = this.props
         
         await axios.get(`${URL_DEV}user/logout`, { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -268,10 +264,7 @@ class App extends Component{
                     history.push('/login')
                 }
             }
-        ).catch((error) => {
-            /* logout();
-            history.push('/login') */
-        })
+        ).catch((error) => { })
     }
     render(){
         
