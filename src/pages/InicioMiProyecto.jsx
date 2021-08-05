@@ -338,19 +338,15 @@ class InicioMiProyecto extends Component {
     }
 
     scrolling = (location) => {
-        console.log(`Scrolling`)
-        scroller.scrollTo(location,{offset: 150})
+        scroller.scrollTo(location,{
+            offset: -50,
+            spy:true,
+            smooth:'true',
+            duration: 800
+        })
     }
 
     componentDidUpdate() {
-        // setTimeout(
-        //     () => {
-        //         scroller.scrollTo('tickets', {
-        //             duration: 500,
-        //             smooth: true
-        //         });
-        //     }, 1000
-        // )
         $(document).scroll(function () {
             var $nav = $(".fixed-top");
             $nav.toggleClass('header-scrolled', $(this).scrollTop() > $nav.height());
