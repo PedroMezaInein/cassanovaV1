@@ -17,7 +17,7 @@ class AreaForm extends Component {
     }
 
     tagInputChange = values =>  {
-        const { onChange, area, form } = this.props
+        const { onChange, area } = this.props
         let aux = []
         let newValues = []
         values.forEach((value) => {
