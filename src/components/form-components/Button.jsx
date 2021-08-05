@@ -12,7 +12,7 @@ export default class button extends Component {
                 {
                     tooltip ?
                         <OverlayTrigger overlay={<Tooltip>{tooltip.text}</Tooltip>}>
-                            <Button id={id}type={type} onClick={onClick} className={className} {...props}>
+                            <Button id={id}type={type} onClick={onClick} className={`${className} text-uppercase`} {...props}>
                                 {
                                     <i className={only_icon}></i>
                                 }
@@ -28,7 +28,7 @@ export default class button extends Component {
                             </Button>
                         </OverlayTrigger>
                         :
-                        <Button id={id} type={type} onClick={onClick} className={className} {...props}>
+                        <Button id={id} type={type} onClick={onClick} className={`${className} text-uppercase`} {...props}>
                             {/* {
                                 <i className={only_icon}></i>
                             } */}
