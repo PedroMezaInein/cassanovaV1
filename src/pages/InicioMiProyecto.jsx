@@ -17,7 +17,7 @@ import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
 import $ from "jquery";
-import { Link, Element } from 'react-scroll'
+import { Link, Element, scroller } from 'react-scroll'
 import { CommonLottie } from '../components/Lottie'
 import { Meetings } from '../assets/animate'
 import FullCalendar from '@fullcalendar/react'
@@ -317,7 +317,7 @@ class InicioMiProyecto extends Component {
         },
         mantenimiento: ''
     }
-
+    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -332,12 +332,19 @@ class InicioMiProyecto extends Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
-            if (id) { this.getMiProyectoAxios(id) }
+            if (id) { this.getMiProyectoAxios(id)}
         }
         this.changePage(permisos)
     }
-
     componentDidUpdate() {
+        // setTimeout(
+        //     () => {
+        //         scroller.scrollTo('tickets', {
+        //             duration: 500,
+        //             smooth: true
+        //         });
+        //     }, 1000
+        // )
         $(document).scroll(function () {
             var $nav = $(".fixed-top");
             $nav.toggleClass('header-scrolled', $(this).scrollTop() > $nav.height());
@@ -631,16 +638,16 @@ class InicioMiProyecto extends Component {
         await axios.get(`${URL_DEV}v2/mi-proyecto`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { proyectos, tiposTrabajo, partidas, status } = response.data
-                const { options, form } = this.state
+                const { options, /*form*/ } = this.state
                 let show = proyectos.length === 1 ? false : true
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
                 options.estatus = setOptions(status, 'estatus', 'id')
-                let proyecto = options.proyectos[0]
-                form.proyecto = proyecto.value
-                this.getMiProyectoAxios(proyecto.value);
-                this.setState( { ...this.state, showSelect: show, options, form } )
+                // let proyecto = options.proyectos[0]
+                // form.proyecto = proyecto.value
+                // this.getMiProyectoAxios(proyecto.value);
+                this.setState( { ...this.state, showSelect: show, options, /*form*/ } )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -654,7 +661,7 @@ class InicioMiProyecto extends Component {
         await axios.get(`${URL_DEV}v2/mi-proyecto/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { adjuntos, options } = this.state
+                const { adjuntos, options, form } = this.state
                 const { proyecto } = response.data
                 let activeKey = ''
                 adjuntos.forEach((grupo) => {
@@ -708,7 +715,8 @@ class InicioMiProyecto extends Component {
                     })
                 })
                 options.equipos = aux3
-                this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options })
+                form.proyecto = proyecto.id.toString()
+                this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options, form })
                 this.getTicketsPage()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
