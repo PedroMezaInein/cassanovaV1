@@ -87,12 +87,16 @@ export default class SolicitudesTabla extends Component {
                                                             { sol.descripcion }
                                                         </td>
                                                         <td className="white-space-nowrap">
-                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>EDITAR</span></Tooltip>}>
-                                                                <div className="btn btn-sm btn-clean btn-icon text-hover-info mr-2"
-                                                                    onClick = { (e) => { e.preventDefault(); openModalEditar(type, sol); } } >
-                                                                    <i className="las la-edit text-muted icon-xl" />
-                                                                </div>
-                                                            </OverlayTrigger>
+                                                            {
+                                                                type !== 'compra' ?
+                                                                    <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>EDITAR</span></Tooltip>}>
+                                                                        <div className="btn btn-sm btn-clean btn-icon text-hover-info mr-2"
+                                                                            onClick = { (e) => { e.preventDefault(); openModalEditar(type, sol); } } >
+                                                                            <i className="las la-edit text-muted icon-xl" />
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                : <></>
+                                                            }
                                                             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
                                                                 <div className="btn btn-sm btn-clean btn-icon text-hover-info"
                                                                     onClick = { (e) => { e.preventDefault(); 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudCompraForm, SolicitudVentaForm, PresupuestoGeneradoCalidad, MantenimientoCorrectivo, AgregarConcepto } from '../../../../components/forms';
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, MantenimientoCorrectivo, AgregarConcepto } from '../../../../components/forms';
 import { Button, SelectSearchGray,InputGray } from '../../../form-components'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -14,6 +14,12 @@ class TicketView extends Component {
 
     state = { checked: true }
 
+    componentDidUpdate(prevProps, old){
+        if(prevProps.modalSol === false && this.props.modalSol === true){
+            this.setState({...this.state, checked: true })
+        }
+    }
+
     getIniciales = nombre => {
         let aux = nombre.split(' ');
         let iniciales = ''
@@ -24,6 +30,7 @@ class TicketView extends Component {
         })
         return iniciales
     }
+
     formatDay (fecha){
         let fecha_instalacion = moment(fecha);
         let format = fecha_instalacion.locale('es').format("DD MMM YYYY");
@@ -261,10 +268,10 @@ class TicketView extends Component {
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
-            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSCompra, onSubmitSVenta,
+            openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta,
             onChangeTicketProceso, onSubmitTicketProceso, handleChangeTicketProceso, generateEmailTicketProceso, onChangeMantenimientos, onSubmitMantenimiento, openModalDeleteMantenimiento, activeKeyNav,
             controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, key, controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte,
-            onChangeSolicitudCompra, submitSolicitudesCompras
+            onChangeSolicitudCompra, submitSolicitudesCompras, addRows
         } = this.props
 
         const { checked } = this.state
@@ -605,13 +612,13 @@ class TicketView extends Component {
                                 className="px-3"
                                 handleChange={handleChange}
                             /> */}
-                <Modal size="xl" title={title} show={modal.solicitud} handleClose={handleCloseSolicitud} >
+                <Modal size = { activeKeyNav === 'solicitud-compra' ? 'lg' : 'xl'} title={title} show={modal.solicitud} handleClose={handleCloseSolicitud} >
                     {
                         activeKeyNav === 'solicitud-compra'?
                             <div className="containter">
                                 {
                                     presupuesto.conceptos.length > 0 ?
-                                        <div className>
+                                        <div className = ''>
                                             <div className="row mx-0 pt-5 pb-3 px-3">
                                                 <label key={key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light">
                                                     <input type="checkbox" name = 'selector' value = { checked } checked = { checked } onChange = { this.selectCheck } />
@@ -621,60 +628,83 @@ class TicketView extends Component {
                                             </div>
                                             {
                                                 checked ?
-                                                    presupuesto.conceptos.map((concepto, index) => {
-                                                        if(concepto.active)
-                                                            return(
-                                                                <div className="row mx-0 border-bottom pb-2" key = { index } >
-                                                                    <div className="col-md-3">
-                                                                        <SelectSearchGray value = { formulario.conceptos[index].area } withtextlabel = { 1 } 
-                                                                            placeholder = 'Seleccionar un área' withtaglabel = { 1 } withplaceholder = { 1 } 
-                                                                            options = { this.setConceptosOptions(concepto) } requirevalidation = { 1 }
-                                                                            messageinc = 'Incorrecto. Selecciona el área' />
-                                                                    </div>
-                                                                    <div className="col-md-3">
-                                                                        <SelectSearchGray value = { formulario.conceptos[index].subarea } withtaglabel = { 1 } 
-                                                                            placeholder = 'Seleccionar un subárea' withtextlabel = { 1 } withplaceholder = { 1 } 
-                                                                            onChange = { (value) => onChangeSolicitudCompra(value, 'subarea', index) }
-                                                                            options = { this.setConceptosSubareasOptions(concepto, index) } requirevalidation = { 1 } 
-                                                                            messageinc = 'Incorrecto. Selecciona la subárea'/>
-                                                                    </div>
-                                                                    <div className="col-md-6">
-                                                                        <InputGray as = 'textarea' rows = '4' name = 'descripcion' placeholder = 'Descripción'
-                                                                            value = { formulario.conceptos[index].descripcion } withtaglabel = { 1 } 
-                                                                            withtextlabel = { 1 } onChange = { (e) => {this.onChangeSolicitudCompra(e, index)} } 
-                                                                            requirevalidation = { 1 } messageinc = 'Incorrecto. Escribe una descripción'/>
-                                                                    </div>
-                                                                </div>
-                                                            )
-                                                        return <div key = {index}></div>
-                                                    })
+                                                    <div className="container">
+                                                        <div className="separator separator-dashed separator-primary mt-1 mb-2" />
+                                                        {
+                                                            presupuesto.conceptos.map((concepto, index) => {
+                                                                if(concepto.active)
+                                                                    return(
+                                                                        <div className="container px-0" key = { index } >
+                                                                            <div className="row mx-0 pb-3" >
+                                                                                <div className="col-md-6">
+                                                                                    <SelectSearchGray value = { formulario.conceptos[index].area } withtextlabel = { 1 } 
+                                                                                        placeholder = 'Seleccionar un área' withtaglabel = { 1 } withplaceholder = { 1 } 
+                                                                                        options = { this.setConceptosOptions(concepto) } requirevalidation = { 1 }
+                                                                                        messageinc = 'Incorrecto. Selecciona el área' customdiv = 'mb-0' />
+                                                                                </div>
+                                                                                <div className="col-md-6">
+                                                                                    <SelectSearchGray value = { formulario.conceptos[index].subarea } withtaglabel = { 1 } 
+                                                                                        placeholder = 'Seleccionar un subárea' withtextlabel = { 1 } withplaceholder = { 1 } 
+                                                                                        onChange = { (value) => onChangeSolicitudCompra(value, 'subarea', index) }
+                                                                                        options = { this.setConceptosSubareasOptions(concepto, index) } requirevalidation = { 1 } 
+                                                                                        messageinc = 'Incorrecto. Selecciona la subárea' customdiv = 'mb-0' />
+                                                                                </div>
+                                                                                <div className="col-md-12">
+                                                                                    <InputGray as = 'textarea' rows = '4' name = 'descripcion' placeholder = 'Descripción'
+                                                                                        value = { formulario.conceptos[index].descripcion } withtaglabel = { 1 } 
+                                                                                        withtextlabel = { 1 } onChange = { (e) => {this.onChangeSolicitudCompra(e, index)} } 
+                                                                                        requirevalidation = { 1 } messageinc = 'Incorrecto. Escribe una descripción'/>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="separator separator-dashed separator-primary mt-1 mb-2" />
+                                                                        </div>
+                                                                        
+                                                                    )
+                                                                return <div key = {index}></div>
+                                                            })
+                                                        }
+                                                    </div>
                                                 :
-                                                    formulario.conceptos.map((concepto, index) => {
-                                                        return(
-                                                            <div className="row mx-0 border-bottom pb-2" key = { index } >
-                                                                <div className="col-md-3">
-                                                                    <SelectSearchGray value = { concepto.area } withtextlabel = { 1 } 
-                                                                        placeholder = 'Seleccionar un área' withtaglabel = { 1 } withplaceholder = { 1 } 
-                                                                        options = { options.areas } requirevalidation = { 1 } 
-                                                                        onChange = { (value) => this.update( value, index, 'area' ) }
-                                                                        messageinc = 'Incorrecto. Selecciona el área' />
-                                                                </div>
-                                                                <div className="col-md-3">
-                                                                    <SelectSearchGray value = { concepto.subarea } withtaglabel = { 1 } 
-                                                                        placeholder = 'Seleccionar un subárea' withtextlabel = { 1 } withplaceholder = { 1 } 
-                                                                        options = { this.getSubareas(concepto) } requirevalidation = { 1 } 
-                                                                        onChange = { (value) => this.update( value, index, 'subarea' ) }
-                                                                        messageinc = 'Incorrecto. Selecciona la subárea'/>
-                                                                </div>
-                                                                <div className="col-md-6">
-                                                                    <InputGray as = 'textarea' rows = '4' name = 'descripcion' placeholder = 'Descripción'
-                                                                        value = { concepto.descripcion } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                                                        requirevalidation = { 1 } messageinc = 'Incorrecto. Escribe una descripción'
-                                                                        onChange = { (e) => {this.onChangeSolicitudCompra(e, index)} } />
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    })
+                                                    <div className="containter">
+                                                        <div className="separator separator-dashed separator-primary mt-1 mb-2" />
+                                                        {
+                                                            formulario.conceptos.map((concepto, index) => {
+                                                                return(
+                                                                    <div className="container px-0" key = { index } >
+                                                                        <div className="row mx-0 pb-2" key = { index } >
+                                                                            <div className="col-md-6">
+                                                                                <SelectSearchGray value = { concepto.area } withtextlabel = { 1 } 
+                                                                                    placeholder = 'Seleccionar un área' withtaglabel = { 1 } withplaceholder = { 1 } 
+                                                                                    options = { options.areas } requirevalidation = { 1 } 
+                                                                                    onChange = { (value) => this.update( value, index, 'area' ) }
+                                                                                    messageinc = 'Incorrecto. Selecciona el área' customdiv = 'mb-0'/>
+                                                                            </div>
+                                                                            <div className="col-md-6">
+                                                                                <SelectSearchGray value = { concepto.subarea } withtaglabel = { 1 } 
+                                                                                    placeholder = 'Seleccionar un subárea' withtextlabel = { 1 } withplaceholder = { 1 } 
+                                                                                    options = { this.getSubareas(concepto) } requirevalidation = { 1 } 
+                                                                                    onChange = { (value) => this.update( value, index, 'subarea' ) }
+                                                                                    messageinc = 'Incorrecto. Selecciona la subárea' customdiv = 'mb-0'/>
+                                                                            </div>
+                                                                            <div className="col-md-12">
+                                                                                <InputGray as = 'textarea' rows = '4' name = 'descripcion' placeholder = 'Descripción'
+                                                                                    value = { concepto.descripcion } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                                                                    requirevalidation = { 1 } messageinc = 'Incorrecto. Escribe una descripción'
+                                                                                    onChange = { (e) => {this.onChangeSolicitudCompra(e, index)} } />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="separator separator-dashed separator-primary mt-1 mb-2" />
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        }
+                                                        <div className="d-flex justify-content-between">
+                                                            <Button onClick = { () => { addRows('delete') } } className = "btn btn-icon  btn-light-danger btn-sm mt-4 ml-3"
+                                                                only_icon = "fas fa-minus icon-sm" tooltip = { { text: 'Eliminar fila' } } icon = '' />
+                                                            <Button onClick = { () => { addRows('add') } } className = "btn btn-icon  btn-light-success btn-sm mt-4 mr-3"
+                                                                only_icon = "fas fa-plus icon-sm" tooltip = { { text: 'Agregar más' } } icon = '' />
+                                                        </div>
+                                                    </div>
                                             }
                                             <div className="text-right">
                                                 <Button icon = '' className = "mt-5" onClick = { (e) => { e.preventDefault(); submitSolicitudesCompras(); } }

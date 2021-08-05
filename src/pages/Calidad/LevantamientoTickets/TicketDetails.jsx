@@ -501,6 +501,18 @@ class TicketDetails extends Component {
         })
     }
 
+    deleteSolicitud = async(id, type) => {
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}solicitud-${type}/${id}`, { headers: setFormHeader(access_token) }).then(
+            (response) => {
+                doneAlert('Solicitud eliminada con éxito.', () => { this.getSolicitudesAxios(`solicitud-${type}`) } )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     submitSolicitudesCompras = async() => {
         const { access_token } = this.props.authUser
         const { formularios, ticket } = this.state
@@ -512,50 +524,6 @@ class TicketDetails extends Component {
                 modal.solicitud = false
                 formularios.conceptos = this.clearFormConceptos()
                 this.setState({...this.state, modal, formularios})
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.',
-                    () => { this.getSolicitudesAxios(`solicitud-compra`) }
-                )
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    addSolicitudCompraAxios = async () => {
-        const { access_token } = this.props.authUser
-        const { formularios, ticket } = this.state
-        const data = new FormData();
-        
-        let aux = Object.keys(formularios.solicitud)
-        aux.forEach((element) => {
-            switch (element) {
-                case 'fecha':
-                    data.append(element, (new Date(formularios.solicitud[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, formularios.solicitud[element])
-                    break
-            }
-        })
-        aux = Object.keys(formularios.solicitud.adjuntos)
-        aux.forEach((element) => {
-            if (formularios.solicitud.adjuntos[element].value !== '') {
-                formularios.solicitud.adjuntos[element].files.forEach((file) => {
-                    data.append(`files_name_${element}[]`, file.name)
-                    data.append(`files_${element}[]`, file.file)
-                })
-                data.append('adjuntos[]', element)
-            }
-        })
-        data.append('ticket', ticket.id)
-        await axios.post(`${URL_DEV}solicitud-compra`, data, { headers: setFormHeader(access_token) }).then(
-            (response) => {
-                const { modal } = this.state
-                modal.solicitud = false
-                this.setState({...this.state, modal, formularios:this.clearFormSolicitud()})
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.',
                     () => { this.getSolicitudesAxios(`solicitud-compra`) }
                 )
@@ -755,9 +723,6 @@ class TicketDetails extends Component {
     openModalEditarSolicitud = (type, solicitud) => {
         const { history } = this.props
         switch(type){
-            case 'compra':
-                history.push({ pathname: '/proyectos/solicitud-compra/edit', state: { solicitud: solicitud } });
-                break;
             case 'venta':
                 history.push({ pathname: '/proyectos/solicitud-venta/edit', state: { solicitud: solicitud } });
                 break;
@@ -1200,11 +1165,6 @@ class TicketDetails extends Component {
         })
     }
     
-    onSubmitSCompra = e => {
-        e.preventDefault()
-        this.addSolicitudCompraAxios()
-    }
-    
     onSubmitSVenta = e => {
         e.preventDefault()
         this.addSolicitudVentaAxios()
@@ -1447,6 +1407,15 @@ class TicketDetails extends Component {
         this.setState({formularios})
     }
 
+    addRows = (type) => {
+        const { formularios } = this.state
+        if(type === 'delete'){
+            if(formularios.conceptos.length > 1){ formularios.conceptos.pop() }
+        } else{ formularios.conceptos.push({area: '', subarea: '', descripcion: ''}) }
+            
+        this.setState({formularios})
+    }
+
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav } = this.state
         return (
@@ -1461,7 +1430,7 @@ class TicketDetails extends Component {
                     onSubmit = { this.onSubmit } openModalConceptos={this.openModalConceptos} deleteFile = { this.deleteFile } 
                     openModalSolicitud = {this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} formeditado={formeditado}
                     onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} 
-                    openModalEditarSolicitud = { this.openModalEditarSolicitud} deleteSolicitud={this.deleteSolicitud} onSubmitSCompra={this.onSubmitSCompra} 
+                    openModalEditarSolicitud = { this.openModalEditarSolicitud} deleteSolicitud={this.deleteSolicitud}
                     onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto} onChangeTicketProceso={this.onChangeTicketProceso} 
                     onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso} 
                     generateEmailTicketProceso={this.generateEmailTicketProceso} generarReporteFotografico={this.generarReporteFotografico} 
@@ -1469,8 +1438,9 @@ class TicketDetails extends Component {
                     openModalDeleteMantenimiento={this.openModalDeleteMantenimiento} controlledNav={this.controlledNav} activeKeyNav={activeKeyNav}
                     openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } checkButtonConceptos = { this.checkButtonConceptos } 
                     controlledTab={this.controlledTab} key={key} onSubmitConcept = { this.onSubmitConcept } handleCloseConceptos={this.handleCloseConceptos} 
-                    openModalReporte={this.openModalReporte} onChangeSolicitudCompra = { this.onChangeSolicitudCompra } 
-                    submitSolicitudesCompras = { this.submitSolicitudesCompras } changeTypeSolicitudes = { this.changeTypeSolicitudes } />
+                    openModalReporte={this.openModalReporte} onChangeSolicitudCompra = { this.onChangeSolicitudCompra } addRows = { this.addRows }
+                    submitSolicitudesCompras = { this.submitSolicitudesCompras } changeTypeSolicitudes = { this.changeTypeSolicitudes } 
+                    modalSol = { modal.solicitud } />
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
                     <Modal.Body className = 'p-0'>
