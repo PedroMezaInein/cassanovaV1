@@ -332,10 +332,17 @@ class InicioMiProyecto extends Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
-            if (id) { this.getMiProyectoAxios(id)}
+            if (id) { this.getMiProyectoAxios(id, 'tickets')}
         }
         this.changePage(permisos)
+        this.scrolling('tickets')
     }
+
+    scrolling = (location) => {
+        console.log(`Scrolling`)
+        scroller.scrollTo(location)
+    }
+
     componentDidUpdate() {
         // setTimeout(
         //     () => {
@@ -655,7 +662,7 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    getMiProyectoAxios = async(id) => {
+    getMiProyectoAxios = async(id, location) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/mi-proyecto/${id}`, { headers: setSingleHeader(access_token) }).then(
@@ -717,6 +724,8 @@ class InicioMiProyecto extends Component {
                 options.equipos = aux3
                 form.proyecto = proyecto.id.toString()
                 this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options, form })
+                if(location)
+                    this.scrolling(location)
                 this.getTicketsPage()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
