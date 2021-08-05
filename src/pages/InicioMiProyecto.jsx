@@ -335,12 +335,11 @@ class InicioMiProyecto extends Component {
             if (id) { this.getMiProyectoAxios(id, 'tickets')}
         }
         this.changePage(permisos)
-        this.scrolling('tickets')
     }
 
     scrolling = (location) => {
         console.log(`Scrolling`)
-        scroller.scrollTo(location)
+        scroller.scrollTo(location,{offset: 150})
     }
 
     componentDidUpdate() {
@@ -724,9 +723,8 @@ class InicioMiProyecto extends Component {
                 options.equipos = aux3
                 form.proyecto = proyecto.id.toString()
                 this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options, form })
-                if(location)
-                    this.scrolling(location)
-                this.getTicketsPage()
+                
+                this.getTicketsPage(location)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -808,7 +806,7 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    getTicketsPage = async () => {
+    getTicketsPage = async (location) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { tickets_info, proyecto } = this.state
@@ -822,6 +820,8 @@ class InicioMiProyecto extends Component {
                 let total_paginas = Math.ceil(total / 10)
                 tickets_info.total_paginas = total_paginas
                 this.setState({ ...this.state, tickets_info, tickets })
+                if(location)
+                    this.scrolling(location)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
