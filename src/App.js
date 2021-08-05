@@ -210,7 +210,6 @@ class App extends Component{
             let params = new URLSearchParams(queryString)
             token = params.get("token")
         }
-        console.log(`TOKEN`, token)
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}user`, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
