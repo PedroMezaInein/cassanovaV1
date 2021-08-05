@@ -8027,6 +8027,7 @@ a.close.disabled {
   font-size: 0.9rem;
   word-wrap: break-word;
   opacity: 0;
+  text-transform: uppercase;
 }
 
 .tooltip.show {
