@@ -201,6 +201,7 @@ const NotificacionesCorreos = React.lazy(() => import('./pages/Plataforma/Notifi
 
 const Etiquetas = React.lazy( () => import('./pages/Catalogos/Etiquetas') )
 class App extends Component{
+
     async componentDidMount(){
         const { history } = this.props
         let queryString = history.location.search
@@ -209,6 +210,7 @@ class App extends Component{
             let params = new URLSearchParams(queryString)
             token = params.get("token")
         }
+        console.log(`TOKEN`, token)
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}user`, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
@@ -221,8 +223,10 @@ class App extends Component{
                     if(error.response){
                         if(error.response.status){
                             if (error.response.status === 401) {
-                                if(token === '')
-                                    this.logoutUser()
+                                //if(token === '')
+                                logout();
+                                history.push('/login')
+                                    //this.logoutUser()
                             }else {
                                 errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                             }
@@ -255,6 +259,7 @@ class App extends Component{
     }
 
     async logoutUser(){
+        console.log('LOGOUT')
         const { logout, authUser : {access_token }, history } = this.props
         
         await axios.get(`${URL_DEV}user/logout`, { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -268,10 +273,7 @@ class App extends Component{
                     history.push('/login')
                 }
             }
-        ).catch((error) => {
-            /* logout();
-            history.push('/login') */
-        })
+        ).catch((error) => { })
     }
     render(){
         

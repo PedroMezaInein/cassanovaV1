@@ -17,7 +17,7 @@ import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
 import $ from "jquery";
-import { Link, Element } from 'react-scroll'
+import { Link, Element, scroller } from 'react-scroll'
 import { CommonLottie } from '../components/Lottie'
 import { Meetings } from '../assets/animate'
 import FullCalendar from '@fullcalendar/react'
@@ -317,7 +317,7 @@ class InicioMiProyecto extends Component {
         },
         mantenimiento: ''
     }
-
+    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -332,9 +332,18 @@ class InicioMiProyecto extends Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
-            if (id) { this.getMiProyectoAxios(id) }
+            if (id) { this.getMiProyectoAxios(id, 'tickets')}
         }
         this.changePage(permisos)
+    }
+
+    scrolling = (location) => {
+        scroller.scrollTo(location,{
+            offset: -50,
+            spy:true,
+            smooth:'true',
+            duration: 800
+        })
     }
 
     componentDidUpdate() {
@@ -631,16 +640,16 @@ class InicioMiProyecto extends Component {
         await axios.get(`${URL_DEV}v2/mi-proyecto`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { proyectos, tiposTrabajo, partidas, status } = response.data
-                const { options, form } = this.state
+                const { options, /*form*/ } = this.state
                 let show = proyectos.length === 1 ? false : true
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
                 options.estatus = setOptions(status, 'estatus', 'id')
-                let proyecto = options.proyectos[0]
-                form.proyecto = proyecto.value
-                this.getMiProyectoAxios(proyecto.value);
-                this.setState( { ...this.state, showSelect: show, options, form } )
+                // let proyecto = options.proyectos[0]
+                // form.proyecto = proyecto.value
+                // this.getMiProyectoAxios(proyecto.value);
+                this.setState( { ...this.state, showSelect: show, options, /*form*/ } )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -648,13 +657,13 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    getMiProyectoAxios = async(id) => {
+    getMiProyectoAxios = async(id, location) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/mi-proyecto/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { adjuntos, options } = this.state
+                const { adjuntos, options, form } = this.state
                 const { proyecto } = response.data
                 let activeKey = ''
                 adjuntos.forEach((grupo) => {
@@ -708,8 +717,10 @@ class InicioMiProyecto extends Component {
                     })
                 })
                 options.equipos = aux3
-                this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options })
-                this.getTicketsPage()
+                form.proyecto = proyecto.id.toString()
+                this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options, form })
+                
+                this.getTicketsPage(location)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -791,7 +802,7 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    getTicketsPage = async () => {
+    getTicketsPage = async (location) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { tickets_info, proyecto } = this.state
@@ -805,6 +816,8 @@ class InicioMiProyecto extends Component {
                 let total_paginas = Math.ceil(total / 10)
                 tickets_info.total_paginas = total_paginas
                 this.setState({ ...this.state, tickets_info, tickets })
+                if(location)
+                    this.scrolling(location)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
