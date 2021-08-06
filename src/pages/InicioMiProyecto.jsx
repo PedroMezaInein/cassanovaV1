@@ -326,12 +326,14 @@ class InicioMiProyecto extends Component {
         });
         if (!modulo)
             history.push('/')
-        this.getProyectosAxios()
+        this.getOptionsAxios()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
-            if (id) { this.getMiProyectoAxios(id, 'tickets')}
+            if (id) { this.getMiProyectoAxios(id, 'tickets') }
+        }else{
+            this.getProyectoAxios()
         }
         this.changePage(permisos)
     }
@@ -634,21 +636,36 @@ class InicioMiProyecto extends Component {
         this.setState({...this.state, activeFlag: activeFlag === 'calendario' ? 'tabla' : 'calendario'})
     }
 
-    getProyectosAxios = async() => {
+    getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/mi-proyecto`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { proyectos, tiposTrabajo, partidas, status } = response.data
-                const { options, /*form*/ } = this.state
+                const { options } = this.state
                 let show = proyectos.length === 1 ? false : true
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
                 options.estatus = setOptions(status, 'estatus', 'id')
-                // let proyecto = options.proyectos[0]
-                // form.proyecto = proyecto.value
-                // this.getMiProyectoAxios(proyecto.value);
-                this.setState( { ...this.state, showSelect: show, options, /*form*/ } )
+                this.setState( { ...this.state, options, showSelect: show } )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getProyectoAxios = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/mi-proyecto`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { proyectos } = response.data
+                const { options, form } = this.state
+                options.proyectos = setOptions(proyectos, 'nombre', 'id')
+                let proyecto = options.proyectos[0]
+                form.proyecto = proyecto.value.toString()
+                this.getMiProyectoAxios(proyecto.value);
+                this.setState( { ...this.state, form, options } )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -885,6 +902,16 @@ class InicioMiProyecto extends Component {
     nameAdjunto(name){
         var nombre_adjunto = name.slice(11, -4);
         return nombre_adjunto;
+    }
+    async logoutUserAxios() {
+        const { logout, authUser: { access_token }, history } = this.props
+        await axios.get(`${URL_DEV}user/logout`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => { logout(); history.push('/login') },
+            (error) => { logout(); history.push('/login') }
+        ).catch((error) => {
+            logout();
+            history.push('/login')
+        })
     }
     render() {
         const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento } = this.state
@@ -1342,7 +1369,8 @@ class InicioMiProyecto extends Component {
                     {
                         user.tipo.tipo !== 'Cliente'?
                         <a href={link_url} className="back-to-top d-flex align-items-center justify-content-center"><i className="la la-arrow-right"></i></a>
-                        :''
+                        :
+                        <a onClick={() => { this.logoutUserAxios(); }}className="back-to-top d-flex align-items-center justify-content-center btn btn-icon btn-light-youtube"><i className="las la-sign-out-alt icon-2x"></i></a>
                     }
                 </div>
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
@@ -1521,6 +1549,6 @@ class InicioMiProyecto extends Component {
 }
 
 const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({ })
+const mapDispatchToProps = dispatch => ({ logout: () => dispatch(logout()), login: payload => dispatch(login(payload)) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InicioMiProyecto);
