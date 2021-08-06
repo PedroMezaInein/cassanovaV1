@@ -159,12 +159,11 @@ class AgregarConcepto extends Component {
                                     formeditado={formeditado}
                                     as="textarea"
                                     placeholder="DESCRIPCIÓN"
-                                    rows="2"
                                     value={form.descripcion}
                                     name="descripcion"
                                     onChange={onChange}
                                     messageinc="Incorrecto. Ingresa una descripción."
-                                    customclass="px-2"
+                                    customclass="px-2 text-justify textarea-input"
                                 />
                             </div>
                         </div>

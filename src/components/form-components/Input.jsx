@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
+import $ from "jquery";
 
 class Input extends Component {
 
@@ -26,6 +27,7 @@ class Input extends Component {
     }
 
     componentDidUpdate(nextProps){
+        this.autoResizeTextArea()
         if(nextProps.value !== this.props.value)
             if(!nextProps.requirevalidation) {
                 this.setState({
@@ -40,10 +42,19 @@ class Input extends Component {
     }
     
     componentDidMount(){
+        this.autoResizeTextArea()
         const { formeditado, value } = this.props
         if(formeditado){
             this.validarInput({ target: { value: value } })
         }
+    }
+    autoResizeTextArea(){
+        $(".textarea-input").each(function () {
+            this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+        }).on("input", function () {
+            this.style.height = "auto";
+            this.style.height = (this.scrollHeight) + "px";
+        });
     }
 
     render() {

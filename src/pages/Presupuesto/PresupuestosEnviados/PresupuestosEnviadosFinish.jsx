@@ -443,9 +443,9 @@ class PresupuestosEnviadosFinish extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer className = 'border-0 justify-content-center'>
-                        <button type="button" class="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex"
+                        <button type="button" className="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex"
                             onClick = { this.handleCloseModal }>CANCELAR</button>
-                        <button type="button" class="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex"
+                        <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex"
                             onClick = { this.sendMail } >SI, ENVIAR</button>
                     </Modal.Footer>
                 </Modal>

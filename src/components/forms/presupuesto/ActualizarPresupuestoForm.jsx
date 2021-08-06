@@ -335,9 +335,9 @@ class ActualizarPresupuestoForm extends Component {
                                                                 <div className="font-weight-bold font-size-sm">{concepto.concepto.clave}</div>
                                                             </td>
                                                             <td className="descripcion text-center">
-                                                                <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "descipcion" rows = "5" as = "textarea"
+                                                                <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "descipcion" as = "textarea"
                                                                     value = { form['conceptos'][key]['descripcion'] } onChange = { (e) => { onChange(key, e, 'descripcion')} }  
-                                                                    disabled = { !form.conceptos[key].active } customclass='rounded-pill px-2 border text-justify' />
+                                                                    disabled = { !form.conceptos[key].active } customclass='rounded-pill px-2 border text-justify textarea-input'/>
                                                             </td>
                                                             <td className="text-center">
                                                                 <div className="unidad-tickets">
