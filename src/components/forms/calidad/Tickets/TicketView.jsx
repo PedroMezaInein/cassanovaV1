@@ -10,6 +10,8 @@ import { questionAlert, waitAlert } from '../../../../functions/alert';
 import { dayDMY, setOptions } from '../../../../functions/setters'
 import { Modal } from '../../../../components/singles'
 import { ProcesoTicketForm } from '../../../../components/forms';
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 class TicketView extends Component {
 
     state = { checked: true }
@@ -618,9 +620,9 @@ class TicketView extends Component {
                             <div className="containter">
                                 {
                                     presupuesto.conceptos.length > 0 ?
-                                        <div className = ''>
-                                            <div className="row mx-0 pt-5 pb-3 px-3">
-                                                <label key={key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light">
+                                        <div>
+                                            <div className="row col-md-12 mx-0 my-5 py-3 px-3 place-content-center">
+                                                <label key={key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light mb-0">
                                                     <input type="checkbox" name = 'selector' value = { checked } checked = { checked } onChange = { this.selectCheck } />
                                                     Marca para cargar las partidas del presupuesto
                                                     <span></span>
@@ -628,87 +630,96 @@ class TicketView extends Component {
                                             </div>
                                             {
                                                 checked ?
-                                                    <div className="container">
-                                                        <div className="separator separator-dashed separator-primary mt-1 mb-2" />
-                                                        {
-                                                            presupuesto.conceptos.map((concepto, index) => {
-                                                                if(concepto.active)
-                                                                    return(
-                                                                        <div className="container px-0" key = { index } >
-                                                                            <div className="row mx-0 pb-3" >
-                                                                                <div className="col-md-6">
-                                                                                    <SelectSearchGray value = { formulario.conceptos[index].area } withtextlabel = { 1 } 
-                                                                                        placeholder = 'Seleccionar un área' withtaglabel = { 1 } withplaceholder = { 1 } 
-                                                                                        options = { this.setConceptosOptions(concepto) } requirevalidation = { 1 }
-                                                                                        messageinc = 'Incorrecto. Selecciona el área' customdiv = 'mb-0' />
+                                                    <div className="container px-0">
+                                                        <div style={{ display: 'flex', maxHeight: '60vh'}} >
+                                                            <Scrollbar>
+                                                                {
+                                                                    presupuesto.conceptos.map((concepto, index) => {
+                                                                        if(concepto.active)
+                                                                            return(
+                                                                                <div className="container px-3" key = { index } >
+                                                                                    <hr className="hr-text" data-content={`Concepto ${concepto.concepto.clave}`}/>
+                                                                                    <div className="row mx-0 pb-3">
+                                                                                        <div className="col-md-6">
+                                                                                            <SelectSearchGray value={formulario.conceptos[index].area} withtextlabel={1}
+                                                                                                placeholder='Seleccionar un área' withtaglabel={1} withplaceholder={1}
+                                                                                                options={this.setConceptosOptions(concepto)} requirevalidation={1}
+                                                                                                messageinc='Incorrecto. Selecciona el área' customdiv='mb-0' />
+                                                                                        </div>
+                                                                                        <div className="col-md-6">
+                                                                                            <SelectSearchGray value={formulario.conceptos[index].subarea} withtaglabel={1}
+                                                                                                placeholder='Seleccionar un subárea' withtextlabel={1} withplaceholder={1}
+                                                                                                onChange={(value) => onChangeSolicitudCompra(value, 'subarea', index)}
+                                                                                                options={this.setConceptosSubareasOptions(concepto, index)} requirevalidation={1}
+                                                                                                messageinc='Incorrecto. Selecciona la subárea' customdiv='mb-0' />
+                                                                                        </div>
+                                                                                        <div className="col-md-12">
+                                                                                            <InputGray as='textarea' name='descripcion' placeholder='Descripción'
+                                                                                                value={formulario.conceptos[index].descripcion} withtaglabel={1}
+                                                                                                withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompra(e, index) }}
+                                                                                                requirevalidation={1} messageinc='Incorrecto. Escribe una descripción' customclass="px-2 textarea-input"/>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
-                                                                                <div className="col-md-6">
-                                                                                    <SelectSearchGray value = { formulario.conceptos[index].subarea } withtaglabel = { 1 } 
-                                                                                        placeholder = 'Seleccionar un subárea' withtextlabel = { 1 } withplaceholder = { 1 } 
-                                                                                        onChange = { (value) => onChangeSolicitudCompra(value, 'subarea', index) }
-                                                                                        options = { this.setConceptosSubareasOptions(concepto, index) } requirevalidation = { 1 } 
-                                                                                        messageinc = 'Incorrecto. Selecciona la subárea' customdiv = 'mb-0' />
-                                                                                </div>
-                                                                                <div className="col-md-12">
-                                                                                    <InputGray as = 'textarea' rows = '4' name = 'descripcion' placeholder = 'Descripción'
-                                                                                        value = { formulario.conceptos[index].descripcion } withtaglabel = { 1 } 
-                                                                                        withtextlabel = { 1 } onChange = { (e) => {this.onChangeSolicitudCompra(e, index)} } 
-                                                                                        requirevalidation = { 1 } messageinc = 'Incorrecto. Escribe una descripción'/>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="separator separator-dashed separator-primary mt-1 mb-2" />
-                                                                        </div>
-                                                                        
-                                                                    )
-                                                                return <div key = {index}></div>
-                                                            })
-                                                        }
+                                                                                
+                                                                            )
+                                                                        return <div key = {index}></div>
+                                                                    })
+                                                                }
+                                                        </Scrollbar>
+                                                        </div>
                                                     </div>
                                                 :
-                                                    <div className="containter">
-                                                        <div className="separator separator-dashed separator-primary mt-1 mb-2" />
-                                                        {
-                                                            formulario.conceptos.map((concepto, index) => {
-                                                                return(
-                                                                    <div className="container px-0" key = { index } >
-                                                                        <div className="row mx-0 pb-2" key = { index } >
-                                                                            <div className="col-md-6">
-                                                                                <SelectSearchGray value = { concepto.area } withtextlabel = { 1 } 
-                                                                                    placeholder = 'Seleccionar un área' withtaglabel = { 1 } withplaceholder = { 1 } 
-                                                                                    options = { options.areas } requirevalidation = { 1 } 
-                                                                                    onChange = { (value) => this.update( value, index, 'area' ) }
-                                                                                    messageinc = 'Incorrecto. Selecciona el área' customdiv = 'mb-0'/>
+                                                    <div className="containter px-0">
+                                                        <div className="d-flex justify-content-end px-7 mb-3">
+                                                            {
+                                                                formulario.conceptos.length > 1 &&
+                                                                <Button onClick = { () => { addRows('delete') } } className = "btn btn-sm btn-bg-light btn-icon-danger btn-hover-light-danger text-danger font-weight-bolder mr-2"
+                                                                    only_icon = "fas fa-minus icon-sm text-danger p-0 mr-2" text = 'Eliminar fila' icon = '' />
+                                                            }
+                                                            <Button onClick = { () => { addRows('add') } } className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder"
+                                                                only_icon = "fas fa-plus icon-sm text-success p-0 mr-2" text = 'Agregar más' icon = '' />
+                                                        </div>
+                                                        <div style={{ display: 'flex', maxHeight: '60vh' }} >
+                                                            <Scrollbar>
+                                                                {
+                                                                    formulario.conceptos.map((concepto, index) => {
+                                                                        return (
+                                                                            <div className="container px-3" key={index} >
+                                                                                <hr className="hr-text" data-content={`${index+1}`}/>
+                                                                                <div className="row mx-0 pb-3" key={index} >
+                                                                                    <div className="col-md-6">
+                                                                                        <SelectSearchGray value={concepto.area} withtextlabel={1}
+                                                                                            placeholder='Seleccionar un área' withtaglabel={1} withplaceholder={1}
+                                                                                            options={options.areas} requirevalidation={1}
+                                                                                            onChange={(value) => this.update(value, index, 'area')}
+                                                                                            messageinc='Incorrecto. Selecciona el área' customdiv='mb-0' />
+                                                                                    </div>
+                                                                                    <div className="col-md-6">
+                                                                                        <SelectSearchGray value={concepto.subarea} withtaglabel={1}
+                                                                                            placeholder='Seleccionar un subárea' withtextlabel={1} withplaceholder={1}
+                                                                                            options={this.getSubareas(concepto)} requirevalidation={1}
+                                                                                            onChange={(value) => this.update(value, index, 'subarea')}
+                                                                                            messageinc='Incorrecto. Selecciona la subárea' customdiv='mb-0' />
+                                                                                    </div>
+                                                                                    <div className="col-md-12">
+                                                                                        <InputGray as='textarea' name='descripcion' placeholder='Descripción'
+                                                                                            value={concepto.descripcion} withtaglabel={1} withtextlabel={1}
+                                                                                            requirevalidation={1} messageinc='Incorrecto. Escribe una descripción'
+                                                                                            onChange={(e) => { this.onChangeSolicitudCompra(e, index) }} customclass="px-2 textarea-input"/>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-                                                                            <div className="col-md-6">
-                                                                                <SelectSearchGray value = { concepto.subarea } withtaglabel = { 1 } 
-                                                                                    placeholder = 'Seleccionar un subárea' withtextlabel = { 1 } withplaceholder = { 1 } 
-                                                                                    options = { this.getSubareas(concepto) } requirevalidation = { 1 } 
-                                                                                    onChange = { (value) => this.update( value, index, 'subarea' ) }
-                                                                                    messageinc = 'Incorrecto. Selecciona la subárea' customdiv = 'mb-0'/>
-                                                                            </div>
-                                                                            <div className="col-md-12">
-                                                                                <InputGray as = 'textarea' rows = '4' name = 'descripcion' placeholder = 'Descripción'
-                                                                                    value = { concepto.descripcion } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                                                                    requirevalidation = { 1 } messageinc = 'Incorrecto. Escribe una descripción'
-                                                                                    onChange = { (e) => {this.onChangeSolicitudCompra(e, index)} } />
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="separator separator-dashed separator-primary mt-1 mb-2" />
-                                                                    </div>
-                                                                )
-                                                            })
-                                                        }
-                                                        <div className="d-flex justify-content-between">
-                                                            <Button onClick = { () => { addRows('delete') } } className = "btn btn-icon  btn-light-danger btn-sm mt-4 ml-3"
-                                                                only_icon = "fas fa-minus icon-sm" tooltip = { { text: 'Eliminar fila' } } icon = '' />
-                                                            <Button onClick = { () => { addRows('add') } } className = "btn btn-icon  btn-light-success btn-sm mt-4 mr-3"
-                                                                only_icon = "fas fa-plus icon-sm" tooltip = { { text: 'Agregar más' } } icon = '' />
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </Scrollbar>
                                                         </div>
                                                     </div>
                                             }
-                                            <div className="text-right">
-                                                <Button icon = '' className = "mt-5" onClick = { (e) => { e.preventDefault(); submitSolicitudesCompras(); } }
-                                                    text="Enviar" />
+                                            <div className="text-center mt-5">
+                                                <div class="separator separator-solid"></div>
+                                                <Button icon = '' className = "mt-4" onClick = { (e) => { e.preventDefault(); submitSolicitudesCompras(); } } text="Enviar" />
                                             </div>
                                         </div>
                                     : <></>
