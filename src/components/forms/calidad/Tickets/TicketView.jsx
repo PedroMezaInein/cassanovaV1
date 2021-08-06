@@ -264,7 +264,7 @@ class TicketView extends Component {
         }
         return []
     }
-     
+    
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes } = this.props
@@ -718,7 +718,7 @@ class TicketView extends Component {
                                                     </div>
                                             }
                                             <div className="text-center mt-5">
-                                                <div class="separator separator-solid"></div>
+                                                <div className="separator separator-solid"></div>
                                                 <Button icon = '' className = "mt-4" onClick = { (e) => { e.preventDefault(); submitSolicitudesCompras(); } } text="Enviar" />
                                             </div>
                                         </div>

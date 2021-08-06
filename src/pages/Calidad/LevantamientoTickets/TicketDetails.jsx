@@ -1440,7 +1440,7 @@ class TicketDetails extends Component {
                     controlledTab={this.controlledTab} key={key} onSubmitConcept = { this.onSubmitConcept } handleCloseConceptos={this.handleCloseConceptos} 
                     openModalReporte={this.openModalReporte} onChangeSolicitudCompra = { this.onChangeSolicitudCompra } addRows = { this.addRows }
                     submitSolicitudesCompras = { this.submitSolicitudesCompras } changeTypeSolicitudes = { this.changeTypeSolicitudes } 
-                    modalSol = { modal.solicitud } />
+                    modalSol = { modal.solicitud }/>
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
                     <Modal.Body className = 'p-0'>
