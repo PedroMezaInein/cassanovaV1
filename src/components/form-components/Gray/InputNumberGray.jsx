@@ -64,16 +64,21 @@ class InputNumberGray extends Component {
         this.setState({...this.state, valor: value})
     }
     render() {
-        const { error, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator, formgroup, value, swal, withicon, custom_gtext, custom_inputg, ...props } = this.props
+        const { error, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator, value, swal, withicon, custom_gtext, inputsolid, withformgroup, customdiv, 
+            withtextlabel, iconvalid, withtaglabel, ...props } = this.props
         const { inputValido, valor } = this.state
         return (
-            <div className={`form-group ${formgroup}`}>
-                <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
-                <div className={`input-group input-group-solid rounded-0 ${custom_inputg}`}>
+            <div className={withformgroup?`form-group ${customdiv}`:''}>
+                {
+                    withtaglabel?
+                    <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{withtextlabel?placeholder:''}</label>
+                    :''
+                }
+                <div className={`input-group input-group-solid rounded-0 ${inputsolid}`}>
                     {
-                        withicon ?
+                        withicon?
                         <div className="input-group-prepend">
-                            <span className={`input-group-text ${custom_gtext}`}>
+                            <span className="input-group-text">
                                 <i className={iconclass + " icon-lg text-dark-50"}></i>
                             </span>
                         </div>
@@ -81,7 +86,7 @@ class InputNumberGray extends Component {
                     }
                     <NumberFormat
                         placeholder={placeholder}
-                        className={`form-control text-dark-50 font-weight-bold ${customclass}`}
+                        className = {`form-control text-dark-50 font-weight-bold text-justify ${customclass} ${inputValido ? 'is-valid sin_icono' : `is-invalid ${iconvalid?'':'sin_icono'}`}`}
                         onChange={(e) => { e.preventDefault(); this.validarInput(e); this.onChange(e) }}
                         thousandSeparator={thousandseparator ? ',' : ''}
                         value = { swal === true ? valor : value }
@@ -91,7 +96,9 @@ class InputNumberGray extends Component {
                         decimalScale={2}
                     />
                 </div>
-                <span className={inputValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
+                {
+                    iconvalid? '': <span className={`${inputValido ? 'form-text text-danger hidden' :'form-text text-danger is-invalid'}`}>{messageinc}</span>
+                }
             </div>
         )
     }

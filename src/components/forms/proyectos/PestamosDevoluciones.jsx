@@ -235,7 +235,7 @@ class PestamosDevoluciones extends Component {
                                                                 </div>
                                                                 <div className="col-md-12 separator separator-dashed mt-5 mb-1"></div>
                                                                 <div className="col-md-12">
-                                                                    <InputNumberGray withicon={1} formgroup = "mb-0" requirevalidation = { 0 } name = "cantidad" onChange = { onChange }
+                                                                    <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation = { 0 } name = "cantidad" onChange = { onChange }
                                                                         value = { form.cantidad } type = "text" placeholder = "CANTIDAD" iconclass = "flaticon2-add-square"
                                                                         thousandseparator = { true } messageinc = "Ingresa la cantidad." />
                                                                 </div>

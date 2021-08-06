@@ -143,7 +143,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     withplaceholder={1}
                                                     withicon={1}
                                                     requirevalidation={1}
-                                                    withformgroup={1}
+                                                    withformgroup={0}
                                                     formeditado={formeditado}
                                                     placeholder='NOMBRE DEL PROYECTO'
                                                     iconclass="far fa-folder-open"
@@ -155,7 +155,11 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
                                                     withicon={1}
+                                                    withformgroup={0}
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="M²"
@@ -180,13 +184,19 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     withtaglabel={1}
                                                     withtextlabel={1}
                                                     withicon={1}
+                                                    customdiv="mb-0"
                                                 />
                                             </div>
                                         </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
                                                     withicon={1}
+                                                    withformgroup={0}
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="DÍAS DE EJECUCIÓN"
@@ -199,9 +209,13 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
                                                     withicon={1}
-                                                    formeditado={formeditado}
+                                                    withformgroup={0}
                                                     requirevalidation={0}
+                                                    formeditado={formeditado}
                                                     placeholder="TOTAL"
                                                     value={formDiseño.total}
                                                     iconclass={"fas fa-dollar-sign"}
@@ -216,7 +230,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     withtextlabel={1}
                                                     withplaceholder={1}
                                                     withicon={1}
-                                                    withformgroup={1}
+                                                    withformgroup={0}
                                                     requirevalidation={0}
                                                     type="text"
                                                     placeholder="DESCUENTO"
@@ -231,9 +245,10 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 />
                                             </div>
                                         </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <div className="form-group">
+                                                <div>
                                                     <label className="col-form-label text-dark-75 font-weight-bold font-size-lg">¿Se incluyen renders?</label>
                                                     <div className="radio-inline">
                                                         <label className="radio">
@@ -251,9 +266,13 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 formDiseño.si_renders?
                                                     <div className="col-md-4">
                                                         <InputNumberGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
                                                             withicon={1}
-                                                            formeditado={formeditado}
+                                                            withformgroup={0}
                                                             requirevalidation={1}
+                                                            formeditado={formeditado}
                                                             placeholder="NÚMERO DE RENDERS"
                                                             value={formDiseño.renders}
                                                             iconclass={"fas fa-photo-video"}
@@ -268,6 +287,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         </div>
                                     </Col>
                                 </Row>
+                                <div className="separator separator-dashed mt-1 mb-8"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6 mb-2">
                                         <OptionsCheckboxHeaders
@@ -625,16 +645,16 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="ACAB. INTERIOR INF." value={formDiseño.construccion_interiores_inf}
                                                                     name="construccion_interiores_inf" onChange={onChange} iconclass="fas fa-dollar-sign"
-                                                                    messageinc="Ingresa el precio de acab. interior inf." thousandseparator={true} formgroup={"mb-1"} />
+                                                                    messageinc="Ingresa el precio de acab. interior inf." thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="ACAB. INTERIOR SUP." value={formDiseño.construccion_interiores_sup}
                                                                     name="construccion_interiores_sup" onChange={onChange} iconclass="fas fa-dollar-sign"
-                                                                    messageinc="Ingresa el precio de acab. de interiores sup." thousandseparator={true} formgroup={"mb-1"} />
+                                                                    messageinc="Ingresa el precio de acab. de interiores sup." thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -647,18 +667,18 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="MOBILIARIO INF." value={formDiseño.mobiliario_inf}
                                                                     name="mobiliario_inf" onChange={onChange}
                                                                     messageinc="Ingresa el precio de mobiliario inf."
-                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="MOBILIARIO SUP." value={formDiseño.mobiliario_sup}
                                                                     name="mobiliario_sup" onChange={onChange}
                                                                     messageinc="Ingresa el precio de mobiliario sup."
-                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -671,18 +691,18 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="CONST. CIVIL INF." value={formDiseño.construccion_civil_inf}
                                                                     name="construccion_civil_inf" onChange={onChange}
                                                                     messageinc="Ingresa el precio de const. civil inf."
-                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="CONST. CIVIL SUP." value={formDiseño.construccion_civil_sup}
                                                                     name="construccion_civil_sup" onChange={onChange}
                                                                     messageinc="Ingresa el precio de const. civil sup."
-                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                         </div>
                                                     </div>

@@ -251,8 +251,10 @@ class FormularioContrato extends Component {
                                                     form.periodo === true &&
                                                         <div className="col-md-12 mb-4">
                                                             <InputNumberGray
+                                                                withtaglabel = { 1 }
+                                                                withtextlabel = { 1 }
+                                                                withplaceholder = { 1 }
                                                                 withicon={1}
-                                                                formgroup="mb-0"
                                                                 requirevalidation={1}
                                                                 onChange={onChangeContrato}
                                                                 name="dias"
@@ -317,8 +319,10 @@ class FormularioContrato extends Component {
                                                 </div>
                                                 <div className="form-group col-md-12 mb-4">
                                                     <InputNumberGray
+                                                        withtaglabel = { 1 }
+                                                        withtextlabel = { 1 }
+                                                        withplaceholder = { 1 }
                                                         withicon={1}
-                                                        formgroup="mb-0"
                                                         requirevalidation={1}
                                                         onChange={onChangeContrato}
                                                         name="pagos_hr_extra"
@@ -332,8 +336,10 @@ class FormularioContrato extends Component {
                                                 </div>
                                                 <div className="form-group col-md-12 mb-4">
                                                     <InputNumberGray
+                                                        withtaglabel = { 1 }
+                                                        withtextlabel = { 1 }
+                                                        withplaceholder = { 1 }
                                                         withicon={1}
-                                                        formgroup="mb-0"
                                                         requirevalidation={1}
                                                         onChange={onChangeContrato}
                                                         name="total_obra"
@@ -347,8 +353,10 @@ class FormularioContrato extends Component {
                                                 </div>
                                                 <div className="form-group col-md-12 mb-4">
                                                     <InputNumberGray
+                                                        withtaglabel = { 1 }
+                                                        withtextlabel = { 1 }
+                                                        withplaceholder = { 1 }
                                                         withicon={1}
-                                                        formgroup="mb-0"
                                                         requirevalidation={1}
                                                         onChange={onChangeContrato}
                                                         name="dias"

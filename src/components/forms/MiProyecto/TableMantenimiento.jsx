@@ -132,9 +132,9 @@ class TableMantenimiento extends Component {
                                 {
                                     this.getActive('costo') &&
                                         <div className="col-md-12 mb-5">
-                                            <InputNumberGray withicon = { 1 } requirevalidation = { 0 } placeholder = "COSTO" value = { form.costo }
-                                                name = "costo" onChange = { onChange } thousandseparator = { true }  customclass='bg-white '
-                                                iconclass='las la-money-bill icon-xl' custom_gtext='bg-white' custom_inputg='bg-white border' />
+                                            <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } requirevalidation = { 0 }
+                                                placeholder = "COSTO" value = { form.costo } name = "costo" onChange = { onChange } thousandseparator = { true }
+                                                customclass='bg-white' iconclass='las la-money-bill icon-xl' custom_gtext='bg-white' inputsolid='bg-white border' />
                                         </div>
                                 }
                                 {
