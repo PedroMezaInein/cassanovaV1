@@ -112,6 +112,7 @@ class PresupuestosEnviadosFinish extends Component {
                     })
                     return false
                 })
+                form.tiempo_valido = presupuesto.tiempo_valido
                 form.conceptos = aux
                 this.setState({
                     ...this.state,
@@ -377,9 +378,12 @@ class PresupuestosEnviadosFinish extends Component {
         /* -------------------------------------------------------------------------- */
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
+        console.log('Entre a guardar')
+        // console.log(form, 'form')
         await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/finish`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { presupuesto } = response.data
+                console.log(presupuesto, 'Respuesta de api guardar')
                 doneAlert('Márgenes actualizados actualizado con éxito', 
                     () => this.getOnePresupuestoAxios(presupuesto.id))
             }, (error) => { printResponseErrorAlert(error) }
@@ -399,7 +403,7 @@ class PresupuestosEnviadosFinish extends Component {
 
     render() {
         
-        const { form, presupuesto, modal, modalObject } = this.state;
+        const { form, presupuesto, modal, modalObject, formeditado } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}

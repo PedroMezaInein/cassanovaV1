@@ -66,8 +66,10 @@ class ContratoFormRH extends Component {
                                     form.periodo === true &&
                                     <div className={`${(title.includes('Nuevo') && form.periodo === true) ? 'col-md-4' : 'col-md-6'}`}>
                                         <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
                                             withicon={1}
-                                            formgroup="mb-0"
                                             requirevalidation={1}
                                             onChange={onChangeContrato}
                                             name="dias"
@@ -140,8 +142,10 @@ class ContratoFormRH extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
                                             withicon={1}
-                                            formgroup="mb-0"
                                             requirevalidation={1}
                                             onChange={onChangeContrato}
                                             name="pagos_hr_extra"
@@ -159,8 +163,10 @@ class ContratoFormRH extends Component {
                                 <div className="form-group row form-group-marginless pt-4">
                                     <div className="col-md-4">
                                         <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
                                             withicon={1}
-                                            formgroup="mb-0"
                                             requirevalidation={1}
                                             onChange={onChangeContrato}
                                             name="total_obra"
@@ -175,8 +181,10 @@ class ContratoFormRH extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
                                             withicon={1}
-                                            formgroup="mb-0"
                                             requirevalidation={1}
                                             onChange={onChangeContrato}
                                             name="dias"
