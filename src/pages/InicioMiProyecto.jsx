@@ -26,6 +26,7 @@ import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import S3 from 'react-aws-s3';
+import { logout, login } from '../redux/reducers/auth_user'
 class InicioMiProyecto extends Component {
     state = {
         activeFlag: 'calendario',
@@ -1370,7 +1371,7 @@ class InicioMiProyecto extends Component {
                         user.tipo.tipo !== 'Cliente'?
                         <a href={link_url} className="back-to-top d-flex align-items-center justify-content-center"><i className="la la-arrow-right"></i></a>
                         :
-                        <a onClick={() => { this.logoutUserAxios(); }}className="back-to-top d-flex align-items-center justify-content-center btn btn-icon btn-light-youtube"><i className="las la-sign-out-alt icon-2x"></i></a>
+                        <span onClick={() => { this.logoutUserAxios(); }}className="back-to-top d-flex align-items-center justify-content-center btn btn-icon btn-light-youtube"><i className="las la-sign-out-alt icon-2x"></i></span>
                     }
                 </div>
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
