@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
+import $ from "jquery";
 class InputSinText extends Component {
     state = {
         inputValido: !this.props.requirevalidation
@@ -37,6 +38,7 @@ class InputSinText extends Component {
         }
     }
     componentDidUpdate(nextProps) {
+        this.autoResizeTextArea()
         if (nextProps.value !== this.props.value)
             if (!nextProps.requirevalidation) {
                 this.setState({
@@ -50,6 +52,7 @@ class InputSinText extends Component {
             }
     }
     componentDidMount() {
+        this.autoResizeTextArea()
         const { formeditado, value } = this.props
         if (formeditado) {
             this.validarInput({ target: { value: value } })
@@ -64,6 +67,15 @@ class InputSinText extends Component {
                 e.target.value = ("" + e.target.value).toUpperCase();
         }
     }
+    autoResizeTextArea(){
+        $(".textarea-input").each(function () {
+            this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+        }).on("input", function () {
+            this.style.height = "auto";
+            this.style.height = (this.scrollHeight) + "px";
+        });
+    }
+    
     render() {
         const { error, onChange, placeholder, iconclass, messageinc, letterCase, customstyle,customclass, ...props } = this.props
         const { inputValido } = this.state
