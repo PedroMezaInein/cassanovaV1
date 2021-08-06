@@ -39,10 +39,11 @@ class FormCalendarioIEquipos extends Component {
                             name = "equipo" value = { form.equipo } onChange = { (value) => this.updateSelect(value, 'equipo') } iconclass = "far fa-folder-open" 
                             messageinc = "Incorrecto. Selecciona el equipo" customdiv = 'mb-0' withicon = { true }/>
                     </div>
+                    <div className="separator separator-dashed mt-5 mb-2 col-md-12"></div>
                     <div className="col-md-6">
-                        <InputNumberGray requirevalidation = { 1 } placeholder = "INGRESA LA CANTIDAD DE EQUIPOS" type = "text" name = "cantidad"
+                        <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } requirevalidation = { 1 } placeholder = "INGRESA LA CANTIDAD DE EQUIPOS" type = "text" name = "cantidad"
                             value = { form.cantidad } onChange = { onChange } iconclass = "fas fa-tablet-alt" patterns = "[0-9]{1,2}" maxLength = "2"
-                            messageinc = "Incorrecto. Ingresa la cantidad."  formgroup = 'mb-0' withicon = { true } />
+                            messageinc = "Incorrecto. Ingresa la cantidad." withicon = { true } />
                     </div>
                     <div className="col-md-6">
                         <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 } 
@@ -50,15 +51,16 @@ class FormCalendarioIEquipos extends Component {
                             iconclass = "fas fa-dollar-sign" thousandseparator = { true } onChange = { onChange } prefix = '$' formeditado = { 0 } 
                             name = "costo" customdiv = 'mb-0' messageinc = "Incorrecto. Ingresa el costo." />
                     </div>
+                    <div className="separator separator-dashed mt-5 mb-2 col-md-12"></div>
                     <div className="col-md-6">
-                        <InputNumberGray requirevalidation = { 1 } placeholder = "INGRESA EL TIEMPO DE VIDA (AÑOS)" type = "text" name = "duracion"
+                        <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } requirevalidation = { 1 } placeholder = "INGRESA EL TIEMPO DE VIDA (AÑOS)" type = "text" name = "duracion"
                             value = { form.duracion } onChange = { onChange } iconclass = "fas fa-id-card" patterns = "[0-9]{1,2}" maxLength = "2" 
-                            messageinc = "Incorrecto. Ingresa el tiempo de vida." formgroup = 'mb-0' withicon = { true } />
+                            messageinc = "Incorrecto. Ingresa el tiempo de vida." withicon = { true } />
                     </div>
                     <div className="col-md-6">
-                        <InputNumberGray requirevalidation = { 1 } placeholder = "INGRESA LA PERIODICIDAD (MESES)" type = "text" name = "periodo"
+                        <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } requirevalidation = { 1 } placeholder = "INGRESA LA PERIODICIDAD (MESES)" type = "text" name = "periodo"
                             value = { form.periodo } onChange = { onChange } iconclass = "fas fa-id-card" patterns = "[0-9]{1,2}" maxLength = "2"
-                            messageinc = "Incorrecto. Ingresa la periodicidad."  formgroup = 'mb-0' withicon = { true } />
+                            messageinc = "Incorrecto. Ingresa la periodicidad." withicon = { true } />
                     </div>
                     <div className="col-md-7 text-center pt-5">
                         <div className="d-flex justify-content-center pt-5" style={{ height: '1px' }}>

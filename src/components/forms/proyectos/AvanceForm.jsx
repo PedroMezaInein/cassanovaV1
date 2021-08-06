@@ -46,6 +46,10 @@ class AvanceForm extends Component {
                             <div className="form-group row mx-0 form-group-marginless justify-content-center">
                                 <div className="col-md-7">
                                     <InputNumberGray
+                                        withtaglabel = { 1 }
+                                        withtextlabel = { 1 }
+                                        withplaceholder = { 1 }
+                                        withformgroup= { 1 }
                                         withicon={1}
                                         requirevalidation={1}
                                         placeholder="NÚMERO DE SEMANA"

@@ -281,6 +281,9 @@ class ProyectosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
                                             withicon={1}
                                             requirevalidation={0}
                                             formeditado={formeditado}
@@ -292,7 +295,6 @@ class ProyectosForm extends Component {
                                             iconclass={"far fa-envelope"}
                                             maxLength="5"
                                             messageinc="Incorrecto. Ingresa el código postal."
-                                            formgroup="mb-0"
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -419,6 +421,9 @@ class ProyectosForm extends Component {
                                             </div>
                                             <div className="col-md-6">
                                                 <InputNumberGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
                                                     withicon={1}
                                                     requirevalidation={1}
                                                     formeditado={formeditado}

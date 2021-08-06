@@ -315,8 +315,10 @@ class EmpleadosForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
                                                     withicon={1}
-                                                    formgroup="mb-0"
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     onChange={onChange}
@@ -331,8 +333,10 @@ class EmpleadosForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
                                                     withicon={1}
-                                                    formgroup="mb-0"
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     onChange={onChange}
@@ -543,8 +547,10 @@ class EmpleadosForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
                                                     withicon={1}
-                                                    formgroup="mb-0"
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     onChange={onChange}
@@ -560,8 +566,10 @@ class EmpleadosForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
                                                     withicon={1}
-                                                    formgroup="mb-0"
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     onChange={onChange}
@@ -599,8 +607,10 @@ class EmpleadosForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
                                                     withicon={1}
-                                                    formgroup="mb-0"
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     onChange={onChange}
@@ -616,8 +626,10 @@ class EmpleadosForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
                                                     withicon={1}
-                                                    formgroup="mb-0"
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     onChange={onChange}
@@ -640,8 +652,10 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className={form.tipo_empleado === 'Obra' ? "col-md-4" : "col-md-6"}>
                                         <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
                                             withicon={1}
-                                            formgroup="mb-0"
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
@@ -660,8 +674,10 @@ class EmpleadosForm extends Component {
                                             <>
                                                 <div className="col-md-4">
                                                     <InputNumberGray
+                                                        withtaglabel = { 1 }
+                                                        withtextlabel = { 1 }
+                                                        withplaceholder = { 1 }
                                                         withicon={1}
-                                                        formgroup="mb-0"
                                                         requirevalidation={0}
                                                         formeditado={formeditado}
                                                         onChange={onChange}
@@ -677,8 +693,10 @@ class EmpleadosForm extends Component {
                                                 </div>
                                                 <div className="col-md-4">
                                                     <InputNumberGray
+                                                        withtaglabel = { 1 }
+                                                        withtextlabel = { 1 }
+                                                        withplaceholder = { 1 }
                                                         withicon={1}
-                                                        formgroup="mb-0"
                                                         requirevalidation={0}
                                                         formeditado={formeditado}
                                                         onChange={onChange}
@@ -696,8 +714,10 @@ class EmpleadosForm extends Component {
                                             :
                                             <div className="col-md-6">
                                                 <InputNumberGray
+                                                    withtaglabel = { 1 }
+                                                    withtextlabel = { 1 }
+                                                    withplaceholder = { 1 }
                                                     withicon={1}
-                                                    formgroup="mb-0"
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     onChange={onChange}
