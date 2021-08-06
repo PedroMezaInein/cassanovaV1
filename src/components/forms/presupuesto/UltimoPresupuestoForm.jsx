@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Card } from 'react-bootstrap'
-import { InputMoneySinText, InputNumberSinText, InputSinText, Button, InputGray } from '../../form-components'
+import { InputMoneySinText, InputNumberSinText, InputSinText, Button, InputNumberGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas, dayDMY } from '../../../functions/setters'
 class UltimoPresupuesto extends Component {
@@ -198,22 +198,22 @@ class UltimoPresupuesto extends Component {
                                 <div className="card-title">
                                     <h3 className="card-label">Presupuesto preeliminar</h3>
                                 </div>
-                                <div className="card-toolbar" >
-                                    <InputGray
-                                        withtaglabel = { 0 }
-                                        withtextlabel = { 0 }
-                                        withplaceholder = { 1 }
-                                        withicon = { 1 }
-                                        withformgroup = { 0 }
-                                        iconclass = 'flaticon-calendar-with-a-clock-time-tools icon-xl'
-                                        iconvalid= { 1 }
-                                        placeholder='PERÍODO DE VALIDEZ'
+                                <div className="card-toolbar">
+                                    <InputNumberGray
+                                        withtaglabel={0}
+                                        withtextlabel={1}
+                                        withplaceholder={1}
+                                        withicon={1}
+                                        withformgroup={0}
+                                        iconvalid={1}
                                         requirevalidation={1}
-                                        formeditado={formeditado}
+                                        placeholder='TPO. DE VALIDEZ (DÍAS NATURALES)'
+                                        formeditado={1}
                                         name='tiempo_valido'
                                         value={form.tiempo_valido}
                                         onChange={onChangeInput}
                                         inputsolid='bg-white border'
+                                        iconclass='flaticon-calendar-with-a-clock-time-tools icon-xl'
                                     />
                                 </div>
                             </Card.Header>
