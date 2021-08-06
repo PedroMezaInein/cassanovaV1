@@ -346,12 +346,11 @@ class UltimoPresupuesto extends Component {
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
                                                                     name="descipcion"
-                                                                    rows="4"
                                                                     as="textarea"
                                                                     value={form['conceptos'][key]['descripcion']}
                                                                     onChange={(e) => { onChange(key, e, 'descripcion') }}
                                                                     disabled={!form.conceptos[key].active}
-                                                                    customclass='rounded-pill px-2 border text-justify'
+                                                                    customclass='rounded-pill px-2 border text-justify textarea-input'
                                                                 />
                                                             </td>
                                                             <td className="text-center">
