@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import axios from 'axios'
-import { URL_DEV, S3_CONFIG } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
@@ -13,7 +13,6 @@ import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../co
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
 import S3 from 'react-aws-s3';
-const ReactS3Client = new S3(S3_CONFIG);
 /* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
@@ -231,19 +230,28 @@ class MaterialCliente extends Component {
             filePath = `empresas/${empresa.id}/adjuntos/${opciones_adjuntos[menuactive].slug}/${Math.floor(Date.now() / 1000)}-`;
             tipo = opciones_adjuntos[menuactive].slug
         }
-        let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
-            return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file.file, `${filePath}${file.name}`)
-                    .then((data) =>{
-                        const { location,status } = data
-                        if(status === 204)
-                            resolve({ name: file.name, url: location })
-                        else
-                            reject(data)
-                    }).catch(err => reject(err))
-            })
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { alma } = response.data
+                let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204)
+                                    resolve({ name: file.name, url: location })
+                                else
+                                    reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, tipo, proyecto)}).catch(err => console.error(err))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
-        Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, tipo, proyecto)}).catch(err => console.error(err))
     }
 
     addS3FilesAxios = async(arreglo, tipo, proyecto) => {
@@ -281,19 +289,28 @@ class MaterialCliente extends Component {
         if(url.length > 2)
             tipo = url[url.length - 2]
         let filePath = `empresas/${empresa.id}/tipo-proyecto/${submenuactive}/renders/${tipo}/`;
-        let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
-            return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
-                    .then((data) =>{
-                        const { location,status } = data
-                        if(status === 204)
-                            resolve({ name: file.name, url: location })
-                        else
-                            reject(data)
-                    }).catch(err => reject(err))
-            })
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { alma } = response.data
+                let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204)
+                                    resolve({ name: file.name, url: location })
+                                else
+                                    reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addS3FilesInRendersAxios(values, tipo, submenuactive)}).catch(err => console.error(err))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
-        Promise.all(auxPromises).then(values => { this.addS3FilesInRendersAxios(values, tipo, submenuactive)}).catch(err => console.error(err))
     }
 
     addS3FilesInRendersAxios = async(arreglo, tipo, categoria) => {

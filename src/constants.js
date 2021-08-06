@@ -10,70 +10,35 @@ export const IM_AZUL = '#7096c1'
 export const IM_DORADO = '#bdab71'
 
 // DEV
-/* export const URL_DEV = 'http://127.0.0.1:8000/api/';
-export const URL_ASSETS = 'http://127.0.0.1:8000'; */
 
-/* export const PROD_LINK = 'https://demo.proyectosadmin.com/api/' */
 export const PROD_LINK = 'https://proyectosadmin.xyz/api/'
 export const DEV_LINK = 'http://localhost:8000/api/'
-/* export const DEV_LINK = 'https://api-app1.test/api/' */
-/* export const DEV_LINK = 'https://demo.proyectosadmin.com/api/' */
-/* export const DEV_LINK = 'https://proyectosadmin.xyz/api/' */
 
 export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_LINK
-/* export const S3_CONFIG = {
-    bucketName: 'admin-proyectos',
-    region: 'us-east-2',
-    accessKeyId: 'AKIAVGBIVGHBWHS6RXRD',
-    secretAccessKey: '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'
-} */
-export const S3_CONFIG = {
-    bucketName: 'admin-proyectos-aws',
-    region: 'us-east-2',
-    accessKeyId: 'AKIAVGBIVGHB6KKDIT7O',
-    secretAccessKey: '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'
-}
-/* export const S3_CONFIG = {
-    bucketName: 'admin-proyectos',
-    region: 'us-east-2',
-    accessKeyId: 'AKIA6N4IN4J6OCL472TN',
-    secretAccessKey: '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'
-} */
-/* export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://demo.proyectosadmin.com' : 'http://127.0.0.1:8000' */
+
 export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proyectosadmin.xyz' : 'http://127.0.0.1:8000'
 
 export const PUSHER_OBJECT = { broadcaster: 'pusher', key: '112ff49dfbf7dccb6934', cluster: 'us2', forceTLS: false }
 
-// PROD / DEV
-/* export const URL_DEV = 'https://demo.proyectosadmin.com/api/';
-export const URL_ASSETS = 'https://demo.proyectosadmin.com'; */
-
-//Paleta de colores
-// export const COLORS = ["#20ACE9", "#EE4C9E", "#62D270", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "#737373"];
 export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1","#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C"];
 
 //Expresiones Regulares
 
-    //export const RFC = '^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))([A-Z\d]{3})?$'  (Expresión original)
     export const RFC = '[A-Z,Ñ,&]{3,4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?'
     // eslint-disable-next-line
     export const DATE ='(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)'
     export const TEL = '^[0-9]{10}$'
     // eslint-disable-next-line
     export const EMAIL = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$'
-    // export const EMAIL='/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i'
     // eslint-disable-next-line
     export const NSS = '^(\d{2})(\d{2})(\d{2})\d{5}$'
     // eslint-disable-next-line
     export const CURP = '/^[a-z]{4}\d{6}[HM][a-z]{5}\d{2}$/i'
-    // export const ABONO = '/^[12-40]$/'
 //Form
 
 // Table
 export const TABLE_SIZE = 20
 
-// Columns table
-// Leads
 export const LEADS_COLUMNS = [                
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Convertido', accessor: 'convertido' },

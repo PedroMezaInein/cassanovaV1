@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL, S3_CONFIG } from '../../../constants'
+import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
 import { Small } from '../../../components/texts'
 import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -28,7 +28,6 @@ import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraFo
 import { toAbsoluteUrl } from "../../../functions/routers"
 import SVG from "react-inlinesvg";
 import S3 from 'react-aws-s3';
-const ReactS3Client = new S3(S3_CONFIG);
 
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
@@ -833,7 +832,7 @@ class Proyectos extends Component {
     /*                            ANCHOR INICIA CHUNKS                            */
     /* -------------------------------------------------------------------------- */
 
-    handleChange = ( files, item ) => {
+    handleChange = async( files, item ) => {
         waitAlert()
         const { proyecto } = this.state
         let filePath = `proyecto/${proyecto.id}/${item}/${Math.floor(Date.now() / 1000)}-`
@@ -842,20 +841,30 @@ class Proyectos extends Component {
             aux.push(file)
         })
         if(aux.length){
-            let auxPromises = aux.map((file) => {
-                return new Promise((resolve, reject) => {
-                    ReactS3Client.uploadFile(file, `${filePath}${file.name}`)
-                        .then((data) =>{
-                            const { location,status } = data
-                            if(status === 204)
-                                resolve({ name: file.name, url: location })
-                            else
-                                reject(data)
-                        }).catch(err => reject(err))
-                })
+            const { access_token } = this.props.authUser
+            await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    const { alma } = response.data
+                    let auxPromises = aux.map((file) => {
+                        return new Promise((resolve, reject) => {
+                            new S3(alma).uploadFile(file, `${filePath}${file.name}`)
+                                .then((data) =>{
+                                    const { location,status } = data
+                                    if(status === 204)
+                                        resolve({ name: file.name, url: location })
+                                    else
+                                        reject(data)
+                                }).catch(err => reject(err))
+                        })
+                    })
+                    Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, item, proyecto)}).catch(err => console.error(err))
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
             })
-            Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, item, proyecto)}).catch(err => console.error(err))
         }
+        
     }
 
     addS3FilesAxios = async(arreglo, tipo, proyecto) => {

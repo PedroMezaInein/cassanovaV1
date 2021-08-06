@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { logout, login } from '../redux/reducers/auth_user'
-import { URL_DEV, URL_ASSETS, S3_CONFIG } from '../constants'
+import { URL_DEV, URL_ASSETS } from '../constants'
 import { setOptions, setEmpresaLogo } from '../functions/setters'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, questionAlert, doneAlert } from '../functions/alert'
 import { connect } from 'react-redux'
@@ -27,7 +26,7 @@ import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import S3 from 'react-aws-s3';
-const ReactS3Client = new S3(S3_CONFIG);
+import { logout, login } from '../redux/reducers/auth_user'
 class InicioMiProyecto extends Component {
     state = {
         activeFlag: 'calendario',
@@ -790,17 +789,26 @@ class InicioMiProyecto extends Component {
 
     addFotosS3 = async(arreglo, id, proyecto) => {
         let filePath = `proyecto/${proyecto}/tickets/${id}/`
-        let auxPromises  = arreglo.map((file) => {
-            return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
-                    .then((data) =>{
-                        const { location,status } = data
-                        if(status === 204) resolve({ name: file.name, url: location })
-                        else reject(data)
-                    }).catch(err => reject(err))
-            })
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { alma } = response.data
+                let auxPromises  = arreglo.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location })
+                                else reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addFotosToTicket(values, id)}).catch(err => console.error(err))        
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
-        Promise.all(auxPromises).then(values => { this.addFotosToTicket(values, id)}).catch(err => console.error(err))
     }
 
     addFotosToTicket = async(values, id) => {
@@ -1367,7 +1375,7 @@ class InicioMiProyecto extends Component {
                         user.tipo.tipo !== 'Cliente'?
                         <a href={link_url} className="back-to-top d-flex align-items-center justify-content-center"><i className="la la-arrow-right"></i></a>
                         :
-                        <a onClick={() => { this.logoutUserAxios(); }}className="back-to-top d-flex align-items-center justify-content-center btn btn-icon btn-light-youtube"><i className="las la-sign-out-alt icon-2x"></i></a>
+                        <span onClick={() => { this.logoutUserAxios(); }}className="back-to-top d-flex align-items-center justify-content-center btn btn-icon btn-light-youtube"><i className="las la-sign-out-alt icon-2x"></i></span>
                     }
                 </div>
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
