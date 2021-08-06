@@ -67,7 +67,7 @@ class ContratosRh extends Component {
         contratos.forEach((contrato) => {
             aux.push({
                 actions: this.setActions(contrato),
-                empleado:renderToString(setTextTableCenter(contrato.empleado.nombre)),
+                empleado:renderToString(setTextTableCenter(contrato.empleado ? contrato.empleado.nombre : '')),
                 periodo: renderToString(setTextTableCenter(contrato.indefinido === 1 ? 'Tiempo indefinido' :`${contrato.dias === null?'-':contrato.dias+' días'}`)),
                 fecha_inicio: renderToString(setDateTable(contrato.fecha_inicio)),
                 fecha_fin: renderToString(setDateTable(contrato.fecha_fin)),
