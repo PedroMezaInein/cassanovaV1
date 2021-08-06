@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, S3_CONFIG } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, sendFileAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
@@ -16,8 +16,6 @@ import S3 from 'react-aws-s3';
 import SVG from "react-inlinesvg";
 import { TagInputGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
-
-const ReactS3Client = new S3(S3_CONFIG);
 class TicketDetails extends Component {
 
     state = {
@@ -276,7 +274,12 @@ class TicketDetails extends Component {
         let filePath = `proyecto/${proyecto}/tickets/${id}/`
         let auxPromises  = arreglo.map((file) => {
             return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                new S3({
+                    bucketName: process.env.REACT_APP_S3_BUCKET_NAME,
+                    region: process.env.REACT_APP_S3_REGION,
+                    accessKeyId: process.env.REACT_APP_S3_ID,
+                    secretAccessKey: process.env.REACT_APP_S3,
+                }).uploadFile(file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
                     .then((data) =>{
                         const { location,status } = data
                         if(status === 204) resolve({ name: file.name, url: location })
@@ -309,7 +312,12 @@ class TicketDetails extends Component {
         let filePath = `proyecto/${ticket.proyecto_id}/tickets/${ticket.id}/`
         let auxPromises  = arreglo.map((file) => {
             return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file.file, `${filePath}${file.type}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+                new S3({
+                    bucketName: process.env.REACT_APP_S3_BUCKET_NAME,
+                    region: process.env.REACT_APP_S3_REGION,
+                    accessKeyId: process.env.REACT_APP_S3_ID,
+                    secretAccessKey: process.env.REACT_APP_S3,
+                }).uploadFile(file.file, `${filePath}${file.type}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
                     .then((data) =>{
                         const { location,status } = data
                         if(status === 204) resolve({ name: file.file.name, url: location, type: file.type })

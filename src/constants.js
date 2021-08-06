@@ -15,12 +15,7 @@ export const PROD_LINK = 'https://proyectosadmin.xyz/api/'
 export const DEV_LINK = 'http://localhost:8000/api/'
 
 export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_LINK
-export const S3_CONFIG = {
-    bucketName: 'admin-proyectos-aws',
-    region: 'us-east-2',
-    accessKeyId: 'AKIAVGBIVGHB6KKDIT7O',
-    secretAccessKey: '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'
-}
+
 export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proyectosadmin.xyz' : 'http://127.0.0.1:8000'
 
 export const PUSHER_OBJECT = { broadcaster: 'pusher', key: '112ff49dfbf7dccb6934', cluster: 'us2', forceTLS: false }

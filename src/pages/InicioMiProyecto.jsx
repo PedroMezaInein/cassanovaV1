@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { URL_DEV, URL_ASSETS, S3_CONFIG } from '../constants'
+import { URL_DEV, URL_ASSETS } from '../constants'
 import { setOptions, setEmpresaLogo } from '../functions/setters'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, questionAlert, doneAlert } from '../functions/alert'
 import { connect } from 'react-redux'
@@ -26,7 +26,6 @@ import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import S3 from 'react-aws-s3';
-const ReactS3Client = new S3(S3_CONFIG);
 class InicioMiProyecto extends Component {
     state = {
         activeFlag: 'calendario',
@@ -774,7 +773,12 @@ class InicioMiProyecto extends Component {
         let filePath = `proyecto/${proyecto}/tickets/${id}/`
         let auxPromises  = arreglo.map((file) => {
             return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                new S3({
+                    bucketName: process.env.REACT_APP_S3_BUCKET_NAME,
+                    region: process.env.REACT_APP_S3_REGION,
+                    accessKeyId: process.env.REACT_APP_S3_ID,
+                    secretAccessKey: process.env.REACT_APP_S3,
+                }).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
                     .then((data) =>{
                         const { location,status } = data
                         if(status === 204) resolve({ name: file.name, url: location })

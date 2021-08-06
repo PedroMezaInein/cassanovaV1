@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { URL_DEV, S3_CONFIG } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import axios from 'axios'
@@ -11,7 +11,6 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
 
-const ReactS3Client = new S3(S3_CONFIG);
 class AddTicket extends Component {
     state = {
         form: {
@@ -77,7 +76,12 @@ class AddTicket extends Component {
         let filePath = `proyecto/${proyecto}/tickets/${id}/`
         let auxPromises  = arreglo.map((file) => {
             return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                new S3({
+                    bucketName: process.env.REACT_APP_S3_BUCKET_NAME,
+                    region: process.env.REACT_APP_S3_REGION,
+                    accessKeyId: process.env.REACT_APP_S3_ID,
+                    secretAccessKey: process.env.REACT_APP_S3,
+                }).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
                     .then((data) =>{
                         const { location,status } = data
                         if(status === 204) resolve({ name: file.name, url: location })
