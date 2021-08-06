@@ -62,7 +62,7 @@ class SolicitudCompraForm extends Component {
                         <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                    <span>1.</span>Soliciar compra</h3>
+                                    <span>1.</span>Solicitar compra</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
