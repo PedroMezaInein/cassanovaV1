@@ -74,22 +74,26 @@ class AddTicket extends Component {
 
     addFotosS3 = async(arreglo, id, proyecto) => {
         let filePath = `proyecto/${proyecto}/tickets/${id}/`
-        let auxPromises  = arreglo.map((file) => {
-            return new Promise((resolve, reject) => {
-                new S3({
-                    bucketName: process.env.REACT_APP_S3_BUCKET_NAME,
-                    region: process.env.REACT_APP_S3_REGION,
-                    accessKeyId: process.env.REACT_APP_S3_ID,
-                    secretAccessKey: process.env.REACT_APP_S3,
-                }).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
-                    .then((data) =>{
-                        const { location,status } = data
-                        if(status === 204) resolve({ name: file.name, url: location })
-                        else reject(data)
-                    }).catch(err => reject(err))
-            })
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { alma } = response.data
+                let auxPromises  = arreglo.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location })
+                                else reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addFotosToTicket(values, id)}).catch(err => console.error(err))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
-        Promise.all(auxPromises).then(values => { this.addFotosToTicket(values, id)}).catch(err => console.error(err))
     }
 
     addFotosToTicket = async(values, id) => {
