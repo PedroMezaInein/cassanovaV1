@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL, S3_CONFIG } from '../../../constants'
+import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
 import { Small } from '../../../components/texts'
 import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -28,7 +28,6 @@ import NotaBitacoraForm from '../../../components/forms/proyectos/NotaBitacoraFo
 import { toAbsoluteUrl } from "../../../functions/routers"
 import SVG from "react-inlinesvg";
 import S3 from 'react-aws-s3';
-const ReactS3Client = new S3(S3_CONFIG);
 
 const MySwal = withReactContent(Swal)
 const chunkSize = 1048576 * 3;
@@ -844,7 +843,12 @@ class Proyectos extends Component {
         if(aux.length){
             let auxPromises = aux.map((file) => {
                 return new Promise((resolve, reject) => {
-                    ReactS3Client.uploadFile(file, `${filePath}${file.name}`)
+                    new S3({
+                        bucketName: process.env.REACT_APP_S3_BUCKET_NAME,
+                        region: process.env.REACT_APP_S3_REGION,
+                        accessKeyId: process.env.REACT_APP_S3_ID,
+                        secretAccessKey: process.env.REACT_APP_S3,
+                    }).uploadFile(file, `${filePath}${file.name}`)
                         .then((data) =>{
                             const { location,status } = data
                             if(status === 204)

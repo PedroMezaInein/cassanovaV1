@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import axios from 'axios'
-import { URL_DEV, S3_CONFIG } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
@@ -13,7 +13,6 @@ import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../co
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
 import S3 from 'react-aws-s3';
-const ReactS3Client = new S3(S3_CONFIG);
 /* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
@@ -233,7 +232,12 @@ class MaterialCliente extends Component {
         }
         let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
             return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file.file, `${filePath}${file.name}`)
+                new S3({
+                    bucketName: process.env.REACT_APP_S3_BUCKET_NAME,
+                    region: process.env.REACT_APP_S3_REGION,
+                    accessKeyId: process.env.REACT_APP_S3_ID,
+                    secretAccessKey: process.env.REACT_APP_S3,
+                }).uploadFile(file.file, `${filePath}${file.name}`)
                     .then((data) =>{
                         const { location,status } = data
                         if(status === 204)
@@ -283,7 +287,12 @@ class MaterialCliente extends Component {
         let filePath = `empresas/${empresa.id}/tipo-proyecto/${submenuactive}/renders/${tipo}/`;
         let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
             return new Promise((resolve, reject) => {
-                ReactS3Client.uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                new S3({
+                    bucketName: process.env.REACT_APP_S3_BUCKET_NAME,
+                    region: process.env.REACT_APP_S3_REGION,
+                    accessKeyId: process.env.REACT_APP_S3_ID,
+                    secretAccessKey: process.env.REACT_APP_S3,
+                }).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
                     .then((data) =>{
                         const { location,status } = data
                         if(status === 204)
