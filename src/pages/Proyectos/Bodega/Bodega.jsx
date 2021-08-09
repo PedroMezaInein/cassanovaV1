@@ -282,13 +282,13 @@ class Bodega extends Component {
                 action: 'prestamos',
                 tooltip: { id: 'prestamos', text: 'Préstamos' }
             },
-            // {
-            //     text: 'Historial',
-            //     btnclass: 'warning',
-            //     iconclass: 'flaticon-list-1',
-            //     action: 'historial',
-            //     tooltip: { id: 'historial', text: 'Historial' }
-            // }
+            {
+                text: 'Historial',
+                btnclass: 'warning',
+                iconclass: 'flaticon-list-1',
+                action: 'historial',
+                tooltip: { id: 'historial', text: 'Historial' }
+            }
         )
         return aux
     }
@@ -353,13 +353,7 @@ class Bodega extends Component {
         })
     }
     
-    openModalHistorial = (bodega)  => {
-        this.setState({
-            ...this.state,
-            bodega: bodega,
-            modalHistorial: true
-        })
-    }
+    openModalHistorial = (bodega)  => { this.setState({ ...this.state, bodega: bodega, modalHistorial: true }) }
     handleCloseDelete = () => { this.setState({ ...this.state, modalDelete: false, bodega: '' }) }
 
     handleCloseAdjuntos = () => {
@@ -586,22 +580,27 @@ class Bodega extends Component {
             console.log(error, 'error')
         })
     }
+    
     onSubmitHistorial = async () => {
         waitAlert()
-        const { formHistorial } = this.state
+        const { formHistorial, bodega } = this.state
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'proyectos/bodega/historial', formHistorial, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v1/proyectos/bodegas/${bodega.id}/entrada`, formHistorial, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { bodega } = response.data
+                this.setState({...this.state, bodega: bodega})
+                if(bodega.tipo === 'herramienta')
+                    this.getHerramientas()
+                else
+                    this.getMateriales()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Se agregó al historial con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     render() {
         const { modalDelete, modalAdjuntos, modalPrestamo, form, modalSee, bodega, key, formPrestamos, options, formDevoluciones, modalHistorial, formHistorial } = this.state
         let tipo = key === 'herramientas' ? 'herramienta' : 'material'
@@ -699,7 +698,7 @@ class Bodega extends Component {
                     <BodegaCard bodega={bodega} />
                 </Modal>
                 <Modal size="lg" title={'Historial'} show={modalHistorial} handleClose={this.handleCloseHistorial} >
-                    <HistorialHM form={formHistorial} onChange={this.onChangeHistorial} onSubmit={this.onSubmitHistorial}/>
+                    <HistorialHM data = { bodega } form={formHistorial} onChange={this.onChangeHistorial} onSubmit={this.onSubmitHistorial}/>
                 </Modal>
             </Layout>
         );

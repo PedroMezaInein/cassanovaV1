@@ -85,3 +85,9 @@ export const setFechaTexto = (fecha) => {
     let months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
     return momento.date() + ' de ' + months[ momento.month() ] + ' del ' + momento.year()
 }
+
+export const setMinFechaTexto = (fecha) => {
+    let momento = moment(fecha)
+    let months = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC']
+    return momento.date() + ' ' + months[ momento.month() ] + ' ' + momento.year()
+}
