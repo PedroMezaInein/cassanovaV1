@@ -25,7 +25,8 @@ class ContratosRhForm extends Component {
             ubicacion_obra:'',
             pagos_hr_extra:'',
             total_obra:'',
-            dias_laborables:''
+            dias_laborables:'',
+            direccion_contrato:''
         },
         options: {
             empleados: [],
@@ -55,6 +56,7 @@ class ContratosRhForm extends Component {
         });
         let aux =action
         aux = aux.split('?')
+        this.getOptionsAxios()
         switch (aux[0]) {
             case 'add':
                 this.setState({
@@ -79,6 +81,7 @@ class ContratosRhForm extends Component {
                         form.pagos_hr_extra = contrato.pagos_hr_extra
                         form.total_obra = contrato.total_obra
                         form.dias_laborables = contrato.dias_laborables
+                        form.direccion_contrato = contrato.empleado.empresa?contrato.empleado.empresa.direccion:''
                         this.setState({
                             ...this.state,
                             form,
@@ -99,7 +102,6 @@ class ContratosRhForm extends Component {
         }
         if (!contratos)
             history.push('/')
-        this.getOptionsAxios()
     }
     async getOptionsAxios() {
         waitAlert()
@@ -109,18 +111,19 @@ class ContratosRhForm extends Component {
                 const { empleados, empleadosObra } = response.data
                 const { options } = this.state
                 options.empleadosObra = setOptions(empleadosObra, 'nombre', 'id')
+                let aux = [];
                 empleados.map((empleado) => {
-                    options.empleados.push({
+                    aux.push({
                         name: empleado.nombre,
                         value: empleado.id.toString(),
                         fecha_inicio: empleado.fecha_inicio,
                         fecha_fin: empleado.fecha_fin,
-                        contratos:empleado.contratos
+                        contratos:empleado.contratos,
+                        direccion_contrato: empleado.empresa?empleado.empresa.direccion:''
                     })
-                    return ''
+                    return false
                 })
-                options.empleados.sort(this.compare)
-
+                options.empleados = aux.sort(this.compare)
                 Swal.close()
                 this.setState({ ...this.state, options })
             }, (error) => { printResponseErrorAlert(error) }
@@ -174,6 +177,7 @@ class ContratosRhForm extends Component {
             case 'empleado':
                 options.empleados.forEach((empleado)=>{
                     if(empleado.value === form.empleado){
+                        form.direccion_contrato = empleado.direccion_contrato
                         if (empleado.contratos.length === 0) {
                             form.fechaInicio = new Date(moment(empleado.fecha_inicio))
                         } else {
