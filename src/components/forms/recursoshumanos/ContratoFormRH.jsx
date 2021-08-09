@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
-import { Form } from 'react-bootstrap'
+import { Form, Row, Col } from 'react-bootstrap'
 import { InputGray, RangeCalendar, InputNumberGray, Button, CalendarDay, SelectSearchGray } from '../../form-components'
 class ContratoFormRH extends Component {
     updateEmpleado = value => {
@@ -21,23 +21,17 @@ class ContratoFormRH extends Component {
                 {
                     tipo === 'administrativo' ?
                         <>
-                            <div className="form-group row form-group-marginless mt-5">
-                                <div className={`${((title.includes('Nuevo')) && (form.periodo === false || form.periodo === '')) ? 'col-md-6' : (title.includes('Nuevo') && form.periodo === true) ? 'col-md-4' : (!title.includes('Nuevo')) ? 'd-none' : ''}`}>
-                                    <SelectSearchGray
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                        customdiv='mb-0'
-                                        options={options.empleados}
-                                        placeholder="SELECCIONA EL EMPLEADO"
-                                        name="empleado"
-                                        value={form.empleado}
-                                        onChange={this.updateEmpleado}
-                                        iconclass={"fas fa-user"}
-                                        formeditado={formeditado}
-                                        messageinc="Selecciona el empleado"
-                                    />
+                        <Row className="mx-0 mt-5">
+                            <Col md="5" className="align-self-center">
+                                <div className="text-center">
+                                    <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                        <label className="text-center font-weight-bolder">Fecha de contrato</label>
+                                    </div>
+                                    <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
                                 </div>
-                                <div className={`${(title.includes('Nuevo') && form.periodo === false) ? 'col-md-6' : (title.includes('Nuevo') && form.periodo === true) ? 'col-md-4' : (!title.includes('Nuevo') && form.periodo === false) ? 'col-md-12' : 'col-md-6'}`}>
+                            </Col>
+                            <Col md="7" className="align-self-center row mx-0">
+                                <div className={`align-self-center ${(title.includes('Nuevo') && (form.periodo === false || form.periodo === '')) ? 'col-md-12' : (title.includes('Nuevo') && form.periodo === true) ? 'col-md-6' : (!title.includes('Nuevo') && form.periodo === false) ? 'col-md-12' : 'col-md-6'}`}>
                                     <div className="mx-auto w-fit-content">
                                         <label className="font-weight-bolder">Periodo del contrato</label>
                                         <div className="radio-list">
@@ -64,7 +58,7 @@ class ContratoFormRH extends Component {
                                 </div>
                                 {
                                     form.periodo === true &&
-                                    <div className={`${(title.includes('Nuevo') && form.periodo === true) ? 'col-md-4' : 'col-md-6'}`}>
+                                    <div className='col-md-5'>
                                         <InputNumberGray
                                             withtaglabel = { 1 }
                                             withtextlabel = { 1 }
@@ -82,18 +76,43 @@ class ContratoFormRH extends Component {
                                         />
                                     </div>
                                 }
-                            </div>
-                            <div className="separator separator-dashed mt-12 mb-10"></div>
-                            <div className="row form-group-marginless">
-                                <div className={`col-md-12 text-align-last-center align-self-center`}>
-                                    <div className="text-center">
-                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                            <label className="text-center font-weight-bolder">Fecha de contrato</label>
-                                        </div>
-                                        <CalendarDay date={form.fechaInicio} onChange={onChangeContrato} name='fechaInicio' requirevalidation={1} withformgroup={0} />
+                                    <div className={`${(!title.includes('Nuevo')) ? 'd-none' : 'col-md-12'}`}>
+                                        <SelectSearchGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withicon={1}
+                                            customdiv='mb-0'
+                                            options={options.empleados}
+                                            placeholder="SELECCIONA EL EMPLEADO"
+                                            name="empleado"
+                                            value={form.empleado}
+                                            onChange={this.updateEmpleado}
+                                            iconclass="fas fa-user"
+                                            formeditado={formeditado}
+                                            messageinc="Selecciona el empleado"
+                                        />
                                     </div>
-                                </div>
-                            </div>
+                                    <div className="separator separator-dashed mt-4 mb-2 col-md-12"></div>
+                                    <div className="col-md-12">
+                                        <InputGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            withformgroup={0}
+                                            requirevalidation={1}
+                                            formeditado={formeditado}
+                                            onChange={onChangeContrato}
+                                            name="direccion_contrato"
+                                            type="text"
+                                            value={form.direccion_contrato}
+                                            placeholder="DIRECCIÓN DEL CONTRATO"
+                                            iconclass="las la-map-marked-alt icon-xl p-0"
+                                            messageinc="Incorrecto. Ingresa la dirección del contrato."
+                                        />
+                                    </div>
+                            </Col>
+                        </Row>
                         </>
                         :
                         <div className="form-group row form-group-marginless mt-8">
@@ -107,10 +126,11 @@ class ContratoFormRH extends Component {
                             </div>
                             <div className="col-md-8 align-self-center">
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    <div className={`${(!title.includes('Nuevo')) ? 'd-none' : 'col-md-4'}`}>
                                         <SelectSearchGray
                                             withtaglabel={1}
                                             withtextlabel={1}
+                                            withicon={1}
                                             customdiv='mb-0'
                                             options={options.empleadosObra}
                                             placeholder="SELECCIONA EL EMPLEADO"
@@ -122,7 +142,7 @@ class ContratoFormRH extends Component {
                                             messageinc="Selecciona el empleado"
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className={`${(!title.includes('Nuevo')) ? 'col-md-6' : 'col-md-4'}`}>
                                         <InputGray
                                             withtaglabel={1}
                                             withtextlabel={1}
@@ -140,7 +160,7 @@ class ContratoFormRH extends Component {
                                             formeditado={formeditado}
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className={`${(!title.includes('Nuevo')) ? 'col-md-6' : 'col-md-4'}`}>
                                         <InputNumberGray
                                             withtaglabel = { 1 }
                                             withtextlabel = { 1 }
@@ -233,6 +253,27 @@ class ContratoFormRH extends Component {
                                             iconclass="flaticon2-map"
                                             messageinc="Ingresa la ubicación de la obra."
                                             formeditado={formeditado}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="row form-group-marginless pt-4">
+                                    <div className="col-md-12 mb-4">
+                                        <InputGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            withformgroup={0}
+                                            requirevalidation={1}
+                                            formeditado={formeditado}
+                                            onChange={onChangeContrato}
+                                            name="direccion_contrato"
+                                            type="text"
+                                            value={form.direccion_contrato}
+                                            placeholder="DIRECCIÓN DEL CONTRATO"
+                                            iconclass="las la-map-marked-alt icon-xl p-0"
+                                            messageinc="Incorrecto. Ingresa la dirección del contrato."
                                         />
                                     </div>
                                 </div>
