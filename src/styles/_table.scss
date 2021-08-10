@@ -275,3 +275,10 @@ div#cardList div:last-child{
         }
     }
 }
+
+.custom-td-descripcion{
+    min-width: 400px;
+    @include down-screen($md) {
+        min-width: unset!important;
+    }
+}

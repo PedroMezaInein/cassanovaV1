@@ -176,6 +176,32 @@ export function setTextTableReactDom(text, doubleClick, data, tipo, style){
         </div>
     )
 }
+
+export function setCustomeDescripcionReactDom(text, doubleClick, data, tipo, style){
+    if(text === null)
+            return ''
+    let valor = text.split("\n")
+    let arreglo = valor.map((element) => {
+        if(element.length > 0){
+            return (
+                <div className = 'font-size-11px line-height-xl mb-3'> {element} </div>
+            )
+        }
+        return <></>
+    })
+    return(
+        <div className = {`text-hover custom-td-descripcion ${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data, tipo)
+                }
+            } } > 
+            { arreglo }
+        </div>
+    )
+}
+
 export function setColorTableReactDom(text, doubleClick, data, tipo) {
     return (
         <div className={`dot mx-auto ${(text === '' ? 'm-5 p-5' : '')}`} style={{backgroundColor: `${text}`}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
