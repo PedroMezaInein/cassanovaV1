@@ -15,6 +15,20 @@ export default class SolicitudesTabla extends Component {
         )
     }
 
+    setDescripcion = desc => {
+        if(desc === null)
+            return ''
+        let valor = desc.split("\n")
+        return valor.map((element) => {
+            if(element.length > 0){
+                return (
+                    <div className = 'mb-3'> {element} </div>
+                )
+            }
+            return <></>
+        })
+    }
+
     render() {
         const { type, title, btn_title, openModalAdd, openModalEditar, deleteSolicitud, solicitudes } = this.props
         return (
@@ -41,6 +55,7 @@ export default class SolicitudesTabla extends Component {
                                     <th>Área</th>
                                     <th>Sub área</th>
                                     <th>Descripción</th>
+                                    <th>Estado</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -84,7 +99,14 @@ export default class SolicitudesTabla extends Component {
                                                             { sol.subarea ? sol.subarea.nombre : ''}
                                                         </td>
                                                         <td className="text-dark font-weight-light font-size-sm text-justify">
-                                                            { sol.descripcion }
+                                                            { this.setDescripcion(sol.descripcion) }
+                                                        </td>
+                                                        <td className="text-dark font-weight-light font-size-sm text-center">
+                                                            {
+                                                                sol[type] ? 
+                                                                    `${type} realizada`
+                                                                : <></>
+                                                            }
                                                         </td>
                                                         <td className="white-space-nowrap">
                                                             {
