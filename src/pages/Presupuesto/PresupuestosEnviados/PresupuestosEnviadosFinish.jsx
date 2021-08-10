@@ -33,7 +33,8 @@ class PresupuestosEnviadosFinish extends Component {
                 importe: 0,
                 id: '',
                 margen: '',
-                precio_unitario: ''
+                precio_unitario: '',
+                bg_margen:true
             }],
             fecha_creacion: new Date(),
             fecha_aceptacion: '',
@@ -108,6 +109,7 @@ class PresupuestosEnviadosFinish extends Component {
                         precio_unitario: precio_unitario,
                         importe: importe,
                         active: concepto.active ? true : false,
+                        bg_margen:true,
                         id: concepto.id,
                     })
                     return false
@@ -244,9 +246,14 @@ class PresupuestosEnviadosFinish extends Component {
 
     onChange = (key, e, name) => {
         let { value } = e.target
-        const { form } = this.state
+        const { form, presupuesto } = this.state
         if (name === 'margen') {
             value = value.replace('%', '')
+            if ((presupuesto.conceptos[key][name].toString() !== value) && value !== 0 && value !== '' ) {
+                form['conceptos'][key]['bg_margen'] = false
+            }else{
+                form['conceptos'][key]['bg_margen'] = true
+            }
         }
         form.conceptos[key][name] = value
         form.conceptos[key].precio_unitario = (form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100))).toFixed(2)
