@@ -716,6 +716,7 @@ class TicketDetails extends Component {
     openModalSolicitud = type => {
         const { modal, formularios, ticket } = this.state
         let { title } = this.state
+        console.log(ticket, 'ticket')
         switch(type){
             case 'compra':
                 title = 'Nueva solicitud de compra'
@@ -734,6 +735,12 @@ class TicketDetails extends Component {
         modal.solicitud = true
         formularios.solicitud.empresa = ticket.proyecto.empresa.id.toString()
         formularios.solicitud.proyecto = ticket.proyecto.id.toString()
+        if (ticket.presupuesto) {
+            formularios.solicitud.adjuntos.adjunto.files = [{
+                name: ticket.presupuesto[0].name,
+                url: ticket.presupuesto[0].url
+            }]
+        }
         this.setState({ ...this.state, modal, formeditado: 1, title:title, formularios })
         this.getOptionsAxios()
     }
