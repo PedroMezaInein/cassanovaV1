@@ -4,8 +4,8 @@ import { Form, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstrap'
 import { InputGray, RangeCalendar, InputNumberGray, FileInput, CalendarDay } from '../../form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
-import Moment from 'react-moment'
 import $ from "jquery";
+import { dayDMY } from '../../../functions/setters'
 class FormularioContrato extends Component {
     state = {
         renovar: false,
@@ -98,13 +98,13 @@ class FormularioContrato extends Component {
                                                         <div className="w-fit-content mx-auto">
                                                             <div>
                                                                 <span className="text-dark-75 font-weight-bold font-size-lg">Inicio:</span>
-                                                                <span className="text-dark-50 font-weight-normal ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment>}</span>
+                                                                <span className="text-dark-50 font-weight-normal ml-1">{dayDMY(contrato.fecha_inicio)}</span>
                                                             </div>
                                                             {
                                                                 contrato.fecha_fin !== null &&
                                                                 <div>
                                                                     <span className="text-dark-75 font-weight-bold font-size-lg">Final:</span>
-                                                                    <span className="text-dark-50 font-weight-normal ml-1">{<Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment>}</span>
+                                                                    <span className="text-dark-50 font-weight-normal ml-1">{dayDMY(contrato.fecha_fin)}</span>
                                                                 </div>
                                                             }
                                                         </div>

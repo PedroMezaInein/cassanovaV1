@@ -77,7 +77,8 @@ class TicketDetails extends Component {
                     importe: 0,
                     id: '',
                     mensajes: { active: false, mensaje: '' },
-                    unidad_id:''
+                    unidad_id:'',
+                    bg_cantidad:true
                 }],
                 conceptosNuevos: []
             },
@@ -399,7 +400,8 @@ class TicketDetails extends Component {
                         costo: concepto.costo,
                         importe: concepto.importe,
                         unidad: concepto.unidad ? concepto.unidad.nombre : '',
-                        unidad_id: concepto.unidad ? concepto.unidad.id.toString() : ''
+                        unidad_id: concepto.unidad ? concepto.unidad.id.toString() : '',
+                        bg_cantidad:true
                     })
                 })
                 formularios.preeliminar.conceptos = aux
@@ -714,6 +716,7 @@ class TicketDetails extends Component {
     openModalSolicitud = type => {
         const { modal, formularios, ticket } = this.state
         let { title } = this.state
+        console.log(ticket, 'ticket')
         switch(type){
             case 'compra':
                 title = 'Nueva solicitud de compra'
@@ -732,6 +735,12 @@ class TicketDetails extends Component {
         modal.solicitud = true
         formularios.solicitud.empresa = ticket.proyecto.empresa.id.toString()
         formularios.solicitud.proyecto = ticket.proyecto.id.toString()
+        if (ticket.presupuesto) {
+            formularios.solicitud.adjuntos.adjunto.files = [{
+                name: ticket.presupuesto[0].name,
+                url: ticket.presupuesto[0].url
+            }]
+        }
         this.setState({ ...this.state, modal, formeditado: 1, title:title, formularios })
         this.getOptionsAxios()
     }
@@ -923,24 +932,64 @@ class TicketDetails extends Component {
 
     clearFormConceptos = () => {
         const { formularios, presupuesto } = this.state
-        if(presupuesto.conceptos.length === 0){
-            formularios.conceptos = [{area: '', subarea: '', descripcion: ''}]
-        }else{ formularios.conceptos = [] }
-        presupuesto.conceptos.forEach((concepto) => {
-            let objeto = { area: '', subarea: '', descripcion: '', concepto: concepto}
-            objeto.descripcion = concepto.descripcion
-            objeto.concepto = concepto
-            if(concepto.concepto)
-                if(concepto.concepto.subpartida)
-                    if(concepto.concepto.subpartida.partida)
-                        if(concepto.concepto.subpartida.partida.areas)
-                            if(concepto.concepto.subpartida.partida.areas.length){
-                                if(concepto.concepto.subpartida.partida.areas.length === 1)
-                                    objeto.area = concepto.concepto.subpartida.partida.areas[0].id.toString()
+        let aux = presupuesto.conceptos
+        aux.sort(function (a, b) {
+            if(a.concepto === null)
+                return 0;
+            if(b.concepto === null)
+                return -1;
+            if(a.concepto.partidaId > b.concepto.partidaId){
+                return 1;
+            }
+            if(a.concepto.partidaId < b.concepto.partidaId){
+                return -1;
+            }
+            return 0;
+        });
+        let aux2 = [];
+        aux.forEach((element) => {
+            if(element.active){
+                if(element.concepto.partidaId){
+                    let finding = aux2.find((elemento) => {
+                        return elemento.partidaId === element.concepto.partidaId
+                    })
+                    if(finding){ 
+                        finding.conceptos.push(element) 
+                        finding.descripcion = finding.descripcion + "\n\n" + element.descripcion
+                        finding.form.push(
+                            {
+                                area: element.concepto.subpartida.partida.areas[0].id.toString(),
+                                subarea: '', 
+                                descripcion: element.descripcion, 
+                                concepto: element
                             }
-            formularios.conceptos.push(objeto)
+                        )
+                    }
+                    else{
+                        let objeto = { 
+                            area: element.concepto.subpartida.partida.areas[0].id.toString(),
+                            subarea: '', 
+                            descripcion: element.descripcion, 
+                            conceptos: [], 
+                            partidaId: element.concepto.partidaId,
+                            concepto: element,
+                            partida: element.concepto.subpartida.partida.nombre,
+                            join: true,
+                            form: [{
+                                area: element.concepto.subpartida.partida.areas[0].id.toString(),
+                                subarea: '', 
+                                descripcion: element.descripcion,
+                                concepto: element
+                            }]
+                        }
+                        objeto.conceptos.push(element) 
+                        aux2.push(objeto)
+                    }
+                    
+                }
+            }
         })
-        return formularios.conceptos
+        return aux2
     }
 
     clearFormSolicitud = () => {
@@ -1015,8 +1064,8 @@ class TicketDetails extends Component {
             case 'En proceso':
                 questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN PROCESO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
                 break;
-            case 'Respuesta pendiente':
-                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EL TICKET EN RESPUESTA PENDIENTE ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+            case 'Aprobación pendiente':
+                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EL TICKET EN APROBACIÓN PENDIENTE ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
                 break;
             case 'En revisión':
                 questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN REVISIÓN EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
@@ -1044,7 +1093,6 @@ class TicketDetails extends Component {
     onChangeSolicitudCompra = (value, name, index) => {
         let { formularios } = this.state
         formularios.conceptos[index][name] = value
-        console.log(`-`)
         this.setState({ ...this.state, formularios })
     }
 
@@ -1420,6 +1468,7 @@ class TicketDetails extends Component {
             formularios.conceptos = this.clearFormConceptos()
         else
             formularios.conceptos = [{area: '', subarea: '', descripcion: ''}]
+        
         this.setState({formularios})
     }
 

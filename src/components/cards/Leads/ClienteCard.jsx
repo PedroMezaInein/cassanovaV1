@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Moment from 'react-moment'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
+import { dayDMY } from '../../../functions/setters'
 export default class ClienteCard extends Component {
     render() {
         const { cliente } = this.props
@@ -78,13 +78,11 @@ export default class ClienteCard extends Component {
                                         <div className="d-flex justify-content-center mr-2">
                                             <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-info">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
-                                                    </span>
+                                                    <i className="flaticon2-calendar-8 text-info icon-lg"></i>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{cliente.created_at}</Moment></div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{dayDMY(cliente.created_at)}</div>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
                                             </div>
                                         </div>

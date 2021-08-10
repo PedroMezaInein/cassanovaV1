@@ -4,7 +4,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout'
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
-import { setOptions, setDateTableLG, setContactoIcon, setEmpresaLogo } from '../../../functions/setters'
+import { setOptions, setDateTableLG, setContactoIcon, setEmpresaLogo, dayDMY } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
 import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2, deleteAlert} from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
@@ -24,7 +24,6 @@ import Swal from 'sweetalert2'
 import { Button } from '../../../components/form-components'
 import Pagination from "react-js-pagination"
 import SymbolIcon from '../../../components/singles/SymbolIcon'
-import Moment from 'react-moment'
 import FileItem from '../../../components/singles/FileItem'
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
@@ -2419,7 +2418,7 @@ class Crm extends Component {
                                         <div className="d-flex justify-content-start">
                                             <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Box1.svg' />
                                             <div>
-                                                <div className="font-size-lg text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{lead.created_at}</Moment></div>
+                                                <div className="font-size-lg text-dark-75 font-weight-bolder">{dayDMY(lead.created_at)}</div>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
                                             </div>
                                         </div>

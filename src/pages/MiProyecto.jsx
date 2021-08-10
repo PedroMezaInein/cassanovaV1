@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
 import { errorAlert, waitAlert, doneAlert, questionAlert, printResponseErrorAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchGray, Input } from '../components/form-components'
-import { setOptions, setLabelTable, setEmpresaLogo } from '../functions/setters'
+import { setOptions, setLabelTable, setEmpresaLogo, dayDMY } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row, NavDropdown, Navbar } from 'react-bootstrap'
 import { Button } from '../components/form-components'
 import Moment from 'react-moment'
@@ -947,13 +947,9 @@ class MiProyecto extends Component {
                                                     {
                                                         proyecto ?
                                                             <div>
-                                                                <Moment format="DD/MM/YYYY">
-                                                                    {proyecto.fecha_inicio}
-                                                                </Moment>
+                                                                {dayDMY(proyecto.fecha_inicio)}
                                                                 {" - "}
-                                                                <Moment format="DD/MM/YYYY">
-                                                                    {proyecto.fecha_fin}
-                                                                </Moment>
+                                                                {dayDMY(proyecto.fecha_fin)}
                                                             </div>
                                                             : ""
                                                     }
@@ -1250,7 +1246,7 @@ class MiProyecto extends Component {
                         {
                             ticket ?
                                 ticket.estatus_ticket ?
-                                    ticket.estatus_ticket.estatus === "Respuesta pendiente" ?
+                                    ticket.estatus_ticket.estatus === "Aprobación pendiente" ?
                                         <>
                                             <Button
                                                 onClick={() => { this.changeEstatus('En proceso') }}
@@ -1327,10 +1323,9 @@ class MiProyecto extends Component {
                                                                 </div>
                                                             </div>
                                                             <div className="d-flex flex-column font-weight-bold">
-                                                                <div className="text-dark mb-1 ">
-                                                                    <Moment format="DD/MM/YYYY">
-                                                                        {ticket.fecha_programada}
-                                                                    </Moment></div>
+                                                                <div className="text-dark mb-1">
+                                                                    {dayDMY(ticket.fecha_programada)}
+                                                                </div>
                                                                 <span className="text-muted ">FECHA PROGRAMADA</span>
                                                             </div>
                                                         </div>

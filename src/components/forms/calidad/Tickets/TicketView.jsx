@@ -109,10 +109,17 @@ class TicketView extends Component {
     onChangePreeliminar = (key, e, name) => {
         let { value } = e.target
         const { formulario, onChange, presupuesto } = this.props
+        let valor = formulario.preeliminar.conceptos
         if (name === 'desperdicio') {
             value = value.replace('%', '')
         }
-        let valor = formulario.preeliminar.conceptos
+        if (name === 'cantidad_preliminar'){
+            if (presupuesto.conceptos[key][name].toString() !== value) {
+                valor[key]['bg_cantidad'] = false
+            }else{
+                valor[key]['bg_cantidad'] = true
+            }
+        }
         valor[key][name] = value
         let cantidad = valor[key].cantidad_preliminar * (1 + (valor[key].desperdicio / 100))
         cantidad = cantidad.toFixed(2)
@@ -222,10 +229,9 @@ class TicketView extends Component {
     }
 
     setConceptosSubareasOptions = (concepto, index) => {
-        const { formulario } = this.props
-        if(formulario.conceptos[index].area !== ''){
-            let objeto = concepto.concepto.subpartida.partida.areas.find((area) => {
-                return area.id.toString() === formulario.conceptos[index].area;
+        if(concepto.area !== ''){
+            let objeto = concepto.concepto.concepto.subpartida.partida.areas.find((area) => {
+                return area.id.toString() === concepto.area;
             })
             if(objeto)
                 return setOptions(objeto.subareas, 'nombre', 'id')
@@ -246,6 +252,12 @@ class TicketView extends Component {
         this.setState({...this.state, checked: checked})
     }
 
+    selectCheckInner = (e, index) => {
+        const { checked } = e.target
+        let { onChangeSolicitudCompra } = this.props
+        onChangeSolicitudCompra(checked, 'join', index)
+    }
+
     update = ( value, index, name ) => {
         let { onChangeSolicitudCompra } = this.props
         onChangeSolicitudCompra(value, name, index)
@@ -263,6 +275,21 @@ class TicketView extends Component {
                 return setOptions(objeto.subareas, 'nombre', 'id')
         }
         return []
+    }
+
+    onChangeValueSolicitudCompraInner = ( value, name, index, key ) => {
+        const { formulario, onChangeSolicitudCompra } = this.props
+        let valor = formulario.conceptos[index].form
+        valor[key][name] = value
+        onChangeSolicitudCompra(valor, 'form', index)
+    }
+
+    onChangeSolicitudCompraInner = ( e, index, key ) => {
+        const { formulario, onChangeSolicitudCompra } = this.props
+        const { value, name } = e.target
+        let valor = formulario.conceptos[index].form
+        valor[key][name] = value
+        onChangeSolicitudCompra(valor, 'form', index)
     }
     
     render() {
@@ -362,7 +389,7 @@ class TicketView extends Component {
                                                 <div className="d-flex align-items-start flex-wrap justify-content-between">
                                                     {
                                                         data.descripcion ?
-                                                            <div className="font-weight-light text-dark-50 py-lg-2 col-md-10 text-justify pl-0">
+                                                            <div className="font-weight-light text-dark-50 py-lg-2 col-md-12 text-justify pl-0">
                                                                 {data.descripcion}
                                                             </div>
                                                         : ''
@@ -603,17 +630,6 @@ class TicketView extends Component {
                         : <> </>
                     : <> </>
                 }
-                {/* <SolicitudCompraForm
-                                form={formulario.solicitud}
-                                onChange={onChangeSolicitud}
-                                options={options}
-                                setOptions={setOptions}
-                                onSubmit={onSubmitSCompra}
-                                clearFiles={clearFiles}
-                                formeditado={formeditado}
-                                className="px-3"
-                                handleChange={handleChange}
-                            /> */}
                 <Modal size = { activeKeyNav === 'solicitud-compra' ? 'lg' : 'xl'} title={title} show={modal.solicitud} handleClose={handleCloseSolicitud} >
                     {
                         activeKeyNav === 'solicitud-compra'?
@@ -634,6 +650,102 @@ class TicketView extends Component {
                                                         <div style={{ display: 'flex', maxHeight: '60vh'}} >
                                                             <Scrollbar>
                                                                 {
+                                                                    formulario.conceptos.map((concepto, index) => {
+                                                                        return(
+                                                                            <div className="container px-3" key={index} >
+                                                                                <hr className="hr-text" data-content={`${concepto.partida}`}/>
+                                                                                <div className="d-flex justify-content-center">
+                                                                                    <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-warning font-weight-light mb-0 text-center">
+                                                                                        <input type="checkbox" name = 'selector' value = { concepto.join } checked = { concepto.join } 
+                                                                                            onChange = { (e) => {this.selectCheckInner(e, index)} } />
+                                                                                        Marca para generar solo una solicitud de compra
+                                                                                        <span></span>
+                                                                                    </label>
+                                                                                </div>
+                                                                                {
+                                                                                    concepto.join ?
+                                                                                        <div className="row mx-0 pb-3">
+                                                                                            <div className="col-md-6">
+                                                                                                <SelectSearchGray value = { concepto.area } withtextlabel = { 1 }
+                                                                                                    placeholder = 'Seleccionar un área' withtaglabel = { 1 } 
+                                                                                                    withplaceholder = { 1 } options = { this.setConceptosOptions(concepto.concepto)} 
+                                                                                                    requirevalidation = { 1 } messageinc='Incorrecto. Selecciona el área' customdiv='mb-0' />
+                                                                                            </div>
+                                                                                            <div className="col-md-6">
+                                                                                                <SelectSearchGray value = { concepto.subarea } withtaglabel = { 1 }
+                                                                                                    placeholder = 'Seleccionar un subárea' withtextlabel = { 1 } 
+                                                                                                    withplaceholder = { 1 } requirevalidation = { 1 }
+                                                                                                    onChange = { (value) => onChangeSolicitudCompra(value, 'subarea', index)}
+                                                                                                    options = { this.setConceptosSubareasOptions(concepto, index)} 
+                                                                                                    messageinc='Incorrecto. Selecciona la subárea' customdiv='mb-0' />
+                                                                                            </div>
+                                                                                            <div className="col-md-12">
+                                                                                                <InputGray as='textarea' name='descripcion' placeholder='Descripción'
+                                                                                                    value={concepto.descripcion} withtaglabel={1}
+                                                                                                    withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompra(e, index) }}
+                                                                                                    requirevalidation={1} messageinc='Incorrecto. Escribe una descripción' customclass="px-2 textarea-input"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    : 
+                                                                                        concepto ?
+                                                                                            concepto.conceptos ? 
+                                                                                                concepto.form.map((concept, key) => {
+                                                                                                    return(
+                                                                                                        <div className="containter p-2" key = { key }>
+                                                                                                            <hr 
+                                                                                                                className="hr-text hr-text__warning" 
+                                                                                                                key = { key }
+                                                                                                                data-content={`${concept.concepto.concepto.clave}`}/>
+                                                                                                            <div className="row mx-0 pb-3">
+                                                                                                                <div className="col-md-6">
+                                                                                                                    <SelectSearchGray 
+                                                                                                                        value = { concept.area } 
+                                                                                                                        withtextlabel = { 1 }
+                                                                                                                        placeholder = 'Seleccionar un área' 
+                                                                                                                        withtaglabel = { 1 } 
+                                                                                                                        withplaceholder = { 1 } 
+                                                                                                                        options = { this.setConceptosOptions(concept.concepto)} 
+                                                                                                                        requirevalidation = { 1 } 
+                                                                                                                        messageinc='Incorrecto. Selecciona el área' 
+                                                                                                                        customdiv='mb-0' />
+                                                                                                                </div>
+                                                                                                                <div className="col-md-6">
+                                                                                                                    <SelectSearchGray 
+                                                                                                                        value = { concept.subarea } 
+                                                                                                                        withtaglabel = { 1 }
+                                                                                                                        placeholder = 'Seleccionar un subárea' 
+                                                                                                                        withtextlabel = { 1 } 
+                                                                                                                        withplaceholder = { 1 } 
+                                                                                                                        requirevalidation = { 1 }
+                                                                                                                        onChange = { (value) => this.onChangeValueSolicitudCompraInner(value, 'subarea', index, key)}
+                                                                                                                        options = { this.setConceptosSubareasOptions(concept, index)} 
+                                                                                                                        messageinc='Incorrecto. Selecciona la subárea' customdiv='mb-0' />
+                                                                                                                </div>
+                                                                                                                <div className="col-md-12">
+                                                                                                                    <InputGray 
+                                                                                                                        as = 'textarea' 
+                                                                                                                        name = 'descripcion' 
+                                                                                                                        placeholder = 'Descripción'
+                                                                                                                        value = { concept.descripcion } 
+                                                                                                                        withtaglabel = { 1 }
+                                                                                                                        withtextlabel = { 1 } 
+                                                                                                                        onChange = { (e) => { this.onChangeSolicitudCompraInner(e, index, key) }}
+                                                                                                                        requirevalidation = { 1 } 
+                                                                                                                        messageinc = 'Incorrecto. Escribe una descripción' 
+                                                                                                                        customclass="px-2 textarea-input"/>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>            
+                                                                                                    )            
+                                                                                                })
+                                                                                            : <></>
+                                                                                        : <></>
+                                                                                }
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                                {/* {
                                                                     presupuesto.conceptos.map((concepto, index) => {
                                                                         if(concepto.active)
                                                                             return(
@@ -665,7 +777,7 @@ class TicketView extends Component {
                                                                             )
                                                                         return <div key = {index}></div>
                                                                     })
-                                                                }
+                                                                } */}
                                                         </Scrollbar>
                                                         </div>
                                                     </div>

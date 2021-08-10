@@ -213,7 +213,7 @@ class Bodega extends Component {
             <Layout active = 'proyectos'  {...this.props}>
                 <Card>
                     <Card.Header> <div className="card-custom"> <h3 className="card-label"> { title } </h3> </div> </Card.Header>
-                    <Card.Body>
+                    <Card.Body className="pt-0">
                         <EquipoFormulario form = { form } options = { options } onChange = { this.onChange }
                             handleChange = { this.handleChangeFiles } onSubmit = { this.onSubmit } />
                     </Card.Body>

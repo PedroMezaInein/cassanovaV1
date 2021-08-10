@@ -444,7 +444,7 @@ class Compras extends Component {
                     estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(compra.total)),
                     fecha: setDateTableReactDom(compra.created_at, this.doubleClick, compra, 'fecha', 'text-center'),
-                    tipo: this.label(compra.hasTickets ? 'ticket' : 'obra'),
+                    tipo: this.labelIcon(compra),
                     id: compra.id,
                     objeto: compra
                 }
@@ -454,7 +454,8 @@ class Compras extends Component {
         return aux
     }
 
-    label(text){
+    labelIcon(compra){
+        let text = compra.hasTicket ? 'ticket' : 'obra'
         return(
             <div className='d-flex align-items-center justify-content-center'>
                 <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}

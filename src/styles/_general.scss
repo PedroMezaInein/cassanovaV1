@@ -3173,4 +3173,14 @@ table#calendario-proyectos tr:last-child td {
         color: #2171c1;
         background-color: #fcfcfa;
     }
+
+    &__warning{
+        &:before{ background: linear-gradient(to right, transparent, #FFA800, transparent); }
+        &:after{ color: #FFA800; }
+    }
+}
+// Se agregó estilo para calendarios, flechas y botón alinados a la derecha
+.fc-toolbar-chunk:nth-of-type(3) {
+    width: -webkit-fill-available;
+    text-align: end;
 }

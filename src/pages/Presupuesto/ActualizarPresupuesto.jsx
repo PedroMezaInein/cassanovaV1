@@ -39,7 +39,8 @@ class ActualizarPresupuesto extends Component {
                     mensaje: ''
                 },
                 unidad_id:'',
-                bg_costo:true
+                bg_costo:true,
+                bg_cantidad:true
             }],
             conceptosNuevos: []
         },
@@ -201,7 +202,8 @@ class ActualizarPresupuesto extends Component {
                             mensajes: mensajeAux,
                             unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : '',
                             unidad_id: concepto.concepto.unidad.id.toString(),
-                            bg_costo:concepto.costo>0?false:true
+                            bg_costo:concepto.costo>0?false:true,
+                            bg_cantidad:true
                         })
                     }
                 })
@@ -349,6 +351,13 @@ class ActualizarPresupuesto extends Component {
                 form['conceptos'][key]['bg_costo'] = true
             }else{
                 form['conceptos'][key]['bg_costo'] = false
+            }
+        }
+        if (name === 'cantidad_preliminar'){
+            if (presupuesto.conceptos[key][name].toString() !== value) {
+                form['conceptos'][key]['bg_cantidad'] = false
+            }else{
+                form['conceptos'][key]['bg_cantidad'] = true
             }
         }
         form['conceptos'][key][name] = value

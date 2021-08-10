@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles'
+import { dayDMY } from '../../../functions/setters'
 export default class ProyectosCard extends Component {
     render() {
         const { proyecto } = this.props
@@ -234,7 +234,7 @@ export default class ProyectosCard extends Component {
                                                     <div className="col-8">
                                                         {
                                                             proyecto.fecha_inicio ?
-                                                                <span><Moment format="DD/MM/YYYY">{proyecto.fecha_inicio}</Moment></span>
+                                                                <span>{dayDMY(proyecto.fecha_inicio)}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -244,7 +244,7 @@ export default class ProyectosCard extends Component {
                                                     <div className="col-8">
                                                         {
                                                             proyecto.fecha_fin ?
-                                                                <span><Moment format="DD/MM/YYYY">{proyecto.fecha_fin}</Moment></span>
+                                                                <span>{dayDMY(proyecto.fecha_fin)}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>

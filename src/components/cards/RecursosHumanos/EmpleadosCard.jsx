@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
-import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
+import { dayDMY } from '../../../functions/setters'
 export default class EmpleadosCard extends Component {
     render() {
         const { empleado } = this.props
@@ -170,7 +170,7 @@ export default class EmpleadosCard extends Component {
                                                     <div className="col-7">
                                                         {
                                                             empleado.fecha_inicio ?
-                                                                <span><Moment format="DD/MM/YYYY">{empleado.fecha_inicio}</Moment></span>
+                                                                <span>{dayDMY(empleado.fecha_inicio)}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -180,7 +180,7 @@ export default class EmpleadosCard extends Component {
                                                     <div className="col-7">
                                                         {
                                                             empleado.fecha_fin ?
-                                                                <span><Moment format="DD/MM/YYYY">{empleado.fecha_fin}</Moment></span>
+                                                                <span>{dayDMY(empleado.fecha_fin)}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -228,7 +228,7 @@ export default class EmpleadosCard extends Component {
                                                     <div className="col-7">
                                                         {
                                                             empleado.fecha_alta_imss ?
-                                                                <span><Moment format="DD/MM/YYYY">{empleado.fecha_alta_imss}</Moment></span>
+                                                                <span>{dayDMY(empleado.fecha_alta_imss)}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>

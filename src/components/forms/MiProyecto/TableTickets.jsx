@@ -76,10 +76,10 @@ class TableTickets extends Component {
                                                 {
                                                     ticket.presupuesto.length ?
                                                         <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>PRESUPUESTO</span></Tooltip>}>
-                                                            <span className={`btn btn-icon btn-sm ${ticket.estatus_ticket.estatus === "Respuesta pendiente" ? 'btn-light-warning pulse pulse-warning' : 'btn-light  btn-hover-primary'}`} onClick={(e) => { openModalSee(ticket) }}>
-                                                                <i className={`las la-file-invoice-dollar icon-xl text-${ticket.estatus_ticket.estatus === "Respuesta pendiente" ? '' : 'primary'} `}></i>
+                                                            <span className={`btn btn-icon btn-sm ${ticket.estatus_ticket.estatus === "Aprobación pendiente" ? 'btn-light-warning pulse pulse-warning' : 'btn-light  btn-hover-primary'}`} onClick={(e) => { openModalSee(ticket) }}>
+                                                                <i className={`las la-file-invoice-dollar icon-xl text-${ticket.estatus_ticket.estatus === "Aprobación pendiente" ? '' : 'primary'} `}></i>
                                                                 {
-                                                                    ticket.estatus_ticket.estatus === "Respuesta pendiente" ?
+                                                                    ticket.estatus_ticket.estatus === "Aprobación pendiente" ?
                                                                     <span className="pulse-ring"></span>
                                                                     :''
                                                                 }

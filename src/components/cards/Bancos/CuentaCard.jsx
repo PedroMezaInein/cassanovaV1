@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
-import Moment from 'react-moment'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
 import NumberFormat from 'react-number-format'
+import { dayDMY } from '../../../functions/setters'
 export default class CuentaCard extends Component {
     render() {
         const { cuenta } = this.props
@@ -33,13 +33,11 @@ export default class CuentaCard extends Component {
                                         <div className="d-flex align-items-start mr-2">
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
-                                                    </span>
+                                                    <i className="flaticon2-calendar-8 text-primary icon-lg"></i>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{cuenta.created_at}</Moment></div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{dayDMY(cuenta.created_at)}</div>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
                                             </div>
                                         </div>
@@ -221,7 +219,7 @@ export default class CuentaCard extends Component {
                         {
                             cuenta.descripcion ?
                                 <div className="mt-4">
-                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light mt-4">
+                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light mt-4 text-justify">
                                         <strong >Descripción: </strong>{cuenta.descripcion}
                                     </div>
                                 </div>
