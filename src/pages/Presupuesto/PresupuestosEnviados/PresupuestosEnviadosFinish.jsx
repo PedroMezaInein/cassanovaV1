@@ -403,7 +403,7 @@ class PresupuestosEnviadosFinish extends Component {
 
     render() {
         
-        const { form, presupuesto, modal, modalObject, formeditado } = this.state;
+        const { form, presupuesto, modal, modalObject } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}
