@@ -168,7 +168,7 @@ class ProcesoTicketForm extends Component {
                                                                     <Button icon='' className="btn btn-light-primary font-weight-bold text-uppercase mr-2" text="GUARDAR"
                                                                         onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') }} />
                                                                     <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="GENERAR PDF"
-                                                                        onClick = { (e) => { questionAlert('¿DESEAS GENERAR EL REPORTE?', 'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DEL PROBLEMA REPORTADO Y SOLUCIONADO', () => generateEmail(true)) } } />
+                                                                        onClick = { (e) => { questionAlert('¿DESEAS GENERAR EL REPORTE?', 'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DE LAS PETICIONES Y LOS TRABAJOS REALIZADOS', () => generateEmail(true)) } } />
                                                                 </div>
                                                             : ''
                                                         }
@@ -202,11 +202,11 @@ class ProcesoTicketForm extends Component {
                             <div className="separator separator-dashed my-10"></div>
                             <Row className="mx-0 d-flex justify-content-center">
                                 <Col md="4" className="text-center">
-                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PROBLEMA REPORTADO</div>
+                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PETICIONES</div>
                                     <ItemSlider items={form.adjuntos.reporte_problema_reportado.files} item='reporte_problema_reportado' />
                                 </Col>
                                 <Col md="4" className="text-center">
-                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PROBLEMA SOLUCIONADO</div>
+                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">TRABAJOS REALIZADOS</div>
                                     <ItemSlider items={form.adjuntos.reporte_problema_solucionado.files} item='reporte_problema_solucionado' />
                                 </Col>
                             </Row>

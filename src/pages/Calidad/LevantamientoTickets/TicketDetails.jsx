@@ -54,12 +54,12 @@ class TicketDetails extends Component {
                 adjuntos: {
                     reporte_problema_reportado: {
                         value: '',
-                        placeholder: 'Problema reportado',
+                        placeholder: 'Peticiones',
                         files: []
                     },
                     reporte_problema_solucionado: {
                         value: '',
-                        placeholder: 'Problema solucionado',
+                        placeholder: 'Trabajos realizados',
                         files: []
                     }
                 },
@@ -1279,7 +1279,7 @@ class TicketDetails extends Component {
     generarReporteFotografico = () => {
         const { ticket, formularios } = this.state
         questionAlertY('¿DESEAS GENERAR EL REPORTE?',
-            'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DEL PROBLEMA REPORTADO Y SOLUCIONADO',
+            'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DE LAS PETICIONES Y LOS TRABAJOS REALIZADOS',
             () => this.generarReporteFotograficoAxios(),
             () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
         )

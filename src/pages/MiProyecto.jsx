@@ -1280,8 +1280,8 @@ class MiProyecto extends Component {
                                     <>
                                         <span className="nav-text font-weight-bold ml-0">REPORTES FOTOGRÁFICOS</span>
                                     </>}>
-                                    <NavDropdown.Item className="ml-0" eventKey="second">PROBLEMA REPORTADO</NavDropdown.Item>
-                                    <NavDropdown.Item className="ml-0" eventKey="third">PROBLEMA SOLUCIONADO</NavDropdown.Item>
+                                    <NavDropdown.Item className="ml-0" eventKey="second">PETICIONES</NavDropdown.Item>
+                                    <NavDropdown.Item className="ml-0" eventKey="third">TRABAJOS REALIZADOS</NavDropdown.Item>
                                 </NavDropdown>
                             </Nav.Item>
                         </Nav>
