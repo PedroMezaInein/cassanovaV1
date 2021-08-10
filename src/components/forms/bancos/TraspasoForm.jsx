@@ -44,7 +44,7 @@ class TraspasoForm extends Component {
                     <div className="col-md-12">
                         <Input requirevalidation = { 0 } formeditado = { formeditado } placeholder = "COMENTARIO" as = "textarea" rows = "3"
                             name = "comentario" value = { form.comentario } onChange = { onChange } messageinc = "Incorrecto. Ingresa el comentario."
-                            style = { { paddingLeft: "10px" } } />
+                            customclass="px-2" />
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>

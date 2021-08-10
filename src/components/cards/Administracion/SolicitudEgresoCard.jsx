@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
-import Moment from 'react-moment'
 import Card from 'react-bootstrap/Card'
 import SymbolIcon from '../../singles/SymbolIcon';
+import { dayDMY } from '../../../functions/setters'
 
 export default class SolicitudEgresoCard extends Component {
     render() {
@@ -112,7 +112,7 @@ export default class SolicitudEgresoCard extends Component {
                                         <div className="d-flex justify-content-start mr-2">
                                             <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Box1.svg' />
                                             <div>
-                                                <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{data.fecha}</Moment></div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{dayDMY(data.fecha)}</div>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
                                             </div>
                                         </div>
@@ -145,7 +145,7 @@ export default class SolicitudEgresoCard extends Component {
                         {
                             data.descripcion ?
                                 <div className="mt-5">
-                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light mt-4">
+                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light mt-4 text-justify">
                                         <strong >Descripción: </strong>{data.descripcion}
                                     </div>
                                 </div>

@@ -320,7 +320,7 @@ class ProyectosForm extends Component {
                                             <div className="col-md-12">
                                                 <Input requirevalidation = { 0 } formeditado = { formeditado } rows = "3" onChange = { onChange }
                                                     as = "textarea" placeholder = "DESCRIPCIÓN" name = "descripcion" value = { form.descripcion }
-                                                    style = { { paddingLeft: "10px" } } messageinc = "Ingresa una descripción." />
+                                                    customclass="px-2" messageinc = "Ingresa una descripción." />
                                             </div>
                                         </div>
                                     </Col>

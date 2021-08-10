@@ -13,11 +13,15 @@ import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import InputGray from '../../../components/form-components/Gray/InputGray'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
+import { Modal } from '../../../components/singles'
+import { EquipoCard } from '../../../components/cards'
 class Equipo extends Component {
 
     state = {
         form: { marca: '', equipo: '', modelo: '', proveedor: '', partida: '', observaciones: ''},
-        options: { proveedores: [], partidas: [] }
+        options: { proveedores: [], partidas: [] },
+        modal: { see: false },
+        equipo: ''
     }
 
     componentDidMount() {
@@ -48,7 +52,7 @@ class Equipo extends Component {
                 modelo: setTextTableReactDom(equipo.modelo, this.doubleClick, equipo, 'modelo', 'text-center'),
                 proveedor: setTextTableReactDom(equipo.proveedor ? equipo.proveedor.razon_social : '', this.doubleClick, equipo, 'proveedor', 'text-center'),
                 partida: setTextTableReactDom(equipo.partida ? equipo.partida.nombre : '', this.doubleClick, equipo, 'partida', 'text-center'),
-                observaciones: setTextTableReactDom(equipo.observaciones, this.doubleClick, equipo, 'observaciones', 'text-center'),
+                observaciones: setTextTableReactDom(equipo.observaciones, this.doubleClick, equipo, 'observaciones', 'text-justify'),
                 ficha: this.setFileLink(equipo.ficha_tecnica),
             })
         })
@@ -83,6 +87,13 @@ class Equipo extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
+            },
+            {
+                text: 'Mostrar&nbsp;información',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
         return aux
@@ -214,16 +225,31 @@ class Equipo extends Component {
 
     getEquiposAxios = async() => { $('#kt_datatable_equipos').DataTable().ajax.reload(); }
 
+    openModalSee = equipo => {
+        const { modal } = this.state
+        modal.see = true
+        this.setState({ ...this.state, modal, equipo: equipo })
+    }
+
+    handleCloseSee = () => {
+        const { modal } = this.state
+        modal.see = false
+        this.setState({ ...this.state, modal, equipo: '' })
+    }
     render(){
         const { access_token } = this.props.authUser
+        const { modal, equipo } = this.state
         return(
             <Layout active = 'proyectos'  {...this.props}>
                 <NewTableServerRender columns = { EQUIPOS_COLUMNS } title = 'Equipos' subtitle = 'Listado de equipos'
                     mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/equipos/add' mostrar_acciones = { true }
-                    actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete } } }
+                    actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }
                     accessToken = { access_token } setter = { this.setEquipos } cardTable = 'cardTable_equipos'
                     urlRender = { `${URL_DEV}v1/proyectos/equipos` } idTable = 'kt_datatable_equipos'
                     cardTableHeader = 'cardTableHeader_equipos' cardBody = 'cardBody_equipos' />
+                <Modal size="lg" title="Equipo" show={modal.see} handleClose={this.handleCloseSee} >
+                    <EquipoCard equipo={equipo} />
+                </Modal>
             </Layout>
         )
     }

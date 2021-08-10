@@ -317,8 +317,8 @@ class App extends Component{
                     <Route path = "/presupuesto/presupuesto-diseño" exact component ={ PresupuestoDiseño } />  
                     <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />   
                     
-                    <Route path = "/presupuesto/presupuestos-enviados" exact component = {PresupuestosEnviados} />
-                    <Route path = "/presupuesto/presupuestos-enviados/finish" exact component = {PresupuestosEnviadosFinish} />
+                    <Route path = "/presupuesto/utilidad-presupuestos" exact component = {PresupuestosEnviados} />
+                    <Route path = "/presupuesto/utilidad-presupuestos/finish" exact component = {PresupuestosEnviadosFinish} />
 
                     {/*  ANCHOR Routes for proyectos */}
 

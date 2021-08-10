@@ -77,7 +77,8 @@ class TicketDetails extends Component {
                     importe: 0,
                     id: '',
                     mensajes: { active: false, mensaje: '' },
-                    unidad_id:''
+                    unidad_id:'',
+                    bg_cantidad:true
                 }],
                 conceptosNuevos: []
             },
@@ -399,7 +400,8 @@ class TicketDetails extends Component {
                         costo: concepto.costo,
                         importe: concepto.importe,
                         unidad: concepto.unidad ? concepto.unidad.nombre : '',
-                        unidad_id: concepto.unidad ? concepto.unidad.id.toString() : ''
+                        unidad_id: concepto.unidad ? concepto.unidad.id.toString() : '',
+                        bg_cantidad:true
                     })
                 })
                 formularios.preeliminar.conceptos = aux
@@ -714,6 +716,7 @@ class TicketDetails extends Component {
     openModalSolicitud = type => {
         const { modal, formularios, ticket } = this.state
         let { title } = this.state
+        console.log(ticket, 'ticket')
         switch(type){
             case 'compra':
                 title = 'Nueva solicitud de compra'
@@ -732,6 +735,12 @@ class TicketDetails extends Component {
         modal.solicitud = true
         formularios.solicitud.empresa = ticket.proyecto.empresa.id.toString()
         formularios.solicitud.proyecto = ticket.proyecto.id.toString()
+        if (ticket.presupuesto) {
+            formularios.solicitud.adjuntos.adjunto.files = [{
+                name: ticket.presupuesto[0].name,
+                url: ticket.presupuesto[0].url
+            }]
+        }
         this.setState({ ...this.state, modal, formeditado: 1, title:title, formularios })
         this.getOptionsAxios()
     }
@@ -1055,8 +1064,8 @@ class TicketDetails extends Component {
             case 'En proceso':
                 questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN PROCESO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
                 break;
-            case 'Respuesta pendiente':
-                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EL TICKET EN RESPUESTA PENDIENTE ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+            case 'Aprobación pendiente':
+                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EL TICKET EN APROBACIÓN PENDIENTE ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
                 break;
             case 'En revisión':
                 questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN REVISIÓN EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))

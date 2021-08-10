@@ -3,6 +3,7 @@ import { Form, Card } from 'react-bootstrap'
 import { InputMoneySinText, InputNumberSinText, InputSinText, Button, InputNumberGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas, dayDMY } from '../../../functions/setters'
+import NumberFormat from 'react-number-format'
 class UltimoPresupuesto extends Component {
     
     state = {
@@ -198,23 +199,25 @@ class UltimoPresupuesto extends Component {
                                 <div className="card-title">
                                     <h3 className="card-label">Presupuesto preeliminar</h3>
                                 </div>
-                                <div className="card-toolbar">
-                                    <InputNumberGray
-                                        withtaglabel={0}
-                                        withtextlabel={1}
-                                        withplaceholder={1}
-                                        withicon={1}
-                                        withformgroup={0}
-                                        iconvalid={1}
-                                        requirevalidation={1}
-                                        placeholder='TPO. DE VALIDEZ (DÍAS NATURALES)'
-                                        formeditado={1}
-                                        name='tiempo_valido'
-                                        value={form.tiempo_valido}
-                                        onChange={onChangeInput}
-                                        inputsolid='bg-white border'
-                                        iconclass='flaticon-calendar-with-a-clock-time-tools icon-xl'
-                                    />
+                                <div className="card-toolbar justify-content-end">
+                                    <div className="col-md-10 px-0">
+                                        <InputNumberGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            withformgroup={0}
+                                            iconvalid={1}
+                                            requirevalidation={1}
+                                            placeholder='VALIDEZ EN DÍAS'
+                                            formeditado={1}
+                                            name='tiempo_valido'
+                                            value={form.tiempo_valido}
+                                            onChange={onChangeInput}
+                                            inputsolid='bg-white border'
+                                            iconclass='flaticon-calendar-with-a-clock-time-tools icon-xl'
+                                        />
+                                    </div>
                                 </div>
                             </Card.Header>
                             <Card.Body className="pt-2">
@@ -386,14 +389,28 @@ class UltimoPresupuesto extends Component {
                                                                     thousandseparator={true}
                                                                     prefix='%'
                                                                     disabled={!form.conceptos[key].active}
-                                                                    customclass='rounded-pill px-2 text-center border'
+                                                                    customclass={`rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Utilidad'?form.conceptos[key].bg_margen ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}
                                                                 />
                                                             </td>
                                                             <td className="text-center">
-                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['precio_unitario']}</div>
+                                                                <div className="font-weight-bold font-size-sm">
+                                                                    <NumberFormat
+                                                                        value= {form['conceptos'][key]['precio_unitario']}
+                                                                        displayType={'text'}
+                                                                        thousandSeparator={true}
+                                                                        renderText={value => <div>{value}</div>}
+                                                                    />
+                                                                </div>
                                                             </td>
                                                             <td className="text-center">
-                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
+                                                                <div className="font-weight-bold font-size-sm">
+                                                                    <NumberFormat
+                                                                        value= {form['conceptos'][key]['importe']}
+                                                                        displayType={'text'}
+                                                                        thousandSeparator={true}
+                                                                        renderText={value => <div>{value}</div>}
+                                                                    />
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     </>

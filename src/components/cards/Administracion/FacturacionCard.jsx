@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
-import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles'
-import { setLabelTable } from '../../../functions/setters'
+import { setLabelTable, dayDMY } from '../../../functions/setters'
 export default class FacturacionCard extends Component {    
     setAdjuntosFacturas = () => {
         const { factura } = this.props
@@ -108,7 +107,7 @@ export default class FacturacionCard extends Component {
                                                     <div className="col-8">
                                                         {
                                                             factura.fecha ?
-                                                                <span><Moment format="DD/MM/YYYY">{factura.fecha}</Moment></span>
+                                                                <span>{dayDMY(factura.fecha)}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>

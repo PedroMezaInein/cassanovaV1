@@ -3,6 +3,7 @@ import { Form, Card } from 'react-bootstrap'
 import { InputMoneySinText, InputNumberSinText, InputSinText, Button, SelectSearchGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas, dayDMY } from '../../../functions/setters'
+import NumberFormat from 'react-number-format'
 class ActualizarPresupuestoForm extends Component {
 
     state = {
@@ -360,7 +361,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                 <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "cantidad_preliminar"
                                                                     value = { form['conceptos'][key]['cantidad_preliminar'] } onChange = { e => onChange(key, e, 'cantidad_preliminar') }
                                                                     thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active } 
-                                                                    customclass='rounded-pill px-2 border text-center' />
+                                                                    customclass={`rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].bg_cantidad ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}/>
                                                             </td>
                                                             <td className="text-center">
                                                                 <InputNumberSinText requirevalidation = { 0 } formeditado = { formeditado } name = "desperdicio" 
@@ -378,12 +379,26 @@ class ActualizarPresupuestoForm extends Component {
                                                                     </td>
                                                             }
                                                             <td className="text-center">
-                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
+                                                                <div className="font-weight-bold font-size-sm">
+                                                                    <NumberFormat
+                                                                        value= {form['conceptos'][key]['cantidad']}
+                                                                        displayType={'text'}
+                                                                        thousandSeparator={true}
+                                                                        renderText={value => <div>{value}</div>}
+                                                                    />
+                                                                </div>
                                                             </td>
                                                             {
                                                                 (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
                                                                 <td className="text-center">
-                                                                    <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
+                                                                    <div className="font-weight-bold font-size-sm">
+                                                                        <NumberFormat
+                                                                            value= {form['conceptos'][key]['importe']}
+                                                                            displayType={'text'}
+                                                                            thousandSeparator={true}
+                                                                            renderText={value => <div>{value}</div>}
+                                                                        />
+                                                                    </div>
                                                                 </td>
                                                             }
                                                         </tr>

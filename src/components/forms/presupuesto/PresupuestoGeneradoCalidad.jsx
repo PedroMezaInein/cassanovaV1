@@ -31,20 +31,20 @@ class PresupuestoGeneradoCalidad extends Component {
                                         {
                                             presupuesto.estatus ? 
                                                 presupuesto.estatus.estatus !== 'Aceptado' ?
-                                                    <Button icon = '' only_icon = "flaticon2-check-mark icon-sm"
-                                                        onClick = { () => { openAlertChangeStatusP('Aceptado') } }
-                                                        className = "btn btn-icon btn-light-success btn-xs mr-2 ml-auto"
-                                                        tooltip = { { text: 'SE ACEPTÓ PRESUPUESTO' } } />
+                                                    <a onClick = { () => { openAlertChangeStatusP('Aceptado') } } className="btn btn-hover-text-success btn-hover-icon-success btn-sm btn-text-dark-50 bg-hover-light-success rounded font-weight-bolder font-size-sm p-2 mr-2">
+                                                        <i className="las la-check-circle icon-lg text-success pr-1"></i>
+                                                        <span className="border-bottom border-success">¿Se aceptó el presupuesto?</span>
+                                                    </a>
                                                 : ''
                                             : ''
                                         }
                                         {
                                             presupuesto.estatus ? 
                                                 presupuesto.estatus.estatus !== 'Rechazado' ?
-                                                    <Button icon = '' only_icon = "flaticon2-cross icon-sm"
-                                                        onClick = { () => { openAlertChangeStatusP('Rechazado') } }
-                                                        className = "btn btn-icon btn-light-danger btn-xs pulse pulse-danger"
-                                                        tooltip = { { text: 'SE RECHAZÓ PRESUPUESTO' } } />
+                                                    <a onClick = { () => { openAlertChangeStatusP('Rechazado') } } className="btn btn-hover-text-danger btn-hover-icon-danger btn-sm btn-text-dark-50 bg-hover-light-danger rounded font-weight-bolder font-size-sm p-2">
+                                                        <i className="las la-times-circle icon-lg text-danger pr-1"></i>
+                                                        <span className="border-bottom border-danger">¿Se rechazó el presupuesto?</span>
+                                                    </a>
                                                 : ''
                                             : ''
                                         }

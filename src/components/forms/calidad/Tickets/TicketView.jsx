@@ -109,10 +109,17 @@ class TicketView extends Component {
     onChangePreeliminar = (key, e, name) => {
         let { value } = e.target
         const { formulario, onChange, presupuesto } = this.props
+        let valor = formulario.preeliminar.conceptos
         if (name === 'desperdicio') {
             value = value.replace('%', '')
         }
-        let valor = formulario.preeliminar.conceptos
+        if (name === 'cantidad_preliminar'){
+            if (presupuesto.conceptos[key][name].toString() !== value) {
+                valor[key]['bg_cantidad'] = false
+            }else{
+                valor[key]['bg_cantidad'] = true
+            }
+        }
         valor[key][name] = value
         let cantidad = valor[key].cantidad_preliminar * (1 + (valor[key].desperdicio / 100))
         cantidad = cantidad.toFixed(2)
@@ -382,7 +389,7 @@ class TicketView extends Component {
                                                 <div className="d-flex align-items-start flex-wrap justify-content-between">
                                                     {
                                                         data.descripcion ?
-                                                            <div className="font-weight-light text-dark-50 py-lg-2 col-md-10 text-justify pl-0">
+                                                            <div className="font-weight-light text-dark-50 py-lg-2 col-md-12 text-justify pl-0">
                                                                 {data.descripcion}
                                                             </div>
                                                         : ''

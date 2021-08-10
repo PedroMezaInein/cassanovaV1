@@ -291,7 +291,7 @@ class NewTableServerRender extends Component {
                 });
             },
 
-            colReorder: true,
+            // colReorder: true,
             responsive: {
                 details: {
                     renderer: function(api, rowIdx, columns){ 

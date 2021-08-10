@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import { ItemSlider } from '../../singles'
 export default class BodegaCard extends Component {
@@ -32,7 +31,7 @@ export default class BodegaCard extends Component {
                                         <Card.Body className="p-0">
                                             <div className="text-justify">
                                                 <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">NOMBRE DE LA HERRAMIENTA:</label>
+                                                    <label className="col-5 font-weight-bolder text-primary">{`NOMBRE ${bodega.tipo ==='material'?'DEL MATERIAL':'DE LA HERRAMIENTA'}`}:</label>
                                                     <div className="col-7">
                                                         {
                                                             bodega.nombre ?
@@ -42,51 +41,37 @@ export default class BodegaCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">MODELO DE LA HERRAMIENTA:</label>
+                                                    <label className="col-5 font-weight-bolder text-primary">PARTIDA:</label>
                                                     <div className="col-7">
                                                         {
-                                                            bodega.modelo ?
-                                                                <span>{bodega.modelo}</span>
+                                                            bodega.partida ?
+                                                                <span>{bodega.partida.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">SERIE DE LA HERRAMIENTA:</label>
+                                                    <label className="col-5 font-weight-bolder text-primary">UNIDAD:</label>
                                                     <div className="col-7">
                                                         {
-                                                            bodega.serie ?
-                                                                <span>{bodega.serie}</span>
+                                                            bodega.unidad ?
+                                                                <span>{bodega.unidad.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">EMPRESA:</label>
+                                                    <label className="col-5 font-weight-bolder text-primary">CANTIDAD:</label>
                                                     <div className="col-7">
-                                                        {
-                                                            bodega.empresa ?
-                                                                <span>{bodega.empresa.name}</span>
-                                                                : <span>-</span>
-                                                        }
+                                                        <span>{bodega.cantidad}</span>
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">PROYECTO:</label>
+                                                    <label className="col-5 font-weight-bolder text-primary">UBICACIÓN DEL MATERIAL:</label>
                                                     <div className="col-7">
                                                         {
-                                                            bodega.proyecto ?
-                                                                <span>{bodega.proyecto.nombre}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">FECHA DE COMPRA:</label>
-                                                    <div className="col-7">
-                                                        {
-                                                            bodega.created_at ?
-                                                                <span><Moment format="DD/MM/YYYY">{bodega.created_at}</Moment></span>
+                                                            bodega.ubicacion ?
+                                                                <span>{bodega.ubicacion}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>

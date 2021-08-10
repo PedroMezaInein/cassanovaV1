@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
-import Moment from 'react-moment'
+import { dayDMY } from '../../functions/setters'
 class FileItem extends Component {
 
     getIcon = () => {
@@ -74,9 +74,7 @@ class FileItem extends Component {
             </td>
             <td className="text-center">
                 <span className="text-muted font-weight-bold">
-                    <Moment format="DD/MM/YYYY">
-                        {item.created_at}
-                    </Moment>
+                    {dayDMY(item.created_at)}
                 </span>
             </td>
             {
@@ -90,9 +88,7 @@ class FileItem extends Component {
                         :
                         <td className="text-center">
                             <span className="text-muted font-weight-bold">
-                                <Moment format="DD/MM/YYYY">
-                                    {anotherDate}
-                                </Moment>
+                                {dayDMY(anotherDate)}
                             </span>
                         </td>
                     : ''

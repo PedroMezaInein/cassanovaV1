@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
-import Moment from 'react-moment'
 import Card from 'react-bootstrap/Card'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
+import { dayDMY } from '../../../functions/setters'
 export default class SolicitudCompraCard extends Component {
     render() {
         const { data, children } = this.props
         return (
             <div className="col-md-12">
                 <Card className="card card-without-box-shadown border-0">
-                    <div className="card-body d-flex align-items-center justify-content-between flex-wrap pb-2 pl-0 pr-0">
+                    <div className="card-body d-flex align-items-center justify-content-between flex-wrap pb-2 pl-0 pr-0 pt-4">
                         <div className="mr-2">
                             {
                                 data.proyecto ?
@@ -92,18 +92,14 @@ export default class SolicitudCompraCard extends Component {
                                 <div className="d-flex align-items-center mr-2">
                                     <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                         <div className="symbol-label">
-                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
-                                            </span>
+                                            <i className="flaticon2-calendar-8 text-primary icon-lg"></i>
                                         </div>
                                     </div>
                                     <div>
                                         {
                                             data.created_at ?
                                                 <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                                    <Moment format="DD/MM/YYYY">
-                                                        {data.created_at}
-                                                    </Moment>
+                                                    {dayDMY(data.created_at)}
                                                 </div>
                                                 : ''
                                         }

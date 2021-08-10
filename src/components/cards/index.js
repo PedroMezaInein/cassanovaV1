@@ -16,6 +16,7 @@ import ventasCard from './Proyectos/VentasCard'
 import bodegaCard from './Proyectos/BodegaCard'
 import solicitudDevolucionCard from './Proyectos/SolicitudDevolucionCard'
 import devolucionCard from './Proyectos/DevolucionCard'
+import equipoCard from './Proyectos/EquipoCard'
 
 //Administración
 import egresosCard from './Administracion/EgresosCard'
@@ -76,6 +77,7 @@ export const VentasCard = ventasCard
 export const BodegaCard = bodegaCard
 export const SolicitudDevolucionCard = solicitudDevolucionCard
 export const DevolucionCard = devolucionCard
+export const EquipoCard = equipoCard
 
 //Administración
 export const EgresosCard = egresosCard

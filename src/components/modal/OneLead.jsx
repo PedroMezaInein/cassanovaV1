@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import { Nav, Tab } from 'react-bootstrap'
 import { FileItem, SymbolIcon } from '../singles'
-import Moment from 'react-moment'
-import { setContactoIcon, setDateTableLG } from '../../functions/setters'
+import { setContactoIcon, setDateTableLG, dayDMY } from '../../functions/setters'
 import { deleteAlert } from '../../functions/alert'
 import { toAbsoluteUrl } from '../../functions/routers'
 import SVG from "react-inlinesvg";
 import Pagination from 'react-js-pagination'
-
 class OneLead extends Component{
 
     state = {
@@ -246,7 +244,7 @@ class OneLead extends Component{
                                     <div className="d-flex justify-content-start mr-2">
                                         <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Box1.svg' />
                                         <div>
-                                            <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{lead.created_at}</Moment></div>
+                                            <div className="font-size-h6 text-dark-75 font-weight-bolder">{dayDMY(lead.created_at)}</div>
                                             <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
                                         </div>
                                     </div>
