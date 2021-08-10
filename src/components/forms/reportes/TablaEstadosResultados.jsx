@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import Moment from 'react-moment'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 import Pagination from "react-js-pagination";
-
+import { dayDMY } from '../../../functions/setters'
 class TablaEstadosResultados extends Component {
 
     state = {
@@ -93,7 +92,7 @@ class TablaEstadosResultados extends Component {
                                                         <div className="text-center text-dark-75 mb-1 font-size-lg pl-2">{venta.id}</div>
                                                     </td>
                                                     <td>
-                                                        <span className="text-center text-dark-75 d-block font-size-lg"><Moment format="DD/MM/YYYY">{venta.created_at}</Moment></span>
+                                                        <span className="text-center text-dark-75 d-block font-size-lg">{dayDMY(venta.created_at)}</span>
                                                     </td>
                                                     <td>
                                                         <span className="text-right text-dark-75 d-block font-size-lg">{setMoneyTableSinSmall(venta.total)}</span>
@@ -129,7 +128,7 @@ class TablaEstadosResultados extends Component {
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <span className="text-center text-dark-75 d-block font-size-lg"><Moment format="DD/MM/YYYY">{ingreso.created_at}</Moment></span>
+                                                        <span className="text-center text-dark-75 d-block font-size-lg">{dayDMY(ingreso.created_at)}</span>
                                                     </td>
                                                     <td>
                                                         <span className="text-right text-dark-75 d-block font-size-lg">{setMoneyTableSinSmall(ingreso.total)}</span>
@@ -164,7 +163,7 @@ class TablaEstadosResultados extends Component {
                                                         <div className="text-center text-dark-75 mb-1 font-size-lg pl-2">{compra.id}</div>
                                                     </td>
                                                     <td>
-                                                        <span className="text-center text-dark-75 d-block font-size-lg"><Moment format="DD/MM/YYYY">{compra.created_at}</Moment></span>
+                                                        <span className="text-center text-dark-75 d-block font-size-lg">{dayDMY(compra.created_at)}</span>
                                                     </td>
                                                     <td>
                                                         <span className="text-right text-dark-75 d-block font-size-lg">{setMoneyTableSinSmall(compra.total)}</span>
@@ -197,7 +196,7 @@ class TablaEstadosResultados extends Component {
                                                         <div className="text-center text-dark-75 mb-1 font-size-lg pl-2">{egreso.id}</div>
                                                     </td>
                                                     <td>
-                                                        <span className="text-center text-dark-75 d-block font-size-lg"><Moment format="DD/MM/YYYY">{egreso.created_at}</Moment></span>
+                                                        <span className="text-center text-dark-75 d-block font-size-lg">{dayDMY(egreso.created_at)}</span>
                                                     </td>
                                                     <td>
                                                         <span className="text-right text-dark-75 d-block font-size-lg">{setMoneyTableSinSmall(egreso.total)}</span>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../constants'
-import { setOptions, setEmpresaLogo } from '../functions/setters'
+import { setOptions, setEmpresaLogo, dayDMY } from '../functions/setters'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, questionAlert, doneAlert } from '../functions/alert'
 import { connect } from 'react-redux'
 import { SelectSearchGray, InputGray, Button } from '../components/form-components'
@@ -13,7 +13,6 @@ import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import { DetailsInstalacion } from '../components/forms'
-import Moment from 'react-moment'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
 import $ from "jquery";
@@ -1484,9 +1483,8 @@ class InicioMiProyecto extends Component {
                                                             </div>
                                                             <div className="d-flex flex-column font-weight-bold">
                                                                 <div className="text-dark mb-1 ">
-                                                                    <Moment format="DD/MM/YYYY">
-                                                                        {ticket.fecha_programada}
-                                                                    </Moment></div>
+                                                                    {dayDMY(ticket.fecha_programada)}
+                                                                </div>
                                                                 <span className="text-muted ">FECHA PROGRAMADA</span>
                                                             </div>
                                                         </div>
