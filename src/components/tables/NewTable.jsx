@@ -146,7 +146,7 @@ class NewTable extends Component {
                 })
             },
 
-            colReorder: true,
+            // colReorder: true,
             responsive: true,
             data: data,
             columns,

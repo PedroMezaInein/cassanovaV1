@@ -122,7 +122,7 @@ class NewTable extends Component{
                     return false
                 });
             },
-            colReorder: true,
+            // colReorder: true,
             responsive: {
                 details: {
                     renderer: function(api, rowIdx, columns){

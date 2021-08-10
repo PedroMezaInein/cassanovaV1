@@ -92,7 +92,7 @@ class TableForModals extends Component {
                 });
             },
 
-            colReorder: true,
+            // colReorder: true,
             responsive: true,
             data: data,
             columns,
