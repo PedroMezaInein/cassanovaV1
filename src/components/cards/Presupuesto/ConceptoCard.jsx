@@ -10,7 +10,7 @@ export default class ConceptoCard extends Component {
             <div className="col-md-12">
                 <Card className="card card-without-box-shadown border-0">
                     <div className="">
-                        <div className="card-body d-flex align-items-center justify-content-between flex-wrap pb-2 pl-0 pr-0">
+                        <div className="card-body d-flex align-items-center justify-content-between flex-wrap pb-2 pl-0 pr-0 pt-4">
                             <div className="mr-2">
                                 {
                                     concepto.subpartida ?
@@ -97,7 +97,7 @@ export default class ConceptoCard extends Component {
                         {
                             concepto.descripcion ?
                                 <div className="mt-5">
-                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light mt-4">
+                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light mt-4 text-justify">
                                         <strong >Descripción: </strong>{concepto.descripcion}
                                     </div>
                                 </div>

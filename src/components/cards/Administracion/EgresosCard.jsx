@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
-import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles'
-
+import { dayDMY } from '../../../functions/setters'
 export default class EgresosCard extends Component {
 
     setAdjuntosFacturas = facturas => {
@@ -129,7 +128,7 @@ export default class EgresosCard extends Component {
                                                     <div className="col-9">
                                                         {
                                                             egreso.created_at ?
-                                                                <span><Moment format="DD/MM/YYYY">{egreso.created_at}</Moment></span>
+                                                                <span>{dayDMY(egreso.created_at)}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>

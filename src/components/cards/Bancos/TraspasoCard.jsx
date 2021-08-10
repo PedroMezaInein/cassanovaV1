@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import NumberFormat from 'react-number-format'
-import Moment from 'react-moment'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
 import { ItemSlider } from '../../../components/singles'
+import { dayDMY } from '../../../functions/setters'
 export default class TranspasoCard extends Component {
     render() {
         const { traspaso } = this.props
@@ -80,13 +80,11 @@ export default class TranspasoCard extends Component {
                                         <div className="d-flex justify-content-start mr-2">
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
-                                                    </span>
+                                                    <i className="flaticon2-calendar-8 text-primary icon-lg"></i>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{traspaso.updated_at}</Moment></div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{dayDMY(traspaso.updated_at)}</div>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
                                             </div>
                                         </div>
@@ -106,7 +104,7 @@ export default class TranspasoCard extends Component {
                         {
                             traspaso.comentario ?
                                 <div className="mt-4">
-                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light mt-4">
+                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light mt-4 text-justify">
                                         <strong >Comentario: </strong>{traspaso.comentario}
                                     </div>
                                 </div>
