@@ -62,7 +62,7 @@ class PresupuestosEnviados extends Component {
             let id = parseInt(params.get("id"))
             if (id) {
                 const { history } = this.props
-                history.push({ pathname: '/presupuesto/presupuestos-enviados/finish', state: { presupuesto: {id: id} } });
+                history.push({ pathname: '/presupuesto/utilidad-presupuestos/finish', state: { presupuesto: {id: id} } });
             }
         }
     }
@@ -166,7 +166,7 @@ class PresupuestosEnviados extends Component {
         return (
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); history.push({ pathname: '/presupuesto/presupuestos-enviados/finish', state: { presupuesto: element } }) }} >
+                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); history.push({ pathname: '/presupuesto/utilidad-presupuestos/finish', state: { presupuesto: element } }) }} >
                         {this.setNaviIcon('flaticon2-pen', 'editar')}
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', 'ELIMINARÁS EL PRESUPUESTO', () => this.deletePresupuestoAxios(element.id)) }}>
