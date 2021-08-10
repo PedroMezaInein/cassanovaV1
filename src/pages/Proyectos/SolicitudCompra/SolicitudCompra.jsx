@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, SOLICITUD_COMPRA_COLUMNS } from '../../../constants'
-import { setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setOptions, setSelectOptions, setTextTable } from '../../../functions/setters'
+import { setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setOptions, setSelectOptions, setTextTable, setCustomeDescripcionReactDom } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert, doneAlert, deleteAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete, ItemSlider} from '../../../components/singles'
@@ -130,7 +130,7 @@ class SolicitudCompra extends Component {
                     factura: setTextTableReactDom(solicitud.factura ? 'Con factura' : 'Sin factura', this.doubleClick, solicitud, 'factura', 'text-center'),
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '', this.doubleClick, solicitud, 'tipoPago', 'text-center'),
-                    descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
+                    descripcion: setCustomeDescripcionReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
                     area: solicitud.subarea ? solicitud.subarea.area ? setTextTableReactDom(solicitud.subarea.area.nombre, this.doubleClick, solicitud, 'area', 'text-center') : '' : '',
                     subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
                     fecha: setDateTableReactDom(solicitud.created_at, this.doubleClick, solicitud, 'fecha', 'text-center'),
