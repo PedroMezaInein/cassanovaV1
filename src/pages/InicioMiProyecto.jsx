@@ -1411,7 +1411,7 @@ class InicioMiProyecto extends Component {
                         {
                             ticket ?
                                 ticket.estatus_ticket ?
-                                    ticket.estatus_ticket.estatus === "Respuesta pendiente" ?
+                                    ticket.estatus_ticket.estatus === "Aprobación pendiente" ?
                                         <>
                                             <Button onClick = { () => { this.changeEstatus('En proceso') } } 
                                                 className = "btn btn-icon btn-light-success btn-sm mr-2" only_icon = "flaticon2-check-mark icon-sm"

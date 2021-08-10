@@ -1246,7 +1246,7 @@ class MiProyecto extends Component {
                         {
                             ticket ?
                                 ticket.estatus_ticket ?
-                                    ticket.estatus_ticket.estatus === "Respuesta pendiente" ?
+                                    ticket.estatus_ticket.estatus === "Aprobación pendiente" ?
                                         <>
                                             <Button
                                                 onClick={() => { this.changeEstatus('En proceso') }}
