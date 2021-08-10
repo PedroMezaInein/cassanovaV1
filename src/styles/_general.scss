@@ -3173,4 +3173,9 @@ table#calendario-proyectos tr:last-child td {
         color: #2171c1;
         background-color: #fcfcfa;
     }
+
+    &__warning{
+        &:before{ background: linear-gradient(to right, transparent, #FFA800, transparent); }
+        &:after{ color: #FFA800; }
+    }
 }
