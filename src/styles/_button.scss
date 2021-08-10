@@ -1721,3 +1721,25 @@ $white: #fff;
 .show>.btn.btn-hover-icon-danger.dropdown-toggle.dropdown-toggle:after {
     color: #f64e60 !important
 }
+
+.btn.btn-light-blog {
+    color: #e8762a;
+    background-color: #FFEEE3;
+    border-color: transparent;
+}
+
+.btn.btn-light-blog i {
+    color: #e8762a;
+}
+.btn.btn-light-blog:hover:not(.btn-text),
+.btn.btn-light-blog:focus:not(.btn-text),
+.btn.btn-light-blog.focus:not(.btn-text) {
+    color: #ffffff;
+    background-color: #e8762a;
+    border-color: transparent;
+}
+.btn.btn-light-blog:hover:not(.btn-text) i,
+.btn.btn-light-blog:focus:not(.btn-text) i,
+.btn.btn-light-blog.focus:not(.btn-text) i {
+    color: #ffffff;
+}
