@@ -104,7 +104,9 @@ export default class SolicitudesTabla extends Component {
                                                         <td className="text-dark font-weight-light font-size-sm text-center">
                                                             {
                                                                 sol[type] ? 
-                                                                    `${type} realizada`
+                                                                    <a href = { `/proyectos/${type}s?id=${sol[type].id}` } >
+                                                                        {`${type} realizada`}
+                                                                    </a>
                                                                 : <></>
                                                             }
                                                         </td>

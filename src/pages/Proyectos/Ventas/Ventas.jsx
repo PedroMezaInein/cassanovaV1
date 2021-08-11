@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter, setTextTableReactDom, setCustomeDescripcionReactDom } from '../../../functions/setters'
 import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
@@ -113,6 +113,7 @@ class Ventas extends Component {
                 },
             }
         },
+        key: 'all'
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -130,11 +131,11 @@ class Ventas extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                this.setState({
-                    ...this.state,
-                    modalSee: true
-                })
+                this.setState({ ...this.state, modalSee: true })
                 this.getVentaAxios(id)
+                setTimeout(() => {
+                    $('#kt_datatable2_ventas').DataTable().column(1).search(id, false, false).ajax.reload();
+                }, 1000);
             }
         }
     }
@@ -446,7 +447,7 @@ class Ventas extends Component {
                     monto: renderToString(setMoneyTable(venta.monto)),
                     impuesto: setTextTableReactDom(venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, venta, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(venta.tipo_pago.tipo, this.doubleClick, venta, 'tipoPago', 'text-center'),
-                    descripcion: setTextTableReactDom(venta.descripcion !== null ? venta.descripcion :'', this.doubleClick, venta, 'descripcion', 'text-justify'),
+                    descripcion: setCustomeDescripcionReactDom(venta.descripcion !== null ? venta.descripcion :'', this.doubleClick, venta, 'descripcion', 'text-justify'),
                     area: setTextTableReactDom(venta.area ? venta.area.nombre : '' , this.doubleClick, venta, 'area', 'text-center'),
                     subarea: setTextTableReactDom(venta.subarea ? venta.subarea.nombre : '', this.doubleClick, venta, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(venta.estatus_compra ? venta.estatus_compra.estatus : '', this.doubleClick, venta, 'estatusCompra', 'text-center'),
@@ -956,7 +957,8 @@ class Ventas extends Component {
             console.log(error, 'error')
         })
     }
-    async getVentasAxios() {
+    async getVentasAxios(tab) {
+        this.setState({ ...this.state, key: tab })
         $('#kt_datatable2_ventas').DataTable().ajax.reload();
     }
     async getOptionsAxiosv2() {
@@ -1262,13 +1264,13 @@ class Ventas extends Component {
             console.log(error, 'error')
         })
     }
-    render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, options, form, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera } = this.state
-        return (
-            <Layout active = 'proyectos'  {...this.props}>
 
-                <NewTableServerRender columns = { VENTAS_COLUMNS } title = 'Ventas' subtitle = 'Listado de ventas' url = '/proyectos/ventas/add'
-                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'kt_datatable2_ventas' exportar_boton = { true }
+    setTabla = (key, tab) => {
+        if( key === tab )
+            return(
+                <NewTableServerRender columns = { VENTAS_COLUMNS } title = 'Ventas' subtitle = {`Listado de ventas ${key === 'all' ? '' : 'de ' + key}`} 
+                    url = '/proyectos/ventas/add' mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'kt_datatable2_ventas' 
+                    exportar_boton = { true } onClickExport = { () => this.exportVentasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1278,24 +1280,44 @@ class Ventas extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera},
                     }}
-                    onClickExport = { () => this.exportVentasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
-                    urlRender = { `${URL_DEV}v2/proyectos/ventas` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+                    urlRender = { `${URL_DEV}v2/proyectos/ventas?tab=${key}` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+            )
+    }
 
+    setName = tab => {
+        switch(tab){
+            case 'all':
+                return 'Fases';
+            case 'Fase 1':
+            case 'Fase 2':
+            case 'Fase 3':
+                return tab;
+            default: return '';
+        }
+    }
+
+    render() {
+        const tabs = ['all', 'Fase 1', 'Fase 2', 'Fase 3']
+        const { modalDelete, modalFacturas, modalAdjuntos, options, form, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera, key } = this.state
+        return (
+            <Layout active = 'proyectos'  {...this.props}>
+                <Tabs defaultActiveKey = 'all' activeKey = { key } onSelect = { (value) => { this.getVentasAxios(value) } } >
+                    {
+                        tabs.map((tab, index) => {
+                            return(
+                                <Tab key = { index }  eventKey = { tab }  title = { this.setName(tab) }>
+                                    { this.setTabla(key, tab) }
+                                </Tab>
+                            )
+                        })
+                    }
+                </Tabs>
                 <ModalDelete title = "¿Estás seguro que deseas eliminar la venta?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
                     onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() } } />
 
                 <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
                     <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="facturas" title="FACTURAS">
-                            {/* <div className="form-group row form-group-marginless pt-4">
-                                    <div className="col-md-12">
-                                        <ProgressBar 
-                                            animated label={`${porcentaje}`} 
-                                            variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                                            now = {porcentaje}
-                                        />
-                                    </div>
-                                </div> */}
                             <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                                 <div className="form-group row form-group-marginless mt-4">
                                     <div className="col-md-6 px-2">

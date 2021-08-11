@@ -1438,8 +1438,8 @@ class InicioMiProyecto extends Component {
                                     <>
                                         <span className="nav-text font-weight-bold ml-0">REPORTES FOTOGRÁFICOS</span>
                                     </>}>
-                                    <NavDropdown.Item className="ml-0 proyecto" eventKey="second">PROBLEMA REPORTADO</NavDropdown.Item>
-                                    <NavDropdown.Item className="ml-0 proyecto" eventKey="third">PROBLEMA SOLUCIONADO</NavDropdown.Item>
+                                    <NavDropdown.Item className="ml-0 proyecto" eventKey="second">PETICIONES</NavDropdown.Item>
+                                    <NavDropdown.Item className="ml-0 proyecto" eventKey="third">TRABAJOS REALIZADOS</NavDropdown.Item>
                                 </NavDropdown>
                             </Nav.Item>
                         </Nav>

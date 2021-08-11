@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Row, Col, Card } from 'react-bootstrap'
 import { dayDMY, setLabelVentas } from "../../../functions/setters"
 import ItemSlider from '../../singles/ItemSlider'
-import { Button } from '../../../components/form-components'
 
 class PresupuestoGeneradoCalidad extends Component {
 
@@ -31,20 +30,20 @@ class PresupuestoGeneradoCalidad extends Component {
                                         {
                                             presupuesto.estatus ? 
                                                 presupuesto.estatus.estatus !== 'Aceptado' ?
-                                                    <a onClick = { () => { openAlertChangeStatusP('Aceptado') } } className="btn btn-hover-text-success btn-hover-icon-success btn-sm btn-text-dark-50 bg-hover-light-success rounded font-weight-bolder font-size-sm p-2 mr-2">
+                                                    <span onClick = { () => { openAlertChangeStatusP('Aceptado') } } className="btn btn-hover-text-success btn-hover-icon-success btn-sm btn-text-dark-50 bg-hover-light-success rounded font-weight-bolder font-size-sm p-2 mr-2">
                                                         <i className="las la-check-circle icon-lg text-success pr-1"></i>
                                                         <span className="border-bottom border-success">¿Se aceptó el presupuesto?</span>
-                                                    </a>
+                                                    </span>
                                                 : ''
                                             : ''
                                         }
                                         {
                                             presupuesto.estatus ? 
                                                 presupuesto.estatus.estatus !== 'Rechazado' ?
-                                                    <a onClick = { () => { openAlertChangeStatusP('Rechazado') } } className="btn btn-hover-text-danger btn-hover-icon-danger btn-sm btn-text-dark-50 bg-hover-light-danger rounded font-weight-bolder font-size-sm p-2">
+                                                    <span onClick = { () => { openAlertChangeStatusP('Rechazado') } } className="btn btn-hover-text-danger btn-hover-icon-danger btn-sm btn-text-dark-50 bg-hover-light-danger rounded font-weight-bolder font-size-sm p-2">
                                                         <i className="las la-times-circle icon-lg text-danger pr-1"></i>
                                                         <span className="border-bottom border-danger">¿Se rechazó el presupuesto?</span>
-                                                    </a>
+                                                    </span>
                                                 : ''
                                             : ''
                                         }
