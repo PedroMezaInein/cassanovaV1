@@ -1266,7 +1266,6 @@ class Ventas extends Component {
     }
 
     setTabla = (key, tab) => {
-        const { access_token } = this.props.authUser
         if( key === tab )
             return(
                 <NewTableServerRender columns = { VENTAS_COLUMNS } title = 'Ventas' subtitle = {`Listado de ventas ${key === 'all' ? '' : 'de ' + key}`} 
@@ -1293,6 +1292,7 @@ class Ventas extends Component {
             case 'Fase 2':
             case 'Fase 3':
                 return tab;
+            default: return '';
         }
     }
 

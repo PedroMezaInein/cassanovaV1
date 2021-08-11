@@ -931,7 +931,7 @@ class TicketDetails extends Component {
     }
 
     clearFormConceptos = () => {
-        const { formularios, presupuesto } = this.state
+        const { presupuesto } = this.state
         let aux = presupuesto.conceptos
         aux.sort(function (a, b) {
             if(a.concepto === null)
