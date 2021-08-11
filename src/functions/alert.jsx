@@ -558,7 +558,7 @@ export function questionAlert2(title, text, action, html) {
     MySwal.fire({
         title: title,
         text: text,
-        icon: "question",
+        // icon: "question",
         html: html,
         showCancelButton: true,
         confirmButtonText: "ENVIAR",

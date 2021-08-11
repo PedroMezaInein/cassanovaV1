@@ -1084,9 +1084,40 @@ class TicketDetails extends Component {
                 this.addPresupuestosAxios()
                 break;
             case 'preeliminar':
-                this.updatePresupuestoAxios()
+                questionAlert2(
+                    '¿DÓNDE DESEAS ENVIAR EL PRESUPUESTO?',
+                    '',
+                    () => { this.onSubmitUpdatePresupueso() },
+                    <form id = 'updatePresupuestoForm' name = 'updatePresupuestoForm' >
+                        <Form.Check inline type="radio" label="COSTOS" name="sendPresupuesto" className="px-0 mb-2" value = 'costos'/>
+                        <Form.Check inline type="radio" label="FINANZAS" name="sendPresupuesto" className="px-0 mb-2" value = 'finanzas'/>
+                    </form>
+                )
+                // this.updatePresupuestoAxios()
                 break;
             default: break;
+        }
+    }
+    onSubmitUpdatePresupueso = async (e) => {
+        const { formularios, presupuesto } = this.state
+        const { access_token } = this.props.authUser
+        let valueCheck = document.updatePresupuestoForm.sendPresupuesto.value;
+        if(valueCheck === 'costos' || valueCheck === 'finanzas'){
+            waitAlert();
+            formularios.preeliminar.valueCheck =  valueCheck
+            // await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
+            //     (response) => {
+            //         this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos')
+            //         this.getPresupuestoAxios(presupuesto.id)
+            //     },(error) => {
+            //         printResponseErrorAlert(error)
+            //     }
+            // ).catch((error) => {
+            //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            //     console.log(error, 'error')
+            // })
+        }else{
+            errorAlert('Selecciona una opción')
         }
     }
 
