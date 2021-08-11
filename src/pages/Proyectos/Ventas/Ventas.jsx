@@ -113,6 +113,7 @@ class Ventas extends Component {
                 },
             }
         },
+        key: 'all'
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -956,7 +957,8 @@ class Ventas extends Component {
             console.log(error, 'error')
         })
     }
-    async getVentasAxios() {
+    async getVentasAxios(tab) {
+        this.setState({ ...this.state, key: tab })
         $('#kt_datatable2_ventas').DataTable().ajax.reload();
     }
     async getOptionsAxiosv2() {
@@ -1262,13 +1264,14 @@ class Ventas extends Component {
             console.log(error, 'error')
         })
     }
-    render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, options, form, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera } = this.state
-        return (
-            <Layout active = 'proyectos'  {...this.props}>
 
-                <NewTableServerRender columns = { VENTAS_COLUMNS } title = 'Ventas' subtitle = 'Listado de ventas' url = '/proyectos/ventas/add'
-                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'kt_datatable2_ventas' exportar_boton = { true }
+    setTabla = (key, tab) => {
+        const { access_token } = this.props.authUser
+        if( key === tab )
+            return(
+                <NewTableServerRender columns = { VENTAS_COLUMNS } title = 'Ventas' subtitle = {`Listado de ventas ${key === 'all' ? '' : 'de ' + key}`} 
+                    url = '/proyectos/ventas/add' mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'kt_datatable2_ventas' 
+                    exportar_boton = { true } onClickExport = { () => this.exportVentasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1278,24 +1281,43 @@ class Ventas extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera},
                     }}
-                    onClickExport = { () => this.exportVentasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
-                    urlRender = { `${URL_DEV}v2/proyectos/ventas` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+                    urlRender = { `${URL_DEV}v2/proyectos/ventas?tab=${key}` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+            )
+    }
 
+    setName = tab => {
+        switch(tab){
+            case 'all':
+                return 'Fases';
+            case 'Fase 1':
+            case 'Fase 2':
+            case 'Fase 3':
+                return tab;
+        }
+    }
+
+    render() {
+        const tabs = ['all', 'Fase 1', 'Fase 2', 'Fase 3']
+        const { modalDelete, modalFacturas, modalAdjuntos, options, form, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera, key } = this.state
+        return (
+            <Layout active = 'proyectos'  {...this.props}>
+                <Tabs defaultActiveKey = 'all' activeKey = { key } onSelect = { (value) => { this.getVentasAxios(value) } } >
+                    {
+                        tabs.map((tab, index) => {
+                            return(
+                                <Tab key = { index }  eventKey = { tab }  title = { this.setName(tab) }>
+                                    { this.setTabla(key, tab) }
+                                </Tab>
+                            )
+                        })
+                    }
+                </Tabs>
                 <ModalDelete title = "¿Estás seguro que deseas eliminar la venta?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
                     onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() } } />
 
                 <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
                     <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="facturas" title="FACTURAS">
-                            {/* <div className="form-group row form-group-marginless pt-4">
-                                    <div className="col-md-12">
-                                        <ProgressBar 
-                                            animated label={`${porcentaje}`} 
-                                            variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                                            now = {porcentaje}
-                                        />
-                                    </div>
-                                </div> */}
                             <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                                 <div className="form-group row form-group-marginless mt-4">
                                     <div className="col-md-6 px-2">
