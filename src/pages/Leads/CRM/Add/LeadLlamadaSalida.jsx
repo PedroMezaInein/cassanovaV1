@@ -525,7 +525,7 @@ class LeadLlamadaSalida extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -550,7 +550,7 @@ class LeadLlamadaSalida extends Component {
                 }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
+                console.error(error, 'error')
             })
         }else{
             errorAlert('Selecciona una opción')
@@ -582,7 +582,7 @@ class LeadLlamadaSalida extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -652,7 +652,7 @@ class LeadLlamadaSalida extends Component {
                 (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
+                console.error(error, 'error')
             })
         }
     }

@@ -173,7 +173,7 @@ class RemisionForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async addRemisionAxios() {
@@ -218,7 +218,7 @@ class RemisionForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async editRemisionAxios() {
@@ -261,7 +261,7 @@ class RemisionForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async deleteAdjuntoAxios() {
@@ -283,7 +283,7 @@ class RemisionForm extends Component {
             (error) => { printResponseErrorAlert(error)}
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     render() {
