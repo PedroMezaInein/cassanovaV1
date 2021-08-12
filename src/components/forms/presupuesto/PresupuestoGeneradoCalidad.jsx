@@ -16,7 +16,7 @@ class PresupuestoGeneradoCalidad extends Component {
     }
 
     isActiveSumaVentas = () => {
-        const { presupuesto, ticket } = this.props
+        const { presupuesto } = this.props
         if(presupuesto){
             if(presupuesto.estatus){
                 if(presupuesto.estatus.estatus === 'Aceptado'){
