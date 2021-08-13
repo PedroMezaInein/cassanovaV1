@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Nav, Tab, Dropdown, Col, Row } from 'react-bootstrap'
+import { Card, Nav, Tab, Dropdown, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
 import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, MantenimientoCorrectivo, AgregarConcepto } from '../../../../components/forms';
 import { Button, SelectSearchGray,InputGray } from '../../../form-components'
@@ -291,10 +291,54 @@ class TicketView extends Component {
         valor[key][name] = value
         onChangeSolicitudCompra(valor, 'form', index)
     }
-    
+
+    tooltip(estatus, details, dotHover, colorText ){
+        const { aux_estatus } = this.props
+        let activeHoverT=false;
+        switch (estatus) {
+            case 'Conceptos':
+                if(aux_estatus.conceptos){ activeHoverT= true }
+                break;
+            case 'Volumetrías':
+                if(aux_estatus.volumetrias){ activeHoverT= true }
+                break;
+            case 'Costos':
+                if(aux_estatus.costos){ activeHoverT= true }
+                break;
+            case 'En revisión':
+                if(aux_estatus.revision){ activeHoverT= true }
+                break;
+            case 'Utilidad':
+                if(aux_estatus.utilidad){ activeHoverT= true }
+                break;
+            case 'En espera':
+                if(aux_estatus.espera){ activeHoverT= true }
+                break;
+            case 'Aceptado':
+                if(aux_estatus.aceptado){ activeHoverT= true }
+                break;
+            case 'Rechazado':
+                if(aux_estatus.rechazado){ activeHoverT= true }
+                break;
+            default:
+                break;
+        }
+        return(
+            <OverlayTrigger overlay={
+                <Tooltip className="mb-4 tool-time-line">
+                    <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus} </div>
+                    <div className="text-justify px-5 pb-3 mt-1">{details}</div>
+                </Tooltip>
+            }>
+                <div className={`status ${activeHoverT?dotHover:''}`}>
+                    <h4>{estatus}</h4>
+                </div>
+            </OverlayTrigger>
+        )
+    }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, 
             openModalSolicitud, handleCloseSolicitud, onChangeSolicitud, clearFiles, handleChange, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta,
@@ -386,42 +430,81 @@ class TicketView extends Component {
                                                         }
                                                     </div>
                                                 </div>
-                                                <div className="d-flex align-items-start flex-wrap justify-content-between">
-                                                    {
-                                                        data.descripcion ?
-                                                            <div className="font-weight-light text-dark-50 py-lg-2 col-md-12 text-justify pl-0">
-                                                                {data.descripcion}
-                                                            </div>
-                                                        : ''
-                                                    }
-                                                    {
-                                                        data.estatus_ticket ?
-                                                            data.estatus_ticket.estatus === 'En revisión' ?
-                                                                <>
-                                                                    <Button icon='' onClick = { () => { changeEstatus('Aceptado') } }
-                                                                        className={"btn btn-icon btn-light-success btn-sm mr-2 ml-auto"}
-                                                                        only_icon={"flaticon2-check-mark icon-sm"} tooltip={{ text: 'ACEPTAR' }} />
-                                                                    <Button icon='' onClick={() => { openModalWithInput('Rechazado') }}
-                                                                        className={"btn btn-icon btn-light-danger btn-sm pulse pulse-danger"}
-                                                                        only_icon={"flaticon2-cross icon-sm"} tooltip={{ text: 'RECHAZAR' }} />
-                                                                </>
+                                                {
+                                                    data.estatus_ticket ?
+                                                        <div className="d-flex align-items-start flex-wrap justify-content-between">
+                                                            {
+                                                                data.descripcion ?
+                                                                    <div className={`font-weight-light text-dark-50 py-lg-2 text-justify pl-0 ${data.estatus_ticket.estatus === 'En revisión' || data.estatus_ticket.estatus === 'Rechazado' ?'col-md-10':'col-md-12'}`}>
+                                                                        {data.descripcion}
+                                                                    </div>
+                                                                : ''
+                                                            }
+                                                            {
+                                                                data.estatus_ticket.estatus === 'En revisión' ?
+                                                                    <>
+                                                                        <Button icon='' onClick={() => { changeEstatus('Aceptado') }}
+                                                                            className={"btn btn-icon btn-light-success btn-sm mr-2 ml-auto"}
+                                                                            only_icon={"flaticon2-check-mark icon-sm"} tooltip={{ text: 'ACEPTAR' }} />
+                                                                        <Button icon='' onClick={() => { openModalWithInput('Rechazado') }}
+                                                                            className={"btn btn-icon btn-light-danger btn-sm pulse pulse-danger"}
+                                                                            only_icon={"flaticon2-cross icon-sm"} tooltip={{ text: 'RECHAZAR' }} />
+                                                                    </>
                                                                     : data.estatus_ticket.estatus === 'Rechazado' ?
-                                                                        <>
-                                                                            <div className="d-flex flex-wrap">
-                                                                                <div>
-                                                                                    <div className="text-muted font-weight-bold">
-                                                                                        { data.motivo_cancelacion }
-                                                                                    </div>
+                                                                        <div className="d-flex flex-wrap">
+                                                                            <div>
+                                                                                <div className="text-muted font-weight-bold">
+                                                                                    {data.motivo_cancelacion}
                                                                                 </div>
                                                                             </div>
-                                                                        </>
-                                                            : ''
-                                                        : ''
-                                                    }
-                                                </div>
+                                                                        </div>
+                                                                        : ''
+                                                            }
+                                                        </div>
+                                                    :<></>
+                                                }
                                             </div>
                                         </div>
-                                        <div className="separator separator-solid mt-6" />
+                                        <div className="row mx-0">
+                                            <div className="col-md-8 px-0 mx-auto">
+                                                {
+                                                    data.estatus_ticket &&
+                                                    <div className="table-responsive">
+                                                        <div className="list min-w-fit-content" data-inbox="list">
+                                                            <ul className="timeline-estatus p-0">
+                                                                <li className={`li ${aux_estatus.espera ? 'complete_espera' : ''}`}>
+                                                                    {this.tooltip('En espera', 'El cliente o el departamento de calidad hacen el levantamiento del ticket.', 'dot-espera-ticket', 'header-ticket-espera')}
+                                                                </li>
+                                                                <li className={`li ${aux_estatus.revision ? 'complete_revision' : ''}`}>
+                                                                    {this.tooltip('En revisión', 'El departamento de calidad verifica si la petición es considerado un ticket.', 'dot-revision-ticket', 'header-ticket-revision')}
+                                                                </li>
+                                                                <li className={`li ${aux_estatus.aceptado ? 'complete_aceptado' : aux_estatus.rechazado ? 'complete_rechazado' : ''}`}>
+                                                                    {this.tooltip(aux_estatus.aceptado ? 'Aceptado' : aux_estatus.rechazado ? 'Rechazado' : 'Aceptado/Rechazado',
+                                                                        aux_estatus.aceptado ? 'El departamento de calidad aprueba el ticket.' : aux_estatus.rechazado ? 'El departamento de calidad rechaza el ticket.' : 'El departamento de calidad aprueba o declina el ticket.',
+                                                                        aux_estatus.aceptado ? 'dot-aceptado-ticket' : 'dot-rechazado-ticket',
+                                                                        aux_estatus.aceptado ? 'header-ticket-aceptado' : aux_estatus.rechazado ? 'header-ticket-rechazado' : 'text-pink bg-light-pink')}
+                                                                </li>
+                                                                {
+                                                                    data.estatus_ticket.estatus !== 'Rechazado' &&
+                                                                    <>
+                                                                        <li className={`li ${aux_estatus.aprobacion ? 'complete_pendiente' : ''}`}>
+                                                                            {this.tooltip('Aprobación pendiente', 'Se realiza el presupuesto y cuando es terminado se envía al cliente con la finalidad de continuar con el proceso de la petición.', 'dot-aprobacion-ticket', 'header-ticket-aprobacion')}
+                                                                        </li>
+                                                                        <li className={`li ${aux_estatus.proceso ? 'complete_proceso' : ''}`}>
+                                                                            {this.tooltip('En proceso', 'El departamento de calidad inicia con los trabajos.', 'dot-proceso-ticket', 'header-ticket-proceso')}
+                                                                        </li>
+                                                                        <li className={`li ${aux_estatus.terminado ? 'complete_terminado' : ''}`}>
+                                                                            {this.tooltip('Terminado', 'El departamento de calidad finaliza las peticiones solicitadas.', 'dot-terminado-ticket', 'header-ticket-terminado')}
+                                                                        </li>
+                                                                    </>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-solid mt-3" />
                                         <div className="d-flex overflow-auto">
                                             <Nav className="nav nav-tabs nav-tabs-line-info nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end ">
                                                 <Nav.Item onClick={(e) => { e.preventDefault(); controlledNav("adjuntos") }}>
@@ -515,7 +598,7 @@ class TicketView extends Component {
                                                 <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
                                                     checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
-                                                    openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } modulo_calidad={true}>
+                                                    openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } modulo_calidad={true} aux_presupuestos={aux_presupuestos}>
                                                     { 
                                                         presupuesto.estatus.estatus === 'En revisión'?
                                                             this.calcularCantidades() ?

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Card } from 'react-bootstrap'
+import { Form, Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { InputMoneySinText, InputNumberSinText, InputSinText, Button, InputNumberGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas, dayDMY } from '../../../functions/setters'
@@ -73,11 +73,55 @@ class UltimoPresupuesto extends Component {
         })
         identificador++
         return identificador.toString()
+    }
 
+    tooltip(estatus, details, dotHover, colorText ){
+        const { aux_presupuestos } = this.props
+        let activeHoverP=false;
+        switch (estatus) {
+            case 'Conceptos':
+                if(aux_presupuestos.conceptos){ activeHoverP= true }
+                break;
+            case 'Volumetrías':
+                if(aux_presupuestos.volumetrias){ activeHoverP= true }
+                break;
+            case 'Costos':
+                if(aux_presupuestos.costos){ activeHoverP= true }
+                break;
+            case 'En revisión':
+                if(aux_presupuestos.revision){ activeHoverP= true }
+                break;
+            case 'Utilidad':
+                if(aux_presupuestos.utilidad){ activeHoverP= true }
+                break;
+            case 'En espera':
+                if(aux_presupuestos.espera){ activeHoverP= true }
+                break;
+            case 'Aceptado':
+                if(aux_presupuestos.aceptado){ activeHoverP= true }
+                break;
+            case 'Rechazado':
+                if(aux_presupuestos.rechazado){ activeHoverP= true }
+                break;
+            default:
+                break;
+        }
+        return(
+            <OverlayTrigger overlay={
+                <Tooltip className="mb-4 tool-time-line">
+                    <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus} </div>
+                    <div className="text-justify px-5 pb-3 mt-1">{details}</div>
+                </Tooltip>
+            }>
+                <div className={`status ${activeHoverP?dotHover:''}`}>
+                    <h4>{estatus}</h4>
+                </div>
+            </OverlayTrigger>
+        )
     }
 
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, onChangeInput, sendPresupuesto, generarPDF } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, onChangeInput, sendPresupuesto, generarPDF, aux_presupuestos } = this.props
         const { margen } = this.state
         if (presupuesto)
             return (
@@ -221,6 +265,43 @@ class UltimoPresupuesto extends Component {
                                 </div>
                             </Card.Header>
                             <Card.Body className="pt-2">
+                                <div className="row mx-0">
+                                    <div className="col-md-8 px-0 mx-auto">
+                                        {
+                                            presupuesto.estatus &&
+                                            <div className="table-responsive mt-5">
+                                                <div className="list min-w-fit-content" data-inbox="list">
+                                                    <ul className="timeline-estatus p-0">
+                                                        <li className={`li ${aux_presupuestos.conceptos ? 'complete-conceptos' : ''}`}>
+                                                            {this.tooltip('Conceptos', 'Se asignan los conceptos al presupuesto.', 'dot-conceptos-presupuesto', 'header-presupuesto-conceptos')}
+                                                        </li>
+                                                        <li className={`li ${aux_presupuestos.volumetrias ? 'complete-volumetrias' : ''}`}>
+                                                            {this.tooltip('Volumetrías', 'Se agregan las volumetrías al presupuesto.', 'dot-volumetrias-presupuesto', 'header-presupuesto-volumetrias')}
+                                                        </li>
+                                                        <li className={`li ${aux_presupuestos.costos ? 'complete-costos' : ''}`}>
+                                                            {this.tooltip('Costos', 'El departamento de compras estima los costos de los conceptos del presupuesto.', 'dot-costos-presupuesto', 'header-presupuesto-costos')}
+                                                        </li>
+                                                        <li className={`li ${aux_presupuestos.revision ? 'complete-revision' : ''}`}>
+                                                            {this.tooltip('En revisión', 'El departamento de calidad se encarga de verificar las medidas, volumetrias y conceptos del presupuesto.', 'dot-revision-presupuesto', 'header-presupuesto-revision')}
+                                                        </li>
+                                                        <li className={`li ${aux_presupuestos.utilidad ? 'complete-utilidad' : ''}`}>
+                                                            {this.tooltip('Utilidad', 'El departamento de finanzas añade la utilidad al presupuesto y es el encargado de enviar al cliente.', 'dot-utilidad-presupuesto', 'header-presupuesto-utilidad')}
+                                                        </li>
+                                                        <li className={`li ${aux_presupuestos.espera ? 'complete-espera' : ''}`}>
+                                                            {this.tooltip('En espera', 'El presupuesto es revisado por el cliente y se obtiene una respuesta del presupuesto.', 'dot-espera-presupuesto', 'header-presupuesto-espera')}
+                                                        </li>
+                                                        <li className={`li ${aux_presupuestos.aceptado ? 'complete-aceptado' : aux_presupuestos.rechazado ? 'complete-rechazado' : ''}`}>
+                                                            {this.tooltip(aux_presupuestos.aceptado ? 'Aceptado' : aux_presupuestos.rechazado ? 'Rechazado' : 'Aceptado/Rechazado',
+                                                                aux_presupuestos.aceptado ? 'El cliente aprueba el presupuesto.' : aux_presupuestos.rechazado ? 'El cliente declina el presupuesto.' : 'El cliente aprueba o declina el presupuesto.',
+                                                                aux_presupuestos.aceptado ? 'dot-aceptado-presupuesto' : 'dot-rechazado-presupuesto',
+                                                                aux_presupuestos.aceptado ? 'header-presupuesto-aceptado' : aux_presupuestos.rechazado ? 'header-presupuesto-rechazado' : 'text-pink bg-light-pink')}
+                                                        </li> 
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
                                 <table className="table table-separate table-responsive-sm">
                                     <thead>
                                         <tr>

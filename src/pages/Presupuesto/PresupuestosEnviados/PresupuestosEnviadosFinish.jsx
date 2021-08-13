@@ -53,6 +53,16 @@ class PresupuestosEnviadosFinish extends Component {
         },
         modalObject: {
             file: {},
+        },
+        aux_presupuestos: {
+            conceptos: false,
+            volumetrias: false,
+            costos: false,
+            revision:false,
+            utilidad: false,
+            espera: false,
+            aceptado: false,
+            rechazado: false,
         }
     };
 
@@ -116,6 +126,7 @@ class PresupuestosEnviadosFinish extends Component {
                 })
                 form.tiempo_valido = presupuesto.tiempo_valido
                 form.conceptos = aux
+                this.showStatusPresupuestos(presupuesto)
                 this.setState({
                     ...this.state,
                     presupuesto: presupuesto,
@@ -407,16 +418,53 @@ class PresupuestosEnviadosFinish extends Component {
         this.setState({...this.state,modal: false, modalObject, form })
         this.getOnePresupuestoAxios(presupuesto.id)
     }
-
+    showStatusPresupuestos= (presupuesto) => {
+        let auxiliar = '';
+        if (presupuesto) {
+            if (presupuesto.estatus)
+                switch (presupuesto.estatus.estatus) {
+                    case 'Conceptos':
+                        auxiliar = { conceptos: true, volumetrias: false, costos: false, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Volumetrías':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: false, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Costos':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'En revisión':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Utilidad':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'En espera':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: false, rechazado: false };
+                        break;
+                    case 'Aceptado':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: true, rechazado: false };
+                        break;
+                    case 'Rechazado':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: false, rechazado: true };
+                        break;
+                    default:
+                        break;
+                }
+        }
+        this.setState({
+            ...this.state,
+            aux_presupuestos: auxiliar
+        })
+    }
     render() {
         
-        const { form, presupuesto, modal, modalObject } = this.state;
+        const { form, presupuesto, modal, modalObject, aux_presupuestos } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}
                     presupuesto={presupuesto} {...this.props} onChangeInput={this.onChangeInput}
                     // aceptarPresupuesto={this.aceptarPresupuesto}
-                    sendPresupuesto={ (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(); } } />
+                    sendPresupuesto={ (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(); } } aux_presupuestos={aux_presupuestos}/>
                 <Modal show = { modal } 
                     //onHide = { () => this.setState({...this.state, modal:false})}
                     onHide = { this.handleCloseModal }

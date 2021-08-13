@@ -54,6 +54,16 @@ class ActualizarPresupuesto extends Component {
             partidas: [],
             subpartidas: [],
             conceptos: []
+        },
+        aux_presupuestos: {
+            conceptos: false,
+            volumetrias: false,
+            costos: false,
+            revision:false,
+            utilidad: false,
+            espera: false,
+            aceptado: false,
+            rechazado: false,
         }
     };
     openModal = () => {
@@ -208,6 +218,7 @@ class ActualizarPresupuesto extends Component {
                     }
                 })
                 form.conceptos = aux
+                this.showStatusPresupuestos(presupuesto)
                 this.setState({ ...this.state, presupuesto: presupuesto, form, formeditado: 1, bg_costo })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -455,8 +466,46 @@ class ActualizarPresupuesto extends Component {
         })
         deleteForm()
     }
+    showStatusPresupuestos= (presupuesto) => {
+        let auxiliar = '';
+        if (presupuesto) {
+            if (presupuesto.estatus)
+                switch (presupuesto.estatus.estatus) {
+                    case 'Conceptos':
+                        auxiliar = { conceptos: true, volumetrias: false, costos: false, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Volumetrías':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: false, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Costos':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'En revisión':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Utilidad':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'En espera':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: false, rechazado: false };
+                        break;
+                    case 'Aceptado':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: true, rechazado: false };
+                        break;
+                    case 'Rechazado':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: false, rechazado: true };
+                        break;
+                    default:
+                        break;
+                }
+        }
+        this.setState({
+            ...this.state,
+            aux_presupuestos: auxiliar
+        })
+    }
     render() {
-        const { form, title, options, formeditado, presupuesto, modal, data, key } = this.state;
+        const { form, title, options, formeditado, presupuesto, modal, data, key, aux_presupuestos } = this.state;
         const { formulario } = this.props
         return (
             <Layout active={"presupuesto"} {...this.props}>
@@ -471,6 +520,7 @@ class ActualizarPresupuesto extends Component {
                     showInputsCalidad={false}
                     options={options}
                     modulo_calidad={false}
+                    aux_presupuestos={aux_presupuestos}
                     {...this.props}
                 />
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
