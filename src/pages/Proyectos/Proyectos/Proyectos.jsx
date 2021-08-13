@@ -956,7 +956,6 @@ class Proyectos extends Component {
     }
 
     setCostos = proyecto => {
-        console.log(` ~ Proyecto ~ `, proyecto)
         let restante = proyecto.costo - proyecto.totalVentas
         if(restante <= 0)
             return(
