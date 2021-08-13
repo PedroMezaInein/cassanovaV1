@@ -554,7 +554,7 @@ export function questionAlertY(title, text, action, cancel) {
         }
     })
 }
-export function questionAlert2(title, text, action, html) {
+export function questionAlert2(title, text, action, html, dismiss) {
     MySwal.fire({
         title: title,
         text: text,
@@ -565,6 +565,9 @@ export function questionAlert2(title, text, action, html) {
         cancelButtonText: "CANCELAR",
         reverseButtons: true,
     }).then((result) => {
+        if(result.dismiss){
+            dismiss()
+        }
         if (result.value) {
             action()
         }

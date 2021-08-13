@@ -31,7 +31,7 @@ function runAjax(settings, accessToken, request, setter, url) {
             deferred.resolve({ data: setter(response.data), draw: response.draw, recordsTotal: response.recordsTotal, recordsFiltered: response.recordsFiltered, elements: response.data });
         },
         error: function (error) {
-            console.log(error, 'error')
+            console.error(error, 'error')
             if(error.status === 401){
                 errorAlert('Usuario sin autentificar')
                 window.location.href = '/'

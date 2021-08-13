@@ -137,7 +137,7 @@ class Partidas extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     doubleClick = (data, tipo) => {
@@ -181,7 +181,7 @@ class Partidas extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     onChangeSwal = (value, tipo) => {
@@ -350,7 +350,7 @@ class Partidas extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -383,7 +383,7 @@ class Partidas extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -412,7 +412,7 @@ class Partidas extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -441,7 +441,7 @@ class Partidas extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 

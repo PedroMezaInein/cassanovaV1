@@ -112,7 +112,7 @@ class ClientesForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async editClienteAxios() {
@@ -131,7 +131,7 @@ class ClientesForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     updateColonia = value => {

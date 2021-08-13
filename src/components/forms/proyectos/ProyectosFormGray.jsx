@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
-import { Button, RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, SelectSearchGray } from '../../form-components'
+import { Button, RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, SelectSearchGray, InputMoneyGray } from '../../form-components'
 import { TEL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
@@ -175,7 +175,7 @@ class ProyectosForm extends Component {
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5> */}
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <TagSelectSearchGray
                                             requirevalidation={1}
                                             placeholder="SELECCIONA LA FASE"
@@ -186,7 +186,7 @@ class ProyectosForm extends Component {
                                             messageinc="Incorrecto. Selecciona la fase."
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <InputGray
                                             letterCase={true}
                                             withtaglabel={1}
@@ -205,7 +205,7 @@ class ProyectosForm extends Component {
                                             messageinc="Incorrecto. Ingresa el nombre del proyecto."
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <InputPhoneGray
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -219,6 +219,12 @@ class ProyectosForm extends Component {
                                             messageinc="Incorrecto. Ingresa el número de contacto."
                                             patterns={TEL}
                                         />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
+                                            withformgroup = { 0 }  requirevalidation = { 1 } formeditado = { formeditado } thousandseparator = { true }
+                                            placeholder = "Costo con IVA" value = { form.costo } name = "costo" onChange = { onChange }
+                                            iconclass = " fas fa-money-check-alt" />
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>

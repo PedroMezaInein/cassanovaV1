@@ -160,7 +160,7 @@ class DocumentosForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async createDocumentoAxios() {
@@ -200,7 +200,7 @@ class DocumentosForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async editHerramientaAxios() {
@@ -240,7 +240,7 @@ class DocumentosForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async deleteAdjuntoAxios(id) {
@@ -257,7 +257,7 @@ class DocumentosForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     render() {

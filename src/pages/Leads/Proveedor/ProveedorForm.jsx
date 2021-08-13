@@ -193,7 +193,7 @@ class ProveedorForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async addProveedorAxios() {
@@ -217,7 +217,7 @@ class ProveedorForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async updateProveedorAxios() {
@@ -241,7 +241,7 @@ class ProveedorForm extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     render() {

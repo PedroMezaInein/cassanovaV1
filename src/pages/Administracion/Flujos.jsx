@@ -187,7 +187,7 @@ class Flujos extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async askFlujosAxios() {
@@ -209,7 +209,7 @@ class Flujos extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     onChangeRange = range => {

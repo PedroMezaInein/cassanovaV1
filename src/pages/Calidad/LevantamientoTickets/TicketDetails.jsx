@@ -207,7 +207,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -237,7 +237,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -253,7 +253,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -268,7 +268,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -287,7 +287,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -311,7 +311,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -327,7 +327,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -353,7 +353,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -369,7 +369,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -430,7 +430,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
@@ -453,27 +453,44 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
-    updatePresupuestoAxios = async() => {
+    updatePresupuestoAxios = async(  ) => {
         const { access_token } = this.props.authUser
         const { formularios, presupuesto } = this.state
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                doneAlert('Presupuesto actualizado con éxito',
-                    () => questionAlertY(`¡Listo!`, 
-                        `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?' 
-                            : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
-                        () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
-                        () => this.getPresupuestoAxios(presupuesto.id))
-                )
-                
+                if(presupuesto.estatus){
+                    switch(presupuesto.estatus.estatus){
+                        case 'En revisión':
+                            questionAlert2(
+                                '¿DÓNDE DESEAS ENVIAR EL PRESUPUESTO?',
+                                'Si aún no deseas enviar, solamente cierra',
+                                () => { this.onSubmitUpdatePresupueso() },
+                                <form id = 'updatePresupuestoForm' name = 'updatePresupuestoForm' >
+                                    <Form.Check inline type="radio" label="COSTOS" name="sendPresupuesto" className="px-0 mb-2" value = 'costos'/>
+                                    <Form.Check inline type="radio" label="FINANZAS" name="sendPresupuesto" className="px-0 mb-2" value = 'finanzas'/>
+                                </form>,
+                                () => { this.patchPresupuesto('estatus', 'En revisión') }
+                            )
+                            break;
+                        default:
+                            doneAlert('Presupuesto actualizado con éxito',
+                                () => questionAlertY(`¡Listo!`, 
+                                    `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?' 
+                                        : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
+                                    () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
+                                    () => this.getPresupuestoAxios(presupuesto.id))
+                            )
+                            break;
+                    }
+                }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -490,7 +507,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -504,7 +521,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -519,23 +536,27 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
     getSolicitudesAxios = async(type) => {
+        /* -------------------------------------------------------------------------- */
+        /*                  ANCHOR GET SOLICITUDES DE COMPRA Y VENTA.                 */
+        /* -------------------------------------------------------------------------- */
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket } = this.state
         await axios.get(`${URL_DEV}v3/calidad/tickets/${ticket.id}/${type}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
+                const { formularios } = this.state
                 const { solicitudes } = response.data
-                this.setState({...this.state, solicitudes: solicitudes})
+                this.setState({...this.state, solicitudes: solicitudes, formularios })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -547,14 +568,13 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
     submitSolicitudesCompras = async() => {
         const { access_token } = this.props.authUser
         const { formularios, ticket } = this.state
-        console.log('formularios.conceptos', formularios.conceptos)
         await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-compra`, { solicitudes: formularios.conceptos }, 
             { headers: setSingleHeader(access_token) }).then(
             (response) => {
@@ -568,51 +588,31 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
     addSolicitudVentaAxios = async () => {
         const { access_token } = this.props.authUser
         const { formularios, ticket } = this.state
-        const data = new FormData();
-        let aux = Object.keys(formularios.solicitud)
-        aux.forEach((element) => {
-            switch (element) {
-                case 'fecha':
-                    data.append(element, (new Date(formularios.solicitud[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, formularios.solicitud[element])
-                    break
-            }
-        })
-        aux = Object.keys(formularios.solicitud.adjuntos)
-        aux.forEach((element) => {
-            if (formularios.solicitud.adjuntos[element].value !== '') {
-                formularios.solicitud.adjuntos[element].files.forEach((file) => {
-                    data.append(`files_name_${element}[]`, file.name)
-                    data.append(`files_${element}[]`, file.file)
-                })
-                data.append('adjuntos[]', element)
-            }
-        })
-        data.append('ticket', ticket.id)
-        await axios.post(`${URL_DEV}solicitud-venta`, data, { headers: setFormHeader(access_token) }).then(
+
+        /* -------------------------------------------------------------------------- */
+        /*                      ANCHOR ADDING SOLICITUD DE VENTAS                     */
+        /* -------------------------------------------------------------------------- */
+
+        await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-venta`, formularios.solicitud, 
+            { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modal } = this.state
                 modal.solicitud = false
-                this.setState({...this.state, modal, formularios:this.clearFormSolicitud()})
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.')
+                this.setState({...this.state, modal, formularios})
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.',
                     () => { this.getSolicitudesAxios(`solicitud-venta`) }
                 )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
@@ -625,7 +625,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
@@ -641,7 +641,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     /* -------------------------------------------------------------------------- */
@@ -734,9 +734,13 @@ class TicketDetails extends Component {
     }
     
     openModalSolicitud = type => {
+
+        /* -------------------------------------------------------------------------- */
+        /*                           ANCHOR MODAL SOLICITUD                           */
+        /* -------------------------------------------------------------------------- */
+
         const { modal, formularios, ticket } = this.state
         let { title } = this.state
-        console.log(ticket, 'ticket')
         switch(type){
             case 'compra':
                 title = 'Nueva solicitud de compra'
@@ -755,10 +759,11 @@ class TicketDetails extends Component {
         modal.solicitud = true
         formularios.solicitud.empresa = ticket.proyecto.empresa.id.toString()
         formularios.solicitud.proyecto = ticket.proyecto.id.toString()
-        if (ticket.presupuesto) {
+        if (ticket.presupuesto.length) {
             formularios.solicitud.adjuntos.adjunto.files = [{
                 name: ticket.presupuesto[0].name,
-                url: ticket.presupuesto[0].url
+                url: ticket.presupuesto[0].url,
+                id: ticket.presupuesto[0].id
             }]
         }
         this.setState({ ...this.state, modal, formeditado: 1, title:title, formularios })
@@ -911,7 +916,7 @@ class TicketDetails extends Component {
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -951,7 +956,7 @@ class TicketDetails extends Component {
     }
 
     clearFormConceptos = () => {
-        const { formularios, presupuesto } = this.state
+        const { presupuesto } = this.state
         let aux = presupuesto.conceptos
         aux.sort(function (a, b) {
             if(a.concepto === null)
@@ -1104,40 +1109,23 @@ class TicketDetails extends Component {
                 this.addPresupuestosAxios()
                 break;
             case 'preeliminar':
-                questionAlert2(
-                    '¿DÓNDE DESEAS ENVIAR EL PRESUPUESTO?',
-                    '',
-                    () => { this.onSubmitUpdatePresupueso() },
-                    <form id = 'updatePresupuestoForm' name = 'updatePresupuestoForm' >
-                        <Form.Check inline type="radio" label="COSTOS" name="sendPresupuesto" className="px-0 mb-2" value = 'costos'/>
-                        <Form.Check inline type="radio" label="FINANZAS" name="sendPresupuesto" className="px-0 mb-2" value = 'finanzas'/>
-                    </form>
-                )
-                // this.updatePresupuestoAxios()
+                this.updatePresupuestoAxios()
                 break;
             default: break;
         }
     }
     onSubmitUpdatePresupueso = async (e) => {
-        const { formularios, presupuesto } = this.state
-        const { access_token } = this.props.authUser
         let valueCheck = document.updatePresupuestoForm.sendPresupuesto.value;
-        if(valueCheck === 'costos' || valueCheck === 'finanzas'){
-            waitAlert();
-            formularios.preeliminar.valueCheck =  valueCheck
-            // await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
-            //     (response) => {
-            //         this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos')
-            //         this.getPresupuestoAxios(presupuesto.id)
-            //     },(error) => {
-            //         printResponseErrorAlert(error)
-            //     }
-            // ).catch((error) => {
-            //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            //     console.log(error, 'error')
-            // })
-        }else{
-            errorAlert('Selecciona una opción')
+        switch(valueCheck){
+            case 'costos':
+                this.patchPresupuesto('estatus', 'Costos')
+                break;
+            case 'finanzas':
+                this.patchPresupuesto('estatus', 'Utilidad')
+                break;
+            default:
+                this.patchPresupuesto('estatus', 'En revisión')
+                break;
         }
     }
 
@@ -1240,7 +1228,7 @@ class TicketDetails extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async addConceptoToPresupuestoAxios(conceptos) {
@@ -1265,7 +1253,7 @@ class TicketDetails extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
@@ -1303,7 +1291,7 @@ class TicketDetails extends Component {
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
+                console.error(error, 'error')
             })
         }else{ errorAlert('Adjunta solo un archivo') }
     }
@@ -1387,7 +1375,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     generarReporteFotograficoAxios = async() => {
@@ -1404,7 +1392,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     /* ---------------------- FORMULARIO MANTENIMIENTO CORRECTIVO ---------------------- */
@@ -1430,7 +1418,7 @@ class TicketDetails extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -1509,7 +1497,7 @@ class TicketDetails extends Component {
             },  (error) => { this.handleCloseModalReporte(); printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 

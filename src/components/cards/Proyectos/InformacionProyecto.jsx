@@ -3,7 +3,7 @@ import { Tab, Nav } from 'react-bootstrap'
 import { printDates } from '../../../functions/printers'
 import ComentarioForm from '../../forms/ComentarioForm'
 import TimelineComments from '../../forms/TimelineComments'
-import { setEmpresaLogo } from '../../../functions/setters'
+import { setEmpresaLogo, setMoneyText } from '../../../functions/setters'
 export default class InformacionProyecto extends Component {
 
     hasComentarios = (proyecto) => {
@@ -171,6 +171,7 @@ export default class InformacionProyecto extends Component {
                                                         </td>
                                                     </tr>
                                             }
+
                                             {
                                                 proyecto.tipo_proyecto &&
                                                     <tr>
@@ -194,6 +195,33 @@ export default class InformacionProyecto extends Component {
                                                             <span>{proyecto.m2} m²</span>
                                                         </td>
                                                     </tr>
+                                            }
+                                            {
+                                                proyecto.costo &&
+                                                    <tr>
+                                                        <td className="text-center">
+                                                            <i className="fas fa-dollar-sign icon-2x text-dark-50"></i>
+                                                        </td>
+                                                        <td className="font-weight-bolder text-dark-50">Costo con IVA</td>
+                                                        <td className="font-weight-light">
+                                                            <span> { setMoneyText(proyecto.costo) } </span>
+                                                        </td>
+                                                    </tr>
+                                            }
+                                            {
+                                                proyecto.totalVentas >= 0 ?
+                                                    <tr>
+                                                        <td className="text-center">
+                                                            <i className = {`fas fa-file-invoice-dollar icon-2x text-${ proyecto.costo - proyecto.totalVentas > 0 ? 'danger' : 'dark-50'}`} />
+                                                        </td>
+                                                        <td className="font-weight-bolder text-dark-50">
+                                                            Total pagado
+                                                        </td>
+                                                        <td className="font-weight-light">
+                                                            <span> { setMoneyText(proyecto.totalVentas) } </span>
+                                                        </td>
+                                                    </tr>
+                                                : <></>
                                             }
                                             {
                                                 proyecto.fase3 === 0 && proyecto.fase2 === 0 && proyecto.fase1 === 0 ? <></> :

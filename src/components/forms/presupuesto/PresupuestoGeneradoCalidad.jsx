@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Row, Col, Card } from 'react-bootstrap'
 import { dayDMY, setLabelVentas } from "../../../functions/setters"
 import ItemSlider from '../../singles/ItemSlider'
-import { Button } from '../../../components/form-components'
 
 class PresupuestoGeneradoCalidad extends Component {
 
@@ -14,6 +13,27 @@ class PresupuestoGeneradoCalidad extends Component {
                 aux.push({url: pdf.pivot.url, name: pdf.pivot.url})
         })
         return aux
+    }
+
+    isActiveSumaVentas = () => {
+        const { presupuesto } = this.props
+        if(presupuesto){
+            if(presupuesto.estatus){
+                if(presupuesto.estatus.estatus === 'Aceptado'){
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    getStatus = () => {
+        const { presupuesto, ticket } = this.props
+        let total = presupuesto.totalPresupuesto
+        let totalVentas = ticket.totalVentas
+        if(totalVentas < (total - 1) )
+            return 'danger';
+        return 'success'
     }
 
     render() {
@@ -31,20 +51,20 @@ class PresupuestoGeneradoCalidad extends Component {
                                         {
                                             presupuesto.estatus ? 
                                                 presupuesto.estatus.estatus !== 'Aceptado' ?
-                                                    <a onClick = { () => { openAlertChangeStatusP('Aceptado') } } className="btn btn-hover-text-success btn-hover-icon-success btn-sm btn-text-dark-50 bg-hover-light-success rounded font-weight-bolder font-size-sm p-2 mr-2">
+                                                    <span onClick = { () => { openAlertChangeStatusP('Aceptado') } } className="btn btn-hover-text-success btn-hover-icon-success btn-sm btn-text-dark-50 bg-hover-light-success rounded font-weight-bolder font-size-sm p-2 mr-2">
                                                         <i className="las la-check-circle icon-lg text-success pr-1"></i>
                                                         <span className="border-bottom border-success">¿Se aceptó el presupuesto?</span>
-                                                    </a>
+                                                    </span>
                                                 : ''
                                             : ''
                                         }
                                         {
                                             presupuesto.estatus ? 
                                                 presupuesto.estatus.estatus !== 'Rechazado' ?
-                                                    <a onClick = { () => { openAlertChangeStatusP('Rechazado') } } className="btn btn-hover-text-danger btn-hover-icon-danger btn-sm btn-text-dark-50 bg-hover-light-danger rounded font-weight-bolder font-size-sm p-2">
+                                                    <span onClick = { () => { openAlertChangeStatusP('Rechazado') } } className="btn btn-hover-text-danger btn-hover-icon-danger btn-sm btn-text-dark-50 bg-hover-light-danger rounded font-weight-bolder font-size-sm p-2">
                                                         <i className="las la-times-circle icon-lg text-danger pr-1"></i>
                                                         <span className="border-bottom border-danger">¿Se rechazó el presupuesto?</span>
-                                                    </a>
+                                                    </span>
                                                 : ''
                                             : ''
                                         }
@@ -52,7 +72,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
                                 <div className="row form-group-marginless mt-8">
-                                    <div className="col-md-3 mb-4 mb-md-0">
+                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -65,7 +85,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3 mb-4 mb-md-0">
+                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
                                                 <span className="symbol-label">
@@ -78,8 +98,6 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                {/* </div>
-                                <div className="form-group row form-group-marginless"> */}
                                     <div className="col-md-3 mb-4 mb-md-0">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
@@ -93,7 +111,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -106,21 +124,30 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                {/* </div>
-                                <div className="form-group row form-group-marginless"> */}
-                                    {/* <div className="col-md-3 mt-8">
-                                        <div className="d-flex">
-                                            <div className="symbol symbol-40 symbol-light-primary mr-5">
-                                                <span className="symbol-label">
-                                                    <i className="las la-link icon-2x text-primary"></i>
-                                                </span>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <a rel="noopener noreferrer" href={ticket.presupuestoAdjunto} target="_blank" className="text-dark mb-1 font-size-lg">PRESUPUESTO</a>
-                                                <span className="text-muted font-weight-light">ADJUNTO</span>
-                                            </div>
-                                        </div>
-                                    </div> */}
+                                    {
+                                        this.isActiveSumaVentas() ?
+                                            <div className="col-md-3">
+                                                <div className="d-flex">
+                                                    <div className = {`symbol symbol-40 symbol-light-${this.getStatus()} mr-5`}>
+                                                        <span className="symbol-label">
+                                                            <i className={`fas fa-search-dollar icon-lg text-${this.getStatus()}`}></i>
+                                                        </span>
+                                                    </div>
+                                                    <div className="d-flex flex-column font-weight-bold">
+                                                        <div className="text-dark mb-1 font-size-lg">
+                                                            <b>
+                                                                ${presupuesto.totalPresupuesto.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}
+                                                            </b> / 
+                                                            <span className = { `text-${this.getStatus()}` }>
+                                                                ${ticket.totalVentas.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}
+                                                            </span>
+                                                        </div>
+                                                        <span className="text-muted font-weight-light">Total / Total pagado</span>
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                        : <></>
+                                    }
                                 </div>
                             </div>
                         </Card.Body>

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, setCustomeDescripcionReactDom } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput, SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
@@ -126,11 +126,11 @@ class Compras extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                this.setState({
-                    ...this.state,
-                    modalSee: true
-                })
+                this.setState({ ...this.state, modalSee: true })
                 this.getCompraAxios(id)
+                setTimeout(() => {
+                    $('#compras').DataTable().column(1).search(id, false, false).ajax.reload();
+                }, 1000);
             }
         }
     }
@@ -438,7 +438,7 @@ class Compras extends Component {
                     comision: renderToString(setMoneyTable(compra.comision ? compra.comision : 0.0)),
                     impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(compra.tipo_pago.tipo, this.doubleClick, compra, 'tipoPago', 'text-center'),
-                    descripcion: setTextTableReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 'text-justify'),
+                    descripcion: setCustomeDescripcionReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 'text-justify'),
                     area: setTextTableReactDom(compra.area ? compra.area.nombre : '', this.doubleClick, compra, 'area', 'text-center'),
                     subarea: setTextTableReactDom(compra.subarea ? compra.subarea.nombre : '', this.doubleClick, compra, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 'text-center'),
@@ -752,7 +752,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -769,7 +769,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -787,7 +787,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
@@ -807,7 +807,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -837,7 +837,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -868,7 +868,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -881,7 +881,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -896,7 +896,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -944,7 +944,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
@@ -964,7 +964,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -999,7 +999,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -1028,7 +1028,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -1048,7 +1048,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -1068,7 +1068,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
@@ -1101,7 +1101,7 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 

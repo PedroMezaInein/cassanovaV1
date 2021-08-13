@@ -95,7 +95,7 @@ class UltimoPresupuesto extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async addConceptoAxios() {
@@ -111,7 +111,7 @@ class UltimoPresupuesto extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -135,7 +135,7 @@ class UltimoPresupuesto extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     setOptions = (name, array) => {
@@ -246,7 +246,7 @@ class UltimoPresupuesto extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     async getOnePresupuestoAxios(id) {
@@ -298,7 +298,7 @@ class UltimoPresupuesto extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     
@@ -322,7 +322,7 @@ class UltimoPresupuesto extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     save = () => {
@@ -376,7 +376,7 @@ class UltimoPresupuesto extends Component {
         //     }
         // ).catch((error) => {
         //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.log(error, 'error')
+        //     console.error(error, 'error')
         // })
     }
     render() {
