@@ -28,11 +28,6 @@ class ProyectosForm extends Component {
             estatus: [],
             tipos:[],
             cp_clientes: [],
-            // fases: [
-            //     { label: 'FASE 1', value: 'fase1', name:'FASE 1' },
-            //     { label: 'FASE 2', value: 'fase2', name:'FASE 2' },
-            //     { label: 'FASE 3', value: 'fase3', name:'FASE 3' }
-            // ],
         },
         data: {
             proyectos: []
@@ -67,6 +62,7 @@ class ProyectosForm extends Component {
             clientes: [],
             tipoProyecto:'',
             m2:'',
+            costo: 0.0,
             adjuntos: {
                 image: {
                     value: '',
@@ -139,7 +135,7 @@ class ProyectosForm extends Component {
                         else
                             if(proyecto.fase1 === 1)
                                 form.nombre = proyecto.nombre + ' - FASE 2'
-                        
+                        form.costo = proyecto.costo
                         form.contacto = proyecto.contacto
                         form.numeroContacto = proyecto.numero_contacto
                         form.fechaInicio = new Date(proyecto.fecha_inicio)
@@ -446,6 +442,9 @@ class ProyectosForm extends Component {
         })
     }
     onSubmit = e => {
+        /* -------------------------------------------------------------------------- */
+        /*                            ANCHOR SUBMITING FORM                           */
+        /* -------------------------------------------------------------------------- */
         e.preventDefault()
         const { title,action } = this.state
         waitAlert()
@@ -487,6 +486,7 @@ class ProyectosForm extends Component {
                 form.porcentaje = proyecto.porcentaje
                 form.descripcion = proyecto.descripcion
                 form.m2 = proyecto.m2
+                form.costo =  proyecto.costo
                 let aux = []
                 if (proyecto.clientes) {
                     proyecto.clientes.forEach(cliente => {
@@ -538,21 +538,8 @@ class ProyectosForm extends Component {
                 const { form } = this.state
                 const { nombre } = response.data
                 form.nombre = nombre
-                this.setState({
-                    ...this.state,
-                    form
-                })
-
-                /* swal.close()
-                doneAlert('Estado actualizado con éxito')
-                const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/proyectos'
-                }); */
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, form })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
@@ -568,13 +555,8 @@ class ProyectosForm extends Component {
                 Swal.close()
                 doneAlert('Estado actualizado con éxito')
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/proyectos'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/proyectos/proyectos' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
@@ -603,17 +585,10 @@ class ProyectosForm extends Component {
                         colonia: element.colonia,
                         calle: element.calle
                     })
-                    return false
                 })
                 options.clientes = aux.sort(this.compare)
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, options })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')

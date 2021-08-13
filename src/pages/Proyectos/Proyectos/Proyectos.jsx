@@ -7,7 +7,7 @@ import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
 import { Small } from '../../../components/texts'
-import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
+import { setTextTable, setArrayTable, setListTable, setDateTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom, setMoneyTable} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert, questionAlert, deleteAlert, questionAlertY } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
@@ -947,11 +947,34 @@ class Proyectos extends Component {
                 descripcion: setTextTableReactDom(proyecto.descripcion !== null ? proyecto.descripcion :'', this.doubleClick, proyecto, 'descripcion', 'text-justify min-width-180px'),
                 adjuntos: renderToString(this.setAdjuntosTable(proyecto)),
                 fases: renderToString(setListTable(this.setFasesList(proyecto), 'text')),
+                costos: this.setCostos(proyecto),
                 id: proyecto.id
             })
             return false
         })
         return aux
+    }
+
+    setCostos = proyecto => {
+        console.log(` ~ Proyecto ~ `, proyecto)
+        let restante = proyecto.costo - proyecto.totalVentas
+        if(restante <= 0)
+            return(
+                <div className = 'px-2'>
+                    <span>
+                        <i className="far fa-thumbs-up pr-2 text-success" />
+                    </span>
+                    <span className="text-success">Pagado</span>
+                </div>
+            )
+        return(
+            <div className="d-flex text-danger">
+                { setMoneyTable(restante) }
+                <div className="ml-2 text-dark">
+                    { setTextTable('Por pagar') }
+                </div>
+            </div>
+        )
     }
 
     deleteElementAxios = async(proyecto, element, tipo) => {
