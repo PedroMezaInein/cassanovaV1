@@ -130,7 +130,26 @@ class TicketDetails extends Component {
         key: 'nuevo',
         title:'',
         solicitudes: [],
-        activeKeyNav:'adjuntos'
+        activeKeyNav:'adjuntos',
+        aux_estatus: {
+            espera: false,
+            revision: false,
+            rechazado: false,
+            aceptado: false,
+            aprobacion: false,
+            proceso: false,
+            terminado: false
+        },
+        aux_presupuestos: {
+            conceptos: false,
+            volumetrias: false,
+            costos: false,
+            revision:false,
+            utilidad: false,
+            espera: false,
+            aceptado: false,
+            rechazado: false,
+        }
     }
     
     componentDidMount() {
@@ -212,6 +231,7 @@ class TicketDetails extends Component {
                 options.equipos = aux
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
+                this.showStatusTickets(ticket)
                 this.setState({ ...this.state, ticket: ticket, formularios, options, data })
                 if(ticket.presupuesto_preeliminar){ this.getPresupuestoAxios(ticket.presupuesto_id) }
             }, (error) => { printResponseErrorAlert(error) }
@@ -405,7 +425,7 @@ class TicketDetails extends Component {
                     })
                 })
                 formularios.preeliminar.conceptos = aux
-                
+                this.showStatusPresupuestos(presupuesto)
                 this.setState({ ...this.state, presupuesto: presupuesto, formularios, formeditado: 1 })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1500,14 +1520,88 @@ class TicketDetails extends Component {
         this.setState({formularios})
     }
 
+    showStatusTickets = (data) => {
+        let auxiliar = '';
+        if (data) {
+            if (data.estatus_ticket)
+                switch (data.estatus_ticket.estatus) {
+                    case 'En espera':
+                        auxiliar = { espera: true, revision: false, rechazado: false, aceptado: false, aprobacion: false, proceso: false, terminado: false};
+                        break;
+                    case 'En revisión':
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: false, aprobacion: false, proceso: false, terminado: false };
+                        break;
+                    case 'Rechazado':
+                        auxiliar = { espera: true, revision: true, rechazado: true, aceptado: false, aprobacion: false, proceso: false, terminado: false };
+                        break;
+                    case 'Aceptado':
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: false, proceso: false, terminado: false };
+                        break;
+                    case 'Aprobación pendiente':
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: false, terminado: false };
+                        break;
+                    case 'En proceso':
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, terminado: false };
+                        break;
+                    case 'Terminado':
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, terminado: true };
+                        break;
+                    default:
+                        break;
+                }
+        }
+        this.setState({
+            ...this.state,
+            aux_estatus: auxiliar
+        })
+    }
+
+    showStatusPresupuestos= (presupuesto) => {
+        let auxiliar = '';
+        if (presupuesto) {
+            if (presupuesto.estatus)
+                switch (presupuesto.estatus.estatus) {
+                    case 'Conceptos':
+                        auxiliar = { conceptos: true, volumetrias: false, costos: false, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Volumetrías':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: false, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Costos':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: false, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'En revisión':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: false, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'Utilidad':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: false, aceptado: false, rechazado: false };
+                        break;
+                    case 'En espera':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: false, rechazado: false };
+                        break;
+                    case 'Aceptado':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: true, rechazado: false };
+                        break;
+                    case 'Rechazado':
+                        auxiliar = { conceptos: true, volumetrias: true, costos: true, revision: true, utilidad: true, espera: true, aceptado: false, rechazado: true };
+                        break;
+                    default:
+                        break;
+                }
+        }
+        this.setState({
+            ...this.state,
+            aux_presupuestos: auxiliar
+        })
+    }
     render() {
-        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav } = this.state
+        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos } = this.state
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
                     /* ---------------------------------- DATOS --------------------------------- */
                     data = { ticket } options = { options } formulario = { formularios } presupuesto = { presupuesto } datos = { data }
-                    solicitudes = { solicitudes }
+                    solicitudes = { solicitudes } aux_estatus = { aux_estatus } aux_presupuestos={aux_presupuestos}
                     /* -------------------------------- FUNCIONES ------------------------------- */
                     openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
