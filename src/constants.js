@@ -283,6 +283,7 @@ export const TIPOS_COLUMNS = [
 
 export const PROYECTOS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Costos', accessor: 'costos', customRender: true, searchable: false, orderable: false },
     { Header: 'Estatus', accessor: 'status', customRender: true },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'T.Proyecto', accessor: 'tipo_proyecto', customRender: true },
@@ -292,9 +293,8 @@ export const PROYECTOS_COLUMNS = [
     { Header: 'Empresa', accessor: 'empresa' },
     { Header: 'F.Inicio', accessor: 'fechaInicio', customRender: true },
     { Header: 'F.Fin', accessor: 'fechaFin', customRender: true },
-    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
     { Header: 'Fases', accessor: 'fases' },
-    { Header: 'Costos', accessor: 'costos', customRender: true, searchable: false, orderable: false }
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const VENTAS_COLUMNS = [
