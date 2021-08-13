@@ -3184,3 +3184,15 @@ table#calendario-proyectos tr:last-child td {
     width: -webkit-fill-available;
     text-align: end;
 }
+.min-w-fit-content{
+    min-width: fit-content;
+}
+
+.tool-time-line{
+    .tool-titulo{
+        padding: 0;
+    }
+    .tooltip-inner {
+        padding: 0;
+    }
+}
