@@ -266,7 +266,7 @@ class ActualizarPresupuestoForm extends Component {
                         </Card.Header>
                         <Card.Body className="pt-2">
                             <div className="row mx-0">
-                                <div className="col-md-8 px-0 mx-auto">
+                                <div className="col-md-10 px-0 mx-auto">
                                     {
                                         presupuesto.estatus &&
                                         <div className="table-responsive mt-5">
