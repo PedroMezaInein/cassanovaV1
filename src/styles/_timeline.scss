@@ -1,0 +1,381 @@
+/*  ==============  TIMELINE TICKETS  ==============  */
+
+// COLORES DE TIMELINE
+$bg-espera-tickets:#EFEBE9;
+$color-espera-tickets:#5D4037F5;
+
+$bg-revision-tickets:#ECEFF1;
+$color-revision-tickets:#5F6A6AF5;
+
+$bg-aprobacion-tickets:#FFF4DE;
+$color-aprobacion-tickets:#FFA800F5;
+
+$bg-proceso-tickets:#EEE5FF;
+$color-proceso-tickets:#8950FCF5;
+
+$bg-terminado-tickets:#E1F0FF;
+$color-terminado-tickets:#3699FFF5;
+
+$bg-aceptado-tickets:#E8F5E9;
+$color-aceptado-tickets:#388E3CF5;
+
+$bg-rechazado-tickets:#FFE2E5;
+$color-rechazado-tickets:#F64E60F5;
+
+// COLOR DE TEXTOS
+.header-ticket-espera{
+    color: $color-espera-tickets;
+    background: $bg-espera-tickets;
+}
+.header-ticket-revision{
+    color: $color-revision-tickets;
+    background: $bg-revision-tickets;
+}
+.header-ticket-aprobacion{
+    color: $color-aprobacion-tickets;
+    background: $bg-aprobacion-tickets;
+}
+.header-ticket-proceso{
+    color: $color-proceso-tickets;
+    background: $bg-proceso-tickets;
+}
+.header-ticket-terminado{
+    color: $color-terminado-tickets;
+    background: $bg-terminado-tickets;
+}
+.header-ticket-aceptado{
+    color: $color-aceptado-tickets;
+    background: $bg-aceptado-tickets;
+}
+.header-ticket-rechazado{
+    color: $color-rechazado-tickets;
+    background: $bg-rechazado-tickets;
+}
+
+// DOT HOVER
+.status.dot-espera-ticket:hover:before { 
+    box-shadow: 0 0 6px 0 $color-espera-tickets;
+}
+.status.dot-revision-ticket:hover:before {
+    box-shadow: 0 0 6px 0 $color-revision-tickets;
+}
+.status.dot-aprobacion-ticket:hover:before {
+    box-shadow: 0 0 6px 0 $color-aprobacion-tickets;
+}
+.status.dot-proceso-ticket:hover:before {
+    box-shadow: 0 0 6px 0 $color-proceso-tickets;
+}
+.status.dot-terminado-ticket:hover:before {
+    box-shadow: 0 0 6px 0 $color-terminado-tickets;
+}
+.status.dot-aceptado-ticket:hover:before {
+    box-shadow: 0 0 6px 0 $color-aceptado-tickets;
+}
+.status.dot-rechazado-ticket:hover:before {
+    box-shadow: 0 0 6px 0 $color-rechazado-tickets;
+}
+
+// TIMELINE ESTATUS
+.timeline-estatus {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.li {
+    transition: all 200ms ease-in;
+    margin-top: 20px;
+}
+
+.status {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid #D6DCE0;
+    position: relative;
+    transition: all 200ms ease-in;
+    white-space: nowrap;
+}
+
+.status h4 {
+    font-weight: 300;
+    font-size: 0.8rem;
+    margin-bottom: 0;
+    line-height: 2;
+    color:#3f4254
+}
+
+.status:before {
+    content: '✔';
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    position: absolute;
+    top: -12px;
+    left: 42%;
+    transition: all 200ms ease-in;
+    display: flex;
+    font-size: 1.1rem;
+    justify-content: center;
+    color: white;
+}
+
+// COMPLETE ESTATUS
+
+
+/*  -----  ESTATUS: EN ESPERA  -----  */
+.li.complete_espera .status {
+    border-top: 1px dashed $color-espera-tickets;
+}
+.li.complete_espera .status:before {
+    background-color: $color-espera-tickets;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: EN REVISIÓN  -----  */
+.li.complete_revision .status {
+    border-top: 1px dashed $color-revision-tickets;
+}
+.li.complete_revision .status:before {
+    background-color: $color-revision-tickets;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: ACEPTADO  -----  */
+.li.complete_aceptado .status {
+    border-top: 1px dashed $color-aceptado-tickets;
+}
+.li.complete_aceptado .status:before {
+    background-color: $color-aceptado-tickets;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: RECHAZADO  -----  */
+.li.complete_rechazado .status {
+    border-top: 1px dashed $color-rechazado-tickets;
+}
+.li.complete_rechazado .status:before {
+    background-color: $color-rechazado-tickets;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: PENDIENTE  -----  */
+.li.complete_pendiente .status {
+    border-top: 1px dashed $color-aprobacion-tickets;
+}
+.li.complete_pendiente .status:before {
+    background-color: $color-aprobacion-tickets;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: EN PROCESO  -----  */
+.li.complete_proceso .status {
+    border-top: 1px dashed $color-proceso-tickets;
+}
+.li.complete_proceso .status:before {
+    background-color: $color-proceso-tickets;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: TERMINADO  -----  */
+.li.complete_terminado .status {
+    border-top: 1px dashed $color-terminado-tickets;
+}
+.li.complete_terminado .status:before {
+    background-color: $color-terminado-tickets;
+    border: none;
+    transition: all 200ms ease-in;
+}
+
+.li.complete_espera .status h4, .li.complete_revision .status h4, .li.complete_aceptado .status h4, .li.complete_rechazado .status h4, .li.complete_pendiente .status h4 , .li.complete_proceso .status h4,  .li.complete_terminado .status h4 {
+    font-weight: 500;
+}
+
+
+/*  ==============  TIMELINE PRESUPUESTO  ==============  */
+
+// COLORES DE TIMELINE
+$bg-conceptos-presupuesto:#EFEBE9;
+$color-conceptos-presupuesto:#8D6E63;
+
+
+$bg-volumetrias-presupuesto:#E3F4FC;
+$color-volumetrias-presupuesto:#009EF7;
+
+
+$bg-costos-presupuesto:#EDE7F6;
+$color-costos-presupuesto:#BA68C8;
+
+
+$bg-revision-presupuesto:#FFF7DB;
+$color-revision-presupuesto:#F1C40F;
+
+
+$bg-utilidad-presupuesto:#FFECD7;
+$color-utilidad-presupuesto:#FF8B00;
+
+
+$bg-espera-presupuesto:#ECEFF1;
+$color-espera-presupuesto:#78909C;
+
+
+$bg-aceptado-presupuesto:#E0F2F1;
+$color-aceptado-presupuesto:#4DB6AC;
+
+
+$bg-rechazado-presupuesto:#FFEBEE;
+$color-rechazado-presupuesto:#F64E60;
+
+
+// COLOR DE TEXTOS
+.header-presupuesto-conceptos{
+    color: $color-conceptos-presupuesto;
+    background: $bg-conceptos-presupuesto;
+}
+.header-presupuesto-volumetrias{
+    color: $color-volumetrias-presupuesto;
+    background: $bg-volumetrias-presupuesto;
+}
+.header-presupuesto-costos{
+    color: $color-costos-presupuesto;
+    background: $bg-costos-presupuesto;
+}
+.header-presupuesto-revision{
+    color: $color-revision-presupuesto;
+    background: $bg-revision-presupuesto;
+}
+.header-presupuesto-utilidad{
+    color: $color-utilidad-presupuesto;
+    background: $bg-utilidad-presupuesto;
+}
+.header-presupuesto-espera{
+    color: $color-espera-presupuesto;
+    background: $bg-espera-presupuesto;
+}
+.header-presupuesto-aceptado{
+    color: $color-aceptado-presupuesto;
+    background: $bg-aceptado-presupuesto;
+}
+
+.header-presupuesto-rechazado{
+    color: $color-rechazado-presupuesto;
+    background: $bg-rechazado-presupuesto;
+}
+
+// DOT HOVER
+.status.dot-conceptos-presupuesto:hover:before { 
+    box-shadow: 0 0 6px 0 $color-conceptos-presupuesto;
+}
+.status.dot-volumetrias-presupuesto:hover:before {
+    box-shadow: 0 0 6px 0 $color-volumetrias-presupuesto;
+}
+.status.dot-costos-presupuesto:hover:before {
+    box-shadow: 0 0 6px 0 $color-costos-presupuesto;
+}
+.status.dot-revision-presupuesto:hover:before {
+    box-shadow: 0 0 6px 0 $color-revision-presupuesto;
+}
+.status.dot-utilidad-presupuesto:hover:before {
+    box-shadow: 0 0 6px 0 $color-utilidad-presupuesto;
+}
+.status.dot-espera-presupuesto:hover:before {
+    box-shadow: 0 0 6px 0 $color-espera-presupuesto;
+}
+.status.dot-aceptado-presupuesto:hover:before {
+    box-shadow: 0 0 6px 0 $color-aceptado-presupuesto;
+}
+.status.dot-rechazado-presupuesto:hover:before {
+    box-shadow: 0 0 6px 0 $color-rechazado-presupuesto;
+}
+
+
+// COMPLETE ESTATUS
+
+
+/*  -----  ESTATUS: CONCEPTOS  -----  */
+.li.complete-conceptos .status {
+    border-top: 1px dashed $color-conceptos-presupuesto;
+}
+.li.complete-conceptos .status:before {
+    background-color: $color-conceptos-presupuesto;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: VOLUMETRÍAS  -----  */
+.li.complete-volumetrias .status {
+    border-top: 1px dashed $color-volumetrias-presupuesto;
+}
+.li.complete-volumetrias .status:before {
+    background-color: $color-volumetrias-presupuesto;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: COSTOS  -----  */
+.li.complete-costos .status {
+    border-top: 1px dashed $color-costos-presupuesto;
+}
+.li.complete-costos .status:before {
+    background-color: $color-costos-presupuesto;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: EN REVISIÓN  -----  */
+.li.complete-revision .status {
+    border-top: 1px dashed $color-revision-presupuesto;
+}
+.li.complete-revision .status:before {
+    background-color: $color-revision-presupuesto;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: UTILIDAD  -----  */
+.li.complete-utilidad .status {
+    border-top: 1px dashed $color-utilidad-presupuesto;
+}
+.li.complete-utilidad .status:before {
+    background-color: $color-utilidad-presupuesto;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: EN ESPERA  -----  */
+.li.complete-espera .status {
+    border-top: 1px dashed $color-espera-presupuesto;
+}
+.li.complete-espera .status:before {
+    background-color: $color-espera-presupuesto;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: ACEPTADO  -----  */
+.li.complete-aceptado .status {
+    border-top: 1px dashed $color-aceptado-presupuesto;
+}
+.li.complete-aceptado .status:before {
+    background-color: $color-aceptado-presupuesto;
+    border: none;
+    transition: all 200ms ease-in;
+}
+/*  -----  ESTATUS: RECHAZADO  -----  */
+.li.complete-rechazado .status {
+    border-top: 1px dashed $color-rechazado-presupuesto;
+}
+.li.complete-rechazado .status:before {
+    background-color: $color-rechazado-presupuesto;
+    border: none;
+    transition: all 200ms ease-in;
+}
+
+.li.complete-conceptos .status h4,
+.li.complete-volumetrias .status h4,
+.li.complete-costos .status h4,
+.li.complete-revision .status h4,
+.li.complete-utilidad .status h4,
+.li.complete-espera .status h4,
+.li.complete-aceptado .status h4,
+.li.complete-rechazado .status h4 {
+    font-weight: 500;
+}
