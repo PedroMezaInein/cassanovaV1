@@ -797,9 +797,7 @@ export function setListTable(arreglo, nombre, minwidth) {
             {
                 arreglo.map((element,  key ) => {
                     return (
-                        <>
-                            <span key = { key }>&#8226; {element[nombre]}</span><br/>
-                        </>
+                        <span key = { key }>&#8226; {element[nombre]}<br/></span>
                     )
                 })
             }
@@ -813,24 +811,22 @@ export function setListTableLinkProyecto(arreglo, nombre) {
             {
                 arreglo.map((element,  key ) => { 
                     return (
-                        <>
-                            <div key={key} className="font-size-11px text-center font-weight-bold white-space-nowrap">
-                                &#8226;&nbsp;
-                                <a href={'/mi-proyecto?id='+element.id} className="text-primary">
-                                        { element[nombre] }
-                                    </a>
-                                    {
-                                        element.estatus ?
-                                            <>
-                                                &nbsp;-&nbsp;<span style={{ color: `${element.estatus.letra}` }}>
-                                                    {element.estatus.estatus}
-                                                </span>
-                                            </>
-                                        :''
-                                    }
-                            </div>
+                        <div key={key} className="font-size-11px text-center font-weight-bold white-space-nowrap">
+                            &#8226;&nbsp;
+                            <a href={'/mi-proyecto?id='+element.id} className="text-primary">
+                                { element[nombre] }
+                            </a>
+                            {
+                                element.estatus ?
+                                    <>
+                                        &nbsp;-&nbsp;<span style={{ color: `${element.estatus.letra}` }}>
+                                            {element.estatus.estatus}
+                                        </span>
+                                    </>
+                                :''
+                            }
                             <br/>
-                        </>
+                        </div>
                     )
                 })
             }
