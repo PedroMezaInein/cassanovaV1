@@ -265,6 +265,12 @@ $color-rechazado-presupuesto:#F64E60;
     color: $color-rechazado-presupuesto;
     background: $bg-rechazado-presupuesto;
 }
+.color-rechazado-presupuesto{
+    color:$color-rechazado-presupuesto;
+}
+.color-aceptado-presupuesto{
+    color: $color-aceptado-presupuesto;
+}
 
 // DOT HOVER
 .status.dot-conceptos-presupuesto:hover:before { 
@@ -291,7 +297,10 @@ $color-rechazado-presupuesto:#F64E60;
 .status.dot-rechazado-presupuesto:hover:before {
     box-shadow: 0 0 6px 0 $color-rechazado-presupuesto;
 }
-
+.status.dot-aceptado-rechazado-presupuesto:hover:before {
+    box-shadow: -2px 0px 5px 0px #4DB6AC, 2px 0px 5px 0px  #F64E60;
+    
+}
 
 // COMPLETE ESTATUS
 
@@ -368,7 +377,19 @@ $color-rechazado-presupuesto:#F64E60;
     border: none;
     transition: all 200ms ease-in;
 }
-
+/*  -----  ESTATUS: ACEPTADO-RECHAZADO  -----  */
+.li.complete-aceptado-rechazado .status {
+    border-top: none;
+    background-repeat: repeat-x;
+    background-image: linear-gradient( 90deg , transparent, transparent 50%, #fff 50%, #fff 100%), linear-gradient( 90deg , #4eb7ad, #4db6ac, #99d5cf, #f64e60, #f64e60);
+    background-size: 6px 1px, 100% 1px;
+    padding-bottom: 11px;
+}
+.li.complete-aceptado-rechazado .status:before {
+    background-image: linear-gradient(90deg, #4DB6AC 50%, #F64E60 50%);
+    border: none;
+    transition: all 200ms ease-in;
+}
 .li.complete-conceptos .status h4,
 .li.complete-volumetrias .status h4,
 .li.complete-costos .status h4,
@@ -376,6 +397,11 @@ $color-rechazado-presupuesto:#F64E60;
 .li.complete-utilidad .status h4,
 .li.complete-espera .status h4,
 .li.complete-aceptado .status h4,
-.li.complete-rechazado .status h4 {
+.li.complete-rechazado .status h4,
+.li.complete-aceptado-rechazado .status h4  {
     font-weight: 500;
+}
+
+.bg-aceptado-rechazado{
+    background-image: linear-gradient(to right, #E0F2F1, #FFEBEE);
 }

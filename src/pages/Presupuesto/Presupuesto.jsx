@@ -9,6 +9,7 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
 import { renderToString } from 'react-dom/server'
 import { ModalDelete, Modal } from '../../components/singles'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import TableForModals from '../../components/tables/TableForModals'
 import $ from "jquery";
 class Presupuesto extends Component {
@@ -40,17 +41,7 @@ class Presupuesto extends Component {
         data: {
             adjuntos: []
         },
-        adjuntos: [],
-        estatus_ticket: [
-            { bg: '#EFEBE9', color: '#8D6E63', text: 'CONCEPTOS', num: 1 },
-            { bg: '#E3F4FC', color: '#009EF7', text: 'VOLUMETRÍAS', num: 2 },
-            { bg: '#EDE7F6', color: '#BA68C8', text: 'COSTOS', num: 3 },
-            { bg: '#FFF7DB', color: '#F1C40F', text: 'EN REVISIÓN', num: 4 },
-            { bg: '#FFECD7', color: '#FF8B00', text: 'UTILIDAD', num: 5 },
-            { bg: '#ECEFF1', color: '#78909C', text: 'EN ESPERA', num: 6 },
-            { bg: '#E0F2F1', color: '#4DB6AC', text: 'ACEPTADO', num: 7 },
-            { bg: '#FFEBEE', color: '#F64E60', text: 'RECHAZADO', num: 7 },
-        ]
+        adjuntos: []
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -305,9 +296,23 @@ class Presupuesto extends Component {
             state: { presupuesto: presupuesto }
         });
     }
+    
+    tooltip(estatus, details, dotHover, colorText ){
+        return(
+            <OverlayTrigger overlay={
+                <Tooltip className="mb-4 tool-time-line">
+                    <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus === 'Aceptado/Rechazado' ?<span><span className="color-aceptado-presupuesto">Aceptado</span> <span className="font-weight-light">/</span> <span className="color-rechazado-presupuesto">Rechazado</span></span> : estatus}</div>
+                    <div className="text-justify px-5 pb-3 mt-1">{details}</div>
+                </Tooltip>
+            }>
+                <div className={`status ${dotHover}`}>
+                    <h4>{estatus}</h4>
+                </div>
+            </OverlayTrigger>
+        )
+    }
     render() {
-
-        const { modal, data, adjuntos, estatus_ticket } = this.state
+        const { modal, data, adjuntos } = this.state
         return (
             <Layout active={'presupuesto'}  {...this.props}>
                 <NewTableServerRender
@@ -331,37 +336,37 @@ class Presupuesto extends Component {
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'>
-                    {
-                        <div className="col-md-12 px-0 mt-12 mb-8 d-flex align-items-center justify-content-center">
-                            <div className="d-flex">
-                                {
-                                    estatus_ticket.slice(0, 6).map((estatus, key) => {
-                                        return (
-                                            <div className="d-flex mr-2" key={key}>
-                                                <span className="label font-weight-bolder mr-2" style={{ backgroundColor: estatus.bg, color: estatus.color, height: '24px', width: '24px', fontSize: '0.9rem' }}>{estatus.num}</span>
-                                                <div className="align-self-center font-weight-bolder">{estatus.text}</div>
-                                                <div className='align-self-center ml-2'>
-                                                    <i className="las la-arrow-right" style={{ color: estatus.color }}></i>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                            <div className="d-flex flex-column">
-                                {
-                                    estatus_ticket.slice(6, 8).map((estatus, key) => {
-                                        return (
-                                            <div className="d-flex mr-2 mb-1" key={key}>
-                                                <span className="label font-weight-bolder mr-2" style={{ backgroundColor: estatus.bg, color: estatus.color, height: '24px', width: '24px', fontSize: '0.9rem' }}>{estatus.num}</span>
-                                                <div className="align-self-center font-weight-bolder">{estatus.text}</div>
-                                            </div>
-                                        )
-                                    })
-                                }
+                    <div className="row mx-0 mb-4 mt-4 mt-md-0">
+                        <div className="col-md-8 px-0 mx-auto">
+                            <div className="table-responsive-md mt-5">
+                                <div className="list min-w-fit-content" data-inbox="list">
+                                    <ul className="timeline-estatus p-0">
+                                        <li className='li complete-conceptos'>
+                                            {this.tooltip('Conceptos', 'Se asignan los conceptos al presupuesto.', 'dot-conceptos-presupuesto', 'header-presupuesto-conceptos')}
+                                        </li>
+                                        <li className='li complete-volumetrias'>
+                                            {this.tooltip('Volumetrías', 'Se agregan las volumetrías al presupuesto.', 'dot-volumetrias-presupuesto', 'header-presupuesto-volumetrias')}
+                                        </li>
+                                        <li className='li complete-costos'>
+                                            {this.tooltip('Costos', 'El departamento de compras estima los costos de los conceptos del presupuesto.', 'dot-costos-presupuesto', 'header-presupuesto-costos')}
+                                        </li>
+                                        <li className='li complete-revision'>
+                                            {this.tooltip('En revisión', 'El departamento de calidad se encarga de verificar las medidas, volumetrias y conceptos del presupuesto.', 'dot-revision-presupuesto', 'header-presupuesto-revision')}
+                                        </li>
+                                        <li className='li complete-utilidad'>
+                                            {this.tooltip('Utilidad', 'El departamento de finanzas añade la utilidad al presupuesto y es el encargado de enviar al cliente.', 'dot-utilidad-presupuesto', 'header-presupuesto-utilidad')}
+                                        </li>
+                                        <li className='li complete-espera'>
+                                            {this.tooltip('En espera', 'El presupuesto es revisado por el cliente y se obtiene una respuesta del presupuesto.', 'dot-espera-presupuesto', 'header-presupuesto-espera')}
+                                        </li>
+                                        <li className='li complete-aceptado-rechazado'>
+                                            {this.tooltip('Aceptado/Rechazado','El cliente aprueba o declina el presupuesto.','dot-aceptado-rechazado-presupuesto','bg-aceptado-rechazado')}
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    }
+                    </div>
                 </NewTableServerRender>
                 <ModalDelete
                     title={"¿Estás seguro que deseas eliminar el presupuesto?"}
