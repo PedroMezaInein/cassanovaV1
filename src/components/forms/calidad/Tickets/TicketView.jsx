@@ -488,7 +488,7 @@ class TicketView extends Component {
                                                                     data.estatus_ticket.estatus !== 'Rechazado' &&
                                                                     <>
                                                                         <li className={`li ${aux_estatus.aprobacion ? 'complete_pendiente' : ''}`}>
-                                                                            {this.tooltip('Aprobación pendiente', 'Se realiza el presupuesto y cuando es terminado se envía al cliente con la finalidad de continuar con el proceso de la petición.', 'dot-aprobacion-ticket', 'header-ticket-aprobacion')}
+                                                                            {this.tooltip('Aprobación pendiente', 'El cliente recibió un presupuesto generado y se espera su aprobación.', 'dot-aprobacion-ticket', 'header-ticket-aprobacion')}
                                                                         </li>
                                                                         <li className={`li ${aux_estatus.proceso ? 'complete_proceso' : ''}`}>
                                                                             {this.tooltip('En proceso', 'El departamento de calidad inicia con los trabajos.', 'dot-proceso-ticket', 'header-ticket-proceso')}
