@@ -297,8 +297,7 @@ class UltimoPresupuesto extends Component {
                                                                         }
                                                                     </td>
                                                                 </tr>
-                                                                :
-                                                                ''
+                                                            : <></>
                                                         }
                                                         {
                                                             this.getSubpartida(key) ?
@@ -323,8 +322,7 @@ class UltimoPresupuesto extends Component {
                                                                         }
                                                                     </td>
                                                                 </tr>
-                                                                :
-                                                                ''
+                                                            : <></>
                                                         }
                                                         <tr data-tip data-for={key + '-th'} className={form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary'} key={key}>
                                                             <td className="check_desc text-center">

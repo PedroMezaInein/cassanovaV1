@@ -18,7 +18,7 @@ export class ShowFile extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         }) */
         var req = new XMLHttpRequest();
         req.open('GET', url, false);

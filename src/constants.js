@@ -293,7 +293,8 @@ export const PROYECTOS_COLUMNS = [
     { Header: 'F.Inicio', accessor: 'fechaInicio', customRender: true },
     { Header: 'F.Fin', accessor: 'fechaFin', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
-    { Header: 'Fases', accessor: 'fases' }
+    { Header: 'Fases', accessor: 'fases' },
+    { Header: 'Costos', accessor: 'costos', customRender: true, searchable: false, orderable: false }
 ]
 
 export const VENTAS_COLUMNS = [

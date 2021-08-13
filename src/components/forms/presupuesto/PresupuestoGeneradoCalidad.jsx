@@ -15,6 +15,27 @@ class PresupuestoGeneradoCalidad extends Component {
         return aux
     }
 
+    isActiveSumaVentas = () => {
+        const { presupuesto } = this.props
+        if(presupuesto){
+            if(presupuesto.estatus){
+                if(presupuesto.estatus.estatus === 'Aceptado'){
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    getStatus = () => {
+        const { presupuesto, ticket } = this.props
+        let total = presupuesto.totalPresupuesto
+        let totalVentas = ticket.totalVentas
+        if(totalVentas < (total - 1) )
+            return 'danger';
+        return 'success'
+    }
+
     render() {
         const { presupuesto, ticket, openAlertChangeStatusP } = this.props
         return (
@@ -51,7 +72,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
                                 <div className="row form-group-marginless mt-8">
-                                    <div className="col-md-3 mb-4 mb-md-0">
+                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -64,7 +85,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3 mb-4 mb-md-0">
+                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
                                                 <span className="symbol-label">
@@ -77,8 +98,6 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                {/* </div>
-                                <div className="form-group row form-group-marginless"> */}
                                     <div className="col-md-3 mb-4 mb-md-0">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
@@ -92,7 +111,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -105,21 +124,30 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                {/* </div>
-                                <div className="form-group row form-group-marginless"> */}
-                                    {/* <div className="col-md-3 mt-8">
-                                        <div className="d-flex">
-                                            <div className="symbol symbol-40 symbol-light-primary mr-5">
-                                                <span className="symbol-label">
-                                                    <i className="las la-link icon-2x text-primary"></i>
-                                                </span>
-                                            </div>
-                                            <div className="d-flex flex-column font-weight-bold">
-                                                <a rel="noopener noreferrer" href={ticket.presupuestoAdjunto} target="_blank" className="text-dark mb-1 font-size-lg">PRESUPUESTO</a>
-                                                <span className="text-muted font-weight-light">ADJUNTO</span>
-                                            </div>
-                                        </div>
-                                    </div> */}
+                                    {
+                                        this.isActiveSumaVentas() ?
+                                            <div className="col-md-3">
+                                                <div className="d-flex">
+                                                    <div className = {`symbol symbol-40 symbol-light-${this.getStatus()} mr-5`}>
+                                                        <span className="symbol-label">
+                                                            <i className={`fas fa-search-dollar icon-lg text-${this.getStatus()}`}></i>
+                                                        </span>
+                                                    </div>
+                                                    <div className="d-flex flex-column font-weight-bold">
+                                                        <div className="text-dark mb-1 font-size-lg">
+                                                            <b>
+                                                                ${presupuesto.totalPresupuesto.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}
+                                                            </b> / 
+                                                            <span className = { `text-${this.getStatus()}` }>
+                                                                ${ticket.totalVentas.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}
+                                                            </span>
+                                                        </div>
+                                                        <span className="text-muted font-weight-light">Total / Total pagado</span>
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                        : <></>
+                                    }
                                 </div>
                             </div>
                         </Card.Body>

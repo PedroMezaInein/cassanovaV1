@@ -54,6 +54,7 @@ class Contratar extends Component {
             colonia: '',
             porcentaje: '',
             descripcion: '',
+            costo: 0.0,
             correo: '',
             correos: [],
             clientes: [],
@@ -267,12 +268,18 @@ class Contratar extends Component {
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map((element) => {
-            if (element === 'colonias')
-                form[element] = []
-            else
-                form[element] = ''
-            return false
+        aux.forEach((element) => {
+            switch(element){
+                case 'colonias':
+                    form[element] = []
+                    break;
+                case 'costo':
+                    form[element] = 0.0
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
         })
         return form
     }
@@ -366,7 +373,7 @@ class Contratar extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
     compare( a, b ) {
@@ -419,7 +426,7 @@ class Contratar extends Component {
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
+                console.error(error, 'error')
             })
         }else{ errorAlert('Selecciona una opción') }
     }
@@ -437,7 +444,7 @@ class Contratar extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -466,7 +473,7 @@ class Contratar extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 

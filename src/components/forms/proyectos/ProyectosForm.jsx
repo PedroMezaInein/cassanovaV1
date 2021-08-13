@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
-import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, TagSelectSearch, TagInput } from '../../form-components'
+import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, TagSelectSearch, TagInput, InputMoney } from '../../form-components'
 import { TEL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import ItemSlider from '../../singles/ItemSlider'
-import $ from "jquery";
+import $ from "jquery"
 class ProyectosForm extends Component {
 
     addCorreo = () => {
@@ -104,10 +104,7 @@ class ProyectosForm extends Component {
         const { onChange } = this.props
         onChange({ target: { name: 'tipoProyecto', value: value.toString() } })
     }
-    // updateFases = value => {
-    //     const { onChange } = this.props
-    //     onChange({target: { value: value, name: 'fases'}}, true)
-    // }
+    
     render() {
         const { title, children, form, onChange, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, 
             removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange, setOptions, openModalCP, showModal, ...props } = this.props
@@ -145,12 +142,6 @@ class ProyectosForm extends Component {
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
                                 <div className="form-group row form-group-marginless">
-                                    {/* <div className="col-md-7">
-                                        <TagSelectFixed placeholder = "SELECCIONA LA FASE" iconclass = "far fa-folder-open"
-                                            options = { options.fases } requirevalidation = { 1 }
-                                            defaultvalue = { form.fases } onChange = { this.updateFases }
-                                            messageinc = "Selecciona la fase" />
-                                    </div> */}
                                     <div className = 'col-md-2 mt-2 align-self-center'>
                                         <div className="d-flex justify-content-space-around">
                                             <div className="mr-5">
@@ -207,7 +198,7 @@ class ProyectosForm extends Component {
                                             <span className="form-text text-danger text-center is-invalid"> Selecciona una fase </span>
                                         }
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <Input requirevalidation = { 1 } formeditado = { formeditado } name = "nombre" value = { form.nombre }
                                             onChange = { onChange } type = "text" placeholder = "NOMBRE DEL PROYECTO" iconclass = "far fa-folder-open"
                                             messageinc="Ingresa el nombre del proyecto." />
@@ -217,11 +208,16 @@ class ProyectosForm extends Component {
                                             onChange = { onChange } type = "text" placeholder="NOMBRE DEL CONTACTO" iconclass = "far fa-user-circle"
                                             messageinc="Ingresa el nombre de contacto." />
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className="col-md-2">
                                         <InputPhone requirevalidation = { 1 } formeditado = { formeditado } prefix = '' name="numeroContacto"
                                             value = { form.numeroContacto } onChange = { onChange } placeholder = "NÚMERO DE CONTACTO"
                                             iconclass = "fas fa-mobile-alt" messageinc = "Ingresa el número de contacto."
                                             patterns = { TEL } />
+                                    </div>
+                                    <div className="col-md-2">
+                                        <InputMoney requirevalidation = { 1 } formeditado = { formeditado } thousandseparator = { true }
+                                            prefix = '$' name = 'costo' value = { form.costo } onChange = { onChange } placeholder = "COSTO CON IVA"
+                                            iconclass = "fas fa-money-bill-wave-alt" />
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>

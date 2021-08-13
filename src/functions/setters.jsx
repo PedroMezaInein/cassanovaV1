@@ -1125,3 +1125,7 @@ export function setDateText(dato){
     const meses = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC']
     return `${day} ${meses[mes]} ${anio}`
 }
+
+export function setMoneyText(money){
+    return '$'+money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+}

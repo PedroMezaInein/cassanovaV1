@@ -64,7 +64,7 @@ class Mercadotecnia extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
@@ -94,7 +94,7 @@ class Mercadotecnia extends Component {
                 printResponseErrorAlert(error)
             }
         ).catch((error) => {
-            console.log(error, 'error')
+            console.error(error, 'error')
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
         })
     }
@@ -115,7 +115,7 @@ class Mercadotecnia extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     } */
 
@@ -135,7 +135,7 @@ class Mercadotecnia extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+            console.error(error, 'error')
         })
     }
 
