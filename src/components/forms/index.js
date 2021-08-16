@@ -21,6 +21,7 @@ import origenLeadForm from './catalogos/OrigenLeadForm'
 import redesSocialesForm from './catalogos/RedesSocialesForm'
 import bancoForm from './catalogos/BancoForm'
 import tipoForm from './catalogos/TipoForm'
+import prestacionForm from './catalogos/PrestacionForm'
 import proyectosForm from './proyectos/ProyectosForm'
 import avanceForm from './proyectos/AvanceForm'
 import ventasForm from './proyectos/VentasForm'
@@ -144,6 +145,7 @@ export const OrigenLeadForm = origenLeadForm
 export const RedesSocialesForm = redesSocialesForm
 export const BancoForm = bancoForm
 export const TipoForm = tipoForm
+export const PrestacionForm = prestacionForm
 export const ProyectosForm = proyectosForm
 export const AvanceForm = avanceForm
 export const VentasForm = ventasForm

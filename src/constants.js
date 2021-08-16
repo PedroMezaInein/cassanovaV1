@@ -281,6 +281,12 @@ export const TIPOS_COLUMNS = [
     { Header: 'Tipo', accessor: 'tipo', customRender: true }
 ]
 
+export const PRESTACIONES_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Prestaciones', accessor: 'prestacion', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
+]
+
 export const PROYECTOS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Costos', accessor: 'costos', customRender: true, searchable: false, orderable: false },
