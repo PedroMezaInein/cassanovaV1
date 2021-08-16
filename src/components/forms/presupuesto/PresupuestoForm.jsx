@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { InputGray, Button, CalendarDay, SelectSearchGray } from '../../form-components'
+import { InputGray, Button, SelectSearchGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 class PresupuestoForm extends Component {
