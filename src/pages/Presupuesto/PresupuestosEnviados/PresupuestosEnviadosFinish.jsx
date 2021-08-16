@@ -119,7 +119,7 @@ class PresupuestosEnviadosFinish extends Component {
                         precio_unitario: precio_unitario,
                         importe: importe,
                         active: concepto.active ? true : false,
-                        bg_margen:true,
+                        bg_margen:concepto.margen > 0 ? false : true,
                         id: concepto.id,
                     })
                     return false

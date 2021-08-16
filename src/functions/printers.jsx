@@ -113,6 +113,8 @@ export function printSwalHeader(tipo){
             return 'EDITAR NSS'
         case 'ubicacion':
             return 'EDITAR LA UBICACIÓN'
+        case 'prestacion':
+            return 'EDITAR LA PRESTACIÓN'
         default:
             return ''
     }

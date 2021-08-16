@@ -109,7 +109,7 @@ class UltimoPresupuesto extends Component {
         return(
             <OverlayTrigger overlay={
                 <Tooltip className="mb-4 tool-time-line">
-                    <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus} </div>
+                    <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus === 'Aceptado/Rechazado' ?<span><span className="color-aceptado-presupuesto">Aceptado</span> <span className="font-weight-light">/</span> <span className="color-rechazado-presupuesto">Rechazado</span></span> : estatus} </div>
                     <div className="text-justify px-5 pb-3 mt-1">{details}</div>
                 </Tooltip>
             }>
@@ -266,7 +266,7 @@ class UltimoPresupuesto extends Component {
                             </Card.Header>
                             <Card.Body className="pt-2">
                                 <div className="row mx-0">
-                                    <div className="col-md-8 px-0 mx-auto">
+                                    <div className="col-md-10 px-0 mx-auto">
                                         {
                                             presupuesto.estatus &&
                                             <div className="table-responsive mt-5">
@@ -294,7 +294,7 @@ class UltimoPresupuesto extends Component {
                                                             {this.tooltip(aux_presupuestos.aceptado ? 'Aceptado' : aux_presupuestos.rechazado ? 'Rechazado' : 'Aceptado/Rechazado',
                                                                 aux_presupuestos.aceptado ? 'El cliente aprueba el presupuesto.' : aux_presupuestos.rechazado ? 'El cliente declina el presupuesto.' : 'El cliente aprueba o declina el presupuesto.',
                                                                 aux_presupuestos.aceptado ? 'dot-aceptado-presupuesto' : 'dot-rechazado-presupuesto',
-                                                                aux_presupuestos.aceptado ? 'header-presupuesto-aceptado' : aux_presupuestos.rechazado ? 'header-presupuesto-rechazado' : 'text-pink bg-light-pink')}
+                                                                aux_presupuestos.aceptado ? 'header-presupuesto-aceptado' : aux_presupuestos.rechazado ? 'header-presupuesto-rechazado' : 'bg-aceptado-rechazado')}
                                                         </li> 
                                                     </ul>
                                                 </div>

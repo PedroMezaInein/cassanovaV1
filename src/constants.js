@@ -13,10 +13,12 @@ export const IM_DORADO = '#bdab71'
 
 export const PROD_LINK = 'https://proyectosadmin.xyz/api/'
 export const DEV_LINK = 'http://localhost:8000/api/'
+//export const DEV_LINK = 'https://apiapp1.inein.com.mx/api/'
 
 export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_LINK
 
 export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proyectosadmin.xyz' : 'http://127.0.0.1:8000'
+//export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proyectosadmin.xyz' : 'https://apiapp1.inein.com.mx'
 
 export const PUSHER_OBJECT = { broadcaster: 'pusher', key: '112ff49dfbf7dccb6934', cluster: 'us2', forceTLS: false }
 
@@ -281,8 +283,15 @@ export const TIPOS_COLUMNS = [
     { Header: 'Tipo', accessor: 'tipo', customRender: true }
 ]
 
+export const PRESTACIONES_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Prestaciones', accessor: 'prestacion', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
+]
+
 export const PROYECTOS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Costos', accessor: 'costos', customRender: true, searchable: false, orderable: false },
     { Header: 'Estatus', accessor: 'status', customRender: true },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'T.Proyecto', accessor: 'tipo_proyecto', customRender: true },
@@ -292,9 +301,8 @@ export const PROYECTOS_COLUMNS = [
     { Header: 'Empresa', accessor: 'empresa' },
     { Header: 'F.Inicio', accessor: 'fechaInicio', customRender: true },
     { Header: 'F.Fin', accessor: 'fechaFin', customRender: true },
-    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
     { Header: 'Fases', accessor: 'fases' },
-    { Header: 'Costos', accessor: 'costos', customRender: true, searchable: false, orderable: false }
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const VENTAS_COLUMNS = [

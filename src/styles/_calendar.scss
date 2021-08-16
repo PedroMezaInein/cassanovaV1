@@ -129,6 +129,10 @@ h2.fc-toolbar-title {
     margin-top: 0.75rem !important;
     color: #80808F !important;
     font-weight: 600 !important;
+    white-space:nowrap;
+    @include down-screen($xxs) {
+        white-space: pre-line;
+    }
 }
 
 a.fc-col-header-cell-cushion {

@@ -98,13 +98,13 @@ class FormularioContrato extends Component {
                                                         <div className="w-fit-content mx-auto">
                                                             <div>
                                                                 <span className="text-dark-75 font-weight-bold font-size-lg">Inicio:</span>
-                                                                <span className="text-dark-50 font-weight-normal ml-1">{dayDMY(contrato.fecha_inicio)}</span>
+                                                                <span className="text-dark-50 font-weight-normal ml-1 white-space-nowrap">{dayDMY(contrato.fecha_inicio)}</span>
                                                             </div>
                                                             {
                                                                 contrato.fecha_fin !== null &&
                                                                 <div>
                                                                     <span className="text-dark-75 font-weight-bold font-size-lg">Final:</span>
-                                                                    <span className="text-dark-50 font-weight-normal ml-1">{dayDMY(contrato.fecha_fin)}</span>
+                                                                    <span className="text-dark-50 font-weight-normal ml-1 white-space-nowrap">{dayDMY(contrato.fecha_fin)}</span>
                                                                 </div>
                                                             }
                                                         </div>
