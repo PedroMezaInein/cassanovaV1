@@ -326,7 +326,7 @@ class TicketView extends Component {
         return(
             <OverlayTrigger overlay={
                 <Tooltip className="mb-4 tool-time-line">
-                    <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus} </div>
+                    <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus === 'Aceptado/Rechazado' ?<span><span className="color-aceptado-presupuesto">Aceptado</span> <span className="font-weight-light">/</span> <span className="color-rechazado-presupuesto">Rechazado</span></span> : estatus} </div>
                     <div className="text-justify px-5 pb-3 mt-1">{details}</div>
                 </Tooltip>
             }>
@@ -482,13 +482,13 @@ class TicketView extends Component {
                                                                     {this.tooltip(aux_estatus.aceptado ? 'Aceptado' : aux_estatus.rechazado ? 'Rechazado' : 'Aceptado/Rechazado',
                                                                         aux_estatus.aceptado ? 'El departamento de calidad aprueba el ticket.' : aux_estatus.rechazado ? 'El departamento de calidad rechaza el ticket.' : 'El departamento de calidad aprueba o declina el ticket.',
                                                                         aux_estatus.aceptado ? 'dot-aceptado-ticket' : 'dot-rechazado-ticket',
-                                                                        aux_estatus.aceptado ? 'header-ticket-aceptado' : aux_estatus.rechazado ? 'header-ticket-rechazado' : 'text-pink bg-light-pink')}
+                                                                        aux_estatus.aceptado ? 'header-ticket-aceptado' : aux_estatus.rechazado ? 'header-ticket-rechazado' : 'bg-aceptado-rechazado')}
                                                                 </li>
                                                                 {
                                                                     data.estatus_ticket.estatus !== 'Rechazado' &&
                                                                     <>
                                                                         <li className={`li ${aux_estatus.aprobacion ? 'complete_pendiente' : ''}`}>
-                                                                            {this.tooltip('Aprobación pendiente', 'Se realiza el presupuesto y cuando es terminado se envía al cliente con la finalidad de continuar con el proceso de la petición.', 'dot-aprobacion-ticket', 'header-ticket-aprobacion')}
+                                                                            {this.tooltip('Aprobación pendiente', 'El cliente recibió un presupuesto generado y se espera su aprobación.', 'dot-aprobacion-ticket', 'header-ticket-aprobacion')}
                                                                         </li>
                                                                         <li className={`li ${aux_estatus.proceso ? 'complete_proceso' : ''}`}>
                                                                             {this.tooltip('En proceso', 'El departamento de calidad inicia con los trabajos.', 'dot-proceso-ticket', 'header-ticket-proceso')}

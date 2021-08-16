@@ -142,6 +142,7 @@ const OrigenesLeads = React.lazy( () => import('./pages/Catalogos/OrigenesLeads'
 const RedesSociales = React.lazy( () => import('./pages/Catalogos/RedesSociales') )
 const RolesMercadotecnia = React.lazy( () => import('./pages/Catalogos/RolesMercadotecnia') )
 const Servicios = React.lazy( () => import('./pages/Catalogos/Servicios') )
+const Prestaciones = React.lazy( () => import('./pages/Catalogos/Prestaciones') )
 
 const Contabilidad = React.lazy( () => import('./pages/Reportes/Contabilidad') )
 const ReporteVentas = React.lazy( () => import('./pages/Reportes/ReporteVentas') )
@@ -426,6 +427,7 @@ class App extends Component{
                     <Route path = "/catalogos/bancos" exact component ={ Bancos } />
                     <Route path = "/catalogos/roles-mercadotecnia" exact component ={ RolesMercadotecnia } />
                     <Route path = "/catalogos/servicios" exact component ={ Servicios } />
+                    <Route path = "/catalogos/prestaciones" exact component ={ Prestaciones } />
                     
                     <Route path = "/catalogos/precio-diseno" exact component ={ PrecioDiseño } />
                     <Route path = "/catalogos/precio-diseno/:action" exact component ={ PrecioDiseñoForm } />

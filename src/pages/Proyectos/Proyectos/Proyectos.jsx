@@ -959,10 +959,8 @@ class Proyectos extends Component {
         let restante = proyecto.costo - proyecto.totalVentas
         if(restante <= 0)
             return(
-                <div className = 'px-2'>
-                    <span>
-                        <i className="far fa-thumbs-up pr-2 text-success" />
-                    </span>
+                <div className='px-2 white-space-nowrap'>
+                    <i className="far fa-thumbs-up pr-2 text-success"/>
                     <span className="text-success">Pagado</span>
                 </div>
             )

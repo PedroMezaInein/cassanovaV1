@@ -336,9 +336,9 @@ class Presupuesto extends Component {
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'>
-                    <div className="row mx-0 mb-4 mt-4 mt-md-0">
-                        <div className="col-md-8 px-0 mx-auto">
-                            <div className="table-responsive-md mt-5">
+                    <div className="row mx-0 mb-4 mt-7 mt-md-0">
+                        <div className="col-md-10 px-0 mx-auto">
+                            <div className="table-responsive-xl mt-5">
                                 <div className="list min-w-fit-content" data-inbox="list">
                                     <ul className="timeline-estatus p-0">
                                         <li className='li complete-conceptos'>
