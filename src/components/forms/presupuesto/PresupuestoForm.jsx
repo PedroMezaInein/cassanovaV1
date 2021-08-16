@@ -250,24 +250,18 @@ class PresupuestoForm extends Component {
                                             <div className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
                                                 <div className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</div>
                                                 <div className="d-flex py-2">
-                                                    <Button
-                                                        icon=''
-                                                        className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
-                                                        onClick={() => { this.mostrarFormulario() }}
-                                                        only_icon="las la-clipboard-list icon-lg mr-3 px-0"
-                                                        type="button"
-                                                        text="LLENAR FORMULARIO"
-                                                    />
+                                                    { console.log(`showFormCalidad`, showFormCalidad) }
+                                                    {
+                                                        !showFormCalidad ? 
+                                                            <Button icon = '' className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
+                                                            onClick = { () => { this.mostrarFormulario() } } only_icon="las la-clipboard-list icon-lg mr-3 px-0" type="button" text="LLENAR FORMULARIO" />
+                                                        : !showForm ? this.mostrarFormulario() : ''
+                                                    }
+                                                    
                                                 </div>
                                             </div>
                                             <Form id="form-presupuesto" className={`${!showForm ? 'd-none' : 'card-spacer pt-0'}`}
-                                                onSubmit={
-                                                    (e) => {
-                                                        e.preventDefault();
-                                                        validateAlert(onSubmit, e, 'form-presupuesto')
-                                                    }
-                                                }
-                                            >
+                                                onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } >
                                                 <div className="col-md-12">
                                                     <div className="form-group row form-group-marginless pt-4 justify-content-center">
                                                         {
@@ -359,7 +353,7 @@ class PresupuestoForm extends Component {
                                                                 withicon={1}
                                                             />
                                                         </div>
-                                                        <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
+                                                        {/* <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
                                                         <div className="col-md-12 text-center align-self-center mt-5">
                                                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                                                 <label className="text-center font-weight-bolder">Fecha del presupuesto</label>
@@ -372,7 +366,7 @@ class PresupuestoForm extends Component {
                                                                 withformgroup={0}
                                                                 requirevalidation={1}
                                                             />
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                 </div>
                                                 <div className="card-footer px-0 pt-4 pb-0">
