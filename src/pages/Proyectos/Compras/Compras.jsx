@@ -400,9 +400,11 @@ class Compras extends Component {
         })
     }
     setCompras = compras => {
+        
         let aux = []
         let _aux = []
         compras.map((compra) => {
+            console.log(`Compra: ${compra.id}`, compra)
             _aux = []
             if (compra.presupuestos) {
                 compra.presupuestos.map((presupuesto) => {
@@ -455,10 +457,17 @@ class Compras extends Component {
     }
 
     labelIcon(compra){
-        let text = compra.hasTicket ? 'ticket' : 'obra'
+        if(compra.hasTicket)
+            return(
+                <a href = {`/calidad/tickets?id=${compra.ticketId}`}>
+                    <div className='d-flex align-items-center justify-content-center'>
+                        <i style={{ color: "#9E9D24" }} className={`las la-ticket-alt icon-xl mr-2`} /> {setTextTable('ticket')}
+                    </div>
+                </a>
+            )
         return(
             <div className='d-flex align-items-center justify-content-center'>
-                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+                <i style={{ color: "#EF6C00" }} className={`las la-hard-hat icon-xl mr-2`} /> {setTextTable('obra')}
             </div>
         )
     }
