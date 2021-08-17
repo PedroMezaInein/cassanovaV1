@@ -173,6 +173,7 @@ class TicketDetails extends Component {
     /* -------------------------------------------------------------------------- */
 
     getOptionsAxios = async() => {
+        waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(access_token) }).then(
             (response) => {
@@ -205,6 +206,7 @@ class TicketDetails extends Component {
                     }
                 }
                 this.setState({ ...this.state, options, data, formularios })
+                Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

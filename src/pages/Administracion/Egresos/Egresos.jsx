@@ -6,7 +6,7 @@ import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
 import { setOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, RangeCalendar } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { Form } from 'react-bootstrap'
@@ -30,6 +30,7 @@ class egresos extends Component {
         modalAdjuntos: false,
         modalSee: false,
         modalFacturaExtranjera: false,
+        modalDownload: false,
         facturas: [],
         porcentaje: 0,
         data: {
@@ -39,6 +40,8 @@ class egresos extends Component {
         },
         form: {
             formaPago: '',
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
             metodoPago: '',
             estatusFactura: '',
             facturaObject: '',
@@ -138,6 +141,10 @@ class egresos extends Component {
                 case 'estatusCompra':
                     form[element] = 0
                     break;
+                case 'fechaInicio':
+                case 'fechaFin':
+                    form[element] = new Date()
+                    break;
                 default:
                     form[element] = ''
                     break;
@@ -154,6 +161,14 @@ class egresos extends Component {
             ...this.state,
             form
         })
+    }
+
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({ ...this.state, form })
     }
     
     handleChange = (files, item)  => {
@@ -699,6 +714,10 @@ class egresos extends Component {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
+    handleCloseDownload = () => {
+        this.setState({ ...this.state, modalDownload: false, form: this.clearForm() })
+    }
+
     handleCloseFacturaExtranjera = () => {
         const { modalFacturaExtranjera } = this.state
         this.setState({
@@ -992,7 +1011,16 @@ class egresos extends Component {
         })
     }
 
-    async exportEgresosAxios() {
+    /* -------------------------------------------------------------------------- */
+    /*                        ANCHOR Exportar egresos Axios                       */
+    /* -------------------------------------------------------------------------- */
+
+    exportEgresos = () => {
+        this.setState({ ...this.state, modalDownload: true, form: this.clearForm() })
+    }
+
+    exportEgresosAxios = async () => {
+        const { form } = this.state
         let headers = []
         let documento = ''
         EGRESOS_COLUMNS.map((columna, key) => {
@@ -1011,7 +1039,8 @@ class egresos extends Component {
         })
         waitAlert();
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'v2/exportar/administracion/egresos', { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/exportar/administracion/egresos`, { columnas: headers, start: form.fechaInicio, end: form.fechaFin }, 
+            { responseType: 'blob', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -1144,7 +1173,7 @@ class egresos extends Component {
         })
     }
     render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, facturas, form, options, modalSee, egreso, modalFacturaExtranjera } = this.state
+        const { modalDelete, modalFacturas, modalAdjuntos, facturas, form, options, modalSee, egreso, modalFacturaExtranjera, modalDownload } = this.state
         return (
             <Layout active = 'administracion'  {...this.props}>
 
@@ -1158,9 +1187,25 @@ class egresos extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
-                    onClickExport = { () => this.exportEgresosAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setEgresos }
+                    onClickExport = { () => this.exportEgresos() } accessToken = { this.props.authUser.access_token } setter = { this.setEgresos }
                     urlRender = { `${URL_DEV}v2/administracion/egresos`} validateFactura = { true } tipo_validacion = 'compras' cardTable = 'cardTable'
                     cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+                
+                <Modal show = { modalDownload } title = 'Descargar egresos' handleClose = { this.handleCloseDownload } >
+                    <Form onSubmit = { this.onSubmit} >
+                        <div className="text-center">
+                            <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                            <RangeCalendar onChange = { this.onChangeRange } start = { form.fechaInicio } end = { form.fechaFin } />
+                        </div>
+                        <div className="card-footer py-3 pr-1">
+                            <div className="row mx-0">
+                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                    <Button icon='' className="btn btn-primary mr-2" onClick={ this.exportEgresosAxios } text="ENVIAR" />
+                                </div>
+                            </div>
+                        </div>
+                    </Form>
+                </Modal>
 
                 <ModalDelete title = "¿Estás seguro que deseas eliminar el egreso?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
                     onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() } } />

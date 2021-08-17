@@ -462,11 +462,18 @@ class Ventas extends Component {
         return aux
     }
 
-    labelIcon(venta){
-        let text = venta.hasTicket ? 'ticket' : 'obra'
+    labelIcon = (venta) => {
+        if(venta.hasTicket)
+            return(
+                <a href = {`/calidad/tickets?id=${venta.ticketId}`}>
+                    <div className='d-flex align-items-center justify-content-center'>
+                        <i style={{ color: "#9E9D24" }} className={`las la-ticket-alt icon-xl mr-2`} /> {setTextTable('ticket')}
+                    </div>
+                </a>
+            )
         return(
             <div className='d-flex align-items-center justify-content-center'>
-                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} /> {setTextTable(text)}
+                <i style={{ color: "#EF6C00" }} className={`las la-hard-hat icon-xl mr-2`} /> {setTextTable('obra')}
             </div>
         )
     }
