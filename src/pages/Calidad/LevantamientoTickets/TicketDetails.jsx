@@ -78,7 +78,8 @@ class TicketDetails extends Component {
                     id: '',
                     mensajes: { active: false, mensaje: '' },
                     unidad_id:'',
-                    bg_cantidad:true
+                    bg_cantidad:true,
+                    vicio_oculto:false
                 }],
                 conceptosNuevos: []
             },
@@ -423,7 +424,8 @@ class TicketDetails extends Component {
                         importe: concepto.importe,
                         unidad: concepto.unidad ? concepto.unidad.nombre : '',
                         unidad_id: concepto.unidad ? concepto.unidad.id.toString() : '',
-                        bg_cantidad:true
+                        bg_cantidad:true,
+                        vicio_oculto:concepto.vicio_oculto ? true : false
                     })
                 })
                 formularios.preeliminar.conceptos = aux

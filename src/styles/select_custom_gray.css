@@ -107,7 +107,7 @@
 }
 
 .select-search.is-disabled {
-    opacity: 0.5;
+    opacity: 1;
 }
 
 .select-search:not(.is-disabled) .select-search__input {
