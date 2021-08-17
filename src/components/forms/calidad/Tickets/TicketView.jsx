@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, MantenimientoCorrectivo, AgregarConcepto } from '../../../../components/forms';
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, AgregarConcepto } from '../../../../components/forms';
 import { Button, SelectSearchGray,InputGray } from '../../../form-components'
-import moment from 'moment'
 import 'moment/locale/es'
 import imageCompression from 'browser-image-compression';
 import { questionAlert, waitAlert } from '../../../../functions/alert';
@@ -31,12 +30,6 @@ class TicketView extends Component {
             return false
         })
         return iniciales
-    }
-
-    formatDay (fecha){
-        let fecha_instalacion = moment(fecha);
-        let format = fecha_instalacion.locale('es').format("DD MMM YYYY");
-        return format.replace('.', '');
     }
 
     onChange = (files) => {
@@ -338,13 +331,12 @@ class TicketView extends Component {
     }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
-            handleChangeTicketProceso, generateEmailTicketProceso, onChangeMantenimientos, onSubmitMantenimiento, openModalDeleteMantenimiento, activeKeyNav,
-            controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, key, controlledTab, onSubmitConcept, handleCloseConceptos, 
-            openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows
+            handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
+            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows
         } = this.props
 
         const { checked } = this.state
@@ -553,15 +545,6 @@ class TicketView extends Component {
                                                                     <span className="nav-text font-weight-bolder white-space-nowrap">{this.showTabTicketProceso()}</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
-                                                            
-                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('mantenimiento'); controlledNav("mantenimiento") }}>
-                                                                <Nav.Link eventKey="mantenimiento">
-                                                                    <span className="nav-icon">
-                                                                        <i className="las la-tools icon-lg mr-2"></i>
-                                                                    </span>
-                                                                    <span className="nav-text font-weight-bolder">Mantenimiento</span>
-                                                                </Nav.Link>
-                                                            </Nav.Item>
                                                             </>
                                                         :<></>
                                                     :<></>
@@ -688,25 +671,6 @@ class TicketView extends Component {
                                                 </Col>
                                             }
                                         </Row>
-                                    </Tab.Pane>
-                                    <Tab.Pane eventKey="mantenimiento">
-                                        <Card className="card-custom gutter-b card-stretch">
-                                            <Card.Header className="border-0 pt-8 pt-md-0">
-                                                <Card.Title className="m-0">
-                                                    <div className="font-weight-bold font-size-h5">Mantenimiento correctivo</div>
-                                                </Card.Title>
-                                            </Card.Header>
-                                            <Card.Body className="pt-0">
-                                                <MantenimientoCorrectivo
-                                                    form={formulario.mantenimientos}
-                                                    options = { options }
-                                                    onChangeMantenimientos={onChangeMantenimientos}
-                                                    data={data}
-                                                    onSubmitMantenimiento={onSubmitMantenimiento}
-                                                    openModalDeleteMantenimiento={openModalDeleteMantenimiento}
-                                                />
-                                            </Card.Body>
-                                        </Card>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>
