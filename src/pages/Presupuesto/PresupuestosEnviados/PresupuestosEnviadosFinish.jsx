@@ -34,7 +34,8 @@ class PresupuestosEnviadosFinish extends Component {
                 id: '',
                 margen: '',
                 precio_unitario: '',
-                bg_margen:true
+                bg_margen:true,
+                vicio_oculto:false
             }],
             fecha_creacion: new Date(),
             fecha_aceptacion: '',
@@ -121,6 +122,7 @@ class PresupuestosEnviadosFinish extends Component {
                         active: concepto.active ? true : false,
                         bg_margen:concepto.margen > 0 ? false : true,
                         id: concepto.id,
+                        vicio_oculto:concepto.vicio_oculto ? true : false
                     })
                     return false
                 })
@@ -267,24 +269,46 @@ class PresupuestosEnviadosFinish extends Component {
             }
         }
         form.conceptos[key][name] = value
-        form.conceptos[key].precio_unitario = (form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100))).toFixed(2)
-        form.conceptos[key].importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad).toFixed(2)
+        form.conceptos[key].precio_unitario = this.getPrecioUnitario(key)
+        
+        if(form.conceptos[key].vicio_oculto){
+            form.conceptos[key].importe = (0).toFixed(2)
+        }else{
+            form.conceptos[key].importe = this.getImporte(key)
+        }
         this.setState({
             ...this.state,
             form
         })
     }
+    getPrecioUnitario(key){
+        const { form } = this.state
+        let precio_unitario =(form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100))).toFixed(2)
+        return precio_unitario
+    }
     
+    getImporte(key){
+        const { form } = this.state
+        let importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad).toFixed(2)
+        return importe
+    }
     checkButton = (key, e) => {
         const { name, checked } = e.target
-        const { form, presupuesto } = this.state
+        const { form, /*presupuesto*/ } = this.state
         form.conceptos[key][name] = checked
-        if (!checked) {
-            let pre = presupuesto.conceptos[key]
-            this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
-            this.onChange(key, { target: { value: pre.costo } }, 'costo')
-            this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
-            this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
+        // if (!checked) {
+        //     let pre = presupuesto.conceptos[key]
+        //     this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
+        //     this.onChange(key, { target: { value: pre.costo } }, 'costo')
+        //     this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
+        //     this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
+        // }
+        if(name === 'vicio_oculto'){
+            if(form.conceptos[key]['vicio_oculto']){
+                form.conceptos[key].importe = (0).toFixed(2)
+            }else{
+                form.conceptos[key].importe = this.getImporte(key)
+            }
         }
         this.setState({
             ...this.state,

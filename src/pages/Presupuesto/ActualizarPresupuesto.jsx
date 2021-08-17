@@ -40,7 +40,8 @@ class ActualizarPresupuesto extends Component {
                 },
                 unidad_id:'',
                 bg_costo:true,
-                bg_cantidad:true
+                bg_cantidad:true,
+                vicio_oculto:false
             }],
             conceptosNuevos: []
         },
@@ -213,7 +214,8 @@ class ActualizarPresupuesto extends Component {
                             unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : '',
                             unidad_id: concepto.concepto.unidad.id.toString(),
                             bg_costo:concepto.costo>0?false:true,
-                            bg_cantidad:true
+                            bg_cantidad:true,
+                            vicio_oculto:concepto.vicio_oculto ? true : false
                         })
                     }
                 })
@@ -354,30 +356,31 @@ class ActualizarPresupuesto extends Component {
     onChange = (key, e, name) => {
         let { value } = e.target
         const { form, presupuesto } = this.state
-        if (name === 'desperdicio') {
+        if (name === 'desperdicio') { 
             value = value.replace('%', '')
         }
         if (name === 'costo'){
             if(value <= 0){
-                form['conceptos'][key]['bg_costo'] = true
+                form.conceptos[key].bg_costo = true
             }else{
-                form['conceptos'][key]['bg_costo'] = false
+                form.conceptos[key].bg_costo = false
             }
         }
         if (name === 'cantidad_preliminar'){
             if (presupuesto.conceptos[key][name].toString() !== value) {
-                form['conceptos'][key]['bg_cantidad'] = false
+                form.conceptos[key].bg_cantidad = false
             }else{
-                form['conceptos'][key]['bg_cantidad'] = true
+                form.conceptos[key].bg_cantidad = true
             }
         }
-        form['conceptos'][key][name] = value
-        let cantidad = form['conceptos'][key]['cantidad_preliminar'] * (1 + (form['conceptos'][key]['desperdicio'] / 100))
-        cantidad = cantidad.toFixed(2)
-        let importe = cantidad * form['conceptos'][key]['costo']
-        importe = importe.toFixed(2)
-        form['conceptos'][key]['cantidad'] = cantidad
-        form['conceptos'][key]['importe'] = importe
+        form.conceptos[key][name] = value
+        form.conceptos[key].cantidad = this.getCantidad(key)
+
+        if(form.conceptos[key].vicio_oculto){
+            form.conceptos[key].importe = (0).toFixed(2)
+        }else{
+            form.conceptos[key].importe =  this.getImporte(key)
+        }
         if (name !== 'mensajes' && name !== 'desperdicio')
             if (presupuesto.conceptos[key][name] !== form.conceptos[key][name]) {
                 form.conceptos[key].mensajes.active = true
@@ -397,19 +400,36 @@ class ActualizarPresupuesto extends Component {
             form
         })
     }
+    getCantidad(key){
+        const { form } = this.state
+        let cantidad = (form.conceptos[key].cantidad_preliminar * (1 + (form.conceptos[key].desperdicio / 100))).toFixed(2)
+        return cantidad
+    }
+    getImporte(key){
+        const { form } = this.state
+        let importe = (this.getCantidad(key) * form.conceptos[key].costo).toFixed(2)
+        return importe
+    }
     checkButton = (key, e) => {
         const { name, checked } = e.target
-        const { form, presupuesto } = this.state
+        const { form /*, presupuesto*/ } = this.state
         form.conceptos[key][name] = checked
-        if (!checked) {
-            let pre = presupuesto.conceptos[key]
-            let aux = { active: false, mensaje: '' }
-            this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
-            this.onChange(key, { target: { value: pre.costo } }, 'costo')
-            this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
-            this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
-            this.onChange(key, { target: { value: aux } }, 'mensajes')
+        if(name === 'vicio_oculto'){
+            if(form.conceptos[key].vicio_oculto){
+                form.conceptos[key].importe = (0).toFixed(2)
+            }else{
+                form.conceptos[key].importe = this.getImporte(key)
+            }
         }
+        // if (!checked) {
+        //     let pre = presupuesto.conceptos[key]
+        //     let aux = { active: false, mensaje: '' }
+        //     this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
+        //     this.onChange(key, { target: { value: pre.costo } }, 'costo')
+        //     this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
+        //     this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
+        //     this.onChange(key, { target: { value: aux } }, 'mensajes')
+        // }
         this.setState({
             ...this.state,
             form

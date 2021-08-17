@@ -3093,6 +3093,7 @@ table#calendario-proyectos tr:last-child td {
     .select-search.has-focus{
         .select-search__option{
             font-size: 12px!important;
+            text-align: center;
         }
     }
 }
@@ -3195,4 +3196,18 @@ table#calendario-proyectos tr:last-child td {
     .tooltip-inner {
         padding: 0;
     }
+}
+.disable-presupuesto:disabled{
+    background-color: #fee9ec !important;
+    border-color: #fee9ec !important;
+    opacity: 1 !important;
+    color: #464e5f !important;
+    font-weight: 400 !important;
+}
+.vicio_oculto-presupuesto{
+    background-color: #e7f1e8 !important;
+    border-color: #e7f1e8 !important;
+    opacity: 1 !important;
+    color: #464e5f !important;
+    font-weight: 400 !important;
 }

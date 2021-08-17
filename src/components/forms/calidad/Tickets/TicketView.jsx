@@ -75,6 +75,13 @@ class TicketView extends Component {
         const { formulario, onChange } = this.props
         let valor = formulario.preeliminar.conceptos
         valor[key][name] = checked ? 1 : 0
+        if(name === 'vicio_oculto'){
+            if(valor[key].vicio_oculto){
+                valor[key].importe = (0).toFixed(2)
+            }else{
+                valor[key].importe = this.getImporte(key, valor)
+            }
+        }
         onChange(valor, 'conceptos', 'preeliminar')
     }
 
@@ -121,12 +128,13 @@ class TicketView extends Component {
             }
         }
         valor[key][name] = value
-        let cantidad = valor[key].cantidad_preliminar * (1 + (valor[key].desperdicio / 100))
-        cantidad = cantidad.toFixed(2)
-        let importe = cantidad * valor[key].costo
-        importe = importe.toFixed(2)
-        valor[key].cantidad = cantidad
-        valor[key].importe = importe
+        valor[key].cantidad = this.getCantidad(key, valor)
+
+        if(valor[key].vicio_oculto){
+            valor[key].importe = (0).toFixed(2)
+        }else{
+            valor[key].importe = this.getImporte(key, valor)
+        }
         if (name !== 'mensajes' && name !== 'desperdicio')
             if (presupuesto.conceptos[key][name] !== valor[key][name]) {
                 valor[key].mensajes.active = true
@@ -144,6 +152,14 @@ class TicketView extends Component {
         onChange(valor, 'conceptos', 'preeliminar')
     }
 
+    getCantidad(key, valor){
+        let cantidad = (valor[key].cantidad_preliminar * (1 + (valor[key].desperdicio / 100))).toFixed(2)
+        return cantidad
+    }
+    getImporte(key, valor){
+        let importe = (this.getCantidad(key, valor) * valor[key].costo).toFixed(2)
+        return importe
+    }
     calcularCantidades = () => {
         const { presupuesto } = this.props
         let suma = 0
