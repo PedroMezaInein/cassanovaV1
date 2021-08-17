@@ -715,7 +715,7 @@ class egresos extends Component {
     }
 
     handleCloseDownload = () => {
-        this.setState({ ...this.state, modalDownload: false })
+        this.setState({ ...this.state, modalDownload: false, form: this.clearForm() })
     }
 
     handleCloseFacturaExtranjera = () => {
@@ -1016,7 +1016,7 @@ class egresos extends Component {
     /* -------------------------------------------------------------------------- */
 
     exportEgresos = () => {
-        this.setState({ ...this.state, modalDownload: true })
+        this.setState({ ...this.state, modalDownload: true, form: this.clearForm() })
     }
 
     exportEgresosAxios = async () => {
@@ -1191,7 +1191,7 @@ class egresos extends Component {
                     urlRender = { `${URL_DEV}v2/administracion/egresos`} validateFactura = { true } tipo_validacion = 'compras' cardTable = 'cardTable'
                     cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
                 
-                <Modal show = { modalDownload } title = 'Descargar leads' handleClose = { this.handleCloseDownload } >
+                <Modal show = { modalDownload } title = 'Descargar egresos' handleClose = { this.handleCloseDownload } >
                     <Form onSubmit = { this.onSubmit} >
                         <div className="text-center">
                             <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
