@@ -1298,6 +1298,15 @@ class TicketDetails extends Component {
             this.saveProcesoTicketAxios( true ) 
         }
     }
+
+    generarReporteFotografico = () => {
+        const { ticket, formularios } = this.state
+        questionAlertY('¿DESEAS GENERAR EL REPORTE?',
+            'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DE LAS PETICIONES Y LOS TRABAJOS REALIZADOS',
+            () => this.generarReporteFotograficoAxios(),
+            () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
+        )
+    }
     
     saveProcesoTicketAxios = async(flag) =>{
         waitAlert()
@@ -1362,6 +1371,14 @@ class TicketDetails extends Component {
             case 'enviar_finanzas':
                 questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
                     () => this.patchPresupuesto('estatus', 'Utilidad'))
+                break;
+            case 'ticket-proceso':
+                const { formularios, ticket } = this.state
+                if(ticket.mantenimiento){
+                    formularios.ticket.equipo = ticket.mantenimiento.instalacion.id.toString()
+                    formularios.ticket.costo = ticket.mantenimiento.costo
+                    this.setState({...this.state, formularios})
+                }
                 break;
             default: break;
         }
