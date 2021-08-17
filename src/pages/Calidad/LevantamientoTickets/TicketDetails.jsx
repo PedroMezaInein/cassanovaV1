@@ -42,7 +42,7 @@ class TicketDetails extends Component {
             ]
         },
         formularios: {
-            presupuesto: { fecha: new Date(), tiempo_ejecucion: "", conceptos: {} },
+            presupuesto: { tiempo_ejecucion: "", conceptos: {} },
             ticket: {
                 fechaProgramada: new Date(),
                 empleado: '',
@@ -470,7 +470,7 @@ class TicketDetails extends Component {
                                 'Si aún no deseas enviar, solamente cierra',
                                 () => { this.onSubmitUpdatePresupueso() },
                                 <form id = 'updatePresupuestoForm' name = 'updatePresupuestoForm' >
-                                    <Form.Check inline type="radio" label="COSTOS" name="sendPresupuesto" className="px-0 mb-2" value = 'costos'/>
+                                    <Form.Check inline type="radio" label="COMPRAS" name="sendPresupuesto" className="px-0 mb-2" value = 'costos'/>
                                     <Form.Check inline type="radio" label="FINANZAS" name="sendPresupuesto" className="px-0 mb-2" value = 'finanzas'/>
                                 </form>,
                                 () => { this.patchPresupuesto('estatus', 'En revisión') }
@@ -1635,8 +1635,7 @@ class TicketDetails extends Component {
                                 </div>
                             </div>
                             <div className="col-md-11 font-weight-light mt-5 text-justify">
-                                Si deseas enviar el reporte fotográfico agrega el o los correos del destinatario, de lo contario da clic en 
-                                <span onClick = { this.handleCloseModalReporte } className="font-weight-bold">cancelar</span>.
+                                Si deseas enviar el reporte fotográfico agrega el o los correos del destinatario, de lo contario da clic en <span onClick = { this.handleCloseModalReporte } className="font-weight-bold">cancelar</span>.
                             </div>
                             <div className="col-md-11 mt-5">
                                 <div>

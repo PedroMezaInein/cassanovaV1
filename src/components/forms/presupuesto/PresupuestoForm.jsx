@@ -139,7 +139,7 @@ class PresupuestoForm extends Component {
                                                         <span className="symbol-label"></span>
                                                     </label>
                                                     <div className="d-flex flex-column mr-2 py-2">
-                                                        <span className="text-dark text-hover-primary font-weight-bold font-size-h4 mx-3">CONCEPTOS</span>
+                                                        <span className="text-dark font-weight-bold font-size-h4 mx-3">CONCEPTOS</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -248,9 +248,8 @@ class PresupuestoForm extends Component {
                                     <div className="card card-custom card-stretch" id="kt_todo_view">
                                         <div className="card-body p-0">
                                             <div className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
-                                                <div className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</div>
+                                                <div className="text-dark font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</div>
                                                 <div className="d-flex py-2">
-                                                    { console.log(`showFormCalidad`, showFormCalidad) }
                                                     {
                                                         !showFormCalidad ? 
                                                             <Button icon = '' className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
@@ -335,38 +334,25 @@ class PresupuestoForm extends Component {
                                                                         />
                                                                     </div>
                                                                 </>
-                                                                : ''
+                                                                :<></>
                                                         }
                                                         <div className="col-md-6">
                                                             <InputGray
                                                                 requirevalidation={1}
                                                                 formeditado={formeditado}
-                                                                placeholder="TIEMPO DE EJECUCIÓN"
+                                                                placeholder={`${showFormCalidad ?'AGREGA EL TIEMPO DE EJECUCIÓN':'TIEMPO DE EJECUCIÓN'}`}
                                                                 value={form.tiempo_ejecucion}
                                                                 name="tiempo_ejecucion"
                                                                 onChange={onChange}
-                                                                iconclass={"flaticon-calendar-with-a-clock-time-tools"}
+                                                                iconclass="flaticon-calendar-with-a-clock-time-tools"
                                                                 customdiv="mb-0"
                                                                 iconvalid={1}
                                                                 withtaglabel={1}
                                                                 withtextlabel={1}
                                                                 withicon={1}
+                                                                withplaceholder={1}
                                                             />
                                                         </div>
-                                                        {/* <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
-                                                        <div className="col-md-12 text-center align-self-center mt-5">
-                                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                                                <label className="text-center font-weight-bolder">Fecha del presupuesto</label>
-                                                            </div>
-                                                            <CalendarDay
-                                                                value={form.fecha}
-                                                                date={form.fecha}
-                                                                onChange={onChange}
-                                                                name='fecha'
-                                                                withformgroup={0}
-                                                                requirevalidation={1}
-                                                            />
-                                                        </div> */}
                                                     </div>
                                                 </div>
                                                 <div className="card-footer px-0 pt-4 pb-0">
