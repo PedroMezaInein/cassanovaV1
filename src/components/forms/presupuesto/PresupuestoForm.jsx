@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { InputGray, Button, CalendarDay, SelectSearchGray } from '../../form-components'
+import { InputGray, Button, SelectSearchGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 class PresupuestoForm extends Component {
@@ -250,24 +250,17 @@ class PresupuestoForm extends Component {
                                             <div className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
                                                 <div className="text-dark font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</div>
                                                 <div className="d-flex py-2">
-                                                    <Button
-                                                        icon=''
-                                                        className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
-                                                        onClick={() => { this.mostrarFormulario() }}
-                                                        only_icon={`las ${showFormCalidad?'la-arrow-alt-circle-right':'la-clipboard-list icon-lg'} mr-2 px-0`}
-                                                        type="button"
-                                                        text={`${showFormCalidad ?'CONTINUAR':'LLENAR FORMULARIO'}`}
-                                                    />
+                                                    {
+                                                        !showFormCalidad ? 
+                                                            <Button icon = '' className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
+                                                            onClick = { () => { this.mostrarFormulario() } } only_icon="las la-clipboard-list icon-lg mr-3 px-0" type="button" text="LLENAR FORMULARIO" />
+                                                        : !showForm ? this.mostrarFormulario() : ''
+                                                    }
+                                                    
                                                 </div>
                                             </div>
                                             <Form id="form-presupuesto" className={`${!showForm ? 'd-none' : 'card-spacer pt-0'}`}
-                                                onSubmit={
-                                                    (e) => {
-                                                        e.preventDefault();
-                                                        validateAlert(onSubmit, e, 'form-presupuesto')
-                                                    }
-                                                }
-                                            >
+                                                onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } >
                                                 <div className="col-md-12">
                                                     <div className="form-group row form-group-marginless pt-4 justify-content-center">
                                                         {
