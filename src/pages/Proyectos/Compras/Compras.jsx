@@ -441,6 +441,7 @@ class Compras extends Component {
                     impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(compra.tipo_pago.tipo, this.doubleClick, compra, 'tipoPago', 'text-center'),
                     descripcion: setCustomeDescripcionReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 'text-justify'),
+                    notas: renderToString(setTextTable(compra.notas)),
                     area: setTextTableReactDom(compra.area ? compra.area.nombre : '', this.doubleClick, compra, 'area', 'text-center'),
                     subarea: setTextTableReactDom(compra.subarea ? compra.subarea.nombre : '', this.doubleClick, compra, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 'text-center'),

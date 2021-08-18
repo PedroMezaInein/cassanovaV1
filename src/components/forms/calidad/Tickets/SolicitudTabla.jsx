@@ -102,12 +102,11 @@ export default class SolicitudesTabla extends Component {
                                                             { this.setDescripcion(sol.descripcion) }
                                                         </td>
                                                         <td className="text-dark font-weight-light font-size-sm text-center">
+                                                            { sol[type] ?  <a href = { `/proyectos/${type}s?id=${sol[type].id}` } > {`${type} realizada`} </a> : <></> }
                                                             {
-                                                                sol[type] ? 
-                                                                    <a href = { `/proyectos/${type}s?id=${sol[type].id}` } >
-                                                                        {`${type} realizada`}
-                                                                    </a>
-                                                                : <></>
+                                                                type === 'compra' && sol[type] ?
+                                                                    <div className = 'font-italic pt-2'> { sol[type]['notas'] } </div>
+                                                                : ''
                                                             }
                                                         </td>
                                                         <td className="white-space-nowrap">
