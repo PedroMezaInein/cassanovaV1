@@ -112,6 +112,9 @@ class PresupuestosEnviadosFinish extends Component {
                     if (precio_unitario !== 0) {
                         importe = (concepto.cantidad * precio_unitario).toFixed(2)
                     }
+                    if(concepto.vicio_oculto){
+                        importe = (0).toFixed(2)
+                    }
                     aux.push({
                         descripcion: concepto.descripcion,
                         costo: concepto.costo,
@@ -295,7 +298,7 @@ class PresupuestosEnviadosFinish extends Component {
     checkButton = (key, e) => {
         const { name, checked } = e.target
         const { form, /*presupuesto*/ } = this.state
-        form.conceptos[key][name] = checked
+        form.conceptos[key][name] = checked ? 1 : 0
         // if (!checked) {
         //     let pre = presupuesto.conceptos[key]
         //     this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
