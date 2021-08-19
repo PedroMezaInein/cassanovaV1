@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
+/* import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers" */
 import { setDateTableLG } from '../../../functions/setters'
-import { questionAlert } from '../../../functions/alert'
+/* import { questionAlert } from '../../../functions/alert' */
 class LeadNegociacion extends Component {
 
     isActiveButton(direction) {
@@ -51,7 +51,7 @@ class LeadNegociacion extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, changePageCierreVenta, changePageContratar, sendEmail, clickOneLead } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, /* changePageCierreVenta, */ changePageContratar, /* sendEmail, */ clickOneLead } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -212,7 +212,7 @@ class LeadNegociacion extends Component {
                                                             </span>
                                                         </OverlayTrigger>
                                                         {
-                                                            this.actionsButton(lead) ?
+                                                            /* this.actionsButton(lead) ?
                                                                 <>
                                                                     {
                                                                         this.getActionEmail(lead) ?
@@ -234,7 +234,7 @@ class LeadNegociacion extends Component {
                                                                             <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                         </span>
                                                                     </span>
-                                                                </OverlayTrigger>
+                                                                </OverlayTrigger> */
                                                         }
                                                         <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                             <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
