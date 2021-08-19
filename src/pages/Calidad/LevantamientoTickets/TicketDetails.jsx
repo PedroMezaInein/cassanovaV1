@@ -1546,20 +1546,22 @@ class TicketDetails extends Component {
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  />
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
-                    <Modal.Body className = 'p-0'>
+                    <Modal.Body className = 'p-0 mt-3'>
                         <div className = 'row mx-0 justify-content-center'>
                             <div className="col-md-12 text-center py-2">
                                 <div>
                                     {
                                         ticket.reporte_url !== undefined ?
+                                            <u>
                                                 <a className="font-weight-bold text-hover-success text-primary" target= '_blank' rel="noreferrer" href = {ticket.reporte_url}>
-                                                REPORTE GENERADO
-                                            </a>
+                                                    DA CLIC AQUÍ PARA VER <i className="las la-hand-point-right text-primary icon-md ml-1"></i> EL REPORTE
+                                                </a>
+                                            </u>
                                         : <></>
                                     }
                                 </div>
                             </div>
-                            <div className="col-md-11 font-weight-light mt-5 text-justify">
+                            <div className="col-md-11 font-weight-light mt-4 text-justify">
                                 Si deseas enviar el reporte fotográfico agrega el o los correos del destinatario, de lo contario da clic en <span onClick = { this.handleCloseModalReporte } className="font-weight-bold">cancelar</span>.
                             </div>
                             <div className="col-md-11 mt-5">

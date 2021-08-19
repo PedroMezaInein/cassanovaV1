@@ -21,7 +21,16 @@ class FormCalendarioTareas extends Component {
                 result += aux[i]
             }
         }
-        return result
+        let text = ''
+        if (aux.length === 1){
+            text = result
+        } else {
+            var strReplacedWith = " y ";
+            var currentIndex = result.lastIndexOf(",");
+            result = result.substring(0, currentIndex) + strReplacedWith + result.substring(currentIndex + 1, result.length);
+            text = result
+        }
+        return text
     }
     mostrarFormulario() {
         const { showForm } = this.state
