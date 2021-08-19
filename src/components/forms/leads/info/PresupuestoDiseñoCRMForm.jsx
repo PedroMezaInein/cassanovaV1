@@ -207,7 +207,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     messageinc="Ingresa los días de ejecución."
                                                 />
                                             </div>
-                                            <div className="col-md-12 px-0">
+                                            <div className="col-md-12 pt-5">
                                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                             </div>
                                             <div className="col-md-4">
