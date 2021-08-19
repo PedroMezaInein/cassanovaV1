@@ -136,7 +136,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     </Col>
                                     <Col md={8} className="align-self-center">
                                         <div className="form-group row form-group-marginless">
-                                            <div className="col-md-4">
+                                            {/* <div className="col-md-4">
                                                 <InputGray 
                                                     withtaglabel={1}
                                                     withtextlabel={1}
@@ -152,7 +152,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     onChange={onChange}
                                                     messageinc="Ingresa el nombre del proyecto."
                                                 />
-                                            </div>
+                                            </div> */}
                                             <div className="col-md-4">
                                                 <InputNumberGray
                                                     withtaglabel={1}
@@ -187,9 +187,9 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     customdiv="mb-0"
                                                 />
                                             </div>
-                                        </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
+                                        {/* </div> */}
+                                            
+                                        {/* <div className="form-group row form-group-marginless"> */}
                                             <div className="col-md-4">
                                                 <InputNumberGray
                                                     withtaglabel={1}
@@ -206,6 +206,9 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     iconclass={"flaticon-calendar-with-a-clock-time-tools"}
                                                     messageinc="Ingresa los días de ejecución."
                                                 />
+                                            </div>
+                                            <div className="col-md-12 px-0">
+                                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
@@ -487,7 +490,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     icon=''
                                                     className="btn btn-light-success btn-sm mr-2"
                                                     only_icon="far fa-file-pdf pr-0 mr-2"
-                                                    text='GENERAR PDF'
+                                                    text='GENERAR COTIZACIÓN'
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
@@ -736,7 +739,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             icon=''
                                             className="btn btn-light-success btn-sm mr-2"
                                             only_icon="far fa-file-pdf pr-0 mr-2"
-                                            text='GENERAR PDF'
+                                            text='GENERAR COTIZACIÓN'
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();
