@@ -566,7 +566,8 @@ export function questionAlert2(title, text, action, html, dismiss) {
         reverseButtons: true,
     }).then((result) => {
         if(result.dismiss){
-            dismiss()
+            if( typeof dismiss === 'function')
+                dismiss()
         }
         if (result.value) {
             action()
