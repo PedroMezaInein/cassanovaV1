@@ -471,7 +471,7 @@ class TicketView extends Component {
                                             </div>
                                         </div>
                                         <div className="row mx-0 my-5">
-                                            <div className="col-md-8 p-3 mx-auto box-shadow-72">
+                                            <div className="col-md-8 p-3 mx-auto box-shadow-53">
                                                 <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5">
                                                     <span className="ribbon-tickets">
                                                         TICKETS
