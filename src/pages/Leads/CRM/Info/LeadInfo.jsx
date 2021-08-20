@@ -707,7 +707,7 @@ class LeadInfo extends Component {
                             if (presupuesto.pdfs[0])
                                 if (presupuesto.pdfs[0].pivot) {
                                     Swal.close()
-                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+                                    questionAlert2('¡COTIZACIÓN GENERADA!', '',
                                         () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador),
                                         this.getTextAlert(presupuesto.pdfs[0].url)
                                     )
@@ -1282,21 +1282,18 @@ class LeadInfo extends Component {
     getTextAlert = url => {
         return (
             <div>
-                <span className="text-dark-50 font-weight-bolder">
-                    ¿Deseas mandar el
-                    <u>
-                        <a rel="noopener noreferrer" href={url} target='_blank' className='text-primary mx-2'>
-                            presupuesto
-                        </a>
-                    </u>
-                    al cliente?
-                </span>
+                <span className="font-weight-bolder font-size-h6 d-block mb-4">¿DESEAS MANDAR LA COTIZACIÓN AL CLIENTE?</span>
+                <u>
+                    <a className="font-weight-bold text-hover-success text-primary font-size-lg" target= '_blank' rel="noreferrer"  href={url}>
+                        DA CLIC AQUÍ PARA VER <i className="las la-hand-point-right text-primary icon-md ml-1"></i> EL PRESUPUESTO
+                    </a>
+                </u>
             </div>
         )
     }
 
     onClickSendPresupuesto = pdf => {
-        questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+        questionAlert2('¡COTIZACIÓN GENERADA!', '',
             () => this.sendCorreoPresupuesto(pdf.pivot.identificador),
             this.getTextAlert(pdf.url)
         )
