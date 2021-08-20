@@ -340,6 +340,7 @@ export const COMPRAS_COLUMNS = [
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
     { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Notas', accessor: 'notas' },
     { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
 ]
 

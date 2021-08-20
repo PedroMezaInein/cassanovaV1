@@ -29,6 +29,7 @@ class LeadLlamadaSalida extends Component {
             tipoProyectoNombre: '',
             origen: '',
             telefono: '',
+            fase: ''
         },
         tipo: '',
         options: {
@@ -100,29 +101,61 @@ class LeadLlamadaSalida extends Component {
         this.onChange({ target: { value: tipoProyecto, name: 'tipoProyectoNombre' } })
     }
     onChange = e => {
-        const { name, value, checked, type } = e.target
+        const { value, checked, type, name } = e.target
         const { form } = this.state
+        let newName = e.target.name
         form[name] = value
         if (type === 'checkbox')
             form[name] = checked
+        if(name === 'fase'){
+            form[name] = parseInt(value)
+            switch(parseInt(value)){
+                case 1:
+                    form.obra = false;
+                    form.diseño = true;
+                    newName = 'diseño'
+                    break;
+                case 2:
+                    form.obra = true;
+                    form.diseño = false;
+                    newName = 'obra'
+                    break;
+                default:
+                    break;
+            }
+        }
         this.setState({
             ...this.state,
             form,
-            messages: this.updateMessages2(name),
-            tipo: name
+            messages: this.updateMessages2(newName),
+            tipo: newName
         })
     }
     onChange2 = e => {
         const { name, value, checked, type } = e.target
         const { form } = this.state
+        let newName = e.target.name
         form[name] = value
         if (type === 'checkbox')
             form[name] = checked
-        this.setState({
-            ...this.state,
-            form,
-            tipo: name
-        })
+        if(name === 'fase'){
+            form[name] = parseInt(value)
+            switch(parseInt(value)){
+                case 1:
+                    form.obra = false;
+                    form.diseño = true;
+                    newName = 'diseño'
+                    break;
+                case 2:
+                    form.obra = true;
+                    form.diseño = false;
+                    newName = 'obra'
+                    break;
+                default:
+                    break;
+            }
+        }
+        this.setState({ ...this.state, form, tipo: newName })
     }
     updateTipoProyecto2 = value => {
         const { options } = this.state
@@ -743,7 +776,22 @@ class LeadLlamadaSalida extends Component {
                                                 onChange={this.onChange2}
                                                 updateTipoProyecto={this.updateTipoProyecto2}
                                                 options={options}
-                                                onSubmit={this.onSubmit}
+                                                onSubmit = { 
+                                                    (e) => {
+                                                        e.preventDefault();
+                                                        questionAlert2(
+                                                            '¿DESEAS ENVIAR CORREO AL CLIENTE?',
+                                                            '',
+                                                            () => { this.onSubmit() },
+                                                            <form id = 'sendCorreoForm' name = 'sendCorreoForm' >
+                                                                <Form.Check type="radio" label="SI" name="sendCorreo"
+                                                                    className="px-0 mb-2" value = 'si'/>
+                                                                <Form.Check type="radio" label="NO" name="sendCorreo"
+                                                                    className="px-0 mb-2" value = 'no'/>
+                                                            </form>
+                                                        )
+                                                    }
+                                                }
                                                 openModalWithInput = { this.openModalWithInput }
                                             />
                                         </Col>

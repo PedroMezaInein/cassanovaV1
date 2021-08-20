@@ -320,7 +320,7 @@ class Contratar extends Component {
         let arreglo = []
         formProyecto.numeroContacto = state.lead.telefono
         formProyecto.contacto = state.lead.nombre.toUpperCase()
-        formProyecto.nombre = state.lead.prospecto.nombre_proyecto
+        //formProyecto.nombre = state.lead.prospecto.nombre_proyecto
         if(state.lead.email){
             arreglo.push(state.lead.email)
             formProyecto.correos = arreglo

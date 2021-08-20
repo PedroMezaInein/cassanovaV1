@@ -40,6 +40,7 @@ class LeadDetenido extends Component {
                                 <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
+                                <th style={{ minWidth: "100px" }} className="text-center">Fase</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>
@@ -129,6 +130,17 @@ class LeadDetenido extends Component {
                                                             })
                                                         }
                                                     </div>
+                                                </td>
+                                                <td className="text-center">
+                                                    {
+                                                        lead.prospecto ?
+                                                            lead.prospecto.diseño ?
+                                                                'Fase 1'
+                                                            : lead.prospecto.obra ?
+                                                                'Fase 2'
+                                                            : ''
+                                                        : ''
+                                                    }
                                                 </td>
                                                 <td className="text-center">
                                                     {

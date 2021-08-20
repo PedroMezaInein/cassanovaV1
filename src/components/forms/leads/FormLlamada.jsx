@@ -52,10 +52,23 @@ class FormLlamada extends Component {
                                         <div className="col-md-12">
                                             <div className="row">
                                                 <div className="col-md-7 px-0">
-                                                    <label className='col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de obra y/o diseño?</label>
+                                                   {/* -------------------------------------------------------------------------- */
+                                                    /*                             ANCHOR FORM LLAMADA                            */
+                                                    /* -------------------------------------------------------------------------- */}
+                                                    <label className='col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de Fase 1 o Fase 2?</label>
                                                 </div>
                                                 <div className="col-md-5 px-0">
-                                                    <div className="checkbox-inline mt-2">
+                                                    <div className="radio-inline">
+                                                        <label className="radio">
+                                                            <input type = "radio" name = 'fase' value = { 1 } onChange = { onChange } checked = { form.fase === 1 ? true : false } />Fase 1
+                                                            <span></span>
+                                                        </label>
+                                                        <label className="radio">
+                                                            <input type = "radio" name = 'fase' value = { 2 } onChange = { onChange } checked = { form.fase === 2 ? true : false } />Fase 2
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                    {/* <div className="checkbox-inline mt-2">
                                                         <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary mr-3">
                                                             <input
                                                                 type="checkbox"
@@ -78,7 +91,7 @@ class FormLlamada extends Component {
                                                                             OBRA
                                                                     <span></span>
                                                         </label>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
                                         </div>

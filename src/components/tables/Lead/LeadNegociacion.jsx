@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
+/* import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers" */
 import { setDateTableLG } from '../../../functions/setters'
-import { questionAlert } from '../../../functions/alert'
+/* import { questionAlert } from '../../../functions/alert' */
 class LeadNegociacion extends Component {
 
     isActiveButton(direction) {
@@ -51,7 +51,7 @@ class LeadNegociacion extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, changePageCierreVenta, changePageContratar, sendEmail, clickOneLead } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, /* changePageCierreVenta, */ changePageContratar, /* sendEmail, */ clickOneLead } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -70,6 +70,7 @@ class LeadNegociacion extends Component {
                                 <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
+                                <th style={{ minWidth: "100px" }} className="text-center">Fase</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "100px" }}></th>
                             </tr>
@@ -168,6 +169,17 @@ class LeadNegociacion extends Component {
                                                 </td>
                                                 <td className="text-center">
                                                     {
+                                                        lead.prospecto ?
+                                                            lead.prospecto.diseño ?
+                                                                'Fase 1'
+                                                            : lead.prospecto.obra ?
+                                                                'Fase 2'
+                                                            : ''
+                                                        : ''
+                                                    }
+                                                </td>
+                                                <td className="text-center">
+                                                    {
                                                         lead.estatus ?
                                                             <Dropdown>
                                                                 <Dropdown.Toggle
@@ -212,7 +224,7 @@ class LeadNegociacion extends Component {
                                                             </span>
                                                         </OverlayTrigger>
                                                         {
-                                                            this.actionsButton(lead) ?
+                                                            /* this.actionsButton(lead) ?
                                                                 <>
                                                                     {
                                                                         this.getActionEmail(lead) ?
@@ -234,7 +246,7 @@ class LeadNegociacion extends Component {
                                                                             <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                         </span>
                                                                     </span>
-                                                                </OverlayTrigger>
+                                                                </OverlayTrigger> */
                                                         }
                                                         <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                             <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">

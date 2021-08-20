@@ -209,10 +209,10 @@ class LeadInfo extends Component {
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
-                form.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
+                //form.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                 form.estado = lead.estado !== null ? lead.estado.toString() : ''
                 form.fecha = new Date(lead.created_at)
-                formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
+                //formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                 if(formDiseño.esquema === 'esquema_1'){
                     formDiseño.tiempo_ejecucion_diseno = 7
                     formDiseño.semanas = this.calculateSemanas(formDiseño.tiempo_ejecucion_diseno)
@@ -478,13 +478,13 @@ class LeadInfo extends Component {
                 form.email = lead.email
                 form.telefono = lead.telefono
                 if(lead.prospecto){
-                    form.proyecto = lead.prospecto.nombre_proyecto
+                    //form.proyecto = lead.prospecto.nombre_proyecto
                     if(lead.prospecto.tipo_proyecto)
                         form.tipoProyecto = lead.prospecto.tipo_proyecto.id.toString()
                 }
                 form.fecha = new Date(lead.created_at)
                 if (lead.presupuesto_diseño) {
-                    formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
+                    //formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
                     formDiseño.fase2 = lead.presupuesto_diseño.fase2
                     formDiseño.renders = lead.presupuesto_diseño.renders

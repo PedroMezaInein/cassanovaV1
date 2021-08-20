@@ -365,7 +365,7 @@ class PresupuestoDiseñoForm extends Component {
 
                 if(presupuesto.lead){
                     if(presupuesto.lead.prospecto){
-                        form.proyecto = presupuesto.lead.prospecto.nombre_proyecto
+                        //form.proyecto = presupuesto.lead.prospecto.nombre_proyecto
                         if(presupuesto.lead.prospecto.tipo_proyecto)
                             form.tipoProyecto = presupuesto.lead.prospecto.tipo_proyecto.id.toString()
                     }
@@ -375,8 +375,8 @@ class PresupuestoDiseñoForm extends Component {
                     if(presupuesto.tipo_proyecto_id)
                         form.tipoProyecto = presupuesto.tipo_proyecto_id.toString()
 
-                if( form.proyecto === '' || form.proyecto === null )
-                    form.proyecto = presupuesto.nombre_proyecto
+                /* if( form.proyecto === '' || form.proyecto === null )
+                    form.proyecto = presupuesto.nombre_proyecto */
 
                 this.setState({
                     ...this.state,

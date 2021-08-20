@@ -148,17 +148,20 @@ class PresupuestoDiseñoForm extends Component {
                                                     name = "tipoProyecto" value = { form.tipoProyecto } onChange = { this.updateTipoProyecto } 
                                                     iconclass = "far fa-building" messageinc = "Selecciona el tipo de proyecto" />
                                             </div>
-                                            <div className="col-md-4">
+                                            {/* <div className="col-md-4">
                                                 <Input requirevalidation = { 1 } formeditado = { formeditado } placeholder = "NOMBRE DEL PROYECTO"
                                                     value = { form.proyecto } name = "proyecto" onChange = { onChange } iconclass = "far fa-folder-open"/>
-                                            </div>
-                                        </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
+                                            </div> */}
+                                        {/* </div> */}
+                                        
+                                        {/* <div className="form-group row form-group-marginless"> */}
                                             <div className="col-md-4">
                                                 <SelectSearch formeditado = { formeditado } options = { options.esquemas } placeholder = "ESQUEMA"
                                                     name = "esquema" value = { form.esquema } onChange = { this.updateEsquema } iconclass = "flaticon2-sheet"
                                                     messageinc = "Selecciona el esquema" />
+                                            </div>
+                                            <div className="col-md-12 px-09">
+                                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "m²"
@@ -170,20 +173,23 @@ class PresupuestoDiseñoForm extends Component {
                                                     value = { form.total } iconclass = "fas fa-dollar-sign" thousandseparator = { true }
                                                     disabled = { true } name = "total" />
                                             </div>
-                                        </div>
+                                        {/* </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
-                                            <div className={form.si_renders?"col-md-3":"col-md-4"}>
+                                        <div className="form-group row form-group-marginless"> */}
+                                            <div className="col-md-4">
                                                 <InputMoney requirevalidation = { 0 } type = "text" placeholder = "DESCUENTO" value = { form.descuento }
                                                     iconclass = "fas fa-percentage" thousandseparator = { true } onChange = { onChange } prefix = '%'
                                                     messageinc = "Ingresa el porcentaje." formeditado = { formeditado }  name = "descuento"/>
                                             </div>
-                                            <div className={form.si_renders?"col-md-3":"col-md-4"}>
+                                            <div className="col-md-12 px-09">
+                                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            </div>
+                                            <div className="col-md-4">
                                                 <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "DÍAS DE EJECUCIÓN"
                                                     value = { form.tiempo_ejecucion_diseno } name = "tiempo_ejecucion_diseno" onChange = { onChange }
                                                     iconclass = "flaticon-calendar-with-a-clock-time-tools" messageinc = "Ingresa los días de ejecución." />
                                             </div>
-                                            <div className={`${(form.si_renders?'col-md-3 d-flex justify-content-center ':'col-md-4 d-flex justify-content-start')}`}>
+                                            <div className='col-md-4 d-flex justify-content-start'>
                                                 <div className="form-group">
                                                     <label className="col-form-label font-size-lg">¿Se incluyen renders?</label>
                                                     <div className="radio-inline">
@@ -202,7 +208,7 @@ class PresupuestoDiseñoForm extends Component {
                                             </div>
                                             {
                                                 form.si_renders?
-                                                    <div className="col-md-3">
+                                                    <div className="col-md-4">
                                                         <InputNumber formeditado = { formeditado } requirevalidation = { 1 } placeholder = "NÚMERO DE RENDERS"
                                                             value = { form.renders } iconclass = "fas fa-photo-video" thousandseparator = { true }
                                                             onChange = { onChange } name = "renders" messageinc = "Ingresa los números de renders."/>
@@ -372,7 +378,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     }
                                                 } />
                                             <Button icon ='' className = "btn btn-light-success btn-sm mr-2" only_icon = "far fa-file-pdf pr-0"
-                                                tooltip = { { text: 'GENERAR PDF' } }
+                                                tooltip = { { text: 'GENERAR COTIZACIÓN' } }
                                                 onClick = {
                                                     (e) => {
                                                         e.preventDefault();
@@ -594,7 +600,7 @@ class PresupuestoDiseñoForm extends Component {
                                                 }
                                             }/>
                                         <Button icon = '' className = "btn btn-light-success btn-sm mr-2" only_icon = "far fa-file-pdf pr-0"
-                                            tooltip = { { text: 'GENERAR PDF' } }
+                                            tooltip = { { text: 'GENERAR COTIZACIÓN' } }
                                             onClick = {
                                                 (e) => {
                                                     e.preventDefault();
