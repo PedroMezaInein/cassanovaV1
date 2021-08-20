@@ -259,7 +259,7 @@ class ActualizarPresupuestoForm extends Component {
                         </Card.Body>
                     </Card>
                     <Card className="mt-4 card-custom">
-                        <Card.Header>
+                        <Card.Header className="border-0">
                             <Card.Title>
                                 <div className="font-weight-bold font-size-h5">Presupuesto Preliminar</div>
                             </Card.Title>
@@ -275,12 +275,12 @@ class ActualizarPresupuestoForm extends Component {
                                 }
                             </div>                    
                         </Card.Header>
-                        <Card.Body className="pt-2">
-                            <div className="row mx-0">
-                                <div className="col-md-10 px-0 mx-auto">
+                        <Card.Body className="pt-0">
+                            <div className="row mx-0 mb-7">
+                                <div className="col-md-8 px-0 mx-auto">
                                     {
                                         modulo_calidad&&
-                                        <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5 mt-5"><span className="ribbon-presupuesto">PRESUPUESTO</span></div>
+                                        <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5"><span className="ribbon-presupuesto">PRESUPUESTO</span></div>
                                     }
                                     {
                                         presupuesto.estatus &&
