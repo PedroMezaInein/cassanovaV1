@@ -249,7 +249,7 @@ class UltimoPresupuesto extends Component {
                         }
                     >
                         <Card className="mt-4 card-custom">
-                            <Card.Header>
+                            <Card.Header className="border-0">
                                 <div className="card-title">
                                     <h3 className="card-label">Presupuesto preeliminar</h3>
                                 </div>
