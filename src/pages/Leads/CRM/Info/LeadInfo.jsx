@@ -2,21 +2,22 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
-import { Button } from '../../../../components/form-components'
+import { Button, InputGray } from '../../../../components/form-components'
 import { URL_DEV } from '../../../../constants'
 import SVG from "react-inlinesvg"
-import { toAbsoluteUrl } from "../../../../functions/routers"
+import { setSingleHeader, toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG, setContactoIcon } from '../../../../functions/setters'
 import { replaceAll } from '../../../../functions/functions'
 import axios from 'axios'
-import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert } from '../../../../functions/alert'
+import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert, customInputAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
-import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral } from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
 import Pagination from "react-js-pagination"
-import Scrollbar from 'perfect-scrollbar-react';
-import 'perfect-scrollbar-react/dist/style.min.css';
-import $ from "jquery";
+import Scrollbar from 'perfect-scrollbar-react'
+import 'perfect-scrollbar-react/dist/style.min.css'
+import $ from "jquery"
+import { Update } from '../../../../components/Lottie'
 class LeadInfo extends Component {
     state = {
         tipo: '',
@@ -725,6 +726,26 @@ class LeadInfo extends Component {
         })
     }
 
+    /* -------------------- ASYNC CALL TO SUBMIT PRESUPUESTO -------------------- */
+    addSolicitudPresupuestoAxios = async() => {
+        const { form, lead } = this.state
+        const { access_token } = this.props.authUser
+        if(form.comentario === '')
+            errorAlert(`Debes agregar un comentario`)
+        else{
+            await axios.post(`${URL_DEV}v1/presupuestos/solicitud-presupuesto`, {comentario: form.comentario, lead: lead.id}, 
+                { headers: setSingleHeader(access_token) }).then(
+                    (response) => {
+
+                    }, (error) => { printResponseErrorAlert(error) }
+                ).catch((error) => {
+                    errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                    console.error(error, 'error')
+                })
+        }
+        
+    }
+
     onChange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -1332,11 +1353,33 @@ class LeadInfo extends Component {
         })
     }
     changeActiveNav = key => {
-        this.setState({
-            ...this.state,
-            activeNav: key
-        })
+        const { lead, form } = this.state
+        let flag = true
+        if(key === 'cotizacion'){
+            if(lead.prospecto){
+                if(lead.prospecto.obra){
+                    flag = false
+                    customInputAlert(
+                        <div>
+                            <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUE SE REQUIERE COTIZAR.</h2>
+                            <div className = 'text-center my-5' style = { { fontSize: '1rem', textTransform: 'none' } } >
+                                Da todos los detalles posibles para que el departamento de proyectos genere una cotización.
+                            </div>
+                            <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 }  
+                                value = { form.comentario } name = 'comentario' rows  = { 8 } as = 'textarea' swal = { true } letterCase = { false } 
+                                onChange = { this.onChange } placeholder = 'COMENTARIOS' />
+                        </div>,
+                        <Update />,
+                        () => { this.addSolicitudPresupuestoAxios() },
+                        () => { Swal.close(); },
+                    )
+                }
+            }
+        }
+        if(flag)
+            this.setState({ ...this.state, activeNav: key })
     }
+
     printContactCount = (contactos) => {
         let sizeContactado = 0
         let sizeNoContactado = 0
@@ -1383,7 +1426,6 @@ class LeadInfo extends Component {
     }
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav} = this.state
-        // console.log(activeNav)
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container
@@ -1513,7 +1555,19 @@ class LeadInfo extends Component {
                                                                                 </span>
                                                                             </span>
                                                                             <div className="navi-text">
-                                                                                <span className="d-block font-weight-bold">Cotización de diseño</span>
+                                                                                <span className="d-block font-weight-bold">
+                                                                                    {
+                                                                                        lead ?
+                                                                                            lead.prospecto ?
+                                                                                                lead.prospecto.diseño ?
+                                                                                                    'Cotización de diseño'
+                                                                                                : lead.prospecto.obra ?
+                                                                                                    'Presupuesto de obra'
+                                                                                                : ''
+                                                                                            : ''
+                                                                                        : ''
+                                                                                    }
+                                                                                </span>
                                                                             </div>
                                                                         </Nav.Link>
                                                                     </Nav.Item>
@@ -1672,7 +1726,19 @@ class LeadInfo extends Component {
                                     <Tab.Pane eventKey="cotizacion">
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
-                                                <span className="font-weight-bolder text-dark align-self-center">Cotización de diseño</span>
+                                                <span className="font-weight-bolder text-dark align-self-center">
+                                                    {
+                                                        lead ?
+                                                            lead.prospecto ?
+                                                                lead.prospecto.diseño ?
+                                                                    'Cotización de diseño'
+                                                                : lead.prospecto.obra ?
+                                                                    'Solicitar presupuesto de obra'
+                                                                : ''
+                                                            : ''
+                                                        : ''
+                                                    }
+                                                </span>
                                                 {
                                                     lead ?
                                                         lead.presupuesto_diseño ?
@@ -1691,12 +1757,23 @@ class LeadInfo extends Component {
                                             </h3>
                                         </Card.Header>
                                         <Card.Body className="pt-0">
-                                            <PresupuestoDiseñoCRMForm options = { options } formDiseño = { formDiseño }
-                                                onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }
-                                                checkButtonSemanas = { this.checkButtonSemanas } onChangeCheckboxes = { this.handleChangeCheckbox }
-                                                onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
-                                                formeditado = { formeditado } onClickTab = { this.handleClickTab }
-                                                activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
+                                            {
+                                                lead ?
+                                                    lead.prospecto ?
+                                                        lead.prospecto.diseño ?
+                                                            <PresupuestoDiseñoCRMForm options = { options } formDiseño = { formDiseño }
+                                                                onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }
+                                                                checkButtonSemanas = { this.checkButtonSemanas } onChangeCheckboxes = { this.handleChangeCheckbox }
+                                                                onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
+                                                                formeditado = { formeditado } onClickTab = { this.handleClickTab }
+                                                                activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
+                                                        : 
+                                                            lead.prospecto.obra ?
+                                                                <div>PRESUPUESTO DE OBRA</div>
+                                                            : ''
+                                                    : ''
+                                                : ''
+                                            }
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>
