@@ -130,7 +130,7 @@ class ProcesoTicketForm extends Component {
                                                                     options = { options.equipos } placeholder = 'SELECCIONA EL EQUIPO INSTALADO' 
                                                                     value = { form.equipo } onChange = { (value) => { this.updateSelect(value, 'equipo') } } 
                                                                     iconclass = "la la-toolbox icon-xl" formeditado = { 0 } 
-                                                                    messageinc = "Incorrecto. Selecciona el técnico que asiste" />
+                                                                    messageinc = "Incorrecto. Selecciona el equipo instalado" />
                                                             </div>
                                                         </Col>
                                                     </Row>        
