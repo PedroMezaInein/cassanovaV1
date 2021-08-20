@@ -305,29 +305,26 @@ class TicketView extends Component {
         const { aux_estatus } = this.props
         let activeHoverT=false;
         switch (estatus) {
-            case 'Conceptos':
-                if(aux_estatus.conceptos){ activeHoverT= true }
-                break;
-            case 'Volumetrías':
-                if(aux_estatus.volumetrias){ activeHoverT= true }
-                break;
-            case 'Costos':
-                if(aux_estatus.costos){ activeHoverT= true }
+            case 'En espera':
+                if(aux_estatus.espera){ activeHoverT= true }
                 break;
             case 'En revisión':
                 if(aux_estatus.revision){ activeHoverT= true }
                 break;
-            case 'Utilidad':
-                if(aux_estatus.utilidad){ activeHoverT= true }
-                break;
-            case 'En espera':
-                if(aux_estatus.espera){ activeHoverT= true }
+            case 'Rechazado':
+                if(aux_estatus.rechazado){ activeHoverT= true }
                 break;
             case 'Aceptado':
                 if(aux_estatus.aceptado){ activeHoverT= true }
                 break;
-            case 'Rechazado':
-                if(aux_estatus.rechazado){ activeHoverT= true }
+            case 'Aprobación pendiente':
+                if(aux_estatus.aprobacion){ activeHoverT= true }
+                break;
+            case 'En proceso':
+                if(aux_estatus.proceso){ activeHoverT= true }
+                break;
+            case 'Terminado':
+                if(aux_estatus.terminado){ activeHoverT= true }
                 break;
             default:
                 break;
@@ -473,43 +470,50 @@ class TicketView extends Component {
                                                 }
                                             </div>
                                         </div>
-                                        <div className="row mx-0">
-                                            <div className="col-md-8 px-0 mx-auto">
-                                                {
-                                                    data.estatus_ticket &&
-                                                    <div className="table-responsive">
-                                                        <div className="list min-w-fit-content" data-inbox="list">
-                                                            <ul className="timeline-estatus p-0">
-                                                                <li className={`li ${aux_estatus.espera ? 'complete_espera' : ''}`}>
-                                                                    {this.tooltip('En espera', 'El cliente o el departamento de calidad hacen el levantamiento del ticket.', 'dot-espera-ticket', 'header-ticket-espera')}
-                                                                </li>
-                                                                <li className={`li ${aux_estatus.revision ? 'complete_revision' : ''}`}>
-                                                                    {this.tooltip('En revisión', 'El departamento de calidad verifica si la petición es considerado un ticket.', 'dot-revision-ticket', 'header-ticket-revision')}
-                                                                </li>
-                                                                <li className={`li ${aux_estatus.aceptado ? 'complete_aceptado' : aux_estatus.rechazado ? 'complete_rechazado' : ''}`}>
-                                                                    {this.tooltip(aux_estatus.aceptado ? 'Aceptado' : aux_estatus.rechazado ? 'Rechazado' : 'Aceptado/Rechazado',
-                                                                        aux_estatus.aceptado ? 'El departamento de calidad aprueba el ticket.' : aux_estatus.rechazado ? 'El departamento de calidad rechaza el ticket.' : 'El departamento de calidad aprueba o declina el ticket.',
-                                                                        aux_estatus.aceptado ? 'dot-aceptado-ticket' : 'dot-rechazado-ticket',
-                                                                        aux_estatus.aceptado ? 'header-ticket-aceptado' : aux_estatus.rechazado ? 'header-ticket-rechazado' : 'bg-aceptado-rechazado')}
-                                                                </li>
-                                                                {
-                                                                    data.estatus_ticket.estatus !== 'Rechazado' &&
-                                                                    <>
-                                                                        <li className={`li ${aux_estatus.aprobacion ? 'complete_pendiente' : ''}`}>
-                                                                            {this.tooltip('Aprobación pendiente', 'El cliente recibió un presupuesto generado y se espera su aprobación.', 'dot-aprobacion-ticket', 'header-ticket-aprobacion')}
-                                                                        </li>
-                                                                        <li className={`li ${aux_estatus.proceso ? 'complete_proceso' : ''}`}>
-                                                                            {this.tooltip('En proceso', 'El departamento de calidad inicia con los trabajos.', 'dot-proceso-ticket', 'header-ticket-proceso')}
-                                                                        </li>
-                                                                        <li className={`li ${aux_estatus.terminado ? 'complete_terminado' : ''}`}>
-                                                                            {this.tooltip('Terminado', 'El departamento de calidad finaliza las peticiones solicitadas.', 'dot-terminado-ticket', 'header-ticket-terminado')}
-                                                                        </li>
-                                                                    </>
-                                                                }
-                                                            </ul>
-                                                        </div>
+                                        <div className="">
+                                            <div className="row mx-0">
+                                                <div className="col-md-8 px-0 mx-auto">
+                                                    <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5">
+                                                        <span className="ribbon-tickets">
+                                                            TICKETS
+                                                        </span>
                                                     </div>
-                                                }
+                                                    {
+                                                        data.estatus_ticket &&
+                                                        <div className="table-responsive">
+                                                            <div className="list min-w-fit-content" data-inbox="list">
+                                                                <ul className="timeline-estatus p-0">
+                                                                    <li className={`li ${aux_estatus.espera ? 'complete_espera' : ''}`}>
+                                                                        {this.tooltip('En espera', 'El cliente o el departamento de calidad hacen el levantamiento del ticket.', 'dot-espera-ticket', 'header-ticket-espera')}
+                                                                    </li>
+                                                                    <li className={`li ${aux_estatus.revision ? 'complete_revision' : ''}`}>
+                                                                        {this.tooltip('En revisión', 'El departamento de calidad verifica si la petición es considerado un ticket.', 'dot-revision-ticket', 'header-ticket-revision')}
+                                                                    </li>
+                                                                    <li className={`li ${aux_estatus.aceptado ? 'complete_aceptado' : aux_estatus.rechazado ? 'complete_rechazado' : ''}`}>
+                                                                        {this.tooltip(aux_estatus.aceptado ? 'Aceptado' : aux_estatus.rechazado ? 'Rechazado' : 'Aceptado/Rechazado',
+                                                                            aux_estatus.aceptado ? 'El departamento de calidad aprueba el ticket.' : aux_estatus.rechazado ? 'El departamento de calidad rechaza el ticket.' : 'El departamento de calidad aprueba o declina el ticket.',
+                                                                            aux_estatus.aceptado ? 'dot-aceptado-ticket' : 'dot-rechazado-ticket',
+                                                                            aux_estatus.aceptado ? 'header-ticket-aceptado' : aux_estatus.rechazado ? 'header-ticket-rechazado' : 'bg-aceptado-rechazado')}
+                                                                    </li>
+                                                                    {
+                                                                        data.estatus_ticket.estatus !== 'Rechazado' &&
+                                                                        <>
+                                                                            <li className={`li ${aux_estatus.aprobacion ? 'complete_pendiente' : ''}`}>
+                                                                                {this.tooltip('Aprobación pendiente', 'El cliente recibió un presupuesto generado y se espera su aprobación.', 'dot-aprobacion-ticket', 'header-ticket-aprobacion')}
+                                                                            </li>
+                                                                            <li className={`li ${aux_estatus.proceso ? 'complete_proceso' : ''}`}>
+                                                                                {this.tooltip('En proceso', 'El departamento de calidad inicia con los trabajos.', 'dot-proceso-ticket', 'header-ticket-proceso')}
+                                                                            </li>
+                                                                            <li className={`li ${aux_estatus.terminado ? 'complete_terminado' : ''}`}>
+                                                                                {this.tooltip('Terminado', 'El departamento de calidad finaliza las peticiones solicitadas.', 'dot-terminado-ticket', 'header-ticket-terminado')}
+                                                                            </li>
+                                                                        </>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="separator separator-solid mt-3" />

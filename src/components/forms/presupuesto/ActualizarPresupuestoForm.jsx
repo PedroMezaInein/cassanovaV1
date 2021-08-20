@@ -279,6 +279,10 @@ class ActualizarPresupuestoForm extends Component {
                             <div className="row mx-0">
                                 <div className="col-md-10 px-0 mx-auto">
                                     {
+                                        modulo_calidad&&
+                                        <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5 mt-5"><span className="ribbon-presupuesto">PRESUPUESTO</span></div>
+                                    }
+                                    {
                                         presupuesto.estatus &&
                                         <div className="table-responsive mt-5">
                                             <div className="list min-w-fit-content" data-inbox="list">
