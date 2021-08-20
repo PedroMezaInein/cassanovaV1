@@ -60,8 +60,8 @@ class LeadNuevo extends Component {
                                     <th style={{ minWidth: "100px" }}>
                                         <span>Nombre del cliente</span>
                                     </th>
-                                    <th style={{ minWidth: "140px" }}>Fecha</th>
-                                    <th style={{ minWidth: "100px" }}>Servicios</th>
+                                    <th style={{ minWidth: "140px" }} className="text-center">Fecha</th>
+                                    <th style={{ minWidth: "100px" }} className="text-center">Servicios</th>
                                     <th style={{ minWidth: "95px" }} className="text-center">Empresa</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
@@ -79,8 +79,8 @@ class LeadNuevo extends Component {
                                             leads.data.map((lead, key) => {
                                                 return (
                                                     <tr key={key}>
-                                                        <td className="pl-0 py-8">
-                                                            <div className="d-flex align-items-center">
+                                                        <td className="pl-0 py-8 white-space-nowrap">
+                                                            <div className="d-flex align-items-center ">
                                                                 <div className="symbol symbol-45 mr-3">
                                                                     <span className="symbol-label font-size-h5 bg-info-o-20 text-info">{lead.nombre.charAt(0)}</span>
                                                                 </div>
@@ -89,21 +89,25 @@ class LeadNuevo extends Component {
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td className="font-size-lg text-left font-weight-bolder">
-                                                            <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                        <td className="font-size-lg text-center font-weight-bolder">
+                                                            <div className="w-max-content mx-auto">
+                                                                <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                            </div>
                                                         </td>
-                                                        <td>
-                                                            <ul className="list-unstyled">
-                                                                {
-                                                                    lead.servicios.length > 0 ?
-                                                                        lead.servicios.map((servicio, key) => {
-                                                                            return (
-                                                                                <li key={key} className="text-dark-75 font-weight-bolder">{servicio.servicio}</li>
-                                                                            )
-                                                                        })
+                                                        <td className="text-center">
+                                                            <div className="w-max-content mx-auto">
+                                                                <ul className="list-unstyled">
+                                                                    {
+                                                                        lead.servicios.length > 0 ?
+                                                                            lead.servicios.map((servicio, key) => {
+                                                                                return (
+                                                                                    <li key={key} className="text-dark-75 font-weight-bolder">{servicio.servicio}</li>
+                                                                                )
+                                                                            })
                                                                         : <span className="text-dark-75 font-weight-bolder">Sin servicios</span>
-                                                                }
-                                                            </ul>
+                                                                    }
+                                                                </ul>
+                                                            </div>
                                                         </td>
                                                         <td className="text-center">
                                                             {

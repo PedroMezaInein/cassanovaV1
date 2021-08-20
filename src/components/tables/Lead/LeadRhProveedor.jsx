@@ -48,7 +48,7 @@ class LeadRhProveedor extends Component {
                     </span>
                 </div>
                 <div className="tab-content">
-                    <div className="table-responsive-lg">
+                    <div className="table-responsive">
                         <table className="table table-borderless table-vertical-center">
                             <thead>
                                 <tr>
@@ -78,7 +78,7 @@ class LeadRhProveedor extends Component {
                                         leads.data.map((lead, key) => {
                                             return (
                                                 <tr key={key}>
-                                                    <td className="pl-0 py-8">
+                                                    <td className="pl-0 py-8 white-space-nowrap">
                                                         <div className="d-flex align-items-center">
                                                             <div className="symbol symbol-45 mr-3">
                                                                 <span className="symbol-label font-size-h5 bg-light-pink text-pink">{lead.nombre.charAt(0)}</span>
@@ -89,24 +89,28 @@ class LeadRhProveedor extends Component {
                                                         </div>
                                                     </td>
                                                     <td className="font-size-lg text-left font-weight-bolder">
-                                                        <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                        {
-                                                            lead.fecha_cancelacion_rechazo !== null &&
-                                                            <>
-                                                                <span>{lead.rechazado? 'Rechazo':'Cancelado'}: </span>
-                                                                <span className="text-muted font-weight-bold font-size-sm">
-                                                                    { setDateTableLG(lead.fecha_cancelacion_rechazo) }
-                                                                </span>
-                                                            </>
-                                                        }
+                                                        <div className="w-max-content mx-auto">
+                                                            <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                            {
+                                                                lead.fecha_cancelacion_rechazo !== null &&
+                                                                <>
+                                                                    <span>{lead.rechazado? 'Rechazo':'Cancelado'}: </span>
+                                                                    <span className="text-muted font-weight-bold font-size-sm">
+                                                                        { setDateTableLG(lead.fecha_cancelacion_rechazo) }
+                                                                    </span>
+                                                                </>
+                                                            }
+                                                        </div>
                                                     </td>
                                                     <td>
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">
-                                                            {
-                                                                lead.proveedor ? 'PROVEEDOR' :
-                                                                    lead.rh ? 'BOLSA DE TRABAJO' : ''
-                                                            }
-                                                        </span>
+                                                        <div className="w-max-content mx-auto">
+                                                            <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">
+                                                                {
+                                                                    lead.proveedor ? 'PROVEEDOR' :
+                                                                        lead.rh ? 'BOLSA DE TRABAJO' : ''
+                                                                }
+                                                            </span>
+                                                        </div>
                                                     </td>
                                                     <td className="text-center">
                                                         {
