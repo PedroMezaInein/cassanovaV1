@@ -39,10 +39,10 @@ class LeadContacto extends Component {
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "140px" }} className="text-center">Fecha</th>
-                                <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
+                                <th className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Fase</th>
+                                <th className="text-center">Vendedor</th>
+                                <th className="text-center">Fase</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>

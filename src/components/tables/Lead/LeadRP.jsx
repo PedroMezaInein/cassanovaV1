@@ -24,7 +24,7 @@ class LeadRP extends Component {
         const { leads, onClickNext, onClickPrev, openModalHistorial, openModalEditar, clickOneLead} = this.props
         return (
             <div className="tab-content">
-                <div className="table-responsive-lg">
+                <div className="table-responsive">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr>
