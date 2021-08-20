@@ -366,7 +366,7 @@ class TicketView extends Component {
                                             <div className="mr-4 align-self-center d-none d-sm-none d-md-none d-lg-block">
                                                 <div className="symbol symbol-50 symbol-lg-120 symbol-light-info">
                                                     <span className="font-size-h6 symbol-label font-weight-boldest ">
-                                                        {this.getIniciales(data.proyecto.nombre)}
+                                                        {data.identificador}
                                                     </span>
                                                 </div>
                                             </div>
@@ -386,10 +386,18 @@ class TicketView extends Component {
                                                             }
                                                             {
                                                                 data.created_at &&
-                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center">
+                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center mr-3">
                                                                         <i className="la la-calendar-check icon-lg text-info mr-1" />
                                                                         {dayDMY(data.created_at)}
                                                                     </div>
+                                                            }
+                                                            {
+                                                                data.subarea ?
+                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center">
+                                                                        <i className="las la-tools icon-lg text-info mr-1" />
+                                                                        {data.subarea.nombre}
+                                                                    </div>
+                                                                :<></>
                                                             }
                                                         </div>
                                                     </div>
