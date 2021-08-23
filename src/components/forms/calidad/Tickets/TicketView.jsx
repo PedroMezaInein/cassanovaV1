@@ -607,6 +607,14 @@ class TicketView extends Component {
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
                                                     checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
                                                     openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } modulo_calidad={true} aux_presupuestos={aux_presupuestos}>
+                                                    {
+                                                        presupuesto.pdfs.length ?
+                                                            <button type="button" className="btn btn-sm btn-light-warning font-weight-bolder font-size-13px mr-2" 
+                                                                onClick = { (e) => { e.preventDefault(); onClick('historial'); } } >
+                                                                <i class="far fa-file-pdf mr-2" />HISTORIAL
+                                                            </button>
+                                                        :<></>
+                                                    }
                                                     { 
                                                         presupuesto.estatus.estatus === 'En revisión'?
                                                             this.calcularCantidades() ?

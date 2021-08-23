@@ -16,6 +16,7 @@ import S3 from 'react-aws-s3';
 import SVG from "react-inlinesvg";
 import { TagInputGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
+import { Modal as CustomModal } from '../../../components/singles'
 class TicketDetails extends Component {
 
     state = {
@@ -121,12 +122,7 @@ class TicketDetails extends Component {
         data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [] },
         ticket: '',
         presupuesto: '',
-        modal: {
-            conceptos: false,
-            solicitud: false,
-            solicitud_venta:false,
-            reporte:false
-        },
+        modal: { conceptos: false, solicitud: false, solicitud_venta:false, reporte:false, pdfs: false },
         formeditado: 0,
         key: 'nuevo',
         title:'',
@@ -1358,7 +1354,7 @@ class TicketDetails extends Component {
         if(ticket.presupuesto_id)
             this.getPresupuestoAxios(ticket.presupuesto_id)
     }
-
+    
     onClick = (type) => {
         switch(type){
             case 'volumetrias':
@@ -1383,6 +1379,11 @@ class TicketDetails extends Component {
                     this.setState({...this.state, formularios})
                 }
                 break;
+            case 'historial':
+                const { modal } = this.state
+                modal.pdfs = true
+                this.setState({...this.state,modal})
+                break;
             default: break;
         }
     }
@@ -1399,6 +1400,12 @@ class TicketDetails extends Component {
             ...this.state,
             activeKeyNav: value
         })
+    }
+    handleCloseModalReporte = () => {
+        const { formularios, modal } = this.state
+        formularios.presupuesto_generado.correos_reporte = []
+        modal.reporte = false
+        this.setState({...this.state, modal, formularios })
     }
     handleCloseModalReporte = () => {
         const { formularios, modal } = this.state
@@ -1547,6 +1554,46 @@ class TicketDetails extends Component {
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  />
+                <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
+                    <div className="table-responsive mt-4">
+                        <table className="table  table-head-bg table-borderless table-vertical-center">
+                            <thead>
+                                <tr className="text-left">
+                                    <th className="pl-7">
+                                        <span className="text-center text-muted font-size-sm">Adjunto</span>
+                                    </th>
+                                    <th className="text-center text-muted font-size-sm">IDENTIFICADOR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    presupuesto ?
+                                        presupuesto.pdfs.map((pdf, index) => {
+                                            console.log(`PDF: `, pdf)
+                                            return(
+                                                <tr key = { index } className = { `${pdf.pivot.motivo_cancelacion !== null ? 'bg-danger' : '' }` }>
+                                                    <td>
+                                                        <div className="d-flex align-items-center">
+                                                            <div>
+                                                                <a rel="noopener noreferrer" target="_blank" href={pdf.url} 
+                                                                    className="text-dark-primary font-weight-bolder text-hover-success mb-1 font-size-lg">
+                                                                    {pdf.name}
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{pdf.pivot.identificador}</span>
+                                                    </td>    
+                                                </tr>
+                                            )
+                                        })
+                                    : <></>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </CustomModal>
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
                     <Modal.Body className = 'p-0 mt-3'>
