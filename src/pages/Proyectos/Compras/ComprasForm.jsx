@@ -10,7 +10,7 @@ import { ComprasForm as ComprasFormulario } from '../../../components/forms'
 import { SolicitudCompraCard } from '../../../components/cards'
 import { Card } from 'react-bootstrap'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import $ from "jquery";
+//import $ from "jquery";
 class ComprasForm extends Component {
     state = {
         title: 'Nueva compra',
