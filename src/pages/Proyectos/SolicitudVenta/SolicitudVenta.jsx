@@ -199,17 +199,26 @@ class SolicitudVenta extends Component {
         })
         return aux
     }
-
+    
     labelIcon(solicitud){
         let text = solicitud.hasTicket ? 'ticket' : 'obra'
-        return(
-            <div className='d-flex align-items-center justify-content-center' >
-                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} />
+        return (
+            <div className="white-space-nowrap">
                 {
-                    solicitud.adjunto?
-                        <a href={solicitud.adjunto? solicitud.adjunto.url:''} target='_blank' rel="noreferrer" className="text-dark-75 text-hover-success font-weight-bolder"><u>{setTextTable(text)}</u></a>
-                    :
-                    setTextTable(text)
+                    solicitud.adjunto ?
+                        <a href={solicitud.adjunto ? solicitud.adjunto.url : ''} target='_blank' rel="noreferrer" className="d-flex align-items-center justify-content-center text-dark-75">
+                            <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} />
+                            <u>
+                                <span className={`${text === 'ticket' ? "text-hover-ticket" : "text-hover-obra"} font-size-11px font-weight-bolder`}>
+                                    {`${text === 'ticket' ? 'Ticket - '+solicitud.ticketIdentificador : 'Obra'}`}
+                                </span>
+                            </u>
+                        </a>
+                        :
+                        <div className="d-flex align-items-center justify-content-center text-dark-75">
+                            <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} />
+                            <span className="font-size-11px">{`${text === 'ticket' ? 'Ticket - '+solicitud.ticketIdentificador : 'Obra'}`}</span>
+                        </div>
                 }
             </div>
         )
