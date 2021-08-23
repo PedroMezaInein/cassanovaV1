@@ -277,7 +277,7 @@ class ActualizarPresupuestoForm extends Component {
                         </Card.Header>
                         <Card.Body className="pt-0">
                             <div className="row mx-0 mb-7">
-                                <div className="col-md-8 px-0 mx-auto">
+                                <div className="col-md-9 px-0 mx-auto">
                                     {
                                         modulo_calidad&&
                                         <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5"><span className="ribbon-presupuesto">PRESUPUESTO</span></div>
@@ -290,13 +290,9 @@ class ActualizarPresupuestoForm extends Component {
                                                     <li className={`li ${aux_presupuestos.conceptos ? 'complete-conceptos' : ''}`}>
                                                         {this.tooltip('Conceptos', `${modulo_calidad?'Se asignan los conceptos y se asigna la cantidad preeliminar al presupuesto.':'Se asignan los conceptos al presupuesto.'}`, 'dot-conceptos-presupuesto', 'header-presupuesto-conceptos')}
                                                     </li>
-                                                    {
-                                                        !modulo_calidad?
-                                                            <li className={`li ${aux_presupuestos.volumetrias ? 'complete-volumetrias' : ''}`}>
-                                                                {this.tooltip('Volumetrías', 'Se agregan las volumetrías al presupuesto.', 'dot-volumetrias-presupuesto', 'header-presupuesto-volumetrias')}
-                                                            </li>
-                                                        :<></>
-                                                    }
+                                                    <li className={`li ${aux_presupuestos.volumetrias ? 'complete-volumetrias' : ''}`}>
+                                                        {this.tooltip('Volumetrías', 'Se agregan las volumetrías al presupuesto.', 'dot-volumetrias-presupuesto', 'header-presupuesto-volumetrias')}
+                                                    </li>
                                                     <li className={`li ${aux_presupuestos.costos ? 'complete-costos' : ''}`}>
                                                         {this.tooltip('Costos', 'El departamento de compras estima los costos de los conceptos del presupuesto.', 'dot-costos-presupuesto', 'header-presupuesto-costos')}
                                                     </li>
