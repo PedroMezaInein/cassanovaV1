@@ -340,7 +340,6 @@ export const COMPRAS_COLUMNS = [
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
     { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
-    { Header: 'Notas', accessor: 'notas' },
     { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
 ]
 
@@ -371,7 +370,8 @@ export const SOLICITUD_COMPRA_COLUMNS = [
     { Header: 'Monto', accessor: 'monto', customRender: true },
     { Header: 'Factura', accessor: 'factura', customRender: true },
     { Header: 'Pago',  accessor: 'tipoPago', customRender: true },
-    { Header: 'Descripción', accessor: 'descripcion', customRender: true },    
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Notas', accessor: 'notas', customRender: true },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Sub-Área', accessor: 'subarea', customRender: true },

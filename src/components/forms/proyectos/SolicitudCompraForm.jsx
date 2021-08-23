@@ -242,7 +242,7 @@ class SolicitudCompraForm extends Component {
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="row form-group-marginless">
-                                            <div className="col-md-12">
+                                            <div className="col-md-6">
                                                 <InputGray
                                                     withtaglabel={1}
                                                     withtextlabel={1}
@@ -259,6 +259,25 @@ class SolicitudCompraForm extends Component {
                                                     onChange={onChange}
                                                     customclass="px-2"
                                                     messageinc="Incorrecto. Ingresa la descripción."
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <InputGray
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
+                                                    withicon={0}
+                                                    withformgroup={0}
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    as="textarea"
+                                                    placeholder="NOTAS"
+                                                    rows="3"
+                                                    value={form.notas}
+                                                    name="notas"
+                                                    onChange={onChange}
+                                                    customclass="px-2"
+                                                    messageinc="Incorrecto. Ingresa las notas."
                                                 />
                                             </div>
                                         </div>

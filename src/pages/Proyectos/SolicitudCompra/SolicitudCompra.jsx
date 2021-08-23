@@ -131,6 +131,7 @@ class SolicitudCompra extends Component {
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '', this.doubleClick, solicitud, 'tipoPago', 'text-center'),
                     descripcion: setCustomeDescripcionReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
+                    notas: setCustomeDescripcionReactDom(solicitud.notas !== null ? solicitud.notas :'', this.doubleClick, solicitud, 'notas', 'text-justify'),
                     area: solicitud.subarea ? solicitud.subarea.area ? setTextTableReactDom(solicitud.subarea.area.nombre, this.doubleClick, solicitud, 'area', 'text-center') : '' : '',
                     subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
                     fecha: setDateTableReactDom(solicitud.created_at, this.doubleClick, solicitud, 'fecha', 'text-center'),
@@ -197,7 +198,7 @@ class SolicitudCompra extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'descripcion' &&
+                    (tipo === 'descripcion' || tipo === 'notas') &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }  />

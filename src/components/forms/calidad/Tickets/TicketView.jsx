@@ -767,10 +767,10 @@ class TicketView extends Component {
                                                                                             </div>
                                                                                             <div className="col-md-12">
                                                                                                 <InputGray as = "textarea" name = "notas" placeholder = "NOTAS" 
-                                                                                                    value = { concepto.notas } withtaglabel={1}
-                                                                                                    withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompra(e, index) }}
-                                                                                                    requirevalidation = { 0 } messageinc='Incorrecto. Escribe la nota' customclass="px-2 textarea-input"
-                                                                                                />
+                                                                                                    value = { concepto.notas } withtaglabel = { 1 } rows = { 2 }
+                                                                                                    withtextlabel = { 1 } requirevalidation = { 0 }
+                                                                                                    onChange = { (e) => { this.onChangeSolicitudCompra(e, index) } }
+                                                                                                    messageinc = 'Incorrecto. Escribe la nota' customclass = "px-2"/>
                                                                                             </div>
                                                                                         </div>
                                                                                     : 
@@ -822,11 +822,12 @@ class TicketView extends Component {
                                                                                                                         customclass="px-2 textarea-input"/>
                                                                                                                 </div>
                                                                                                                 <div className="col-md-12">
-                                                                                                                    <InputGray as = "textarea" name = "notas" placeholder = "NOTAS" 
-                                                                                                                        value = { concept.notas } withtaglabel={1}
-                                                                                                                        withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompraInner(e, index, key) }}
-                                                                                                                        requirevalidation = { 0 } messageinc='Incorrecto. Escribe la nota' customclass="px-2 textarea-input"
-                                                                                                                    />
+                                                                                                                    <InputGray as = "textarea" name = "notas" 
+                                                                                                                        placeholder = "NOTAS" value = { concept.notas } 
+                                                                                                                        withtaglabel={1} rows = { 2 } withtextlabel = { 1 } 
+                                                                                                                        onChange={(e) => { this.onChangeSolicitudCompraInner(e, index, key) }}
+                                                                                                                        requirevalidation = { 0 } messageinc='Incorrecto. Escribe la nota' 
+                                                                                                                        customclass="px-2 " />
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>            
