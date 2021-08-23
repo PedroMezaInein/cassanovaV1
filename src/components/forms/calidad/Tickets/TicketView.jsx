@@ -765,6 +765,13 @@ class TicketView extends Component {
                                                                                                     withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompra(e, index) }}
                                                                                                     requirevalidation={1} messageinc='Incorrecto. Escribe una descripción' customclass="px-2 textarea-input"/>
                                                                                             </div>
+                                                                                            <div className="col-md-12">
+                                                                                                <InputGray as = "textarea" name = "notas" placeholder = "NOTAS" 
+                                                                                                    value = { concepto.notas } withtaglabel={1}
+                                                                                                    withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompra(e, index) }}
+                                                                                                    requirevalidation = { 0 } messageinc='Incorrecto. Escribe la nota' customclass="px-2 textarea-input"
+                                                                                                />
+                                                                                            </div>
                                                                                         </div>
                                                                                     : 
                                                                                         concepto ?
@@ -813,6 +820,13 @@ class TicketView extends Component {
                                                                                                                         requirevalidation = { 1 } 
                                                                                                                         messageinc = 'Incorrecto. Escribe una descripción' 
                                                                                                                         customclass="px-2 textarea-input"/>
+                                                                                                                </div>
+                                                                                                                <div className="col-md-12">
+                                                                                                                    <InputGray as = "textarea" name = "notas" placeholder = "NOTAS" 
+                                                                                                                        value = { concept.notas } withtaglabel={1}
+                                                                                                                        withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompraInner(e, index, key) }}
+                                                                                                                        requirevalidation = { 0 } messageinc='Incorrecto. Escribe la nota' customclass="px-2 textarea-input"
+                                                                                                                    />
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>            
@@ -866,6 +880,13 @@ class TicketView extends Component {
                                                                                             value={concepto.descripcion} withtaglabel={1} withtextlabel={1}
                                                                                             requirevalidation={1} messageinc='Incorrecto. Escribe una descripción'
                                                                                             onChange={(e) => { this.onChangeSolicitudCompra(e, index) }} customclass="px-2 textarea-input"/>
+                                                                                    </div>
+                                                                                    <div className="col-md-12">
+                                                                                        <InputGray as="textarea" name="notas" placeholder="NOTAS"
+                                                                                            value={concepto.notas} withtaglabel={1}
+                                                                                            withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompra(e, index) }}
+                                                                                            requirevalidation={0} messageinc='Incorrecto. Escribe la nota' customclass="px-2 textarea-input"
+                                                                                        />
                                                                                     </div>
                                                                                 </div>
                                                                             </div>

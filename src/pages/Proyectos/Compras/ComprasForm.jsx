@@ -10,11 +10,12 @@ import { ComprasForm as ComprasFormulario } from '../../../components/forms'
 import { SolicitudCompraCard } from '../../../components/cards'
 import { Card } from 'react-bootstrap'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import $ from "jquery";
 class ComprasForm extends Component {
     state = {
         title: 'Nueva compra',
         form: {
-            notas: '',
+            // notas: '',
             factura: 'Sin factura',
             facturaObject: '',
             contrato: '',
@@ -404,7 +405,7 @@ class ComprasForm extends Component {
                         form.contrato = compra.contrato.id.toString()
                     }
                 }
-                form.notas = compra.notas
+                // form.notas = compra.notas
                 this.setState({
                     ...this.state,
                     title: 'Editar compra',
