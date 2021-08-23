@@ -286,18 +286,18 @@ class ComprasForm extends Component {
                                             </div>
                                         : ''
                                     }
-                                    <div className="col-12 px-0">
-                                        <div className="separator separator-dashed mt-1 mb-2" />
+                                    <div className="col-12">
+                                        <div className="separator separator-dashed mt-6 mb-2" />
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-12">
                                         <Input requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" rows = "3" 
-                                            value = { form.descripcion } name = "descripcion" onChange = { onChange } customclass = "px-2"
+                                            value = { form.descripcion } name = "descripcion" onChange = { onChange } customclass = "px-2 text-justify"
                                             messageinc="Incorrecto. Ingresa una descripción." />
                                     </div>
-                                    <div className="col-md-6">
+                                    {/* <div className="col-md-6">
                                         <Input requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "NOTAS" rows = "3" 
                                             value = { form.notas } name = "notas" onChange = { onChange } customclass = "px-2"/>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">

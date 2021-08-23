@@ -115,7 +115,7 @@ class TicketDetails extends Component {
                 fechaMantenimiento: new Date()
             },
             conceptos:[{
-                area: '', subarea: '', descripcion: ''
+                area: '', subarea: '', descripcion: '', notas:''
             }]
         },
         data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [] },
@@ -954,7 +954,8 @@ class TicketDetails extends Component {
                                 area: element.concepto.subpartida.partida.areas[0].id.toString(),
                                 subarea: '', 
                                 descripcion: element.descripcion, 
-                                concepto: element
+                                concepto: element,
+                                notas: ''
                             }
                         )
                     }
@@ -968,11 +969,13 @@ class TicketDetails extends Component {
                             concepto: element,
                             partida: element.concepto.subpartida.partida.nombre,
                             join: true,
+                            notas: '',
                             form: [{
                                 area: element.concepto.subpartida.partida.areas[0].id.toString(),
                                 subarea: '', 
                                 descripcion: element.descripcion,
-                                concepto: element
+                                concepto: element,
+                                notas: ''
                             }]
                         }
                         objeto.conceptos.push(element) 
@@ -1434,7 +1437,7 @@ class TicketDetails extends Component {
         if(value)
             formularios.conceptos = this.clearFormConceptos()
         else
-            formularios.conceptos = [{area: '', subarea: '', descripcion: ''}]
+            formularios.conceptos = [{area: '', subarea: '', descripcion: '', notas: ''}]
         
         this.setState({formularios})
     }

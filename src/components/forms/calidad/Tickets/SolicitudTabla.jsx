@@ -54,16 +54,17 @@ export default class SolicitudesTabla extends Component {
                                     <th>Fecha</th>
                                     <th>Área</th>
                                     <th>Sub área</th>
-                                    <th>Descripción</th>
+                                    <th style={{minWidth:'300px'}}>Descripción</th>
+                                    { type === 'compra' ? <th style={{minWidth:'200px'}}>Notas</th> : <></> }
                                     <th>Estado</th>
-                                    <th></th>
+                                    <th style={{minWidth:'50px'}}></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     solicitudes ?
                                         solicitudes.length === 0 ?
-                                            this.printEmptyTable( type === 'compra' ? 5 : 8 )
+                                            this.printEmptyTable( type === 'compra' ? 7 : 9 )
                                         :
                                             solicitudes.map((sol) => {
                                                 return(
@@ -90,7 +91,9 @@ export default class SolicitudesTabla extends Component {
                                                             : <></>
                                                         }
                                                         <td className="text-dark font-weight-light font-size-sm">
-                                                            { setDateText(sol.created_at) }
+                                                            <div className="w-max-content mx-auto">
+                                                                { setDateText(sol.created_at) }
+                                                            </div>
                                                         </td>
                                                         <td className="text-dark font-weight-light font-size-sm">
                                                             { sol.subarea ? sol.subarea.area ? sol.subarea.area.nombre : '' : ''}
@@ -101,13 +104,17 @@ export default class SolicitudesTabla extends Component {
                                                         <td className="text-dark font-weight-light font-size-sm text-justify">
                                                             { this.setDescripcion(sol.descripcion) }
                                                         </td>
+                                                        {
+                                                            type === 'compra' ?
+                                                                <td className="font-size-sm text-justify">
+                                                                    <div className="text-dark-75">{ sol.notas ? sol.notas : <div className="text-center">Sin notas</div> } </div>
+                                                                </td>
+                                                            : <></>
+                                                        }
                                                         <td className="text-dark font-weight-light font-size-sm text-center">
-                                                            { sol[type] ?  <a href = { `/proyectos/${type}s?id=${sol[type].id}` } > {`${type} realizada`} </a> : <></> }
-                                                            {
-                                                                type === 'compra' && sol[type] ?
-                                                                    <div className = 'font-italic pt-2'> { sol[type]['notas'] } </div>
-                                                                : ''
-                                                            }
+                                                            <div className="w-max-content mx-auto">
+                                                                { sol[type] ?  <u><a className="font-weight-bold text-hover-success" href = { `/proyectos/${type}s?id=${sol[type].id}` } > {`${type} realizada`} </a></u> : <></> }
+                                                            </div>
                                                         </td>
                                                         <td className="white-space-nowrap">
                                                             {
@@ -132,7 +139,7 @@ export default class SolicitudesTabla extends Component {
                                                 )
                                             })
                                     : 
-                                        this.printEmptyTable( type === 'compra' ? 9 : 8 )
+                                        this.printEmptyTable( type === 'compra' ? 7 : 9 )
                                 }
                             </tbody>
                         </table>
