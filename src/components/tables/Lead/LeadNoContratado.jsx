@@ -84,7 +84,7 @@ class LeadNoContratado extends Component {
         const { modal, lead } = this.state
         return (
             <div className="tab-content">
-                <div className="table-responsive-lg">
+                <div className="table-responsive">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr>
