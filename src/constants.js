@@ -734,7 +734,7 @@ export const PROYECTOS_TICKETS = [
     { Header: 'ID', accessor: 'identificador' },
     { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Proyecto', accessor: 'proyectos' },
-    { Header: 'Cliente', accessor: 'cliente' },
+    { Header: 'Solicito', accessor: 'solicito' },
     { Header: 'Tipo de trabajo', accessor: 'tipo_trabajo' },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion' },

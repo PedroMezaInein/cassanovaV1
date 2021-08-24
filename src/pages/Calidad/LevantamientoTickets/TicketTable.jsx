@@ -86,7 +86,7 @@ class TicketTable extends Component {
                     identificador: renderToString(setTextTableCenter(calidad.identificador)),
                     estatus: renderToString(setLabelTable(calidad.estatus_ticket)),
                     proyectos: renderToString(setTextTable(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
-                    cliente: renderToString(setTextTableCenter(calidad.usuario ? calidad.usuario.name : '')),
+                    solicito: renderToString(setTextTableCenter(calidad.solicito)),
                     tipo_trabajo: renderToString(setTextTableCenter(calidad.subarea ? calidad.subarea.nombre : '')),
                     fecha: setDateTableReactDom(calidad.created_at, this.doubleClick, calidad, 'fecha', 'text-center'),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),

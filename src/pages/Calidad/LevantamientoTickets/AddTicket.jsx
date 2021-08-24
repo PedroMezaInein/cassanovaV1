@@ -15,6 +15,7 @@ class AddTicket extends Component {
     state = {
         form: {
             proyecto: '',
+            solicito: '',
             tipo_trabajo: '',
             descripcion: '',
             adjuntos: {
