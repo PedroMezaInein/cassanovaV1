@@ -656,7 +656,7 @@ class TicketView extends Component {
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
                                             <Col md={`${data.reporte_url === null ? 12 : 7 }`}>
-                                                <Card className="card-custom gutter-b card-stretch mb-8">
+                                                <Card className="card-custom gutter-b mb-8">
                                                     <Card.Header className="border-0 pt-8 pt-md-0">
                                                         <Card.Title className="mb-0">
                                                             <div className="font-weight-bold font-size-h5">{this.showTabTicketProceso()}</div>
@@ -684,7 +684,7 @@ class TicketView extends Component {
                                                             {
                                                                 data.reporte_url !== null ?
                                                                     <>  
-                                                                        <div className="d-block w-100">
+                                                                        <div className="w-100">
                                                                             <ItemSlider items={[{ url: data.reporte_url, name: 'reporte.pdf' }]} item='' />
                                                                         </div>
                                                                         {

@@ -4,7 +4,9 @@ import { validateAlert, questionAlert } from '../../../functions/alert'
 import { InputGray, Button, CalendarDay, InputMoneyGray, SelectSearchGray } from '../../form-components'
 import ItemSlider from '../../singles/ItemSlider'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
-import { dayDMY } from '../../../functions/setters'
+import { dayDMY, setMoneyText } from '../../../functions/setters'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
 
 class ProcesoTicketForm extends Component {
 
@@ -38,7 +40,10 @@ class ProcesoTicketForm extends Component {
     }
 
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props 
+        console.log(form, 'form')
+        console.log(options,'options')
+        console.log(ticket,'ticket')
         return (
             <>
                 {
@@ -56,7 +61,7 @@ class ProcesoTicketForm extends Component {
                                     <div id="for2-wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
                                         <div className="wizard-label pt-0 pb-6 pb-md-5">
                                             <h3 className="wizard-title">
-                                                <span>2.</span> Reporte de archivos</h3>
+                                                <span>2.</span> Fotografías</h3>
                                             <div className="wizard-bar"></div>
                                         </div>
                                     </div>
@@ -204,27 +209,65 @@ class ProcesoTicketForm extends Component {
                                         <div className="text-info font-size-h6">{form.recibe}</div>
                                         <div className="text-dark-75 font-size-lg font-weight-light">RECIBIÓ</div>
                                     </Col>
-                            </Row>
-                            <div className="separator separator-dashed my-10"></div>
-                            <Row className="mx-0 d-flex justify-content-center">
-                                <Col md="4" className="text-center">
-                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PETICIONES</div>
-                                    <ItemSlider items={form.adjuntos.reporte_problema_reportado.files} item='reporte_problema_reportado' />
-                                </Col>
-                                <Col md="4" className="text-center">
-                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">TRABAJOS REALIZADOS</div>
-                                    <ItemSlider items={form.adjuntos.reporte_problema_solucionado.files} item='reporte_problema_solucionado' />
-                                </Col>
-                            </Row>
-                            {
-                                form.descripcion_solucion &&
-                                <>
-                                    <div className="separator separator-dashed my-10"></div>
-                                    <div className="font-weight-light text-center font-size-lg mt-10"><span className="font-weight-bolder">Solución del problema: </span>{form.descripcion_solucion}</div>
-                                </>
-                            }
-                        </div>
-                        :<></>
+                                </Row>
+                                <div className="separator separator-dashed my-10  col-md-10 mx-auto"></div>
+                                <Row className="mx-0 d-flex justify-content-center">
+                                    <Col md="4" className="text-center">
+                                        <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PETICIONES</div>
+                                        <ItemSlider items={form.adjuntos.reporte_problema_reportado.files} item='reporte_problema_reportado' />
+                                    </Col>
+                                    <Col md="4" className="text-center">
+                                        <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">TRABAJOS REALIZADOS</div>
+                                        <ItemSlider items={form.adjuntos.reporte_problema_solucionado.files} item='reporte_problema_solucionado' />
+                                    </Col>
+                                </Row>
+                                {
+                                    ticket.descripcion &&
+                                        <div className="font-weight-light text-justify font-size-lg mt-12 col-md-8 mx-auto"><span className="font-weight-bolder">Petición: </span>{ticket.descripcion}</div>
+                                }
+                                {
+                                    form.descripcion_solucion &&
+                                        <div className="font-weight-light text-justify font-size-lg mt-5 col-md-8 mx-auto"><span className="font-weight-bolder">Trabajo realizado: </span>{form.descripcion_solucion}</div>
+                                }
+                                {
+                                    this.isMantenimiento() ? 
+                                    <>
+                                        <div className="separator separator-dashed my-10 col-md-10 mx-auto"></div>
+                                        <Row className="mx-0 d-flex justify-content-center mt-5">
+                                            <div className="card card-custom col-md-8 shadow-none bg-diagonal border">
+                                                <div className="card-body d-flex align-items-center px-3 py-6 flex-column">
+                                                    <div className="mb-4 font-weight-bolder">
+                                                        <u>{ticket.subarea?ticket.subarea.nombre:''}</u>
+                                                    </div>
+                                                    
+                                                        <div className="text-justify d-flex align-items-center">
+                                                            <div className="mr-5">
+                                                                <span className="svg-icon svg-icon-3x svg-icon-info">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Hard-drive.svg')} />
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <div className="d-flex flex-column">
+                                                                    <span className="text-dark font-weight-bold font-size-lg mb-3">EQUIPO INSTALADO:
+                                                                        <span className="text-dark-75 font-weight-light font-size-lg"> {ticket.mantenimiento.instalacion.equipo.texto}</span>
+                                                                    </span>
+                                                                </div>
+                                                                <div className="d-flex flex-column">
+                                                                    <span className="text-dark font-weight-bold font-size-lg">COSTO:
+                                                                        <span className="text-dark-75 font-weight-light font-size-lg"> { setMoneyText(ticket.mantenimiento.costo)}</span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </Row>
+                                    </>
+                                    :<></>
+                                }
+                            </div>
+                        : <></>
                 }
             </>
         );
