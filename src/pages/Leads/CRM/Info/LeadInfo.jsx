@@ -20,6 +20,7 @@ import $ from "jquery"
 import { Update } from '../../../../components/Lottie'
 class LeadInfo extends Component {
     state = {
+        solicitud: '',
         tipo: '',
         activeNav: 'historial-contacto',
         modal: {
@@ -733,7 +734,7 @@ class LeadInfo extends Component {
         if(form.comentario === '')
             errorAlert(`Debes agregar un comentario`)
         else{
-            await axios.post(`${URL_DEV}v1/presupuestos/solicitud-presupuesto`, {comentario: form.comentario, lead: lead.id}, 
+            await axios.post(`${URL_DEV}v1/presupuestos/solicitud-presupuesto/lead`, {comentario: form.comentario, lead: lead.id}, 
                 { headers: setSingleHeader(access_token) }).then(
                     (response) => {
 
@@ -744,6 +745,22 @@ class LeadInfo extends Component {
                 })
         }
         
+    }
+
+    /* ------------ ANCHOR ASYNC CALL TO GET SOLICITUD DE PRESUPUESTO ----------- */
+    getSolicitudPresupuesto = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/presupuestos/solicitud-presupuesto/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { solicitud } = response.data
+                Swal.close()
+                this.setState({ ...this.state, activeNav: 'cotizacion', solicitud: solicitud })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
 
     onChange = e => {
@@ -1353,31 +1370,37 @@ class LeadInfo extends Component {
         })
     }
     changeActiveNav = key => {
-        const { lead, form } = this.state
+        this.setState({ ...this.state, activeNav: key })
+        /* const { lead, form } = this.state
         let flag = true
         if(key === 'cotizacion'){
             if(lead.prospecto){
-                if(lead.prospecto.obra){
-                    flag = false
-                    customInputAlert(
-                        <div>
-                            <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUE SE REQUIERE COTIZAR.</h2>
-                            <div className = 'text-center my-5' style = { { fontSize: '1rem', textTransform: 'none' } } >
-                                Da todos los detalles posibles para que el departamento de proyectos genere una cotización.
-                            </div>
-                            <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 }  
-                                value = { form.comentario } name = 'comentario' rows  = { 8 } as = 'textarea' swal = { true } letterCase = { false } 
-                                onChange = { this.onChange } placeholder = 'COMENTARIOS' />
-                        </div>,
-                        <Update />,
-                        () => { this.addSolicitudPresupuestoAxios() },
-                        () => { Swal.close(); },
-                    )
+                if(!lead.prospecto.diseño && lead.prospecto.obra){
+                    if(!lead.solicitud_presupuesto){
+                        flag = false
+                        customInputAlert(
+                            <div>
+                                <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUE SE REQUIERE COTIZAR.</h2>
+                                <div className = 'text-center my-5' style = { { fontSize: '1rem', textTransform: 'none' } } >
+                                    Da todos los detalles posibles para que el departamento de proyectos genere una cotización.
+                                </div>
+                                <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 }  
+                                    value = { form.comentario } name = 'comentario' rows  = { 8 } as = 'textarea' swal = { true } letterCase = { false } 
+                                    onChange = { this.onChange } placeholder = 'COMENTARIOS' />
+                            </div>,
+                            <Update />,
+                            () => { this.addSolicitudPresupuestoAxios() },
+                            () => { Swal.close(); },
+                        )
+                    }else{
+                        flag = false
+                        this.getSolicitudPresupuesto(lead.solicitud_presupuesto.id)
+                    }
                 }
             }
         }
         if(flag)
-            this.setState({ ...this.state, activeNav: key })
+            this.setState({ ...this.state, activeNav: key }) */
     }
 
     printContactCount = (contactos) => {
@@ -1425,7 +1448,7 @@ class LeadInfo extends Component {
         )
     }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav} = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav, solicitud } = this.state
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container
@@ -1524,7 +1547,7 @@ class LeadInfo extends Component {
                                                             <div className="d-flex align-items-center">
                                                                 <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center">
                                                                     <Nav.Item className="navi-item mr-3">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="informacion-general" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2 rounded" eventKey="informacion-general" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/User.svg')} />
@@ -1536,7 +1559,7 @@ class LeadInfo extends Component {
                                                                         </Nav.Link>
                                                                     </Nav.Item>
                                                                     <Nav.Item className="navi-item mr-3">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="historial-contacto" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2 rounded" eventKey="historial-contacto" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Group-chat.svg')} />
@@ -1548,7 +1571,7 @@ class LeadInfo extends Component {
                                                                         </Nav.Link>
                                                                     </Nav.Item>
                                                                     <Nav.Item className="navi-item">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="cotizacion" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2 rounded" eventKey="cotizacion" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
@@ -1733,7 +1756,7 @@ class LeadInfo extends Component {
                                                                 lead.prospecto.diseño ?
                                                                     'Cotización de diseño'
                                                                 : lead.prospecto.obra ?
-                                                                    'Solicitar presupuesto de obra'
+                                                                    'Presupuesto de obra'
                                                                 : ''
                                                             : ''
                                                         : ''
@@ -1757,7 +1780,13 @@ class LeadInfo extends Component {
                                             </h3>
                                         </Card.Header>
                                         <Card.Body className="pt-0">
-                                            {
+                                            <PresupuestoDiseñoCRMForm options = { options } formDiseño = { formDiseño }
+                                                onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }
+                                                checkButtonSemanas = { this.checkButtonSemanas } onChangeCheckboxes = { this.handleChangeCheckbox }
+                                                onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
+                                                formeditado = { formeditado } onClickTab = { this.handleClickTab }
+                                                activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
+                                            {/* {
                                                 lead ?
                                                     lead.prospecto ?
                                                         lead.prospecto.diseño ?
@@ -1769,11 +1798,75 @@ class LeadInfo extends Component {
                                                                 activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
                                                         : 
                                                             lead.prospecto.obra ?
-                                                                <div>PRESUPUESTO DE OBRA</div>
+                                                                solicitud !== '' ? 
+                                                                    <div className="row mx-0">
+                                                                        <div className="col-md-6">
+                                                                            <div className="table-responsive-lg border rounded p-2">
+                                                                                <table className="table table-vertical-center w-80 mx-auto table-borderless" id="tcalendar_p_info">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <th colSpan="3" className="text-center pt-0">
+                                                                                                {
+                                                                                                    solicitud.empresa ? solicitud.empresa.logoPrincipal ?
+                                                                                                        <img alt='' width="170" src={solicitud.empresa.logoPrincipal} />
+                                                                                                    : '' : ''
+                                                                                                }
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <tr className="border-top-2px">
+                                                                                            <td className="text-center w-5">
+                                                                                                <i className="las la-user-edit icon-2x text-dark-50"></i>
+                                                                                            </td>
+                                                                                            <td className="w-33 font-weight-bolder text-dark-50">NOMBRE</td>
+                                                                                            <td className="font-weight-light">
+                                                                                                <span>{solicitud.nombre}</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="text-center">
+                                                                                                <i className="fab la-readme icon-2x text-dark-50"></i>
+                                                                                            </td>
+                                                                                            <td className="font-weight-bolder text-dark-50">Descripción</td>
+                                                                                            <td className="font-weight-light">
+                                                                                                <span>{solicitud.descripcion}</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        {
+                                                                                            solicitud.area ?
+                                                                                                <tr>
+                                                                                                    <td className="text-center">
+                                                                                                        <i className="las la-list-ol icon-2x text-dark-50"></i>
+                                                                                                    </td>
+                                                                                                    <td className="font-weight-bolder text-dark-50">Fase</td>
+                                                                                                    <td className="font-weight-light">
+                                                                                                        <span>{solicitud.area.nombre}</span>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            : ''
+                                                                                        }
+                                                                                        <tr>
+                                                                                            <td className="text-center">
+                                                                                                <i className="las la-file-contract icon-2x text-dark-50"></i>
+                                                                                            </td>
+                                                                                            <td className="font-weight-bolder text-dark-50">Presupuesto</td>
+                                                                                            <td className="font-weight-light">
+                                                                                                <span>
+                                                                                                    { !solicitud.presupuesto ? 'En espera' : '' }
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                : ''
                                                             : ''
                                                     : ''
                                                 : ''
-                                            }
+                                            } */}
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>
