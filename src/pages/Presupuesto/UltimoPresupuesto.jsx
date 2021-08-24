@@ -403,6 +403,7 @@ class UltimoPresupuesto extends Component {
                     descargar={() => this.generarPDFAxios()}
                     url={'presupuesto/presupuesto/finish'}
                     exportar={true}
+                    title='del presupuesto'
                 />
             </Layout>
         );

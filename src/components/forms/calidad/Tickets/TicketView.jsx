@@ -11,6 +11,7 @@ import { Modal } from '../../../../components/singles'
 import { ProcesoTicketForm } from '../../../../components/forms';
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
+import FloatButtons from '../../../../components/singles/FloatButtons'
 class TicketView extends Component {
 
     state = { checked: true }
@@ -344,12 +345,12 @@ class TicketView extends Component {
     }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav, formularioGuardado } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
-            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows
+            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover
         } = this.props
 
         const { checked } = this.state
@@ -927,6 +928,17 @@ class TicketView extends Component {
                         onSubmit = { onSubmitConcept }
                     />
                 </Modal>
+                {
+                    this.isButtonEnabled() !== false && activeKeyNav === 'presupuesto'?
+                        <FloatButtons
+                            save={save}
+                            recover={recover}
+                            formulario={formularioGuardado}
+                            url='calidad/tickets/detalles-ticket'
+                            title='del presupuesto'
+                        />
+                    : <></>
+                }
             </div>
         )
     }

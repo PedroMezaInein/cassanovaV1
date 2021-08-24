@@ -17,6 +17,7 @@ import SVG from "react-inlinesvg";
 import { TagInputGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
 import { Modal as CustomModal } from '../../../components/singles'
+import { save, deleteForm } from '../../../redux/reducers/formulario'
 class TicketDetails extends Component {
 
     state = {
@@ -1540,8 +1541,33 @@ class TicketDetails extends Component {
             aux_presupuestos: auxiliar
         })
     }
+    save = () => {
+        const { formularios } = this.state
+        const { save } = this.props
+        let auxObject = {}
+        let aux = Object.keys(formularios.preeliminar)
+        aux.map((element) => {
+            auxObject[element] = formularios.preeliminar[element]
+            return false
+        })
+        save({
+            form: auxObject,
+            page: 'calidad/tickets/detalles-ticket'
+        })
+    }
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        let { formularios } = this.state
+        formularios.preeliminar = formulario.form
+        this.setState({
+            ...this.state,
+            formularios
+        })
+        deleteForm()
+    }
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos } = this.state
+        const { formulario } = this.props
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
@@ -1561,7 +1587,7 @@ class TicketDetails extends Component {
                     checkButtonConceptos = { this.checkButtonConceptos }  controlledTab={this.controlledTab} onSubmitConcept = { this.onSubmitConcept } 
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
-                    changeTypeSolicitudes = { this.changeTypeSolicitudes }  />
+                    changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}/>
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
                     <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>
@@ -1603,7 +1629,16 @@ class TicketDetails extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({ })
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser,
+        formulario: state.formulario
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(TicketDetails);

@@ -10,6 +10,8 @@ import { UltimoPresupuestoForm } from "../../../components/forms"
 import { TagInputGray } from '../../../components/form-components'
 import { setSingleHeader } from "../../../functions/routers"
 import { Modal } from "react-bootstrap"
+import { save, deleteForm } from '../../../redux/reducers/formulario'
+import FloatButtons from '../../../components/singles/FloatButtons'
 class PresupuestosEnviadosFinish extends Component {
     state = {
         modal: false,
@@ -480,9 +482,31 @@ class PresupuestosEnviadosFinish extends Component {
             aux_presupuestos: auxiliar
         })
     }
+    save = () => {
+        const { form } = this.state
+        const { save } = this.props
+        let auxObject = {}
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            auxObject[element] = form[element]
+            return false
+        })
+        save({
+            form: auxObject,
+            page: 'presupuesto/utilidad-presupuestos/finish'
+        })
+    }
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        this.setState({
+            ...this.state,
+            form: formulario.form
+        })
+        deleteForm()
+    }
     render() {
-        
         const { form, presupuesto, modal, modalObject, aux_presupuestos } = this.state;
+        const { formulario } = this.props
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}
@@ -530,12 +554,28 @@ class PresupuestosEnviadosFinish extends Component {
                             onClick = { this.sendMail } >ENVIAR</button>
                     </Modal.Footer>
                 </Modal>
+                <FloatButtons
+                    save={this.save}
+                    recover={this.recover}
+                    formulario={formulario}
+                    url={'presupuesto/utilidad-presupuestos/finish'}
+                    title='del presupuesto'
+                />
             </Layout>
         );
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser} }
-const mapDispatchToProps = dispatch => ({})
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser,
+        formulario: state.formulario
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(PresupuestosEnviadosFinish);

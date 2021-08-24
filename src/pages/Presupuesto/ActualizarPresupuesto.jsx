@@ -562,6 +562,7 @@ class ActualizarPresupuesto extends Component {
                     recover={this.recover}
                     formulario={formulario}
                     url={'presupuesto/presupuesto/update'}
+                    title='del presupuesto'
                 />
             </Layout>
         );
