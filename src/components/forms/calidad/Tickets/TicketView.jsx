@@ -379,10 +379,10 @@ class TicketView extends Component {
                                                         </div>
                                                         <div className="d-flex flex-wrap mt-2">
                                                             {
-                                                                data.usuario &&
+                                                                data.solicito &&
                                                                     <div className="font-weight-bold my-2 text-dark-65 font-size-lg mr-3 d-flex align-items-center">
                                                                         <i className="la la-user-tie icon-lg text-info mr-1" />
-                                                                        {data.usuario.name}
+                                                                        {data.solicito}
                                                                     </div>
                                                             }
                                                             {
