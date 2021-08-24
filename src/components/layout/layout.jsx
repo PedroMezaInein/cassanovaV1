@@ -76,12 +76,6 @@ class Layout extends Component {
         }
     }
 
-    /* getIpInfo = async () => {
-        axios.get('https://ipapi.co/json').then((response) => {
-            this.setState({json: response.data})
-        }).catch((error) => { console.log(error); });
-    } */
-
     getUserChecador = async() => {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/usuarios/usuarios/checador`, { headers: { Authorization: `Bearer ${access_token}` } }).then(

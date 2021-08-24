@@ -68,11 +68,6 @@ class Usuarios extends Component {
         if (!usuarios)
             history.push('/')
         this.getOptionsAxios();
-        /* const pusher = new Echo( PUSHER_OBJECT );
-        pusher.channel('Usuarios.Usuario').listen('Usuarios\\UsuarioEvent', (e) => {
-            console.log(e, 'E')
-            this.getUsuariosAxios();
-        }) */
     }
 
     getUsuariosAxios = () => {

@@ -181,13 +181,13 @@ export function setCustomeDescripcionReactDom(text, doubleClick, data, tipo, sty
     if(text === null)
             return ''
     let valor = text.split("\n")
-    let arreglo = valor.map((element) => {
+    let arreglo = valor.map((element, index) => {
         if(element.length > 0){
             return (
-                <div className = 'font-size-11px line-height-xl mb-3'> {element} </div>
+                <div key = { index } className = 'font-size-11px line-height-xl mb-3'> {element} </div>
             )
         }
-        return <></>
+        return <div key = { index } className = 'd-none' />
     })
     return(
         <div className = {`text-hover custom-td-descripcion ${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }

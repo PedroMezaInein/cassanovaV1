@@ -10,10 +10,12 @@ import { ComprasForm as ComprasFormulario } from '../../../components/forms'
 import { SolicitudCompraCard } from '../../../components/cards'
 import { Card } from 'react-bootstrap'
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+//import $ from "jquery";
 class ComprasForm extends Component {
     state = {
         title: 'Nueva compra',
         form: {
+            // notas: '',
             factura: 'Sin factura',
             facturaObject: '',
             contrato: '',
@@ -88,6 +90,42 @@ class ComprasForm extends Component {
         porcentaje: '',
         facturas: [],
         adjuntos: []
+    }
+    componentDidMount() {
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
+        const egresos = permisos.find(function (element, index) {
+            const { modulo: { url } } = element
+            return pathname === url + '/' + action
+        });
+        this.getOptionsAxios()
+        switch (action) {
+            case 'add':
+                this.setState({
+                    ...this.state,
+                    title: 'Nueva compra',
+                    formeditado: 0
+                })
+                break;
+            case 'edit':
+                if (state) {
+                    if (state.compra) { this.getCompra(state.compra) }
+                    else{ history.push('/proyectos/compras') }
+                } else{ history.push('/proyectos/compras') }
+                break;
+            case 'convert': 
+                if (state) {
+                    if (state.solicitud) { this.getSolicitudCompraAxios(state.solicitud.id) }
+                }
+                this.setState({ ...this.state, formeditado: 1 })
+                break;
+            default:
+                break;
+        }
+        if (!egresos)
+            history.push('/')
     }
     onChange = e => {
         const { form } = this.state
@@ -322,112 +360,11 @@ class ComprasForm extends Component {
         else
             this.addCompraAxios()
     }
-    componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action } } } = this.props
-        const { history, location: { state } } = this.props
-        const egresos = permisos.find(function (element, index) {
-            const { modulo: { url } } = element
-            return pathname === url + '/' + action
-        });
-        this.getOptionsAxios()
-        switch (action) {
-            case 'add':
-                this.setState({
-                    ...this.state,
-                    title: 'Nueva compra',
-                    formeditado: 0
-                })
-                break;
-            case 'edit':
-                if (state) {
-                    if (state.compra) {
-                        this.getCompra(state.compra)
-                        /* const { compra } = state
-                        const { form, options } = this.state
-                        form.factura = compra.factura ? 'Con factura' : 'Sin factura'
-                        if (compra.proyecto) {
-                            if (compra.proyecto.clientes) {
-                                form.proyecto = compra.proyecto.id.toString()
-                            }
-                        }
-                        if (compra.empresa) {
-                            form.empresa = compra.empresa.id.toString()
-                            options['cuentas'] = setOptions(compra.empresa.cuentas, 'nombre', 'id')
-                            if (compra.cuenta)
-                                form.cuenta = compra.cuenta.id.toString()
-                        }
-                        if (compra.subarea) {
-                            form.area = compra.subarea.area.id.toString()
-                            options['subareas'] = setOptions(compra.subarea.area.subareas, 'nombre', 'id')
-                            form.subarea = compra.subarea.id.toString()
-                        }
-                        form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
-                        form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
-                        form.estatusCompra = compra.estatus_compra ? compra.estatus_compra.id : 0
-                        form.total = compra.monto
-                        form.fecha = new Date(compra.created_at)
-                        form.descripcion = compra.descripcion
-                        form.comision = compra.comision
-                        if (compra.proveedor) {
-                            options['contratos'] = setOptions(compra.proveedor.contratos, 'nombre', 'id')
-                            form.proveedor = compra.proveedor.id.toString()
-                            form.rfc = compra.proveedor.rfc
-                            if (compra.contrato) {
-                                form.contrato = compra.contrato.id.toString()
-                            }
-                        }
-                        if (compra.pago) {
-                            form.adjuntos.pago.files = [{
-                                name: compra.pago.name, url: compra.pago.url
-                            }]
-                        }
-                        if (compra.presupuesto) {
-                            form.adjuntos.presupuesto.files = [{
-                                name: compra.presupuesto.name, url: compra.presupuesto.url
-                            }]
-                        }
-                        this.setState({
-                            ...this.state,
-                            title: 'Editar compra',
-                            form,
-                            options,
-                            compra: compra,
-                            formeditado: 1
-                        }) */
-                    }
-                    else
-                        history.push('/proyectos/compras')
-                } else
-                    history.push('/proyectos/compras')
-                break;
-            case 'convert': 
-                if (state) {
-                    if (state.solicitud) {
-                        this.getSolicitudCompraAxios(state.solicitud.id)
-                    }
-                }
-                this.setState({
-                    ...this.state,
-                    formeditado: 1
-                })
-                break;
-            default:
-                break;
-        }
-        if (!egresos)
-            history.push('/')
-    }
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ...this.state,
-            options
-        })
+        this.setState({ ...this.state, options })
     }
-
     getCompra = async(compra) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -468,6 +405,7 @@ class ComprasForm extends Component {
                         form.contrato = compra.contrato.id.toString()
                     }
                 }
+                // form.notas = compra.notas
                 this.setState({
                     ...this.state,
                     title: 'Editar compra',
@@ -566,31 +504,6 @@ class ComprasForm extends Component {
     async editCompraAxios() {
         const { access_token } = this.props.authUser
         const { form, compra } = this.state
-        /* const data = new FormData();
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fecha':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
-                case 'adjuntos':
-                case 'facturaObject':
-                    break;
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-            return false
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-            }
-            data.append('adjuntos[]', element)
-            return false
-        }) */
         await axios.put(`${URL_DEV}v2/proyectos/compras/${compra.id}`, form, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 this.getOptionsAxios()
@@ -669,12 +582,6 @@ class ComprasForm extends Component {
                 }
                 if (solicitud.proyecto) {
                     form.proyecto = solicitud.proyecto.id.toString()
-                    /* if (solicitud.proyecto.clientes) {
-                        if (solicitud.proyecto.clientes.proyectos) {
-                            options['proyectos'] = setOptions(solicitud.proyecto.clientes.proyectos, 'nombre', 'id')
-                            form.proyecto = solicitud.proyecto.id.toString()
-                        }
-                    } */
                 }
                 if (solicitud.empresa) {
                     if (solicitud.empresa.cuentas) {
@@ -721,30 +628,13 @@ class ComprasForm extends Component {
             <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
-                        <div className="card-title">
-                            <h3 className="card-label">{title}</h3>
-                        </div>
+                        <div className="card-title"> <h3 className="card-label">{title}</h3> </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ComprasFormulario
-                            options={options}
-                            form={form}
-                            setOptions={this.setOptions}
-                            data={data}
-                            title={title}
-                            onChange={this.onChange}
-                            onChangeAdjunto={this.onChangeAdjunto}
-                            clearFiles={this.clearFiles}
-                            sendFactura={() => { this.sendFactura() }}
-                            onSubmit={this.onSubmit}
-                            formeditado={formeditado}
-                            className="px-3"
-                        >
-                            {
-                                solicitud ?
-                                    <SolicitudCompraCard solicitud={solicitud} formeditado={formeditado} border={"border-nav mt-4 mb-5"} />
-                                    : ''
-                            }
+                        <ComprasFormulario options = { options } form = { form } setOptions = { this.setOptions } data = { data } title = { title }
+                            onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles } 
+                            sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } formeditado = { formeditado } className = "px-3" >
+                            { solicitud ? <SolicitudCompraCard solicitud={solicitud} formeditado={formeditado} border={"border-nav mt-4 mb-5"} /> : '' }
                         </ComprasFormulario>
                     </Card.Body>
                 </Card>
@@ -753,13 +643,7 @@ class ComprasForm extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ComprasForm);

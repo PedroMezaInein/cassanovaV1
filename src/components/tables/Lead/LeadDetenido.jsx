@@ -24,7 +24,7 @@ class LeadDetenido extends Component {
         const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, clickOneLead } = this.props
         return (
             <div className="tab-content">
-                <div className="table-responsive-lg">
+                <div className="table-responsive">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr>
@@ -36,10 +36,11 @@ class LeadDetenido extends Component {
                                 <th style={{ minWidth: "174px" }}>
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
-                                <th style={{ minWidth: "120px" }}>Fecha</th>
-                                <th style={{ minWidth: "100px" }}>Origen</th>
+                                <th style={{ minWidth: "120px" }} className="text-center">Fecha</th>
+                                <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
+                                <th style={{ minWidth: "100px" }} className="text-center">Fase</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>
@@ -54,7 +55,7 @@ class LeadDetenido extends Component {
                                     leads.data.map((lead, index) => {
                                         return (
                                             <tr key={index}>
-                                                <td className="pl-0 py-8">
+                                                <td className="pl-0 py-8 white-space-nowrap">
                                                     <div className="d-flex align-items-center">
                                                         <div className="symbol symbol-45 mr-3">
                                                             <span className="symbol-label font-size-h5 bg-light-gray text-gray">
@@ -76,26 +77,29 @@ class LeadDetenido extends Component {
                                                     </div>
                                                 </td>
                                                 <td className="font-size-lg text-left font-weight-bolder">
-                                                    <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
-                                                        {
-                                                            lead.prospecto ?
-                                                                lead.prospecto.contactos ?
-                                                                    lead.prospecto.contactos.length ?
-                                                                        setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                    <div className="w-max-content mx-auto">
+                                                        <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                        <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                            {
+                                                                lead.prospecto ?
+                                                                    lead.prospecto.contactos ?
+                                                                        lead.prospecto.contactos.length ?
+                                                                            setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                        : '-'
                                                                     : '-'
                                                                 : '-'
-                                                            : '-'
-                                                        }
-                                                    </span>
+                                                            }
+                                                        </span>
+                                                    </div>
                                                 </td>
-                                                <td>
+                                                <td className="text-center">
                                                     {
-                                                        lead.origen ?
+                                                        lead.origen &&
+                                                        <div className="w-max-content mx-auto">
                                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
                                                                 {lead.origen.origen}
                                                             </span>
-                                                            : ''
+                                                        </div>
                                                     }
                                                 </td>
                                                 <td className="text-center">
@@ -129,6 +133,17 @@ class LeadDetenido extends Component {
                                                             })
                                                         }
                                                     </div>
+                                                </td>
+                                                <td className="text-center text-dark-75 font-weight-bold">
+                                                    {
+                                                        lead.prospecto ?
+                                                            lead.prospecto.diseño ?
+                                                                'Fase 1'
+                                                            : lead.prospecto.obra ?
+                                                                'Fase 2'
+                                                            : ''
+                                                        : ''
+                                                    }
                                                 </td>
                                                 <td className="text-center">
                                                     {

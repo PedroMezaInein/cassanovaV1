@@ -84,7 +84,7 @@ class LeadNoContratado extends Component {
         const { modal, lead } = this.state
         return (
             <div className="tab-content">
-                <div className="table-responsive-lg">
+                <div className="table-responsive">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr>
@@ -97,7 +97,7 @@ class LeadNoContratado extends Component {
                                     <span>Nombre del cliente</span>
                                 </th>
                                 <th style={{ minWidth: "145px" }} className="text-center">Fecha</th>
-                                <th style={{ minWidth: "100px" }}>Origen</th>
+                                <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Motivo</th>
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
@@ -136,36 +136,39 @@ class LeadNoContratado extends Component {
                                                     </div>
                                                 </td>
                                                 <td className="font-size-lg text-left font-weight-bolder">
-                                                    <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                    {
-                                                        lead.prospecto ?
-                                                            lead.prospecto.contactos ?
-                                                                lead.prospecto.contactos.length > 0 ?
-                                                                    <>
-                                                                        <span>Último contacto: </span>
-                                                                        <span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span><br />
-                                                                    </>
+                                                    <div className="w-max-content mx-auto">
+                                                        <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                        {
+                                                            lead.prospecto ?
+                                                                lead.prospecto.contactos ?
+                                                                    lead.prospecto.contactos.length > 0 ?
+                                                                        <>
+                                                                            <span>Último contacto: </span>
+                                                                            <span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span><br />
+                                                                        </>
+                                                                    : ''
                                                                 : ''
                                                             : ''
-                                                        : ''
-                                                    }
-                                                    {
-                                                        lead.fecha_cancelacion_rechazo !== null &&
-                                                        <>
-                                                            <span>{lead.rechazado? 'Rechazo':'Cancelado'}: </span>
-                                                            <span className="text-muted font-weight-bold font-size-sm">
-                                                                { setDateTableLG(lead.fecha_cancelacion_rechazo) }
-                                                            </span>
-                                                        </>
-                                                    }
+                                                        }
+                                                        {
+                                                            lead.fecha_cancelacion_rechazo !== null &&
+                                                            <>
+                                                                <span>{lead.rechazado? 'Rechazo':'Cancelado'}: </span>
+                                                                <span className="text-muted font-weight-bold font-size-sm">
+                                                                    { setDateTableLG(lead.fecha_cancelacion_rechazo) }
+                                                                </span>
+                                                            </>
+                                                        }
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     {
-                                                        lead.origen ?
+                                                        lead.origen &&
+                                                        <div className="w-max-content mx-auto">
                                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
                                                                 {lead.origen.origen}
                                                             </span>
-                                                            : ''
+                                                        </div>
                                                     }
                                                 </td>
                                                 <td className="text-justify">

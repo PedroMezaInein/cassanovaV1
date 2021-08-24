@@ -99,14 +99,32 @@ class LeadTelefono extends Component {
     onChange = e => {
         const { name, value, checked, type } = e.target
         const { form, } = this.state
+        let newName = name
         form[name] = value
         if (type === 'checkbox')
             form[name] = checked
+        if(name === 'fase'){
+            form[name] = parseInt(value)
+            switch(parseInt(value)){
+                case 1:
+                    form.obra = false;
+                    form.diseño = true;
+                    newName = 'diseño'
+                    break;
+                case 2:
+                    form.obra = true;
+                    form.diseño = false;
+                    newName = 'obra'
+                    break;
+                default:
+                    break;
+            }
+        }
         this.setState({
             ...this.state,
             form,
-            messages: this.updateMessages2(name, value),
-            tipo: name
+            messages: this.updateMessages2(newName, value),
+            tipo: newName
         })
     }
 
@@ -404,16 +422,14 @@ class LeadTelefono extends Component {
                                     form.tipoProyecto !== '' &&
                                     <div className="col-md-3 d-flex align-items-center">
                                         <div className="form-group">
-                                            <label className='col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de obra y/o diseño?</label>
-                                            <div className="radio-list mt-4">
-                                                <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary mr-3">
-                                                    <input type="checkbox" onChange={(e) => this.onChange(e)} name='diseño'
-                                                        checked={form.diseño} value={form.diseño} /> DISEÑO
+                                            <label className='col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de Fase 1 o Fase 2?</label>
+                                            <div className="radio-inline">
+                                                <label className="radio">
+                                                    <input type = "radio" name = 'fase' value = { 1 } onChange = { this.onChange } checked = { form.fase === 1 ? true : false } />Fase 1
                                                     <span></span>
                                                 </label>
-                                                <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary">
-                                                    <input type="checkbox" onChange={(e) => this.onChange(e)}
-                                                        name='obra' checked={form.obra} value={form.obra} /> Obra
+                                                <label className="radio">
+                                                    <input type = "radio" name = 'fase' value = { 2 } onChange = { this.onChange } checked = { form.fase === 2 ? true : false } />Fase 2
                                                     <span></span>
                                                 </label>
                                             </div>

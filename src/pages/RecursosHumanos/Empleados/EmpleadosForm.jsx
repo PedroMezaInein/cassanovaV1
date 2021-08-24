@@ -124,7 +124,7 @@ class EmpleadosForm extends Component {
                         form.numero_alta_imss = empleado.numero_alta_imss
                         form.departamentos = []
                         form.nacionalidad = empleado.nacionalidad
-                        if(!empleado.fecha_nacimiento.isNaN() && empleado.fecha_nacimiento !== null)
+                        if(!isNaN(empleado.fecha_nacimiento) && empleado.fecha_nacimiento !== null)
                             form.fecha_nacimiento = new Date()
                         else    
                             form.fecha_nacimiento = new Date(moment(empleado.fecha_nacimiento))

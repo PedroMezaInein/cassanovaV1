@@ -31,6 +31,7 @@ class SolicitudCompraForm extends Component {
             subarea: '',
             empresa: '',
             descripcion: '',
+            notas: '',
             total: '',
             remision: '',
             fecha: new Date(),
@@ -176,6 +177,7 @@ class SolicitudCompraForm extends Component {
         form.descripcion = solicitud.descripcion
         form.fecha = new Date(solicitud.created_at)
         form.total = solicitud.monto
+        form.solicitud = solicitud.notas
         if (solicitud.adjunto) {
             form.adjuntos.adjunto.files = [{
                 name: solicitud.adjunto.name,

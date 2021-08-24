@@ -134,6 +134,17 @@ class ActualizarPresupuestoForm extends Component {
             </OverlayTrigger>
         )
     }
+    bgActiveCheck(key){
+        const { form } = this.props
+        let css = ''
+        if(form.conceptos[key].vicio_oculto){
+            css= 'concepto-inactive bg-success-o-30'
+        }
+        if(!form.conceptos[key].active){ 
+            css= 'concepto-inactive bg-danger-o-30'
+        }
+        return css
+    }
     render() {
         const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options, isButtonEnabled, modulo_calidad, aux_presupuestos } = this.props
         const { desperdicio } = this.state
@@ -248,7 +259,7 @@ class ActualizarPresupuestoForm extends Component {
                         </Card.Body>
                     </Card>
                     <Card className="mt-4 card-custom">
-                        <Card.Header>
+                        <Card.Header className="border-0">
                             <Card.Title>
                                 <div className="font-weight-bold font-size-h5">Presupuesto Preliminar</div>
                             </Card.Title>
@@ -264,9 +275,13 @@ class ActualizarPresupuestoForm extends Component {
                                 }
                             </div>                    
                         </Card.Header>
-                        <Card.Body className="pt-2">
-                            <div className="row mx-0">
-                                <div className="col-md-10 px-0 mx-auto">
+                        <Card.Body className="pt-0">
+                            <div className="row mx-0 mb-7">
+                                <div className="col-md-9 px-0 mx-auto">
+                                    {
+                                        modulo_calidad&&
+                                        <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5"><span className="ribbon-presupuesto">PRESUPUESTO</span></div>
+                                    }
                                     {
                                         presupuesto.estatus &&
                                         <div className="table-responsive mt-5">
@@ -275,13 +290,9 @@ class ActualizarPresupuestoForm extends Component {
                                                     <li className={`li ${aux_presupuestos.conceptos ? 'complete-conceptos' : ''}`}>
                                                         {this.tooltip('Conceptos', `${modulo_calidad?'Se asignan los conceptos y se asigna la cantidad preeliminar al presupuesto.':'Se asignan los conceptos al presupuesto.'}`, 'dot-conceptos-presupuesto', 'header-presupuesto-conceptos')}
                                                     </li>
-                                                    {
-                                                        !modulo_calidad?
-                                                            <li className={`li ${aux_presupuestos.volumetrias ? 'complete-volumetrias' : ''}`}>
-                                                                {this.tooltip('Volumetrías', 'Se agregan las volumetrías al presupuesto.', 'dot-volumetrias-presupuesto', 'header-presupuesto-volumetrias')}
-                                                            </li>
-                                                        :<></>
-                                                    }
+                                                    <li className={`li ${aux_presupuestos.volumetrias ? 'complete-volumetrias' : ''}`}>
+                                                        {this.tooltip('Volumetrías', 'Se agregan las volumetrías al presupuesto.', 'dot-volumetrias-presupuesto', 'header-presupuesto-volumetrias')}
+                                                    </li>
                                                     <li className={`li ${aux_presupuestos.costos ? 'complete-costos' : ''}`}>
                                                         {this.tooltip('Costos', 'El departamento de compras estima los costos de los conceptos del presupuesto.', 'dot-costos-presupuesto', 'header-presupuesto-costos')}
                                                     </li>
@@ -314,197 +325,216 @@ class ActualizarPresupuestoForm extends Component {
                                         }
                                     }
                                 >
-                                <table className="table table-separate table-responsive-sm">
-                                    <thead>
-                                        <tr>
-                                            <th className="check_desc border-0">
-                                                <div className="font-size-sm text-center"></div>
-                                            </th>
-                                            <th className="clave border-0 center_content">
-                                                <div className="font-size-sm text-center">Clave</div>
-                                            </th>
-                                            <th className="descripcion border-0 center_content">
-                                                <div className="font-size-sm text-center">Descripción</div>
-                                            </th>
-                                            <th className="border-0 center_content">
-                                                <div className="font-size-sm text-center">Unidad</div>
-                                            </th>
-                                            <th className="border-0 center_content">
-                                                <div className="font-size-sm text-center">Cantidad <br/> Preliminar</div>
-                                            </th>
-                                            <th className="border-0">
-                                                <div className="font-size-sm text-center white-space-nowrap">% Despercicio</div>
-                                                <div className="d-flex justify-content-center">
-                                                    <InputNumberSinText identificador = "desperdicio-global" requirevalidation = { 0 } formeditado = { 1 }
-                                                        name = " desperdicio " value = { desperdicio } onChange = { this.onChangeDesperdicio }
-                                                        thousandseparator = { true } prefix = '%'  customclass='rounded-pill px-2 border text-center' />
-                                                </div>
-                                            </th>
-                                            {
-                                                (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-sm text-center">Costo</div>
+                                <div className="table-responsive">
+                                    <table className="table table-separate table-vertical-center">
+                                        <thead>
+                                            <tr>
+                                                <th className="check_desc border-0">
+                                                    <div className="font-size-sm text-center"></div>
                                                 </th>
-                                            }
-                                            <th className="border-0 center_content"> <div className="font-size-sm text-center">Cantidad</div> </th>
-                                            {
-                                                (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
-                                                    <th className="border-0 center_content">
-                                                        <div className="font-size-sm text-center">Importe</div>
-                                                        <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
-                                                            { setMoneyTableForNominas(this.getTotalImport()) }
-                                                        </div>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-sm text-center">Clave</div>
+                                                </th>
+                                                <th className="descripcion border-0 center_content">
+                                                    <div className="font-size-sm text-center">Descripción</div>
+                                                </th>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-sm text-center">Unidad</div>
+                                                </th>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-sm text-center">Cantidad <br/> Preliminar</div>
+                                                </th>
+                                                <th className="border-0">
+                                                    <div className="font-size-sm text-center white-space-nowrap">% Despercicio</div>
+                                                    <div className="d-flex justify-content-center">
+                                                        <InputNumberSinText identificador = "desperdicio-global" requirevalidation = { 0 } formeditado = { 1 }
+                                                            name = " desperdicio " value = { desperdicio } onChange = { this.onChangeDesperdicio }
+                                                            thousandseparator = { true } prefix = '%'  customclass='rounded-pill px-2 border text-center' />
+                                                    </div>
+                                                </th>
+                                                {
+                                                    (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
+                                                    <th className="border-0 center_content" style={{minWidth:'120px'}}>
+                                                        <div className="font-size-sm text-center">Costo</div>
                                                     </th>
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            presupuesto.conceptos.map((concepto, key) => {
-                                                return (
-                                                    <>
-                                                        {
-                                                            this.getPartida(key) ?
-                                                                <tr>
-                                                                    <td colSpan={9} className="bg-light text-primary font-size-lg font-weight-bolder border-0 ">
-                                                                        <b className="font-weight-boldest text-primary font-size-h6 ml-2">
-                                                                            { this.getPartidaClave(concepto.concepto.clave) }.
-                                                                        </b>
-                                                                        &nbsp;&nbsp; 
-                                                                        {
-                                                                            concepto.concepto ? 
-                                                                                concepto.concepto.subpartida ?
-                                                                                    concepto.concepto.subpartida.partida ?
-                                                                                        concepto.concepto.subpartida.partida.nombre
+                                                }
+                                                <th className="border-0 center_content"> <div className="font-size-sm text-center">Cantidad</div> </th>
+                                                {
+                                                    (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
+                                                        <th className="border-0 center_content">
+                                                            <div className="font-size-sm text-center">Importe</div>
+                                                            <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
+                                                                { setMoneyTableForNominas(this.getTotalImport()) }
+                                                            </div>
+                                                        </th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                presupuesto.conceptos.map((concepto, key) => {
+                                                    return (
+                                                        <>
+                                                            {
+                                                                this.getPartida(key) ?
+                                                                    <tr>
+                                                                        <td colSpan={9} className="bg-light text-primary font-size-lg font-weight-bolder border-0 ">
+                                                                            <b className="font-weight-boldest text-primary font-size-h6 ml-2">
+                                                                                { this.getPartidaClave(concepto.concepto.clave) }.
+                                                                            </b>
+                                                                            &nbsp;&nbsp; 
+                                                                            {
+                                                                                concepto.concepto ? 
+                                                                                    concepto.concepto.subpartida ?
+                                                                                        concepto.concepto.subpartida.partida ?
+                                                                                            concepto.concepto.subpartida.partida.nombre
+                                                                                        : ''
                                                                                     : ''
                                                                                 : ''
-                                                                            : ''
-                                                                        } 
-                                                                    </td>
-                                                                </tr>
-                                                            : <></>
-                                                        }
-                                                        {
-                                                            this.getSubpartida(key)?
-                                                                <tr>
-                                                                    <td colSpan={9} className="font-size-lg font-weight-bolder">
-                                                                        <b  className="font-size-h6 label label-light-info label-pill label-inline mr-2 font-weight-bolder label-rounded">
-                                                                        {
-                                                                            this.getPartidaClave(concepto.concepto.clave)
-                                                                        }
-                                                                        .
-                                                                        {
-                                                                            this.getSubpartidaClave(concepto.concepto.clave)
-                                                                        }
-                                                                        </b>
-                                                                        &nbsp;
-                                                                        {
-                                                                            concepto.concepto ? 
-                                                                                concepto.concepto.subpartida ?
-                                                                                    concepto.concepto.subpartida.nombre
-                                                                                : ''
-                                                                            : ''
-                                                                        }
-                                                                    </td>
-                                                                </tr>
-                                                            :<></>
-                                                        }
-                                                        <tr data-tip data-for = { key + '-th' } className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-info-o-30' } key = { key }>
-                                                            <td className="check_desc text-center">
-                                                                <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-primary mr-3">
-                                                                    <input name = 'active' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
-                                                                        checked = { form.conceptos[key].active } value = { form.conceptos[key].active } />
-                                                                    <span className="symbol-label"></span>
-                                                                </label>
-                                                            </td>
-                                                            <td className="clave text-center">
-                                                                <div className="font-weight-bold font-size-sm">{concepto.concepto.clave}</div>
-                                                            </td>
-                                                            <td className="descripcion text-center">
-                                                                <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "descipcion" as = "textarea"
-                                                                    value = { form['conceptos'][key]['descripcion'] } onChange = { (e) => { onChange(key, e, 'descripcion')} }  
-                                                                    disabled = { !form.conceptos[key].active } customclass='rounded-pill px-2 border text-justify textarea-input'/>
-                                                            </td>
-                                                            <td className="text-center">
-                                                                <div className="unidad-tickets">
-                                                                    <SelectSearchGray
-                                                                        customstyle={{ color: '#464E5F!important', fontWeight: '400!important' }}
-                                                                        formeditado={formeditado}
-                                                                        withtaglabel={0}
-                                                                        withtextlabel={0}
-                                                                        withicon={0}
-                                                                        customdiv="mb-0"
-                                                                        customclass="form-control-sm rounded-pill px-2 border text-center bg-white"
-                                                                        options={options.unidades}
-                                                                        name="unidad_id"
-                                                                        value={form['conceptos'][key]['unidad_id']}
-                                                                        onChange={(e) => this.updateUnidad(e, key)}
-                                                                    />
-                                                                </div>
-                                                            </td>
-                                                            <td className="text-center">
-                                                                <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "cantidad_preliminar"
-                                                                    value = { form['conceptos'][key]['cantidad_preliminar'] } onChange = { e => onChange(key, e, 'cantidad_preliminar') }
-                                                                    thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active } 
-                                                                    customclass={`rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].bg_cantidad ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}/>
-                                                            </td>
-                                                            <td className="text-center">
-                                                                <InputNumberSinText requirevalidation = { 0 } formeditado = { formeditado } name = "desperdicio" 
-                                                                    value = { form['conceptos'][key]['desperdicio'] } onChange = { e => onChange(key, e, 'desperdicio') }
-                                                                    thousandseparator = { true } prefix = '%' disabled = { !form.conceptos[key].active } 
-                                                                    customclass='rounded-pill px-2 border text-center' />
-                                                            </td>
-                                                            {
-                                                                (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
-                                                                    <td className="text-center">
-                                                                        <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "costo" 
-                                                                            value = { form['conceptos'][key]['costo'] } onChange = { e => onChange(key, e, 'costo') } 
-                                                                            thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active || showInputsCalidad }
-                                                                            customclass={`rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Costos'?form.conceptos[key].bg_costo ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`} />
-                                                                    </td>
+                                                                            } 
+                                                                        </td>
+                                                                    </tr>
+                                                                : <></>
                                                             }
-                                                            <td className="text-center">
-                                                                <div className="font-weight-bold font-size-sm">
-                                                                    <NumberFormat
-                                                                        value= {form['conceptos'][key]['cantidad']}
-                                                                        displayType={'text'}
-                                                                        thousandSeparator={true}
-                                                                        renderText={value => <div>{value}</div>}
-                                                                    />
-                                                                </div>
-                                                            </td>
                                                             {
-                                                                (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
+                                                                this.getSubpartida(key)?
+                                                                    <tr>
+                                                                        <td colSpan={9} className="font-size-lg font-weight-bolder">
+                                                                            <b  className="font-size-h6 label label-light-info label-pill label-inline mr-2 font-weight-bolder label-rounded">
+                                                                            {
+                                                                                this.getPartidaClave(concepto.concepto.clave)
+                                                                            }
+                                                                            .
+                                                                            {
+                                                                                this.getSubpartidaClave(concepto.concepto.clave)
+                                                                            }
+                                                                            </b>
+                                                                            &nbsp;
+                                                                            {
+                                                                                concepto.concepto ? 
+                                                                                    concepto.concepto.subpartida ?
+                                                                                        concepto.concepto.subpartida.nombre
+                                                                                    : ''
+                                                                                : ''
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                :<></>
+                                                            }
+                                                            <tr data-tip data-for = { key + '-th' } className = { this.bgActiveCheck(key) } key = { key }>
+                                                                <td className="check_desc text-center">
+                                                                    <div className="d-flex justify-content-center">
+                                                                        <OverlayTrigger overlay={<Tooltip>{form.conceptos[key].active?<span>ELIMINAR<br/>CONCEPTO</span>:<span>AGREGAR<br/>CONCEPTO</span>}</Tooltip>}>
+                                                                            <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-danger">
+                                                                                <input name = 'active' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
+                                                                                    checked = { form.conceptos[key].active } value = { form.conceptos[key].active } />
+                                                                                <span className="symbol-label"></span>
+                                                                            </label>
+                                                                        </OverlayTrigger>
+                                                                        {
+                                                                            form.conceptos[key].active ?
+                                                                            <OverlayTrigger overlay={<Tooltip>{form.conceptos[key].vicio_oculto?<span>QUITAR COMO<br/>VICIO OCULTO</span>:<span>AGREGAR COMO<br/>VICIO OCULTO</span>}</Tooltip>}>
+                                                                                <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-success ml-2">
+                                                                                    <input name = 'vicio_oculto' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
+                                                                                        checked = { form.conceptos[key].vicio_oculto } value = { form.conceptos[key].vicio_oculto } />
+                                                                                    <span className="symbol-label"></span>
+                                                                                </label>
+                                                                            </OverlayTrigger>
+                                                                            :<></>
+                                                                        }
+                                                                    </div>
+                                                                </td>
+                                                                <td className="clave text-center">
+                                                                    <div className="font-weight-bold font-size-sm">{concepto.concepto.clave}</div>
+                                                                </td>
+                                                                <td className="descripcion text-center">
+                                                                    <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "descipcion" as = "textarea"
+                                                                        value = { form['conceptos'][key]['descripcion'] } onChange = { (e) => { onChange(key, e, 'descripcion')} }  
+                                                                        disabled = { !form.conceptos[key].active } customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 border text-justify textarea-input`}/>
+                                                                </td>
+                                                                <td className="text-center">
+                                                                    <div className="unidad-tickets">
+                                                                        <SelectSearchGray
+                                                                            customstyle={{ color: '#464E5F!important', fontWeight: '400!important' }}
+                                                                            formeditado={formeditado}
+                                                                            withtaglabel={0}
+                                                                            withtextlabel={0}
+                                                                            withicon={0}
+                                                                            customdiv="mb-0"
+                                                                            customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} form-control-sm rounded-pill px-2 border text-center bg-white w-70px`}
+                                                                            options={options.unidades}
+                                                                            name="unidad_id"
+                                                                            value={form['conceptos'][key]['unidad_id']}
+                                                                            onChange={(e) => this.updateUnidad(e, key)}
+                                                                            disabled = { !form.conceptos[key].active }
+                                                                        />
+                                                                    </div>
+                                                                </td>
+                                                                <td className="text-center">
+                                                                    <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "cantidad_preliminar"
+                                                                        value = { form['conceptos'][key]['cantidad_preliminar'] } onChange = { e => onChange(key, e, 'cantidad_preliminar') }
+                                                                        thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active } 
+                                                                        customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].bg_cantidad ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}/>
+                                                                </td>
+                                                                <td className="text-center">
+                                                                    <InputNumberSinText requirevalidation = { 0 } formeditado = { formeditado } name = "desperdicio" 
+                                                                        value = { form['conceptos'][key]['desperdicio'] } onChange = { e => onChange(key, e, 'desperdicio') }
+                                                                        thousandseparator = { true } prefix = '%' disabled = { !form.conceptos[key].active } 
+                                                                        customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 border text-center`} />
+                                                                </td>
+                                                                {
+                                                                    (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
+                                                                        <td className="text-center">
+                                                                            <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "costo"
+                                                                                value = { form['conceptos'][key]['costo'] } onChange = { e => onChange(key, e, 'costo') } 
+                                                                                thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active }
+                                                                                customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Costos'?form.conceptos[key].bg_costo ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`} />
+                                                                        </td>
+                                                                }
                                                                 <td className="text-center">
                                                                     <div className="font-weight-bold font-size-sm">
                                                                         <NumberFormat
-                                                                            value= {form['conceptos'][key]['importe']}
+                                                                            value= {form['conceptos'][key]['cantidad']}
                                                                             displayType={'text'}
                                                                             thousandSeparator={true}
                                                                             renderText={value => <div>{value}</div>}
                                                                         />
                                                                     </div>
                                                                 </td>
-                                                            }
-                                                        </tr>
-                                                        {
-                                                            form.conceptos[key].mensajes.active ?
-                                                                <tr>
-                                                                    <td className="px-3 mx-2" colSpan = { 9 }>
-                                                                        <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "mensaje" placeholder="AGREGA UN COMENTARIO"
-                                                                            rows = "1" as = "textarea" className="form-control form-control-lg form-control-solid font-size-12px"
-                                                                            value = { form.conceptos[key].mensajes.mensaje } onChange = { (e) => { this.onChangeMensaje(e, key) } }
+                                                                {
+                                                                    (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) ?
+                                                                    <td className="text-center">
+                                                                        <div className="font-weight-bold font-size-sm">
+                                                                            <NumberFormat
+                                                                                value= {form['conceptos'][key]['importe']}
+                                                                                displayType={'text'}
+                                                                                thousandSeparator={true}
+                                                                                renderText={value => <div>{value}</div>}
                                                                             />
+                                                                        </div>
                                                                     </td>
-                                                                </tr>
-                                                            :<></>
-                                                        }
-                                                    </>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
+                                                                    :<></>
+                                                                }
+                                                            </tr>
+                                                            {
+                                                                form.conceptos[key].mensajes.active ?
+                                                                    <tr>
+                                                                        <td className="px-3 mx-2" colSpan = { 9 }>
+                                                                            <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "mensaje" placeholder="AGREGA UN COMENTARIO"
+                                                                                rows = "1" as = "textarea" className="form-control form-control-lg form-control-solid font-size-12px"
+                                                                                value = { form.conceptos[key].mensajes.mensaje } onChange = { (e) => { this.onChangeMensaje(e, key) } }
+                                                                                />
+                                                                        </td>
+                                                                    </tr>
+                                                                :<></>
+                                                            }
+                                                        </>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                                 {
                                     isButtonEnabled !== false ?
                                         <div className="mt-3 text-center">

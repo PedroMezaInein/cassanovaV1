@@ -885,7 +885,7 @@ class Proyectos extends Component {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.error(error, 'error')
             })
-        } catch (error) { console.log("error", error); }   
+        } catch (error) { console.error("error", error); }   
     }
 
     handleChangeComentario = (files, item) => {

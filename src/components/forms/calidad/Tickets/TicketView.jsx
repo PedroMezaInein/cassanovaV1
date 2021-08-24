@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, MantenimientoCorrectivo, AgregarConcepto } from '../../../../components/forms';
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, AgregarConcepto } from '../../../../components/forms';
 import { Button, SelectSearchGray,InputGray } from '../../../form-components'
-import moment from 'moment'
 import 'moment/locale/es'
 import imageCompression from 'browser-image-compression';
 import { questionAlert, waitAlert } from '../../../../functions/alert';
@@ -33,12 +32,6 @@ class TicketView extends Component {
         return iniciales
     }
 
-    formatDay (fecha){
-        let fecha_instalacion = moment(fecha);
-        let format = fecha_instalacion.locale('es').format("DD MMM YYYY");
-        return format.replace('.', '');
-    }
-
     onChange = (files) => {
         const { addingFotos, data } = this.props
         questionAlert('ENVIARÁS NUEVAS FOTOS', '¿QUIERES CONTINUAR?', () => { 
@@ -54,7 +47,7 @@ class TicketView extends Component {
                         compressedFile.path = compressedFile.name
                         resolve(compressedFile)
                     }).catch(function (error) {
-                        console.log(reject(error));
+                        console.error(reject(error));
                     });
                 })
             })
@@ -75,6 +68,13 @@ class TicketView extends Component {
         const { formulario, onChange } = this.props
         let valor = formulario.preeliminar.conceptos
         valor[key][name] = checked ? 1 : 0
+        if(name === 'vicio_oculto'){
+            if(valor[key].vicio_oculto){
+                valor[key].importe = (0).toFixed(2)
+            }else{
+                valor[key].importe = this.getImporte(key, valor)
+            }
+        }
         onChange(valor, 'conceptos', 'preeliminar')
     }
 
@@ -121,12 +121,13 @@ class TicketView extends Component {
             }
         }
         valor[key][name] = value
-        let cantidad = valor[key].cantidad_preliminar * (1 + (valor[key].desperdicio / 100))
-        cantidad = cantidad.toFixed(2)
-        let importe = cantidad * valor[key].costo
-        importe = importe.toFixed(2)
-        valor[key].cantidad = cantidad
-        valor[key].importe = importe
+        valor[key].cantidad = this.getCantidad(key, valor)
+
+        if(valor[key].vicio_oculto){
+            valor[key].importe = (0).toFixed(2)
+        }else{
+            valor[key].importe = this.getImporte(key, valor)
+        }
         if (name !== 'mensajes' && name !== 'desperdicio')
             if (presupuesto.conceptos[key][name] !== valor[key][name]) {
                 valor[key].mensajes.active = true
@@ -144,6 +145,14 @@ class TicketView extends Component {
         onChange(valor, 'conceptos', 'preeliminar')
     }
 
+    getCantidad(key, valor){
+        let cantidad = (valor[key].cantidad_preliminar * (1 + (valor[key].desperdicio / 100))).toFixed(2)
+        return cantidad
+    }
+    getImporte(key, valor){
+        let importe = (this.getCantidad(key, valor) * valor[key].costo).toFixed(2)
+        return importe
+    }
     calcularCantidades = () => {
         const { presupuesto } = this.props
         let suma = 0
@@ -296,29 +305,26 @@ class TicketView extends Component {
         const { aux_estatus } = this.props
         let activeHoverT=false;
         switch (estatus) {
-            case 'Conceptos':
-                if(aux_estatus.conceptos){ activeHoverT= true }
-                break;
-            case 'Volumetrías':
-                if(aux_estatus.volumetrias){ activeHoverT= true }
-                break;
-            case 'Costos':
-                if(aux_estatus.costos){ activeHoverT= true }
+            case 'En espera':
+                if(aux_estatus.espera){ activeHoverT= true }
                 break;
             case 'En revisión':
                 if(aux_estatus.revision){ activeHoverT= true }
                 break;
-            case 'Utilidad':
-                if(aux_estatus.utilidad){ activeHoverT= true }
-                break;
-            case 'En espera':
-                if(aux_estatus.espera){ activeHoverT= true }
+            case 'Rechazado':
+                if(aux_estatus.rechazado){ activeHoverT= true }
                 break;
             case 'Aceptado':
                 if(aux_estatus.aceptado){ activeHoverT= true }
                 break;
-            case 'Rechazado':
-                if(aux_estatus.rechazado){ activeHoverT= true }
+            case 'Aprobación pendiente':
+                if(aux_estatus.aprobacion){ activeHoverT= true }
+                break;
+            case 'En proceso':
+                if(aux_estatus.proceso){ activeHoverT= true }
+                break;
+            case 'Terminado':
+                if(aux_estatus.terminado){ activeHoverT= true }
                 break;
             default:
                 break;
@@ -338,13 +344,12 @@ class TicketView extends Component {
     }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
-            handleChangeTicketProceso, generateEmailTicketProceso, onChangeMantenimientos, onSubmitMantenimiento, openModalDeleteMantenimiento, activeKeyNav,
-            controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, key, controlledTab, onSubmitConcept, handleCloseConceptos, 
-            openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows
+            handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
+            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows
         } = this.props
 
         const { checked } = this.state
@@ -361,7 +366,7 @@ class TicketView extends Component {
                                             <div className="mr-4 align-self-center d-none d-sm-none d-md-none d-lg-block">
                                                 <div className="symbol symbol-50 symbol-lg-120 symbol-light-info">
                                                     <span className="font-size-h6 symbol-label font-weight-boldest ">
-                                                        {this.getIniciales(data.proyecto.nombre)}
+                                                        {data.identificador}
                                                     </span>
                                                 </div>
                                             </div>
@@ -381,10 +386,18 @@ class TicketView extends Component {
                                                             }
                                                             {
                                                                 data.created_at &&
-                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center">
+                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center mr-3">
                                                                         <i className="la la-calendar-check icon-lg text-info mr-1" />
                                                                         {dayDMY(data.created_at)}
                                                                     </div>
+                                                            }
+                                                            {
+                                                                data.subarea ?
+                                                                    <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center">
+                                                                        <i className="las la-tools icon-lg text-info mr-1" />
+                                                                        {data.subarea.nombre}
+                                                                    </div>
+                                                                :<></>
                                                             }
                                                         </div>
                                                     </div>
@@ -465,8 +478,13 @@ class TicketView extends Component {
                                                 }
                                             </div>
                                         </div>
-                                        <div className="row mx-0">
-                                            <div className="col-md-8 px-0 mx-auto">
+                                        <div className="row mx-0 my-5">
+                                            <div className="col-md-8 p-3 mx-auto box-shadow-53">
+                                                <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5">
+                                                    <span className="ribbon-tickets">
+                                                        TICKETS
+                                                    </span>
+                                                </div>
                                                 {
                                                     data.estatus_ticket &&
                                                     <div className="table-responsive">
@@ -504,7 +522,6 @@ class TicketView extends Component {
                                                 }
                                             </div>
                                         </div>
-                                        <div className="separator separator-solid mt-3" />
                                         <div className="d-flex overflow-auto">
                                             <Nav className="nav nav-tabs nav-tabs-line-info nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end ">
                                                 <Nav.Item onClick={(e) => { e.preventDefault(); controlledNav("adjuntos") }}>
@@ -553,15 +570,6 @@ class TicketView extends Component {
                                                                     <span className="nav-text font-weight-bolder white-space-nowrap">{this.showTabTicketProceso()}</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
-                                                            
-                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('mantenimiento'); controlledNav("mantenimiento") }}>
-                                                                <Nav.Link eventKey="mantenimiento">
-                                                                    <span className="nav-icon">
-                                                                        <i className="las la-tools icon-lg mr-2"></i>
-                                                                    </span>
-                                                                    <span className="nav-text font-weight-bolder">Mantenimiento</span>
-                                                                </Nav.Link>
-                                                            </Nav.Item>
                                                             </>
                                                         :<></>
                                                     :<></>
@@ -599,6 +607,14 @@ class TicketView extends Component {
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
                                                     checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
                                                     openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } modulo_calidad={true} aux_presupuestos={aux_presupuestos}>
+                                                    {
+                                                        presupuesto.pdfs.length ?
+                                                            <button type="button" className="btn btn-sm btn-light-warning font-weight-bolder font-size-13px mr-2" 
+                                                                onClick = { (e) => { e.preventDefault(); onClick('historial'); } } >
+                                                                <i class="far fa-file-pdf mr-2" />HISTORIAL
+                                                            </button>
+                                                        :<></>
+                                                    }
                                                     { 
                                                         presupuesto.estatus.estatus === 'En revisión'?
                                                             this.calcularCantidades() ?
@@ -640,7 +656,7 @@ class TicketView extends Component {
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
                                             <Col md={`${data.reporte_url === null ? 12 : 7 }`}>
-                                                <Card className="card-custom gutter-b card-stretch mb-8">
+                                                <Card className="card-custom gutter-b mb-8">
                                                     <Card.Header className="border-0 pt-8 pt-md-0">
                                                         <Card.Title className="mb-0">
                                                             <div className="font-weight-bold font-size-h5">{this.showTabTicketProceso()}</div>
@@ -668,7 +684,7 @@ class TicketView extends Component {
                                                             {
                                                                 data.reporte_url !== null ?
                                                                     <>  
-                                                                        <div className="d-block w-100">
+                                                                        <div className="w-100">
                                                                             <ItemSlider items={[{ url: data.reporte_url, name: 'reporte.pdf' }]} item='' />
                                                                         </div>
                                                                         {
@@ -688,25 +704,6 @@ class TicketView extends Component {
                                                 </Col>
                                             }
                                         </Row>
-                                    </Tab.Pane>
-                                    <Tab.Pane eventKey="mantenimiento">
-                                        <Card className="card-custom gutter-b card-stretch">
-                                            <Card.Header className="border-0 pt-8 pt-md-0">
-                                                <Card.Title className="m-0">
-                                                    <div className="font-weight-bold font-size-h5">Mantenimiento correctivo</div>
-                                                </Card.Title>
-                                            </Card.Header>
-                                            <Card.Body className="pt-0">
-                                                <MantenimientoCorrectivo
-                                                    form={formulario.mantenimientos}
-                                                    options = { options }
-                                                    onChangeMantenimientos={onChangeMantenimientos}
-                                                    data={data}
-                                                    onSubmitMantenimiento={onSubmitMantenimiento}
-                                                    openModalDeleteMantenimiento={openModalDeleteMantenimiento}
-                                                />
-                                            </Card.Body>
-                                        </Card>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>
@@ -768,6 +765,13 @@ class TicketView extends Component {
                                                                                                     withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompra(e, index) }}
                                                                                                     requirevalidation={1} messageinc='Incorrecto. Escribe una descripción' customclass="px-2 textarea-input"/>
                                                                                             </div>
+                                                                                            <div className="col-md-12">
+                                                                                                <InputGray as = "textarea" name = "notas" placeholder = "NOTAS" 
+                                                                                                    value = { concepto.notas } withtaglabel = { 1 } rows = { 2 }
+                                                                                                    withtextlabel = { 1 } requirevalidation = { 0 }
+                                                                                                    onChange = { (e) => { this.onChangeSolicitudCompra(e, index) } }
+                                                                                                    messageinc = 'Incorrecto. Escribe la nota' customclass = "px-2"/>
+                                                                                            </div>
                                                                                         </div>
                                                                                     : 
                                                                                         concepto ?
@@ -816,6 +820,14 @@ class TicketView extends Component {
                                                                                                                         requirevalidation = { 1 } 
                                                                                                                         messageinc = 'Incorrecto. Escribe una descripción' 
                                                                                                                         customclass="px-2 textarea-input"/>
+                                                                                                                </div>
+                                                                                                                <div className="col-md-12">
+                                                                                                                    <InputGray as = "textarea" name = "notas" 
+                                                                                                                        placeholder = "NOTAS" value = { concept.notas } 
+                                                                                                                        withtaglabel={1} rows = { 2 } withtextlabel = { 1 } 
+                                                                                                                        onChange={(e) => { this.onChangeSolicitudCompraInner(e, index, key) }}
+                                                                                                                        requirevalidation = { 0 } messageinc='Incorrecto. Escribe la nota' 
+                                                                                                                        customclass="px-2 " />
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>            
@@ -869,6 +881,13 @@ class TicketView extends Component {
                                                                                             value={concepto.descripcion} withtaglabel={1} withtextlabel={1}
                                                                                             requirevalidation={1} messageinc='Incorrecto. Escribe una descripción'
                                                                                             onChange={(e) => { this.onChangeSolicitudCompra(e, index) }} customclass="px-2 textarea-input"/>
+                                                                                    </div>
+                                                                                    <div className="col-md-12">
+                                                                                        <InputGray as="textarea" name="notas" placeholder="NOTAS"
+                                                                                            value={concepto.notas} withtaglabel={1}
+                                                                                            withtextlabel={1} onChange={(e) => { this.onChangeSolicitudCompra(e, index) }}
+                                                                                            requirevalidation={0} messageinc='Incorrecto. Escribe la nota' customclass="px-2 textarea-input"
+                                                                                        />
                                                                                     </div>
                                                                                 </div>
                                                                             </div>

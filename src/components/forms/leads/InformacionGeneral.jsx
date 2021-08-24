@@ -88,7 +88,7 @@ class InformacionGeneral extends Component {
                                             : ''
                                     }
                                     {
-                                        this.estatus() === "En espera" && lead.relaciones_publicas === false ?
+                                        /* this.estatus() === "En espera" && lead.relaciones_publicas === false ?
                                             ''
                                             :
                                             <div className="col-md-4">
@@ -98,7 +98,7 @@ class InformacionGeneral extends Component {
                                                     value={form.proyecto} onChange={onChange}
                                                     messageinc="Ingresa el nombre del proyecto."
                                                 />
-                                            </div>
+                                            </div> */
                                     }
                                 </>
                         }

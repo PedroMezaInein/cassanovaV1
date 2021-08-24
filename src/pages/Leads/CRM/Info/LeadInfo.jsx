@@ -2,23 +2,25 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
-import { Button } from '../../../../components/form-components'
+import { Button, InputGray } from '../../../../components/form-components'
 import { URL_DEV } from '../../../../constants'
 import SVG from "react-inlinesvg"
-import { toAbsoluteUrl } from "../../../../functions/routers"
+import { setSingleHeader, toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG, setContactoIcon } from '../../../../functions/setters'
 import { replaceAll } from '../../../../functions/functions'
 import axios from 'axios'
-import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert } from '../../../../functions/alert'
+import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert, customInputAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
-import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral } from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
 import Pagination from "react-js-pagination"
-import Scrollbar from 'perfect-scrollbar-react';
-import 'perfect-scrollbar-react/dist/style.min.css';
-import $ from "jquery";
+import Scrollbar from 'perfect-scrollbar-react'
+import 'perfect-scrollbar-react/dist/style.min.css'
+import $ from "jquery"
+import { Update } from '../../../../components/Lottie'
 class LeadInfo extends Component {
     state = {
+        solicitud: '',
         tipo: '',
         activeNav: 'historial-contacto',
         modal: {
@@ -209,10 +211,10 @@ class LeadInfo extends Component {
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
-                form.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
+                //form.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                 form.estado = lead.estado !== null ? lead.estado.toString() : ''
                 form.fecha = new Date(lead.created_at)
-                formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
+                //formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                 if(formDiseño.esquema === 'esquema_1'){
                     formDiseño.tiempo_ejecucion_diseno = 7
                     formDiseño.semanas = this.calculateSemanas(formDiseño.tiempo_ejecucion_diseno)
@@ -478,13 +480,13 @@ class LeadInfo extends Component {
                 form.email = lead.email
                 form.telefono = lead.telefono
                 if(lead.prospecto){
-                    form.proyecto = lead.prospecto.nombre_proyecto
+                    //form.proyecto = lead.prospecto.nombre_proyecto
                     if(lead.prospecto.tipo_proyecto)
                         form.tipoProyecto = lead.prospecto.tipo_proyecto.id.toString()
                 }
                 form.fecha = new Date(lead.created_at)
                 if (lead.presupuesto_diseño) {
-                    formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
+                    //formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
                     formDiseño.fase2 = lead.presupuesto_diseño.fase2
                     formDiseño.renders = lead.presupuesto_diseño.renders
@@ -706,7 +708,7 @@ class LeadInfo extends Component {
                             if (presupuesto.pdfs[0])
                                 if (presupuesto.pdfs[0].pivot) {
                                     Swal.close()
-                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+                                    questionAlert2('¡COTIZACIÓN GENERADA!', '',
                                         () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador),
                                         this.getTextAlert(presupuesto.pdfs[0].url)
                                     )
@@ -719,6 +721,42 @@ class LeadInfo extends Component {
             (error) => {
                 printResponseErrorAlert(error)
             }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    /* -------------------- ASYNC CALL TO SUBMIT PRESUPUESTO -------------------- */
+    addSolicitudPresupuestoAxios = async() => {
+        const { form, lead } = this.state
+        const { access_token } = this.props.authUser
+        if(form.comentario === '')
+            errorAlert(`Debes agregar un comentario`)
+        else{
+            await axios.post(`${URL_DEV}v1/presupuestos/solicitud-presupuesto/lead`, {comentario: form.comentario, lead: lead.id}, 
+                { headers: setSingleHeader(access_token) }).then(
+                    (response) => {
+
+                    }, (error) => { printResponseErrorAlert(error) }
+                ).catch((error) => {
+                    errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                    console.error(error, 'error')
+                })
+        }
+        
+    }
+
+    /* ------------ ANCHOR ASYNC CALL TO GET SOLICITUD DE PRESUPUESTO ----------- */
+    getSolicitudPresupuesto = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/presupuestos/solicitud-presupuesto/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { solicitud } = response.data
+                Swal.close()
+                this.setState({ ...this.state, activeNav: 'cotizacion', solicitud: solicitud })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
@@ -1261,21 +1299,18 @@ class LeadInfo extends Component {
     getTextAlert = url => {
         return (
             <div>
-                <span className="text-dark-50 font-weight-bolder">
-                    ¿Deseas mandar el
-                    <u>
-                        <a rel="noopener noreferrer" href={url} target='_blank' className='text-primary mx-2'>
-                            presupuesto
-                        </a>
-                    </u>
-                    al cliente?
-                </span>
+                <span className="font-weight-bolder font-size-h6 d-block mb-4">¿DESEAS MANDAR LA COTIZACIÓN AL CLIENTE?</span>
+                <u>
+                    <a className="font-weight-bold text-hover-success text-primary font-size-lg" target= '_blank' rel="noreferrer"  href={url}>
+                        DA CLIC AQUÍ PARA VER <i className="las la-hand-point-right text-primary icon-md ml-1"></i> EL PRESUPUESTO
+                    </a>
+                </u>
             </div>
         )
     }
 
     onClickSendPresupuesto = pdf => {
-        questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+        questionAlert2('¡COTIZACIÓN GENERADA!', '',
             () => this.sendCorreoPresupuesto(pdf.pivot.identificador),
             this.getTextAlert(pdf.url)
         )
@@ -1335,11 +1370,39 @@ class LeadInfo extends Component {
         })
     }
     changeActiveNav = key => {
-        this.setState({
-            ...this.state,
-            activeNav: key
-        })
+        this.setState({ ...this.state, activeNav: key })
+        /* const { lead, form } = this.state
+        let flag = true
+        if(key === 'cotizacion'){
+            if(lead.prospecto){
+                if(!lead.prospecto.diseño && lead.prospecto.obra){
+                    if(!lead.solicitud_presupuesto){
+                        flag = false
+                        customInputAlert(
+                            <div>
+                                <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUE SE REQUIERE COTIZAR.</h2>
+                                <div className = 'text-center my-5' style = { { fontSize: '1rem', textTransform: 'none' } } >
+                                    Da todos los detalles posibles para que el departamento de proyectos genere una cotización.
+                                </div>
+                                <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 }  
+                                    value = { form.comentario } name = 'comentario' rows  = { 8 } as = 'textarea' swal = { true } letterCase = { false } 
+                                    onChange = { this.onChange } placeholder = 'COMENTARIOS' />
+                            </div>,
+                            <Update />,
+                            () => { this.addSolicitudPresupuestoAxios() },
+                            () => { Swal.close(); },
+                        )
+                    }else{
+                        flag = false
+                        this.getSolicitudPresupuesto(lead.solicitud_presupuesto.id)
+                    }
+                }
+            }
+        }
+        if(flag)
+            this.setState({ ...this.state, activeNav: key }) */
     }
+
     printContactCount = (contactos) => {
         let sizeContactado = 0
         let sizeNoContactado = 0
@@ -1385,8 +1448,7 @@ class LeadInfo extends Component {
         )
     }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav} = this.state
-        // console.log(activeNav)
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav, solicitud } = this.state
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container
@@ -1485,7 +1547,7 @@ class LeadInfo extends Component {
                                                             <div className="d-flex align-items-center">
                                                                 <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center">
                                                                     <Nav.Item className="navi-item mr-3">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="informacion-general" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2 rounded" eventKey="informacion-general" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/User.svg')} />
@@ -1497,7 +1559,7 @@ class LeadInfo extends Component {
                                                                         </Nav.Link>
                                                                     </Nav.Item>
                                                                     <Nav.Item className="navi-item mr-3">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="historial-contacto" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2 rounded" eventKey="historial-contacto" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Group-chat.svg')} />
@@ -1509,14 +1571,26 @@ class LeadInfo extends Component {
                                                                         </Nav.Link>
                                                                     </Nav.Item>
                                                                     <Nav.Item className="navi-item">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="cotizacion" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2 rounded" eventKey="cotizacion" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                                 </span>
                                                                             </span>
                                                                             <div className="navi-text">
-                                                                                <span className="d-block font-weight-bold">Cotización de diseño</span>
+                                                                                <span className="d-block font-weight-bold">
+                                                                                    {
+                                                                                        lead ?
+                                                                                            lead.prospecto ?
+                                                                                                lead.prospecto.diseño ?
+                                                                                                    'Cotización de diseño'
+                                                                                                : lead.prospecto.obra ?
+                                                                                                    'Presupuesto de obra'
+                                                                                                : ''
+                                                                                            : ''
+                                                                                        : ''
+                                                                                    }
+                                                                                </span>
                                                                             </div>
                                                                         </Nav.Link>
                                                                     </Nav.Item>
@@ -1675,7 +1749,19 @@ class LeadInfo extends Component {
                                     <Tab.Pane eventKey="cotizacion">
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
-                                                <span className="font-weight-bolder text-dark align-self-center">Cotización de diseño</span>
+                                                <span className="font-weight-bolder text-dark align-self-center">
+                                                    {
+                                                        lead ?
+                                                            lead.prospecto ?
+                                                                lead.prospecto.diseño ?
+                                                                    'Cotización de diseño'
+                                                                : lead.prospecto.obra ?
+                                                                    'Presupuesto de obra'
+                                                                : ''
+                                                            : ''
+                                                        : ''
+                                                    }
+                                                </span>
                                                 {
                                                     lead ?
                                                         lead.presupuesto_diseño ?
@@ -1700,6 +1786,87 @@ class LeadInfo extends Component {
                                                 onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
                                                 formeditado = { formeditado } onClickTab = { this.handleClickTab }
                                                 activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
+                                            {/* {
+                                                lead ?
+                                                    lead.prospecto ?
+                                                        lead.prospecto.diseño ?
+                                                            <PresupuestoDiseñoCRMForm options = { options } formDiseño = { formDiseño }
+                                                                onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }
+                                                                checkButtonSemanas = { this.checkButtonSemanas } onChangeCheckboxes = { this.handleChangeCheckbox }
+                                                                onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
+                                                                formeditado = { formeditado } onClickTab = { this.handleClickTab }
+                                                                activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
+                                                        : 
+                                                            lead.prospecto.obra ?
+                                                                solicitud !== '' ? 
+                                                                    <div className="row mx-0">
+                                                                        <div className="col-md-6">
+                                                                            <div className="table-responsive-lg border rounded p-2">
+                                                                                <table className="table table-vertical-center w-80 mx-auto table-borderless" id="tcalendar_p_info">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <th colSpan="3" className="text-center pt-0">
+                                                                                                {
+                                                                                                    solicitud.empresa ? solicitud.empresa.logoPrincipal ?
+                                                                                                        <img alt='' width="170" src={solicitud.empresa.logoPrincipal} />
+                                                                                                    : '' : ''
+                                                                                                }
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <tr className="border-top-2px">
+                                                                                            <td className="text-center w-5">
+                                                                                                <i className="las la-user-edit icon-2x text-dark-50"></i>
+                                                                                            </td>
+                                                                                            <td className="w-33 font-weight-bolder text-dark-50">NOMBRE</td>
+                                                                                            <td className="font-weight-light">
+                                                                                                <span>{solicitud.nombre}</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="text-center">
+                                                                                                <i className="fab la-readme icon-2x text-dark-50"></i>
+                                                                                            </td>
+                                                                                            <td className="font-weight-bolder text-dark-50">Descripción</td>
+                                                                                            <td className="font-weight-light">
+                                                                                                <span>{solicitud.descripcion}</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        {
+                                                                                            solicitud.area ?
+                                                                                                <tr>
+                                                                                                    <td className="text-center">
+                                                                                                        <i className="las la-list-ol icon-2x text-dark-50"></i>
+                                                                                                    </td>
+                                                                                                    <td className="font-weight-bolder text-dark-50">Fase</td>
+                                                                                                    <td className="font-weight-light">
+                                                                                                        <span>{solicitud.area.nombre}</span>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            : ''
+                                                                                        }
+                                                                                        <tr>
+                                                                                            <td className="text-center">
+                                                                                                <i className="las la-file-contract icon-2x text-dark-50"></i>
+                                                                                            </td>
+                                                                                            <td className="font-weight-bolder text-dark-50">Presupuesto</td>
+                                                                                            <td className="font-weight-light">
+                                                                                                <span>
+                                                                                                    { !solicitud.presupuesto ? 'En espera' : '' }
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                : ''
+                                                            : ''
+                                                    : ''
+                                                : ''
+                                            } */}
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>

@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert, questionAlert } from '../../../functions/alert'
-import { InputGray, Button, CalendarDay } from '../../form-components'
+import { InputGray, Button, CalendarDay, InputMoneyGray, SelectSearchGray } from '../../form-components'
 import ItemSlider from '../../singles/ItemSlider'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
-import { dayDMY } from '../../../functions/setters'
+import { dayDMY, setMoneyText } from '../../../functions/setters'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
 
 class ProcesoTicketForm extends Component {
 
@@ -18,8 +20,30 @@ class ProcesoTicketForm extends Component {
         onChange({ target: { name: 'empleado', value: value } })
     }
 
+    isMantenimiento = () => {
+        const { ticket } = this.props
+        if(ticket.subarea){
+            switch(ticket.subarea.nombre){
+                case 'MANTENIMIENTO':
+                case 'MANTENIMIENTO CORRECTIVO':
+                case 'MANTENIMIENTO PREVENTIVO':
+                    return true;
+                default: break;
+            }
+        }
+        return false;
+    }
+
+    updateSelect = (value, type) => {
+        const { onChange } = this.props
+        onChange({ target: { name: type, value: value } })
+    }
+
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props 
+        console.log(form, 'form')
+        console.log(options,'options')
+        console.log(ticket,'ticket')
         return (
             <>
                 {
@@ -37,7 +61,7 @@ class ProcesoTicketForm extends Component {
                                     <div id="for2-wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
                                         <div className="wizard-label pt-0 pb-6 pb-md-5">
                                             <h3 className="wizard-title">
-                                                <span>2.</span> Reporte de archivos</h3>
+                                                <span>2.</span> Fotografías</h3>
                                             <div className="wizard-bar"></div>
                                         </div>
                                     </div>
@@ -45,15 +69,8 @@ class ProcesoTicketForm extends Component {
                             </div>
                             <div className="row justify-content-center">
                                 <div className="col-md-12">
-                                    <Form
-                                        onSubmit={
-                                            (e) => {
-                                                e.preventDefault();
-                                                validateAlert(onSubmit, e, 'for2-wizard-2-content')
-                                            }
-                                        }
-                                        {...props}
-                                    >
+                                    <Form onSubmit = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') } }
+                                        {...props} >
                                         <div id="for2-wizard-1-content" className="px-2" data-wizard-type="step-content" data-wizard-state="current">
                                             <Row className="mx-0">
                                                 <Col md="6" className="align-self-center px-0 d-flex justify-content-center">
@@ -63,14 +80,9 @@ class ProcesoTicketForm extends Component {
                                                         </div>
                                                         <div className="col-md-12 text-center px-0">
                                                             <div className="calendar-tickets">
-                                                                <CalendarDay
-                                                                    value={form.fechaProgramada}
-                                                                    date={form.fechaProgramada}
-                                                                    onChange={onChange}
-                                                                    name='fechaProgramada'
-                                                                    withformgroup={0}
-                                                                    requirevalidation={0}
-                                                                />
+                                                                <CalendarDay value = { form.fechaProgramada } date = { form.fechaProgramada }
+                                                                    onChange = { onChange } name = 'fechaProgramada' withformgroup = { 0 }
+                                                                    requirevalidation = { 0 } />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -78,58 +90,57 @@ class ProcesoTicketForm extends Component {
                                                 <Col md="6" className="align-self-center">
                                                     <div className="row mx-0 form-group-marginless">
                                                         <div className="col-md-12">
-                                                            <InputGray
-                                                                withtaglabel={1}
-                                                                withtextlabel={1}
-                                                                withplaceholder={1}
-                                                                withicon={1}
-                                                                withformgroup={1}
-                                                                placeholder="TÉCNICO QUE ASISTE"
-                                                                name="empleado"
-                                                                value={form.empleado}
-                                                                onChange={onChange}
-                                                                iconclass="la la-user-check icon-xl"
-                                                                requirevalidation={0}
-                                                                formeditado={formeditado}
-                                                            />
+                                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
+                                                                withformgroup = { 1 } placeholder = "TÉCNICO QUE ASISTE" name = "empleado" 
+                                                                value = { form.empleado } onChange = { onChange } iconclass = "la la-user-check icon-xl"
+                                                                requirevalidation = { 0 } formeditado = { formeditado } />
                                                         </div>
                                                         <div className="col-md-12">
-                                                            <InputGray
-                                                                withtaglabel={1}
-                                                                withtextlabel={1}
-                                                                withplaceholder={1}
-                                                                withicon={1}
-                                                                withformgroup={1}
-                                                                placeholder="¿QUIÉN RECIBE?"
-                                                                name="recibe"
-                                                                value={form.recibe}
-                                                                onChange={onChange}
-                                                                iconclass="la la-user icon-xl"
-                                                                requirevalidation={0}
-                                                                formeditado={formeditado}
-                                                            />
+                                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
+                                                                withformgroup = { 1 } placeholder = "¿QUIÉN RECIBE?" name = "recibe" value = { form.recibe }
+                                                                onChange = { onChange } iconclass = "la la-user icon-xl" requirevalidation = { 0 }
+                                                                formeditado = { formeditado } />
                                                         </div>
                                                         <div className="col-md-12">
-                                                            <InputGray
-                                                                withtaglabel={1}
-                                                                withtextlabel={1}
-                                                                withplaceholder={1}
-                                                                withicon={0}
-                                                                withformgroup={0}
-                                                                formeditado={formeditado}
-                                                                requirevalidation={0}
-                                                                as='textarea'
-                                                                name='descripcion_solucion'
-                                                                placeholder='DESCRIPCIÓN DE LA SOLUCIÓN DEL PROBLEMA'
-                                                                onChange={onChange}
-                                                                value={form.descripcion_solucion}
-                                                                rows='4'
-                                                                messageinc="Incorrecto. Ingresa una descripción."
-                                                            />
+                                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 }
+                                                                withformgroup = { 0 } formeditado = { formeditado } requirevalidation = { 0 } as = 'textarea'
+                                                                name = 'descripcion_solucion' placeholder = 'DESCRIPCIÓN DE LA SOLUCIÓN DEL PROBLEMA'
+                                                                onChange = { onChange } value = { form.descripcion_solucion } rows = '4'
+                                                                messageinc = "Incorrecto. Ingresa una descripción." />
                                                         </div>
                                                     </div>
                                                 </Col>
                                             </Row>
+                                            {
+                                                this.isMantenimiento() ? 
+                                                    <Row className = 'mx-0'>
+                                                        <Col md = { 12 }>
+                                                            <hr />
+                                                            <label className="text-center font-weight-bolder text-dark-60">
+                                                                { ticket.subarea ? ticket.subarea.nombre  : '' }
+                                                            </label>
+                                                        </Col>
+                                                        <Col md = { 6 }>
+                                                            <div className="col-md-12">
+                                                                <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } 
+                                                                    withformgroup = { 1 } requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } 
+                                                                    prefix = '$' name = "costo" value = { form.costo } onChange = { onChange } 
+                                                                    placeholder = "COSTO" iconclass = "la la-money-bill icon-xl" />
+                                                            </div>
+                                                            
+                                                        </Col>
+                                                        <Col md = { 6 }>
+                                                            <div className="col-md-12">
+                                                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } name = "equipo"
+                                                                    options = { options.equipos } placeholder = 'SELECCIONA EL EQUIPO INSTALADO' 
+                                                                    value = { form.equipo } onChange = { (value) => { this.updateSelect(value, 'equipo') } } 
+                                                                    iconclass = "la la-toolbox icon-xl" formeditado = { 0 } 
+                                                                    messageinc = "Incorrecto. Selecciona el equipo instalado" />
+                                                            </div>
+                                                        </Col>
+                                                    </Row>        
+                                                : <div></div>
+                                            }
                                             <div className="d-flex justify-content-between border-top mt-3 pt-3 card-footer pb-0">
                                                 <div className="mr-2"></div>
                                                 <div>
@@ -198,27 +209,65 @@ class ProcesoTicketForm extends Component {
                                         <div className="text-info font-size-h6">{form.recibe}</div>
                                         <div className="text-dark-75 font-size-lg font-weight-light">RECIBIÓ</div>
                                     </Col>
-                            </Row>
-                            <div className="separator separator-dashed my-10"></div>
-                            <Row className="mx-0 d-flex justify-content-center">
-                                <Col md="4" className="text-center">
-                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PETICIONES</div>
-                                    <ItemSlider items={form.adjuntos.reporte_problema_reportado.files} item='reporte_problema_reportado' />
-                                </Col>
-                                <Col md="4" className="text-center">
-                                    <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">TRABAJOS REALIZADOS</div>
-                                    <ItemSlider items={form.adjuntos.reporte_problema_solucionado.files} item='reporte_problema_solucionado' />
-                                </Col>
-                            </Row>
-                            {
-                                form.descripcion_solucion &&
-                                <>
-                                    <div className="separator separator-dashed my-10"></div>
-                                    <div className="font-weight-light text-center font-size-lg mt-10"><span className="font-weight-bolder">Solución del problema: </span>{form.descripcion_solucion}</div>
-                                </>
-                            }
-                        </div>
-                        :<></>
+                                </Row>
+                                <div className="separator separator-dashed my-10  col-md-10 mx-auto"></div>
+                                <Row className="mx-0 d-flex justify-content-center">
+                                    <Col md="4" className="text-center">
+                                        <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">PETICIONES</div>
+                                        <ItemSlider items={form.adjuntos.reporte_problema_reportado.files} item='reporte_problema_reportado' />
+                                    </Col>
+                                    <Col md="4" className="text-center">
+                                        <div className="mb-4 font-weight-bolder font-size-lg white-space-nowrap">TRABAJOS REALIZADOS</div>
+                                        <ItemSlider items={form.adjuntos.reporte_problema_solucionado.files} item='reporte_problema_solucionado' />
+                                    </Col>
+                                </Row>
+                                {
+                                    ticket.descripcion &&
+                                        <div className="font-weight-light text-justify font-size-lg mt-12 col-md-8 mx-auto"><span className="font-weight-bolder">Petición: </span>{ticket.descripcion}</div>
+                                }
+                                {
+                                    form.descripcion_solucion &&
+                                        <div className="font-weight-light text-justify font-size-lg mt-5 col-md-8 mx-auto"><span className="font-weight-bolder">Trabajo realizado: </span>{form.descripcion_solucion}</div>
+                                }
+                                {
+                                    this.isMantenimiento() ? 
+                                    <>
+                                        <div className="separator separator-dashed my-10 col-md-10 mx-auto"></div>
+                                        <Row className="mx-0 d-flex justify-content-center mt-5">
+                                            <div className="card card-custom col-md-8 shadow-none bg-diagonal border">
+                                                <div className="card-body d-flex align-items-center px-3 py-6 flex-column">
+                                                    <div className="mb-4 font-weight-bolder">
+                                                        <u>{ticket.subarea?ticket.subarea.nombre:''}</u>
+                                                    </div>
+                                                    
+                                                        <div className="text-justify d-flex align-items-center">
+                                                            <div className="mr-5">
+                                                                <span className="svg-icon svg-icon-3x svg-icon-info">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Hard-drive.svg')} />
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <div className="d-flex flex-column">
+                                                                    <span className="text-dark font-weight-bold font-size-lg mb-3">EQUIPO INSTALADO:
+                                                                        <span className="text-dark-75 font-weight-light font-size-lg"> {ticket.mantenimiento.instalacion.equipo.texto}</span>
+                                                                    </span>
+                                                                </div>
+                                                                <div className="d-flex flex-column">
+                                                                    <span className="text-dark font-weight-bold font-size-lg">COSTO:
+                                                                        <span className="text-dark-75 font-weight-light font-size-lg"> { setMoneyText(ticket.mantenimiento.costo)}</span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </Row>
+                                    </>
+                                    :<></>
+                                }
+                            </div>
+                        : <></>
                 }
             </>
         );

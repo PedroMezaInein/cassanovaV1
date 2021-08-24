@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, sendFileAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { TicketView } from '../../../components/forms'
+import { TicketView, HistorialPresupuestos } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
 import { setSingleHeader, setFormHeader, toAbsoluteUrl } from '../../../functions/routers'
 import { SelectSearchGray, CalendarDaySwal } from '../../../components/form-components'
@@ -16,6 +16,7 @@ import S3 from 'react-aws-s3';
 import SVG from "react-inlinesvg";
 import { TagInputGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
+import { Modal as CustomModal } from '../../../components/singles'
 class TicketDetails extends Component {
 
     state = {
@@ -78,7 +79,8 @@ class TicketDetails extends Component {
                     id: '',
                     mensajes: { active: false, mensaje: '' },
                     unidad_id:'',
-                    bg_cantidad:true
+                    bg_cantidad:true,
+                    vicio_oculto:false
                 }],
                 conceptosNuevos: []
             },
@@ -114,18 +116,13 @@ class TicketDetails extends Component {
                 fechaMantenimiento: new Date()
             },
             conceptos:[{
-                area: '', subarea: '', descripcion: ''
+                area: '', subarea: '', descripcion: '', notas:''
             }]
         },
         data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [] },
         ticket: '',
         presupuesto: '',
-        modal: {
-            conceptos: false,
-            solicitud: false,
-            solicitud_venta:false,
-            reporte:false
-        },
+        modal: { conceptos: false, solicitud: false, solicitud_venta:false, reporte:false, pdfs: false },
         formeditado: 0,
         key: 'nuevo',
         title:'',
@@ -423,7 +420,8 @@ class TicketDetails extends Component {
                         importe: concepto.importe,
                         unidad: concepto.unidad ? concepto.unidad.nombre : '',
                         unidad_id: concepto.unidad ? concepto.unidad.id.toString() : '',
-                        bg_cantidad:true
+                        bg_cantidad:true,
+                        vicio_oculto:concepto.vicio_oculto ? true : false
                     })
                 })
                 formularios.preeliminar.conceptos = aux
@@ -618,19 +616,6 @@ class TicketDetails extends Component {
         })
     }
     
-    deleteSolicitudAxios = async(id, type) => {
-        const { access_token } = this.props.authUser
-        await axios.delete(`${URL_DEV}solicitud-${type}/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue eliminada con éxito.')
-                this.getSolicitudesAxios(`solicitud-${type}`)
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
     async deleteMantenimientoAxios(mantenimiento) {
         const { access_token } = this.props.authUser
         await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos/${mantenimiento.id}`, { headers: setSingleHeader(access_token) }).then(
@@ -792,30 +777,7 @@ class TicketDetails extends Component {
             formularios:this.clearFormSolicitud()
         })
     }
-    
-    handleChange = (files, item) => {
-        const { formularios } = this.state
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        formularios.solicitud['adjuntos'][item].value = files
-        formularios.solicitud['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            formularios
-        })
-    }
-    openModalDeleteMantenimiento = mantenimiento => {
-        deleteAlert(`¿DESEAS ELIMINAR EL MANTENIMIENTO?`, '', () => this.deleteMantenimientoAxios(mantenimiento))
-    }
+
     openAlertChangeStatusP = (estatus, presupuesto) => {
         const { formularios, ticket } = this.state;
         switch(estatus){
@@ -828,7 +790,7 @@ class TicketDetails extends Component {
                                 <div id='customInputRechazado'>
                                     <Form.Control
                                         placeholder='MOTIVO DE RECHAZO'
-                                        className="form-control form-control-solid p-3 text-uppercase"
+                                        className="form-control form-control-solid p-3 text-uppercase text-justify"
                                         id='motivo_rechazo'
                                         as="textarea"
                                         rows="3"
@@ -988,7 +950,8 @@ class TicketDetails extends Component {
                                 area: element.concepto.subpartida.partida.areas[0].id.toString(),
                                 subarea: '', 
                                 descripcion: element.descripcion, 
-                                concepto: element
+                                concepto: element,
+                                notas: ''
                             }
                         )
                     }
@@ -1002,11 +965,13 @@ class TicketDetails extends Component {
                             concepto: element,
                             partida: element.concepto.subpartida.partida.nombre,
                             join: true,
+                            notas: '',
                             form: [{
                                 area: element.concepto.subpartida.partida.areas[0].id.toString(),
                                 subarea: '', 
                                 descripcion: element.descripcion,
-                                concepto: element
+                                concepto: element,
+                                notas: ''
                             }]
                         }
                         objeto.conceptos.push(element) 
@@ -1274,29 +1239,6 @@ class TicketDetails extends Component {
         e.preventDefault()
         this.addSolicitudVentaAxios()
     }
-    onChangeAdjunto = valor => {
-        let tipo = valor.target.id
-        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success, tipo);})
-    }
-    
-    async addAdjuntoAxios(valor, tipo) {
-        waitAlert()
-        const { name, file } = valor.target
-        const { access_token } = this.props.authUser
-        const { presupuesto } = this.state
-        let data = new FormData();
-        if(file){
-            data.append(`file`, file)
-            await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/adjuntos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
-                (response) => {
-                    doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
-                }, (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.error(error, 'error')
-            })
-        }else{ errorAlert('Adjunta solo un archivo') }
-    }
     
     /* ---------------------- FORMULARIO TICKET EN PROCESO ---------------------- */
     onChangeTicketProceso = e => {
@@ -1364,6 +1306,7 @@ class TicketDetails extends Component {
             () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
         )
     }
+    
     saveProcesoTicketAxios = async(flag) =>{
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1397,32 +1340,6 @@ class TicketDetails extends Component {
             console.error(error, 'error')
         })
     }
-    /* ---------------------- FORMULARIO MANTENIMIENTO CORRECTIVO ---------------------- */
-    onChangeMantenimientos = e => {
-        const { name, value } = e.target
-        const { formularios } = this.state
-        formularios.mantenimientos[name] = value
-        this.setState({ ...this.state, formularios })
-    }
-    onSubmitMantenimiento = async(e) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { ticket, formularios, data } = this.state
-        await axios.post(`${URL_DEV}v2/calidad/tickets/${ticket.id}/mantenimiento`, formularios.mantenimientos, { headers: setSingleHeader(access_token) }).then(
-            (response) => { 
-                doneAlert('Mantenimiento correctivo generado con éxito.') 
-                this.getOneTicketAxios(ticket.id)
-                data.mantenimientos = ticket.mantenimientos
-                this.setState({
-                    ...this.state,
-                    data
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
 
     deleteFile = element => {
         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => { this.deleteAdjuntoAxios(element.id) } )
@@ -1437,7 +1354,7 @@ class TicketDetails extends Component {
         if(ticket.presupuesto_id)
             this.getPresupuestoAxios(ticket.presupuesto_id)
     }
-
+    
     onClick = (type) => {
         switch(type){
             case 'volumetrias':
@@ -1453,6 +1370,19 @@ class TicketDetails extends Component {
             case 'enviar_finanzas':
                 questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
                     () => this.patchPresupuesto('estatus', 'Utilidad'))
+                break;
+            case 'ticket-proceso':
+                const { formularios, ticket } = this.state
+                if(ticket.mantenimiento){
+                    formularios.ticket.equipo = ticket.mantenimiento.instalacion.id.toString()
+                    formularios.ticket.costo = ticket.mantenimiento.costo
+                    this.setState({...this.state, formularios})
+                }
+                break;
+            case 'historial':
+                const { modal } = this.state
+                modal.pdfs = true
+                this.setState({...this.state,modal})
                 break;
             default: break;
         }
@@ -1476,6 +1406,20 @@ class TicketDetails extends Component {
         formularios.presupuesto_generado.correos_reporte = []
         modal.reporte = false
         this.setState({...this.state, modal, formularios })
+    }
+    handleCloseModalReporte = () => {
+        const { formularios, modal } = this.state
+        formularios.presupuesto_generado.correos_reporte = []
+        modal.reporte = false
+        this.setState({...this.state, modal, formularios })
+    }
+    handleClosePdfs = () => {
+        const { modal } = this.state
+        modal.pdfs = false
+        this.setState({
+            ...this.state,
+            modal
+        })
     }
     tagInputChange = (nuevosCorreos) => {
         const { formularios } = this.state 
@@ -1508,7 +1452,7 @@ class TicketDetails extends Component {
         if(value)
             formularios.conceptos = this.clearFormConceptos()
         else
-            formularios.conceptos = [{area: '', subarea: '', descripcion: ''}]
+            formularios.conceptos = [{area: '', subarea: '', descripcion: '', notas: ''}]
         
         this.setState({formularios})
     }
@@ -1603,40 +1547,42 @@ class TicketDetails extends Component {
                 <TicketView
                     /* ---------------------------------- DATOS --------------------------------- */
                     data = { ticket } options = { options } formulario = { formularios } presupuesto = { presupuesto } datos = { data }
-                    solicitudes = { solicitudes } aux_estatus = { aux_estatus } aux_presupuestos={aux_presupuestos}
+                    solicitudes = { solicitudes } aux_estatus = { aux_estatus } aux_presupuestos={aux_presupuestos} title={title} modal={modal} key={key} 
+                    activeKeyNav={activeKeyNav} modalSol = { modal.solicitud } formeditado={formeditado}
                     /* -------------------------------- FUNCIONES ------------------------------- */
-                    openModalWithInput = { this.openModalWithInput } changeEstatus = { this.changeEstatus } addingFotos = { this.addFotosS3 } 
-                    onClick = { this.onClick } onChange = { this.onChangeSwal } setData = { this.setData } setOptions = { this.setOptions }
-                    onSubmit = { this.onSubmit } openModalConceptos={this.openModalConceptos} deleteFile = { this.deleteFile } 
-                    openModalSolicitud = {this.openModalSolicitud} handleCloseSolicitud={this.handleCloseSolicitud} title={title} modal={modal} formeditado={formeditado}
-                    onChangeSolicitud={this.onChangeSolicitud} clearFiles = { this.clearFiles } handleChange={this.handleChange} 
-                    openModalEditarSolicitud = { this.openModalEditarSolicitud} deleteSolicitud={this.deleteSolicitud}
-                    onSubmitSVenta={this.onSubmitSVenta} onChangeAdjunto={this.onChangeAdjunto} onChangeTicketProceso={this.onChangeTicketProceso} 
-                    onSubmitTicketProceso={this.onSubmitTicketProceso} handleChangeTicketProceso={this.handleChangeTicketProceso} 
-                    generateEmailTicketProceso={this.generateEmailTicketProceso} generarReporteFotografico={this.generarReporteFotografico} 
-                    onChangeMantenimientos={this.onChangeMantenimientos} onSubmitMantenimiento={this.onSubmitMantenimiento} 
-                    openModalDeleteMantenimiento={this.openModalDeleteMantenimiento} controlledNav={this.controlledNav} activeKeyNav={activeKeyNav}
-                    openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } checkButtonConceptos = { this.checkButtonConceptos } 
-                    controlledTab={this.controlledTab} key={key} onSubmitConcept = { this.onSubmitConcept } handleCloseConceptos={this.handleCloseConceptos} 
-                    openModalReporte={this.openModalReporte} onChangeSolicitudCompra = { this.onChangeSolicitudCompra } addRows = { this.addRows }
-                    submitSolicitudesCompras = { this.submitSolicitudesCompras } changeTypeSolicitudes = { this.changeTypeSolicitudes } 
-                    modalSol = { modal.solicitud }/>
+                    openModalWithInput = { this.openModalWithInput }  changeEstatus = { this.changeEstatus }  addingFotos = { this.addFotosS3 } 
+                    onClick = { this.onClick }  onChange = { this.onChangeSwal }  setData = { this.setData }  setOptions = { this.setOptions }
+                    onSubmit = { this.onSubmit }  openModalConceptos={this.openModalConceptos}  deleteFile = { this.deleteFile }  
+                    openModalSolicitud = {this.openModalSolicitud}  handleCloseSolicitud={this.handleCloseSolicitud}  onChangeSolicitud={this.onChangeSolicitud} 
+                    clearFiles = { this.clearFiles }  openModalEditarSolicitud = { this.openModalEditarSolicitud}  deleteSolicitud={this.deleteSolicitud}
+                    onSubmitSVenta={this.onSubmitSVenta}  onChangeTicketProceso={this.onChangeTicketProceso}  onSubmitTicketProceso={this.onSubmitTicketProceso} 
+                    handleChangeTicketProceso={this.handleChangeTicketProceso}  generateEmailTicketProceso={this.generateEmailTicketProceso}  
+                    controlledNav={this.controlledNav}  openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } 
+                    checkButtonConceptos = { this.checkButtonConceptos }  controlledTab={this.controlledTab} onSubmitConcept = { this.onSubmitConcept } 
+                    handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
+                    onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
+                    changeTypeSolicitudes = { this.changeTypeSolicitudes }  />
+                <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
+                    <HistorialPresupuestos presupuesto={presupuesto}/>
+                </CustomModal>
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
-                    <Modal.Body className = 'p-0'>
+                    <Modal.Body className = 'p-0 mt-3'>
                         <div className = 'row mx-0 justify-content-center'>
                             <div className="col-md-12 text-center py-2">
                                 <div>
                                     {
                                         ticket.reporte_url !== undefined ?
+                                            <u>
                                                 <a className="font-weight-bold text-hover-success text-primary" target= '_blank' rel="noreferrer" href = {ticket.reporte_url}>
-                                                REPORTE GENERADO
-                                            </a>
+                                                    DA CLIC AQUÍ PARA VER <i className="las la-hand-point-right text-primary icon-md ml-1"></i> EL REPORTE
+                                                </a>
+                                            </u>
                                         : <></>
                                     }
                                 </div>
                             </div>
-                            <div className="col-md-11 font-weight-light mt-5 text-justify">
+                            <div className="col-md-11 font-weight-light mt-4 text-justify">
                                 Si deseas enviar el reporte fotográfico agrega el o los correos del destinatario, de lo contario da clic en <span onClick = { this.handleCloseModalReporte } className="font-weight-bold">cancelar</span>.
                             </div>
                             <div className="col-md-11 mt-5">

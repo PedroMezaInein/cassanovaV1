@@ -280,7 +280,7 @@ class MaterialCliente extends Component {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.error(error, 'error')
             })
-        } catch (error) { console.log("error", error); }   
+        } catch (error) { console.error("error", error); }   
     }
 
     addAdjuntoInRender = async() => {
@@ -336,7 +336,7 @@ class MaterialCliente extends Component {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.error(error, 'error')
             })
-        } catch (error) { console.log("error", error); }  
+        } catch (error) { console.error("error", error); }  
     }
 
     /* ANCHOR ADD ADJUNTO RENDER */
@@ -872,7 +872,7 @@ class MaterialCliente extends Component {
                                 <div className='col-md-12'>
                                     <div> <Files /> </div>
                                     <div className='text-center font-weight-bolder font-size-h3 text-primary'>
-                                        Da click a un submenú de <br />servicios por categoría
+                                        Da clic a un submenú de <br />servicios por categoría
                                     </div>
                                 </div>
                             </div>

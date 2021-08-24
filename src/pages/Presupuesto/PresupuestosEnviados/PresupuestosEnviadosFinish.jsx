@@ -34,7 +34,8 @@ class PresupuestosEnviadosFinish extends Component {
                 id: '',
                 margen: '',
                 precio_unitario: '',
-                bg_margen:true
+                bg_margen:true,
+                vicio_oculto:false
             }],
             fecha_creacion: new Date(),
             fecha_aceptacion: '',
@@ -111,6 +112,9 @@ class PresupuestosEnviadosFinish extends Component {
                     if (precio_unitario !== 0) {
                         importe = (concepto.cantidad * precio_unitario).toFixed(2)
                     }
+                    if(concepto.vicio_oculto){
+                        importe = (0).toFixed(2)
+                    }
                     aux.push({
                         descripcion: concepto.descripcion,
                         costo: concepto.costo,
@@ -121,6 +125,7 @@ class PresupuestosEnviadosFinish extends Component {
                         active: concepto.active ? true : false,
                         bg_margen:concepto.margen > 0 ? false : true,
                         id: concepto.id,
+                        vicio_oculto:concepto.vicio_oculto ? true : false
                     })
                     return false
                 })
@@ -267,24 +272,46 @@ class PresupuestosEnviadosFinish extends Component {
             }
         }
         form.conceptos[key][name] = value
-        form.conceptos[key].precio_unitario = (form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100))).toFixed(2)
-        form.conceptos[key].importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad).toFixed(2)
+        form.conceptos[key].precio_unitario = this.getPrecioUnitario(key)
+        
+        if(form.conceptos[key].vicio_oculto){
+            form.conceptos[key].importe = (0).toFixed(2)
+        }else{
+            form.conceptos[key].importe = this.getImporte(key)
+        }
         this.setState({
             ...this.state,
             form
         })
     }
+    getPrecioUnitario(key){
+        const { form } = this.state
+        let precio_unitario =(form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100))).toFixed(2)
+        return precio_unitario
+    }
     
+    getImporte(key){
+        const { form } = this.state
+        let importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad).toFixed(2)
+        return importe
+    }
     checkButton = (key, e) => {
         const { name, checked } = e.target
-        const { form, presupuesto } = this.state
-        form.conceptos[key][name] = checked
-        if (!checked) {
-            let pre = presupuesto.conceptos[key]
-            this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
-            this.onChange(key, { target: { value: pre.costo } }, 'costo')
-            this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
-            this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
+        const { form, /*presupuesto*/ } = this.state
+        form.conceptos[key][name] = checked ? 1 : 0
+        // if (!checked) {
+        //     let pre = presupuesto.conceptos[key]
+        //     this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
+        //     this.onChange(key, { target: { value: pre.costo } }, 'costo')
+        //     this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
+        //     this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
+        // }
+        if(name === 'vicio_oculto'){
+            if(form.conceptos[key]['vicio_oculto']){
+                form.conceptos[key].importe = (0).toFixed(2)
+            }else{
+                form.conceptos[key].importe = this.getImporte(key)
+            }
         }
         this.setState({
             ...this.state,
@@ -396,12 +423,9 @@ class PresupuestosEnviadosFinish extends Component {
         /* -------------------------------------------------------------------------- */
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
-        console.log('Entre a guardar')
-        // console.log(form, 'form')
         await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/finish`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { presupuesto } = response.data
-                console.log(presupuesto, 'Respuesta de api guardar')
                 doneAlert('Márgenes actualizados actualizado con éxito', 
                     () => this.getOnePresupuestoAxios(presupuesto.id))
             }, (error) => { printResponseErrorAlert(error) }
@@ -465,33 +489,31 @@ class PresupuestosEnviadosFinish extends Component {
                     presupuesto={presupuesto} {...this.props} onChangeInput={this.onChangeInput}
                     // aceptarPresupuesto={this.aceptarPresupuesto}
                     sendPresupuesto={ (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(); } } aux_presupuestos={aux_presupuestos}/>
-                <Modal show = { modal } 
-                    //onHide = { () => this.setState({...this.state, modal:false})}
+                <Modal show = { modal }
                     onHide = { this.handleCloseModal }
                     centered
                     contentClassName = 'swal2-popup d-flex'
                     >
                     <Modal.Header className = 'border-0 justify-content-center'>
-                        <h2 className="swal2-title text-center">¡PRESUPUESTO GENERADO!</h2>
+                        <h2 className="swal2-title text-center">¡PDF GENERADO!</h2>
                     </Modal.Header>
                     <Modal.Body className = 'py-0'>
                         <div className = 'row mx-0 justify-content-center'>
                             <div className="col-md-12 text-center py-2">
-                                <div className="text-primary font-weight-bolder font-size-lg">
-                                    Documento generado:
-                                </div>
-                                <div>
+                                <div className="text-dark-75 font-weight-bolder font-size-lg">
                                     {
                                         modalObject.adjunto !== undefined ?
-                                            <a className="text-muted font-weight-bold text-hover-success" target= '_blank' rel="noreferrer" href = {modalObject.adjunto.url}>
-                                                {modalObject.adjunto.name}
-                                            </a>
+                                            <u> 
+                                                <a className="text-primary font-weight-bold text-hover-success" target= '_blank' rel="noreferrer" href = {modalObject.adjunto.url}>
+                                                    DA CLIC AQUÍ PARA VER <i className="las la-hand-point-right text-primary icon-md ml-1"></i> EL PRESUPUESTO
+                                                </a>
+                                            </u>
                                         : <></>
                                     }
                                 </div>
                             </div>
                             <div className="col-md-11 font-weight-light mt-5 text-justify">
-                                Si deseas enviar el presupuesto agrega el o los correos del {'destinatario'}, de lo contario da clic en <span className="font-weight-bold">cancelar</span>.
+                                Si deseas enviar el presupuesto agrega el o los correos de los destinatarios, de lo contario da clic en <span className="font-weight-bold">cancelar</span>.
                             </div>
                             <div className="col-md-11 mt-5">
                                 <div>
@@ -505,7 +527,7 @@ class PresupuestosEnviadosFinish extends Component {
                         <button type="button" className="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex"
                             onClick = { this.handleCloseModal }>CANCELAR</button>
                         <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex"
-                            onClick = { this.sendMail } >SI, ENVIAR</button>
+                            onClick = { this.sendMail } >ENVIAR</button>
                     </Modal.Footer>
                 </Modal>
             </Layout>

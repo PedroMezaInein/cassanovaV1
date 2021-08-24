@@ -1,78 +1,49 @@
 /*  ==============  TIMELINE TICKETS  ==============  */
 
-// COLORES DE TIMELINE
-$bg-espera-tickets:#EFEBE9;
-$color-espera-tickets:#5D4037F5;
-
-$bg-revision-tickets:#ECEFF1;
-$color-revision-tickets:#5F6A6AF5;
-
-$bg-aprobacion-tickets:#FFF4DE;
-$color-aprobacion-tickets:#FFA800F5;
-
-$bg-proceso-tickets:#EEE5FF;
-$color-proceso-tickets:#8950FCF5;
-
-$bg-terminado-tickets:#E1F0FF;
-$color-terminado-tickets:#3699FFF5;
-
-$bg-aceptado-tickets:#E8F5E9;
-$color-aceptado-tickets:#388E3CF5;
-
-$bg-rechazado-tickets:#FFE2E5;
-$color-rechazado-tickets:#F64E60F5;
-
 // COLOR DE TEXTOS
 .header-ticket-espera{
-    color: $color-espera-tickets;
-    background: $bg-espera-tickets;
+    color: #736657;
+    background: #FFF6EB;
 }
 .header-ticket-revision{
-    color: $color-revision-tickets;
-    background: $bg-revision-tickets;
+    color: #a08a69;
+    background: #FFEBCD;
 }
 .header-ticket-aprobacion{
-    color: $color-aprobacion-tickets;
-    background: $bg-aprobacion-tickets;
+    color: #3da8b6;
+    background: #DFF5FF;
 }
 .header-ticket-proceso{
-    color: $color-proceso-tickets;
-    background: $bg-proceso-tickets;
+    color: #21c793;
+    background: #E4FFF7;
 }
 .header-ticket-terminado{
-    color: $color-terminado-tickets;
-    background: $bg-terminado-tickets;
+    color: #348757;
+    background: #c9fde0;
 }
-.header-ticket-aceptado{
-    color: $color-aceptado-tickets;
-    background: $bg-aceptado-tickets;
-}
-.header-ticket-rechazado{
-    color: $color-rechazado-tickets;
-    background: $bg-rechazado-tickets;
+.header-ticket-aceptado, .header-ticket-rechazado{
+    color: #015c86;
+    background: #DFF5FF;
 }
 
 // DOT HOVER
 .status.dot-espera-ticket:hover:before { 
-    box-shadow: 0 0 6px 0 $color-espera-tickets;
+    box-shadow: 0 0 6px 0 #736657;
 }
 .status.dot-revision-ticket:hover:before {
-    box-shadow: 0 0 6px 0 $color-revision-tickets;
+    box-shadow: 0 0 6px 0 #a08a69;
 }
 .status.dot-aprobacion-ticket:hover:before {
-    box-shadow: 0 0 6px 0 $color-aprobacion-tickets;
+    box-shadow: 0 0 6px 0 #3da8b6;
 }
 .status.dot-proceso-ticket:hover:before {
-    box-shadow: 0 0 6px 0 $color-proceso-tickets;
+    box-shadow: 0 0 6px 0 #21c793;
 }
 .status.dot-terminado-ticket:hover:before {
-    box-shadow: 0 0 6px 0 $color-terminado-tickets;
+    box-shadow: 0 0 6px 0 #348757;
 }
-.status.dot-aceptado-ticket:hover:before {
-    box-shadow: 0 0 6px 0 $color-aceptado-tickets;
-}
-.status.dot-rechazado-ticket:hover:before {
-    box-shadow: 0 0 6px 0 $color-rechazado-tickets;
+.status.dot-rechazado-ticket:hover:before, .status.dot-aceptado-ticket:hover:before  {
+    box-shadow: 0 0 6px 0 #015c86;
 }
 
 // TIMELINE ESTATUS
@@ -93,7 +64,7 @@ $color-rechazado-tickets:#F64E60F5;
     padding: 10px 20px;
     display: flex;
     justify-content: center;
-    border-top: 1px solid #D6DCE0;
+    border-top: 2px solid #D6DCE0;
     position: relative;
     transition: all 200ms ease-in;
     white-space: nowrap;
@@ -113,7 +84,7 @@ $color-rechazado-tickets:#F64E60F5;
     height: 20px;
     background-color: white;
     border-radius: 25px;
-    border: 1px solid #ddd;
+    border: 2px solid #ddd;
     position: absolute;
     top: -12px;
     left: 42%;
@@ -129,64 +100,78 @@ $color-rechazado-tickets:#F64E60F5;
 
 /*  -----  ESTATUS: EN ESPERA  -----  */
 .li.complete_espera .status {
-    border-top: 1px dashed $color-espera-tickets;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #e4cbad, #a08a69)
 }
 .li.complete_espera .status:before {
-    background-color: $color-espera-tickets;
+    background-color: #e4cbad;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: EN REVISIÓN  -----  */
 .li.complete_revision .status {
-    border-top: 1px dashed $color-revision-tickets;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #a08a69, #015c86);
 }
 .li.complete_revision .status:before {
-    background-color: $color-revision-tickets;
+    background-color: #a08a69;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: ACEPTADO  -----  */
 .li.complete_aceptado .status {
-    border-top: 1px dashed $color-aceptado-tickets;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #015c86, #3da8b6);
 }
 .li.complete_aceptado .status:before {
-    background-color: $color-aceptado-tickets;
+    background-color: #015c86;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: RECHAZADO  -----  */
 .li.complete_rechazado .status {
-    border-top: 1px dashed $color-rechazado-tickets;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #015c86, #3da8b6);
 }
 .li.complete_rechazado .status:before {
-    background-color: $color-rechazado-tickets;
+    background-color:  #015c86;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: PENDIENTE  -----  */
 .li.complete_pendiente .status {
-    border-top: 1px dashed $color-aprobacion-tickets;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #3da8b6, #21c793);
 }
 .li.complete_pendiente .status:before {
-    background-color: $color-aprobacion-tickets;
+    background-color: #3da8b6;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: EN PROCESO  -----  */
 .li.complete_proceso .status {
-    border-top: 1px dashed $color-proceso-tickets;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #21c793, #348757);
 }
 .li.complete_proceso .status:before {
-    background-color: $color-proceso-tickets;
+    background-color: #21c793;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: TERMINADO  -----  */
 .li.complete_terminado .status {
-    border-top: 1px dashed $color-terminado-tickets;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #348757, #3d5214);
 }
 .li.complete_terminado .status:before {
-    background-color: $color-terminado-tickets;
+    background-color: #348757;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -233,73 +218,61 @@ $color-rechazado-presupuesto:#F64E60;
 
 // COLOR DE TEXTOS
 .header-presupuesto-conceptos{
-    color: $color-conceptos-presupuesto;
-    background: $bg-conceptos-presupuesto;
+    color: #ff8c2c;
+    background: #ffe7d4;
 }
 .header-presupuesto-volumetrias{
-    color: $color-volumetrias-presupuesto;
-    background: $bg-volumetrias-presupuesto;
+    color: #f8bf3a;
+    background: #ffefc9;
 }
 .header-presupuesto-costos{
-    color: $color-costos-presupuesto;
-    background: $bg-costos-presupuesto;
+    color: #B9D13D;
+    background: #f5fdcc;
 }
 .header-presupuesto-revision{
-    color: $color-revision-presupuesto;
-    background: $bg-revision-presupuesto;
+    color:#52d390;
+    background: #cbfde4;
 }
 .header-presupuesto-utilidad{
-    color: $color-utilidad-presupuesto;
-    background: $bg-utilidad-presupuesto;
+    color: #27b8c9;
+    background: #cdf4fa;
 }
 .header-presupuesto-espera{
-    color: $color-espera-presupuesto;
-    background: $bg-espera-presupuesto;
+    color: #0b6ca3;
+    background: #cfeafa;
 }
-.header-presupuesto-aceptado{
-    color: $color-aceptado-presupuesto;
-    background: $bg-aceptado-presupuesto;
-}
-
-.header-presupuesto-rechazado{
-    color: $color-rechazado-presupuesto;
-    background: $bg-rechazado-presupuesto;
+.header-presupuesto-aceptado, .header-presupuesto-rechazado, .bg-aceptado-rechazado{
+    color: #764ca2;
+    background: #e8d7fa;
 }
 .color-rechazado-presupuesto{
-    color:$color-rechazado-presupuesto;
+    color:#764ca2;
 }
 .color-aceptado-presupuesto{
-    color: $color-aceptado-presupuesto;
+    color:#764ca2;
 }
 
 // DOT HOVER
 .status.dot-conceptos-presupuesto:hover:before { 
-    box-shadow: 0 0 6px 0 $color-conceptos-presupuesto;
+    box-shadow: 0 0 6px 0 #ff8c2c;
 }
 .status.dot-volumetrias-presupuesto:hover:before {
-    box-shadow: 0 0 6px 0 $color-volumetrias-presupuesto;
+    box-shadow: 0 0 6px 0 #f8bf3a;
 }
 .status.dot-costos-presupuesto:hover:before {
-    box-shadow: 0 0 6px 0 $color-costos-presupuesto;
+    box-shadow: 0 0 6px 0 #B9D13D;
 }
 .status.dot-revision-presupuesto:hover:before {
-    box-shadow: 0 0 6px 0 $color-revision-presupuesto;
+    box-shadow: 0 0 6px 0 #52d390;
 }
 .status.dot-utilidad-presupuesto:hover:before {
-    box-shadow: 0 0 6px 0 $color-utilidad-presupuesto;
+    box-shadow: 0 0 6px 0 #27b8c9;
 }
 .status.dot-espera-presupuesto:hover:before {
-    box-shadow: 0 0 6px 0 $color-espera-presupuesto;
+    box-shadow: 0 0 6px 0 #0b6ca3;
 }
-.status.dot-aceptado-presupuesto:hover:before {
-    box-shadow: 0 0 6px 0 $color-aceptado-presupuesto;
-}
-.status.dot-rechazado-presupuesto:hover:before {
-    box-shadow: 0 0 6px 0 $color-rechazado-presupuesto;
-}
-.status.dot-aceptado-rechazado-presupuesto:hover:before {
-    box-shadow: -2px 0px 5px 0px #4DB6AC, 2px 0px 5px 0px  #F64E60;
-    
+.status.dot-aceptado-presupuesto:hover:before, .status.dot-rechazado-presupuesto:hover:before, .status.dot-aceptado-rechazado-presupuesto:hover:before  {
+    box-shadow: 0 0 6px 0 #764ca2;
 }
 
 // COMPLETE ESTATUS
@@ -307,89 +280,82 @@ $color-rechazado-presupuesto:#F64E60;
 
 /*  -----  ESTATUS: CONCEPTOS  -----  */
 .li.complete-conceptos .status {
-    border-top: 1px dashed $color-conceptos-presupuesto;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #ff831e, #fdbc3e);
 }
 .li.complete-conceptos .status:before {
-    background-color: $color-conceptos-presupuesto;
+    background-color: #ff8c2c;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: VOLUMETRÍAS  -----  */
 .li.complete-volumetrias .status {
-    border-top: 1px dashed $color-volumetrias-presupuesto;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #fdbc3e, #b9d13d);
 }
 .li.complete-volumetrias .status:before {
-    background-color: $color-volumetrias-presupuesto;
+    background-color: #f8bf3a;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: COSTOS  -----  */
 .li.complete-costos .status {
-    border-top: 1px dashed $color-costos-presupuesto;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #bad23f, #52d390)
 }
 .li.complete-costos .status:before {
-    background-color: $color-costos-presupuesto;
+    background-color: #B9D13D;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: EN REVISIÓN  -----  */
 .li.complete-revision .status {
-    border-top: 1px dashed $color-revision-presupuesto;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #52d390, #27b8c9);
 }
 .li.complete-revision .status:before {
-    background-color: $color-revision-presupuesto;
+    background-color: #52d390;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: UTILIDAD  -----  */
 .li.complete-utilidad .status {
-    border-top: 1px dashed $color-utilidad-presupuesto;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #27b8c9, #0b6ca3);
 }
 .li.complete-utilidad .status:before {
-    background-color: $color-utilidad-presupuesto;
+    background-color: #27b8c9;
     border: none;
     transition: all 200ms ease-in;
 }
 /*  -----  ESTATUS: EN ESPERA  -----  */
 .li.complete-espera .status {
-    border-top: 1px dashed $color-espera-presupuesto;
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #0b6ca3, #764ca2);
 }
 .li.complete-espera .status:before {
-    background-color: $color-espera-presupuesto;
+    background-color: #0b6ca3;
     border: none;
     transition: all 200ms ease-in;
 }
-/*  -----  ESTATUS: ACEPTADO  -----  */
-.li.complete-aceptado .status {
-    border-top: 1px dashed $color-aceptado-presupuesto;
+/*  -----  ESTATUS: ACEPTADO Y RECHAZADO-----  */
+.li.complete-aceptado .status, .li.complete-rechazado .status, .li.complete-aceptado-rechazado .status {
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #764ca2, #653f8c);
 }
-.li.complete-aceptado .status:before {
-    background-color: $color-aceptado-presupuesto;
+.li.complete-aceptado .status:before, .li.complete-rechazado .status:before, .li.complete-aceptado-rechazado .status:before {
+    background-color: #764ca2;
     border: none;
     transition: all 200ms ease-in;
 }
-/*  -----  ESTATUS: RECHAZADO  -----  */
-.li.complete-rechazado .status {
-    border-top: 1px dashed $color-rechazado-presupuesto;
-}
-.li.complete-rechazado .status:before {
-    background-color: $color-rechazado-presupuesto;
-    border: none;
-    transition: all 200ms ease-in;
-}
-/*  -----  ESTATUS: ACEPTADO-RECHAZADO  -----  */
-.li.complete-aceptado-rechazado .status {
-    border-top: none;
-    background-repeat: repeat-x;
-    background-image: linear-gradient( 90deg , transparent, transparent 50%, #fff 50%, #fff 100%), linear-gradient( 90deg , #4eb7ad, #4db6ac, #99d5cf, #f64e60, #f64e60);
-    background-size: 6px 1px, 100% 1px;
-    padding-bottom: 11px;
-}
-.li.complete-aceptado-rechazado .status:before {
-    background-image: linear-gradient(90deg, #4DB6AC 50%, #F64E60 50%);
-    border: none;
-    transition: all 200ms ease-in;
-}
+
 .li.complete-conceptos .status h4,
 .li.complete-volumetrias .status h4,
 .li.complete-costos .status h4,
@@ -402,6 +368,63 @@ $color-rechazado-presupuesto:#F64E60;
     font-weight: 500;
 }
 
-.bg-aceptado-rechazado{
-    background-image: linear-gradient(to right, #E0F2F1, #FFEBEE);
+.ribbon-estatus {
+    text-align: center;
+    padding: 5px 0;
+    width: fit-content;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+    font-size:1rem;
+}
+
+.ribbon-tickets{
+    background-image: linear-gradient(to right, #015c86, #006a88, #00767f, #00806d, #348757);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ribbon-presupuesto{
+    background-image: linear-gradient(to right, #27b8c9, #00a3d0, #008acf, #4e6ec1, #764ca2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+
+
+// TIMELINE DASHED
+
+.timeline .timeline-item-dashed {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: flex-start
+}
+
+.timeline .timeline-line-dashed {
+    display: block;
+    content: " ";
+    justify-content: center;
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translate(50%);
+    border-left-width: 1px;
+    border-left-style: dashed;
+    border-left-color: #e4e6ef;
+}
+
+.timeline .timeline-icon-dashed {
+    z-index: 1;
+    flex-shrink: 0;
+    margin-right: 1rem
+}
+
+.timeline .timeline-content-dashed {
+    width: 100%;
+    overflow: auto;
+    margin-bottom: 1.5rem
 }

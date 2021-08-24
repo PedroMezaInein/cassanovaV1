@@ -176,7 +176,7 @@ export default class ComprasCard extends Component {
                                                 </div>
                                                 <div className="row pb-1">
                                                     <label className="col-3 font-weight-bolder text-primary align-self-center">DESCRIPCIÓN:</label>
-                                                    <div className="col-9">
+                                                    <div className="col-9 white-space-pre-line">
                                                         {
                                                             compra.descripcion ?
                                                                 <span>{compra.descripcion}</span>

@@ -267,61 +267,37 @@ class ComprasForm extends Component {
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
-                                <div className="form-group row form-group-marginless">
+                                <div className="form-group form-group-marginless row mx-0">
                                     <div className={form.area.length ?'col-md-4':'col-md-6'}>
-                                        <Calendar 
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="FECHA" 
-                                            name="fecha" 
-                                            value={form.fecha}
-                                            patterns={DATE}
-                                        />
+                                        <Calendar formeditado = { formeditado } onChangeCalendar = { this.handleChangeDate } placeholder = "FECHA" 
+                                            name = "fecha" value = { form.fecha } patterns = { DATE } />
                                     </div>
                                     <div className={form.area.length ?'col-md-4':'col-md-6'}>
-                                        <SelectSearch 
-                                            formeditado={formeditado}
-                                            options={options.areas} 
-                                            placeholder="SELECCIONA EL ÁREA"
-                                            name="areas" 
-                                            value={form.area} 
-                                            onChange={this.updateArea}
-                                            iconclass={"far fa-window-maximize"}
-                                            messageinc="Incorrecto. Selecciona el área"
-                                        />
+                                        <SelectSearch formeditado = { formeditado } options = { options.areas } placeholder = "SELECCIONA EL ÁREA"
+                                            name = "areas" value = { form.area } onChange = { this.updateArea } iconclass = "far fa-window-maximize"
+                                            messageinc = "Incorrecto. Selecciona el área" />
                                     </div>
                                     {
                                         form.area ?
                                             <div className="col-md-4">
-                                                <SelectSearch 
-                                                    formeditado={formeditado}
-                                                    options={options.subareas} 
-                                                    placeholder="SELECCIONA EL SUBÁREA"
-                                                    name="subarea" 
-                                                    value={form.subarea} 
-                                                    onChange={this.updateSubarea}
-                                                    iconclass={"far fa-window-restore"} 
-                                                    messageinc="Incorrecto. Selecciona el subárea"
-                                                />
+                                                <SelectSearch formeditado = { formeditado } options = { options.subareas } placeholder = "SELECCIONA EL SUBÁREA"
+                                                    name = "subarea" value = { form.subarea } onChange = { this.updateSubarea } 
+                                                    iconclass = "far fa-window-restore" messageinc = "Incorrecto. Selecciona el subárea" />
                                             </div>
                                         : ''
                                     }
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <Input 
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            as="textarea" 
-                                            placeholder="DESCRIPCIÓN" 
-                                            rows="3" value={form.descripcion}
-                                            name="descripcion" 
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa una descripción."
-                                            customclass="px-2"
-                                        />
+                                    <div className="col-12">
+                                        <div className="separator separator-dashed mt-6 mb-2" />
                                     </div>
+                                    <div className="col-md-12">
+                                        <Input requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" rows = "3" 
+                                            value = { form.descripcion } name = "descripcion" onChange = { onChange } customclass = "px-2 text-justify"
+                                            messageinc="Incorrecto. Ingresa una descripción." />
+                                    </div>
+                                    {/* <div className="col-md-6">
+                                        <Input requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "NOTAS" rows = "3" 
+                                            value = { form.notas } name = "notas" onChange = { onChange } customclass = "px-2"/>
+                                    </div> */}
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">

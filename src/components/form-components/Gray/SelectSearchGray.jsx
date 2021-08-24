@@ -8,7 +8,7 @@ class SelectSearchGray extends Component {
     }
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle, customclass, messageinc, customdiv, withicon, iconvalid, iconclass } = this.props
+        const { customstyle, customclass, messageinc, customdiv, withicon, iconvalid, iconclass, disabled } = this.props
         let validado = false;
         if (requirevalidation) {
             if (onChange === null || onChange.value === null) {
@@ -36,6 +36,7 @@ class SelectSearchGray extends Component {
                             className={`${customclass} form-control text-dark-50 font-weight-bold text-uppercase ${validado ? 'is-valid sin_icono' : `is-invalid ${iconvalid?'':'sin_icono'}`}`}
                             {...valueProps}
                             style={customstyle}
+                            disabled={disabled}
                         />
                     </div>
                     {

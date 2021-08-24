@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, SOLICITUD_COMPRA_COLUMNS } from '../../../constants'
-import { setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setOptions, setSelectOptions, setTextTable, setCustomeDescripcionReactDom } from '../../../functions/setters'
+import { setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setOptions, setSelectOptions, setCustomeDescripcionReactDom } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert, doneAlert, deleteAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete, ItemSlider} from '../../../components/singles'
@@ -131,6 +131,7 @@ class SolicitudCompra extends Component {
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '', this.doubleClick, solicitud, 'tipoPago', 'text-center'),
                     descripcion: setCustomeDescripcionReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
+                    notas: setCustomeDescripcionReactDom(solicitud.notas !== null ? solicitud.notas :'', this.doubleClick, solicitud, 'notas', 'text-justify'),
                     area: solicitud.subarea ? solicitud.subarea.area ? setTextTableReactDom(solicitud.subarea.area.nombre, this.doubleClick, solicitud, 'area', 'text-center') : '' : '',
                     subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
                     fecha: setDateTableReactDom(solicitud.created_at, this.doubleClick, solicitud, 'fecha', 'text-center'),
@@ -144,14 +145,23 @@ class SolicitudCompra extends Component {
 
     labelIcon(solicitud){
         let text = solicitud.hasTicket ? 'ticket' : 'obra'
-        return(
-            <div className='d-flex align-items-center justify-content-center' >
-                <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} />
+        return (
+            <div className="white-space-nowrap">
                 {
-                    solicitud.adjunto?
-                        <a href={solicitud.adjunto? solicitud.adjunto.url:''} target='_blank' rel="noreferrer" className="text-dark-75 text-hover-success font-weight-bolder"><u>{setTextTable(text)}</u></a>
-                    :
-                    setTextTable(text)
+                    solicitud.adjunto ?
+                        <a href={solicitud.adjunto ? solicitud.adjunto.url : ''} target='_blank' rel="noreferrer" className="d-flex align-items-center justify-content-center text-dark-75">
+                            <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} />
+                            <u>
+                                <span className={`${text === 'ticket' ? "text-hover-ticket" : "text-hover-obra"} font-size-11px font-weight-bolder`}>
+                                    {`${text === 'ticket' ? 'Ticket - '+solicitud.ticketIdentificador : 'Obra'}`}
+                                </span>
+                            </u>
+                        </a>
+                        :
+                        <div className="d-flex align-items-center justify-content-center text-dark-75">
+                            <i style={{ color: `${text === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${text === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`} />
+                            <span className="font-size-11px">{`${text === 'ticket' ? 'Ticket - '+solicitud.ticketIdentificador : 'Obra'}`}</span>
+                        </div>
                 }
             </div>
         )
@@ -197,7 +207,7 @@ class SolicitudCompra extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'descripcion' &&
+                    (tipo === 'descripcion' || tipo === 'notas') &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }  />

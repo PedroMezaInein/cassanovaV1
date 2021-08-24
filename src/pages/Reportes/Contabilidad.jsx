@@ -457,7 +457,7 @@ class Contabilidad extends Component {
                     })
                     zip.generateAsync({type:"blob"})
                         .then((blob) => {saveAs(blob, 'contabilidad.zip'); Swal.close()})
-                        .catch(e => console.log(e));
+                        .catch(e => console.error(e));
                     
                 }
                 
@@ -467,7 +467,7 @@ class Contabilidad extends Component {
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error ')
+            console.error(error, 'error ')
         })
     }
     onChangeRange = range => {

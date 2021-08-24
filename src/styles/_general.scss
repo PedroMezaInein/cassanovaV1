@@ -2318,6 +2318,10 @@ span.font-weight-bolder.text-hover-error:hover {
 .white-space-pre-wrap {
     white-space: pre-wrap !important;
 }
+.white-space-pre-line{
+    white-space: pre-line !important;
+    
+}
 
 .min-width-180px {
     min-width: 180px;
@@ -3093,6 +3097,7 @@ table#calendario-proyectos tr:last-child td {
     .select-search.has-focus{
         .select-search__option{
             font-size: 12px!important;
+            text-align: center;
         }
     }
 }
@@ -3112,6 +3117,9 @@ table#calendario-proyectos tr:last-child td {
 }
 .box-shadow-36{
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+.box-shadow-53{
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
 
 .notify-p-stiky{
@@ -3195,4 +3203,31 @@ table#calendario-proyectos tr:last-child td {
     .tooltip-inner {
         padding: 0;
     }
+}
+.disable-presupuesto:disabled{
+    background-color: #fee9ec !important;
+    border-color: #fee9ec !important;
+    opacity: 1 !important;
+    color: #464e5f !important;
+    font-weight: 400 !important;
+}
+.vicio_oculto-presupuesto{
+    background-color: #e7f1e8 !important;
+    border-color: #e7f1e8 !important;
+    opacity: 1 !important;
+    color: #464e5f !important;
+    font-weight: 400 !important;
+}
+.text-hover-ticket:hover{
+    color:#9E9D24;
+    text-decoration: underline;
+    text-decoration-color: #9E9D24;
+}
+.text-hover-obra:hover{
+    color:#EF6C00;
+    text-decoration: underline;
+    text-decoration-color: #EF6C00;
+}
+.border-hover-light:hover {
+    border-color: #e4e6ef !important
 }
