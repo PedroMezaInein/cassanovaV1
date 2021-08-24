@@ -217,11 +217,9 @@ class App extends Component{
                 const { data } = response
                 login(data)
             }, (error) => {
-                //console.log(`ERROR`, error.response)
                 const { status } = error.response
                 if(status === 401){
                     if(token){
-                        console.log(`TOKEN`)
                     }
                     else{ history.push('/login') }
                 }else {
@@ -251,9 +249,7 @@ class App extends Component{
     }
 
     async logoutUser(){
-        console.log('LOGOUT')
         const { logout, authUser : {access_token }, history } = this.props
-        
         await axios.get(`${URL_DEV}user/logout`, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 logout();

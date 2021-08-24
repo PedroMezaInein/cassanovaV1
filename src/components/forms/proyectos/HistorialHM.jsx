@@ -110,7 +110,6 @@ class HistorialHM extends Component {
                     <div className="timeline timeline-historial mt-3 d-inline-block">
                         {
                             datos.map((dato) => {
-                                console.log(`Dato`, dato)
                                 return(
                                     <div className="timeline-item align-items-start">
                                         <div className="timeline-label font-weight-bolder text-dark-75 font-size-lg"> { setMinFechaTexto(dato.fecha) } </div>

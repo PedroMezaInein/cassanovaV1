@@ -160,6 +160,25 @@ class TicketTable extends Component {
             formeditado: 1
         });
     }
+
+    async exportTicketsAxios(){
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/exportar/calidad/calidad`, { responseType:'blob', headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'tickets.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Tickets exportados con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     render() {
         return (
             <Layout active={'calidad'}  {...this.props}>
@@ -182,6 +201,8 @@ class TicketTable extends Component {
                     accessToken={this.props.authUser.access_token}
                     setter={this.setCalidad}
                     urlRender={URL_DEV + 'calidad'}
+                    exportar_boton = { true }
+                    onClickExport = { () => this.exportTicketsAxios() }
                 />
             </Layout>
         )

@@ -404,7 +404,6 @@ class Compras extends Component {
         let aux = []
         let _aux = []
         compras.map((compra) => {
-            console.log(`Compra: ${compra.id}`, compra)
             _aux = []
             if (compra.presupuestos) {
                 compra.presupuestos.map((presupuesto) => {
