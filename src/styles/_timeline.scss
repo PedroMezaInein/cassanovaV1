@@ -388,3 +388,43 @@ $color-rechazado-presupuesto:#F64E60;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+
+
+
+// TIMELINE DASHED
+
+.timeline .timeline-item-dashed {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: flex-start
+}
+
+.timeline .timeline-line-dashed {
+    display: block;
+    content: " ";
+    justify-content: center;
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translate(50%);
+    border-left-width: 1px;
+    border-left-style: dashed;
+    border-left-color: #e4e6ef;
+}
+
+.timeline .timeline-icon-dashed {
+    z-index: 1;
+    flex-shrink: 0;
+    margin-right: 1rem
+}
+
+.timeline .timeline-content-dashed {
+    width: 100%;
+    overflow: auto;
+    margin-bottom: 1.5rem
+}

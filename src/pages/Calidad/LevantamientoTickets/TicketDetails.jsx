@@ -5,7 +5,7 @@ import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { TicketView } from '../../../components/forms'
+import { TicketView, HistorialPresupuestos } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
 import { setSingleHeader, setFormHeader, toAbsoluteUrl } from '../../../functions/routers'
 import { SelectSearchGray, CalendarDaySwal } from '../../../components/form-components'
@@ -790,7 +790,7 @@ class TicketDetails extends Component {
                                 <div id='customInputRechazado'>
                                     <Form.Control
                                         placeholder='MOTIVO DE RECHAZO'
-                                        className="form-control form-control-solid p-3 text-uppercase"
+                                        className="form-control form-control-solid p-3 text-uppercase text-justify"
                                         id='motivo_rechazo'
                                         as="textarea"
                                         rows="3"
@@ -1413,6 +1413,14 @@ class TicketDetails extends Component {
         modal.reporte = false
         this.setState({...this.state, modal, formularios })
     }
+    handleClosePdfs = () => {
+        const { modal } = this.state
+        modal.pdfs = false
+        this.setState({
+            ...this.state,
+            modal
+        })
+    }
     tagInputChange = (nuevosCorreos) => {
         const { formularios } = this.state 
         let unico = {};
@@ -1555,44 +1563,7 @@ class TicketDetails extends Component {
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  />
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
-                    <div className="table-responsive mt-4">
-                        <table className="table  table-head-bg table-borderless table-vertical-center">
-                            <thead>
-                                <tr className="text-left">
-                                    <th className="pl-7">
-                                        <span className="text-center text-muted font-size-sm">Adjunto</span>
-                                    </th>
-                                    <th className="text-center text-muted font-size-sm">IDENTIFICADOR</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    presupuesto ?
-                                        presupuesto.pdfs.map((pdf, index) => {
-                                            console.log(`PDF: `, pdf)
-                                            return(
-                                                <tr key = { index } className = { `${pdf.pivot.motivo_cancelacion !== null ? 'bg-danger' : '' }` }>
-                                                    <td>
-                                                        <div className="d-flex align-items-center">
-                                                            <div>
-                                                                <a rel="noopener noreferrer" target="_blank" href={pdf.url} 
-                                                                    className="text-dark-primary font-weight-bolder text-hover-success mb-1 font-size-lg">
-                                                                    {pdf.name}
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{pdf.pivot.identificador}</span>
-                                                    </td>    
-                                                </tr>
-                                            )
-                                        })
-                                    : <></>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
