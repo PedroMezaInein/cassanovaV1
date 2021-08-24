@@ -621,7 +621,7 @@ class TicketView extends Component {
                                                             this.calcularCantidades() ?
                                                                 <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2" 
                                                                     onClick = { (e) => { e.preventDefault(); onClick('enviar_finanzas'); } } >
-                                                                    ENVIAR A FINANZAS
+                                                                    GUARDAR Y ENVIAR A FINANZAS
                                                                 </button>    
                                                             : <></>
                                                         : <></>
