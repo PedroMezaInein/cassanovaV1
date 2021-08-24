@@ -81,7 +81,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
                                                 <div className="text-dark mb-1 font-size-lg">{presupuesto.identificador}</div>
-                                                <span className="text-muted font-weight-light">IDENTIFICADOR</span>
+                                                <span className="text-muted font-weight-light">NO. DEL PRESUPUESTO</span>
                                             </div>
                                         </div>
                                     </div>
