@@ -1569,7 +1569,6 @@ class TicketDetails extends Component {
                                 {
                                     presupuesto ?
                                         presupuesto.pdfs.map((pdf, index) => {
-                                            console.log(`PDF: `, pdf)
                                             return(
                                                 <tr key = { index } className = { `${pdf.pivot.motivo_cancelacion !== null ? 'bg-danger' : '' }` }>
                                                     <td>

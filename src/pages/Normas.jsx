@@ -54,7 +54,6 @@ class Normas extends Component {
         if (!result.destination) {
             return;
         }
-        console.log(result, 'result')
         const items = this.reorder( 
             this.state.items,
             result.source.index,
@@ -370,7 +369,6 @@ class Normas extends Component {
                                 >
                                     {this.state.items.map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id} index={index}>
-                                            {console.log(item, 'item')}
                                             {(provided, snapshot) => (
                                             <tr
                                             ref={provided.innerRef}

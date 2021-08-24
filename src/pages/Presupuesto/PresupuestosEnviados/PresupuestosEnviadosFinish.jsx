@@ -423,12 +423,9 @@ class PresupuestosEnviadosFinish extends Component {
         /* -------------------------------------------------------------------------- */
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
-        console.log('Entre a guardar')
-        // console.log(form, 'form')
         await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/finish`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { presupuesto } = response.data
-                console.log(presupuesto, 'Respuesta de api guardar')
                 doneAlert('Márgenes actualizados actualizado con éxito', 
                     () => this.getOnePresupuestoAxios(presupuesto.id))
             }, (error) => { printResponseErrorAlert(error) }

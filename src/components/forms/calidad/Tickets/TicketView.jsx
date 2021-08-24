@@ -47,7 +47,7 @@ class TicketView extends Component {
                         compressedFile.path = compressedFile.name
                         resolve(compressedFile)
                     }).catch(function (error) {
-                        console.log(reject(error));
+                        console.error(reject(error));
                     });
                 })
             })
