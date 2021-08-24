@@ -40,10 +40,7 @@ class ProcesoTicketForm extends Component {
     }
 
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props 
-        console.log(form, 'form')
-        console.log(options,'options')
-        console.log(ticket,'ticket')
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props
         return (
             <>
                 {
