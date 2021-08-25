@@ -218,7 +218,7 @@ class Presupuesto extends Component {
                         proyecto: renderToString(setTextTableCenter(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
                         area: renderToString(setTextTableCenter(presupuesto.area ? presupuesto.area.nombre : '')),
                         fecha: renderToString(setDateTable(presupuesto.fecha)),
-                        tiempo_ejecucion: renderToString(setTextTableCenter(presupuesto.tiempo_ejecucion)),
+                        tiempo_ejecucion: renderToString(setTextTableCenter(`${presupuesto.tiempo_ejecucion} días`)),
                         id: presupuesto.id,
                         objeto: presupuesto
                     }
