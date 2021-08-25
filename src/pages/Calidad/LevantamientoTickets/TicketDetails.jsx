@@ -1360,7 +1360,7 @@ class TicketDetails extends Component {
             case 'volumetrias':
                 this.onClickVolumetrias()
                 break;
-            case 'solicitud-venta':
+            case 'facturacion':
             case 'solicitud-compra':
                 this.getSolicitudesAxios(type);
                 break;
