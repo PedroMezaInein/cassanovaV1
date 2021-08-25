@@ -346,6 +346,29 @@ class TicketView extends Component {
             </OverlayTrigger>
         )
     }
+    setNavTabs = () => {
+        const { data } = this.props
+        if( data ){
+            if(data.estatus_ticket){
+                switch(data.estatus_ticket.estatus){
+                    case 'En espera':
+                    case 'En revisión':
+                    case 'Rechazado':
+                        return 'adjuntos'
+                    case 'Aceptado':
+                    case 'Aprobación pendiente':
+                        return 'presupuesto'
+                    case 'En proceso':
+                    case 'Terminado':
+                    case 'Pendiente de pago':
+                        return 'solicitud-compra'
+                    default:
+                        break;
+                }
+            }
+        }
+        return ''
+    }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav, formularioGuardado } = this.props
@@ -363,7 +386,7 @@ class TicketView extends Component {
                 {
                     data ? 
                         data.proyecto ?
-                            <Tab.Container defaultActiveKey={activeKeyNav}>
+                            <Tab.Container defaultActiveKey={this.setNavTabs()}>
                                 <Card className = 'card card-custom gutter-b'>
                                     <Card.Body className="pb-0">
                                         <div className="d-flex">
