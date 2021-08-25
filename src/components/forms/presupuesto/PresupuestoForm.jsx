@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { InputGray, Button, SelectSearchGray } from '../../form-components'
+import { InputGray, Button, SelectSearchGray, InputNumberGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 class PresupuestoForm extends Component {
@@ -336,21 +336,22 @@ class PresupuestoForm extends Component {
                                                                 </>
                                                                 :<></>
                                                         }
-                                                        <div className="col-md-6">
-                                                            <InputGray
-                                                                requirevalidation={1}
-                                                                formeditado={formeditado}
-                                                                placeholder={`${showFormCalidad ?'AGREGA EL TIEMPO DE EJECUCIÓN':'TIEMPO DE EJECUCIÓN'}`}
-                                                                value={form.tiempo_ejecucion}
-                                                                name="tiempo_ejecucion"
-                                                                onChange={onChange}
-                                                                iconclass="flaticon-calendar-with-a-clock-time-tools"
-                                                                customdiv="mb-0"
-                                                                iconvalid={1}
+                                                        <div className='col-md-6'>
+                                                            <InputNumberGray
                                                                 withtaglabel={1}
                                                                 withtextlabel={1}
-                                                                withicon={1}
                                                                 withplaceholder={1}
+                                                                withicon={1}
+                                                                withformgroup={0}
+                                                                iconvalid={1}
+                                                                requirevalidation={1}
+                                                                placeholder='TIEMPO DE EJECUCIÓN (DÍAS NATURALES)'
+                                                                formeditado={formeditado}
+                                                                name="tiempo_ejecucion"
+                                                                value={form.tiempo_ejecucion}
+                                                                onChange={onChange}
+                                                                customdiv="mb-0"
+                                                                iconclass='flaticon-calendar-with-a-clock-time-tools icon-xl'
                                                             />
                                                         </div>
                                                     </div>

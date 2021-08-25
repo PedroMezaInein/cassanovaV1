@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, AgregarConcepto } from '../../../../components/forms';
+import ItemSlider from '../../../singles/ItemSlider'
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, AgregarConcepto } from '../../../../components/forms'
 import { Button, SelectSearchGray,InputGray } from '../../../form-components'
 import 'moment/locale/es'
 import imageCompression from 'browser-image-compression';
-import { questionAlert, waitAlert } from '../../../../functions/alert';
+import { questionAlert, waitAlert } from '../../../../functions/alert'
 import { dayDMY, setOptions } from '../../../../functions/setters'
 import { Modal } from '../../../../components/singles'
-import { ProcesoTicketForm } from '../../../../components/forms';
-import Scrollbar from 'perfect-scrollbar-react';
-import 'perfect-scrollbar-react/dist/style.min.css';
-import { SolicitudFacturacionTabla } from '../../../tables';
+import { ProcesoTicketForm } from '../../../../components/forms'
+import Scrollbar from 'perfect-scrollbar-react'
+import { SolicitudFacturacionTabla } from '../../../tables'
+import FloatButtons from '../../../../components/singles/FloatButtons'
+import 'perfect-scrollbar-react/dist/style.min.css'
 class TicketView extends Component {
 
     state = { checked: true }
@@ -345,12 +346,12 @@ class TicketView extends Component {
     }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav, formularioGuardado } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
-            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows
+            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover
         } = this.props
 
         const { checked } = this.state
@@ -379,10 +380,10 @@ class TicketView extends Component {
                                                         </div>
                                                         <div className="d-flex flex-wrap mt-2">
                                                             {
-                                                                data.usuario &&
+                                                                data.solicito &&
                                                                     <div className="font-weight-bold my-2 text-dark-65 font-size-lg mr-3 d-flex align-items-center">
                                                                         <i className="la la-user-tie icon-lg text-info mr-1" />
-                                                                        {data.usuario.name}
+                                                                        {data.solicito}
                                                                     </div>
                                                             }
                                                             {
@@ -621,7 +622,7 @@ class TicketView extends Component {
                                                             this.calcularCantidades() ?
                                                                 <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2" 
                                                                     onClick = { (e) => { e.preventDefault(); onClick('enviar_finanzas'); } } >
-                                                                    ENVIAR A FINANZAS
+                                                                    GUARDAR Y ENVIAR A FINANZAS
                                                                 </button>    
                                                             : <></>
                                                         : <></>
@@ -926,6 +927,17 @@ class TicketView extends Component {
                         onSubmit = { onSubmitConcept }
                     />
                 </Modal>
+                {
+                    this.isButtonEnabled() !== false && activeKeyNav === 'presupuesto'?
+                        <FloatButtons
+                            save={save}
+                            recover={recover}
+                            formulario={formularioGuardado}
+                            url='calidad/tickets/detalles-ticket'
+                            title='del presupuesto'
+                        />
+                    : <></>
+                }
             </div>
         )
     }
