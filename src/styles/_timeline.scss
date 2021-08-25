@@ -3,27 +3,31 @@
 // COLOR DE TEXTOS
 .header-ticket-espera{
     color: #736657;
-    background: #FFF6EB;
+    background: #f1e8d9;
 }
 .header-ticket-revision{
     color: #a08a69;
-    background: #FFEBCD;
+    background: #d7cebf;
 }
 .header-ticket-aprobacion{
     color: #3da8b6;
-    background: #DFF5FF;
+    background: #aedbdf;
 }
 .header-ticket-proceso{
     color: #21c793;
-    background: #E4FFF7;
+    background: #ade6d4;
+}
+.header-ticket-pendiente-pago{
+    color: #348757;
+    background: #abcdbb;
 }
 .header-ticket-terminado{
-    color: #348757;
-    background: #c9fde0;
+    color: #3d5214;
+    background: #c5ccb8;
 }
 .header-ticket-aceptado, .header-ticket-rechazado{
     color: #015c86;
-    background: #DFF5FF;
+    background: #9ec1cc;
 }
 
 // DOT HOVER
@@ -39,8 +43,11 @@
 .status.dot-proceso-ticket:hover:before {
     box-shadow: 0 0 6px 0 #21c793;
 }
-.status.dot-terminado-ticket:hover:before {
+.status.dot-pendiente-pago-ticket:hover:before {
     box-shadow: 0 0 6px 0 #348757;
+}
+.status.dot-terminado-ticket:hover:before {
+    box-shadow: 0 0 6px 0 #3d5214;
 }
 .status.dot-rechazado-ticket:hover:before, .status.dot-aceptado-ticket:hover:before  {
     box-shadow: 0 0 6px 0 #015c86;
@@ -164,19 +171,31 @@
     border: none;
     transition: all 200ms ease-in;
 }
-/*  -----  ESTATUS: TERMINADO  -----  */
-.li.complete_terminado .status {
+/*  -----  ESTATUS: PENDIENTE DE PAGO -----  */
+.li.complete_pendiente_pago .status {
     border-top: 2px solid;
     border-image-slice: 1;
     border-image-source: linear-gradient(to right, #348757, #3d5214);
 }
-.li.complete_terminado .status:before {
+.li.complete_pendiente_pago .status:before {
     background-color: #348757;
     border: none;
     transition: all 200ms ease-in;
 }
 
-.li.complete_espera .status h4, .li.complete_revision .status h4, .li.complete_aceptado .status h4, .li.complete_rechazado .status h4, .li.complete_pendiente .status h4 , .li.complete_proceso .status h4,  .li.complete_terminado .status h4 {
+/*  -----  ESTATUS: TERMINADO-----  */
+.li.complete_terminado .status {
+    border-top: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #3d5214, #7a792e);
+}
+.li.complete_terminado .status:before {
+    background-color: #3d5214;
+    border: none;
+    transition: all 200ms ease-in;
+}
+
+.li.complete_espera .status h4, .li.complete_revision .status h4, .li.complete_aceptado .status h4, .li.complete_rechazado .status h4, .li.complete_pendiente .status h4 , .li.complete_proceso .status h4,  .li.complete_pendiente_pago .status h4, .li.complete_terminado .status h4 {
     font-weight: 500;
 }
 

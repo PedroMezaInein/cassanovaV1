@@ -137,6 +137,7 @@ class TicketDetails extends Component {
             aceptado: false,
             aprobacion: false,
             proceso: false,
+            pendiente:false,
             terminado: false
         },
         aux_presupuestos: {
@@ -1495,25 +1496,28 @@ class TicketDetails extends Component {
             if (data.estatus_ticket)
                 switch (data.estatus_ticket.estatus) {
                     case 'En espera':
-                        auxiliar = { espera: true, revision: false, rechazado: false, aceptado: false, aprobacion: false, proceso: false, terminado: false};
+                        auxiliar = { espera: true, revision: false, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false};
                         break;
                     case 'En revisión':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: false, aprobacion: false, proceso: false, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Rechazado':
-                        auxiliar = { espera: true, revision: true, rechazado: true, aceptado: false, aprobacion: false, proceso: false, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: true, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Aceptado':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: false, proceso: false, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Aprobación pendiente':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: false, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'En proceso':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:false, terminado: false };
+                        break;
+                    case 'Pendiente de pago':
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: false };
                         break;
                     case 'Terminado':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, terminado: true };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: true };
                         break;
                     default:
                         break;

@@ -324,6 +324,9 @@ class TicketView extends Component {
             case 'En proceso':
                 if(aux_estatus.proceso){ activeHoverT= true }
                 break;
+            case 'Pendiente de pago':
+                if(aux_estatus.pendiente){ activeHoverT= true }
+                break;
             case 'Terminado':
                 if(aux_estatus.terminado){ activeHoverT= true }
                 break;
@@ -480,7 +483,7 @@ class TicketView extends Component {
                                             </div>
                                         </div>
                                         <div className="row mx-0 my-5">
-                                            <div className="col-md-8 p-3 mx-auto box-shadow-53">
+                                            <div className="col-sm-11 col-md-9 col-xl-10 col-xxl-6 mx-auto box-shadow-53">
                                                 <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5">
                                                     <span className="ribbon-tickets">
                                                         TICKETS
@@ -511,6 +514,9 @@ class TicketView extends Component {
                                                                         </li>
                                                                         <li className={`li ${aux_estatus.proceso ? 'complete_proceso' : ''}`}>
                                                                             {this.tooltip('En proceso', 'El departamento de calidad inicia con los trabajos.', 'dot-proceso-ticket', 'header-ticket-proceso')}
+                                                                        </li>
+                                                                        <li className={`li ${aux_estatus.pendiente ? 'complete_pendiente_pago' : ''}`}>
+                                                                            {this.tooltip('Pendiente de pago', 'El departamento de calidad espera el pago del presupuesto.', 'dot-pendiente-pago-ticket', 'header-ticket-pendiente-pago')}
                                                                         </li>
                                                                         <li className={`li ${aux_estatus.terminado ? 'complete_terminado' : ''}`}>
                                                                             {this.tooltip('Terminado', 'El departamento de calidad finaliza las peticiones solicitadas.', 'dot-terminado-ticket', 'header-ticket-terminado')}
