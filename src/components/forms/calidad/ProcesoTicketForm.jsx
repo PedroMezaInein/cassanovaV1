@@ -40,12 +40,9 @@ class ProcesoTicketForm extends Component {
     }
 
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props 
-        console.log(form, 'form')
-        console.log(options,'options')
-        console.log(ticket,'ticket')
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props
         return (
-            <>
+            <div>
                 {
                     estatus === 'En proceso' ?
                         <div className="wizard wizard-3" id="for2-wizardP" data-wizard-state="step-first">
@@ -269,7 +266,7 @@ class ProcesoTicketForm extends Component {
                             </div>
                         : <></>
                 }
-            </>
+            </div>
         );
     }
 }
