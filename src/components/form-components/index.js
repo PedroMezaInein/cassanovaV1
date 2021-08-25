@@ -49,6 +49,7 @@ import tagSelectSearchGray from './Gray/TagSelectSearchGray'
 import selectCreateGray from './Gray/SelectCreateGray'
 import inputPasswordGray from './Gray/InputPasswordGray'
 import CalendarDayGray from './Gray/CalendarDayGray'
+import CreatableMultiselectGray from './Gray/CreatableMultiselectGray'
 //TIempos
 import selectMinutos from './SelectMinutos'
 import selectHorasLaborales from './SelectHorasLaborales'
@@ -133,4 +134,4 @@ export const InputLPassword = inputLPassword
 export const FileXMLViewer = fileXMLViewer
 export const TreeGrid = treeGrid
 
-export { CalendarDayGray, Single }
+export { CalendarDayGray, Single, CreatableMultiselectGray }
