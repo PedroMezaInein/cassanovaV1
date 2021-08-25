@@ -157,7 +157,7 @@ class PresupuestoGeneradoCalidad extends Component {
                     <Card className="card-custom card-stretch">
                         <Card.Body className="py-5 d-flex flex-direction-column justify-content-center">
                             <div className="row mx-0">
-                                <div className = { `col-md-${presupuesto.estatus.estatus === 'Aceptado' ? 6 : 12}` }>
+                                <div className = {`col-md-${presupuesto.estatus.estatus === 'Aceptado' ? 6 : 12} align-self-center`}>
                                     <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-5 text-center">PRESUPUESTO</div>
                                     {
                                         ticket ? 
@@ -167,7 +167,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                 </div>
                                 {
                                     presupuesto.estatus.estatus === 'Aceptado' ? 
-                                        <div className = { `col-md-6` }>
+                                        <div className="col-md-6 align-self-center">
                                             <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-5 text-center">Evidencias Vo.Bo.</div>
                                             {
                                                 ticket ? 
