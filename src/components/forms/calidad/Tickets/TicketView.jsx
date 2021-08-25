@@ -11,6 +11,7 @@ import { Modal } from '../../../../components/singles'
 import { ProcesoTicketForm } from '../../../../components/forms';
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
+import { SolicitudFacturacionTabla } from '../../../tables';
 class TicketView extends Component {
 
     state = { checked: true }
@@ -554,12 +555,12 @@ class TicketView extends Component {
                                                                     <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de compra</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
-                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); controlledNav("solicitud-venta") }}>
-                                                                <Nav.Link eventKey="solicitud-venta">
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('facturacion'); controlledNav("facturacion") }}>
+                                                                <Nav.Link eventKey="facturacion">
                                                                     <span className="nav-icon">
                                                                         <i className="las la-clipboard-list icon-lg mr-2"></i>
                                                                     </span>
-                                                                    <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de venta</span>
+                                                                    <span className="nav-text font-weight-bolder white-space-nowrap">Facturación</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('ticket-proceso'); controlledNav("ticket-proceso") }}>
@@ -648,10 +649,8 @@ class TicketView extends Component {
                                             openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
                                             deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="solicitud-venta">
-                                        <SolicitudTabla type = "venta" title = "Historial de solicitud de ventas" btn_title = "SOLICITUD DE VENTA" 
-                                            openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
-                                            deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
+                                    <Tab.Pane eventKey="facturacion">
+                                        <SolicitudFacturacionTabla />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
