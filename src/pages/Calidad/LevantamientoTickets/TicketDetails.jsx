@@ -14,7 +14,7 @@ import 'moment/locale/es'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
 import SVG from "react-inlinesvg";
-import { TagInputGray } from '../../../components/form-components'
+import { CreatableMultiselectGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
 import { Modal as CustomModal } from '../../../components/singles'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
@@ -41,7 +41,8 @@ class TicketDetails extends Component {
                 {
                     id: 2, estatus: "Rechazado"
                 }
-            ]
+            ],
+            correos_clientes:[]
         },
         formularios: {
             presupuesto: { tiempo_ejecucion: "", conceptos: {} },
@@ -845,12 +846,29 @@ class TicketDetails extends Component {
         }
     }
     openModalReporte = () => {
-        const { modal, formularios } = this.state
-        const { email } = this.props.authUser.user
+        const { modal, formularios, presupuesto, options } = this.state
+        const { user } = this.props.authUser
         modal.reporte = true
+        
         formularios.presupuesto_generado.correos_reporte = []
-        formularios.presupuesto_generado.correos_reporte.push(email)
-        this.setState({ ...this.state, modal, formularios })
+        let aux_contactos = [];
+        if (user.email) {
+            formularios.presupuesto_generado.correos_reporte.push({ value: user.email, label: user.email })
+            aux_contactos.push({
+                value: user.email,
+                label: user.email
+            })
+        }
+        options.correos_clientes = []
+        presupuesto.proyecto.contactos.forEach(contacto => {
+            aux_contactos.push({
+                value: contacto.correo.toLowerCase(),
+                label: contacto.correo.toLowerCase()
+            })
+            return ''
+        })
+        options.correos_clientes = aux_contactos
+        this.setState({ ...this.state, modal, formularios, options })
     }
     updateStatus = async (estatus) => {
         const { presupuesto, ticket } = this.state
@@ -1437,6 +1455,10 @@ class TicketDetails extends Component {
         const { access_token } = this.props.authUser
         const { formularios, ticket } = this.state
         formularios.presupuesto_generado.presupuestoAdjunto = ticket.reporte_url
+        var arrayCorreos = formularios.presupuesto_generado.correos_reporte.map(function (obj) {
+            return obj.label;
+        });
+        formularios.presupuesto_generado.correos_reporte = arrayCorreos
         await axios.put(`${URL_DEV}v2/calidad/tickets/${ticket.id}/correo`, formularios.presupuesto_generado, { headers: setSingleHeader(access_token) }).then(
             (response) => { 
                 this.handleCloseModalReporte()
@@ -1565,6 +1587,23 @@ class TicketDetails extends Component {
         })
         deleteForm()
     }
+    
+    handleChangeCreateMSelect = (newValue) => {
+        const { formularios } = this.state
+        if(newValue == null){
+            newValue = []
+        }
+        let currentValue = []
+        newValue.forEach(valor => {
+            currentValue.push({
+                value: valor.value,
+                label: valor.label
+            })
+            return ''
+        })
+        formularios.presupuesto_generado.correos_reporte = currentValue
+        this.setState({...this.state, formularios })
+    };
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos } = this.state
         const { formulario } = this.props
@@ -1613,8 +1652,13 @@ class TicketDetails extends Component {
                             </div>
                             <div className="col-md-11 mt-5">
                                 <div>
-                                    <TagInputGray swal = { true } tags = { formularios.presupuesto_generado.correos_reporte } placeholder = "CORREO(S)" iconclass = "flaticon-email" 
-                                        uppercase = { false } onChange = { this.tagInputChange } /> 
+                                    {/* <TagInputGray swal = { true } tags = { formularios.presupuesto_generado.correos_reporte } placeholder = "CORREO(S)" iconclass = "flaticon-email" 
+                                        uppercase = { false } onChange = { this.tagInputChange } />  */}
+                                        
+                                    <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email"
+                                        requirevalidation = { 1 } messageinc = "Selecciona el o los correos" uppercase={false} 
+                                        onChange = { this.handleChangeCreateMSelect } options={options.correos_clientes} elementoactual = { formularios.presupuesto_generado.correos_reporte }
+                                    />
                                 </div>
                             </div>
                         </div>
