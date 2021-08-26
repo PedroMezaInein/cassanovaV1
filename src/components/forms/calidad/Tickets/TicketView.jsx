@@ -377,7 +377,8 @@ class TicketView extends Component {
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
-            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover
+            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
+            addSolicitudFacturaAxios
         } = this.props
 
         const { checked } = this.state
@@ -677,10 +678,10 @@ class TicketView extends Component {
                                     <Tab.Pane eventKey="solicitud-compra">
                                         <SolicitudTabla type = "compra" title = "Historial de solicitud de compras" btn_title = "SOLICITUD DE COMPRA" 
                                             openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
-                                            deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
+                                            deleteSolicitud = { deleteSolicitud } solicitudes = { key === 'facturacion' ? [] : solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="facturacion">
-                                        <SolicitudFacturacionTabla options={options} />
+                                        <SolicitudFacturacionTabla options={options} onSubmit = { addSolicitudFacturaAxios } solicitudes = { solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>

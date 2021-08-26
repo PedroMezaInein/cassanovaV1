@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Form } from 'react-bootstrap';
+import { Card, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { InputMoneyGray, InputGray, SelectSearchGray, Button } from '../../form-components';
 import { Modal } from '../../singles';
 import { RFC } from '../../../constants'
@@ -42,9 +42,19 @@ export default class SolicitudFacturacionTabla extends Component{
     updateMetodoPago = value => { this.onChange({ target: { value: value, name: 'metodo_pago' } }) }
     updateEstatusFactura = value => { this.onChange({ target: { value: value, name: 'estatus_factura' } }) }
 
+    onSubmit = e => {
+        e.preventDefault()
+        const { onSubmit } = this.props
+        const { form } = this.state
+        onSubmit(form)
+        this.setState({ ...this.state, modal: false })
+        console.log(`Actualizado`)
+    }
+
     render(){
         const { modal, form } = this.state
-        const { options, onSubmit } = this.props
+        const { options, onSubmit, solicitudes } = this.props
+        console.log(`solicitudes`, solicitudes)
         return(
             <div>
                 <Card className="card-custom gutter-b card-stretch">
@@ -70,18 +80,80 @@ export default class SolicitudFacturacionTabla extends Component{
                                         <th>Receptor</th>
                                         <th>Concepto</th>
                                         <th>Monto</th>
+                                        <th>Tipo de<br /> pago</th>
                                         <th>Forma de<br /> pago</th>
                                         <th>Método de<br /> pago</th>
                                         <th>Estatus de<br /> facturación</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
-                                
+                                <tbody>
+                                    {
+                                        solicitudes.map((sol, index) => {
+                                            return(
+                                                <tr key = { index }>
+                                                    <td className = 'border text-center'>
+                                                        <div>
+                                                            {sol.razon_social_emisor}
+                                                            <br />
+                                                            {sol.rfc_emisor}
+                                                        </div>
+                                                    </td>
+                                                    <td className = 'border text-center'>
+                                                        <div>
+                                                            {sol.razon_social_receptor}
+                                                            <br />
+                                                            {sol.rfc_receptor}
+                                                        </div>
+                                                    </td>
+                                                    <td className = 'border text-center'>
+                                                        {sol.concepto ? sol.concepto.concepto : '-'}
+                                                    </td>
+                                                    <td className = 'border text-center'>
+                                                        {sol.monto}
+                                                    </td>
+                                                    <td className = 'border text-center'>
+                                                        { sol.tipo_pago ? sol.tipo_pago.tipo : '-' }
+                                                    </td>
+                                                    <td className = 'border text-center'>
+                                                        { sol.forma_pago ? sol.forma_pago.nombre : '-' }
+                                                    </td>
+                                                    <td className = 'border text-center'>
+                                                        { sol.metodo_pago ? sol.metodo_pago.nombre : '' }
+                                                    </td>
+                                                    <td className = 'border text-center'>
+                                                        { sol.estatus_factura ? sol.estatus_factura.estatus : '' }
+                                                    </td>
+                                                    <td className = 'border text-center'>
+                                                        {
+                                                            sol.venta ?
+                                                                'Venta realizada'
+                                                            : 
+                                                                <div>
+                                                                    <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
+                                                                        <div className="btn btn-sm btn-clean btn-icon text-danger text-hover-white bg-hover-danger">
+                                                                            <i className="las la-trash-alt icon-xl text-danger" />
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                    <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
+                                                                        <div className="btn btn-sm btn-clean btn-icon text-primary text-hover-white bg-hover-primary">
+                                                                            <i className="las la-file-invoice-dollar icon-xl text-primary" />
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                </div>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
                             </table>
                         </div>
                     </Card.Body>
                 </Card>
                 <Modal size = 'xl' show = { modal } title = 'Nueva solicitud de factura' handleClose = { this.handleClose } >
-                <Form onSubmit={(e) => { e.preventDefault(); onSubmit(e) }} >  
+                    <Form onSubmit={(e) => { e.preventDefault(); this.onSubmit(form) }} >  
                         <div className="form-group row form-group-marginless mt-5">
                             <div className="col-md-4">
                                 <InputGray
