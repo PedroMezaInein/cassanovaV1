@@ -488,7 +488,7 @@ class UltimoPresupuesto extends Component {
                                                                         thousandseparator={true}
                                                                         prefix='%'
                                                                         disabled={!form.conceptos[key].active}
-                                                                        customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Utilidad'?form.conceptos[key].bg_margen ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}
+                                                                        customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Utilidad'?form.conceptos[key].bg_margen ?'input-utilidad font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}
                                                                     />
                                                                 </td>
                                                                 <td className="text-center">
