@@ -116,12 +116,12 @@ export default class SolicitudesTabla extends Component {
                                                                 { 
                                                                     sol[type] ?  
                                                                         <a className="font-weight-bold text-success text-hover-primary" href = { `/proyectos/${type}s?id=${sol[type].id}` } > 
-                                                                            <i className="flaticon2-shopping-cart icon-xl text-success d-block"></i>
+                                                                            <i className="flaticon2-shopping-cart icon-lg text-success d-block"></i>
                                                                                 <u> {`${type} realizada`} </u> 
                                                                         </a>
                                                                     :
                                                                         <>
-                                                                            <i className="flaticon2-shopping-cart-1 icon-xl text-orange d-block"></i>
+                                                                            <i className="flaticon2-shopping-cart-1 icon-lg text-orange d-block"></i>
                                                                             <span className="text-orange">{`${type} pendiente`} </span>
                                                                         </>
                                                                 }
