@@ -613,6 +613,22 @@ class TicketDetails extends Component {
             console.error(error, 'error')
         })
     }
+
+    addSolicitudFacturaAxios = async(formulario) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-factura`, formulario, 
+            { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                /*  */
+                console.log(`Creaado`)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
     
     addSolicitudVentaAxios = async () => {
         const { access_token } = this.props.authUser
@@ -1627,6 +1643,7 @@ class TicketDetails extends Component {
         formularios.presupuesto_generado.correos_reporte = currentValue
         this.setState({...this.state, formularios })
     };
+
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos } = this.state
         const { formulario } = this.props
@@ -1649,7 +1666,8 @@ class TicketDetails extends Component {
                     checkButtonConceptos = { this.checkButtonConceptos }  controlledTab={this.controlledTab} onSubmitConcept = { this.onSubmitConcept } 
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
-                    changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}/>
+                    changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
+                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } />
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
                     <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>

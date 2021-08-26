@@ -372,8 +372,8 @@ class PresupuestosEnviadosFinish extends Component {
 
     generarPDFAxios = async() =>{
         const { access_token } = this.props.authUser
-        const { form, presupuesto } = this.state
-        await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}/generar`, form, { headers: setSingleHeader(access_token) }).then(
+        const { presupuesto } = this.state
+        await axios.get(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/pdf`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { adjunto } = response.data
                 const { form, presupuesto, options } = this.state
@@ -429,7 +429,7 @@ class PresupuestosEnviadosFinish extends Component {
         this.sendPresupuestoAxios()
     } */
 
-    sendPresupuestoAxios = async () => {
+    sendPresupuestoAxios = async (flag) => {
         /* -------------------------------------------------------------------------- */
         /*                         ANCHOR Sending presupuesto                         */
         /* -------------------------------------------------------------------------- */
@@ -438,8 +438,12 @@ class PresupuestosEnviadosFinish extends Component {
         await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/finish`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { presupuesto } = response.data
-                doneAlert('Márgenes actualizados actualizado con éxito', 
+                if(flag){
+                    this.generarPDFAxios()
+                }else{
+                    doneAlert('Márgenes actualizados actualizado con éxito', 
                     () => this.getOnePresupuestoAxios(presupuesto.id))
+                }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -536,10 +540,12 @@ class PresupuestosEnviadosFinish extends Component {
         const { formulario } = this.props
         return (
             <Layout active={"presupuesto"} {...this.props}>
-                <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} generarPDF={this.generarPDF}
+                <UltimoPresupuestoForm formeditado={1} form={form} onChange={this.onChange} checkButton={this.checkButton} 
                     presupuesto={presupuesto} {...this.props} onChangeInput={this.onChangeInput}
                     // aceptarPresupuesto={this.aceptarPresupuesto}
-                    sendPresupuesto={ (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(); } } aux_presupuestos={aux_presupuestos}/>
+                    generarPDF = { (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(true); } } 
+                    sendPresupuesto = { (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(); } } 
+                    aux_presupuestos={aux_presupuestos}/>
                 <Modal show = { modal }
                     onHide = { this.handleCloseModal }
                     centered
