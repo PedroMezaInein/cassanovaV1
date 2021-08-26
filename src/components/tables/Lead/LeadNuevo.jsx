@@ -48,7 +48,7 @@ class LeadNuevo extends Component {
         return (
             <>
                 <div className="tab-content">
-                    <div className="table-responsive">
+                    <div className="table-responsive-xl">
                         <table className="table table-borderless table-vertical-center">
                             <thead>
                                 <tr>
