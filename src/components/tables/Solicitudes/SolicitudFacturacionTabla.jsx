@@ -3,8 +3,8 @@ import { Card, Form, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap';
 import { InputMoneyGray, InputGray, SelectSearchGray, Button, CalendarDay, FileInput } from '../../form-components';
 import { Modal } from '../../singles';
 import { RFC } from '../../../constants'
-import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert } from '../../../functions/alert'
-import { setOptions } from '../../../functions/setters'
+import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert, deleteAlert } from '../../../functions/alert'
+import { setMoneyTable, setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 
 export default class SolicitudFacturacionTabla extends Component{
@@ -46,7 +46,17 @@ export default class SolicitudFacturacionTabla extends Component{
 
     openModal = e => {
         const { form, modal } = this.state
+        const { ticket } = this.props
         form.estatus_factura = '1'
+        form.rfc_receptor = ''
+        form.razon_social_receptor = ''
+        form.concepto = ''
+        form.forma_pago = ''
+        form.metodo_pago = ''
+        form.tipo_pago = ''
+        if(ticket)
+            if(ticket.presupuesto_preeliminar)
+                form.monto = ticket.presupuesto_preeliminar.totalPresupuesto
         modal.factura = true
         this.setState({ ...this.state, modal })
     }
@@ -292,12 +302,11 @@ export default class SolicitudFacturacionTabla extends Component{
         const { form } = this.state
         onSubmit(form)
         this.setState({ ...this.state, modal: false })
-        console.log(`Actualizado`)
     }
 
     render(){
         const { modal, form } = this.state
-        const { options, onSubmit, solicitudes, onSubmitGenerarVenta } = this.props
+        const { options, solicitudes, onSubmitGenerarVenta, deleteSolicitud } = this.props
         console.log(`solicitudes`, solicitudes)
         return(
             <div>
@@ -335,7 +344,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                     {
                                         solicitudes ?
                                             solicitudes.length === 0 ?
-                                                this.printEmptyTable(9)
+                                                    this.printEmptyTable(9)
                                                 :
                                                 solicitudes.map((sol, index) => {
                                                     return (
@@ -358,7 +367,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                                                 {sol.concepto ? sol.concepto.concepto : '-'}
                                                             </td>
                                                             <td className='border text-center'>
-                                                                {sol.monto}
+                                                                { setMoneyTable(sol.monto) }
                                                             </td>
                                                             <td className='border text-center'>
                                                                 {sol.tipo_pago ? sol.tipo_pago.tipo : '-'}
@@ -379,7 +388,9 @@ export default class SolicitudFacturacionTabla extends Component{
                                                                         :
                                                                         <div className="white-space-nowrap">
                                                                             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
-                                                                                <div className="btn btn-icon btn-sm btn-bg-light btn-text-danger btn-hover-light-danger btn-circle mr-2">
+                                                                                <div className="btn btn-icon btn-sm btn-bg-light btn-text-danger btn-hover-light-danger btn-circle mr-2"
+                                                                                     onClick = { (e) => { e.preventDefault(); 
+                                                                                        deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA SOLICITUD?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteSolicitud(sol.id)) } } >
                                                                                     <i className="las la-trash-alt icon-xl" />
                                                                                 </div>
                                                                             </OverlayTrigger>

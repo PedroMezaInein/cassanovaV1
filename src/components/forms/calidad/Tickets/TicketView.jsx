@@ -681,7 +681,8 @@ class TicketView extends Component {
                                             deleteSolicitud = { deleteSolicitud } solicitudes = { key === 'facturacion' ? [] : solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="facturacion">
-                                        <SolicitudFacturacionTabla options={options} onSubmit = { addSolicitudFacturaAxios } solicitudes = { solicitudes } />
+                                        <SolicitudFacturacionTabla options={options} onSubmit = { addSolicitudFacturaAxios } solicitudes = { solicitudes } 
+                                            ticket = { data } deleteSolicitud = { deleteSolicitud } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
