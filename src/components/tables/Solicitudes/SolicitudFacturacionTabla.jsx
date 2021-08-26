@@ -375,20 +375,15 @@ export default class SolicitudFacturacionTabla extends Component{
                                                                     sol.venta ?
                                                                         'Venta realizada'
                                                                         :
-                                                                        <div>
+                                                                        <div className="white-space-nowrap">
                                                                             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
-                                                                                <div className="btn btn-sm btn-clean btn-icon text-danger text-hover-white bg-hover-danger">
-                                                                                    <i className="las la-trash-alt icon-xl text-danger" />
+                                                                                <div className="btn btn-icon btn-sm btn-bg-light btn-text-danger btn-hover-light-danger btn-circle mr-2">
+                                                                                    <i className="las la-trash-alt icon-xl" />
                                                                                 </div>
                                                                             </OverlayTrigger>
                                                                             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
-                                                                                <div className="btn btn-sm btn-clean btn-icon text-primary text-hover-white bg-hover-primary">
-                                                                                    <i className="las la-file-invoice-dollar icon-xl text-primary" />
-                                                                                </div>
-                                                                            </OverlayTrigger>
-                                                                            <OverlayTrigger overlay={<Tooltip>Generar venta</Tooltip>}>
-                                                                                <span className="btn btn-icon btn-sm btn-bg-light btn-text-info btn-hover-light-info btn-circle" onClick={this.openModalGenerarVenta}>
-                                                                                    <i className="las la-file-invoice icon-lg"></i>
+                                                                                <span className="btn btn-icon btn-sm btn-bg-light btn-text-primary btn-hover-light-primary btn-circle" onClick={this.openModalGenerarVenta}>
+                                                                                    <i className="las la-file-invoice-dollar icon-lg"></i>
                                                                                 </span>
                                                                             </OverlayTrigger>
                                                                         </div>
