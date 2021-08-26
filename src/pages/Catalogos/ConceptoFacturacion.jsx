@@ -252,11 +252,11 @@ class ConceptoFacturacion extends Component {
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-12">
                                 <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={1} placeholder="CLAVE" 
-                                    iconclass="flaticon2-information" name="clave" value={form.clave} onChange={this.onChange}/>
+                                    iconclass="las la-key" name="clave" value={form.clave} onChange={this.onChange}/>
                             </div>
                             <div className="col-md-12">
-                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={1} placeholder="DESCRIPCIÓN" 
-                                    iconclass="flaticon2-writing" name="descripcion" value={form.descripcion} onChange={this.onChange} as='textarea' rows='3'/>
+                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0} withformgroup={0} placeholder="DESCRIPCIÓN" 
+                                    name="descripcion" value={form.descripcion} onChange={this.onChange} as='textarea' rows='2'/>
                             </div>
                         </div>
                         <div className="card-footer py-3 pr-1">
