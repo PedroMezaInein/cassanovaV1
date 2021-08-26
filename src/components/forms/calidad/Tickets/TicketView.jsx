@@ -580,7 +580,7 @@ class TicketView extends Component {
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); controlledNav("solicitud-compra") }}>
                                                                 <Nav.Link eventKey="solicitud-compra">
                                                                     <span className="nav-icon">
-                                                                        <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
+                                                                        <i className="las la-cart-plus icon-xl mr-2"></i>
                                                                     </span>
                                                                     <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de compra</span>
                                                                 </Nav.Link>
@@ -588,7 +588,7 @@ class TicketView extends Component {
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('facturacion'); controlledNav("facturacion") }}>
                                                                 <Nav.Link eventKey="facturacion">
                                                                     <span className="nav-icon">
-                                                                        <i className="las la-clipboard-list icon-lg mr-2"></i>
+                                                                        <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
                                                                     </span>
                                                                     <span className="nav-text font-weight-bolder white-space-nowrap">Facturación</span>
                                                                 </Nav.Link>
