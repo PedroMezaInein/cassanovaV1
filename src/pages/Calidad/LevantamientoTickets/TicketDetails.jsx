@@ -614,6 +614,20 @@ class TicketDetails extends Component {
         })
     }
 
+    deleteSolicitudAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.delete(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-factura/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert(`Solicitud eliminada con éxito`, () => { this.getSolicitudesAxios('facturacion') } )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     addSolicitudFacturaAxios = async(formulario) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1666,7 +1680,7 @@ class TicketDetails extends Component {
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
-                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } />
+                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitud = { this.deleteSolicitudAxios } />
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
                     <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>

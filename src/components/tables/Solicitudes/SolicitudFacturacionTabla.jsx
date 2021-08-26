@@ -3,7 +3,7 @@ import { Card, Form, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap';
 import { InputMoneyGray, InputGray, SelectSearchGray, Button, CalendarDay, FileInput } from '../../form-components';
 import { Modal } from '../../singles';
 import { RFC } from '../../../constants'
-import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert, deleteAlert } from '../../../functions/alert'
 import { setMoneyTable, setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 
@@ -304,7 +304,7 @@ export default class SolicitudFacturacionTabla extends Component{
 
     render(){
         const { modal, form } = this.state
-        const { options, onSubmit, solicitudes, onSubmitGenerarVenta } = this.props
+        const { options, solicitudes, onSubmitGenerarVenta, deleteSolicitud } = this.props
         console.log(`solicitudes`, solicitudes)
         return(
             <div>
@@ -386,7 +386,9 @@ export default class SolicitudFacturacionTabla extends Component{
                                                                         :
                                                                         <div className="white-space-nowrap">
                                                                             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
-                                                                                <div className="btn btn-icon btn-sm btn-bg-light btn-text-danger btn-hover-light-danger btn-circle mr-2">
+                                                                                <div className="btn btn-icon btn-sm btn-bg-light btn-text-danger btn-hover-light-danger btn-circle mr-2"
+                                                                                     onClick = { (e) => { e.preventDefault(); 
+                                                                                        deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA SOLICITUD?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteSolicitud(sol.id)) } } >
                                                                                     <i className="las la-trash-alt icon-xl" />
                                                                                 </div>
                                                                             </OverlayTrigger>
