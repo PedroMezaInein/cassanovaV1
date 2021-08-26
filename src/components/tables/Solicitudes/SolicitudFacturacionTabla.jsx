@@ -290,7 +290,6 @@ export default class SolicitudFacturacionTabla extends Component{
         const { form } = this.state
         onSubmit(form)
         this.setState({ ...this.state, modal: false })
-        console.log(`Actualizado`)
     }
 
     render(){
