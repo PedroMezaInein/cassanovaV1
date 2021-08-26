@@ -251,7 +251,7 @@ export default class SolicitudFacturacionTabla extends Component{
         })
     }
     onSubmit = e => {
-        e.preventDefault()
+        // e.preventDefault()
         const { onSubmit } = this.props
         const { form } = this.state
         onSubmit(form)
