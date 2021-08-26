@@ -22,7 +22,7 @@ export default class SolicitudFacturacionTabla extends Component{
             forma_pago: '',
             metodo_pago: '',
             estatus_factura: '',
-            tipo_pago: '',
+            tipo_pago: 0,
             cuenta:'',
             tipo_impuesto:0,
             estatus_compra:0,
@@ -51,7 +51,7 @@ export default class SolicitudFacturacionTabla extends Component{
     }
 
     openModalGenerarVenta = e => {
-        const { form, modal } = this.state
+        const { modal } = this.state
         modal.venta = true
         this.setState({ ...this.state, modal })
     }
@@ -59,12 +59,47 @@ export default class SolicitudFacturacionTabla extends Component{
     handleClose = () => {
         const { modal } = this.state
         modal.factura = false
-        this.setState({ ...this.state, modal })
+        this.setState({ ...this.state, modal, form: this.clearForm()  })
     }
     handleCloseGenerarVenta = () => {
         const { modal } = this.state
         modal.venta = false
-        this.setState({ ...this.state, modal })
+        this.setState({ ...this.state, modal, form: this.clearForm()  })
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'tipo_impuesto':
+                case 'tipo_pago':
+                case 'estatus_compra':
+                    form[element] = 0
+                    break;
+                case 'fecha':
+                    form[element] = new Date()
+                    break;
+                case 'adjuntos':
+                    form[element] = {
+                        factura: {
+                            value: '',
+                            placeholder: 'Factura',
+                            files: []
+                        },
+                        pago: {
+                            value: '',
+                            placeholder: 'Pago',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+            return false
+        })
+        return form;
     }
     onChange = e => {
         const { name, value } = e.target
