@@ -680,7 +680,7 @@ class TicketView extends Component {
                                             deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="facturacion">
-                                        <SolicitudFacturacionTabla />
+                                        <SolicitudFacturacionTabla options={options} />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
