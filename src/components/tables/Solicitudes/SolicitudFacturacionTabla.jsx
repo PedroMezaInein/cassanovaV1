@@ -41,7 +41,7 @@ export default class SolicitudFacturacionTabla extends Component{
     updateTipoPago = value => { this.onChange({ target: { value: value, name: 'tipo_pago' } }) }
     updateMetodoPago = value => { this.onChange({ target: { value: value, name: 'metodo_pago' } }) }
     updateEstatusFactura = value => { this.onChange({ target: { value: value, name: 'estatus_factura' } }) }
-    
+
     render(){
         const { modal, form } = this.state
         const { options, onSubmit } = this.props
@@ -207,7 +207,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                     prefix = '$' name = "monto" value = { form.monto } onChange = { this.onChange } placeholder = "MONTO CON IVA"/>
                             </div>
                         </div>
-                        <div className="card-footer py-3 px-0 text-right">
+                        <div className="card-footer pt-3 pb-0 px-0 text-right">
                             <Button icon='' className="btn btn-primary" text="ENVIAR" type='submit' />
                         </div>
                     </Form>
