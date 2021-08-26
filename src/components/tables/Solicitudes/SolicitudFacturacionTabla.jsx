@@ -24,6 +24,7 @@ export default class SolicitudFacturacionTabla extends Component{
             estatus_factura: '',
             tipo_pago: 0,
             cuenta:'',
+            cliente:'',
             tipo_impuesto:0,
             estatus_compra:0,
             descripcion:'',
@@ -122,6 +123,7 @@ export default class SolicitudFacturacionTabla extends Component{
     updateTipoPago = value => { this.onChange({ target: { value: value, name: 'tipo_pago' } }) }
     updateMetodoPago = value => { this.onChange({ target: { value: value, name: 'metodo_pago' } }) }
     updateEstatusFactura = value => { this.onChange({ target: { value: value, name: 'estatus_factura' } }) }
+    updateCliente = value => { this.onChange({ target: { value: value, name: 'cliente' } }) }
     updateCuenta = value => { this.onChange({ target: { value: value, name: 'cuenta' } }) }
     updateTipoImpuesto = value => { this.onChange({ target: { value: value, name: 'tipo_impuesto' } }) }
     updateEstatusCompra = value => { this.onChange({ target: { value: value, name: 'estatus_compra' } }) }
@@ -507,7 +509,7 @@ export default class SolicitudFacturacionTabla extends Component{
                         </div>
                     </Form>
                 </Modal>
-                <Modal size = 'xl' show = { modal.venta } title = 'Generar venta' handleClose = { this.handleCloseGenerarVenta } >
+                <Modal size = 'xl' show = { modal.venta } title = 'ADJUNTAR FACTURA' handleClose = { this.handleCloseGenerarVenta } >
                 <Form id="form-generar-factura" onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmitGenerarVenta, e, 'form-generar-factura') } } >  
                         <Row className="form-group mx-0 form-group-marginless mt-5">
                             <Col md="4" className="text-center align-self-center">
@@ -517,20 +519,40 @@ export default class SolicitudFacturacionTabla extends Component{
                                 <CalendarDay date = { form.fecha } onChange = { this.onChange } name='fecha' requirevalidation={1}/>
                             </Col>
                             <Col md="8" className="align-self-center">
-                                <SelectSearchGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    withicon={1}
-                                    customdiv="mb-0"
-                                    iconclass="far fa-credit-card"
-                                    formeditado={0}
-                                    options={options.cuentas}
-                                    placeholder="SELECCIONA LA CUENTA"
-                                    name="cuenta"
-                                    value={form.cuenta}
-                                    onChange={this.updateCuenta}
-                                    messageinc="Incorrecto. Selecciona la cuenta."
-                                />
+                                <div className="row form-group-marginless">
+                                    <div className="col-md-6">
+                                        <SelectSearchGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withicon={1}
+                                            customdiv="mb-0"
+                                            iconclass="far fa-credit-card"
+                                            formeditado={0}
+                                            options={options.clientes}
+                                            placeholder="SELECCIONA EL CLIENTE"
+                                            name="cliente"
+                                            value={form.cliente}
+                                            onChange={this.updateCliente}
+                                            messageinc="Incorrecto. Selecciona el cliente."
+                                        />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <SelectSearchGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withicon={1}
+                                            customdiv="mb-0"
+                                            iconclass="far fa-credit-card"
+                                            formeditado={0}
+                                            options={options.cuentas}
+                                            placeholder="SELECCIONA LA CUENTA"
+                                            name="cuenta"
+                                            value={form.cuenta}
+                                            onChange={this.updateCuenta}
+                                            messageinc="Incorrecto. Selecciona la cuenta."
+                                        />
+                                    </div>
+                                </div>
                                 <div className="separator separator-dashed mt-5 mb-2"></div>
                                 <div className="row form-group-marginless">
                                     <div className="col-md-6">
