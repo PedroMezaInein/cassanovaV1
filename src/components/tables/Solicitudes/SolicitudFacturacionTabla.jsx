@@ -138,7 +138,8 @@ export default class SolicitudFacturacionTabla extends Component{
         )
     }
     onChangeAdjunto = e => {
-        const { form, data, options } = this.state
+        const { form } = this.state
+        const { options } = this.props
         const { files, value, name } = e.target
         let aux = []
         for (let counter = 0; counter < files.length; counter++) {
@@ -218,45 +219,14 @@ export default class SolicitudFacturacionTabla extends Component{
                             Fecha = Fecha.substring(0, aux)
                             obj.fecha = Fecha
                         }
-                        let auxEmpresa = ''
-                        data.empresas.find(function (element, index) {
-                            if (element.rfc === obj.rfc_receptor) {
-                                auxEmpresa = element
-                            }
-                            return false
-                        });
-                        let auxProveedor = ''
-                        data.proveedores.find(function (element, index) {
-                            if(element.rfc)
-                                if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase()) {
-                                    auxProveedor = element
-                                }
-                            return false
-                        });
-                        if (auxEmpresa) {
-                            options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
-                            form.empresa = auxEmpresa.name
-                        } else {
-                            errorAlert('No existe la empresa')
-                        }
-                        if (auxProveedor) { form.proveedor = auxProveedor.id.toString() } 
-                        else {
-                            if(obj.nombre_emisor === ''){
-                                const { history } = this.props
-                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/leads/proveedores')
-                            }else
-                                createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
-                        }
-                        if (auxEmpresa && auxProveedor) {
-                            Swal.close()
-                        }
-                        form.facturaObject = obj
-                        form.rfc = obj.rfc_emisor
-                        this.setState({
-                            ...this.state,
-                            options,
-                            form
+                        let newCliente = options.clientes.find((cliente) => {
+                            return cliente.rfc === obj.rfc_receptor
                         })
+                        if(newCliente)
+                            form.cliente = newCliente.value
+                        form.facturaObject = obj
+                        Swal.close()
+                        this.setState({ ...this.state, options, form })
                     }
                     reader.readAsText(files[counter])
                 }

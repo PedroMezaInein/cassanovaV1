@@ -574,7 +574,16 @@ class TicketDetails extends Component {
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
                     options.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
                     options.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
-                    options.clientes = setOptions(clientes, 'empresa', 'id')
+                    //
+                    let aux = []
+                    clientes.forEach((cliente) => {
+                        aux.push({
+                            name: cliente.empresa,
+                            value: cliente.id.toString(),
+                            rfc: cliente.rfc
+                        })
+                    })
+                    options.clientes = aux
                 }
                 this.setState({...this.state, solicitudes: solicitudes, formularios, options })
             }, (error) => { printResponseErrorAlert(error) }
