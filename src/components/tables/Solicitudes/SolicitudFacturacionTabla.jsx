@@ -4,7 +4,7 @@ import { InputMoneyGray, InputGray, SelectSearchGray, Button, CalendarDay, FileI
 import { Modal } from '../../singles';
 import { RFC } from '../../../constants'
 import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert } from '../../../functions/alert'
-import { setOptions } from '../../../functions/setters'
+import { setMoneyTable, setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 
 export default class SolicitudFacturacionTabla extends Component{
@@ -45,7 +45,17 @@ export default class SolicitudFacturacionTabla extends Component{
 
     openModal = e => {
         const { form, modal } = this.state
+        const { ticket } = this.props
         form.estatus_factura = '1'
+        form.rfc_receptor = ''
+        form.razon_social_receptor = ''
+        form.concepto = ''
+        form.forma_pago = ''
+        form.metodo_pago = ''
+        form.tipo_pago = ''
+        if(ticket)
+            if(ticket.presupuesto_preeliminar)
+                form.monto = ticket.presupuesto_preeliminar.totalPresupuesto
         modal.factura = true
         this.setState({ ...this.state, modal })
     }
@@ -332,7 +342,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                     {
                                         solicitudes ?
                                             solicitudes.length === 0 ?
-                                                this.printEmptyTable(9)
+                                                    this.printEmptyTable(9)
                                                 :
                                                 solicitudes.map((sol, index) => {
                                                     return (
@@ -355,7 +365,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                                                 {sol.concepto ? sol.concepto.concepto : '-'}
                                                             </td>
                                                             <td className='border text-center'>
-                                                                {sol.monto}
+                                                                { setMoneyTable(sol.monto) }
                                                             </td>
                                                             <td className='border text-center'>
                                                                 {sol.tipo_pago ? sol.tipo_pago.tipo : '-'}

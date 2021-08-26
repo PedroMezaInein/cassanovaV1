@@ -621,8 +621,7 @@ class TicketDetails extends Component {
         await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-factura`, formulario, 
             { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                /*  */
-                console.log(`Creaado`)
+                doneAlert(`Solicitud generada con éxito`, () => { this.getSolicitudesAxios('facturacion') } )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
