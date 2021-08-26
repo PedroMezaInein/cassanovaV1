@@ -52,7 +52,6 @@ export default class SolicitudFacturacionTabla extends Component{
 
     openModalGenerarVenta = e => {
         const { form, modal } = this.state
-        form.estatus_factura = '1'
         modal.venta = true
         this.setState({ ...this.state, modal })
     }
@@ -284,7 +283,6 @@ export default class SolicitudFacturacionTabla extends Component{
                             <table className="table table-vertical-center">
                                 <thead>
                                     <tr className="font-weight-bolder text-info text-center white-space-nowrap bg-light-info">
-                                        <th></th>
                                         <th>Emisor</th>
                                         <th>Receptor</th>
                                         <th>Concepto</th>
@@ -298,68 +296,73 @@ export default class SolicitudFacturacionTabla extends Component{
                                 </thead>
                                 <tbody>
                                     {
-                                        solicitudes.map((sol, index) => {
-                                            return(
-                                                <tr key = { index }>
-                                                    <td className = 'border text-center'>
-                                                        <div>
-                                                            {sol.razon_social_emisor}
-                                                            <br />
-                                                            {sol.rfc_emisor}
-                                                        </div>
-                                                    </td>
-                                                    <td className = 'border text-center'>
-                                                        <div>
-                                                            {sol.razon_social_receptor}
-                                                            <br />
-                                                            {sol.rfc_receptor}
-                                                        </div>
-                                                    </td>
-                                                    <td className = 'border text-center'>
-                                                        {sol.concepto ? sol.concepto.concepto : '-'}
-                                                    </td>
-                                                    <td className = 'border text-center'>
-                                                        {sol.monto}
-                                                    </td>
-                                                    <td className = 'border text-center'>
-                                                        { sol.tipo_pago ? sol.tipo_pago.tipo : '-' }
-                                                    </td>
-                                                    <td className = 'border text-center'>
-                                                        { sol.forma_pago ? sol.forma_pago.nombre : '-' }
-                                                    </td>
-                                                    <td className = 'border text-center'>
-                                                        { sol.metodo_pago ? sol.metodo_pago.nombre : '' }
-                                                    </td>
-                                                    <td className = 'border text-center'>
-                                                        { sol.estatus_factura ? sol.estatus_factura.estatus : '' }
-                                                    </td>
-                                                    <td className = 'border text-center'>
-                                                        {
-                                                            sol.venta ?
-                                                                'Venta realizada'
-                                                            : 
+                                        solicitudes ?
+                                            solicitudes.length === 0 ?
+                                                this.printEmptyTable(9)
+                                                :
+                                                solicitudes.map((sol, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td className='border text-center'>
                                                                 <div>
-                                                                    <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
-                                                                        <div className="btn btn-sm btn-clean btn-icon text-danger text-hover-white bg-hover-danger">
-                                                                            <i className="las la-trash-alt icon-xl text-danger" />
-                                                                        </div>
-                                                                    </OverlayTrigger>
-                                                                    <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
-                                                                        <div className="btn btn-sm btn-clean btn-icon text-primary text-hover-white bg-hover-primary">
-                                                                            <i className="las la-file-invoice-dollar icon-xl text-primary" />
-                                                                        </div>
-                                                                    </OverlayTrigger>
-                                                                    <OverlayTrigger overlay={<Tooltip>Generar venta</Tooltip>}>
-                                                                        <span className="btn btn-icon btn-sm btn-bg-light btn-text-info btn-hover-light-info btn-circle" onClick = { this.openModalGenerarVenta }>
-                                                                            <i className="las la-file-invoice icon-lg"></i>
-                                                                        </span>
-                                                                    </OverlayTrigger>
+                                                                    {sol.razon_social_emisor}
+                                                                    <br />
+                                                                    {sol.rfc_emisor}
                                                                 </div>
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })
+                                                            </td>
+                                                            <td className='border text-center'>
+                                                                <div>
+                                                                    {sol.razon_social_receptor}
+                                                                    <br />
+                                                                    {sol.rfc_receptor}
+                                                                </div>
+                                                            </td>
+                                                            <td className='border text-center'>
+                                                                {sol.concepto ? sol.concepto.concepto : '-'}
+                                                            </td>
+                                                            <td className='border text-center'>
+                                                                {sol.monto}
+                                                            </td>
+                                                            <td className='border text-center'>
+                                                                {sol.tipo_pago ? sol.tipo_pago.tipo : '-'}
+                                                            </td>
+                                                            <td className='border text-center'>
+                                                                {sol.forma_pago ? sol.forma_pago.nombre : '-'}
+                                                            </td>
+                                                            <td className='border text-center'>
+                                                                {sol.metodo_pago ? sol.metodo_pago.nombre : ''}
+                                                            </td>
+                                                            <td className='border text-center'>
+                                                                {sol.estatus_factura ? sol.estatus_factura.estatus : ''}
+                                                            </td>
+                                                            <td className='border text-center'>
+                                                                {
+                                                                    sol.venta ?
+                                                                        'Venta realizada'
+                                                                        :
+                                                                        <div>
+                                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
+                                                                                <div className="btn btn-sm btn-clean btn-icon text-danger text-hover-white bg-hover-danger">
+                                                                                    <i className="las la-trash-alt icon-xl text-danger" />
+                                                                                </div>
+                                                                            </OverlayTrigger>
+                                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
+                                                                                <div className="btn btn-sm btn-clean btn-icon text-primary text-hover-white bg-hover-primary">
+                                                                                    <i className="las la-file-invoice-dollar icon-xl text-primary" />
+                                                                                </div>
+                                                                            </OverlayTrigger>
+                                                                            <OverlayTrigger overlay={<Tooltip>Generar venta</Tooltip>}>
+                                                                                <span className="btn btn-icon btn-sm btn-bg-light btn-text-info btn-hover-light-info btn-circle" onClick={this.openModalGenerarVenta}>
+                                                                                    <i className="las la-file-invoice icon-lg"></i>
+                                                                                </span>
+                                                                            </OverlayTrigger>
+                                                                        </div>
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                        : this.printEmptyTable(9)
                                     }
                                 </tbody>
                             </table>
