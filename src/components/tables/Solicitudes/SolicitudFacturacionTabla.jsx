@@ -138,7 +138,8 @@ export default class SolicitudFacturacionTabla extends Component{
         )
     }
     onChangeAdjunto = e => {
-        const { form, data, options } = this.state
+        const { form } = this.state
+        const { options } = this.props
         const { files, value, name } = e.target
         let aux = []
         for (let counter = 0; counter < files.length; counter++) {
@@ -218,9 +219,13 @@ export default class SolicitudFacturacionTabla extends Component{
                             Fecha = Fecha.substring(0, aux)
                             obj.fecha = Fecha
                         }
+                        let newCliente = options.clientes.find((cliente) => {
+                            return cliente.rfc === obj.rfc_receptor
+                        })
+                        if(newCliente)
+                            form.cliente = newCliente.value
                         form.facturaObject = obj
                         Swal.close()
-                        console.log(`Object: `, obj)
                         this.setState({ ...this.state, options, form })
                     }
                     reader.readAsText(files[counter])
