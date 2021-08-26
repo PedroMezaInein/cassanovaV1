@@ -325,6 +325,9 @@ class TicketView extends Component {
             case 'En proceso':
                 if(aux_estatus.proceso){ activeHoverT= true }
                 break;
+            case 'Pendiente de pago':
+                if(aux_estatus.pendiente){ activeHoverT= true }
+                break;
             case 'Terminado':
                 if(aux_estatus.terminado){ activeHoverT= true }
                 break;
@@ -344,6 +347,29 @@ class TicketView extends Component {
             </OverlayTrigger>
         )
     }
+    setNavTabs = () => {
+        const { data } = this.props
+        if( data ){
+            if(data.estatus_ticket){
+                switch(data.estatus_ticket.estatus){
+                    case 'En espera':
+                    case 'En revisión':
+                    case 'Rechazado':
+                        return 'adjuntos'
+                    case 'Aceptado':
+                    case 'Aprobación pendiente':
+                        return 'presupuesto'
+                    case 'En proceso':
+                    case 'Terminado':
+                    case 'Pendiente de pago':
+                        return 'solicitud-compra'
+                    default:
+                        break;
+                }
+            }
+        }
+        return ''
+    }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav, formularioGuardado } = this.props
@@ -361,7 +387,7 @@ class TicketView extends Component {
                 {
                     data ? 
                         data.proyecto ?
-                            <Tab.Container defaultActiveKey={activeKeyNav}>
+                            <Tab.Container defaultActiveKey={this.setNavTabs()}>
                                 <Card className = 'card card-custom gutter-b'>
                                     <Card.Body className="pb-0">
                                         <div className="d-flex">
@@ -481,7 +507,7 @@ class TicketView extends Component {
                                             </div>
                                         </div>
                                         <div className="row mx-0 my-5">
-                                            <div className="col-md-8 p-3 mx-auto box-shadow-53">
+                                            <div className="col-sm-11 col-md-9 col-xl-10 col-xxl-7 mx-auto box-shadow-53">
                                                 <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5">
                                                     <span className="ribbon-tickets">
                                                         TICKETS
@@ -512,6 +538,9 @@ class TicketView extends Component {
                                                                         </li>
                                                                         <li className={`li ${aux_estatus.proceso ? 'complete_proceso' : ''}`}>
                                                                             {this.tooltip('En proceso', 'El departamento de calidad inicia con los trabajos.', 'dot-proceso-ticket', 'header-ticket-proceso')}
+                                                                        </li>
+                                                                        <li className={`li ${aux_estatus.pendiente ? 'complete_pendiente_pago' : ''}`}>
+                                                                            {this.tooltip('Pendiente de pago', 'El departamento de calidad espera el pago del presupuesto.', 'dot-pendiente-pago-ticket', 'header-ticket-pendiente-pago')}
                                                                         </li>
                                                                         <li className={`li ${aux_estatus.terminado ? 'complete_terminado' : ''}`}>
                                                                             {this.tooltip('Terminado', 'El departamento de calidad finaliza las peticiones solicitadas.', 'dot-terminado-ticket', 'header-ticket-terminado')}

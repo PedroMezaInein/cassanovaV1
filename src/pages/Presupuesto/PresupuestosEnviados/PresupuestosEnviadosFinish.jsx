@@ -7,7 +7,7 @@ import { setOptions } from "../../../functions/setters"
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../../functions/alert"
 import Layout from "../../../components/layout/layout"
 import { UltimoPresupuestoForm } from "../../../components/forms"
-import { TagInputGray } from '../../../components/form-components'
+import { CreatableMultiselectGray } from '../../../components/form-components'
 import { setSingleHeader } from "../../../functions/routers"
 import { Modal } from "react-bootstrap"
 import { save, deleteForm } from '../../../redux/reducers/formulario'
@@ -48,6 +48,7 @@ class PresupuestosEnviadosFinish extends Component {
             partidas: [],
             subpartidas: [],
             proveedores: [],
+            correos_clientes: []
         },
         data: {
             partidas: [],
@@ -358,16 +359,6 @@ class PresupuestosEnviadosFinish extends Component {
     //     })
     // }
 
-    tagInputChange = (nuevosCorreos) => {
-        const { form } = this.state 
-        let unico = {};
-        nuevosCorreos.forEach(function (i) {
-            if (!unico[i]) { unico[i] = true }
-        })
-        form.correos_presupuesto = nuevosCorreos ? Object.keys(unico) : [];
-        this.setState({ ...this.state, form })
-    }
-
     generarPDF = e => {
         e.preventDefault()
         const { form } = this.state
@@ -385,12 +376,27 @@ class PresupuestosEnviadosFinish extends Component {
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}/generar`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { adjunto } = response.data
-                const { form } = this.state
+                const { form, presupuesto, options } = this.state
                 const { user } = this.props.authUser
-                if(user.email)
-                    form.correos_presupuesto.push(user.email)
+                let aux_contactos = [];
+                if(user.email){
+                    form.correos_presupuesto.push({ value: user.email, label: user.email })
+                    aux_contactos.push({
+                        value: user.email,
+                        label: user.email
+                    })
+                }
+                options.correos_clientes = []
+                presupuesto.proyecto.contactos.forEach(contacto => {
+                    aux_contactos.push({
+                        value: contacto.correo.toLowerCase(),
+                        label: contacto.correo.toLowerCase()
+                    })
+                    return ''
+                })
+                options.correos_clientes = aux_contactos
                 Swal.close()
-                this.setState({...this.state, modalObject: {adjunto: adjunto}, modal: true, form })
+                this.setState({...this.state, modalObject: {adjunto: adjunto}, modal: true, form, options })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -403,6 +409,10 @@ class PresupuestosEnviadosFinish extends Component {
         const { access_token } = this.props.authUser
         const { form, presupuesto, modalObject } = this.state
         form.presupuestoAdjunto = modalObject.adjunto
+        var arrayCorreos = form.correos_presupuesto.map(function (obj) {
+            return obj.label;
+        });
+        form.correos_presupuesto = arrayCorreos
         await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/correo`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => { 
                 doneAlert('Correo enviado con éxito', () => { this.handleCloseModal() } ) 
@@ -504,8 +514,25 @@ class PresupuestosEnviadosFinish extends Component {
         })
         deleteForm()
     }
+    handleChangeCreateMSelect = (newValue) => {
+        const { form } = this.state
+        if(newValue == null){
+            newValue = []
+        }
+        let currentValue = []
+        newValue.forEach(valor => {
+            currentValue.push({
+                value: valor.value,
+                label: valor.label
+            })
+            return ''
+        })
+        form.correos_presupuesto = currentValue
+        this.setState({...this.state, form })
+    };
+    
     render() {
-        const { form, presupuesto, modal, modalObject, aux_presupuestos } = this.state;
+        const { form, presupuesto, modal, modalObject, aux_presupuestos, options } = this.state;
         const { formulario } = this.props
         return (
             <Layout active={"presupuesto"} {...this.props}>
@@ -541,8 +568,10 @@ class PresupuestosEnviadosFinish extends Component {
                             </div>
                             <div className="col-md-11 mt-5">
                                 <div>
-                                    <TagInputGray swal = { true } tags = { form.correos_presupuesto } placeholder = "CORREO(S)" iconclass = "flaticon-email" 
-                                        uppercase = { false } onChange = { this.tagInputChange } /> 
+                                    <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email"
+                                        requirevalidation = { 1 } messageinc = "Selecciona el o los correos" uppercase={false} 
+                                        onChange = { this.handleChangeCreateMSelect } options={options.correos_clientes} elementoactual = { form.correos_presupuesto }
+                                    />
                                 </div>
                             </div>
                         </div>

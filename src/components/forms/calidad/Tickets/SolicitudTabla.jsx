@@ -56,7 +56,7 @@ export default class SolicitudesTabla extends Component {
                                     <th>Sub área</th>
                                     <th style={{minWidth:'300px'}}>Descripción</th>
                                     { type === 'compra' ? <th style={{minWidth:'200px'}}>Notas</th> : <></> }
-                                    <th>Estado</th>
+                                    <th>Estatus de {type}</th>
                                     <th style={{minWidth:'50px'}}></th>
                                 </tr>
                             </thead>
@@ -106,14 +106,25 @@ export default class SolicitudesTabla extends Component {
                                                         </td>
                                                         {
                                                             type === 'compra' ?
-                                                                <td className="font-size-sm text-justify">
+                                                                <td className="font-size-sm text-center">
                                                                     <div className="text-dark-75">{ sol.notas ? sol.notas : <div className="text-center">Sin notas</div> } </div>
                                                                 </td>
                                                             : <></>
                                                         }
                                                         <td className="text-dark font-weight-light font-size-sm text-center">
-                                                            <div className="w-max-content mx-auto">
-                                                                { sol[type] ?  <u><a className="font-weight-bold text-hover-success" href = { `/proyectos/${type}s?id=${sol[type].id}` } > {`${type} realizada`} </a></u> : <></> }
+                                                            <div className="w-max-content mx-auto d-block align-items-center">
+                                                                { 
+                                                                    sol[type] ?  
+                                                                        <a className="font-weight-bold text-success text-hover-primary" href = { `/proyectos/${type}s?id=${sol[type].id}` } > 
+                                                                            <i className="flaticon2-shopping-cart icon-xl text-success d-block"></i>
+                                                                                <u> {`${type} realizada`} </u> 
+                                                                        </a>
+                                                                    :
+                                                                        <>
+                                                                            <i className="flaticon2-shopping-cart-1 icon-xl text-orange d-block"></i>
+                                                                            <span className="text-orange">{`${type} pendiente`} </span>
+                                                                        </>
+                                                                }
                                                             </div>
                                                         </td>
                                                         <td className="white-space-nowrap">
