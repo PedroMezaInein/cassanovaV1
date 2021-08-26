@@ -16,7 +16,7 @@ export default class SolicitudesTabla extends Component {
     }
 
     setDescripcion = desc => {
-        if(desc === null)
+        if(desc === null || desc === undefined)
             return ''
         let valor = desc.split("\n")
         return valor.map((element) => {
