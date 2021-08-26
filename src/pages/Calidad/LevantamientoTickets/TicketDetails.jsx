@@ -22,6 +22,11 @@ class TicketDetails extends Component {
 
     state = {
         options: { 
+            metodosPago: [],
+            formasPago: [],
+            estatusFacturas: [],
+            tiposPagos: [],
+            conceptos: [],
             empleados: [],
             estatus: [],
             tiposTrabajo: [],
@@ -551,9 +556,16 @@ class TicketDetails extends Component {
         await axios.get(`${URL_DEV}v3/calidad/tickets/${ticket.id}/${type}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { formularios } = this.state
-                const { solicitudes } = response.data
-                this.setState({...this.state, solicitudes: solicitudes, formularios })
+                const { formularios, options } = this.state
+                const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, conceptos } = response.data
+                if(type === 'facturacion'){
+                    options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
+                    options.formasPago = setOptions(formasPago, 'nombre', 'id')
+                    options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
+                    options.tiposPagos = setOptions(tiposPago, 'tipo', 'id')
+                    options.conceptos = setOptions(conceptos, 'concepto', 'id')
+                }
+                this.setState({...this.state, solicitudes: solicitudes, formularios, options })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

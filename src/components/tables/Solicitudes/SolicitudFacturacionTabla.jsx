@@ -1,11 +1,23 @@
 import React, { Component } from 'react'
-import { Card } from 'react-bootstrap';
+import { Card, Form } from 'react-bootstrap';
+import { InputMoneyGray } from '../../form-components';
+import InputGray from '../../form-components/Gray/InputGray';
 import { Modal } from '../../singles';
 
 export default class SolicitudFacturacionTabla extends Component{
 
     state = {
-        modal: false
+        modal: false,
+        form: {
+            rfc_receptor: '',
+            razon_social_receptor: '',
+            concepto: '',
+            monto: 0.0,
+            forma_pago: '',
+            metodo_pago: '',
+            estatus_factura: '',
+            tipo_pago: ''
+        }
     }
 
     openModal = e => {
@@ -16,8 +28,15 @@ export default class SolicitudFacturacionTabla extends Component{
         this.setState({ ...this.state, modal: false })
     }
 
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({...this.state, form})
+    }
+
     render(){
-        const { modal } = this.state
+        const { modal, form } = this.state
         return(
             <div>
                 <Card className="card-custom gutter-b card-stretch">
@@ -54,7 +73,19 @@ export default class SolicitudFacturacionTabla extends Component{
                     </Card.Body>
                 </Card>
                 <Modal size = 'lg' show = { modal } title = 'Nueva solicitud de factura' handleClose = { this.handleClose } >
-
+                    <Form>
+                    {/* <div className="form-group row form-group-marginless"> */}
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-4">
+                                <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } 
+                                    withformgroup = { 1 } requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } 
+                                    prefix = '$' name = "monto" value = { form.monto } onChange = { this.onChange } placeholder = "MONTO"/>
+                            </div>
+                            <div className="col-md-4">
+                                
+                            </div>
+                        </div>
+                    </Form>
                 </Modal>
             </div>
         );
