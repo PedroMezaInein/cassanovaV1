@@ -42,7 +42,6 @@ class TicketDetails extends Component {
             empresas: [],
             areas: [],
             subareas: [],
-            tiposPagos: [],
             estatus_final:[
                 {
                     id: 1, estatus: "Aceptado"

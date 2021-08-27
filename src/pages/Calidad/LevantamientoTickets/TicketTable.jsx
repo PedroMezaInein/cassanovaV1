@@ -80,7 +80,6 @@ class TicketTable extends Component {
     setCalidad = calidad => {
         let aux = []
         calidad.map((calidad) => {
-            console.log(calidad,'calidad')
             aux.push(
                 {
                     actions: this.setActions(calidad),
@@ -93,7 +92,6 @@ class TicketTable extends Component {
                     fecha_termino:  renderToString(setDateTable(calidad.fecha_programada)),
                     costo_presupuesto:  renderToString(setMoneyTable('1234')),
                     monto_pagado:  renderToString(setMoneyTable('1234')),
-                    solicito: renderToString(setTextTableCenter(calidad.solicito)),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
                     motivo: renderToString(setTextTable(calidad.motivo_cancelacion)),
                     id: calidad.id
