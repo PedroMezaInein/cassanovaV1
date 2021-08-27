@@ -639,6 +639,11 @@ class TicketDetails extends Component {
         })
     }
 
+    addVentaAxios = async(id, form) => {
+        console.log(`ID`, id, `FORM`, form)
+        waitAlert()
+    }
+
     addSolicitudFacturaAxios = async(formulario) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1691,7 +1696,8 @@ class TicketDetails extends Component {
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
-                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitud = { this.deleteSolicitudAxios } />
+                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitud = { this.deleteSolicitudAxios } 
+                    addVenta = { this.addVentaAxios } />
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
                     <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>
