@@ -4,7 +4,7 @@ import { InputMoneyGray, InputGray, SelectSearchGray, Button, CalendarDay, FileI
 import { Modal } from '../../singles';
 import { RFC } from '../../../constants'
 import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert, deleteAlert } from '../../../functions/alert'
-import { setMoneyTable, setOptions } from '../../../functions/setters'
+import { setMoneyTableSinSmall, setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 
 export default class SolicitudFacturacionTabla extends Component{
@@ -131,7 +131,7 @@ export default class SolicitudFacturacionTabla extends Component{
     printEmptyTable = columns => {
         return(
             <tr className = 'text-center'>
-                <td colSpan = { columns }  className="text-dark font-weight-light font-size-sm">
+                <td colSpan = { columns }  className="text-dark-50 font-weight-light font-size-md">
                     <b>No hay solicitudes de factura</b>
                 </td>
             </tr>
@@ -277,7 +277,6 @@ export default class SolicitudFacturacionTabla extends Component{
     render(){
         const { modal, form } = this.state
         const { options, solicitudes, onSubmitGenerarVenta, deleteSolicitud } = this.props
-        console.log(`solicitudes`, solicitudes)
         return(
             <div>
                 <Card className="card-custom gutter-b card-stretch">
@@ -288,26 +287,26 @@ export default class SolicitudFacturacionTabla extends Component{
                             </div>
                         </Card.Title>
                         <div className="card-toolbar">
-                            <button type="button" className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" 
+                            <button type="button" className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info btn-text-solicitud font-weight-bolder font-size-13px" 
                                 onClick = { this.openModal }>
-                                <i className="las la-file-invoice-dollar icon-xl mr-2 px-0 text-info" /> SOLICITAR FACTURA
+                                <i className="las la-file-invoice-dollar icon-xl mr-2 px-0" /> SOLICITAR FACTURA
                             </button>
                         </div>
                     </Card.Header>
                     <Card.Body className = 'p-9 pt-0'>
-                        <div className="table-responsive rounded-top">
-                            <table className="table table-vertical-center">
+                        <div className="table-responsive">
+                            <table className="table table-vertical-center table-sol-fact box-shadow-53">
                                 <thead>
-                                    <tr className="font-weight-bolder text-info text-center white-space-nowrap bg-light-info">
+                                    <tr className="font-weight-bolder text-center white-space-nowrap">
+                                        <th></th>
                                         <th>Emisor</th>
                                         <th>Receptor</th>
                                         <th>Concepto</th>
                                         <th>Monto</th>
-                                        <th>Tipo de<br /> pago</th>
-                                        <th>Forma de<br /> pago</th>
-                                        <th>Método de<br /> pago</th>
-                                        <th>Estatus de<br /> facturación</th>
-                                        <th></th>
+                                        <th>Tipo de <br/> pago</th>
+                                        <th>Forma de <br/> pago</th>
+                                        <th>Método de <br/> pago</th>
+                                        <th>Estatus de <br/> facturación</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -318,59 +317,57 @@ export default class SolicitudFacturacionTabla extends Component{
                                                 :
                                                 solicitudes.map((sol, index) => {
                                                     return (
-                                                        <tr key={index}>
-                                                            <td className='border text-center'>
-                                                                <div>
-                                                                    {sol.razon_social_emisor}
-                                                                    <br />
-                                                                    {sol.rfc_emisor}
-                                                                </div>
-                                                            </td>
-                                                            <td className='border text-center'>
-                                                                <div>
-                                                                    {sol.razon_social_receptor}
-                                                                    <br />
-                                                                    {sol.rfc_receptor}
-                                                                </div>
-                                                            </td>
-                                                            <td className='border text-center'>
-                                                                {sol.concepto ? sol.concepto.concepto : '-'}
-                                                            </td>
-                                                            <td className='border text-center'>
-                                                                { setMoneyTable(sol.monto) }
-                                                            </td>
-                                                            <td className='border text-center'>
-                                                                {sol.tipo_pago ? sol.tipo_pago.tipo : '-'}
-                                                            </td>
-                                                            <td className='border text-center'>
-                                                                {sol.forma_pago ? sol.forma_pago.nombre : '-'}
-                                                            </td>
-                                                            <td className='border text-center'>
-                                                                {sol.metodo_pago ? sol.metodo_pago.nombre : ''}
-                                                            </td>
-                                                            <td className='border text-center'>
-                                                                {sol.estatus_factura ? sol.estatus_factura.estatus : ''}
-                                                            </td>
-                                                            <td className='border text-center'>
+                                                        <tr key={index} className="font-weight-light">
+                                                            <td className='text-center'>
                                                                 {
                                                                     sol.venta ?
                                                                         'Venta realizada'
                                                                         :
                                                                         <div className="white-space-nowrap">
                                                                             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
-                                                                                <div className="btn btn-icon btn-sm btn-bg-light btn-text-danger btn-hover-light-danger btn-circle mr-2"
-                                                                                     onClick = { (e) => { e.preventDefault(); 
+                                                                                <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-danger btn-circle mr-2"
+                                                                                        onClick = { (e) => { e.preventDefault(); 
                                                                                         deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA SOLICITUD?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteSolicitud(sol.id)) } } >
-                                                                                    <i className="las la-trash-alt icon-xl" />
+                                                                                    <i className="las la-trash-alt icon-xl " />
                                                                                 </div>
                                                                             </OverlayTrigger>
                                                                             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
-                                                                                <span className="btn btn-icon btn-sm btn-bg-light btn-text-primary btn-hover-light-primary btn-circle" onClick={this.openModalGenerarVenta}>
+                                                                                <span className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-info btn-circle" onClick={this.openModalGenerarVenta}>
                                                                                     <i className="las la-file-invoice-dollar icon-lg"></i>
                                                                                 </span>
                                                                             </OverlayTrigger>
                                                                         </div>
                                                                 }
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                <div>
+                                                                    {sol.razon_social_emisor}
+                                                                    <div className="font-weight-bold text-dark-75">{sol.rfc_emisor}</div>
+                                                                </div>
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                <div>
+                                                                    {sol.razon_social_receptor}
+                                                                    <div className="font-weight-bold text-dark-75">{sol.rfc_receptor}</div>
+                                                                </div>
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                {sol.concepto ? sol.concepto.concepto : '-'}
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                { setMoneyTableSinSmall(sol.monto) }
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                {sol.tipo_pago ? sol.tipo_pago.tipo : '-'}
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                {sol.forma_pago ? sol.forma_pago.nombre : '-'}
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                {sol.metodo_pago ? sol.metodo_pago.nombre : ''}
+                                                            </td>
+                                                            <td className='text-center'>
+                                                                {sol.estatus_factura ? sol.estatus_factura.estatus : ''}
                                                             </td>
                                                         </tr>
                                                     )

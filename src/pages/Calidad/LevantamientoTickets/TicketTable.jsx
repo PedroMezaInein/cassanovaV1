@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../../constants'
-import { setTextTable, setLabelTable, setTextTableCenter, setDateTableReactDom } from '../../../functions/setters'
+import { setTextTable, setLabelTable, setTextTableCenter, setMoneyTable, setDateTableReactDom, setDateTable } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, customInputAlert, waitAlert } from '../../../functions/alert'
 import { setSingleHeader } from '../../../functions/routers'
@@ -80,6 +80,7 @@ class TicketTable extends Component {
     setCalidad = calidad => {
         let aux = []
         calidad.map((calidad) => {
+            console.log(calidad,'calidad')
             aux.push(
                 {
                     actions: this.setActions(calidad),
@@ -89,6 +90,10 @@ class TicketTable extends Component {
                     solicito: renderToString(setTextTableCenter(calidad.solicito)),
                     tipo_trabajo: renderToString(setTextTableCenter(calidad.subarea ? calidad.subarea.nombre : '')),
                     fecha: setDateTableReactDom(calidad.created_at, this.doubleClick, calidad, 'fecha', 'text-center'),
+                    fecha_termino:  renderToString(setDateTable(calidad.fecha_programada)),
+                    costo_presupuesto:  renderToString(setMoneyTable('1234')),
+                    monto_pagado:  renderToString(setMoneyTable('1234')),
+                    solicito: renderToString(setTextTableCenter(calidad.solicito)),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
                     motivo: renderToString(setTextTable(calidad.motivo_cancelacion)),
                     id: calidad.id
