@@ -378,7 +378,7 @@ class TicketView extends Component {
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
             controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
-            addSolicitudFacturaAxios
+            addSolicitudFacturaAxios, addVenta
         } = this.props
 
         const { checked } = this.state
@@ -682,7 +682,7 @@ class TicketView extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="facturacion">
                                         <SolicitudFacturacionTabla options={options} onSubmit = { addSolicitudFacturaAxios } solicitudes = { solicitudes } 
-                                            ticket = { data } deleteSolicitud = { deleteSolicitud } />
+                                            ticket = { data } deleteSolicitud = { deleteSolicitud } onSubmitGenerarVenta = { addVenta } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
