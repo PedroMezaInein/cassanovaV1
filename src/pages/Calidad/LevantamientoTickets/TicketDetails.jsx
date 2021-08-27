@@ -42,7 +42,6 @@ class TicketDetails extends Component {
             empresas: [],
             areas: [],
             subareas: [],
-            tiposPagos: [],
             estatus_final:[
                 {
                     id: 1, estatus: "Aceptado"
@@ -1691,7 +1690,7 @@ class TicketDetails extends Component {
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
-                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitud = { this.deleteSolicitudAxios } />
+                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitudFactura = { this.deleteSolicitudAxios } />
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
                     <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>

@@ -172,6 +172,8 @@ class ConceptoFacturacion extends Component {
             case 'edit':
                 this.updateAxios()
                 break;
+            default:
+                break;
         }
     }
 
@@ -239,7 +241,7 @@ class ConceptoFacturacion extends Component {
     }
 
     render() {
-        const { form, modal, action, formeditado} = this.state
+        const { form, modal, action } = this.state
         return (
             <Layout active = 'catalogos'  {...this.props}>
                 <NewTableServerRender columns = { CONCEPTOS_FACTURACION_COLUMNS } title = 'Conceptos' subtitle='Listado de conceptos de facturación' 
