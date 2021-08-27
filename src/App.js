@@ -143,6 +143,7 @@ const RedesSociales = React.lazy( () => import('./pages/Catalogos/RedesSociales'
 const RolesMercadotecnia = React.lazy( () => import('./pages/Catalogos/RolesMercadotecnia') )
 const Servicios = React.lazy( () => import('./pages/Catalogos/Servicios') )
 const Prestaciones = React.lazy( () => import('./pages/Catalogos/Prestaciones') )
+const ConceptosFacturacion = React.lazy( () => import('./pages/Catalogos/ConceptoFacturacion') )
 
 const Contabilidad = React.lazy( () => import('./pages/Reportes/Contabilidad') )
 const ReporteVentas = React.lazy( () => import('./pages/Reportes/ReporteVentas') )
@@ -439,6 +440,7 @@ class App extends Component{
                     <Route path = "/catalogos/redes-sociales" exact component = { RedesSociales } />
                     
                     <Route path = "/catalogos/tareas-etiquetas" exact component ={ Etiquetas } />
+                    <Route path = "/catalogos/conceptos-facturacion" exact component = { ConceptosFacturacion } />
 
                     {/* ANCHOR Routes for reportes */}
 

@@ -14,13 +14,23 @@ import 'moment/locale/es'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
 import SVG from "react-inlinesvg";
-import { TagInputGray } from '../../../components/form-components'
+import { CreatableMultiselectGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
 import { Modal as CustomModal } from '../../../components/singles'
+import { save, deleteForm } from '../../../redux/reducers/formulario'
 class TicketDetails extends Component {
 
     state = {
         options: { 
+            metodosPago: [],
+            formasPago: [],
+            estatusFacturas: [],
+            tiposPagos: [],
+            conceptos: [],
+            clientes:[],
+            cuentas:[],
+            tiposImpuestos:[],
+            estatusCompras:[],
             empleados: [],
             estatus: [],
             tiposTrabajo: [],
@@ -40,7 +50,8 @@ class TicketDetails extends Component {
                 {
                     id: 2, estatus: "Rechazado"
                 }
-            ]
+            ],
+            correos_clientes:[],
         },
         formularios: {
             presupuesto: { tiempo_ejecucion: "", conceptos: {} },
@@ -135,6 +146,7 @@ class TicketDetails extends Component {
             aceptado: false,
             aprobacion: false,
             proceso: false,
+            pendiente:false,
             terminado: false
         },
         aux_presupuestos: {
@@ -550,9 +562,30 @@ class TicketDetails extends Component {
         await axios.get(`${URL_DEV}v3/calidad/tickets/${ticket.id}/${type}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { formularios } = this.state
-                const { solicitudes } = response.data
-                this.setState({...this.state, solicitudes: solicitudes, formularios })
+                const { formularios, options } = this.state
+                const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, conceptos, cuentas, tiposImpuestos, estatusCompras, clientes } = response.data
+                if(type === 'facturacion'){
+                    options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
+                    options.formasPago = setOptions(formasPago, 'nombre', 'id')
+                    options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
+                    options.tiposPagos = setOptions(tiposPago, 'tipo', 'id')
+                    options.conceptos = setOptions(conceptos, 'concepto', 'id')
+                    options.cuentas = setOptions(cuentas, 'nombre', 'id')
+                    options.cuentas = setOptions(cuentas, 'nombre', 'id')
+                    options.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
+                    options.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
+                    //
+                    let aux = []
+                    clientes.forEach((cliente) => {
+                        aux.push({
+                            name: cliente.empresa,
+                            value: cliente.id.toString(),
+                            rfc: cliente.rfc
+                        })
+                    })
+                    options.clientes = aux
+                }
+                this.setState({...this.state, solicitudes: solicitudes, formularios, options })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -585,6 +618,35 @@ class TicketDetails extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.',
                     () => { this.getSolicitudesAxios(`solicitud-compra`) }
                 )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    deleteSolicitudAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.delete(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-factura/${id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert(`Solicitud eliminada con éxito`, () => { this.getSolicitudesAxios('facturacion') } )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    addSolicitudFacturaAxios = async(formulario) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-factura`, formulario, 
+            { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                doneAlert(`Solicitud generada con éxito`, () => { this.getSolicitudesAxios('facturacion') } )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -844,12 +906,29 @@ class TicketDetails extends Component {
         }
     }
     openModalReporte = () => {
-        const { modal, formularios } = this.state
-        const { email } = this.props.authUser.user
+        const { modal, formularios, presupuesto, options } = this.state
+        const { user } = this.props.authUser
         modal.reporte = true
+        
         formularios.presupuesto_generado.correos_reporte = []
-        formularios.presupuesto_generado.correos_reporte.push(email)
-        this.setState({ ...this.state, modal, formularios })
+        let aux_contactos = [];
+        if (user.email) {
+            formularios.presupuesto_generado.correos_reporte.push({ value: user.email, label: user.email })
+            aux_contactos.push({
+                value: user.email,
+                label: user.email
+            })
+        }
+        options.correos_clientes = []
+        presupuesto.proyecto.contactos.forEach(contacto => {
+            aux_contactos.push({
+                value: contacto.correo.toLowerCase(),
+                label: contacto.correo.toLowerCase()
+            })
+            return ''
+        })
+        options.correos_clientes = aux_contactos
+        this.setState({ ...this.state, modal, formularios, options })
     }
     updateStatus = async (estatus) => {
         const { presupuesto, ticket } = this.state
@@ -1360,7 +1439,7 @@ class TicketDetails extends Component {
             case 'volumetrias':
                 this.onClickVolumetrias()
                 break;
-            case 'solicitud-venta':
+            case 'facturacion':
             case 'solicitud-compra':
                 this.getSolicitudesAxios(type);
                 break;
@@ -1436,6 +1515,10 @@ class TicketDetails extends Component {
         const { access_token } = this.props.authUser
         const { formularios, ticket } = this.state
         formularios.presupuesto_generado.presupuestoAdjunto = ticket.reporte_url
+        var arrayCorreos = formularios.presupuesto_generado.correos_reporte.map(function (obj) {
+            return obj.label;
+        });
+        formularios.presupuesto_generado.correos_reporte = arrayCorreos
         await axios.put(`${URL_DEV}v2/calidad/tickets/${ticket.id}/correo`, formularios.presupuesto_generado, { headers: setSingleHeader(access_token) }).then(
             (response) => { 
                 this.handleCloseModalReporte()
@@ -1472,25 +1555,28 @@ class TicketDetails extends Component {
             if (data.estatus_ticket)
                 switch (data.estatus_ticket.estatus) {
                     case 'En espera':
-                        auxiliar = { espera: true, revision: false, rechazado: false, aceptado: false, aprobacion: false, proceso: false, terminado: false};
+                        auxiliar = { espera: true, revision: false, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false};
                         break;
                     case 'En revisión':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: false, aprobacion: false, proceso: false, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Rechazado':
-                        auxiliar = { espera: true, revision: true, rechazado: true, aceptado: false, aprobacion: false, proceso: false, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: true, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Aceptado':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: false, proceso: false, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Aprobación pendiente':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: false, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'En proceso':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, terminado: false };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:false, terminado: false };
+                        break;
+                    case 'Pendiente de pago':
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: false };
                         break;
                     case 'Terminado':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, terminado: true };
+                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: true };
                         break;
                     default:
                         break;
@@ -1540,8 +1626,51 @@ class TicketDetails extends Component {
             aux_presupuestos: auxiliar
         })
     }
+    save = () => {
+        const { formularios } = this.state
+        const { save } = this.props
+        let auxObject = {}
+        let aux = Object.keys(formularios.preeliminar)
+        aux.map((element) => {
+            auxObject[element] = formularios.preeliminar[element]
+            return false
+        })
+        save({
+            form: auxObject,
+            page: 'calidad/tickets/detalles-ticket'
+        })
+    }
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        let { formularios } = this.state
+        formularios.preeliminar = formulario.form
+        this.setState({
+            ...this.state,
+            formularios
+        })
+        deleteForm()
+    }
+    
+    handleChangeCreateMSelect = (newValue) => {
+        const { formularios } = this.state
+        if(newValue == null){
+            newValue = []
+        }
+        let currentValue = []
+        newValue.forEach(valor => {
+            currentValue.push({
+                value: valor.value,
+                label: valor.label
+            })
+            return ''
+        })
+        formularios.presupuesto_generado.correos_reporte = currentValue
+        this.setState({...this.state, formularios })
+    };
+
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos } = this.state
+        const { formulario } = this.props
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
@@ -1561,7 +1690,8 @@ class TicketDetails extends Component {
                     checkButtonConceptos = { this.checkButtonConceptos }  controlledTab={this.controlledTab} onSubmitConcept = { this.onSubmitConcept } 
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
-                    changeTypeSolicitudes = { this.changeTypeSolicitudes }  />
+                    changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
+                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitud = { this.deleteSolicitudAxios } />
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
                     <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>
@@ -1587,8 +1717,13 @@ class TicketDetails extends Component {
                             </div>
                             <div className="col-md-11 mt-5">
                                 <div>
-                                    <TagInputGray swal = { true } tags = { formularios.presupuesto_generado.correos_reporte } placeholder = "CORREO(S)" iconclass = "flaticon-email" 
-                                        uppercase = { false } onChange = { this.tagInputChange } /> 
+                                    {/* <TagInputGray swal = { true } tags = { formularios.presupuesto_generado.correos_reporte } placeholder = "CORREO(S)" iconclass = "flaticon-email" 
+                                        uppercase = { false } onChange = { this.tagInputChange } />  */}
+                                        
+                                    <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email"
+                                        requirevalidation = { 1 } messageinc = "Selecciona el o los correos" uppercase={false} 
+                                        onChange = { this.handleChangeCreateMSelect } options={options.correos_clientes} elementoactual = { formularios.presupuesto_generado.correos_reporte }
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -1603,7 +1738,16 @@ class TicketDetails extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({ })
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser,
+        formulario: state.formulario
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(TicketDetails);

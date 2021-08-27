@@ -17,17 +17,22 @@ export default class FormNuevoTicket extends Component {
                 <Form id="form-nuevo-ticket"
                     onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-nuevo-ticket') } } >
                     <div className="form-group row form-group-marginless pt-4 justify-content-md-center">
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <SelectSearchGray requirevalidation = { 1 } withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 }
                                 options = { options.proyectos } placeholder = 'SELECCIONA EL PROYECTO' name = 'proyecto'
                                 value = { form.proyecto } onChange = { (value) =>  { this.updateSelect(value, 'proyecto') } } 
                                 iconclass = 'las la-swatchbook icon-2x' messageinc = "Incorrecto. Selecciona el proyecto" />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <SelectSearchGray requirevalidation = { 1 } withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 }
                                 options = { options.tiposTrabajo } placeholder = "SELECCIONA EL TIPO DE TRABAJO" name = "tipo_trabajo"
                                 value = { form.tipo_trabajo } onChange = { (value) =>  { this.updateSelect(value, 'tipo_trabajo') } }  
                                 iconclass = "las la-tools icon-xl" messageinc = "Incorrecto. Selecciona el tipo de trabajo" />
+                        </div>
+                        <div className="col-md-4">
+                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
+                                requirevalidation = { 1 } placeholder = "NOMBRE DEL SOLICITANTE" value = { form.solicito } name = "solicito" 
+                                onChange = { onChange } messageinc="Incorrecto. Ingresa el nombre del solicitante." />
                         </div>
                     </div>
                     <div className="separator separator-dashed mt-1 mb-2"></div>

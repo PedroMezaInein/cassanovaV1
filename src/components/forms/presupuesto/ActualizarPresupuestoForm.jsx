@@ -474,7 +474,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "cantidad_preliminar"
                                                                         value = { form['conceptos'][key]['cantidad_preliminar'] } onChange = { e => onChange(key, e, 'cantidad_preliminar') }
                                                                         thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active } 
-                                                                        customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].bg_cantidad ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}/>
+                                                                        customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].bg_cantidad ?'input-conceptos font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}/>
                                                                 </td>
                                                                 <td className="text-center">
                                                                     <InputNumberSinText requirevalidation = { 0 } formeditado = { formeditado } name = "desperdicio" 
@@ -488,7 +488,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                             <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "costo"
                                                                                 value = { form['conceptos'][key]['costo'] } onChange = { e => onChange(key, e, 'costo') } 
                                                                                 thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active }
-                                                                                customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Costos'?form.conceptos[key].bg_costo ?'bg-light-info text-info font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`} />
+                                                                                customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Costos'?form.conceptos[key].bg_costo ?'input-costos font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`} />
                                                                         </td>
                                                                 }
                                                                 <td className="text-center">

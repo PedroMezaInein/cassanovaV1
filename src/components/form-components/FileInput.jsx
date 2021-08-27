@@ -64,8 +64,8 @@ class FileInput extends Component {
     }
 
     render() {
-        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, classbtn, iconclass, color_label, classinput, ...props } = this.props
-        const { fileValido } = this.state
+        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, classbtn, iconclass, color_label, classinput, requirevalidation, ...props } = this.props
+        let newfileValido = files.length > 0 ? true: false;
         return (
             <>
                 {/* <label className="col-form-label ">{placeholder}</label> */}
@@ -102,7 +102,11 @@ class FileInput extends Component {
                         className={classinput}
                     />
                 </span>
-                <span className={fileValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
+                {
+                    requirevalidation?
+                    <span className={newfileValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid font-size-xs"}> {messageinc} </span>
+                    :<></>
+                }
                 <div className="flex-wrap d-flex d-flex justify-content-center align-items-center">
                     {
                         files.map((file, key) => {

@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import ItemSlider from '../../../singles/ItemSlider';
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, AgregarConcepto } from '../../../../components/forms';
+import ItemSlider from '../../../singles/ItemSlider'
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, AgregarConcepto } from '../../../../components/forms'
 import { Button, SelectSearchGray,InputGray } from '../../../form-components'
 import 'moment/locale/es'
 import imageCompression from 'browser-image-compression';
-import { questionAlert, waitAlert } from '../../../../functions/alert';
+import { questionAlert, waitAlert } from '../../../../functions/alert'
 import { dayDMY, setOptions } from '../../../../functions/setters'
 import { Modal } from '../../../../components/singles'
-import { ProcesoTicketForm } from '../../../../components/forms';
-import Scrollbar from 'perfect-scrollbar-react';
-import 'perfect-scrollbar-react/dist/style.min.css';
+import { ProcesoTicketForm } from '../../../../components/forms'
+import Scrollbar from 'perfect-scrollbar-react'
+import { SolicitudFacturacionTabla } from '../../../tables'
+import FloatButtons from '../../../../components/singles/FloatButtons'
+import 'perfect-scrollbar-react/dist/style.min.css'
 class TicketView extends Component {
 
     state = { checked: true }
@@ -323,6 +325,9 @@ class TicketView extends Component {
             case 'En proceso':
                 if(aux_estatus.proceso){ activeHoverT= true }
                 break;
+            case 'Pendiente de pago':
+                if(aux_estatus.pendiente){ activeHoverT= true }
+                break;
             case 'Terminado':
                 if(aux_estatus.terminado){ activeHoverT= true }
                 break;
@@ -342,14 +347,38 @@ class TicketView extends Component {
             </OverlayTrigger>
         )
     }
+    setNavTabs = () => {
+        const { data } = this.props
+        if( data ){
+            if(data.estatus_ticket){
+                switch(data.estatus_ticket.estatus){
+                    case 'En espera':
+                    case 'En revisión':
+                    case 'Rechazado':
+                        return 'adjuntos'
+                    case 'Aceptado':
+                    case 'Aprobación pendiente':
+                        return 'presupuesto'
+                    case 'En proceso':
+                    case 'Terminado':
+                    case 'Pendiente de pago':
+                        return 'solicitud-compra'
+                    default:
+                        break;
+                }
+            }
+        }
+        return ''
+    }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
-        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav } = this.props
+        const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, activeKeyNav, formularioGuardado } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
-            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows
+            controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
+            addSolicitudFacturaAxios
         } = this.props
 
         const { checked } = this.state
@@ -359,7 +388,7 @@ class TicketView extends Component {
                 {
                     data ? 
                         data.proyecto ?
-                            <Tab.Container defaultActiveKey={activeKeyNav}>
+                            <Tab.Container defaultActiveKey={this.setNavTabs()}>
                                 <Card className = 'card card-custom gutter-b'>
                                     <Card.Body className="pb-0">
                                         <div className="d-flex">
@@ -378,10 +407,10 @@ class TicketView extends Component {
                                                         </div>
                                                         <div className="d-flex flex-wrap mt-2">
                                                             {
-                                                                data.usuario &&
+                                                                data.solicito &&
                                                                     <div className="font-weight-bold my-2 text-dark-65 font-size-lg mr-3 d-flex align-items-center">
                                                                         <i className="la la-user-tie icon-lg text-info mr-1" />
-                                                                        {data.usuario.name}
+                                                                        {data.solicito}
                                                                     </div>
                                                             }
                                                             {
@@ -479,7 +508,7 @@ class TicketView extends Component {
                                             </div>
                                         </div>
                                         <div className="row mx-0 my-5">
-                                            <div className="col-md-8 p-3 mx-auto box-shadow-53">
+                                            <div className="col-sm-11 col-md-9 col-xl-10 col-xxl-7 mx-auto box-shadow-53">
                                                 <div className="ribbon-estatus col-md-3 px-5 mx-auto mb-5">
                                                     <span className="ribbon-tickets">
                                                         TICKETS
@@ -510,6 +539,9 @@ class TicketView extends Component {
                                                                         </li>
                                                                         <li className={`li ${aux_estatus.proceso ? 'complete_proceso' : ''}`}>
                                                                             {this.tooltip('En proceso', 'El departamento de calidad inicia con los trabajos.', 'dot-proceso-ticket', 'header-ticket-proceso')}
+                                                                        </li>
+                                                                        <li className={`li ${aux_estatus.pendiente ? 'complete_pendiente_pago' : ''}`}>
+                                                                            {this.tooltip('Pendiente de pago', 'El departamento de calidad espera el pago del presupuesto.', 'dot-pendiente-pago-ticket', 'header-ticket-pendiente-pago')}
                                                                         </li>
                                                                         <li className={`li ${aux_estatus.terminado ? 'complete_terminado' : ''}`}>
                                                                             {this.tooltip('Terminado', 'El departamento de calidad finaliza las peticiones solicitadas.', 'dot-terminado-ticket', 'header-ticket-terminado')}
@@ -549,17 +581,17 @@ class TicketView extends Component {
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); controlledNav("solicitud-compra") }}>
                                                                 <Nav.Link eventKey="solicitud-compra">
                                                                     <span className="nav-icon">
-                                                                        <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
+                                                                        <i className="las la-cart-plus icon-xl mr-2"></i>
                                                                     </span>
                                                                     <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de compra</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
-                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-venta'); controlledNav("solicitud-venta") }}>
-                                                                <Nav.Link eventKey="solicitud-venta">
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); onClick('facturacion'); controlledNav("facturacion") }}>
+                                                                <Nav.Link eventKey="facturacion">
                                                                     <span className="nav-icon">
-                                                                        <i className="las la-clipboard-list icon-lg mr-2"></i>
+                                                                        <i className="las la-file-invoice-dollar icon-lg mr-2"></i>
                                                                     </span>
-                                                                    <span className="nav-text font-weight-bolder white-space-nowrap">Solicitud de venta</span>
+                                                                    <span className="nav-text font-weight-bolder white-space-nowrap">Facturación</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('ticket-proceso'); controlledNav("ticket-proceso") }}>
@@ -620,7 +652,7 @@ class TicketView extends Component {
                                                             this.calcularCantidades() ?
                                                                 <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2" 
                                                                     onClick = { (e) => { e.preventDefault(); onClick('enviar_finanzas'); } } >
-                                                                    ENVIAR A FINANZAS
+                                                                    GUARDAR Y ENVIAR A FINANZAS
                                                                 </button>    
                                                             : <></>
                                                         : <></>
@@ -646,12 +678,11 @@ class TicketView extends Component {
                                     <Tab.Pane eventKey="solicitud-compra">
                                         <SolicitudTabla type = "compra" title = "Historial de solicitud de compras" btn_title = "SOLICITUD DE COMPRA" 
                                             openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
-                                            deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
+                                            deleteSolicitud = { deleteSolicitud } solicitudes = { key === 'facturacion' ? [] : solicitudes } />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="solicitud-venta">
-                                        <SolicitudTabla type = "venta" title = "Historial de solicitud de ventas" btn_title = "SOLICITUD DE VENTA" 
-                                            openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
-                                            deleteSolicitud = { deleteSolicitud } solicitudes = { solicitudes } />
+                                    <Tab.Pane eventKey="facturacion">
+                                        <SolicitudFacturacionTabla options={options} onSubmit = { addSolicitudFacturaAxios } solicitudes = { solicitudes } 
+                                            ticket = { data } deleteSolicitud = { deleteSolicitud } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
@@ -927,6 +958,17 @@ class TicketView extends Component {
                         onSubmit = { onSubmitConcept }
                     />
                 </Modal>
+                {
+                    this.isButtonEnabled() !== false && activeKeyNav === 'presupuesto'?
+                        <FloatButtons
+                            save={save}
+                            recover={recover}
+                            formulario={formularioGuardado}
+                            url='calidad/tickets/detalles-ticket'
+                            title='del presupuesto'
+                        />
+                    : <></>
+                }
             </div>
         )
     }

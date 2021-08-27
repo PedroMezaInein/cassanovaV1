@@ -278,6 +278,12 @@ export const BANCOS_COLUMNS = [
     { Header: 'Banco', accessor: 'banco',  customRender: true }
 ]
 
+export const CONCEPTOS_FACTURACION_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Clave', accessor: 'clave',  customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion',  customRender: true }
+]
+
 export const TIPOS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Tipo', accessor: 'tipo', customRender: true }
@@ -734,7 +740,7 @@ export const PROYECTOS_TICKETS = [
     { Header: 'ID', accessor: 'identificador' },
     { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Proyecto', accessor: 'proyectos' },
-    { Header: 'Cliente', accessor: 'cliente' },
+    { Header: 'Solicitó', accessor: 'solicito' },
     { Header: 'Tipo de trabajo', accessor: 'tipo_trabajo' },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion' },
