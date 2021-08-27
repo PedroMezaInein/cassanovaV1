@@ -10,6 +10,7 @@ import Swal from 'sweetalert2'
 export default class SolicitudFacturacionTabla extends Component{
 
     state = {
+        id: '',
         modal: {
             factura: false,
             venta:false
@@ -61,10 +62,10 @@ export default class SolicitudFacturacionTabla extends Component{
         this.setState({ ...this.state, modal })
     }
 
-    openModalGenerarVenta = e => {
+    openModalGenerarVenta = (id) => {
         const { modal } = this.state
         modal.venta = true
-        this.setState({ ...this.state, modal })
+        this.setState({ ...this.state, modal, id: id })
     }
 
     handleClose = () => {
@@ -289,10 +290,12 @@ export default class SolicitudFacturacionTabla extends Component{
     }
 
     onSubmitGenerarVenta = () => {
-        const { onSubmitGenerarVenta } = this.props
-        const { form } = this.state
-        console.log(`FORM`, form)
-        alert(`On submit generar venta`)
+        const { onSubmitGenerarVenta: submiting } = this.props
+        
+        const { form, id } = this.state
+        console.log(`FORM: ${id}`, form)
+        submiting(id, form)
+        /* alert(`On submit generar venta`) */
     }
 
     render(){
@@ -353,7 +356,8 @@ export default class SolicitudFacturacionTabla extends Component{
                                                                                 </div>
                                                                             </OverlayTrigger>
                                                                             <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
-                                                                                <span className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-info btn-circle" onClick={this.openModalGenerarVenta}>
+                                                                                <span className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-info btn-circle" 
+                                                                                    onClick = { () => { this.openModalGenerarVenta(sol.id) }}>
                                                                                     <i className="las la-file-invoice-dollar icon-lg"></i>
                                                                                 </span>
                                                                             </OverlayTrigger>
