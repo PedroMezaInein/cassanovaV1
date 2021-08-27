@@ -72,11 +72,13 @@ export default class SolicitudFacturacionTabla extends Component{
         modal.factura = false
         this.setState({ ...this.state, modal, form: this.clearForm()  })
     }
+
     handleCloseGenerarVenta = () => {
         const { modal } = this.state
         modal.venta = false
         this.setState({ ...this.state, modal, form: this.clearForm()  })
     }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -112,12 +114,14 @@ export default class SolicitudFacturacionTabla extends Component{
         })
         return form;
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
         this.setState({...this.state, form})
     }
+
     updateConcepto = value => { this.onChange({ target: { value: value, name: 'concepto' } }) } 
     updateFormaPago= value => { this.onChange({ target: { value: value, name: 'forma_pago' } }) }
     updateTipoPago = value => { this.onChange({ target: { value: value, name: 'tipo_pago' } }) }
@@ -137,6 +141,7 @@ export default class SolicitudFacturacionTabla extends Component{
             </tr>
         )
     }
+
     onChangeAdjunto = e => {
         const { form } = this.state
         const { options } = this.props
@@ -247,6 +252,7 @@ export default class SolicitudFacturacionTabla extends Component{
             form
         })
     }
+
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -266,17 +272,32 @@ export default class SolicitudFacturacionTabla extends Component{
             form
         })
     }
+
     onSubmit = e => {
-        // e.preventDefault()
         const { onSubmit } = this.props
+        const { form, modal } = this.state
+        modal.factura = false
+        let arreglo = []
+        arreglo.push(
+            new Promise((resolve, reject) => {
+                onSubmit(form).then(function () {
+                    resolve()
+                }).catch(function (error) { });
+            })
+        )
+        Promise.all(arreglo).then(values => { this.setState({ ...this.state, modal }) }).catch(err => console.error(err))
+    }
+
+    onSubmitGenerarVenta = () => {
+        const { onSubmitGenerarVenta } = this.props
         const { form } = this.state
-        onSubmit(form)
-        this.setState({ ...this.state, modal: false })
+        console.log(`FORM`, form)
+        alert(`On submit generar venta`)
     }
 
     render(){
         const { modal, form } = this.state
-        const { options, solicitudes, onSubmitGenerarVenta, deleteSolicitud } = this.props
+        const { options, solicitudes, deleteSolicitud } = this.props
         return(
             <div>
                 <Card className="card-custom gutter-b card-stretch">
@@ -512,7 +533,7 @@ export default class SolicitudFacturacionTabla extends Component{
                     </Form>
                 </Modal>
                 <Modal size = 'xl' show = { modal.venta } title = 'ADJUNTAR FACTURA' handleClose = { this.handleCloseGenerarVenta } >
-                <Form id="form-generar-factura" onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmitGenerarVenta, e, 'form-generar-factura') } } >  
+                    <Form id="form-generar-factura" onSubmit={ (e) => { e.preventDefault(); validateAlert(this.onSubmitGenerarVenta, e, 'form-generar-factura') } } >  
                         <Row className="form-group mx-0 form-group-marginless mt-5">
                             <Col md="4" className="text-center align-self-center">
                                 <div className="d-flex justify-content-center" style={{ height: '1px' }}>
@@ -637,7 +658,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                 onClick={
                                     (e) => {
                                         e.preventDefault();
-                                        validateAlert(onSubmitGenerarVenta, e, 'form-generar-factura')
+                                        validateAlert(this.onSubmitGenerarVenta, e, 'form-generar-factura')
                                     }
                                 }
                                 text="ENVIAR" />
