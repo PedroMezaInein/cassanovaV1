@@ -4,26 +4,42 @@ import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
+import { setOptions } from '../../../functions/setters'
 
 class VentasForm extends Component {
 
     updateCliente = value => {
-        const { onChange, setOptions, form, data } = this.props
+        const { onChange, setOptions: propSetOptions, form, data, options } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
         onChange({ target: { value: '', name: 'proyecto' } })
         onChange({ target: { value: '', name: 'contrato' } })
         const { options: { clientes } } = this.props
 
+        let aux2 = []
+
         clientes.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
-                setOptions('proyectos', element.proyectos)
-                setOptions('contratos', element.contratos)
+                element.proyectos.forEach((auxiliar) => {
+                    aux2.push(auxiliar)
+                })
+                propSetOptions('contratos', element.contratos)
                 if (form.rfc !== '') {
                     onChange({ target: { value: '', name: 'contrato' } })
                 }
             }
             return false
         })
+
+        var hash = {};
+        aux2 = aux2.filter(function(current) {
+            var exists = !hash[current.id];
+                hash[current.id] = true;
+            return exists;
+        });
+
+        propSetOptions('proyectos', aux2)
+
+        /* let aux = options.clientes */
 
         data.clientes.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
