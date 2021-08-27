@@ -1675,13 +1675,14 @@ class TicketDetails extends Component {
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos } = this.state
         const { formulario } = this.props
+        const { access_token } = this.props.authUser
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
                     /* ---------------------------------- DATOS --------------------------------- */
                     data = { ticket } options = { options } formulario = { formularios } presupuesto = { presupuesto } datos = { data }
                     solicitudes = { solicitudes } aux_estatus = { aux_estatus } aux_presupuestos={aux_presupuestos} title={title} modal={modal} key={key} 
-                    activeKeyNav={activeKeyNav} modalSol = { modal.solicitud } formeditado={formeditado}
+                    activeKeyNav={activeKeyNav} modalSol = { modal.solicitud } formeditado={formeditado} at = { access_token }
                     /* -------------------------------- FUNCIONES ------------------------------- */
                     openModalWithInput = { this.openModalWithInput }  changeEstatus = { this.changeEstatus }  addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick }  onChange = { this.onChangeSwal }  setData = { this.setData }  setOptions = { this.setOptions }
@@ -1695,8 +1696,8 @@ class TicketDetails extends Component {
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
-                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitud = { this.deleteSolicitudAxios } 
-                    addVenta = { this.addVentaAxios } />
+                    addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitudFactura = { this.deleteSolicitudAxios } 
+                    addVenta = { this.addVentaAxios } getSolicitudes = { this.getSolicitudesAxios } />
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
                     <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>

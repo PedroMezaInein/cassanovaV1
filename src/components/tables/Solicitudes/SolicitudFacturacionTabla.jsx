@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { Card, Form, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap';
 import { InputMoneyGray, InputGray, SelectSearchGray, Button, CalendarDay, FileInput } from '../../form-components';
 import { Modal } from '../../singles';
-import { RFC } from '../../../constants'
-import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert, deleteAlert } from '../../../functions/alert'
+import { RFC, URL_DEV } from '../../../constants'
+import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert, deleteAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { setMoneyTableSinSmall, setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
+import axios from 'axios'
+import { setSingleHeader } from '../../../functions/routers';
 
 export default class SolicitudFacturacionTabla extends Component{
 
@@ -289,13 +291,40 @@ export default class SolicitudFacturacionTabla extends Component{
         Promise.all(arreglo).then(values => { this.setState({ ...this.state, modal }) }).catch(err => console.error(err))
     }
 
-    onSubmitGenerarVenta = () => {
-        const { onSubmitGenerarVenta: submiting } = this.props
-        
-        const { form, id } = this.state
-        console.log(`FORM: ${id}`, form)
-        submiting(id, form)
-        /* alert(`On submit generar venta`) */
+    onSubmitGenerarVenta = async() => {
+        const { at } = this.props
+        const { form } = this.state
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/administracion/facturas`, form.facturaObject, 
+            { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { factura } = response.data
+                if(factura)
+                    this.addNewVentaAxios(factura)
+                else
+                    this.generateNewFactura()
+            }, (error) => {  printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    addNewVentaAxios = async(factura) => {
+        const { at, ticket, getSolicitudes } = this.props
+        let { form, id, modal } = this.state
+        waitAlert()
+        await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-factura/${id}/venta/${factura.id}`, form, 
+            { headers: setSingleHeader(at) }).then(
+            (response) => {
+                modal.venta = false
+                this.setState({...this.state, modal})
+                doneAlert(`Venta generada con éxito`,  () => { getSolicitudes('facturacion') } )
+            }, (error) => {  printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
 
     render(){
