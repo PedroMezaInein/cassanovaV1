@@ -8,7 +8,7 @@ import { setMoneyTableSinSmall, setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import { setSingleHeader } from '../../../functions/routers';
-
+import S3 from 'react-aws-s3';
 export default class SolicitudFacturacionTabla extends Component{
 
     state = {
@@ -302,7 +302,7 @@ export default class SolicitudFacturacionTabla extends Component{
                 if(factura)
                     this.addNewVentaAxios(factura)
                 else
-                    this.generateNewFactura()
+                    this.submitFacturaAxios()
             }, (error) => {  printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -316,10 +316,89 @@ export default class SolicitudFacturacionTabla extends Component{
         waitAlert()
         await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-factura/${id}/venta/${factura.id}`, form, 
             { headers: setSingleHeader(at) }).then(
-            (response) => {
+            async (response) => {
+                const { venta } = response.data
                 modal.venta = false
                 this.setState({...this.state, modal})
+                if(form.adjuntos.pago.files.length){
+                    await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(at) }).then(
+                        (response) => {
+                            const { alma } = response.data
+                            let filePath = `ventas/${venta.id}/pagos/`
+                            let auxPromises  = form.adjuntos.pago.files.map((file) => {
+                                return new Promise((resolve, reject) => {
+                                    new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                                        .then((data) =>{
+                                            const { location,status } = data
+                                            if(status === 204) resolve({ name: file.name, url: location })
+                                            else reject(data)
+                                        }).catch(err => reject(err))
+                                })
+                            })
+                            Promise.all(auxPromises).then(values => { this.addPagoAxios(values, venta.id)}).catch(err => console.error(err))
+                        }, (error) => { printResponseErrorAlert(error) }
+                    ).catch((error) => {
+                        errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                        console.error(error, 'error')
+                    })
+                }
                 doneAlert(`Venta generada con éxito`,  () => { getSolicitudes('facturacion') } )
+            }, (error) => {  printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    addPagoAxios = async(files, id) => {
+        const { at } = this.props
+        let form = {}
+        form.archivos = files
+        form.type = 'pago'
+        await axios.post(`${URL_DEV}v2/proyectos/ventas/${id}/adjuntos-url`, form, 
+            { headers: setSingleHeader(at) }).then(
+            (response) => {
+            }, (error) => {  printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    submitFacturaAxios = async() => {
+        const { form } = this.state
+        const { at } = this.props
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { alma } = response.data
+                let filePath = `facturas/ventas/`
+                let auxPromises  = form.adjuntos.factura.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location })
+                                else reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addNewFacturaAxios(values)}).catch(err => console.error(err))        
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    addNewFacturaAxios = async(files) => {
+        const { form } = this.state
+        const { at } = this.props
+        form.archivos = files
+        await axios.post(`${URL_DEV}v2/administracion/facturas`, form, 
+            { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { factura } = response.data
+                this.addNewVentaAxios(factura)
             }, (error) => {  printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
