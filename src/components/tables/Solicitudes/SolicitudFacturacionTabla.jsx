@@ -3,8 +3,8 @@ import { Card, Form, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap';
 import { InputMoneyGray, InputGray, SelectSearchGray, Button, CalendarDay, FileInput } from '../../form-components';
 import { Modal } from '../../singles';
 import { RFC, URL_DEV } from '../../../constants'
-import { errorAlert, waitAlert, createAlert, errorAlertRedirectOnDissmis, validateAlert, deleteAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
-import { setMoneyTableSinSmall, setOptions } from '../../../functions/setters'
+import { errorAlert, waitAlert, validateAlert, deleteAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { setMoneyTableSinSmall } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import { setSingleHeader } from '../../../functions/routers';

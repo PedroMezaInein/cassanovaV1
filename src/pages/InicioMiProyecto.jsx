@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../constants'
 import { setOptions, setEmpresaLogo, dayDMY } from '../functions/setters'
-import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, questionAlert, doneAlert } from '../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../functions/alert'
 import { connect } from 'react-redux'
 import { SelectSearchGray, InputGray, Button } from '../components/form-components'
-import { Nav, Navbar, Tab, Col, Row, NavDropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Nav, Navbar, Tab, Col, Row, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import moment from 'moment';
 import Swal from 'sweetalert2'
 import 'moment/locale/es';
