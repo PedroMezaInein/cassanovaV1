@@ -370,6 +370,15 @@ class TicketView extends Component {
         }
         return ''
     }
+
+    getPagado = () => {
+        const { data, presupuesto } = this.props
+        let total = presupuesto.totalPresupuesto - data.totalVentas;
+        if(total > 1)
+            return false
+        return true
+    }
+
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, 
@@ -721,7 +730,7 @@ class TicketView extends Component {
                                                                             <ItemSlider items={[{ url: data.reporte_url, name: 'reporte.pdf' }]} item='' />
                                                                         </div>
                                                                         {
-                                                                            data.estatus_ticket.estatus !== 'Terminado' ?
+                                                                            data.estatus_ticket.estatus !== 'Terminado'  && this.getPagado() ? 
                                                                                 <div className="text-center mt-5">
                                                                                     <Button icon='' className = "btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px"  
                                                                                         onClick={(e) => { e.preventDefault(); openModalReporte() }} text = 'ENVIAR AL CLIENTE' 
