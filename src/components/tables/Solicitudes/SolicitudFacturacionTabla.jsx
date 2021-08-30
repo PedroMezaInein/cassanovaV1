@@ -316,9 +316,9 @@ export default class SolicitudFacturacionTabla extends Component{
                     </Card.Header>
                     <Card.Body className = 'p-9 pt-0'>
                         <div className="table-responsive">
-                            <table className="table table-vertical-center table-sol-fact box-shadow-53">
+                            <table className="table table-vertical-center table-sol-fact box-shadow-53 bg-light">
                                 <thead>
-                                    <tr className="font-weight-bolder text-center white-space-nowrap">
+                                    <tr className="font-weight-bolder text-center white-space-nowrap bg-white">
                                         <th></th>
                                         <th>Emisor</th>
                                         <th>Receptor</th>
