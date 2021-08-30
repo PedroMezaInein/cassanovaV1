@@ -549,7 +549,6 @@ export default class SolicitudFacturacionTabla extends Component{
                                     onChange={this.onChange}
                                     iconclass="far fa-file-alt"
                                     messageinc="Incorrecto. Ingresa la razón social."
-                                    maxLength="13"
                                 />
                             </Col>
                             <Col md="4">
