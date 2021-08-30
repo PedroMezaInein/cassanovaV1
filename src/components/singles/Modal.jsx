@@ -11,7 +11,7 @@ class modal extends Component {
     }
 
     render() {
-        const { show, handleClose, children, title, size, icon, customcontent, contentcss, classBody } = this.props
+        const { show, handleClose, children, title, size, icon, customcontent, contentcss, classBody, bgHeader } = this.props
 
         return (
             <>
@@ -23,7 +23,7 @@ class modal extends Component {
                     centered={customcontent?false:true}
                     contentClassName={contentcss}
                 >
-                    <Modal.Header>
+                    <Modal.Header className={bgHeader}>
                         <h5 className="modal-title" id="exampleModalLabel">
 
                             {title}

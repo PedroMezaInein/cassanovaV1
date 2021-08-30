@@ -2,17 +2,17 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../constants'
 import { setOptions, setEmpresaLogo, dayDMY } from '../functions/setters'
-import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, questionAlert, doneAlert } from '../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../functions/alert'
 import { connect } from 'react-redux'
 import { SelectSearchGray, InputGray, Button } from '../components/form-components'
-import { Nav, Navbar, Tab, Col, Row, NavDropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Nav, Navbar, Tab, Col, Row, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import moment from 'moment';
 import Swal from 'sweetalert2'
 import 'moment/locale/es';
 import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
-import { DetailsInstalacion } from '../components/forms'
+import { DetailsInstalacion, FormFilterTickets } from '../components/forms'
 import TableTickets from '../components/forms/MiProyecto/TableTickets'
 import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
 import $ from "jquery";
@@ -44,7 +44,8 @@ class InicioMiProyecto extends Component {
             single : false,
             details: false,
             tickets: false,
-            mantenimiento: false
+            mantenimiento: false,
+            filterTickets:false
         },
         showadjuntos: [
             {
@@ -111,6 +112,15 @@ class InicioMiProyecto extends Component {
                     placeholder: 'Fotos del incidente',
                     files: []
                 }
+            },
+            filterTickets: {
+                filter: [],
+                estatus: '',
+                fechaInicio: new Date(),
+                fechaFin: new Date(),
+                tipo_trabajo: '',
+                descripcion: '',
+                proyecto: ''
             }
         },
         options: {
@@ -129,6 +139,12 @@ class InicioMiProyecto extends Component {
                 { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
                 { label: 'COSTO', value: 'costo', name:'COSTO' },
                 { label: 'FECHA', value: 'fecha', name:'FECHA' },
+            ],
+            filterTickets:[
+                { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
+                { label: 'TIPO DE TRABAJO', value: 'tipo_trabajo', name:'TIPO DE TRABAJO' },
+                { label: 'DESCRIPCIÓN', value: 'descripcion', name:'DESCRIPCIÓN' },
+                { label: 'FECHA', value: 'fecha', name:'FECHA' }
             ]
         },
         adjuntos: [
@@ -314,7 +330,8 @@ class InicioMiProyecto extends Component {
             total_paginas: 0,
             value: "en_contacto"
         },
-        mantenimiento: ''
+        mantenimiento: '',
+        tipoTickets: 'proyecto'
     }
     
     componentDidMount() {
@@ -465,6 +482,13 @@ class InicioMiProyecto extends Component {
         form[name] = value
         this.setState({...this.state, form})
     }
+    
+    onChangeType = (e, formulario) => {
+        const { value, name } = e.target
+        const { form } = this.state
+        form[formulario][name] = value
+        this.setState({...this.state, form})
+    }
 
     onChangeRange = range => {
         const { startDate, endDate } = range
@@ -473,7 +497,13 @@ class InicioMiProyecto extends Component {
         form.fechaFin = endDate
         this.setState({ ...this.state, form })
     }
-
+    onChangeRangeFilter = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.filterTickets.fechaInicio = startDate
+        form.filterTickets.fechaFin = endDate
+        this.setState({ ...this.state, form })
+    }
     handleChange = (files, item) => {
         if(files.length)
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
@@ -542,20 +572,39 @@ class InicioMiProyecto extends Component {
         modal.details = true
         this.setState({ ...this.state, modal, formeditado: 0, ticket: ticket })
     }
-
+    openFilterTickets = () => {
+        const { modal, tipoTickets, options } = this.state
+        modal.filterTickets = true
+        let array = []
+        if(tipoTickets === 'all'){
+            options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
+        }
+        this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0})
+    }
     handleClose = () => {
         const { modal } = this.state
         modal.tickets = false
         modal.details = false
         modal.single = false
         modal.mantenimiento = false
+        modal.filterTickets = false
         this.setState({...this.state, form: this.clearForm(), modal, ticket: '', mantenimiento: '' })
     }
-
     onClickMantenimiento = mantenimiento => {
         const { modal } = this.state
         modal.mantenimiento = true
         this.setState({...this.state, modal, mantenimiento: mantenimiento})
+    }
+    handleCloseFilter = () => {
+        const { modal, form } = this.state
+        modal.filterTickets = false
+        form.filterTickets.filter = []
+        form.filterTickets.estatus = ''
+        form.filterTickets.tipo_trabajo = ''
+        form.filterTickets.descripcion = ''
+        form.filterTickets.fechaInicio = new Date()
+        form.filterTickets.fechaFin = new Date()
+        this.setState({...this.state, modal, form })
     }
 
     // changeEstatus = estatus => {
@@ -827,11 +876,11 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    getTicketsPage = async (location) => {
+    getTicketsPage = async (location, tipo) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { tickets_info, proyecto } = this.state
-        await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}`, { headers: setSingleHeader(access_token) }).then(
+        await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}/${tipo}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { total, page, tickets } = response.data
@@ -887,7 +936,26 @@ class InicioMiProyecto extends Component {
             console.error(error, 'error')
         })
     }
-    
+    filterTickets = async () => {
+        waitAlert()
+        // const { access_token } = this.props.authUser
+        // const { tickets, form } = this.state
+        // await axios.put(`${URL_DEV}v2/mi-proyecto/${proyecto.id}`, form, { headers: setSingleHeader(access_token) }).then(
+        //     (response) => {
+        //         const { mantenimientos } = response.data
+        //         let aux = []
+        //         mantenimientos.forEach((mantenimiento) => {
+        //             aux.push({mantenimiento: mantenimiento, instalacion: mantenimiento.instalacion})
+        //         })
+        //         this.setState({...this.state, mantenimientos: aux})
+        //         Swal.close()
+        //         /* doneAlert(response.data.message !== undefined ? response.data.message : 'Tabla filtrada con éxito.') */
+        //     }, (error) => { printResponseErrorAlert(error) }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.error(error, 'error')
+        // })
+    }
     cleanForm = () => {
         const { form } = this.state
         form.rubro = []
@@ -917,8 +985,12 @@ class InicioMiProyecto extends Component {
             history.push('/login')
         })
     }
+    openTicketsP = () => { this.getTicketsPage('', 'proyecto') }
+    
+    openAllTickets = () => { this.getTicketsPage('', 'all') }
+
     render() {
-        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento } = this.state
+        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets } = this.state
         const { user } = this.props.authUser
         return (
             <div>
@@ -1325,14 +1397,35 @@ class InicioMiProyecto extends Component {
                                     con el objetivo de brindarte una pronta solución.
                                 </div>
                                 <div className="container">
-                                    <div className="d-flex justify-content-end mb-10">
-                                        <span className='btn btn-sm btn-transparent btn-hover-light-info text-info font-weight-bolder font-size-13px box-shadow-button' 
-                                            onClick={(e) => { e.preventDefault(); this.openModalLevantamiento() }}>
-                                            <i className="la la-file-archive icon-xl text-info"></i> NUEVO TICKET
-                                        </span>
+                                    <div className="text-center">
+                                        <div className="btn-group btn-group-sm">
+                                            <button type="button" className={`button-tickets-list ${tipoTickets === 'proyecto' ? 'active' : 'draw'}`} onClick={this.openTicketsP}>Tickets del proyecto</button>
+                                            <button type="button" className={`button-tickets-list ${tipoTickets === 'all' ? 'active' : 'draw'}`} onClick={this.openAllTickets}>Todos los tickets</button>
+                                        </div>
                                     </div>
-                                    <TableTickets tickets = { tickets } openModalSee = { this.openModalSee }  openModalDetalles = { this.openModalDetalles } 
-                                        tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket } />
+                                    {
+                                        tipoTickets === 'proyecto' ?
+                                            <>
+                                                <div className="d-flex justify-content-end mb-10">
+                                                    <span className='btn btn-sm btn-transparent btn-hover-light-success text-success font-weight-bolder font-size-13px box-shadow-button' 
+                                                        onClick={(e) => { e.preventDefault(); this.openModalLevantamiento() }}>
+                                                        <i className="la la-file-archive icon-xl text-success"></i> NUEVO TICKET
+                                                    </span>
+                                                    <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button' 
+                                                        onClick={(e) => { e.preventDefault(); this.openFilterTickets() }}>
+                                                        <i className="la la-filter icon-xl text-primary"></i> Filtrar
+                                                    </span>
+                                                </div>
+                                                <TableTickets tickets = { tickets } openModalSee = { this.openModalSee }  openModalDetalles = { this.openModalDetalles } 
+                                                    tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket }
+                                                />
+                                            </>
+                                        :
+                                        <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button' 
+                                            onClick={(e) => { e.preventDefault(); this.openFilterTickets() }}>
+                                            <i className="la la-filter icon-xl text-primary"></i> Filtrar
+                                        </span>
+                                    }
                                 </div>
                             </Element>       
                             {
@@ -1514,6 +1607,9 @@ class InicioMiProyecto extends Component {
                             <DetailsInstalacion instalacion = { mantenimiento } />
                         </Modal>
                 }
+                <Modal size="lg" title="Filtrado de tickets" show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" bgHeader="border-0">
+                    <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } onChangeRange={this.onChangeRangeFilter} onSubmit={this.filterTickets} tipoTickets={tipoTickets}/>
+                </Modal>
             </div>
         )
     }
