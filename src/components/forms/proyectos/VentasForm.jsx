@@ -4,12 +4,10 @@ import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
-import { setOptions } from '../../../functions/setters'
-
 class VentasForm extends Component {
 
     updateCliente = value => {
-        const { onChange, setOptions: propSetOptions, form, data, options } = this.props
+        const { onChange, setOptions: propSetOptions, form, data, /* options */ } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
         onChange({ target: { value: '', name: 'proyecto' } })
         onChange({ target: { value: '', name: 'contrato' } })

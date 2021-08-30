@@ -2,14 +2,14 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
-import { Button, InputGray } from '../../../../components/form-components'
+import { Button } from '../../../../components/form-components'
 import { URL_DEV } from '../../../../constants'
 import SVG from "react-inlinesvg"
 import { setSingleHeader, toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG, setContactoIcon } from '../../../../functions/setters'
 import { replaceAll } from '../../../../functions/functions'
 import axios from 'axios'
-import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert, customInputAlert } from '../../../../functions/alert'
+import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral } from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
@@ -17,7 +17,6 @@ import Pagination from "react-js-pagination"
 import Scrollbar from 'perfect-scrollbar-react'
 import 'perfect-scrollbar-react/dist/style.min.css'
 import $ from "jquery"
-import { Update } from '../../../../components/Lottie'
 class LeadInfo extends Component {
     state = {
         solicitud: '',
@@ -1448,7 +1447,7 @@ class LeadInfo extends Component {
         )
     }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav, solicitud } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav } = this.state
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container

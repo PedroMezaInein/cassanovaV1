@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../constants'
 import { setOptions, setEmpresaLogo, dayDMY } from '../functions/setters'
-import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, questionAlert, doneAlert } from '../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../functions/alert'
 import { connect } from 'react-redux'
 import { SelectSearchGray, InputGray, Button } from '../components/form-components'
-import { Nav, Navbar, Tab, Col, Row, NavDropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Nav, Navbar, Tab, Col, Row, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import moment from 'moment';
 import Swal from 'sweetalert2'
 import 'moment/locale/es';
@@ -558,10 +558,10 @@ class InicioMiProyecto extends Component {
         this.setState({...this.state, modal, mantenimiento: mantenimiento})
     }
 
-    changeEstatus = estatus => {
-        const { ticket } = this.state
-        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-    }
+    // changeEstatus = estatus => {
+    //     const { ticket } = this.state
+    //     questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+    // }
 
     nextPageTicket = (e) => {
         e.preventDefault()
@@ -850,22 +850,22 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    changeEstatusAxios = async (data) => {
-        const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { proyecto } = this.state
-                this.handleClose()
-                if (data.estatus) {
-                    doneAlert('El ticket fue actualizado con éxito.')
-                    this.getMiProyectoAxios(proyecto.id)
-                }
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+    // changeEstatusAxios = async (data) => {
+    //     const { access_token } = this.props.authUser
+    //     await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+    //         (response) => {
+    //             const { proyecto } = this.state
+    //             this.handleClose()
+    //             if (data.estatus) {
+    //                 doneAlert('El ticket fue actualizado con éxito.')
+    //                 this.getMiProyectoAxios(proyecto.id)
+    //             }
+    //         }, (error) => { printResponseErrorAlert(error) }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.error(error, 'error')
+    //     })
+    // }
 
     filtrarTabla = async () => {
         waitAlert()
@@ -1407,7 +1407,7 @@ class InicioMiProyecto extends Component {
                     <div className="mt-4">
                         { ticket ? <ItemSlider items = { ticket.presupuesto } item = 'presupuesto' /> : '' }
                     </div>
-                    <div className="d-flex justify-content-center mt-5">
+                    {/* <div className="d-flex justify-content-center mt-5">
                         {
                             ticket ?
                                 ticket.estatus_ticket ?
@@ -1424,117 +1424,85 @@ class InicioMiProyecto extends Component {
                                 : ''
                             : ''
                         }
-                    </div>
+                    </div> */}
                 </Modal>
-                <Modal size = "lg" title = "Detalles del levantamiento" show = { modal.details } handleClose = { this.handleClose } customcontent = { true } 
-                    contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable" >
-                    <Tab.Container defaultActiveKey = "first">
-                        <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x mt-2">
-                            <Nav.Item>
-                                <Nav.Link eventKey="first"> <span className="nav-text font-weight-bold">Información general</span></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <NavDropdown title={
-                                    <>
-                                        <span className="nav-text font-weight-bold ml-0">REPORTES FOTOGRÁFICOS</span>
-                                    </>}>
-                                    <NavDropdown.Item className="ml-0 proyecto" eventKey="second">PETICIONES</NavDropdown.Item>
-                                    <NavDropdown.Item className="ml-0 proyecto" eventKey="third">TRABAJOS REALIZADOS</NavDropdown.Item>
-                                </NavDropdown>
-                            </Nav.Item>
-                        </Nav>
-                        <Tab.Content>
-                            {
-                                ticket ?
-                                    <>
-                                        <Tab.Pane eventKey="first" className="mt-5">
-                                            <p className="text-justify font-size-lg my-7 font-weight-light">
-                                                <span className="font-weight-bold mr-2">Descripción de la solición:</span>{ticket.descripcion_solucion !== "null" ? ticket.descripcion_solucion : ''}
-                                            </p>
-                                            <div className="table-responsive mt-5">
-                                                <div className="list min-w-500px" data-inbox="list">
-                                                    <div className="d-flex justify-content-center align-items-center list-item my-5">
-                                                        <div className={ticket.recibe !== "null" ? "col-md-4 d-flex align-items-center justify-content-center px-0" : "col-md-6 d-flex align-items-center justify-content-center px-0"}>
-                                                            <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
-                                                                <div className="symbol-label">
-                                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            {
-                                                                ticket ?
-                                                                    ticket.tecnico_asiste ?
-                                                                        <div className="d-flex flex-column font-weight-bold">
-                                                                            <div className="text-dark mb-1 ">{ticket.tecnico_asiste}</div>
-                                                                            <span className="text-muted ">TÉCNICO QUE ASISTE</span>
-                                                                        </div>
-                                                                        : ''
-                                                                    : ''
-                                                            }
-                                                        </div>
-                                                        <div className={ticket.recibe !== "null" ? "col-md-4 d-flex align-items-center justify-content-center px-0" : "col-md-6 d-flex align-items-center justify-content-center px-0"}>
-                                                            <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
-                                                                <div className="symbol-label">
-                                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="d-flex flex-column font-weight-bold">
-                                                                <div className="text-dark mb-1 ">
-                                                                    {dayDMY(ticket.fecha_programada)}
-                                                                </div>
-                                                                <span className="text-muted ">FECHA PROGRAMADA</span>
-                                                            </div>
-                                                        </div>
-                                                        {
-                                                            ticket.recibe !== "null" ?
-                                                                <div className={ticket.recibe !== "null" ? "col-md-4 d-flex align-items-center justify-content-center px-0" : "col-md-6 d-flex align-items-center justify-content-center px-0"}>
-                                                                    <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
-                                                                        <div className="symbol-label">
-                                                                            <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                                                <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
-                                                                            </span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="d-flex flex-column font-weight-bold">
-                                                                        <div className="text-dark mb-1 ">
-                                                                            {ticket.recibe !== "null" ? ticket.recibe : ''}
-                                                                        </div>
-                                                                        <span className="text-muted ">¿QUIÉN RECIBE?</span>
-                                                                    </div>
-                                                                </div>
-                                                                : ''
-                                                        }
-
+                <Modal size="lg" title="Detalles del levantamiento" show={modal.details} handleClose={this.handleClose} customcontent={true}
+                    contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                    {
+                        ticket ?
+                            <>
+                                <div className="d-flex justify-content-center align-items-center my-5 row mx-0">
+                                    {
+                                        ticket.fecha_programada ?
+                                            <div className="col-md-6 d-flex align-items-center justify-content-center px-0">
+                                                <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
+                                                    <div className="symbol-label">
+                                                        <span className="svg-icon svg-icon-primary svg-icon-lg">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
+                                                        </span>
                                                     </div>
                                                 </div>
+                                                <div className="d-flex flex-column font-weight-bold">
+                                                    <div className="text-dark mb-1">{dayDMY(ticket.fecha_programada)}</div>
+                                                    <span className="text-muted ">FECHA PROGRAMADA</span>
+                                                </div>
                                             </div>
-                                        </Tab.Pane>
-                                        <Tab.Pane eventKey="second">
-                                            {
-                                                ticket ?
-                                                    <div className="my-3">
-                                                        <ItemSlider items = { ticket.reporte_problema_reportado } item = 'presupuesto' />
+                                            : <></>
+                                    }
+                                    {
+                                        ticket.tecnico_asiste ?
+                                            <div className="col-md-6 d-flex align-items-center justify-content-center px-0">
+                                                <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
+                                                    <div className="symbol-label">
+                                                        <span className="svg-icon svg-icon-primary svg-icon-lg">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
+                                                        </span>
                                                     </div>
-                                                : ''
-                                            }
-                                        </Tab.Pane>
-                                        <Tab.Pane eventKey="third">
-                                            {
-                                                ticket ?
-                                                    <div className="my-3">
-                                                        <ItemSlider items = { ticket.reporte_problema_solucionado } item = 'presupuesto' />
+                                                </div>
+                                                <div className="d-flex flex-column font-weight-bold">
+                                                    <div className="text-dark mb-1">{ticket.tecnico_asiste}</div>
+                                                    <span className="text-muted ">TÉCNICO QUE ASISTE</span>
+                                                </div>
+                                            </div>
+                                            : <></>
+                                    }
+                                    {/* {
+                                        ticket.recibe !== "null" ?
+                                            <div className="col-md-6 d-flex align-items-center justify-content-center px-0 mt-5">
+                                                <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
+                                                    <div className="symbol-label">
+                                                        <span className="svg-icon svg-icon-primary svg-icon-lg">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
+                                                        </span>
                                                     </div>
-                                                : ''
-                                            }
-                                        </Tab.Pane>
-                                    </>
-                                : ''
-                            }
-                        </Tab.Content>
-                    </Tab.Container>
+                                                </div>
+                                                <div className="d-flex flex-column font-weight-bold">
+                                                    <div className="text-dark mb-1">{ticket.recibe}</div>
+                                                    <span className="text-muted ">¿QUIÉN RECIBE?</span>
+                                                </div>
+                                            </div>
+                                            : <></>
+                                    } */}
+                                </div>
+                                {
+                                    ticket.descripcion_solucion !== "null"?
+                                        <p className="text-justify font-size-lg mt-7 mb-0 font-weight-light">
+                                            <span className="font-weight-bold mr-2">Descripción de los trabajos realizados:</span>{ ticket.descripcion_solucion }
+                                        </p>
+                                    :<></>
+                                }
+                                {
+                                    ticket.reporte_url?
+                                        <div className="text-center mt-5">
+                                            <button type="button" href={proyecto.reporte_url} target='_blank' rel="noopener noreferrer" className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px text-uppercase btn btn-primary">
+                                                <i className="las la-file-pdf icon-xl mr-2 px-0 text-success"></i>VER REPORTE
+                                            </button>
+                                        </div>
+                                    :<></>
+                                }
+                            </>
+                            : ''
+                    }
                 </Modal>
                 {
                     mantenimiento !== '' &&

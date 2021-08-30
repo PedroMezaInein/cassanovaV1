@@ -742,7 +742,10 @@ export const PROYECTOS_TICKETS = [
     { Header: 'Proyecto', accessor: 'proyectos' },
     { Header: 'Solicitó', accessor: 'solicito' },
     { Header: 'Tipo de trabajo', accessor: 'tipo_trabajo' },
-    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'F. solicitud', accessor: 'fecha', customRender: true },
+    { Header: 'F. termino', accessor: 'fecha_termino' },
+    { Header: 'Costo del presupuesto', accessor: 'costo_presupuesto' },
+    { Header: 'Monto pagado', accessor: 'monto_pagado' },
     { Header: 'Descripción', accessor: 'descripcion' },
     { Header: 'Motivo de cancelación', accessor: 'motivo' }
 ]
