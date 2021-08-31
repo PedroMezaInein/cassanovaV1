@@ -91,7 +91,7 @@ class LeadContacto extends Component {
                                                         lead.empresa.isotipos.length > 0 ?
                                                             lead.empresa.isotipos.map((isotipo, key) => {
                                                                 return (
-                                                                    <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                    <OverlayTrigger rootClose key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
                                                                         <div className="symbol-group symbol-hover d-flex justify-content-center">
                                                                             <div className="symbol symbol-40 symbol-circle">
                                                                                 <img alt="Pic" src={isotipo.url} />
@@ -154,7 +154,7 @@ class LeadContacto extends Component {
                                                         {
                                                             lead.prospecto.vendedores.map((vendedor, index) => {
                                                                 return (
-                                                                    <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
+                                                                    <OverlayTrigger rootClose key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
                                                                         <div className="symbol symbol-35 symbol-circle">
                                                                             <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
                                                                         </div>
@@ -228,7 +228,7 @@ class LeadContacto extends Component {
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
+                                                    <OverlayTrigger rootClose overlay={<Tooltip>VER MÁS</Tooltip>}>
                                                         <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2">
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </span>

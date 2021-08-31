@@ -639,7 +639,7 @@ class ParrillasContenido extends Component {
         }
         return (
             <div className='pb-2'>
-                <OverlayTrigger overlay={
+                <OverlayTrigger rootClose overlay={
                     <Tooltip>
                         <span>
                             <span>

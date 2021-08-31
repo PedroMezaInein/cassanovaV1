@@ -11,7 +11,7 @@ export default class button extends Component {
             <>
                 {
                     tooltip ?
-                        <OverlayTrigger overlay={<Tooltip>{tooltip.text}</Tooltip>}>
+                        <OverlayTrigger rootClose overlay={<Tooltip>{tooltip.text}</Tooltip>}>
                             <Button id={id}type={type} onClick={onClick} className={`${className} text-uppercase`} {...props}>
                                 {
                                     <i className={only_icon}></i>

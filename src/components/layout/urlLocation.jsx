@@ -202,21 +202,21 @@ class UrlLocation extends Component {
                                         url === "leads/crm" &&
                                             <>
                                                 <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
-                                                    <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">BUSCAR LEAD</span></Tooltip>}>
+                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">BUSCAR LEAD</span></Tooltip>}>
                                                         <li className="nav-item mb-2" data-placement="right" onClick = { (e) => { e.preventDefault(); this.openModalBuscar() }}>
                                                             <span className="btn btn-sm btn-icon btn-bg-light btn-text-success btn-hover-success" >
                                                                 <i className="la la-search icon-xl"></i>
                                                             </span>
                                                         </li>
                                                     </OverlayTrigger>
-                                                    <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">DESCARGAR LEADS</span></Tooltip>}>
+                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">DESCARGAR LEADS</span></Tooltip>}>
                                                         <li className="nav-item mb-2" title="" data-placement="left"  onClick = { (e) => { e.preventDefault(); this.openModal() }} >
                                                             <span className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary">
                                                                 <i className="la la-file-excel icon-xl"></i>
                                                             </span>
                                                         </li>
                                                     </OverlayTrigger>
-                                                    <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">NUEVO LEAD</span></Tooltip>}>
+                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">NUEVO LEAD</span></Tooltip>}>
                                                         <li className="nav-item mb-2" data-placement="left" onClick={() => { this.changePageAdd('telefono') }}>
                                                             <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info">
                                                                 <i className="la la-user-plus icon-xl"></i>

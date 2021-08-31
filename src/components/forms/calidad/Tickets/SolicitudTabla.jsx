@@ -72,7 +72,7 @@ export default class SolicitudesTabla extends Component {
                                                         <td className="white-space-nowrap text-center">
                                                             {
                                                                 type !== 'compra' ?
-                                                                    <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>EDITAR</span></Tooltip>}>
+                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>EDITAR</span></Tooltip>}>
                                                                         <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-success btn-circle mr-2"
                                                                             onClick = { (e) => { e.preventDefault(); openModalEditar(type, sol); } } >
                                                                             <i className="las la-edit icon-xl" />
@@ -80,7 +80,7 @@ export default class SolicitudesTabla extends Component {
                                                                     </OverlayTrigger>
                                                                 : <></>
                                                             }
-                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
+                                                            <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
                                                                 <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-danger btn-circle"
                                                                     onClick = { (e) => { e.preventDefault(); 
                                                                         deleteAlert(`¿DESEAS ELIMINAR LA SOLICITUD DE ${type.toUpperCase()}?`, '', () => deleteSolicitud(sol.id, type))  } } >

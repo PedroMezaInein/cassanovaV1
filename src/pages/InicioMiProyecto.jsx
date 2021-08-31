@@ -635,7 +635,7 @@ class InicioMiProyecto extends Component {
         const { proyecto } = this.state
         let { extendedProps } = eventInfo.event._def
         return (
-            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {proyecto.nombre}</Tooltip>}>
+            <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {proyecto.nombre}</Tooltip>}>
                 <div className="text-hover container p-1 tarea" style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}} onClick={(e) => { e.preventDefault(); this.onClickMantenimiento(extendedProps) }}>
                         <div className="row mx-0 row-paddingless">
                             <div className="col-md-auto mr-1 text-truncate">

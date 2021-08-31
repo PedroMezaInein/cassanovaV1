@@ -430,7 +430,7 @@ class Checador extends Component {
                                                         diasNumber.map((element, key) => {
                                                             return(
                                                                 <td key={key}>
-                                                                    <OverlayTrigger overlay = { <Tooltip>
+                                                                    <OverlayTrigger rootClose overlay = { <Tooltip>
                                                                         {
                                                                             this.getDifHours(user, element)
                                                                         }

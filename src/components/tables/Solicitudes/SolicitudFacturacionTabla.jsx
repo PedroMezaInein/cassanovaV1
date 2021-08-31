@@ -459,14 +459,14 @@ export default class SolicitudFacturacionTabla extends Component{
                                                                         </div>
                                                                         :
                                                                         <div className="white-space-nowrap">
-                                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
+                                                                            <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
                                                                                 <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-danger btn-circle mr-2"
                                                                                         onClick = { (e) => { e.preventDefault(); 
                                                                                         deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA SOLICITUD?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteSolicitud(sol.id)) } } >
                                                                                     <i className="las la-trash-alt icon-xl " />
                                                                                 </div>
                                                                             </OverlayTrigger>
-                                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
+                                                                            <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
                                                                                 <span className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-info btn-circle" 
                                                                                     onClick = { () => { this.openModalGenerarVenta(sol.id) }}>
                                                                                     <i className="las la-file-invoice-dollar icon-lg"></i>

@@ -335,7 +335,7 @@ class TicketView extends Component {
                 break;
         }
         return(
-            <OverlayTrigger overlay={
+            <OverlayTrigger rootClose overlay={
                 <Tooltip className="mb-4 tool-time-line">
                     <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus === 'Aceptado/Rechazado' ?<span><span className="color-aceptado-presupuesto">Aceptado</span> <span className="font-weight-light">/</span> <span className="color-rechazado-presupuesto">Rechazado</span></span> : estatus} </div>
                     <div className="text-justify px-5 pb-3 mt-1">{details}</div>

@@ -543,7 +543,7 @@ class PlanTrabajo extends Component {
                             className = 'text-center position-relative p-0 text-hover' 
                             onClick = { (e) => { e.preventDefault(); this.clickedEvent(empresa.calendars[conteo][diaActual]) } } 
                             >
-                            <OverlayTrigger key={diaActual} overlay={
+                            <OverlayTrigger rootClose key={diaActual} overlay={
                                 <Tooltip className="tool-calendar">
                                     <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4"style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
                                         {empresa.calendars[conteo][diaActual].nombre}
