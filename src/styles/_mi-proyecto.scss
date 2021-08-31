@@ -770,3 +770,78 @@ a.ml-0.proyecto.dropdown-item {
     display: inline-block;
     margin: 0px 9px;
 }
+
+
+.button-tickets-list {
+    background: none;
+    border: 0;
+    box-sizing: border-box;
+    padding: 0.65rem 1rem;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 0 1px #012970;
+    color: #012970;
+    font-weight: 700;
+    position: relative;
+    vertical-align: middle;
+
+    &::before,
+    &::after {
+        box-sizing: inherit;
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.draw {
+    transition: color 0.25s;
+
+    &::before,
+    &::after {
+        border: 1px solid transparent;
+        width: 0;
+        height: 0;
+    }
+
+    &::before {
+        top: 0;
+        left: 0;
+    }
+
+    &::after {
+        bottom: 0;
+        right: 0;
+    }
+
+    &:hover {
+        color: #ff725e;
+    }
+    &:hover::before,
+    &:hover::after {
+        width: 100%;
+        height: 100%;
+    }
+
+    &:hover::before {
+        border-top-color: #ff725e;
+        border-right-color: #ff725e;
+        transition: width 0.25s ease-out, 
+        height 0.25s ease-out 0.25s;
+    }
+
+    &:hover::after {
+        border-bottom-color: #ff725e;
+        border-left-color: #ff725e;
+        transition: border-color 0s ease-out 0.5s,
+        width 0.25s ease-out 0.5s,
+        height 0.25s ease-out 0.75s;
+    }
+}
+
+button.button-tickets-list.active{
+    box-shadow: inset 0 0 20px rgba(255, 235, 207, 0.5), 0 0 20px rgba(255, 255, 255, 0.2)!important;
+    outline-offset: 15px!important;
+    color: #ff725e!important;
+    border: 1px solid #ff725e!important;
+}

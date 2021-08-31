@@ -46,7 +46,7 @@ class TableTickets extends Component {
                         <tbody>
                             {
                                 tickets.length === 0 ?
-                                    <tr className="text-dark-75 font-weight-normal text-center" >
+                                    <tr className="text-dark-75 font-weight-light text-center" >
                                         <td colSpan = "7">
                                             Aún no hay tickets levantados
                                         </td>
@@ -56,7 +56,7 @@ class TableTickets extends Component {
                             {
                                 tickets.map((ticket, key) => {
                                     return (
-                                        <tr className="text-dark-75 font-weight-normal text-center" key={key}>
+                                        <tr className="text-dark-75 font-weight-light text-center" key={key}>
                                             <td> { setLabelTable(ticket.estatus_ticket) } </td>
                                             <td> { this.formatDay(ticket.created_at) } </td>
                                             <td> { ticket.subarea ? ticket.subarea.nombre : '-' } </td>
@@ -76,8 +76,8 @@ class TableTickets extends Component {
                                                 {
                                                     ticket.presupuesto.length ?
                                                         <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>PRESUPUESTO</span></Tooltip>}>
-                                                            <span className={`btn btn-icon btn-sm ${ticket.estatus_ticket.estatus === "Aprobación pendiente" ? 'btn-light-warning pulse pulse-warning' : 'btn-light  btn-hover-primary'}`} onClick={(e) => { openModalSee(ticket) }}>
-                                                                <i className={`las la-file-invoice-dollar icon-xl text-${ticket.estatus_ticket.estatus === "Aprobación pendiente" ? '' : 'primary'} `}></i>
+                                                            <span className={`btn btn-icon btn-sm ${ticket.estatus_ticket.estatus === "Aprobación pendiente" ? 'btn-light-warning pulse pulse-warning' : 'btn-light  btn-hover-success'}`} onClick={(e) => { openModalSee(ticket) }}>
+                                                                <i className={`las la-file-invoice-dollar icon-xl text-${ticket.estatus_ticket.estatus === "Aprobación pendiente" ? '' : 'success'} `}></i>
                                                                 {
                                                                     ticket.estatus_ticket.estatus === "Aprobación pendiente" ?
                                                                     <span className="pulse-ring"></span>
