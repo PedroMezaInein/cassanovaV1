@@ -307,7 +307,7 @@ class NewTable extends Component{
         const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick, children, exportar_boton } = this.props
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
-                <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class` }>
+                <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
                     <div className = { `card-title ${customtitle}` } >
                         <h3 className={`card-label font-weight-bolder ${customlabel}`}> { title ? title : '' }
                             <span className={`d-block text-muted pt-2 font-size-sm ${customsubtitle}`}>
@@ -342,8 +342,9 @@ class NewTable extends Component{
                 </Card.Header>
                 <Card.Body id = { `${tableName}-card-body-id` } className = "pt-0">
                     {children}
-                    <table ref = 'main' className = "table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" 
-                        id = { tableName ? tableName : "kt_datatable2"} />
+                    <div className="table-responsive">
+                        <table ref = 'main' className = "table table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id = { tableName ? tableName : "kt_datatable2"} />
+                    </div>
                 </Card.Body>
             </Card>
         )
