@@ -3235,9 +3235,10 @@ table#calendario-proyectos tr:last-child td {
 .table-sol-fact{
     thead th {
         font-weight: 600;
-        color: #7e8299;
+        color: #4DB6AC;
         font-size: 1rem;
-        letter-spacing: 0.2rem;
+        letter-spacing: 0.3rem;
+        border-bottom: 1.5px solid #4DB6AC;
     }
     tr:nth-child(2n){
         background-color: #e0f2f194;
