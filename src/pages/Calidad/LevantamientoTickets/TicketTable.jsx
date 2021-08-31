@@ -90,8 +90,8 @@ class TicketTable extends Component {
                     tipo_trabajo: renderToString(setTextTableCenter(calidad.subarea ? calidad.subarea.nombre : '')),
                     fecha: setDateTableReactDom(calidad.created_at, this.doubleClick, calidad, 'fecha', 'text-center'),
                     fecha_termino:  renderToString(setDateTable(calidad.fecha_programada)),
-                    costo_presupuesto:  renderToString(setMoneyTable('1234')),
-                    monto_pagado:  renderToString(setMoneyTable('1234')),
+                    costo_presupuesto:  renderToString( calidad.presupuesto_preeliminar ? setMoneyTable(calidad.presupuesto_preeliminar.totalPresupuesto) : '-'),
+                    monto_pagado:  renderToString(setMoneyTable(calidad.totalVentas)),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
                     motivo: renderToString(setTextTable(calidad.motivo_cancelacion)),
                     id: calidad.id
