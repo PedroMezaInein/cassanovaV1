@@ -575,7 +575,6 @@ class InicioMiProyecto extends Component {
     openFilterTickets = () => {
         const { modal, tipoTickets, options } = this.state
         modal.filterTickets = true
-        let array = []
         if(tipoTickets === 'all'){
             options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
         }

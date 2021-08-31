@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import $ from "jquery";
-import { Card } from 'react-bootstrap';
+import { Card, DropdownButton, Dropdown } from 'react-bootstrap';
 import ReactDOM from 'react-dom'
 import { errorAlert } from '../../functions/alert';
 import { CommonLottie } from '../Lottie'
@@ -287,12 +287,27 @@ class NewTable extends Component{
             onClick();
         }
     }
-
+    clickHandlerExport = () => {
+        const { onClickExport } = this.props
+        if (typeof onClickExport === 'function') {
+            this.props.onClickExport();
+        }
+    }
+    setNaviIcon(icon, text) {
+        return (
+            <span className="navi-icon">
+                <i className={`${icon} mr-2`} />
+                <span className="navi-text">
+                    {text}
+                </span>
+            </span>
+        )
+    }
     render = () => {
-        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, customButton, abrirModal, url, filterClick, children } = this.props
+        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick, children, exportar_boton } = this.props
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
-                <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class` }>
+                <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
                     <div className = { `card-title ${customtitle}` } >
                         <h3 className={`card-label font-weight-bolder ${customlabel}`}> { title ? title : '' }
                             <span className={`d-block text-muted pt-2 font-size-sm ${customsubtitle}`}>
@@ -300,33 +315,40 @@ class NewTable extends Component{
                             </span>
                         </h3>
                     </div>
-                    <div className="card-toolbar">
-                        <button onClick = { filterClick } className="btn btn-info mr-2 font-weight-bold">
-                            <i className="fas fa-filter"></i> FILTRAR
-                        </button>
-                        {
-                            customButton ? 
-                                customButton
-                            : abrirModal === true ?
-                                    <button onClick = { this.clickHandler } className="btn btn-success font-weight-bold">
-                                        <i className="flaticon-add"></i> AGREGAR
-                                    </button>
-                                :
-                                    <a href = { url } className="btn btn-success font-weight-bold">
-                                        <i className="flaticon-add"></i> AGREGAR
-                                    </a>
-                        }
+                    <div className="card-toolbar toolbar-dropdown">
+                        <DropdownButton menualign="right" title={<span>OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-newtable-options' >
+                            {
+                                abrirModal === true ?
+                                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={this.clickHandler} >
+                                        {this.setNaviIcon('flaticon-add', 'AGREGAR')}
+                                    </Dropdown.Item>
+                                    :
+                                    <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
+                                        {this.setNaviIcon('flaticon-add', 'AGREGAR')}
+                                    </Dropdown.Item>
+                            }
+                            <Dropdown.Item className="text-hover-info dropdown-info" onClick={filterClick}>
+                                {this.setNaviIcon('fas fa-filter', 'FILTRAR')}
+                            </Dropdown.Item>
+                            {
+                                exportar_boton === true ?
+                                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={() => this.clickHandlerExport()} >
+                                        {this.setNaviIcon('far fa-file-excel', 'EXPORTAR')}
+                                    </Dropdown.Item>
+                                : <></>
+                            }
+                        </DropdownButton>
                     </div>
                 </Card.Header>
                 <Card.Body id = { `${tableName}-card-body-id` } className = "pt-0">
                     {children}
-                    <table ref = 'main' className = "table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" 
-                        id = { tableName ? tableName : "kt_datatable2"} />
+                    <div className="table-responsive">
+                        <table ref = 'main' className = "table table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id = { tableName ? tableName : "kt_datatable2"} />
+                    </div>
                 </Card.Body>
             </Card>
         )
     }
-
 }
 
 export default NewTable
