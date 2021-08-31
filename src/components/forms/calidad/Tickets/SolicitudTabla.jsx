@@ -38,16 +38,17 @@ export default class SolicitudesTabla extends Component {
                         <div className="font-weight-bold font-size-h5">{title}</div>
                     </Card.Title>
                     <div className="card-toolbar">
-                        <button type="button" className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bolder font-size-13px" onClick = { (e) => { e.preventDefault(); openModalAdd(type); } }>
-                            <i className="flaticon2-plus icon-nm mr-2 px-0 text-info"></i>{btn_title}
+                        <button type="button" className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info btn-text-solicitud font-weight-bolder font-size-13px" onClick = { (e) => { e.preventDefault(); openModalAdd(type); } }>
+                            <i className="flaticon2-plus icon-nm mr-2 px-0"></i>{btn_title}
                         </button>
                     </div>
                 </Card.Header>
                 <Card.Body className="p-9 pt-0">
                     <div className="table-responsive rounded-top">
-                        <table className="table table-vertical-center">
+                        <table className="table table-vertical-center table-sol-fact">
                             <thead>
-                                <tr className="font-weight-bolder text-info text-center white-space-nowrap bg-light-info">
+                                <tr className="white-space-nowrap bg-header">
+                                    <th style={{minWidth:'50px'}}></th>
                                     { type !== 'compra' ? <th>Tipo de pago</th> : <></> }
                                     { type !== 'compra' ? <th>Monto</th> : <></> }
                                     { type !== 'compra' ? <th>Factura</th> : <></> }
@@ -57,7 +58,6 @@ export default class SolicitudesTabla extends Component {
                                     <th style={{minWidth:'300px'}}>Descripción</th>
                                     { type === 'compra' ? <th style={{minWidth:'200px'}}>Notas</th> : <></> }
                                     <th>Estatus de {type}</th>
-                                    <th style={{minWidth:'50px'}}></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,40 +68,59 @@ export default class SolicitudesTabla extends Component {
                                         :
                                             solicitudes.map((sol) => {
                                                 return(
-                                                    <tr key = { sol.id } className = 'text-center'>
+                                                    <tr key = { sol.id } className = 'font-weight-light'>
+                                                        <td className="white-space-nowrap text-center">
+                                                            {
+                                                                type !== 'compra' ?
+                                                                    <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>EDITAR</span></Tooltip>}>
+                                                                        <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-success btn-circle mr-2"
+                                                                            onClick = { (e) => { e.preventDefault(); openModalEditar(type, sol); } } >
+                                                                            <i className="las la-edit icon-xl" />
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                : <></>
+                                                            }
+                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
+                                                                <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-danger btn-circle"
+                                                                    onClick = { (e) => { e.preventDefault(); 
+                                                                        deleteAlert(`¿DESEAS ELIMINAR LA SOLICITUD DE ${type.toUpperCase()}?`, '', () => deleteSolicitud(sol.id, type))  } } >
+                                                                    <i className="las la-trash-alt icon-xl" />
+                                                                </div>
+                                                            </OverlayTrigger>
+                                                        </td>
                                                         {
                                                             type !== 'compra' ?
-                                                                <td className="text-dark font-weight-light font-size-sm">
+                                                                <td className="text-dark text-center font-size-sm">
                                                                     { sol.tipo_pago ? sol.tipo_pago.tipo : '' }
                                                                 </td>
                                                             : <></>
                                                         }
                                                         {
                                                             type !== 'compra' ?
-                                                                <td className="text-dark font-weight-light font-size-sm">
+                                                                <td className="text-dark text-center font-size-sm">
                                                                     { setMoneyTable(sol.monto) }
                                                                 </td>
                                                             : <></>
                                                         }
                                                         {
                                                             type !== 'compra' ?
-                                                                <td className="text-dark font-weight-light font-size-sm">
+                                                                <td className="text-dark text-center font-size-sm">
                                                                     { sol.factura ? 'Con factura' : 'Sin factura' }
                                                                 </td>
                                                             : <></>
                                                         }
-                                                        <td className="text-dark font-weight-light font-size-sm">
+                                                        <td className="text-dark text-center font-size-sm">
                                                             <div className="w-max-content mx-auto">
                                                                 { setDateText(sol.created_at) }
                                                             </div>
                                                         </td>
-                                                        <td className="text-dark font-weight-light font-size-sm">
+                                                        <td className="text-dark text-center font-size-sm">
                                                             { sol.subarea ? sol.subarea.area ? sol.subarea.area.nombre : '' : ''}
                                                         </td>
-                                                        <td className="text-dark font-weight-light font-size-sm">
+                                                        <td className="text-dark text-center font-size-sm">
                                                             { sol.subarea ? sol.subarea.nombre : ''}
                                                         </td>
-                                                        <td className="text-dark font-weight-light font-size-sm text-justify">
+                                                        <td className="text-dark font-size-sm text-justify">
                                                             { this.setDescripcion(sol.descripcion) }
                                                         </td>
                                                         {
@@ -126,25 +145,6 @@ export default class SolicitudesTabla extends Component {
                                                                         </>
                                                                 }
                                                             </div>
-                                                        </td>
-                                                        <td className="white-space-nowrap">
-                                                            {
-                                                                type !== 'compra' ?
-                                                                    <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>EDITAR</span></Tooltip>}>
-                                                                        <div className="btn btn-sm btn-clean btn-icon text-hover-info mr-2"
-                                                                            onClick = { (e) => { e.preventDefault(); openModalEditar(type, sol); } } >
-                                                                            <i className="las la-edit text-muted icon-xl" />
-                                                                        </div>
-                                                                    </OverlayTrigger>
-                                                                : <></>
-                                                            }
-                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
-                                                                <div className="btn btn-sm btn-clean btn-icon text-hover-info"
-                                                                    onClick = { (e) => { e.preventDefault(); 
-                                                                        deleteAlert(`¿DESEAS ELIMINAR LA SOLICITUD DE ${type.toUpperCase()}?`, '', () => deleteSolicitud(sol.id, type))  } } >
-                                                                    <i className="las la-trash-alt text-muted icon-xl" />
-                                                                </div>
-                                                            </OverlayTrigger>
                                                         </td>
                                                     </tr>
                                                 )
