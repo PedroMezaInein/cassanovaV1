@@ -67,6 +67,7 @@ import fileXMLViewer from './FileXMLViewer'
 import treeGrid from './TreeGrid'
 // ReactSelect
 import Single from './ReactSelect/ConIcono/Single'
+import ReactSelectSearchGray from './Gray/ReactSelectSearchGray'
 
 export const Button = button
 export const Input = input
@@ -134,4 +135,4 @@ export const InputLPassword = inputLPassword
 export const FileXMLViewer = fileXMLViewer
 export const TreeGrid = treeGrid
 
-export { CalendarDayGray, Single, CreatableMultiselectGray }
+export { CalendarDayGray, Single, CreatableMultiselectGray, ReactSelectSearchGray }
