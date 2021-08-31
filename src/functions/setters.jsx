@@ -105,6 +105,14 @@ export function setOptions(arreglo, name, value) {
         }
         return false
     })
+
+    var hash = {};
+    aux = aux.filter(function(current) {
+        var exists = !hash[current.value];
+            hash[current.value] = true;
+        return exists;
+    });
+
     aux.sort(compare)
     return aux
 }
