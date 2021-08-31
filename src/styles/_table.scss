@@ -263,7 +263,10 @@ div#cardList div:last-child{
         .responsive-td{
             width: 1%;
             flex-wrap: nowrap;
-            font-weight: bolder;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            font-size: 0.9rem;
         }
         td{
             .justify-content-center{
