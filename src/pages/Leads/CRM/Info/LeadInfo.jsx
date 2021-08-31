@@ -2,21 +2,23 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
-import { Button } from '../../../../components/form-components'
+import { Button, InputGray } from '../../../../components/form-components'
 import { URL_DEV } from '../../../../constants'
 import SVG from "react-inlinesvg"
 import { setSingleHeader, toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG, setContactoIcon } from '../../../../functions/setters'
-import { replaceAll } from '../../../../functions/functions'
+import { diffCommentDate, replaceAll } from '../../../../functions/functions'
 import axios from 'axios'
-import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert } from '../../../../functions/alert'
+import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert, customInputAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral } from '../../../../components/forms'
+import { Update } from '../../../../components/Lottie'
 import { Modal } from '../../../../components/singles'
 import Pagination from "react-js-pagination"
 import Scrollbar from 'perfect-scrollbar-react'
 import 'perfect-scrollbar-react/dist/style.min.css'
 import $ from "jquery"
+import { isMobile } from "react-device-detect"
 class LeadInfo extends Component {
     state = {
         solicitud: '',
@@ -40,7 +42,7 @@ class LeadInfo extends Component {
             telefono: '',
             proyecto: '',
             fecha: '',
-            estado: ''
+            estado: '',
         },
         formHistorial: {
             comentario: '',
@@ -184,22 +186,6 @@ class LeadInfo extends Component {
         activePage: 1
     }
 
-    mostrarFormulario() {
-        const { showForm } = this.state
-        this.setState({
-            ...this.state,
-            showForm: !showForm,
-            showAgenda: false
-        })
-    }
-    mostrarAgenda() {
-        const { showAgenda } = this.state
-        this.setState({
-            ...this.state,
-            showAgenda: !showAgenda,
-            showForm: false
-        })
-    }
     componentDidMount() {
         const { location: { state } } = this.props
         const { history } = this.props
@@ -274,11 +260,29 @@ class LeadInfo extends Component {
         this.getOptionsAxios()
     }
 
-    /* -------------------------------------------------------------------------- */
-    /*                             ASYNC CALL TO APIS                             */
-    /* -------------------------------------------------------------------------- */
+    componentDidUpdate(){ $(".pagination").removeClass("page-link"); }
 
-    /* ------------------------ ASYNC CALL TO GET OPTIONS ----------------------- */
+    mostrarFormulario() {
+        const { showForm } = this.state
+        this.setState({
+            ...this.state,
+            showForm: !showForm,
+            showAgenda: false
+        })
+    }
+
+    mostrarAgenda() {
+        const { showAgenda } = this.state
+        this.setState({
+            ...this.state,
+            showAgenda: !showAgenda,
+            showForm: false
+        })
+    }
+    /* -------------------------------------------------------------------------- */
+    /*                          ANCHOR ASYNC CALL TO APIS                         */
+    /* -------------------------------------------------------------------------- */
+    /* -------------------- ANCHOR ASYNC CALL TO GET OPTIONS -------------------- */
     getOptionsAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -310,8 +314,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* ------------ ASNC CALL GET OPTIONS FROM PRESUPUESTO DE DISEÑO ------------ */
+    /* -------- ANCHOR ASYNC CALL GET OPTIONS FROM PRESUPUESTO DE DISEÑO -------- */
     getPresupuestoDiseñoOptionsAxios = async(id) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -370,8 +373,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* ------------------------ ASYNC CALL POST CONTACTO ------------------------ */
+    /* --------------------- ANCHOR ASYNC CALL POST CONTACTO -------------------- */
     agregarContacto = async () => {
         waitAlert()
         const { lead, formHistorial } = this.state
@@ -418,8 +420,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* ---------------------- ASYNC CALL TO AGENDAR EVENTO ---------------------- */
+    /* ------------------- ANCHOR ASYNC CALL TO AGENDAR EVENTO ------------------ */
     agendarEvento = async () => {
         const { lead, formAgenda } = this.state
         waitAlert()
@@ -449,8 +450,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* ----------------------- ASYNC CALL TO GET ONE LEAD ----------------------- */
+    /* -------------------- ANCHOR ASYNC CALL TO GET ONE LEAD ------------------- */
     getOneLead = async (lead) => {
         let { tipo } = this.state
         const { access_token } = this.props.authUser
@@ -580,8 +580,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* --------------------- ASYNC CALL TO RECHAZAR ESTATUS --------------------- */    
+    /* ------------------ ANCHOR ASYNC CALL TO RECHAZAR ESTATUS ----------------- */
     changeEstatusCanceladoRechazadoAxios = async (data) => {
         const { estatus } = data
         let elemento = ''
@@ -601,8 +600,7 @@ class LeadInfo extends Component {
             this.changeEstatusAxios(data)
         }
     }
-
-    /* ----------------------- ASYN CALL TO CHANGE ESTATUS ---------------------- */
+    /* ------------------- ANCHOR ASYNC CALL TO CHANGE ESTATUS ------------------ */
     changeEstatusAxios = async (data) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -617,8 +615,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* --------------------- ASYNC CALL TO ELIMINAR CONTACTO -------------------- */
+    /* ----------------- ANCHOR ASYNC CALL TO ELIMINAR CONTACTO ----------------- */
     eliminarContacto = async (contacto) => {
         const { access_token } = this.props.authUser
         const { lead } = this.state
@@ -635,8 +632,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* ------------------- ASYNC CALL TO SOLICITAR FECHA CITA ------------------- */
+    /* ---------------- ANCHOR ASYNC CALL TO SOLICITAR CITA FECHA --------------- */
     solicitarFechaCita = async () => {
         const { access_token } = this.props.authUser
         const { lead } = this.state
@@ -653,8 +649,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* ---------------- ASYNC CALL TO SEND CORREO CON PRESUPUESTO --------------- */
+    /* ------------ ANCHOR ASYNC CALL TO SEND CORREO CON PRESUPUESTO ------------ */
     sendCorreoPresupuesto = async (identificador) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -673,8 +668,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* --------------------- ASYNC CALL TO UPDATE LEAD INFO --------------------- */
+    /* ------------------ ANCHOR ASYNC CALL TO UPDATE LEAD INFO ----------------- */
     addLeadInfoAxios = async() => {
         const { access_token } = this.props.authUser
         const { form, lead } = this.state
@@ -691,8 +685,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* --------------- ASYNC CALL TO SUBMIT PRESUPUESTO DE DISEÑO --------------- */
+    /* ------------ ANCHOR ASYNC CALL TO SUBMIT PRESUPUESTO DE DISEÑO ----------- */
     onSubmitPresupuestoDiseñoAxios = async (pdf) => {
         waitAlert();
         const { access_token } = this.props.authUser
@@ -725,8 +718,7 @@ class LeadInfo extends Component {
             console.error(error, 'error')
         })
     }
-
-    /* -------------------- ASYNC CALL TO SUBMIT PRESUPUESTO -------------------- */
+    /* ----------------- ANCHOR ASYNC CALL TO SUBMIT PRESUPUESTO ---------------- */
     addSolicitudPresupuestoAxios = async() => {
         const { form, lead } = this.state
         const { access_token } = this.props.authUser
@@ -745,7 +737,6 @@ class LeadInfo extends Component {
         }
         
     }
-
     /* ------------ ANCHOR ASYNC CALL TO GET SOLICITUD DE PRESUPUESTO ----------- */
     getSolicitudPresupuesto = async(id) => {
         waitAlert()
@@ -755,6 +746,26 @@ class LeadInfo extends Component {
                 const { solicitud } = response.data
                 Swal.close()
                 this.setState({ ...this.state, activeNav: 'cotizacion', solicitud: solicitud })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    /* ---------------------- ANCHOR ASYNC SAVE COMENTARIO ---------------------- */
+    comentarAxios = async() => {
+        waitAlert()
+        const { form, solicitud } = this.state
+        const { access_token } = this.props.authUser
+        await axios.post(`${URL_DEV}v1/presupuestos/solicitud-presupuesto/${solicitud.id}/comentario`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { solicitud } = response.data
+                const { form } = this.state
+                form.comentario = ''
+                this.setState({...this.state, form})
+                Swal.close()
+                doneAlert(`Comentario agregado con éxito`, () => { this.getSolicitudPresupuesto(solicitud.id) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -796,10 +807,7 @@ class LeadInfo extends Component {
             }
             formAgenda[name] = checked
         }
-        this.setState({
-            ...this.state,
-            formAgenda
-        })
+        this.setState({ ...this.state, formAgenda })
     }
 
     handleChangeCheckbox = (array, type) => {
@@ -1080,10 +1088,7 @@ class LeadInfo extends Component {
             return false
         })
         formAgenda.correos = aux
-        this.setState({
-            ...this.state,
-            formAgenda
-        })
+        this.setState({ ...this.state, formAgenda })
     }
 
     onChangeConceptos = (e, key) => {
@@ -1318,19 +1323,13 @@ class LeadInfo extends Component {
     openModalPresupuesto = () => {
         const { modal } = this.state
         modal.presupuesto = true
-        this.setState({
-            ...this.state,
-            modal
-        })
+        this.setState({ ...this.state, modal })
     }
 
     handleCloseModalPresupuesto = () => {
         const { modal } = this.state
         modal.presupuesto = false
-        this.setState({
-            ...this.state,
-            modal
-        })
+        this.setState({ ...this.state, modal })
     }
 
     tagInputChange = (nuevosCorreos) => {
@@ -1341,36 +1340,24 @@ class LeadInfo extends Component {
             if (!unico[i]) { unico[i] = true }
         })
         formAgenda.correos = uppercased ? Object.keys(unico) : [];
-        this.setState({
-            formAgenda
-        })
+        this.setState({ formAgenda })
     }
 
     onChangePage(pageNumber){
         let { activePage } = this.state
         activePage = pageNumber
-        this.setState({
-            ...this.state,
-            activePage
-        })
-    }
-
-    componentDidUpdate(){
-        $(".pagination").removeClass("page-link");
+        this.setState({ ...this.state, activePage })
     }
     
     handleClickTab = (type) => { 
         let {defaultKey, formDiseño} = this.state
         defaultKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
-        this.setState({
-            ...this.state,
-            activeKey: type,
-            defaultKey
-        })
+        this.setState({ ...this.state, activeKey: type, defaultKey })
     }
+
     changeActiveNav = key => {
-        this.setState({ ...this.state, activeNav: key })
-        /* const { lead, form } = this.state
+        /* this.setState({ ...this.state, activeNav: key }) */
+        const { lead, form } = this.state
         let flag = true
         if(key === 'cotizacion'){
             if(lead.prospecto){
@@ -1399,7 +1386,7 @@ class LeadInfo extends Component {
             }
         }
         if(flag)
-            this.setState({ ...this.state, activeNav: key }) */
+            this.setState({ ...this.state, activeNav: key })
     }
 
     printContactCount = (contactos) => {
@@ -1446,8 +1433,43 @@ class LeadInfo extends Component {
             </div>
         )
     }
+
+    printComment = (coment) => {
+        const { usuario } = coment
+        const { user } = this.props.authUser
+        let own = user.id === usuario.id
+        return(
+            <div>
+                {
+                    isMobile ? 
+                        <div className = { `text-${own ? 'right' : 'left'}` }>
+                            <div className="symbol symbol-50 symbol-circle" data-toggle="tooltip">
+                                <img alt="Pic" src = { usuario.avatar ? usuario.avatar : "/default.jpg" } />
+                            </div>
+                        </div>
+                    :   
+                        <div className = {`d-flex ${own ? 'flex-row-reverse' : ''} mx-3`}>
+                            <div className="symbol symbol-50 symbol-circle" data-toggle="tooltip">
+                                <img alt="Pic" src = { usuario.avatar ? usuario.avatar : "/default.jpg" } />
+                            </div>
+                        </div>
+                }
+                
+                <div className = {`d-flex ${own ? 'flex-row-reverse' : ''} m-3`}>
+                    <div style = {{ maxWidth: isMobile ? '100%' : '80%' }} 
+                    className = {`border rounded bg-light-${own ? 'info' : 'primary'} text-justify px-3 py-2`} >
+                        { coment.texto }
+                        <span class="blockquote-footer font-weight-lighter ml-2 d-inline">
+                            <span className = 'font-weight-boldest'>{usuario.name}</span> / { diffCommentDate(coment) }
+                        </span>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav, solicitud } = this.state
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container
@@ -1778,14 +1800,14 @@ class LeadInfo extends Component {
                                                 }
                                             </h3>
                                         </Card.Header>
-                                        <Card.Body className="pt-0">
-                                            <PresupuestoDiseñoCRMForm options = { options } formDiseño = { formDiseño }
+                                        <Card.Body className = {`pt-0 ${isMobile ? 'px-1' : ''}`}>
+                                            {/* <PresupuestoDiseñoCRMForm options = { options } formDiseño = { formDiseño }
                                                 onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }
                                                 checkButtonSemanas = { this.checkButtonSemanas } onChangeCheckboxes = { this.handleChangeCheckbox }
                                                 onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
                                                 formeditado = { formeditado } onClickTab = { this.handleClickTab }
-                                                activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
-                                            {/* {
+                                                activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} /> */}
+                                            {
                                                 lead ?
                                                     lead.prospecto ?
                                                         lead.prospecto.diseño ?
@@ -1801,7 +1823,8 @@ class LeadInfo extends Component {
                                                                     <div className="row mx-0">
                                                                         <div className="col-md-6">
                                                                             <div className="table-responsive-lg border rounded p-2">
-                                                                                <table className="table table-vertical-center w-80 mx-auto table-borderless" id="tcalendar_p_info">
+                                                                                <table className={`table table-vertical-center w-${isMobile ? '100' : '80'} mx-auto table-borderless`} 
+                                                                                    id="tcalendar_p_info">
                                                                                     <thead>
                                                                                         <tr>
                                                                                             <th colSpan="3" className="text-center pt-0">
@@ -1860,12 +1883,45 @@ class LeadInfo extends Component {
                                                                                 </table>
                                                                             </div>
                                                                         </div>
+                                                                        <div className="col-md-6 mt-3 mt-md-0">
+                                                                            <Form onSubmit = { (e) => { e.preventDefault(); } } >
+                                                                                <div className="row mx-0 border rounded p-3">
+                                                                                    <div className="col md-12">
+                                                                                        <InputGray withtaglabel = { 1 } withtextlabel = { 1 } rows  = '3'
+                                                                                            withplaceholder = { 1 } withicon = { 0 } as = 'textarea' 
+                                                                                            value = { form.comentario } requirevalidation = { 1 } 
+                                                                                            name = 'comentario' placeholder = 'ESCRIBE UN COMENTARIO'
+                                                                                            onChange = { this.onChange }
+                                                                                            />
+                                                                                    </div>
+                                                                                    <div className="col-md-12 mt-3 text-right">
+                                                                                        <Button icon = '' text = "Enviar"
+                                                                                            className="btn btn-light-success font-weight-bold text-uppercase" 
+                                                                                            onClick = { (e) => { questionAlert('¿DESEAS ENVIAR TU COMENTARIO?', 
+                                                                                                '', () => this.comentarAxios()) } } />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </Form>
+                                                                            <div className="row mx-0 my-3 border rounded">
+                                                                                {
+                                                                                    solicitud.comentarios.map((coment, index) =>{
+                                                                                        return(
+                                                                                            <div className = 'col-md-12 my-4' key = { index }>
+                                                                                                {
+                                                                                                    this.printComment(coment)
+                                                                                                }
+                                                                                            </div>
+                                                                                        )
+                                                                                    })
+                                                                                }
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 : ''
                                                             : ''
                                                     : ''
                                                 : ''
-                                            } */}
+                                            }
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>
