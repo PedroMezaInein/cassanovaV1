@@ -477,7 +477,7 @@ export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, 
                             <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
                                 {
                                     element.name ?
-                                        <span className="mr-1 font-size-12px" >
+                                        <span className="mr-1 font-size-11px" >
                                             <span className="font-weight-bold" onClick={() => { navigator.clipboard.writeText(element.name) }}>
                                                 { element.lista ? element.name + '.' : element.name + ':' }
                                             </span>
@@ -525,7 +525,7 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
                         <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
                             {
                                 element.name ?
-                                    <span className="mr-1 font-size-12px" >
+                                    <span className="mr-1 font-size-11px" >
                                         <span className="font-weight-bold">
                                             {
                                                 element.lista ?
@@ -851,7 +851,7 @@ export function setArrayTable(arreglo, minwidth) {
                         <div key = { id } className={`mb-2 ${minwidth?'':'center-td'}`}>
                             {
                                 element.name ?
-                                    <span className="mr-1 font-size-12px" >
+                                    <span className="mr-1 font-size-11px" >
                                         <span className="font-weight-bold">
                                             {
                                                 element.lista ?
