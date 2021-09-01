@@ -132,7 +132,6 @@ class EmpleadosForm extends Component {
                             else
                                 form.fecha_nacimiento = null
                         }
-                            
                         form.domicilio = empleado.domicilio
                         form.telefono_movil = empleado.telefono_movil
                         form.telefono_particular = empleado.telefono_particular
