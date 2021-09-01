@@ -115,7 +115,7 @@ class FormularioContrato extends Component {
                                                     </td>
                                                     <td>
                                                         <div className="text-center d-flex justify-content-center">
-                                                            <OverlayTrigger overlay={<Tooltip>ADJUNTAR CONTRATO FIRMADO</Tooltip>}>
+                                                            <OverlayTrigger rootClose overlay={<Tooltip>ADJUNTAR CONTRATO FIRMADO</Tooltip>}>
                                                                 <div>
                                                                     <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos } 
                                                                         value = { form.adjuntos.contrato.value } name = {contrato.id} id = 'adjunto-contrato'
@@ -124,7 +124,7 @@ class FormularioContrato extends Component {
                                                                         iconclass = 'la la-file-signature text-dark-50 icon-2x' />
                                                                 </div>
                                                             </OverlayTrigger>
-                                                            <OverlayTrigger overlay={<Tooltip>ADJUNTAR CARTA FIRMADA</Tooltip>}>
+                                                            <OverlayTrigger rootClose overlay={<Tooltip>ADJUNTAR CARTA FIRMADA</Tooltip>}>
                                                                 <div>
                                                                     <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos }
                                                                         value = { form.adjuntos.carta.value } name = {contrato.id} id = 'adjunto-carta'
@@ -156,7 +156,7 @@ class FormularioContrato extends Component {
                                                         </div>
                                                     </td>
                                                     <td className="text-center">
-                                                        <OverlayTrigger overlay={<Tooltip>RENOVAR</Tooltip>}>
+                                                        <OverlayTrigger rootClose overlay={<Tooltip>RENOVAR</Tooltip>}>
                                                             <span className="btn btn-light btn-icon h-35px font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
                                                                 <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
@@ -165,7 +165,7 @@ class FormularioContrato extends Component {
                                                         </OverlayTrigger>
                                                         {
                                                             contrato.terminado === 0 ?
-                                                                <OverlayTrigger overlay={<Tooltip>TERMINAR</Tooltip>}>
+                                                                <OverlayTrigger rootClose overlay={<Tooltip>TERMINAR</Tooltip>}>
                                                                     <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2"  onClick={() => { cancelarContrato(contrato) }} >
                                                                         <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
@@ -176,7 +176,7 @@ class FormularioContrato extends Component {
                                                         }
                                                         {
                                                             contrato.contrato_firmado === null ? 
-                                                                <OverlayTrigger overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
+                                                                <OverlayTrigger rootClose overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
                                                                     <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2" onClick = { (e) => { e.preventDefault(); regeneratePdf(contrato)   }}>
                                                                         <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                             <i className="far fa-file-pdf svg-icon-info"></i>

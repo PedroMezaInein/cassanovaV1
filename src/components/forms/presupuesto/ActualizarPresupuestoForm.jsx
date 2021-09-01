@@ -122,7 +122,7 @@ class ActualizarPresupuestoForm extends Component {
                 break;
         }
         return(
-            <OverlayTrigger overlay={
+            <OverlayTrigger rootClose overlay={
                 <Tooltip className="mb-4 tool-time-line">
                     <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus === 'Aceptado/Rechazado' ?<span><span className="color-aceptado-presupuesto">Aceptado</span> <span className="font-weight-light">/</span> <span className="color-rechazado-presupuesto">Rechazado</span></span> : estatus} </div>
                     <div className="text-justify px-5 pb-3 mt-1">{details}</div>
@@ -424,7 +424,7 @@ class ActualizarPresupuestoForm extends Component {
                                                             <tr data-tip data-for = { key + '-th' } className = { this.bgActiveCheck(key) } key = { key }>
                                                                 <td className="check_desc text-center">
                                                                     <div className="d-flex justify-content-center">
-                                                                        <OverlayTrigger overlay={<Tooltip>{form.conceptos[key].active?<span>ELIMINAR<br/>CONCEPTO</span>:<span>AGREGAR<br/>CONCEPTO</span>}</Tooltip>}>
+                                                                        <OverlayTrigger rootCloser overlay={<Tooltip>{form.conceptos[key].active?<span>ELIMINAR<br/>CONCEPTO</span>:<span>AGREGAR<br/>CONCEPTO</span>}</Tooltip>}>
                                                                             <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-danger">
                                                                                 <input name = 'active' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
                                                                                     checked = { form.conceptos[key].active } value = { form.conceptos[key].active } />
@@ -433,7 +433,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                         </OverlayTrigger>
                                                                         {
                                                                             form.conceptos[key].active ?
-                                                                            <OverlayTrigger overlay={<Tooltip>{form.conceptos[key].vicio_oculto?<span>QUITAR COMO<br/>VICIO OCULTO</span>:<span>AGREGAR COMO<br/>VICIO OCULTO</span>}</Tooltip>}>
+                                                                            <OverlayTrigger rootClose overlay={<Tooltip>{form.conceptos[key].vicio_oculto?<span>QUITAR COMO<br/>VICIO OCULTO</span>:<span>AGREGAR COMO<br/>VICIO OCULTO</span>}</Tooltip>}>
                                                                                 <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-success ml-2">
                                                                                     <input name = 'vicio_oculto' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
                                                                                         checked = { form.conceptos[key].vicio_oculto } value = { form.conceptos[key].vicio_oculto } />

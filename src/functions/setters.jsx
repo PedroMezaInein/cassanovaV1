@@ -32,7 +32,7 @@ function setHiddenPassword(pwd){
     for (let i = 0; i < pwd.length; i++)
         aux += '*'
     return(
-        <OverlayTrigger overlay={<Tooltip>{pwd}</Tooltip>}>
+        <OverlayTrigger rootClose overlay={<Tooltip>{pwd}</Tooltip>}>
             <span>{aux}</span>
         </OverlayTrigger>
     ) 
@@ -44,7 +44,7 @@ function substrCadena( cadena ) {
         if (cadena.length > 15) {
             aux = cadena.substr(0, 15) + "..."
             return(
-                <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
+                <OverlayTrigger rootClose overlay={<Tooltip>{cadena}</Tooltip>}>
                     <span>{aux}</span>
                 </OverlayTrigger>
             )
@@ -58,7 +58,7 @@ function substrCadena( cadena ) {
         if (cadena.length > 29) {
             aux = cadena.substr(0, 29) + "..."
             return(
-                <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
+                <OverlayTrigger rootClose overlay={<Tooltip>{cadena}</Tooltip>}>
                     <span>{aux}</span>
                 </OverlayTrigger>
             )

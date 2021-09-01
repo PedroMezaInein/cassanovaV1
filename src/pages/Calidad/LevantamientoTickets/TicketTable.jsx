@@ -109,13 +109,13 @@ class TicketTable extends Component {
     setActionsMantenimientos = (calidad) => {
         return(
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger overlay = { <Tooltip><span className="font-weight-bold">Ver ticket</span></Tooltip> } >
+                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Ver ticket</span></Tooltip> } >
                     <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-primary btn-hover-primary`} 
                         onClick = { (e) => { e.preventDefault(); this.changePageSee(calidad) } }>
                         <i className = 'fas flaticon2-magnifier-tool' />
                     </button>
                 </OverlayTrigger>
-                <OverlayTrigger overlay = { <Tooltip><span className="font-weight-bold">Eliminar</span></Tooltip> } >
+                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Eliminar</span></Tooltip> } >
                     <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
                         onClick = { (e) => { e.preventDefault(); this.openModalDeleteTicket(calidad) } }>
                         <i className = 'flaticon2-rubbish-bin' />

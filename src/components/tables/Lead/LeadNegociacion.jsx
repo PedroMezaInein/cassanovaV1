@@ -143,7 +143,7 @@ class LeadNegociacion extends Component {
                                                         lead.empresa.isotipos.length > 0 ?
                                                             lead.empresa.isotipos.map((isotipo, key) => {
                                                                 return (
-                                                                    <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                    <OverlayTrigger rootClose key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
                                                                         <div className="symbol-group symbol-hover d-flex justify-content-center">
                                                                             <div className="symbol symbol-40 symbol-circle">
                                                                                 <img alt="Pic" src={isotipo.url} />
@@ -160,7 +160,7 @@ class LeadNegociacion extends Component {
                                                         {
                                                             lead.prospecto.vendedores.map((vendedor, index) => {
                                                                 return (
-                                                                    <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
+                                                                    <OverlayTrigger rootClose key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
                                                                         <div className="symbol symbol-35 symbol-circle">
                                                                             <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
                                                                         </div>
@@ -221,7 +221,7 @@ class LeadNegociacion extends Component {
                                                 </td>
                                                 <td className="text-center">
                                                     <div className="d-flex justify-content-evenly">
-                                                        <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
+                                                        <OverlayTrigger rootClose overlay={<Tooltip>VER MÁS</Tooltip>}>
                                                             <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
                                                                 <i className="flaticon2-plus icon-nm"></i>
                                                             </span>
@@ -231,7 +231,7 @@ class LeadNegociacion extends Component {
                                                                 <>
                                                                     {
                                                                         this.getActionEmail(lead) ?
-                                                                            <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO DATOS RECIBIDOS</Tooltip>}>
+                                                                            <OverlayTrigger rootClose overlay={<Tooltip>ENVIAR CORREO DATOS RECIBIDOS</Tooltip>}>
                                                                                 <span onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}
                                                                                     className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
                                                                                     <span className="svg-icon svg-icon-md">
@@ -243,7 +243,7 @@ class LeadNegociacion extends Component {
                                                                     }
                                                                 </>
                                                             :
-                                                                <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
+                                                                <OverlayTrigger rootClose overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
                                                                     <span onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
                                                                         <span className="svg-icon svg-icon-md">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
@@ -251,19 +251,19 @@ class LeadNegociacion extends Component {
                                                                     </span>
                                                                 </OverlayTrigger> */
                                                         }
-                                                        <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
+                                                        <OverlayTrigger rootClose overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                             <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
                                                                 <i className="fas fa-file-signature icon-14px"></i>
                                                             </span>
                                                         </OverlayTrigger>
-                                                        {/* <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
+                                                        {/* <OverlayTrigger rootClose overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
                                                             <span onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
                                                                 <span className="svg-icon svg-icon-md">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                 </span>
                                                             </span>
                                                         </OverlayTrigger> */}
-                                                        {/* <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
+                                                        {/* <OverlayTrigger rootClose overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                             <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
                                                                 <i className="fas fa-file-signature icon-14px"></i>
                                                             </span>

@@ -111,7 +111,7 @@ class LeadRP extends Component {
                                                         lead.empresa.isotipos.length > 0 ?
                                                             lead.empresa.isotipos.map((isotipo, key) => {
                                                                 return (
-                                                                    <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                    <OverlayTrigger rootClose key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
                                                                         <div className="symbol-group symbol-hover d-flex justify-content-center">
                                                                             <div className="symbol symbol-40 symbol-circle">
                                                                                 <img alt="Pic" src={isotipo.url} />
@@ -131,13 +131,13 @@ class LeadRP extends Component {
                                                     }
                                                 </td> */}
                                                 <td className="pr-0 text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
+                                                    <OverlayTrigger rootClose overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
                                                         <span onClick={(e) => { openModalEditar(lead) }}
                                                             className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-orange">
                                                             <i className="fas fa-edit icon-md"></i>
                                                         </span>
                                                     </OverlayTrigger>
-                                                    <OverlayTrigger overlay={<Tooltip>HSITORIAL DE CONTACTO</Tooltip>}>
+                                                    <OverlayTrigger rootClose overlay={<Tooltip>HSITORIAL DE CONTACTO</Tooltip>}>
                                                         <span onClick={(e) => { openModalHistorial(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-orange">
                                                             <i className="fas fa-clipboard-list icon-md"></i>
                                                         </span>

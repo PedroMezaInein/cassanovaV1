@@ -3233,27 +3233,34 @@ table#calendario-proyectos tr:last-child td {
 }
 
 .table-sol-fact{
-    thead th {
+    thead{
         font-weight: 600;
-        color: #4DB6AC;
+        color: #707cbb;
         font-size: 1rem;
-        letter-spacing: 0.3rem;
-        border-bottom: 1.5px solid #4DB6AC;
+        border-bottom: 1.5px solid #707cbb;
     }
     tr:nth-child(2n){
-        background-color: #e0f2f194;
-        border-top: 1.1px solid #B2DFDB;
-        border-bottom: 1.1px solid #B2DFDB;
+        border-top: 1.1px solid #c5cae9;
+        border-bottom: 1.1px solid #c5cae9;
+    }
+    tr:last-child {
+        border-bottom: none;
     }
     .text-solicitud{
-        color: #4DB6AC;
+        color: #7986CB;
         font-weight: 600;
+    }
+    .bg-header{
+        background:#f6f6fb;
+    }
+    tr.font-weight-light:hover{
+        background: #F3F6F9;
     }
 }
 .btn.btn-text-solicitud {
-    color: #4DB6AC;
+    color: #7986CB;
 }
 
 .btn.btn-text-solicitud i {
-    color: #4DB6AC;
+    color: #7986CB;
 }

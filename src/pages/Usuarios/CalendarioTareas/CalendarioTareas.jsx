@@ -194,7 +194,7 @@ class Calendario extends Component {
     renderEventContent = (eventInfo) => {
         const { tarea } = eventInfo.event._def.extendedProps
         return (
-            <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
+            <OverlayTrigger rootClose overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
                 <div className="text-hover container p-1 bg-info rounded-xl" onClick={(e) => { e.preventDefault(); this.getTareas(tarea) }}>
                     <div className="row mx-0 row-paddingless">
                         <div className="col-md-auto mr-2 text-truncate">
@@ -219,7 +219,7 @@ class Calendario extends Component {
                     {
                         obtenerTresR.map((responsable, key) => {
                             return (
-                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                <OverlayTrigger rootClose key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
                                     <div className="symbol symbol-25 symbol-circle border-0">
                                         <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
                                     </div>
@@ -227,7 +227,7 @@ class Calendario extends Component {
                             )
                         })
                     }
-                    <OverlayTrigger overlay={
+                    <OverlayTrigger rootClose overlay={
                         <Tooltip>
                             {
                                 obtenerRestantes.map((responsable, key) => {
@@ -259,7 +259,7 @@ class Calendario extends Component {
                     {
                         responsables.map((responsable, key) => {
                             return (
-                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                <OverlayTrigger rootClose key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
                                     <div className="symbol symbol-25 symbol-circle border-0">
                                         <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
                                     </div>

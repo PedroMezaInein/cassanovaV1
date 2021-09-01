@@ -464,7 +464,7 @@ class NotificacionesCorreos extends Component {
                                                                             {
                                                                                 element.destinatarios.map((destinatario, index) => {
                                                                                     return (
-                                                                                        <OverlayTrigger key={index} overlay={<Tooltip>{destinatario.name}</Tooltip>}>
+                                                                                        <OverlayTrigger rootClose key={index} overlay={<Tooltip>{destinatario.name}</Tooltip>}>
                                                                                             <div className={`symbol symbol-20 symbol-lg-30 symbol-circle border-0 ${!element.enable ? '' : 'symbol-light-info '}`}>
                                                                                                 {
                                                                                                     destinatario.avatar ?
