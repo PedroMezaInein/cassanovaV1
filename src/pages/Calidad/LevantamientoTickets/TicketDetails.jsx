@@ -1684,14 +1684,17 @@ class TicketDetails extends Component {
                     case 'En revisión':
                     case 'Rechazado':
                         defaultNavTabs = 'adjuntos'
+                        break;
                     case 'Aceptado':
                     case 'Aprobación pendiente':
                         defaultNavTabs = 'presupuesto'
+                        break;
                     case 'En proceso':
                     case 'Terminado':
                     case 'Pendiente de pago':
                         this.getSolicitudesAxios('solicitud-compra');
                         defaultNavTabs = 'solicitud-compra'
+                        break;
                     default:
                         break;
                 }
@@ -1703,6 +1706,7 @@ class TicketDetails extends Component {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, defaultNavTabs } = this.state
         const { formulario } = this.props
         const { access_token } = this.props.authUser
+        console.log(defaultNavTabs, 'defaultNavTabs')
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
