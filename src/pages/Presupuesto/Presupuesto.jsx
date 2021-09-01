@@ -254,13 +254,6 @@ class Presupuesto extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
-            },
-            {
-                text: 'Mostrar&nbsp;presupuesto',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-magnifier-tool',
-                action: 'finish',
-                tooltip: { id: 'finish', text: 'Ver presupuesto', type: 'error' },
             }
         )
         if (presupuesto.pdfs) {
@@ -286,13 +279,6 @@ class Presupuesto extends Component {
         const { history } = this.props
         history.push({
             pathname: '/presupuesto/presupuesto/update',
-            state: { presupuesto: presupuesto }
-        });
-    }
-    openUltimo = presupuesto => {
-        const { history } = this.props
-        history.push({
-            pathname: '/presupuesto/presupuesto/finish',
             state: { presupuesto: presupuesto }
         });
     }
@@ -325,7 +311,6 @@ class Presupuesto extends Component {
                     mostrar_acciones={true}
                     actions={{
                         'edit': { function: this.openModalEdit },
-                        'finish': { function: this.openUltimo },
                         'delete': { function: this.openModalDelete },
                         'download': { function: this.downloadPDF }
                     }}
@@ -369,7 +354,7 @@ class Presupuesto extends Component {
                     </div>
                 </NewTableServerRender>
                 <ModalDelete
-                    title={"¿Estás seguro que deseas eliminar el presupuesto?"}
+                    title="¿Estás seguro que deseas eliminar el presupuesto?"
                     show={modal.delete}
                     handleClose={this.handleCloseDelete}
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAxios() }}
