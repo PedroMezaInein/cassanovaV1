@@ -10,7 +10,7 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 const NavItem = children => {
     const { prestamo: { id, cantidad, sumDevoluciones, proyecto, fecha }, onSelect } = children
     return (
-        <OverlayTrigger overlay = { <Tooltip>{proyecto.nombre}</Tooltip> } >
+        <OverlayTrigger rootClose overlay = { <Tooltip>{proyecto.nombre}</Tooltip> } >
             <Nav.Item className = 'mr-1' onClick = { (e) => { e.preventDefault(); onSelect(id) } }>
                 <Nav.Link eventKey = { id } className="nav-link btn btn-hover-light-primary d-flex flex-column flex-center border-radius-21px min-w-70px mr-2 py-4 px-3 ">
                     <span className="opacity-50 font-size-sm font-weight-bold text-primary">

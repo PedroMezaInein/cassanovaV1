@@ -641,7 +641,7 @@ class Calendario extends Component {
             let start = new Date(eventInfo.event._def.extendedProps.evento.googleEvent.start.dateTime);
             let end = new Date(eventInfo.event._def.extendedProps.evento.googleEvent.end.dateTime);
             return (
-                <OverlayTrigger
+                <OverlayTrigger rootClose
                     /* defaultShow = { true } */
                     overlay={
                         <Tooltip className="tool-calendar">
@@ -687,7 +687,7 @@ class Calendario extends Component {
             )
         }
         return (
-            <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
+            <OverlayTrigger rootClose overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
                 <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
                     <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
                     <span>{eventInfo.event.title}</span>

@@ -32,7 +32,7 @@ function setHiddenPassword(pwd){
     for (let i = 0; i < pwd.length; i++)
         aux += '*'
     return(
-        <OverlayTrigger overlay={<Tooltip>{pwd}</Tooltip>}>
+        <OverlayTrigger rootClose overlay={<Tooltip>{pwd}</Tooltip>}>
             <span>{aux}</span>
         </OverlayTrigger>
     ) 
@@ -44,7 +44,7 @@ function substrCadena( cadena ) {
         if (cadena.length > 15) {
             aux = cadena.substr(0, 15) + "..."
             return(
-                <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
+                <OverlayTrigger rootClose overlay={<Tooltip>{cadena}</Tooltip>}>
                     <span>{aux}</span>
                 </OverlayTrigger>
             )
@@ -58,7 +58,7 @@ function substrCadena( cadena ) {
         if (cadena.length > 29) {
             aux = cadena.substr(0, 29) + "..."
             return(
-                <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
+                <OverlayTrigger rootClose overlay={<Tooltip>{cadena}</Tooltip>}>
                     <span>{aux}</span>
                 </OverlayTrigger>
             )
@@ -477,7 +477,7 @@ export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, 
                             <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
                                 {
                                     element.name ?
-                                        <span className="mr-1 font-size-12px" >
+                                        <span className="mr-1 font-size-11px" >
                                             <span className="font-weight-bold" onClick={() => { navigator.clipboard.writeText(element.name) }}>
                                                 { element.lista ? element.name + '.' : element.name + ':' }
                                             </span>
@@ -525,7 +525,7 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
                         <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
                             {
                                 element.name ?
-                                    <span className="mr-1 font-size-12px" >
+                                    <span className="mr-1 font-size-11px" >
                                         <span className="font-weight-bold">
                                             {
                                                 element.lista ?
@@ -851,7 +851,7 @@ export function setArrayTable(arreglo, minwidth) {
                         <div key = { id } className={`mb-2 ${minwidth?'':'center-td'}`}>
                             {
                                 element.name ?
-                                    <span className="mr-1 font-size-12px" >
+                                    <span className="mr-1 font-size-11px" >
                                         <span className="font-weight-bold">
                                             {
                                                 element.lista ?

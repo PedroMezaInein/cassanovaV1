@@ -65,7 +65,7 @@ class TableTickets extends Component {
                                                 <div className="d-flex justify-content-evenly">
                                                 {
                                                     ticket.fotos ? ticket.fotos.length ?
-                                                        <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>FOTOS</span></Tooltip>}>
+                                                        <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>FOTOS</span></Tooltip>}>
                                                             <span className="btn btn-icon btn-bg-light btn-text-info btn-hover-info btn-sm" 
                                                                 onClick={(e) => { showFilesAlert( ticket.fotos, '') }}>
                                                                 <i className="las la-photo-video text-info icon-lg"></i>
@@ -75,7 +75,7 @@ class TableTickets extends Component {
                                                 }
                                                 {
                                                     ticket.presupuesto.length ?
-                                                        <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>PRESUPUESTO</span></Tooltip>}>
+                                                        <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>PRESUPUESTO</span></Tooltip>}>
                                                             <span className={`btn btn-icon btn-sm ${ticket.estatus_ticket.estatus === "Aprobación pendiente" ? 'btn-light-warning pulse pulse-warning' : 'btn-light  btn-hover-success'}`} onClick={(e) => { openModalSee(ticket) }}>
                                                                 <i className={`las la-file-invoice-dollar icon-xl text-${ticket.estatus_ticket.estatus === "Aprobación pendiente" ? '' : 'success'} `}></i>
                                                                 {
@@ -89,7 +89,7 @@ class TableTickets extends Component {
                                                 }
                                                 {
                                                     ticket.estatus_ticket.estatus === "Terminado" ?
-                                                        <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>DETALLES DEL LEVANTAMIENTO</span></Tooltip>}>
+                                                        <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>DETALLES DEL LEVANTAMIENTO</span></Tooltip>}>
                                                             <span className="btn btn-icon btn-light btn-hover-primary btn-sm" onClick={(e) => { openModalDetalles(ticket) }}>
                                                                 <i className="la la-list-alt text-primary icon-xl"></i>
                                                             </span>
@@ -98,7 +98,7 @@ class TableTickets extends Component {
                                                 }
                                                 {
                                                     ticket.motivo_cancelacion !== null ?
-                                                    <OverlayTrigger overlay={<Tooltip className="tool-card-motivo">
+                                                    <OverlayTrigger rootClose overlay={<Tooltip className="tool-card-motivo">
                                                             <div className="tool-titulo text-warning font-weight-bolder letter-spacing-0-4 bg-light-warning">
                                                                 MOTIVO DE CANCELACIÓN
                                                             </div>

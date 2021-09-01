@@ -427,9 +427,9 @@ export default class SolicitudFacturacionTabla extends Component{
                     </Card.Header>
                     <Card.Body className = 'p-9 pt-0'>
                         <div className="table-responsive">
-                            <table className="table table-vertical-center table-sol-fact box-shadow-53 bg-light">
+                            <table className="table table-vertical-center table-sol-fact box-shadow-53">
                                 <thead>
-                                    <tr className="font-weight-bolder text-center white-space-nowrap bg-white">
+                                    <tr className="font-weight-bolder text-center white-space-nowrap bg-header">
                                         <th></th>
                                         <th>Emisor</th>
                                         <th>Receptor</th>
@@ -453,17 +453,20 @@ export default class SolicitudFacturacionTabla extends Component{
                                                             <td className='text-center'>
                                                                 {
                                                                     sol.venta ?
-                                                                        'Venta realizada'
+                                                                        <div className="font-weight-bolder text-orange">
+                                                                            <i className="las la-money-check-alt text-orange icon-xl"></i>
+                                                                            <div>Venta realizada</div>
+                                                                        </div>
                                                                         :
                                                                         <div className="white-space-nowrap">
-                                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
+                                                                            <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
                                                                                 <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-danger btn-circle mr-2"
                                                                                         onClick = { (e) => { e.preventDefault(); 
                                                                                         deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA SOLICITUD?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteSolicitud(sol.id)) } } >
                                                                                     <i className="las la-trash-alt icon-xl " />
                                                                                 </div>
                                                                             </OverlayTrigger>
-                                                                            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
+                                                                            <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ADJUNTAR FACTURA</span></Tooltip>}>
                                                                                 <span className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-info btn-circle" 
                                                                                     onClick = { () => { this.openModalGenerarVenta(sol.id) }}>
                                                                                     <i className="las la-file-invoice-dollar icon-lg"></i>
@@ -499,7 +502,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                                             <td className='text-center'>
                                                                 {sol.metodo_pago ? sol.metodo_pago.nombre : ''}
                                                             </td>
-                                                            <td className='text-center'>
+                                                            <td className={`text-center ${sol.estatus_factura ? sol.estatus_factura.estatus === 'POR PAGAR'? 'text-red':'text-green':''} font-weight-bold`}>
                                                                 {sol.estatus_factura ? sol.estatus_factura.estatus : ''}
                                                             </td>
                                                         </tr>

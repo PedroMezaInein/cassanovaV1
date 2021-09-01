@@ -331,7 +331,7 @@ class Facturacion extends Component {
     setInfoTable = (rfc, nombre) => {
         return (
             <div style={{minWidth:'160px'}}>
-                <span className="mr-1 font-size-12px" >
+                <span className="mr-1 font-size-11px" >
                     <span className="font-weight-bold">
                         RFC:
                     </span>
@@ -340,7 +340,7 @@ class Facturacion extends Component {
                     {rfc}
                 </span>
                 <br />
-                <span className="mr-1 font-size-12px" >
+                <span className="mr-1 font-size-11px" >
                     <span className="font-weight-bold">
                         Nombre:
                     </span>

@@ -70,7 +70,7 @@ class CalendarioInstalacion extends Component {
     renderEventContent = (eventInfo) => {
         let { extendedProps } = eventInfo.event._def
         return (
-            <OverlayTrigger overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</Tooltip>}>
+            <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</Tooltip>}>
                 <div className="text-hover container p-1 tarea" style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}} onClick={(e) => { e.preventDefault(); this.getInstalacion(extendedProps) }}>
                         <div className="row mx-0 row-paddingless">
                             <div className="col-md-auto mr-1 text-truncate">
@@ -392,7 +392,7 @@ class CalendarioInstalacion extends Component {
     setActionsMantenimientos = (element) => {
         return(
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger overlay = { <Tooltip>Eliminar</Tooltip> }  >
+                <OverlayTrigger rootClose overlay = { <Tooltip>Eliminar</Tooltip> }  >
                     <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
                         onClick = { (e) => { e.preventDefault(); this.openModalDeleteMantenimiento(element) } }>
                         <i className = 'flaticon2-rubbish-bin' />
@@ -422,7 +422,7 @@ class CalendarioInstalacion extends Component {
                 <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
                     {
                         activeKey === 'calendario' ?
-                            <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR TABLA</span></Tooltip>}>
+                            <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR TABLA</span></Tooltip>}>
                                 <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.changeActive('tabla') }} >
                                     <span className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary">
                                         <i className="la flaticon2-list-2 icon-xl"></i>
@@ -430,7 +430,7 @@ class CalendarioInstalacion extends Component {
                                 </li>
                             </OverlayTrigger>
                         : 
-                            <OverlayTrigger overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR CALENDARIO</span></Tooltip>}>
+                            <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR CALENDARIO</span></Tooltip>}>
                                 <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.changeActive('calendario') }}>
                                     <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info" >
                                         <i className="la flaticon2-calendar-8 icon-xl"></i>

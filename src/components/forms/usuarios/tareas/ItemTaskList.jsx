@@ -33,7 +33,7 @@ class ItemTaskList extends Component {
                     {
                         obtenerTresR.map((responsable, key) => {
                             return (
-                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                <OverlayTrigger rootClose key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
                                     <div className="symbol symbol-25 symbol-circle border-0">
                                         <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
                                     </div>
@@ -41,7 +41,7 @@ class ItemTaskList extends Component {
                             )
                         })
                     }
-                    <OverlayTrigger overlay={
+                    <OverlayTrigger rootClose overlay={
                         <Tooltip>
                             {
                                 obtenerRestantes.map((responsable, key) => {
@@ -73,7 +73,7 @@ class ItemTaskList extends Component {
                     {
                         responsables.map((responsable, key) => {
                             return (
-                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                <OverlayTrigger rootClose key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
                                     <div className="symbol symbol-25 symbol-circle border-0">
                                         <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
                                     </div>

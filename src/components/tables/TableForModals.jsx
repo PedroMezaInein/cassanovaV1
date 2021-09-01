@@ -234,8 +234,8 @@ class TableForModals extends Component {
                             ""
                     }
                 </div>
-                <div>
-                    <table ref="main" className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                <div className="table-responsive">
+                    <table ref="main" className="table table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
                 </div>
             </>
         )

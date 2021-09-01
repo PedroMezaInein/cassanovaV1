@@ -903,7 +903,7 @@ class Vacaciones extends Component {
 }
 function renderEventContent(eventInfo) {
     return (
-        <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
+        <OverlayTrigger rootClose overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
             <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
                 <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
                 <span>{eventInfo.event.title}</span>

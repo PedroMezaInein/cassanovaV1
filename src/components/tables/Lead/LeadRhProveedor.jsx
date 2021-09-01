@@ -117,7 +117,7 @@ class LeadRhProveedor extends Component {
                                                             lead.empresa.isotipos.length > 0 ?
                                                                 lead.empresa.isotipos.map((isotipo, key) => {
                                                                     return (
-                                                                        <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                        <OverlayTrigger rootClose key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
                                                                             <div className="symbol-group symbol-hover d-flex justify-content-center">
                                                                                 <div className="symbol symbol-40 symbol-circle">
                                                                                     <img alt="Pic" src={isotipo.url} />
@@ -181,7 +181,7 @@ class LeadRhProveedor extends Component {
                                                         </span>
                                                     </td>
                                                     <td className="text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
+                                                    <OverlayTrigger rootClose overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
                                                         <span onClick={(e) => { openModalEditarRRHHP(lead) }}className="btn btn-default btn-icon btn-sm">
                                                             <i className="fas fa-edit icon-md"></i>
                                                         </span>

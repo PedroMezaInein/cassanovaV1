@@ -207,7 +207,7 @@ class CalendarioProyectos extends Component {
     }
     showtd(proyecto, colspan, border) {
         return (
-            <OverlayTrigger overlay={
+            <OverlayTrigger rootClose overlay={
                 <Tooltip className="tool-calendar">
                     <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4" style={{ backgroundColor: proyecto.color }}>
                         {proyecto.nombre}

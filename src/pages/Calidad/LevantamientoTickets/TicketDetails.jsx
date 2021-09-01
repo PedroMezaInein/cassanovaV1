@@ -157,7 +157,8 @@ class TicketDetails extends Component {
             espera: false,
             aceptado: false,
             rechazado: false,
-        }
+        },
+        defaultNavTabs:''
     }
     
     componentDidMount() {
@@ -241,8 +242,9 @@ class TicketDetails extends Component {
                 options.equipos = aux
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
+                this.setState({ticket: ticket, formularios, options, data })
                 this.showStatusTickets(ticket)
-                this.setState({ ...this.state, ticket: ticket, formularios, options, data })
+                this.setNavTabs(ticket)
                 if(ticket.presupuesto_preeliminar){ this.getPresupuestoAxios(ticket.presupuesto_id) }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -563,6 +565,7 @@ class TicketDetails extends Component {
                 Swal.close()
                 const { formularios, options } = this.state
                 const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, conceptos, cuentas, tiposImpuestos, estatusCompras, clientes } = response.data
+                console.log(response.data, 'response.data')
                 if(type === 'facturacion'){
                     options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
                     options.formasPago = setOptions(formasPago, 'nombre', 'id')
@@ -1672,10 +1675,38 @@ class TicketDetails extends Component {
         this.setState({...this.state, formularios })
     };
 
+    setNavTabs = (ticket) => {
+        let { defaultNavTabs } = this.state
+        if( ticket ){
+            if(ticket.estatus_ticket){
+                switch(ticket.estatus_ticket.estatus){
+                    case 'En espera':
+                    case 'En revisión':
+                    case 'Rechazado':
+                        defaultNavTabs = 'adjuntos'
+                        break;
+                    case 'Aceptado':
+                    case 'Aprobación pendiente':
+                        defaultNavTabs = 'presupuesto'
+                        break;
+                    case 'En proceso':
+                    case 'Terminado':
+                    case 'Pendiente de pago':
+                        this.getSolicitudesAxios('solicitud-compra');
+                        defaultNavTabs = 'solicitud-compra'
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        this.setState({defaultNavTabs })
+    }
     render() {
-        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos } = this.state
+        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, defaultNavTabs } = this.state
         const { formulario } = this.props
         const { access_token } = this.props.authUser
+        console.log(defaultNavTabs, 'defaultNavTabs')
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
@@ -1697,7 +1728,7 @@ class TicketDetails extends Component {
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
                     addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitudFactura = { this.deleteSolicitudAxios } 
-                    addVenta = { this.addVentaAxios } getSolicitudes = { this.getSolicitudesAxios } />
+                    addVenta = { this.addVentaAxios } getSolicitudes = { this.getSolicitudesAxios } defaultNavTabs={defaultNavTabs}/>
                 <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
                     <HistorialPresupuestos presupuesto={presupuesto}/>
                 </CustomModal>

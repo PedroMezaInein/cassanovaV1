@@ -335,7 +335,7 @@ class TicketView extends Component {
                 break;
         }
         return(
-            <OverlayTrigger overlay={
+            <OverlayTrigger rootClose overlay={
                 <Tooltip className="mb-4 tool-time-line">
                     <div className={`tool-titulo ${colorText} font-weight-bolder letter-spacing-0-4 py-1`}> {estatus === 'Aceptado/Rechazado' ?<span><span className="color-aceptado-presupuesto">Aceptado</span> <span className="font-weight-light">/</span> <span className="color-rechazado-presupuesto">Rechazado</span></span> : estatus} </div>
                     <div className="text-justify px-5 pb-3 mt-1">{details}</div>
@@ -346,29 +346,6 @@ class TicketView extends Component {
                 </div>
             </OverlayTrigger>
         )
-    }
-    setNavTabs = () => {
-        const { data } = this.props
-        if( data ){
-            if(data.estatus_ticket){
-                switch(data.estatus_ticket.estatus){
-                    case 'En espera':
-                    case 'En revisión':
-                    case 'Rechazado':
-                        return 'adjuntos'
-                    case 'Aceptado':
-                    case 'Aprobación pendiente':
-                        return 'presupuesto'
-                    case 'En proceso':
-                    case 'Terminado':
-                    case 'Pendiente de pago':
-                        return 'solicitud-compra'
-                    default:
-                        break;
-                }
-            }
-        }
-        return ''
     }
 
     getPagado = () => {
@@ -388,7 +365,7 @@ class TicketView extends Component {
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
             controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
-            addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes
+            addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs
         } = this.props
 
         const { checked } = this.state
@@ -398,7 +375,7 @@ class TicketView extends Component {
                 {
                     data ? 
                         data.proyecto ?
-                            <Tab.Container defaultActiveKey={this.setNavTabs()}>
+                            <Tab.Container activeKey={defaultNavTabs}>
                                 <Card className = 'card card-custom gutter-b'>
                                     <Card.Body className="pb-0">
                                         <div className="d-flex">

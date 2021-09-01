@@ -578,7 +578,7 @@ class NewTableServerRender extends Component {
                         </div>
                         <div className="card-toolbar">
                             {(restante_empresa === true) ?
-                                <OverlayTrigger overlay={<Tooltip>RESTANTE POR EMPRESA</Tooltip>}>
+                                <OverlayTrigger rootClose overlay={<Tooltip>RESTANTE POR EMPRESA</Tooltip>}>
                                     <button onClick={() => this.clickHandlerRestante()} className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2">
                                         <i className="fas fa-dollar-sign text-dark-50"></i>
                                     </button>
@@ -587,7 +587,7 @@ class NewTableServerRender extends Component {
                                 ""
                             }
                             {(habilitar === true) ?
-                                <OverlayTrigger overlay={<Tooltip><span className="font-weight-bold text-dark-75">{text_habilitar}</span></Tooltip>}>
+                                <OverlayTrigger rootClose overlay={<Tooltip><span className="font-weight-bold text-dark-75">{text_habilitar}</span></Tooltip>}>
                                     <button onClick={() => this.clickHandlerHabilitar()} className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mx-3">
                                         <i className={`fas ${icon_habilitar} text-dark-50`}></i>
                                     </button>
@@ -620,7 +620,9 @@ class NewTableServerRender extends Component {
 
                     <Card.Body id={cardBody} className="pt-0">
                         {children}
-                        <table ref={'main'} className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                        <div className="table-responsive">
+                            <table ref={'main'} className="table table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                        </div>
                     </Card.Body>
                 </Card>
             </>

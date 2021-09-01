@@ -212,7 +212,7 @@ export function deleteAlert(title,text,action, text_button) {
         </div>,
         showConfirmButton: true,
         showCancelButton: true,
-        confirmButtonText: text_button? text_button: 'ELIMINAR',
+        confirmButtonText: text_button? text_button: 'SI, ELIMINAR',
         cancelButtonText: 'CANCELAR',
         reverseButtons: true,
         customClass: {
