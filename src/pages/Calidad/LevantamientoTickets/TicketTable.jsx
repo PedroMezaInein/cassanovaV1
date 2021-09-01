@@ -151,7 +151,9 @@ class TicketTable extends Component {
 
     async exportTicketsAxios(){
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/exportar/calidad/calidad`, { responseType:'blob', headers: setSingleHeader(access_token)}).then(
+        const { filters } = this.state
+        let filtros = JSON.stringify(filters)
+        await axios.post(`${URL_DEV}v2/exportar/calidad/calidad`, { 'search': filtros }, { responseType:'blob', headers: setSingleHeader(access_token)}).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -216,7 +218,6 @@ class TicketTable extends Component {
         const { filters, modal } = this.state
         modal.filtros = false
         this.setState({...this.state, modal})
-        console.log(filters, 'FILTERS')
         $('#tickets').DataTable().search( JSON.stringify(filters) ).draw();
     }
     onChangeFilter = e => {
