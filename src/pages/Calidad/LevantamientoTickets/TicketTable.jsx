@@ -18,6 +18,7 @@ class TicketTable extends Component {
         calidad: '',
         form: { fecha: new Date() },
         modal: { filtros: false },
+        restante: 0.0,
         filters: {
             id: '',
             proyecto: '',
@@ -66,11 +67,11 @@ class TicketTable extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { estatus, tiposTrabajo } = response.data
+                const { estatus, tiposTrabajo, restante } = response.data
                 const { options, formularios, data} = this.state
                 options.estatus = setOptions(estatus, 'estatus', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'nombre', 'id')
-                this.setState({ ...this.state, options, data, formularios })
+                this.setState({ ...this.state, options, data, formularios, restante: restante })
                 Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -256,8 +257,8 @@ class TicketTable extends Component {
         this.setState({...this.state, filters})
     }
     pendingPaymentClick = () => {
-        let pendiente_pago = 1234
-        pendingPaymentAlert('PENDIENTE DE PAGO', pendiente_pago)
+        const { restante } = this.state
+        pendingPaymentAlert('PENDIENTE DE PAGO', restante)
     }
     render() {
         const { modal, filters, options } = this.state
