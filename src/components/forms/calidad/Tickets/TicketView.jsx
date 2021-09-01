@@ -218,6 +218,7 @@ class TicketView extends Component {
             if(data.estatus_ticket){
                 switch(data.estatus_ticket.estatus){
                     case 'En proceso':
+                    case 'Pendiente de pago':
                         return <span>Ticket en proceso</span>
                     case 'Terminado':
                         return <span>Ticket terminado</span>
