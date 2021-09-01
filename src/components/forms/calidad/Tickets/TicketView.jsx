@@ -218,6 +218,7 @@ class TicketView extends Component {
             if(data.estatus_ticket){
                 switch(data.estatus_ticket.estatus){
                     case 'En proceso':
+                    case 'Pendiente de pago':
                         return <span>Ticket en proceso</span>
                     case 'Terminado':
                         return <span>Ticket terminado</span>
@@ -542,7 +543,7 @@ class TicketView extends Component {
                                             </div>
                                         </div>
                                         <div className="d-flex overflow-auto">
-                                            <Nav className="nav nav-tabs nav-tabs-line-info nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end ">
+                                            <Nav className="nav nav-tabs nav-tabs-line-info nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end">
                                                 <Nav.Item onClick={(e) => { e.preventDefault(); controlledNav("adjuntos") }}>
                                                     <Nav.Link eventKey="adjuntos">
                                                         <span className="nav-icon">

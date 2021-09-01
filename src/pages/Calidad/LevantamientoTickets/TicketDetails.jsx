@@ -565,7 +565,6 @@ class TicketDetails extends Component {
                 Swal.close()
                 const { formularios, options } = this.state
                 const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, conceptos, cuentas, tiposImpuestos, estatusCompras, clientes } = response.data
-                console.log(response.data, 'response.data')
                 if(type === 'facturacion'){
                     options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
                     options.formasPago = setOptions(formasPago, 'nombre', 'id')
@@ -1484,7 +1483,8 @@ class TicketDetails extends Component {
     controlledNav = value => {
         this.setState({
             ...this.state,
-            activeKeyNav: value
+            activeKeyNav: value,
+            defaultNavTabs:value
         })
     }
     handleCloseModalReporte = () => {
@@ -1700,13 +1700,12 @@ class TicketDetails extends Component {
                 }
             }
         }
-        this.setState({defaultNavTabs })
+        this.setState({ defaultNavTabs })
     }
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, defaultNavTabs } = this.state
         const { formulario } = this.props
         const { access_token } = this.props.authUser
-        console.log(defaultNavTabs, 'defaultNavTabs')
         return (
             <Layout active = 'calidad'  {...this.props}>
                 <TicketView
