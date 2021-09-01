@@ -375,7 +375,7 @@ class TicketView extends Component {
                 {
                     data ? 
                         data.proyecto ?
-                            <Tab.Container defaultActiveKey={defaultNavTabs}>
+                            <Tab.Container activeKey={defaultNavTabs}>
                                 <Card className = 'card card-custom gutter-b'>
                                     <Card.Body className="pb-0">
                                         <div className="d-flex">

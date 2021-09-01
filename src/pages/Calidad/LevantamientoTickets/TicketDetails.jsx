@@ -242,9 +242,9 @@ class TicketDetails extends Component {
                 options.equipos = aux
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
+                this.setState({ticket: ticket, formularios, options, data })
                 this.showStatusTickets(ticket)
                 this.setNavTabs(ticket)
-                this.setState({ ...this.state, ticket: ticket, formularios, options, data })
                 if(ticket.presupuesto_preeliminar){ this.getPresupuestoAxios(ticket.presupuesto_id) }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1700,7 +1700,7 @@ class TicketDetails extends Component {
                 }
             }
         }
-        this.setState({...this.state, defaultNavTabs })
+        this.setState({defaultNavTabs })
     }
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, defaultNavTabs } = this.state
