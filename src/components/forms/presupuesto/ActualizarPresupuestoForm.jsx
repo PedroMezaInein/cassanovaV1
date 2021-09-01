@@ -203,7 +203,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                 </div>
                                                             </div>
                                                             <div className="font-size-h5 font-weight-bold">
-                                                                {presupuesto.tiempo_ejecucion}
+                                                                {presupuesto.tiempo_ejecucion} días
                                                                 <div className="font-weight-normal font-size-lg text-muted">Tiempo de ejecución</div>
                                                             </div>
                                                         </div>
