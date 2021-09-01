@@ -170,7 +170,7 @@ class NewTable extends Component{
                                     <CommonLottie animationData = { NoData } />
                                 </div>
                                 <div className="col-12 text-center">
-                                    <h3 className="card-label font-weight-bolder undefined">
+                                    <h3 className="card-label font-weight-normal">
                                         No hay datos disponibles
                                     </h3>
                                 </div>
@@ -338,7 +338,7 @@ class NewTable extends Component{
                                 : <></>
                             }
                             {
-                                tableName === 'tickets' || tableName === 'presupuestos-utilidad' ?
+                                tableName === 'tickets' || tableName === 'presupuestos-utilidad' || tableName === 'presupuestos'?
                                     <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={pendingPaymentClick}>
                                         {this.setNaviIcon('flaticon-exclamation', 'PENDIENTE DE PAGO')}
                                     </Dropdown.Item>

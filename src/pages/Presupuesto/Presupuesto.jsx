@@ -5,20 +5,23 @@ import Swal from 'sweetalert2'
 import { URL_DEV, PRESUPUESTO_COLUMNS, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../constants'
 import { setOptions, setTextTable, setDateTable, setAdjuntosList, setTextTableCenter, setLabelTable } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
-import NewTableServerRender from '../../components/tables/NewTableServerRender'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, deleteAlert, pendingPaymentAlert } from '../../functions/alert'
 import { renderToString } from 'react-dom/server'
-import { ModalDelete, Modal } from '../../components/singles'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Modal } from '../../components/singles'
+import { Dropdown, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import TableForModals from '../../components/tables/TableForModals'
 import $ from "jquery";
+import { NewTable } from '../../components/NewTables';
+import { PresupuestoFilter } from '../../components/filters';
+
+const DatatableName = 'presupuestos'
 class Presupuesto extends Component {
     state = {
         formeditado: 0,
         modal: {
             form: false,
-            delete: false,
             adjuntos: false,
+            filters: false
         },
         presupuesto: '',
         title: 'Nuevo presupuesto',
@@ -36,12 +39,20 @@ class Presupuesto extends Component {
             empresas: [],
             areas: [],
             partidas: [],
-            subpartidas: []
+            subpartidas: [],
+            estatus:[ { value: 'Utilidad', name: 'Utilidad'}, { value: 'Aceptado', name: 'Aceptado'}, { value: 'Rechazado', name: 'Rechazado'}]
         },
         data: {
             adjuntos: []
         },
-        adjuntos: []
+        adjuntos: [],
+        filters: {
+            proyecto: '',
+            fecha: { start: null, end: null },
+            empresa: '',
+            area: '',
+            tiempo_ejecucion: ''
+        },
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -97,19 +108,14 @@ class Presupuesto extends Component {
             console.error(error, 'error')
         })
     }
-    async deletePresupuestoAxios() {
+    async deletePresupuestoAxios(id) {
         const { access_token } = this.props.authUser
-        const { presupuesto } = this.state
-        await axios.delete(URL_DEV + 'presupuestos/' + presupuesto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { modal } = this.state
-                modal.delete = false
-                this.getPresupuestoAxios()
+                this.reloadTable()
                 this.setState({
                     ...this.state,
-                    modal,
                     presupuesto: '',
-
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.')
             },
@@ -119,15 +125,6 @@ class Presupuesto extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
-        })
-    }
-    openModalDelete = presupuesto => {
-        const { modal } = this.state
-        modal.delete = true
-        this.setState({
-            ...this.state,
-            modal,
-            presupuesto: presupuesto
         })
     }
     downloadPDF = presupuesto => {
@@ -152,15 +149,6 @@ class Presupuesto extends Component {
             modal,
             adjuntos: [],
             data
-        })
-    }
-    handleCloseDelete = () => {
-        const { modal } = this.state
-        modal.delete = false
-        this.setState({
-            ...this.state,
-            modal,
-            presupuesto: ''
         })
     }
     clearForm = () => {
@@ -202,8 +190,9 @@ class Presupuesto extends Component {
         })
         return aux
     }
-    async getPresupuestoAxios() {
-        $('#kt_datatable2_presupuesto').DataTable().ajax.reload();
+    reloadTable = () => {
+        const { filters } = this.state
+        $(`#${DatatableName}`).DataTable().search(JSON.stringify(filters)).draw();
     }
     setPresupuestos = presupuestos => {
         let aux = []
@@ -239,50 +228,36 @@ class Presupuesto extends Component {
         )
     }
     setActions = presupuesto => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' },
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
-            }
+        const { history } = this.props
+        return (
+            <div className="w-100 d-flex justify-content-center">
+                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); history.push({ pathname: '/presupuesto/presupuesto/update', state: { presupuesto: presupuesto } }) }} >
+                        {this.setNaviIcon('flaticon2-pen', 'editar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', 'ELIMINARÁS EL PRESUPUESTO', () => this.deletePresupuestoAxios(presupuesto.id)) }}>
+                        {this.setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                    {
+                        presupuesto.pdfs.length > 0 &&
+                        <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.downloadPDF(presupuesto) }} >
+                        {this.setNaviIcon('flaticon2-download-1', 'descargar presupuesto')}
+                        </Dropdown.Item>
+                    }
+                </DropdownButton>
+            </div>
         )
-        if (presupuesto.pdfs) {
-            aux.push(
-                {
-                    text: 'Descargar&nbsp;presupuesto',
-                    btnclass: 'info',
-                    iconclass: 'flaticon2-download-1',
-                    action: 'download',
-                    tooltip: { id: 'download', text: 'Decargar presupuesto' },
-                }
-            )
-        }
-        return aux
     }
-    changePageAdd = () => {
-        const { history } = this.props
-        history.push({
-            pathname: '/presupuesto/presupuesto/add'
-        });
+    setNaviIcon(icon, text) {
+        return (
+            <span className="navi-icon">
+                <i className={`${icon} mr-2`} />
+                <span className="navi-text">
+                    {text}
+                </span>
+            </span>
+        )
     }
-    openModalEdit = presupuesto => {
-        const { history } = this.props
-        history.push({
-            pathname: '/presupuesto/presupuesto/update',
-            state: { presupuesto: presupuesto }
-        });
-    }
-    
     tooltip(estatus, details, dotHover, colorText ){
         return(
             <OverlayTrigger rootClose overlay={
@@ -297,30 +272,54 @@ class Presupuesto extends Component {
             </OverlayTrigger>
         )
     }
+    openModalFiltros = () => {
+        const { modal } = this.state
+        modal.filters = true
+        this.setState({...this.state, modal })
+    }
+    handleCloseFiltros = () => {
+        const { modal } = this.state
+        modal.filters = false
+        this.setState({...this.state, modal })
+    }
+    clearFiltros = (e) => {
+        e.preventDefault()
+        const { filters , modal} = this.state
+        filters.proyecto = ''
+        filters.area = ''
+        filters.empresa = ''
+        filters.fecha = { start: null, end: null }
+        filters.tiempo_ejecucion = ''
+        modal.filters = false
+        this.setState({...this.state, modal, filters})
+        this.reloadTable()
+    }
+    onSubmitFilter = (e) => {
+        e.preventDefault()
+        const { modal } = this.state
+        modal.filters = false
+        this.setState({...this.state, modal})
+        this.reloadTable()
+    }
+    onChangeFilter = e => {
+        const { name, value } = e.target
+        const { filters } = this.state
+        filters[name] = value
+        this.setState({...this.state, filters})
+    }
+    pendingPaymentClick = () => {
+        let pendiente_pago = 1234
+        pendingPaymentAlert('PENDIENTE DE PAGO', pendiente_pago)
+    }
     render() {
-        const { modal, data, adjuntos } = this.state
+        const { modal, data, adjuntos, filters, options } = this.state
         return (
             <Layout active={'presupuesto'}  {...this.props}>
-                <NewTableServerRender
-                    columns={PRESUPUESTO_COLUMNS}
-                    title='Presupuesto'
-                    subtitle='Listado de presupuestos'
-                    url='/presupuesto/presupuesto/add'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    mostrar_acciones={true}
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete },
-                        'download': { function: this.downloadPDF }
-                    }}
-                    idTable='kt_datatable2_presupuesto'
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setPresupuestos}
-                    urlRender = { `${URL_DEV}v2/presupuesto/presupuestos` }
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'>
+                <NewTable tableName = { DatatableName } subtitle = 'Listado de presupuestos' title = 'Presupuestos' 
+                    url='/presupuesto/presupuesto/add' accessToken = { this.props.authUser.access_token } columns = { PRESUPUESTO_COLUMNS }  
+                    setter = { this.setPresupuestos } urlRender = {`${URL_DEV}v2/presupuesto/presupuestos`} 
+                    filterClick = { this.openModalFiltros } pendingPaymentClick = { this.pendingPaymentClick}
+                    >
                     <div className="row mx-0 mb-4 mt-7 mt-md-0">
                         <div className="col-md-10 px-0 mx-auto">
                             <div className="table-responsive-xl mt-5">
@@ -352,13 +351,10 @@ class Presupuesto extends Component {
                             </div>
                         </div>
                     </div>
-                </NewTableServerRender>
-                <ModalDelete
-                    title="¿Estás seguro que deseas eliminar el presupuesto?"
-                    show={modal.delete}
-                    handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAxios() }}
-                />
+                </NewTable>
+                <Modal size = 'lg' title = 'Filtros' show = { modal.filters } handleClose = { this.handleCloseFiltros }>
+                    <PresupuestoFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilter } onChangeFilter={ this.onChangeFilter } options={options}/>
+                </Modal>
                 <Modal show={modal.adjuntos} handleClose={this.handleClose} title="Listado de presupuestos" >
                     <TableForModals
                         columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
