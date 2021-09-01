@@ -1,9 +1,10 @@
-import { Message, Done, Sending, Robot404, UserWarning, CommonLottie } from '../components/Lottie/'
+import { Message, Done, Sending, Robot404, UserWarning, CommonLottie, PendingPayment } from '../components/Lottie/'
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Trash, UploadingFile } from '../assets/animate'
 import { ItemSlider } from '../components/singles'
+import NumberFormat from 'react-number-format'
 
 const MySwal = withReactContent(Swal)
 
@@ -742,4 +743,35 @@ export const printResponseErrorAlert = (error) => {
                 break
         }
     }
+}
+
+export function pendingPaymentAlert(title, text) {
+    MySwal.fire({
+        title: title,
+        text:text,
+        html: <div>
+            <div className="row mx-0 justify-content-center">
+                <PendingPayment animationData = { Trash } />
+            </div>
+            <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins mt-6">
+                EL PAGO PENDIENTE ES DE
+                <NumberFormat
+                    value={text}
+                    displayType={'text'}
+                    thousandSeparator={true}
+                    prefix={'$'}
+                    renderText={value => <span className="font-weight-bolder" style={{color:'#83b0c3'}}> {value}</span>}
+                />
+            </div>
+        </div>,
+        showCancelButton: true,
+        cancelButtonText: 'CERRAR',
+        customClass: {
+            content: 'mt-0',
+            actions: 'mb-0',
+            confirmButton: 'd-none',
+            title:'mt-4 letter-spacing-0-4',
+            cancelButton: 'btn-pending-payment-sweetalert2',
+        }
+    })
 }

@@ -5,7 +5,7 @@ import Layout from "../../../components/layout/layout"
 import { NewTable } from '../../../components/NewTables';
 import { PRESUPUESTO_UTILIDAD_COLUMNS, URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from "../../../constants";
 import { setTextTable, setLabelTable, setTextTableCenter, setDateTable, setOptions, setAdjuntosList } from "../../../functions/setters";
-import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from "../../../functions/alert";
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, pendingPaymentAlert } from "../../../functions/alert";
 import { setSingleHeader } from "../../../functions/routers";
 import axios from 'axios'
 import $ from "jquery";
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2'
 import { Dropdown, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
 
-const DatatableName = 'presupuestos'
+const DatatableName = 'presupuestos-utilidad'
 class PresupuestosEnviados extends Component {
 
     state = { 
@@ -250,6 +250,12 @@ class PresupuestosEnviados extends Component {
             </OverlayTrigger>
         )
     }
+    
+    pendingPaymentClick = () => {
+        let pendiente_pago = 1234
+        pendingPaymentAlert('PENDIENTE DE PAGO', pendiente_pago)
+    }
+
     render() {
         const { access_token } = this.props.authUser
         const { modal, filters, options, modal_adjuntos, data, adjuntos } = this.state
@@ -258,7 +264,7 @@ class PresupuestosEnviados extends Component {
                 <NewTable tableName = { DatatableName } subtitle = 'Listado de Presupuestos a agregar utilidad' title = 'Presupuestos' 
                     url = '/presupuesto/presupuesto/add' accessToken = { access_token } columns = { PRESUPUESTO_UTILIDAD_COLUMNS }  
                     setter = { this.setPresupuestos } urlRender = {`${URL_DEV}v2/presupuesto/presupuestos/utilidad`} 
-                    filterClick = { this.openModalFiltros } 
+                    filterClick = { this.openModalFiltros } pendingPaymentClick = { this.pendingPaymentClick}
                     >
                     <div className="row mx-0 mb-4 mt-7 mt-md-0">
                         <div className="col-md-10 px-0 mx-auto">
