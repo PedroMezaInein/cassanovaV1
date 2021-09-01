@@ -89,10 +89,10 @@ class TicketTable extends Component {
                 {
                     actions: this.setActionsMantenimientos(calidad),
                     identificador: renderToString(setTextTableCenter(calidad.identificador)),
-                    estatus: renderToString(setLabelTable(calidad.estatus_ticket)),
+                    estatus: renderToString(setLabelTable(calidad.estatus)),
                     proyectos: renderToString(setTextTable(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
                     solicito: renderToString(setTextTableCenter(calidad.solicito)),
-                    tipo_trabajo: renderToString(setTextTableCenter(calidad.subarea ? calidad.subarea.nombre : '')),
+                    tipo_trabajo: renderToString(setTextTableCenter(calidad.tipo ? calidad.tipo.nombre : '')),
                     fecha: renderToString(setDateTable(calidad.created_at)),
                     fecha_termino:  renderToString(setDateTable(calidad.fecha_programada)),
                     costo_presupuesto:  renderToString( calidad.presupuesto_preeliminar ? setMoneyTable(calidad.presupuesto_preeliminar.totalPresupuesto) : setTextTableCenter('-')),
@@ -216,6 +216,7 @@ class TicketTable extends Component {
         const { filters, modal } = this.state
         modal.filtros = false
         this.setState({...this.state, modal})
+        console.log(filters, 'FILTERS')
         $('#tickets').DataTable().search( JSON.stringify(filters) ).draw();
     }
     onChangeFilter = e => {
@@ -258,8 +259,9 @@ class TicketTable extends Component {
         return (
             <Layout active={'calidad'}  {...this.props}>
                 <NewTable tableName = 'tickets' subtitle = 'Listado de tickets' title = 'Tickets' mostrar_boton = { true } abrir_modal = { false }
-                    url = '/calidad/tickets/nuevo-ticket' columns = { PROYECTOS_TICKETS } accessToken = { this.props.authUser.access_token } setter = { this.setCalidad } 
-                    urlRender={URL_DEV + 'calidad'} filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => this.exportTicketsAxios() }
+                    url = '/calidad/tickets/nuevo-ticket' columns = { PROYECTOS_TICKETS } accessToken = { this.props.authUser.access_token } 
+                    setter = { this.setCalidad } urlRender={`${URL_DEV}v3/calidad/tickets`} filterClick = { this.openModalFiltros } exportar_boton = { true } 
+                    onClickExport = { () => this.exportTicketsAxios() }
                 />
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filtros } handleClose = { this.handleCloseFiltros }>
                     <TickesFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilters } onChangeFilter={ this.onChangeFilter } options={options}/>
