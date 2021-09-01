@@ -28,7 +28,7 @@ class ServicioForm extends Component{
                 </div>
                 {
                     form.servicio !== '' && 
-                        <div class = 'mt-3 text-center'>
+                        <div className = 'mt-3 text-center'>
                             <Button icon = '' className = 'mx-auto' onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-servicio') } } text = 'Enviar' />
                         </div>
                 }
