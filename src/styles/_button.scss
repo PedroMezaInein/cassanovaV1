@@ -1743,3 +1743,25 @@ $white: #fff;
 .btn.btn-light-blog.focus:not(.btn-text) i {
     color: #ffffff;
 }
+
+.btn-historial-presupuestos{
+    width: fit-content;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    background: #f3f6f9;
+    padding: 5px 5px;
+    border-radius: 3px;
+    color: #464E5F!important;
+    cursor: pointer;
+    u {
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-color: #8950fc;
+    }
+    :hover{
+        color: #8950fc!important;
+        font-weight: 500;
+    }
+}
