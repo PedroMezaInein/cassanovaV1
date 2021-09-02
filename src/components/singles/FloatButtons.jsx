@@ -25,9 +25,8 @@ class FloatButtons extends Component {
                                     </span>
                                 </li>
                             </OverlayTrigger>
-                            : ''
-
-                        : ''
+                            : <></>
+                        : <></>
                 }
                 {
                     exportar ? 
@@ -38,10 +37,8 @@ class FloatButtons extends Component {
                                 </span>
                             </li>
                         </OverlayTrigger>
-                    :''
-                    
+                    : <></>
                 }
-                
             </ul>
         )
     }

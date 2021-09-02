@@ -847,3 +847,17 @@ table.dataTable {
   table.dataTable tbody tr.selected a, table.dataTable tbody th.selected a, table.dataTable tbody td.selected a {
     color: #7f7f7f; }
   
+    @media screen and (min-width: 992px){
+      .table-modals{
+        .col-sm-12.col-md-5{
+          align-self: center;
+        }
+        div.dataTables_wrapper div.dataTables_info{
+          padding-top: 0px;
+          margin-top: 0px;
+        }
+        .dataTables_wrapper .dataTables_pager .dataTables_length label{
+          display: none;
+        }
+      }
+    }

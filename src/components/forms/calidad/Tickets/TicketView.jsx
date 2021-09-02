@@ -366,7 +366,7 @@ class TicketView extends Component {
             onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
             controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
-            addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs
+            addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs, historialPresupuestos
         } = this.props
 
         const { checked } = this.state
@@ -626,15 +626,9 @@ class TicketView extends Component {
                                                 <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
                                                     checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
-                                                    openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } modulo_calidad={true} aux_presupuestos={aux_presupuestos}>
-                                                    {
-                                                        presupuesto.pdfs.length ?
-                                                            <button type="button" className="btn btn-sm btn-light-warning font-weight-bolder font-size-13px mr-2" 
-                                                                onClick = { (e) => { e.preventDefault(); onClick('historial'); } } >
-                                                                <i class="far fa-file-pdf mr-2" />HISTORIAL
-                                                            </button>
-                                                        :<></>
-                                                    }
+                                                    openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } modulo_calidad={true} aux_presupuestos={aux_presupuestos}
+                                                    historialPresupuestos={historialPresupuestos}
+                                                    >
                                                     { 
                                                         presupuesto.estatus.estatus === 'En revisión'?
                                                             this.calcularCantidades() ?

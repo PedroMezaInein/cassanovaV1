@@ -131,14 +131,14 @@ class UltimoPresupuesto extends Component {
         return css
     }
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, onChangeInput, sendPresupuesto, generarPDF, aux_presupuestos } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, onChangeInput, sendPresupuesto, generarPDF, aux_presupuestos, historialPresupuestos } = this.props
         const { margen } = this.state
         if (presupuesto)
             return (
                 <>
-                    < Card className="card-custom" >
+                    <Card className="card-custom" >
                         <Card.Body className="p-0">
-                        <div className="table-responsive">
+                            <div className="table-responsive">
                                 <div className="list min-w-1000px">
                                     <div className="px-9 py-6">
                                         <div>
@@ -250,8 +250,17 @@ class UltimoPresupuesto extends Component {
                     >
                         <Card className="mt-4 card-custom">
                             <Card.Header className="border-0">
-                                <div className="card-title">
-                                    <h3 className="card-label">Presupuesto preeliminar</h3>
+                                <div className="card-title mt-5">
+                                    <div className={`mb-0 ${presupuesto.pdfs.length === 0 ? 'card-label':'h3'}`}>
+                                        Presupuesto preeliminar
+                                        {
+                                            presupuesto.pdfs.length > 0 &&
+                                            <a className="btn-historial-presupuestos" onClick={historialPresupuestos}>
+                                                <i className="las la-file-pdf icon-lg text-info mr-1"></i>
+                                                <u>Historial de presupuestos</u>
+                                            </a>
+                                        }
+                                    </div>
                                 </div>
                                 <div className="card-toolbar justify-content-end">
                                     <div className="col-md-10 px-0">
