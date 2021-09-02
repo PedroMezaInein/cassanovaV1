@@ -124,7 +124,6 @@ class EmpleadosForm extends Component {
                         form.numero_alta_imss = empleado.numero_alta_imss
                         form.departamentos = []
                         form.nacionalidad = empleado.nacionalidad
-                        console.log(empleado.fecha_nacimiento, 'NAC')
                         if(moment(empleado.fecha_nacimiento).isValid())
                             form.fecha_nacimiento = new Date(moment(empleado.fecha_nacimiento))
                         else
