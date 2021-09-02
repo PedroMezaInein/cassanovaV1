@@ -929,6 +929,26 @@ class Empleados extends Component {
             console.error(error, 'error')
         })
     }
+
+    deleteContratoAxios = async(contrato) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { empleado } = this.state
+        await axios.delete(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${contrato.id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { empleado } = response.data
+                const { key } = this.state
+                if (key === 'administrativo') { this.getEmpleadosAxios() }
+                if (key === 'obra') { this.getEmpleadosObraAxios() }
+                this.setState({...this.state, empleado: empleado})
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+    
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato, formeditado } = this.state
         return (
@@ -986,7 +1006,8 @@ class Empleados extends Component {
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
                         generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
-                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } formeditado={formeditado}/>
+                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } f
+                        ormeditado={formeditado} user = { this.props.authUser.user } deleteContrato = { this.deleteContratoAxios } />
                 </Modal>
             </Layout>
         )

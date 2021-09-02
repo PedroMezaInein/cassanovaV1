@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { validateAlert } from '../../../functions/alert'
+import { deleteAlert, validateAlert } from '../../../functions/alert'
 import { Form, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstrap'
 import { InputGray, RangeCalendar, InputNumberGray, FileInput, CalendarDay } from '../../form-components'
 import SVG from "react-inlinesvg";
@@ -38,8 +38,23 @@ class FormularioContrato extends Component {
             showForm: false
         })
     }
+
+    isAdmin = ( contrato ) => {
+        const { user } = this.props
+        if(contrato.contrato_firmado)
+            return false
+        if(user){
+            if(user.tipo){
+                if(user.tipo.tipo === 'Administrador'){
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     render() {
-        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato, regeneratePdf, formeditado } = this.props
+        const { empleado, form, onChangeContrato, onChangeRange, generarContrato, onChangeAdjuntos, cancelarContrato, renovarContrato, regeneratePdf, formeditado, deleteContrato } = this.props
         const { renovar, showForm, showHistorial } = this.state
         return (
             <>
@@ -157,7 +172,7 @@ class FormularioContrato extends Component {
                                                     </td>
                                                     <td className="text-center">
                                                         <OverlayTrigger rootClose overlay={<Tooltip>RENOVAR</Tooltip>}>
-                                                            <span className="btn btn-light btn-icon h-35px font-weight-bolder" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
+                                                            <span className="btn btn-light btn-icon h-35px font-weight-bolder my-1" onClick = { (e) => { e.preventDefault();  this.mostrarForm()   }}>
                                                                 <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/File-done.svg')} />
                                                                 </span>
@@ -166,7 +181,7 @@ class FormularioContrato extends Component {
                                                         {
                                                             contrato.terminado === 0 ?
                                                                 <OverlayTrigger rootClose overlay={<Tooltip>TERMINAR</Tooltip>}>
-                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2"  onClick={() => { cancelarContrato(contrato) }} >
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1"  onClick={() => { cancelarContrato(contrato) }} >
                                                                         <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                                                                         </span>
@@ -177,7 +192,7 @@ class FormularioContrato extends Component {
                                                         {
                                                             contrato.contrato_firmado === null ? 
                                                                 <OverlayTrigger rootClose overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
-                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2" onClick = { (e) => { e.preventDefault(); regeneratePdf(contrato)   }}>
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1" onClick = { (e) => { e.preventDefault(); regeneratePdf(contrato)   }}>
                                                                         <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                             <i className="far fa-file-pdf svg-icon-info"></i>
                                                                         </span>
@@ -185,7 +200,18 @@ class FormularioContrato extends Component {
                                                                 </OverlayTrigger>
                                                             : ''
                                                         }
-                                                        
+                                                        {
+                                                            this.isAdmin(contrato) ? 
+                                                                <OverlayTrigger rootClose overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1" 
+                                                                        onClick = { (e) => { e.preventDefault(); deleteAlert(`¿Estás seguro?`, `Eliminarás el contrato`, () => { deleteContrato(contrato) } ) }}>
+                                                                        <span className="svg-icon svg-icon-lg svg-icon-danger text-danger">
+                                                                            <i className="far fa-trash-alt svg-icon-danger text-danger"></i>
+                                                                        </span>
+                                                                    </span>
+                                                                </OverlayTrigger>
+                                                            : ''
+                                                        }
                                                     </td>
                                                 </tr>
                                             )

@@ -124,14 +124,11 @@ class EmpleadosForm extends Component {
                         form.numero_alta_imss = empleado.numero_alta_imss
                         form.departamentos = []
                         form.nacionalidad = empleado.nacionalidad
-                        if(!isNaN(empleado.fecha_nacimiento) && empleado.fecha_nacimiento !== null)
-                            form.fecha_nacimiento = null
-                        else{
-                            if(moment(empleado.fecha_nacimiento).isValid())
-                                form.fecha_nacimiento = new Date()
-                            else
-                                form.fecha_nacimiento = null
-                        }
+                        console.log(empleado.fecha_nacimiento, 'NAC')
+                        if(moment(empleado.fecha_nacimiento).isValid())
+                            form.fecha_nacimiento = new Date(moment(empleado.fecha_nacimiento))
+                        else
+                            form.fecha_nacimiento = new Date()
                         form.domicilio = empleado.domicilio
                         form.telefono_movil = empleado.telefono_movil
                         form.telefono_particular = empleado.telefono_particular
