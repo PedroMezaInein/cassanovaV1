@@ -36,7 +36,7 @@ class PresupuestoFilter extends Component {
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-6">
-                        <ReactSelectSearchGray placeholder='Selecciona el área' defaultvalue={filters.tipo_trabajo} iconclass='las la-boxes icon-xl'
+                        <ReactSelectSearchGray placeholder='Selecciona el área' defaultvalue={filters.area} iconclass='las la-boxes icon-xl'
                             options={this.transformarOptions(options.areas)} onChange={(value) => { this.updateSelect(value, 'area') }}
                         />
                     </div>
@@ -92,7 +92,6 @@ class PresupuestoFilter extends Component {
                 </div>
 
             </Form>
-
 
         )
     }
