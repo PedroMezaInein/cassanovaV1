@@ -132,7 +132,6 @@ class PresupuestosEnviados extends Component {
         return aux
     }
 
-    
     label(presupuesto){
         let tipo = presupuesto.hasTickets ? 'ticket' : 'presupuesto'
         let identificador = tipo === 'ticket' && (presupuesto.ticketIdentificador !== null || presupuesto.ticketIdentificador !== '')
@@ -196,6 +195,7 @@ class PresupuestosEnviados extends Component {
         filters.empresa = ''
         filters.fecha = { start: null, end: null }
         filters.tiempo_ejecucion = ''
+        filters.estatus = ''
         this.setState({...this.state, modal:false, filters})
         this.reloadTable()
     }

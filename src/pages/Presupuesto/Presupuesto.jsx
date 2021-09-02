@@ -40,7 +40,9 @@ class Presupuesto extends Component {
             areas: [],
             partidas: [],
             subpartidas: [],
-            estatus:[ { value: 'Utilidad', name: 'Utilidad'}, { value: 'Aceptado', name: 'Aceptado'}, { value: 'Rechazado', name: 'Rechazado'}]
+            estatus:[ { value: 'Conceptos', name: 'Conceptos'}, { value: 'Volumetrías', name: 'Volumetrías'}, { value: 'Costos', name: 'Costos'},
+                { value: 'En revisión', name: 'En revisión'}, { value: 'En espera', name: 'En espera'}, { value: 'Aceptado', name: 'Aceptado'},
+                { value: 'Rechazado', name: 'Rechazado'} ]
         },
         data: {
             adjuntos: []
@@ -290,6 +292,7 @@ class Presupuesto extends Component {
         filters.empresa = ''
         filters.fecha = { start: null, end: null }
         filters.tiempo_ejecucion = ''
+        filters.estatus = ''
         modal.filters = false
         this.setState({...this.state, modal, filters})
         this.reloadTable()
@@ -353,7 +356,8 @@ class Presupuesto extends Component {
                     </div>
                 </NewTable>
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filters } handleClose = { this.handleCloseFiltros }>
-                    <PresupuestoFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilter } onChangeFilter={ this.onChangeFilter } options={options}/>
+                    <PresupuestoFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilter } 
+                        onChangeFilter={ this.onChangeFilter } options={options}/>
                 </Modal>
                 <Modal show={modal.adjuntos} handleClose={this.handleClose} title="Historial de presupuestos" >
                     <TableForModals
