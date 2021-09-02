@@ -42,8 +42,7 @@ class PresupuestoFilter extends Component {
                     </div>
                     <div className="col-md-6">
                         <ReactSelectSearchGray placeholder='Selecciona el estatus' defaultvalue={filters.estatus} iconclass='las la-check-circle icon-xl'
-                            options={this.transformarOptions(options.estatus)} onChange={(value) => { this.updateSelect(value, 'estatus') }}
-                        />
+                            options={this.transformarOptions(options.estatus)} onChange={(value) => { this.updateSelect(value, 'estatus') }} />
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -51,32 +50,8 @@ class PresupuestoFilter extends Component {
                     <div className="col-md-6">
                         <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
                             withformgroup={0} name='tiempo_ejecucion' placeholder='TIEMPO DE EJECUCIÓN (DÍAS NATURALES)' value={filters.tiempo_ejecucion}
-                            onChange={onChangeFilter} iconclass="flaticon-calendar-with-a-clock-time-tools"
-                        />
+                            onChange={onChangeFilter} iconclass="flaticon-calendar-with-a-clock-time-tools" />
                     </div>
-                    {/* <div className="col-md-6">
-                        <label class="col-form-label font-weight-bold text-dark-60">¿Qué estatus de pago deseas filtrar?</label>
-                        <div className="checkbox-outline pt-2">
-                            <label className="checkbox font-weight-light mr-5">
-                                <input
-                                    name='por_pagar'
-                                    type="checkbox"
-                                    checked={filters.por_pagar}
-                                    onChange={onChangeFilter}
-                                /> POR PAGAR
-                                <span></span>
-                            </label>
-                            <label className="checkbox font-weight-light">
-                                <input
-                                    name='pagado'
-                                    type="checkbox"
-                                    checked={filters.pagado}
-                                    onChange={onChangeFilter}
-                                />PAGADO
-                                <span></span>
-                            </label>
-                        </div>
-                    </div> */}
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
