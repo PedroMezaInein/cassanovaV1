@@ -5,17 +5,17 @@ import Layout from "../../../components/layout/layout"
 import { NewTable } from '../../../components/NewTables';
 import { PRESUPUESTO_UTILIDAD_COLUMNS, URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from "../../../constants";
 import { setTextTable, setLabelTable, setTextTableCenter, setDateTable, setOptions, setAdjuntosList } from "../../../functions/setters";
-import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from "../../../functions/alert";
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, pendingPaymentAlert } from "../../../functions/alert";
 import { setSingleHeader } from "../../../functions/routers";
 import axios from 'axios'
 import $ from "jquery";
 import { Modal } from '../../../components/singles'
-import { InputGray, SelectSearchGray, RangeCalendar, Button } from "../../../components/form-components";
 import Swal from 'sweetalert2'
 import { Dropdown, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
+import { PresupuestoFilter } from '../../../components/filters'
 
-const DatatableName = 'presupuestos'
+const DatatableName = 'presupuestos-utilidad'
 class PresupuestosEnviados extends Component {
 
     state = { 
@@ -28,7 +28,11 @@ class PresupuestosEnviados extends Component {
             area: '',
             tiempo_ejecucion: ''
         },
-        options: { empresas: [], areas: [] },
+        options: { 
+            empresas: [],
+            areas: [],
+            estatus:[ { value: 'Utilidad', name: 'Utilidad'}, { value: 'En espera', name: 'En espera'}, { value: 'Aceptado', name: 'Aceptado'}, { value: 'Rechazado', name: 'Rechazado'}]
+        },
         data: {
             adjuntos: []
         },
@@ -128,7 +132,6 @@ class PresupuestosEnviados extends Component {
         return aux
     }
 
-    
     label(presupuesto){
         let tipo = presupuesto.hasTickets ? 'ticket' : 'presupuesto'
         let identificador = tipo === 'ticket' && (presupuesto.ticketIdentificador !== null || presupuesto.ticketIdentificador !== '')
@@ -192,6 +195,7 @@ class PresupuestosEnviados extends Component {
         filters.empresa = ''
         filters.fecha = { start: null, end: null }
         filters.tiempo_ejecucion = ''
+        filters.estatus = ''
         this.setState({...this.state, modal:false, filters})
         this.reloadTable()
     }
@@ -250,15 +254,21 @@ class PresupuestosEnviados extends Component {
             </OverlayTrigger>
         )
     }
+    
+    pendingPaymentClick = () => {
+        let pendiente_pago = 1234
+        pendingPaymentAlert('PENDIENTE DE PAGO', pendiente_pago)
+    }
+
     render() {
         const { access_token } = this.props.authUser
         const { modal, filters, options, modal_adjuntos, data, adjuntos } = this.state
         return (
             <Layout active = "presupuesto" {...this.props}>
-                <NewTable tableName = { DatatableName } subtitle = 'Listado de Presupuestos a agregar utilidad' title = 'Presupuestos' 
+                <NewTable tableName = { DatatableName } subtitle = 'Listado de presupuestos' title = 'Utilidad en presupuestos' 
                     url = '/presupuesto/presupuesto/add' accessToken = { access_token } columns = { PRESUPUESTO_UTILIDAD_COLUMNS }  
                     setter = { this.setPresupuestos } urlRender = {`${URL_DEV}v2/presupuesto/presupuestos/utilidad`} 
-                    filterClick = { this.openModalFiltros } 
+                    filterClick = { this.openModalFiltros } pendingPaymentClick = { this.pendingPaymentClick}
                     >
                     <div className="row mx-0 mb-4 mt-7 mt-md-0">
                         <div className="col-md-10 px-0 mx-auto">
@@ -292,45 +302,8 @@ class PresupuestosEnviados extends Component {
                         </div>
                     </div>
                 </NewTable>
-                <Modal size = 'lg' title = 'Filtros' show = { modal } handleClose = { this.handleCloseFiltros } customcontent = { true }
-                    contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
-                    <form onSubmit = { this.onSubmitFilter } >
-                        <div className="row justify-content-center mx-0">
-                            <div className="col-md-6">
-                                <InputGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
-                                    withformgroup = { 0 } name = 'proyecto' placeholder = 'PROYECTO' value = { filters.proyecto } 
-                                    onChange = { this.onChangeFilter } />
-                            </div>
-                            <div className="col-md-6">
-                                <SelectSearchGray options = { options.empresas } placeholder = 'EMPRESA' value = { filters.empresa } 
-                                    withtaglabel = { 1 } withtextlabel = { 0 } withicon={0} customdiv = 'mb-0' 
-                                    onChange = { (value) => { this.onChangeFilter({target:{name:'empresa',value:value}}) } } />
-                            </div>
-                            <div className="col-md-6">
-                                <SelectSearchGray options = { options.areas } placeholder = 'ÁREA' value = { filters.area } 
-                                    withtaglabel = { 1 } withtextlabel = { 0 } withicon={0} customdiv = 'mb-0' 
-                                    onChange = { (value) => { this.onChangeFilter({target:{name:'area',value:value}}) } } />
-                            </div>
-                            <div className="col-md-6">
-                                <InputGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
-                                    withformgroup = { 0 } name = 'tiempo_ejecucion' placeholder = 'TIEMPO EJECUCIÓN' value = { filters.tiempo_ejecucion } 
-                                    onChange = { this.onChangeFilter } />
-                            </div>
-                            <div className="col-md-6">
-                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 0 } withicon={0} customdiv = 'mb-0' placeholder = 'ESTATUS' value = { filters.estatus } 
-                                    options = { [ { value: 'Utilidad', name: 'Utilidad'}, { value: 'En espera', name: 'En espera'}, { value: 'Aceptado', name: 'Aceptado'}, { value: 'Rechazado', name: 'Rechazado'} ] } 
-                                    onChange = { (value) => { this.onChangeFilter({target:{name:'estatus',value:value}}) } } />
-                            </div>
-                            <div className="col-md-9 my-6 text-center">
-                                <RangeCalendar start = { filters.fecha.start } end = { filters.fecha.end } 
-                                    onChange = { (value) => { this.onChangeFilter({target:{name:'fecha',value:{start: value.startDate, end: value.endDate}}}) } } />
-                            </div>
-                        </div>
-                        <div className="mx-0 row justify-content-between border-top pt-4">
-                            <Button only_icon='las la-redo-alt icon-lg' className="btn btn-light-danger btn-sm font-weight-bold" type = 'button' text="LIMPIAR" onClick = { this.clearFiltros } />
-                            <Button only_icon='las la-filter icon-xl' className="btn btn-light-info btn-sm font-weight-bold" type = 'submit' text="FILTRAR"  />
-                        </div>
-                    </form>
+                <Modal size = 'lg' title = 'Filtros' show = { modal } handleClose = { this.handleCloseFiltros }>
+                    <PresupuestoFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilter } onChangeFilter={ this.onChangeFilter } options={options}/>
                 </Modal>
                 <Modal show={modal_adjuntos} handleClose={this.handleCloseModalDownloadPDF} title="Listado de presupuestos" >
                     <TableForModals

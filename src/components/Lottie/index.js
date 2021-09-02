@@ -18,6 +18,7 @@ import userWarning from './UserWarning'
 import Panel from './Panel'
 import MoneyTransaction from './MoneyTransaction'
 import CommonLottie from './CommonLottie'
+import PendingPayment from './PendingPayment'
 
 export const Sending = sending
 export const Done = done
@@ -36,4 +37,4 @@ export const Build = build
 export const Robot404 = robot404
 export const Update = update
 export const UserWarning = userWarning
-export { Panel, MoneyTransaction, CommonLottie }
+export { Panel, MoneyTransaction, CommonLottie, PendingPayment }

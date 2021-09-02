@@ -170,7 +170,7 @@ class NewTable extends Component{
                                     <CommonLottie animationData = { NoData } />
                                 </div>
                                 <div className="col-12 text-center">
-                                    <h3 className="card-label font-weight-bolder undefined">
+                                    <h3 className="card-label font-weight-normal">
                                         No hay datos disponibles
                                     </h3>
                                 </div>
@@ -304,7 +304,7 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick, children, exportar_boton } = this.props
+        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick, children, exportar_boton, pendingPaymentClick } = this.props
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
                 <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
@@ -332,10 +332,17 @@ class NewTable extends Component{
                             </Dropdown.Item>
                             {
                                 exportar_boton === true ?
-                                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={() => this.clickHandlerExport()} >
+                                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => this.clickHandlerExport()} >
                                         {this.setNaviIcon('far fa-file-excel', 'EXPORTAR')}
                                     </Dropdown.Item>
                                 : <></>
+                            }
+                            {
+                                tableName === 'tickets' || tableName === 'presupuestos-utilidad' || tableName === 'presupuestos'?
+                                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={pendingPaymentClick}>
+                                        {this.setNaviIcon('flaticon-exclamation', 'PENDIENTE DE PAGO')}
+                                    </Dropdown.Item>
+                                :<></>
                             }
                         </DropdownButton>
                     </div>

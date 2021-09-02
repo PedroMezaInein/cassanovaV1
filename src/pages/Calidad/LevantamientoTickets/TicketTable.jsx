@@ -4,7 +4,7 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../../constants'
 import { setTextTable, setLabelTable, setTextTableCenter, setMoneyTable, setDateTable, setOptions } from '../../../functions/setters'
-import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, waitAlert } from '../../../functions/alert'
+import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, waitAlert, pendingPaymentAlert } from '../../../functions/alert'
 import { setSingleHeader } from '../../../functions/routers'
 import axios from 'axios'
 import $ from "jquery";
@@ -18,6 +18,7 @@ class TicketTable extends Component {
         calidad: '',
         form: { fecha: new Date() },
         modal: { filtros: false },
+        restante: 0.0,
         filters: {
             id: '',
             proyecto: '',
@@ -66,11 +67,11 @@ class TicketTable extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { estatus, tiposTrabajo } = response.data
+                const { estatus, tiposTrabajo, restante } = response.data
                 const { options, formularios, data} = this.state
                 options.estatus = setOptions(estatus, 'estatus', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'nombre', 'id')
-                this.setState({ ...this.state, options, data, formularios })
+                this.setState({ ...this.state, options, data, formularios, restante: restante })
                 Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -79,7 +80,7 @@ class TicketTable extends Component {
         })
     }
     openModalDeleteTicket = calidad => {
-        deleteAlert('¡BORRARÁS EL TICKET DE CALIDAD!', '¿DESEAS ELIMINARLO?', () => { this.deleteTicketAxios(calidad) })
+        deleteAlert('¡BORRARÁS EL TICKET!', '¿DESEAS ELIMINARLO?', () => { this.deleteTicketAxios(calidad) })
     }
     
     setCalidad = calidad => {
@@ -255,6 +256,10 @@ class TicketTable extends Component {
         }
         this.setState({...this.state, filters})
     }
+    pendingPaymentClick = () => {
+        const { restante } = this.state
+        pendingPaymentAlert('PENDIENTE DE PAGO', restante)
+    }
     render() {
         const { modal, filters, options } = this.state
         return (
@@ -262,7 +267,7 @@ class TicketTable extends Component {
                 <NewTable tableName = 'tickets' subtitle = 'Listado de tickets' title = 'Tickets' mostrar_boton = { true } abrir_modal = { false }
                     url = '/calidad/tickets/nuevo-ticket' columns = { PROYECTOS_TICKETS } accessToken = { this.props.authUser.access_token } 
                     setter = { this.setCalidad } urlRender={`${URL_DEV}v3/calidad/tickets`} filterClick = { this.openModalFiltros } exportar_boton = { true } 
-                    onClickExport = { () => this.exportTicketsAxios() }
+                    onClickExport = { () => this.exportTicketsAxios() } pendingPaymentClick = { this.pendingPaymentClick}
                 />
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filtros } handleClose = { this.handleCloseFiltros }>
                     <TickesFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilters } onChangeFilter={ this.onChangeFilter } options={options}/>
