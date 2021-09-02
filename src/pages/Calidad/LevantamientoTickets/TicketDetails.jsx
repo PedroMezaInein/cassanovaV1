@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { renderToString } from "react-dom/server";
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
-import { setOptions, setSelectOptions } from '../../../functions/setters'
+import { URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../../constants'
+import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { TicketView, HistorialPresupuestos } from '../../../components/forms'
@@ -18,6 +19,7 @@ import { CreatableMultiselectGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
 import { Modal as CustomModal } from '../../../components/singles'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
+import TableForModals from '../../../components/tables/TableForModals'
 class TicketDetails extends Component {
 
     state = {
@@ -129,7 +131,7 @@ class TicketDetails extends Component {
                 area: '', subarea: '', descripcion: '', notas:''
             }]
         },
-        data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [] },
+        data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [], adjuntos: [] },
         ticket: '',
         presupuesto: '',
         modal: { conceptos: false, solicitud: false, solicitud_venta:false, reporte:false, pdfs: false },
@@ -158,7 +160,8 @@ class TicketDetails extends Component {
             aceptado: false,
             rechazado: false,
         },
-        defaultNavTabs:''
+        defaultNavTabs:'',
+        adjuntos: []
     }
     
     componentDidMount() {
@@ -1464,11 +1467,6 @@ class TicketDetails extends Component {
                     this.setState({...this.state, formularios})
                 }
                 break;
-            case 'historial':
-                const { modal } = this.state
-                modal.pdfs = true
-                this.setState({...this.state,modal})
-                break;
             default: break;
         }
     }
@@ -1499,13 +1497,41 @@ class TicketDetails extends Component {
         modal.reporte = false
         this.setState({...this.state, modal, formularios })
     }
-    handleClosePdfs = () => {
-        const { modal } = this.state
-        modal.pdfs = false
+    openModalPdfs = () => {
+        const { data, presupuesto, modal } = this.state
+        modal.pdfs = true
+        data.adjuntos = presupuesto.pdfs
         this.setState({
             ...this.state,
-            modal
+            modal,
+            adjuntos: this.setAdjuntosTable(presupuesto.pdfs),
+            data
         })
+    }
+    handleClosePdfs = () => {
+        const { data, modal } = this.state
+        modal.pdfs = false
+        data.adjuntos = []
+        this.setState({
+            ...this.state,
+            modal,
+            adjuntos: [],
+            data
+        })
+    }
+    setAdjuntosTable = adjuntos => {
+        let aux = []
+        adjuntos.map((adjunto) => {
+            aux.push({
+                url: renderToString(
+                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
+                ),
+                identificador: renderToString(setTextTableCenter(adjunto.pivot.identificador)),
+                id: adjunto.id
+            })
+            return false
+        })
+        return aux
     }
     tagInputChange = (nuevosCorreos) => {
         const { formularios } = this.state 
@@ -1703,7 +1729,7 @@ class TicketDetails extends Component {
         this.setState({ defaultNavTabs })
     }
     render() {
-        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, defaultNavTabs } = this.state
+        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, defaultNavTabs, adjuntos } = this.state
         const { formulario } = this.props
         const { access_token } = this.props.authUser
         return (
@@ -1727,10 +1753,9 @@ class TicketDetails extends Component {
                     onChangeSolicitudCompra = { this.onChangeSolicitudCompra } submitSolicitudesCompras = { this.submitSolicitudesCompras } 
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
                     addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitudFactura = { this.deleteSolicitudAxios } 
-                    addVenta = { this.addVentaAxios } getSolicitudes = { this.getSolicitudesAxios } defaultNavTabs={defaultNavTabs}/>
-                <CustomModal show = { modal.pdfs } size ="lg" title = 'Historial de presupuestos' handleClose = { this.handleClosePdfs } >
-                    <HistorialPresupuestos presupuesto={presupuesto}/>
-                </CustomModal>
+                    addVenta = { this.addVentaAxios } getSolicitudes = { this.getSolicitudesAxios } defaultNavTabs={defaultNavTabs}
+                    historialPresupuestos={this.openModalPdfs}
+                />
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
                     <Modal.Body className = 'p-0 mt-3'>
@@ -1769,6 +1794,16 @@ class TicketDetails extends Component {
                         <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { this.sendMail } >SI, ENVIAR</button>
                     </Modal.Footer>
                 </Modal>
+                <CustomModal show={modal.pdfs} handleClose={this.handleClosePdfs} title="Historial de presupuestos" >
+                    <TableForModals
+                        columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
+                        data={adjuntos}
+                        hideSelector={true}
+                        mostrar_acciones={false}
+                        dataID='adjuntos'
+                        elements={data.adjuntos}
+                    />
+                </CustomModal>
             </Layout>
         )
     }

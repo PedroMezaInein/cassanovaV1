@@ -146,7 +146,7 @@ class ActualizarPresupuestoForm extends Component {
         return css
     }
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options, isButtonEnabled, modulo_calidad, aux_presupuestos } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options, isButtonEnabled, modulo_calidad, aux_presupuestos, historialPresupuestos } = this.props
         const { desperdicio } = this.state
         if (presupuesto)
             return (
@@ -260,9 +260,18 @@ class ActualizarPresupuestoForm extends Component {
                     </Card>
                     <Card className="mt-4 card-custom">
                         <Card.Header className="border-0">
-                            <Card.Title>
-                                <div className="font-weight-bold font-size-h5">Presupuesto Preliminar</div>
-                            </Card.Title>
+                            <div className="card-title mt-5">
+                                <div className={`mb-0 ${presupuesto.pdfs.length === 0 ? 'card-label' : 'h3'}`}>
+                                    Presupuesto preeliminar
+                                    {
+                                        presupuesto.pdfs.length > 0 &&
+                                        <a className="btn-historial-presupuestos" onClick={historialPresupuestos}>
+                                            <i className="las la-file-pdf icon-lg text-info mr-1"></i>
+                                            <u>Historial de presupuestos</u>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
                             <div className="card-toolbar" >
                                 {children}
                                 {
