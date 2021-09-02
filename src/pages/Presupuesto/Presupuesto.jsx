@@ -241,7 +241,7 @@ class Presupuesto extends Component {
                     {
                         presupuesto.pdfs.length > 0 &&
                         <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.downloadPDF(presupuesto) }} >
-                        {this.setNaviIcon('flaticon2-download-1', 'descargar presupuesto')}
+                        {this.setNaviIcon('flaticon2-download-1', 'Historial de presupuestos')}
                         </Dropdown.Item>
                     }
                 </DropdownButton>
@@ -355,7 +355,7 @@ class Presupuesto extends Component {
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filters } handleClose = { this.handleCloseFiltros }>
                     <PresupuestoFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilter } onChangeFilter={ this.onChangeFilter } options={options}/>
                 </Modal>
-                <Modal show={modal.adjuntos} handleClose={this.handleClose} title="Listado de presupuestos" >
+                <Modal show={modal.adjuntos} handleClose={this.handleClose} title="Historial de presupuestos" >
                     <TableForModals
                         columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
                         data={adjuntos}

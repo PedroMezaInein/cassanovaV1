@@ -254,7 +254,7 @@ class PresupuestoDiseño extends Component {
                     handleClose={this.handleCloseModalDelete}
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAdminAxios() }}
                 />
-                <Modal show={modal.adjuntos} handleClose={this.handleClose} title="Listado de presupuestos" >
+                <Modal show={modal.adjuntos} handleClose={this.handleClose} title="Historial de presupuestos" >
                     <TableForModals
                         columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
                         data={adjuntos}

@@ -125,7 +125,7 @@ class PresupuestosEnviados extends Component {
                     proyecto: renderToString(setTextTableCenter(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
                     area: renderToString(setTextTableCenter(presupuesto.area ? presupuesto.area.nombre : '')),
                     fecha: renderToString(setDateTable(presupuesto.fecha)),
-                    tiempo_ejecucion: renderToString(setTextTableCenter(presupuesto.tiempo_ejecucion))
+                    tiempo_ejecucion: renderToString(setTextTableCenter(`${presupuesto.tiempo_ejecucion} días`))
                 }
             )
         })
@@ -169,7 +169,7 @@ class PresupuestosEnviados extends Component {
                     {
                         element.pdfs.length > 0 &&
                         <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalDownloadPDF(element) }} >
-                        {this.setNaviIcon('flaticon2-download-1', 'descargar presupuesto')}
+                        {this.setNaviIcon('flaticon2-download-1', 'Historial de presupuestos')}
                         </Dropdown.Item>
                     }
                 </DropdownButton>
