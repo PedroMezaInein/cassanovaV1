@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Card, Form, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap';
 import { InputMoneyGray, InputGray, SelectSearchGray, Button, CalendarDay, FileInput } from '../../form-components';
 import { Modal } from '../../singles';
-import { RFC, URL_DEV } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { errorAlert, waitAlert, validateAlert, deleteAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 import Swal from 'sweetalert2'
@@ -18,9 +18,9 @@ export default class SolicitudFacturacionTabla extends Component{
             venta:false
         },
         form: {
+            cliente_solicitud_f:'',
             rfc_receptor: '',
             razon_social_receptor: '',
-            concepto: '',
             monto: 0.0,
             forma_pago: '',
             metodo_pago: '',
@@ -53,7 +53,6 @@ export default class SolicitudFacturacionTabla extends Component{
         form.estatus_factura = '1'
         form.rfc_receptor = ''
         form.razon_social_receptor = ''
-        form.concepto = ''
         form.forma_pago = ''
         form.metodo_pago = ''
         form.tipo_pago = ''
@@ -121,15 +120,26 @@ export default class SolicitudFacturacionTabla extends Component{
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
+        const { options } = this.props
         form[name] = value
+        if ( name === 'cliente_solicitud_f'){
+            options.clientes.forEach((cliente) => {
+                if(cliente.value === value){
+                    form.razon_social_receptor = cliente.name
+                    form.rfc_receptor = cliente.rfc
+                }
+            })
+            
+        }
+
         this.setState({...this.state, form})
     }
 
-    updateConcepto = value => { this.onChange({ target: { value: value, name: 'concepto' } }) } 
     updateFormaPago= value => { this.onChange({ target: { value: value, name: 'forma_pago' } }) }
     updateTipoPago = value => { this.onChange({ target: { value: value, name: 'tipo_pago' } }) }
     updateMetodoPago = value => { this.onChange({ target: { value: value, name: 'metodo_pago' } }) }
     updateEstatusFactura = value => { this.onChange({ target: { value: value, name: 'estatus_factura' } }) }
+    updateClienteFactura = value => { this.onChange({ target: { value: value, name: 'cliente_solicitud_f' } }) }
     updateCliente = value => { this.onChange({ target: { value: value, name: 'cliente' } }) }
     updateCuenta = value => { this.onChange({ target: { value: value, name: 'cuenta' } }) }
     updateTipoImpuesto = value => { this.onChange({ target: { value: value, name: 'tipo_impuesto' } }) }
@@ -433,7 +443,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                         <th></th>
                                         <th>Emisor</th>
                                         <th>Receptor</th>
-                                        <th>Concepto</th>
+                                        <th>Detalle</th>
                                         <th>Monto</th>
                                         <th>Tipo de <br/> pago</th>
                                         <th>Forma de <br/> pago</th>
@@ -488,7 +498,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                                                 </div>
                                                             </td>
                                                             <td className='text-center'>
-                                                                {sol.concepto ? sol.concepto.concepto : '-'}
+                                                                {sol.detalle ? sol.detalle : '-'}
                                                             </td>
                                                             <td className='text-center'>
                                                                 { setMoneyTableSinSmall(sol.monto) }
@@ -519,7 +529,21 @@ export default class SolicitudFacturacionTabla extends Component{
                     <Form onSubmit={(e) => { e.preventDefault(); this.onSubmit(form) }}>
                         <Row className="form-group mx-0 form-group-marginless mt-5">
                             <Col md="4">
-                                <InputGray
+                                <SelectSearchGray
+                                    withtaglabel={1}
+                                    withtextlabel={1}
+                                    withicon={1}
+                                    customdiv="mb-0"
+                                    iconclass="far fa-credit-card"
+                                    formeditado={0}
+                                    options={options.clientes}
+                                    placeholder="SELECCIONA EL CLIENTE"
+                                    name="cliente_solicitud_f"
+                                    value={form.cliente_solicitud_f}
+                                    onChange={this.updateClienteFactura}
+                                    messageinc="Incorrecto. Selecciona el cliente."
+                                />
+                                {/* <InputGray
                                     withtaglabel = { 1 }
                                     withtextlabel = { 1 }
                                     withplaceholder = { 1 }
@@ -535,9 +559,9 @@ export default class SolicitudFacturacionTabla extends Component{
                                     patterns={RFC}
                                     messageinc="Incorrecto. Ej. ABCD001122ABC."
                                     maxLength="13"
-                                />
+                                /> */}
                             </Col>
-                            <Col md="4">
+                            {/* <Col md="4">
                                 <InputGray
                                     withtaglabel = { 1 }
                                     withtextlabel = { 1 }
@@ -553,25 +577,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                     iconclass="far fa-file-alt"
                                     messageinc="Incorrecto. Ingresa la razón social."
                                 />
-                            </Col>
-                            <Col md="4">
-                                <SelectSearchGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    withicon = { 1 }
-                                    customdiv="mb-0"
-                                    formeditado={0}
-                                    options={options.conceptos}
-                                    placeholder="CONCEPTO"
-                                    name="concepto"
-                                    value={form.concepto}
-                                    onChange={this.updateConcepto}
-                                    messageinc="Incorrecto. Selecciona el concepto."
-                                />
-                            </Col>
-                        </Row>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <Row className="form-group mx-0 form-group-marginless">
+                            </Col> */}
                             <Col md="4">
                                 <SelectSearchGray
                                     withtaglabel={1}
@@ -602,6 +608,9 @@ export default class SolicitudFacturacionTabla extends Component{
                                     messageinc="Incorrecto. Selecciona el método de pago."
                                 />
                             </Col>
+                        </Row>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <Row className="form-group mx-0 form-group-marginless">
                             <Col md="4">
                                 <SelectSearchGray
                                     withtaglabel={1}
@@ -617,9 +626,6 @@ export default class SolicitudFacturacionTabla extends Component{
                                     messageinc="Incorrecto. Selecciona el tipo de pago."
                                 />
                             </Col>
-                        </Row>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <Row className="form-group mx-0 form-group-marginless">
                             <Col  md="4">
                                 <SelectSearchGray
                                     withtaglabel={1}

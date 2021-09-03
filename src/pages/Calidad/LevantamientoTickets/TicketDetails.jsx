@@ -6,7 +6,7 @@ import { URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { TicketView, HistorialPresupuestos } from '../../../components/forms'
+import { TicketView } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
 import { setSingleHeader, setFormHeader, toAbsoluteUrl } from '../../../functions/routers'
 import { SelectSearchGray, CalendarDaySwal } from '../../../components/form-components'
@@ -567,13 +567,13 @@ class TicketDetails extends Component {
             (response) => {
                 Swal.close()
                 const { formularios, options } = this.state
-                const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, conceptos, cuentas, tiposImpuestos, estatusCompras, clientes } = response.data
+                const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, cuentas, tiposImpuestos, estatusCompras, clientes } = response.data
                 if(type === 'facturacion'){
                     options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
                     options.formasPago = setOptions(formasPago, 'nombre', 'id')
                     options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
                     options.tiposPagos = setOptions(tiposPago, 'tipo', 'id')
-                    options.conceptos = setOptions(conceptos, 'concepto', 'id')
+                    // options.conceptos = setOptions(conceptos, 'concepto', 'id')
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
                     options.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')

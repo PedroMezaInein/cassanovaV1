@@ -2,55 +2,55 @@
 
 // COLOR DE TEXTOS
 .header-ticket-espera{
-    color: #736657;
-    background: #f1e8d9;
+    color: #de6c55;
+    background: #ffe3d2;
 }
 .header-ticket-revision{
-    color: #a08a69;
-    background: #d7cebf;
+    color: #f56369;
+    background: #ffdadf;
 }
 .header-ticket-aprobacion{
-    color: #3da8b6;
-    background: #aedbdf;
+    color: #47657c;
+    background: #daf0ff;
 }
 .header-ticket-proceso{
-    color: #21c793;
-    background: #ade6d4;
+    color: #807999;
+    background: #dcdfff;
 }
 .header-ticket-pendiente-pago{
-    color: #348757;
-    background: #abcdbb;
+    color: #d0708e;
+    background: #fedae6;
 }
 .header-ticket-terminado{
-    color: #3d5214;
-    background: #c5ccb8;
+    color: #649baa;
+    background: #E0F2F1;
 }
 .header-ticket-aceptado, .header-ticket-rechazado{
-    color: #015c86;
-    background: #9ec1cc;
+    color: #4da4d1;
+    background: #E1F5FE;
 }
 
 // DOT HOVER
 .status.dot-espera-ticket:hover:before { 
-    box-shadow: 0 0 6px 0 #736657;
+    box-shadow: 0 0 6px 0 #de6c55;
 }
 .status.dot-revision-ticket:hover:before {
-    box-shadow: 0 0 6px 0 #a08a69;
+    box-shadow: 0 0 6px 0 #f56369;
 }
 .status.dot-aprobacion-ticket:hover:before {
-    box-shadow: 0 0 6px 0 #3da8b6;
+    box-shadow: 0 0 6px 0 #47657c;
 }
 .status.dot-proceso-ticket:hover:before {
-    box-shadow: 0 0 6px 0 #21c793;
+    box-shadow: 0 0 6px 0 #807999;
 }
 .status.dot-pendiente-pago-ticket:hover:before {
-    box-shadow: 0 0 6px 0 #348757;
+    box-shadow: 0 0 6px 0 #d0708e;
 }
 .status.dot-terminado-ticket:hover:before {
-    box-shadow: 0 0 6px 0 #3d5214;
+    box-shadow: 0 0 6px 0 #649baa;
 }
 .status.dot-rechazado-ticket:hover:before, .status.dot-aceptado-ticket:hover:before  {
-    box-shadow: 0 0 6px 0 #015c86;
+    box-shadow: 0 0 6px 0 #4da4d1;
 }
 
 // TIMELINE ESTATUS
@@ -109,10 +109,10 @@
 .li.complete_espera .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #e4cbad, #a08a69)
+    border-image-source: linear-gradient(to right, #cd583d, #d05c42, #d45f46, #d7634a, #da674f, #dd6852, #df6854, #e26957, #e56659, #e7635b, #ea605d, #df6c55);
 }
 .li.complete_espera .status:before {
-    background-color: #e4cbad;
+    background-color: #de6c55;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -120,10 +120,10 @@
 .li.complete_revision .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #a08a69, #015c86);
+    border-image-source: linear-gradient(to right, #de6c55, #e36a58, #e7695b, #ec675f, #f06563, #f26379, #f56369, #f56369, #f16571, #e16c7f,#e47587, #b67aa1, #a182b0, #4ea3d0);
 }
 .li.complete_revision .status:before {
-    background-color: #a08a69;
+    background-color: #f56369;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -131,10 +131,10 @@
 .li.complete_aceptado .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #015c86, #3da8b6);
+    border-image-source: linear-gradient(to right, #4da4d1, #4fa0cc, #509cc6, #5199c1, #5295bc, #5290b5, #528aad, #5185a6, #4f7d9b, #4c7591, #4a6d86, #47657c);
 }
 .li.complete_aceptado .status:before {
-    background-color: #015c86;
+    background-color: #4da4d1;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -142,10 +142,10 @@
 .li.complete_rechazado .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #015c86, #3da8b6);
+    border-image-source: linear-gradient(to right, #4da4d1, #4fa0cc, #509cc6, #5199c1, #5295bc, #5290b5, #528aad, #5185a6, #4f7d9b, #4c7591, #4a6d86, #47657c);
 }
 .li.complete_rechazado .status:before {
-    background-color:  #015c86;
+    background-color:  #4da4d1;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -153,10 +153,10 @@
 .li.complete_pendiente .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #3da8b6, #21c793);
+    border-image-source: linear-gradient(to right, #47657c, #4e6780, #566983, #5e6b86, #656d88, #6a6f8a, #6e708c, #73728e, #767491, #797694, #7d7796, #807999);
 }
 .li.complete_pendiente .status:before {
-    background-color: #3da8b6;
+    background-color: #47657c;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -164,10 +164,10 @@
 .li.complete_proceso .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #21c793, #348757);
+    border-image-source: linear-gradient(to right, #807999, #7d6f91, #7a6588, #785b7e, #765174, #7c5074, #834f73, #894e71, #9a5679, #ac5e81, #be6788, #d0708e);
 }
 .li.complete_proceso .status:before {
-    background-color: #21c793;
+    background-color: #807999;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -175,10 +175,10 @@
 .li.complete_pendiente_pago .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #348757, #3d5214);
+    border-image-source: linear-gradient(to right, #d0708e, #cc718e, #c7718e, #c3728d, #bf728d, #b87598, #ae79a1, #a47da8, #8e87b4, #778fb8, #6896b4, #649baa);
 }
 .li.complete_pendiente_pago .status:before {
-    background-color: #348757;
+    background-color: #d0708e;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -187,10 +187,10 @@
 .li.complete_terminado .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #3d5214, #7a792e);
+    border-image-source: linear-gradient(to right, #649baa, #639aa6, #6299a2, #62989e, #62979a, #619496, #609192, #5f8e8e, #5c8889, #5a8384, #577d7f, #55787a);
 }
 .li.complete_terminado .status:before {
-    background-color: #3d5214;
+    background-color: #649baa;
     border: none;
     transition: all 200ms ease-in;
 }
@@ -397,7 +397,7 @@ $color-rechazado-presupuesto:#F64E60;
 }
 
 .ribbon-tickets{
-    background-image: linear-gradient(to right, #015c86, #006a88, #00767f, #00806d, #348757);
+    background-image: linear-gradient(to right,#de6c55, #d56d98, #a383c1, #6d94c3, #649baa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
