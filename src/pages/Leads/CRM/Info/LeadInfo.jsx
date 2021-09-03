@@ -728,7 +728,12 @@ class LeadInfo extends Component {
             await axios.post(`${URL_DEV}v1/presupuestos/solicitud-presupuesto/lead`, {comentario: form.comentario, lead: lead.id}, 
                 { headers: setSingleHeader(access_token) }).then(
                     (response) => {
-
+                        const { form } = this.state
+                        const { solicitud } = response.data
+                        form.comentario = ''
+                        this.setState({...this.state, form})
+                        doneAlert('Solicitud enviada con éxito', () => { this.getOneLead(lead) } )
+                        this.getSolicitudPresupuesto(solicitud.id)
                     }, (error) => { printResponseErrorAlert(error) }
                 ).catch((error) => {
                     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1368,7 +1373,7 @@ class LeadInfo extends Component {
                             <div>
                                 <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUÉ SE REQUIERE COTIZAR.</h2>
                                 <div className = 'text-center my-5' style = { { fontSize: '1rem', textTransform: 'none' } } >
-                                    Da todos los detalles posibles, con estos el departamento de proyectos generará una cotización.
+                                    DA TODOS LOS DETALLES POSIBLES, CON ESTOS EL DEPARTAMENTO DE PROYECTOS GENERARÁ UNA COTIZACIÓN.
                                 </div>
                                 <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 }  
                                     value = { form.comentario } name = 'comentario' rows  = { 8 } as = 'textarea' swal = { true } letterCase = { false } 
