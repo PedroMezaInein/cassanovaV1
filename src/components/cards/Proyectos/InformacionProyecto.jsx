@@ -159,19 +159,15 @@ export default class InformacionProyecto extends Component {
                                                         </td>
                                                     </tr>
                                             }
-                                            {
-                                                proyecto.calle &&
-                                                    <tr>
-                                                        <td className="text-center">
-                                                            <i className="las la-calendar icon-2x text-dark-50"></i>
-                                                        </td>
-                                                        <td className="font-weight-bolder text-dark-50">PERIODO DEL PROYECTO</td>
-                                                        <td className="font-weight-light">
-                                                            {printDates(proyecto.fecha_inicio, proyecto.fecha_fin)}
-                                                        </td>
-                                                    </tr>
-                                            }
-
+                                            <tr>
+                                                <td className="text-center">
+                                                    <i className="las la-calendar icon-2x text-dark-50"></i>
+                                                </td>
+                                                <td className="font-weight-bolder text-dark-50">PERIODO DEL PROYECTO</td>
+                                                <td className="font-weight-light">
+                                                    {printDates(proyecto.fecha_inicio, proyecto.fecha_fin)}
+                                                </td>
+                                            </tr>
                                             {
                                                 proyecto.tipo_proyecto &&
                                                     <tr>
