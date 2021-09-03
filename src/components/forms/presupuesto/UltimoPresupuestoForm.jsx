@@ -255,10 +255,10 @@ class UltimoPresupuesto extends Component {
                                         Presupuesto preeliminar
                                         {
                                             presupuesto.pdfs.length > 0 &&
-                                            <a className="btn-historial-presupuestos" onClick={historialPresupuestos}>
+                                            <span className="btn-historial-presupuestos" onClick={historialPresupuestos}>
                                                 <i className="las la-file-pdf icon-lg text-info mr-1"></i>
                                                 <u>Historial de presupuestos</u>
-                                            </a>
+                                            </span>
                                         }
                                     </div>
                                 </div>
