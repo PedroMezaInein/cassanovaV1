@@ -915,7 +915,7 @@ class TicketDetails extends Component {
                                     <div className="separator separator-dashed mt-5 mb-2"></div>
                                     <div className="form-group row form-group-marginless mb-1">
                                         <div className="col-md-12 text-justify">
-                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} iconclass='la-hashtag icon-xl'
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} iconclass='las la-hashtag icon-xl'
                                                 requirevalidation={0} value={formularios.presupuesto_generado.ordenCompra} name={'orden_compra'}
                                                 onChange={(e) => { this.onChangeSwal(e.target.value, 'orden_compra', 'presupuesto_generado') }}
                                                 swal={true} placeholder='NÚMERO DE ORDEN DE COMPRA'
