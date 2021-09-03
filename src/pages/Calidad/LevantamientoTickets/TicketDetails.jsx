@@ -807,7 +807,7 @@ class TicketDetails extends Component {
             case 'Aceptado':
                 customInputAlert(
                     <div>
-                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">¡Presupuesto Aceptado!</h5>
+                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">¿El presupuesto fue aceptado?</h5>
                         <div className="mt-7 text-underline-position col-md-10 mx-auto">
                             <span className="font-weight-bold">Nota:</span> La fecha y la evidencia del visto bueno son datos <span className="font-weight-bolder"><u className="bg-danger-o-30 text-danger px-1">requeridos</u></span>.
                         </div>

@@ -728,7 +728,12 @@ class LeadInfo extends Component {
             await axios.post(`${URL_DEV}v1/presupuestos/solicitud-presupuesto/lead`, {comentario: form.comentario, lead: lead.id}, 
                 { headers: setSingleHeader(access_token) }).then(
                     (response) => {
-
+                        const { form } = this.state
+                        const { solicitud } = response.data
+                        form.comentario = ''
+                        this.setState({...this.state, form})
+                        doneAlert('Solicitud enviada con éxito', () => { this.getOneLead(lead) } )
+                        this.getSolicitudPresupuesto(solicitud.id)
                     }, (error) => { printResponseErrorAlert(error) }
                 ).catch((error) => {
                     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1366,9 +1371,9 @@ class LeadInfo extends Component {
                         flag = false
                         customInputAlert(
                             <div>
-                                <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUE SE REQUIERE COTIZAR.</h2>
+                                <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUÉ SE REQUIERE COTIZAR.</h2>
                                 <div className = 'text-center my-5' style = { { fontSize: '1rem', textTransform: 'none' } } >
-                                    Da todos los detalles posibles para que el departamento de proyectos genere una cotización.
+                                    DA TODOS LOS DETALLES POSIBLES, CON ESTOS EL DEPARTAMENTO DE PROYECTOS GENERARÁ UNA COTIZACIÓN.
                                 </div>
                                 <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 }  
                                     value = { form.comentario } name = 'comentario' rows  = { 8 } as = 'textarea' swal = { true } letterCase = { false } 
@@ -1649,7 +1654,6 @@ class LeadInfo extends Component {
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
                                                 <div className="text-center">
                                                     <Button id = "solicitar_cita" icon='' className = "btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"
-                                                        // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
                                                         onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita()) }}
                                                         only_icon = "far fa-calendar-check icon-15px mr-2" text = 'SOLICITAR CITA' />
                                                     <Button icon='' className = "btn btn-icon btn-xs p-3 btn-light-primary mr-2 mt-2"
@@ -1670,7 +1674,6 @@ class LeadInfo extends Component {
                                             <div className={this.state.showAgenda ? 'col-md-12 mb-5' : 'd-none'}>
                                                 <AgendarCitaForm formAgenda = { formAgenda } onChange = { this.onChangeAgenda }
                                                     removeCorreo = { this.removeCorreo }
-                                                    // solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
                                                     onSubmit = { () => { waitAlert(); this.agendarEvento() } }
                                                     tagInputChange = { (e) => this.tagInputChange(e) }
                                                     onChangeAgendaLC = { this.onChangeAgendaLC } lead={lead}
