@@ -1366,9 +1366,9 @@ class LeadInfo extends Component {
                         flag = false
                         customInputAlert(
                             <div>
-                                <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUE SE REQUIERE COTIZAR.</h2>
+                                <h2 className = 'swal2-title mb-4 mt-2'>COMENTA QUÉ SE REQUIERE COTIZAR.</h2>
                                 <div className = 'text-center my-5' style = { { fontSize: '1rem', textTransform: 'none' } } >
-                                    Da todos los detalles posibles para que el departamento de proyectos genere una cotización.
+                                    Da todos los detalles posibles, con estos el departamento de proyectos generará una cotización.
                                 </div>
                                 <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 }  
                                     value = { form.comentario } name = 'comentario' rows  = { 8 } as = 'textarea' swal = { true } letterCase = { false } 

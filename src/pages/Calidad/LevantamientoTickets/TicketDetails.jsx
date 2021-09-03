@@ -9,7 +9,7 @@ import Layout from '../../../components/layout/layout'
 import { TicketView } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
 import { setSingleHeader, setFormHeader, toAbsoluteUrl } from '../../../functions/routers'
-import { SelectSearchGray, CalendarDaySwal } from '../../../components/form-components'
+import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import moment from 'moment'
 import 'moment/locale/es'
 import Swal from 'sweetalert2'
@@ -120,7 +120,8 @@ class TicketDetails extends Component {
                 fechaEvidencia: new Date(),
                 adjuntoEvidencia: '',
                 motivo_rechazo:'',
-                correos_reporte: []
+                correos_reporte: [],
+                ordenCompra:''
             },
             mantenimientos:{
                 costo: 0.0,
@@ -878,29 +879,48 @@ class TicketDetails extends Component {
             case 'Aceptado':
                 customInputAlert(
                     <div>
-                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">INGRESA LOS SIGUIENTES DATOS</h5>
-                        <div className="mx-auto col-md-11 mt-6 text-break">
+                        <h5 className="mb-2 font-weight-bold text-dark col-md-12">¿El presupuesto fue aceptado?</h5>
+                        <div className="mt-7 text-underline-position col-md-10 mx-auto">
+                            <span className="font-weight-bold">Nota:</span> La fecha y la evidencia del visto bueno son datos <span className="font-weight-bolder"><u className="bg-danger-o-30 text-danger px-1">requeridos</u></span>.
+                        </div>
+                        <div className="mx-auto col-md-11 text-break">
                             <form id='sendStatusForm' name='sendStatusForm'>
                                 <div id='customInputAceptado'>
-                                    <label htmlFor="adjunto_evidencia" className="drop-files">
-                                        <span className="svg-icon svg-icon-2x svg-icon-primary">
-                                            <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')}/>
-                                        </span>
-                                        <input
-                                            id="adjunto_evidencia"
-                                            type="file"
-                                            onChange={(e) => {this.onChangeSwal(e.target.files[0], 'adjuntoEvidencia', 'presupuesto_generado'); this.changeNameFile()}}
-                                            name='adjunto_evidencia'
-                                            accept="image/*, application/pdf"
-                                        />
-                                        <div className="font-weight-bolder font-size-md ml-2" id="info">Subir evidencia</div>
-                                    </label>
-                                    <div className="mt-6">
-                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                            <label className="text-center font-weight-bolder">Fecha de visto bueno</label>
+                                    <div className="form-group row form-group-marginless mb-0">
+                                        <div className="mt-6 col-md-12">
+                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                <label className="text-center font-weight-bolder">Fecha de visto bueno</label>
+                                            </div>
+                                            <CalendarDaySwal value={formularios.presupuesto_generado.fechaEvidencia} onChange={(e) => { this.onChangeSwal(e.target.value, 'fechaEvidencia', 'presupuesto_generado') }} name={'fechaEvidencia'}
+                                                date={formularios.presupuesto_generado.fechaEvidencia} withformgroup={0} />
                                         </div>
-                                        <CalendarDaySwal value = { formularios.presupuesto_generado.fechaEvidencia } onChange = { (e) => {  this.onChangeSwal(e.target.value, 'fechaEvidencia', 'presupuesto_generado' )} } name = { 'fechaEvidencia' } 
-                                        date = { formularios.presupuesto_generado.fechaEvidencia } withformgroup={0} />
+                                    </div>
+                                    <div className="form-group row form-group-marginless mt-5 mb-0">
+                                        <div className="col-md-12">
+                                            <label htmlFor="adjunto_evidencia" className="drop-files">
+                                                <span className="svg-icon svg-icon-2x svg-icon-primary">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')} />
+                                                </span>
+                                                <input
+                                                    id="adjunto_evidencia"
+                                                    type="file"
+                                                    onChange={(e) => { this.onChangeSwal(e.target.files[0], 'adjuntoEvidencia', 'presupuesto_generado'); this.changeNameFile() }}
+                                                    name='adjunto_evidencia'
+                                                    accept="image/*, application/pdf"
+                                                />
+                                                <div className="font-weight-bolder font-size-md ml-2" id="info">Subir evidencia</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className="separator separator-dashed mt-5 mb-2"></div>
+                                    <div className="form-group row form-group-marginless mb-1">
+                                        <div className="col-md-12 text-justify">
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} iconclass='las la-hashtag icon-xl'
+                                                requirevalidation={0} value={formularios.presupuesto_generado.ordenCompra} name={'orden_compra'}
+                                                onChange={(e) => { this.onChangeSwal(e.target.value, 'orden_compra', 'presupuesto_generado') }}
+                                                swal={true} placeholder='NÚMERO DE ORDEN DE COMPRA'
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </form>
