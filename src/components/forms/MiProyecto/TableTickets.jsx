@@ -84,7 +84,11 @@ class TableTickets extends Component {
                                             <tr className="text-dark-75 font-weight-light text-center" key={key}>
                                                 <td> {setLabelTable(ticket.estatus_ticket)} </td>
                                                 <td> {this.formatDay(ticket.created_at)} </td>
-                                                <td><div className="text-center">{ticket.proyecto.nombre}</div></td>
+                                                {
+                                                    tipoTickets === 'all'?
+                                                        <td><div className="text-center">{ticket.proyecto.nombre}</div></td>
+                                                    :<></>
+                                                }
                                                 <td> {ticket.subarea ? ticket.subarea.nombre : '-'} </td>
                                                 <td className="text-justify"> {ticket.descripcion} </td>
                                                 <td className="white-space-nowrap">

@@ -331,7 +331,7 @@ class InicioMiProyecto extends Component {
             value: "en_contacto"
         },
         mantenimiento: '',
-        tipoTickets: 'all'
+        tipoTickets: 'proyecto'
     }
     
     componentDidMount() {
