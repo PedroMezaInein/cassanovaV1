@@ -1654,7 +1654,6 @@ class LeadInfo extends Component {
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
                                                 <div className="text-center">
                                                     <Button id = "solicitar_cita" icon='' className = "btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"
-                                                        // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
                                                         onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita()) }}
                                                         only_icon = "far fa-calendar-check icon-15px mr-2" text = 'SOLICITAR CITA' />
                                                     <Button icon='' className = "btn btn-icon btn-xs p-3 btn-light-primary mr-2 mt-2"
@@ -1675,7 +1674,6 @@ class LeadInfo extends Component {
                                             <div className={this.state.showAgenda ? 'col-md-12 mb-5' : 'd-none'}>
                                                 <AgendarCitaForm formAgenda = { formAgenda } onChange = { this.onChangeAgenda }
                                                     removeCorreo = { this.removeCorreo }
-                                                    // solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
                                                     onSubmit = { () => { waitAlert(); this.agendarEvento() } }
                                                     tagInputChange = { (e) => this.tagInputChange(e) }
                                                     onChangeAgendaLC = { this.onChangeAgendaLC } lead={lead}
