@@ -331,7 +331,7 @@ class InicioMiProyecto extends Component {
             value: "en_contacto"
         },
         mantenimiento: '',
-        tipoTickets: 'proyecto'
+        tipoTickets: 'all'
     }
     
     componentDidMount() {
@@ -1395,37 +1395,10 @@ class InicioMiProyecto extends Component {
                                     el cual abrirá una ventana donde podrás describirnos el problema que tienes y adjuntar o tomar fotografías,
                                     con el objetivo de brindarte una pronta solución.
                                 </div>
-                                <div className="container">
-                                    <div className="text-center">
-                                        <div className="btn-group btn-group-sm">
-                                            <button type="button" className={`button-tickets-list ${tipoTickets === 'proyecto' ? 'active' : 'draw'}`} onClick={this.openTicketsP}>Tickets del proyecto</button>
-                                            <button type="button" className={`button-tickets-list ${tipoTickets === 'all' ? 'active' : 'draw'}`} onClick={this.openAllTickets}>Todos los tickets</button>
-                                        </div>
-                                    </div>
-                                    {
-                                        tipoTickets === 'proyecto' ?
-                                            <>
-                                                <div className="d-flex justify-content-end mb-10">
-                                                    <span className='btn btn-sm btn-transparent btn-hover-light-success text-success font-weight-bolder font-size-13px box-shadow-button' 
-                                                        onClick={(e) => { e.preventDefault(); this.openModalLevantamiento() }}>
-                                                        <i className="la la-file-archive icon-xl text-success"></i> NUEVO TICKET
-                                                    </span>
-                                                    <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button' 
-                                                        onClick={(e) => { e.preventDefault(); this.openFilterTickets() }}>
-                                                        <i className="la la-filter icon-xl text-primary"></i> Filtrar
-                                                    </span>
-                                                </div>
-                                                <TableTickets tickets = { tickets } openModalSee = { this.openModalSee }  openModalDetalles = { this.openModalDetalles } 
-                                                    tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket }
-                                                />
-                                            </>
-                                        :
-                                        <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button' 
-                                            onClick={(e) => { e.preventDefault(); this.openFilterTickets() }}>
-                                            <i className="la la-filter icon-xl text-primary"></i> Filtrar
-                                        </span>
-                                    }
-                                </div>
+                                <TableTickets tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles}
+                                    tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} tipoTickets={tipoTickets}
+                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets}
+                                />
                             </Element>       
                             {
                                 proyecto.equipos_instalados.length ? 

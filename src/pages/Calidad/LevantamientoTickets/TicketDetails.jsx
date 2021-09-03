@@ -567,13 +567,13 @@ class TicketDetails extends Component {
             (response) => {
                 Swal.close()
                 const { formularios, options } = this.state
-                const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, conceptos, cuentas, tiposImpuestos, estatusCompras, clientes } = response.data
+                const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, cuentas, tiposImpuestos, estatusCompras, clientes } = response.data
                 if(type === 'facturacion'){
                     options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
                     options.formasPago = setOptions(formasPago, 'nombre', 'id')
                     options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
                     options.tiposPagos = setOptions(tiposPago, 'tipo', 'id')
-                    options.conceptos = setOptions(conceptos, 'concepto', 'id')
+                    // options.conceptos = setOptions(conceptos, 'concepto', 'id')
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
                     options.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
