@@ -223,3 +223,21 @@ export const printComentario = (texto, proyectos) => {
         )
     })
 }
+
+export const printDireccion = (dato) => {
+    let texto = ''
+    if(dato.calle){
+        texto += dato.calle
+        if(dato.colonia)
+            texto += ` ${dato.colonia}`
+        if(dato.municipio)
+            texto += `, ${dato.municipio}`
+        if(dato.estado)
+            texto += ` ${dato.estado}`
+        if(dato.cp)
+            texto += `,cp ${dato.cp}`
+        return texto
+    } else{
+        return 'Sin especificar'
+    }
+}

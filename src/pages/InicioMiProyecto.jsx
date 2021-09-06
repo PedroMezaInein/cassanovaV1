@@ -12,9 +12,7 @@ import 'moment/locale/es';
 import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
-import { DetailsInstalacion, FormFilterTickets } from '../components/forms'
-import TableTickets from '../components/forms/MiProyecto/TableTickets'
-import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
+import { DetailsInstalacion, FormFilterTickets, TablePresupuestos, TableTickets, TableMantenimiento } from '../components/forms'
 import $ from "jquery";
 import { Link, Element, scroller } from 'react-scroll'
 import { CommonLottie } from '../components/Lottie'
@@ -115,12 +113,15 @@ class InicioMiProyecto extends Component {
             },
             filterTickets: {
                 filter: [],
+                id:'',
                 estatus: '',
                 fechaInicio: new Date(),
                 fechaFin: new Date(),
                 tipo_trabajo: '',
                 descripcion: '',
-                proyecto: ''
+                proyecto: '',
+                tiempo_ejecucion:'',
+                area:''
             }
         },
         options: {
@@ -129,6 +130,11 @@ class InicioMiProyecto extends Component {
             tiposTrabajo: [],
             equipos:[],
             estatus:[],
+            areas:[
+                { label: 'FASE 1', value: 'fase_1', name:'FASE 1' },
+                { label: 'FASE 2', value: 'fase_2', name:'FASE 2' },
+                { label: 'FASE 3', value: 'fase_3', name:'FASE 3' }
+            ],
             mantenimientos:[
                 { label: 'PREVENTIVO', value: 'preventivo', name:'PREVENTIVO' },
                 { label: 'CORRECTIVO', value: 'correctivo', name:'CORRECTIVO' }
@@ -141,9 +147,17 @@ class InicioMiProyecto extends Component {
                 { label: 'FECHA', value: 'fecha', name:'FECHA' },
             ],
             filterTickets:[
+                { label: 'IDENTIFICADOR', value: 'id', name:'IDENTIFICADOR' },
                 { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
                 { label: 'TIPO DE TRABAJO', value: 'tipo_trabajo', name:'TIPO DE TRABAJO' },
                 { label: 'DESCRIPCIÓN', value: 'descripcion', name:'DESCRIPCIÓN' },
+                { label: 'FECHA', value: 'fecha', name:'FECHA' }
+            ],
+            filterPresupuesto:[
+                { label: 'IDENTIFICADOR', value: 'id', name:'IDENTIFICADOR' },
+                { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
+                { label: 'FASE', value: 'fase', name:'FASE' },
+                { label: 'TIEMPO DE EJECUCIÓN', value: 'tiempo_ejecucion', name:'TIEMPO DE EJECUCIÓN' },
                 { label: 'FECHA', value: 'fecha', name:'FECHA' }
             ]
         },
@@ -327,11 +341,17 @@ class InicioMiProyecto extends Component {
         tickets_info: {
             numPage: 0,
             total: 0,
-            total_paginas: 0,
-            value: "en_contacto"
+            total_paginas: 0
+        },
+        presupuestos_info: {
+            numPage: 0,
+            total: 0,
+            total_paginas: 0
         },
         mantenimiento: '',
-        tipoTickets: 'all'
+        tipoTickets: 'proyecto',
+        typePresupuesto: 'proyecto',
+        typeForm:'ticket'
     }
     
     componentDidMount() {
@@ -538,11 +558,11 @@ class InicioMiProyecto extends Component {
                         }
                     }
                     break;
+                case 'filterTickets':
+                    break;
                 case 'fechaInicio':
                 case 'fechaFin':
                     form[element] =  new Date()
-                    break;
-                case 'proyecto':
                     break;
                 case 'rubro':
                     form[element] = []
@@ -572,13 +592,28 @@ class InicioMiProyecto extends Component {
         modal.details = true
         this.setState({ ...this.state, modal, formeditado: 0, ticket: ticket })
     }
-    openFilterTickets = () => {
-        const { modal, tipoTickets, options } = this.state
+    openFilter = (type) => {
+        const { modal, tipoTickets, options, typePresupuesto } = this.state
+        let { typeForm } = this.state
         modal.filterTickets = true
-        if(tipoTickets === 'all'){
-            options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
+        typeForm = type
+
+        let optionsType = typeForm === 'ticket' ? options.filterTickets : options.filterPresupuesto
+        if(tipoTickets === 'all' || typePresupuesto === 'all'){
+            let found = optionsType.some(item => item.value.includes('proyecto'))
+            if (!found){
+                optionsType.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
+            }
         }
-        this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0})
+        if((tipoTickets === 'proyecto' && typeForm === 'ticket') || (typePresupuesto === 'proyecto' && typeForm === 'presupuesto')){
+            optionsType.forEach((element, index) => {
+                if(element.value === "proyecto"){
+                    optionsType.splice(index,1);
+                }
+            })
+        }
+
+        this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0, typeForm})
     }
     handleClose = () => {
         const { modal } = this.state
@@ -586,7 +621,6 @@ class InicioMiProyecto extends Component {
         modal.details = false
         modal.single = false
         modal.mantenimiento = false
-        modal.filterTickets = false
         this.setState({...this.state, form: this.clearForm(), modal, ticket: '', mantenimiento: '' })
     }
     onClickMantenimiento = mantenimiento => {
@@ -595,7 +629,7 @@ class InicioMiProyecto extends Component {
         this.setState({...this.state, modal, mantenimiento: mantenimiento})
     }
     handleCloseFilter = () => {
-        const { modal, form } = this.state
+        const { modal, form, tipoTickets } = this.state
         modal.filterTickets = false
         form.filterTickets.filter = []
         form.filterTickets.estatus = ''
@@ -604,6 +638,7 @@ class InicioMiProyecto extends Component {
         form.filterTickets.fechaInicio = new Date()
         form.filterTickets.fechaFin = new Date()
         this.setState({...this.state, modal, form })
+        this.getTicketsPage('', tipoTickets)
     }
 
     // changeEstatus = estatus => {
@@ -613,21 +648,21 @@ class InicioMiProyecto extends Component {
 
     nextPageTicket = (e) => {
         e.preventDefault()
-        const { tickets_info } = this.state
+        const { tickets_info, tipoTickets } = this.state
         if (tickets_info.numPage < tickets_info.total_paginas - 1) {
             tickets_info.numPage++
             this.setState({ tickets_info })
         }
-        this.getTicketsPage()
+        this.getTicketsPage('', tipoTickets)
     }
 
     prevPageTicket = (e) => {
         e.preventDefault()
-        const { tickets_info } = this.state
+        const { tickets_info, tipoTickets } = this.state
         if (tickets_info.numPage > 0) {
             tickets_info.numPage--
             this.setState({ tickets_info })
-            this.getTicketsPage()
+            this.getTicketsPage('', tipoTickets)
         }
     }
 
@@ -693,7 +728,7 @@ class InicioMiProyecto extends Component {
                 let show = proyectos.length === 1 ? false : true
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
-                options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
+                options.tiposTrabajo = setOptions(tiposTrabajo, 'nombre', 'id')
                 options.estatus = setOptions(status, 'estatus', 'id')
                 this.setState( { ...this.state, options, showSelect: show } )
             }, (error) => { printResponseErrorAlert(error) }
@@ -878,17 +913,19 @@ class InicioMiProyecto extends Component {
     getTicketsPage = async (location, tipo) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { tickets_info, proyecto } = this.state
-        await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}/${tipo}`, { headers: setSingleHeader(access_token) }).then(
+        const { tickets_info, proyecto, form } = this.state
+        await axios.put(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}&type=${tipo}`, 
+            { filtrado: form.filterTickets}, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { total, page, tickets } = response.data
-                const { tickets_info } = this.state
+                const { tickets_info, modal } = this.state
                 tickets_info.total = total
                 tickets_info.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 tickets_info.total_paginas = total_paginas
-                this.setState({ ...this.state, tickets_info, tickets })
+                modal.filterTickets = false
+                this.setState({ ...this.state, tickets_info, tickets, modal })
                 if(location)
                     this.scrolling(location)
             }, (error) => { printResponseErrorAlert(error) }
@@ -935,25 +972,10 @@ class InicioMiProyecto extends Component {
             console.error(error, 'error')
         })
     }
-    filterTickets = async () => {
+    filterTickets = () => {
         waitAlert()
-        // const { access_token } = this.props.authUser
-        // const { tickets, form } = this.state
-        // await axios.put(`${URL_DEV}v2/mi-proyecto/${proyecto.id}`, form, { headers: setSingleHeader(access_token) }).then(
-        //     (response) => {
-        //         const { mantenimientos } = response.data
-        //         let aux = []
-        //         mantenimientos.forEach((mantenimiento) => {
-        //             aux.push({mantenimiento: mantenimiento, instalacion: mantenimiento.instalacion})
-        //         })
-        //         this.setState({...this.state, mantenimientos: aux})
-        //         Swal.close()
-        //         /* doneAlert(response.data.message !== undefined ? response.data.message : 'Tabla filtrada con éxito.') */
-        //     }, (error) => { printResponseErrorAlert(error) }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.error(error, 'error')
-        // })
+        const { tipoTickets } = this.state
+        this.getTicketsPage('', tipoTickets)
     }
     cleanForm = () => {
         const { form } = this.state
@@ -984,12 +1006,40 @@ class InicioMiProyecto extends Component {
             history.push('/login')
         })
     }
-    openTicketsP = () => { this.getTicketsPage('', 'proyecto') }
-    
-    openAllTickets = () => { this.getTicketsPage('', 'all') }
 
+    onChangeTicketTab = (type) => {
+        const { tickets_info } = this.state
+        tickets_info.numPage = 0
+        this.setState({ ...this.state, tipoTickets: type, tickets_info })
+        this.getTicketsPage('', type)
+    }
+    onChangePresupuestoTab = (type) => {
+        const { presupuestos_info } = this.state
+        presupuestos_info.numPage = 0
+        this.setState({ ...this.state, typePresupuesto: type, presupuestos_info })
+    }
+
+    nextPagePresupuesto = (e) => {
+        e.preventDefault()
+        const { presupuestos_info, tipoTickets } = this.state
+        if (presupuestos_info.numPage < presupuestos_info.total_paginas - 1) {
+            presupuestos_info.numPage++
+            this.setState({ presupuestos_info })
+        }
+        this.getTicketsPage('', tipoTickets)
+    }
+
+    prevPagePresupuesto = (e) => {
+        e.preventDefault()
+        const { presupuestos_info, tipoTickets } = this.state
+        if (presupuestos_info.numPage > 0) {
+            presupuestos_info.numPage--
+            this.setState({ presupuestos_info })
+            this.getTicketsPage('', tipoTickets)
+        }
+    }
     render() {
-        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets } = this.state
+        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets, typePresupuesto, typeForm, presupuestos_info } = this.state
         const { user } = this.props.authUser
         return (
             <div>
@@ -1023,6 +1073,9 @@ class InicioMiProyecto extends Component {
                                                                     </Nav.Item>
                                                                 : ''
                                                             }
+                                                            <Nav.Item className='nav-cliente'>
+                                                                <Link activeClass="active" offset={-50} className="nav-cliente nav-link mt-0 link-durante-obra" to="presupuestos" spy={true} smooth={true} duration={500} >Presupuestos</Link>
+                                                            </Nav.Item>
                                                             {
                                                                 proyecto.avances.length ?
                                                                     <Nav.Item className = 'nav-cliente'>
@@ -1238,7 +1291,7 @@ class InicioMiProyecto extends Component {
                                 </Element>
                                 {
                                     proyecto.adjuntos.length ?
-                                        <Element name = 'adjuntos' className = 'section' >
+                                        <Element name = 'adjuntos' className = 'section border-y-blue' >
                                             <div className="container">
                                                 <div className="header-section link-durante-obra">Durante obra</div>
                                                 <div className="title-proyecto">ADJUNTOS DEL PROYECTO</div>
@@ -1355,6 +1408,20 @@ class InicioMiProyecto extends Component {
                                         </Element>
                                         : ''
                                 }
+                                <Element name = 'presupuestos' className="presupuestos bg-presupuestos section" >
+                                <div className="container">
+                                    <div className="header-section link-durante-obra">Durante obra</div>
+                                    <div className="title-proyecto">PRESUPUESTOS</div>
+                                    <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
+                                        En la siguiente sección, se muestra un listado de los presupuestos generados en dos secciones, el primero son los presupuestos del proyecto seleccionado y
+                                        el segundo todos los presupuestos de todos los proyectos asignados.
+                                    </div>
+                                    <TablePresupuestos presupuestos={tickets} openModalSee={this.openModalSee} presupuestos_info={presupuestos_info}
+                                        onClickNext={this.nextPagePresupuesto} onClickPrev={this.prevPagePresupuesto} typePresupuesto={typePresupuesto}
+                                        openFilter={this.openFilter} changeTicketTab = { this.onChangePresupuestoTab }
+                                    />
+                                </div>
+                                </Element>
                                 {
                                     proyecto.avances.length ?
                                         <Element name="avances" className="avances bg-white section border-y-blue ">
@@ -1387,7 +1454,7 @@ class InicioMiProyecto extends Component {
                                         </Element>
                                     : ''
                                 }
-                            <Element name = 'tickets' className = 'border-y-blue section'>
+                            <Element name = 'tickets' className = 'bg-presupuestos section'>
                                 <div className="header-section link-termino-obra">Al termino de obra</div>
                                 <div className="title-proyecto">TICKETS</div>
                                 <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
@@ -1395,10 +1462,10 @@ class InicioMiProyecto extends Component {
                                     el cual abrirá una ventana donde podrás describirnos el problema que tienes y adjuntar o tomar fotografías,
                                     con el objetivo de brindarte una pronta solución.
                                 </div>
-                                <TableTickets tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles}
-                                    tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} tipoTickets={tipoTickets}
-                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets}
-                                />
+                                <TableTickets tickets = { tickets } openModalSee = { this.openModalSee } openModalDetalles = { this.openModalDetalles }
+                                    tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket } 
+                                    tipoTickets = { tipoTickets } openModalLevantamiento = { this.openModalLevantamiento } 
+                                    openFilter = { this.openFilter } changeTicketTab = { this.onChangeTicketTab } />
                             </Element>       
                             {
                                 proyecto.equipos_instalados.length ? 
@@ -1574,13 +1641,14 @@ class InicioMiProyecto extends Component {
                         <Modal size="lg" title={<span><i className={`${mantenimiento.iconClass} icon-lg mr-2 
                             ${mantenimiento.tipo==='Instalación'?'color-instalacion': mantenimiento.tipo === 'Mantenimiento correctivo' ? 'color-mantenimiento' : 'color-mantenimiento-preventivo'}`}></i>
                             {`${mantenimiento.tipo} de ${mantenimiento.instalacion.equipo.equipo}`}
-                            </span>} 
-                            show={modal.mantenimiento} handleClose={this.handleClose} classBody="bg-light">
+                            </span>} show={modal.mantenimiento} handleClose={this.handleClose} classBody="bg-light">
                             <DetailsInstalacion instalacion = { mantenimiento } />
                         </Modal>
                 }
-                <Modal size="lg" title="Filtrado de tickets" show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" bgHeader="border-0">
-                    <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } onChangeRange={this.onChangeRangeFilter} onSubmit={this.filterTickets} tipoTickets={tipoTickets}/>
+                <Modal size="lg" title={`Filtrado de ${typeForm}s`}show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" 
+                    bgHeader="border-0">
+                    <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } typeForm={typeForm}
+                        onChangeRange = { this.onChangeRangeFilter } onSubmit = { this.filterTickets } />
                 </Modal>
             </div>
         )

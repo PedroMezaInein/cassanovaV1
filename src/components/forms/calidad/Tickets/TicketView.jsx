@@ -363,7 +363,7 @@ class TicketView extends Component {
             activeKeyNav, formularioGuardado, at } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
-            onChangeSolicitud, clearFiles, openModalEditarSolicitud, deleteSolicitud, onSubmitSVenta, onChangeTicketProceso, onSubmitTicketProceso, 
+            deleteSolicitud, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
             controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
             addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs, historialPresupuestos
@@ -658,9 +658,8 @@ class TicketView extends Component {
                                         }
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="solicitud-compra">
-                                        <SolicitudTabla type = "compra" title = "Historial de solicitud de compras" btn_title = "SOLICITUD DE COMPRA" 
-                                            openModalAdd = { openModalSolicitud } openModalEditar = { openModalEditarSolicitud } 
-                                            deleteSolicitud = { deleteSolicitud } solicitudes = { key === 'facturacion' ? [] : solicitudes } />
+                                        <SolicitudTabla type = "compra" title = "Historial de solicitudes de compras" btn_title = "SOLICITUD DE COMPRA" 
+                                            openModalAdd = { openModalSolicitud } deleteSolicitud = { deleteSolicitud } solicitudes = { key === 'facturacion' ? [] : solicitudes } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="facturacion">
                                         <SolicitudFacturacionTabla options={options} onSubmit = { addSolicitudFacturaAxios } solicitudes = { solicitudes } 
@@ -724,9 +723,9 @@ class TicketView extends Component {
                         : <> </>
                     : <> </>
                 }
-                <Modal size = { activeKeyNav === 'solicitud-compra' ? 'lg' : 'xl'} title={title} show={modal.solicitud} handleClose={handleCloseSolicitud} >
+                <Modal size = 'lg' title={title} show={modal.solicitud} handleClose={handleCloseSolicitud} >
                     {
-                        activeKeyNav === 'solicitud-compra'?
+                        presupuesto?
                             <div className="containter">
                                 {
                                     presupuesto.conceptos.length > 0 ?
@@ -920,10 +919,6 @@ class TicketView extends Component {
                                     : <></>
                                 }
                             </div>
-                        : activeKeyNav === 'solicitud-venta' ?
-                            <SolicitudVentaForm title = { title } form = { formulario.solicitud } options = { options } setOptions = { setOptions }
-                                onChange = { onChangeSolicitud } clearFiles = { clearFiles } onSubmit = { onSubmitSVenta } formeditado = { formeditado }
-                                className = "px-3" />
                         :<></>
                     }
                 </Modal>
@@ -942,7 +937,7 @@ class TicketView extends Component {
                     />
                 </Modal>
                 {
-                    this.isButtonEnabled() !== false && activeKeyNav === 'presupuesto'?
+                    this.isButtonEnabled() !== false && defaultNavTabs === 'presupuesto'?
                         <FloatButtons
                             save={save}
                             recover={recover}

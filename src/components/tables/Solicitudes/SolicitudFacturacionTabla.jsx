@@ -64,8 +64,9 @@ export default class SolicitudFacturacionTabla extends Component{
     }
 
     openModalGenerarVenta = (id) => {
-        const { modal } = this.state
+        const { modal, form } = this.state
         modal.venta = true
+        form.tipo_impuesto = '1'
         this.setState({ ...this.state, modal, id: id })
     }
 

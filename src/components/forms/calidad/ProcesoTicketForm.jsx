@@ -188,7 +188,7 @@ class ProcesoTicketForm extends Component {
                                 </div>
                             </div>
                         </div>
-                        : estatus === 'Terminado'?
+                        : estatus === 'Terminado' || estatus === 'Pendiente de pago'?
                             <div>
                                 <Row className="mx-0 d-flex justify-content-center text-center">
                                     <Col md="auto" className="p-5 rounded-xl font-weight-bolder align-self-center mr-8 box-shadow-36">

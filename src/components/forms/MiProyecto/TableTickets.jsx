@@ -29,16 +29,16 @@ class TableTickets extends Component {
         return false;
     }
     render() {
-        const { tickets, openModalSee, openModalDetalles, onClickPrev, onClickNext, tickets_info, tipoTickets, openModalLevantamiento, openFilterTickets } = this.props
+        const { tickets, openModalSee, openModalDetalles, onClickPrev, onClickNext, tickets_info, tipoTickets, openModalLevantamiento, openFilter, changeTicketTab } = this.props
         return (
             <div className="container">
                 <div className="text-center">
                     <div className="btn-group btn-group-sm">
-                        <button type="button" className={`button-tickets-list ${tipoTickets === 'proyecto' ? 'active' : 'draw'}`} onClick={this.openTicketsP}>Tickets del proyecto</button>
-                        <button type="button" className={`button-tickets-list ${tipoTickets === 'all' ? 'active' : 'draw'}`} onClick={this.openAllTickets}>Todos los tickets</button>
+                        <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'proyecto' ? 'active' : ''}`} onClick={ () => { changeTicketTab('proyecto')}}>Tickets del proyecto</button>
+                        <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'all' ? 'active' : ''}`} onClick={ () => {changeTicketTab('all')}}>Todos los tickets</button>
                     </div>
                 </div>
-                <div className="d-flex justify-content-end mb-10">
+                <div className="d-flex justify-content-end mb-10 mt-6 mt-md-0">
                     {
                         tipoTickets === 'proyecto'?
                             <span className='btn btn-sm btn-transparent btn-hover-light-success text-success font-weight-bolder font-size-13px box-shadow-button' onClick={openModalLevantamiento}>
@@ -46,16 +46,17 @@ class TableTickets extends Component {
                             </span>
                         :<></>
                     }
-                    <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button' onClick={openFilterTickets}>
+                    <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button'onClick={() => { openFilter('ticket')}}>
                         <i className="la la-filter icon-xl text-primary"></i> Filtrar
                     </span>
                 </div>
                 <div className="tab-content">
-                    <div className="table-responsive" id='table-proyecto'>
-                        <table className="table table-borderless table-vertical-center table-hover">
+                    <div className="table-responsive">
+                        <table className="table table-borderless table-vertical-center table-hover  rounded bg-white" id="table-tickets">
                             <thead>
-                                <tr className="text-center bg-blue-proyecto text-proyecto">
+                                <tr className="text-center text-proyecto">
                                     <th>Estatus</th>
+                                    <th>ID</th>
                                     <th style={{ minWidth: '100px' }}>Fecha</th>
                                     {
                                         tipoTickets === 'all'?
@@ -79,12 +80,16 @@ class TableTickets extends Component {
                                 }
                                 {
                                     tickets.map((ticket, key) => {
-                                        console.log(ticket)
                                         return (
                                             <tr className="text-dark-75 font-weight-light text-center" key={key}>
                                                 <td> {setLabelTable(ticket.estatus_ticket)} </td>
+                                                <td> {ticket.identificador} </td>
                                                 <td> {this.formatDay(ticket.created_at)} </td>
-                                                <td><div className="text-center">{ticket.proyecto.nombre}</div></td>
+                                                {
+                                                    tipoTickets === 'all'?
+                                                        <td><div className="text-center">{ticket.proyecto.nombre}</div></td>
+                                                    :<></>
+                                                }
                                                 <td> {ticket.subarea ? ticket.subarea.nombre : '-'} </td>
                                                 <td className="text-justify"> {ticket.descripcion} </td>
                                                 <td className="white-space-nowrap">

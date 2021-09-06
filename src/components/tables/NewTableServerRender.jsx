@@ -620,7 +620,7 @@ class NewTableServerRender extends Component {
 
                     <Card.Body id={cardBody} className="pt-0">
                         {children}
-                        <div className="table-responsive">
+                        <div className="table-responsive-xl">
                             <table ref={'main'} className="table table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
                         </div>
                     </Card.Body>
