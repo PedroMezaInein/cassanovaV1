@@ -350,7 +350,9 @@ class NewTable extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body id={cardBody} className="pt-0">
-                        <table ref="main"  style={{width:"100%"}} className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify collapsed dataTable dtr-inline" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                        <div className="table-responsive-xl">
+                            <table ref="main"  style={{width:"100%"}} className="table table-separate table-head-custom table-checkable display table-hover text-justify collapsed dataTable dtr-inline" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                        </div>
                     </Card.Body>
                 </Card>
             </>

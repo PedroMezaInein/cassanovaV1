@@ -349,7 +349,7 @@ class NewTable extends Component{
                 </Card.Header>
                 <Card.Body id = { `${tableName}-card-body-id` } className = "pt-0">
                     {children}
-                    <div className="table-responsive">
+                    <div className="table-responsive-xl">
                         <table ref = 'main' className = "table table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id = { tableName ? tableName : "kt_datatable2"} />
                     </div>
                 </Card.Body>
