@@ -41,23 +41,15 @@ class FormFilterTickets extends Component {
         }
     }
     
-    updateEstatus= value => {
-        const { onChange } = this.props
-        onChange({target: { value: value, name: 'estatus'}}, 'filterTickets', true)
-    }
-    
-    updateTipoTrabajo = value => {
-        const { onChange } = this.props
-        onChange({target: { value: value, name: 'tipo_trabajo'}}, 'filterTickets', true)
-    }
-    updateProyecto = value => {
-        const { onChange } = this.props
-        onChange({target: { value: value, name: 'proyecto'}}, 'filterTickets', true)
-    }
     onChange = (e) => {
         const { name, value } = e.target
         const { onChange } = this.props
         onChange({target: { value: value, name: name}}, 'filterTickets')
+    }
+
+    updateSelect = (value, name) => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: name } }, 'filterTickets')
     }
 
     getActive = value => {
@@ -74,35 +66,39 @@ class FormFilterTickets extends Component {
     }
 
     render() {
-        const { onSubmit, options, form, onChangeRange, tipoTickets } = this.props
+        const { onSubmit, options, form, onChangeRange, typeForm } = this.props
         return (
             <Form>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12 mb-5">
-                        <TagSelectSearchGray placeholder = '¿QUÉ DESEAS FILTRAR?' options = { options.filterTickets } defaultvalue = { form.filter }
+                        <TagSelectSearchGray placeholder = '¿QUÉ DESEAS FILTRAR?' options={typeForm === 'ticket' ? options.filterTickets : options.filterPresupuesto} defaultvalue = { form.filter }
                             iconclass = 'las la-user-friends icon-xl' onChange = { this.updateRubro } bgcolor='#fff'/>
                     </div>
                     {
-                        this.getActive('proyecto') && tipoTickets==='all'?
-                            <div className="col-md-12 mb-5">
-                                <ReactSelectSearch placeholder = 'Selecciona el proyecto' defaultvalue = { form.proyecto } iconclass='las la-folder icon-xl'
-                                    options = { this.transformarOptions(options.proyectos) } onChange = { this.updateProyecto } />
-                            </div>
-                        :<></>
+                        this.getActive('proyecto') &&
+                        <div className="col-md-12 mb-5">
+                            <ReactSelectSearch placeholder = 'Selecciona el proyecto' defaultvalue = { form.proyecto } iconclass='las la-folder icon-xl'
+                                options = { this.transformarOptions(options.proyectos) } onChange={(value) => { this.updateSelect(value, 'proyecto') }}/>
+                        </div>
                     }
                     {
                         this.getActive('estatus') &&
                         <div className="col-md-12 mb-5">
                             <ReactSelectSearch placeholder='Selecciona el estatus' options={this.transformarOptions(options.estatus)}
-                                defaultvalue={form.estatus} onChange={this.updateEstatus} iconclass='las la-check-circle icon-xl' />
+                                defaultvalue={form.estatus} iconclass='las la-check-circle icon-xl'  onChange={(value) => { this.updateSelect(value, 'estatus') }} />
                         </div>
                     }
                     {
-                        this.getActive('tipo_trabajo') &&
-                            <div className="col-md-12 mb-5">
-                                <ReactSelectSearch placeholder = 'Selecciona el tipo de trabajo' defaultvalue = { form.tipo_trabajo } iconclass='las la-tools icon-xl'
-                                    options = { this.transformarOptions(options.tiposTrabajo) } onChange = { this.updateTipoTrabajo } />
-                            </div>
+                        this.getActive(typeForm === 'ticket' ? 'tipo_trabajo' : 'area') &&
+                        <div className="col-md-12 mb-5">
+                            <ReactSelectSearch
+                                placeholder={`Selecciona el ${typeForm === 'ticket' ? 'tipo de trabajo' : 'area'}`}
+                                defaultvalue={typeForm === 'ticket' ? form.tipo_trabajo : form.area}
+                                iconclass='las la-tools icon-xl'
+                                options={typeForm === 'ticket' ? this.transformarOptions(options.tiposTrabajo) : this.transformarOptions(options.areas)}
+                                onChange={(value) => { this.updateSelect(value, `${typeForm === 'ticket' ? 'tipo_trabajo' : 'area'}`) }}
+                            />
+                        </div>
                     }
                     {
                         this.getActive('id') &&
@@ -113,11 +109,24 @@ class FormFilterTickets extends Component {
                         </div>
                     }
                     {
-                        this.getActive('descripcion') &&
+                        this.getActive(typeForm === 'ticket' ? 'descripcion' : 'tiempo_ejecucion') &&
                         <div className="col-md-12 mb-5">
-                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0} requirevalidation={0}
-                                placeholder="DESCRIPCIÓN" value={form.descripcion} name="descripcion" onChange = { (value) => this.onChange(value)} thousandseparator={true}
-                                customclass='bg-white' iconclass='las la-money-bill icon-xl' custom_gtext='bg-white' inputsolid='bg-white border' />
+                            <InputGray
+                                withtaglabel={1}
+                                withtextlabel={1}
+                                withplaceholder={1}
+                                withicon={1}
+                                requirevalidation={0}
+                                placeholder={`${typeForm === 'ticket' ? 'DESCRIPCIÓN' : 'TIEMPO DE EJECUCIÓN'}`}
+                                value={typeForm === 'ticket' ? form.descripcion : form.tiempo_ejecucion}
+                                name={typeForm === 'ticket' ? 'descripcion' : 'tiempo_ejecucion'}
+                                onChange = { (value) => this.onChange(value)}
+                                thousandseparator={true}
+                                customclass='bg-white'
+                                iconclass={`${typeForm === 'ticket' ? 'las la-grip-lines' : 'flaticon-calendar-with-a-clock-time-tools'}`}
+                                custom_gtext='bg-white'
+                                inputsolid='bg-white border'
+                            />
                         </div>
                     }
                     {

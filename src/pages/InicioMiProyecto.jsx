@@ -119,7 +119,9 @@ class InicioMiProyecto extends Component {
                 fechaFin: new Date(),
                 tipo_trabajo: '',
                 descripcion: '',
-                proyecto: ''
+                proyecto: '',
+                tiempo_ejecucion:'',
+                area:''
             }
         },
         options: {
@@ -128,6 +130,7 @@ class InicioMiProyecto extends Component {
             tiposTrabajo: [],
             equipos:[],
             estatus:[],
+            areas: [],
             mantenimientos:[
                 { label: 'PREVENTIVO', value: 'preventivo', name:'PREVENTIVO' },
                 { label: 'CORRECTIVO', value: 'correctivo', name:'CORRECTIVO' }
@@ -144,6 +147,13 @@ class InicioMiProyecto extends Component {
                 { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
                 { label: 'TIPO DE TRABAJO', value: 'tipo_trabajo', name:'TIPO DE TRABAJO' },
                 { label: 'DESCRIPCIÓN', value: 'descripcion', name:'DESCRIPCIÓN' },
+                { label: 'FECHA', value: 'fecha', name:'FECHA' }
+            ],
+            filterPresupuesto:[
+                { label: 'IDENTIFICADOR', value: 'id', name:'IDENTIFICADOR' },
+                { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
+                { label: 'ÁREA', value: 'area', name:'ÁREA' },
+                { label: 'TIEMPO DE EJECUCIÓN', value: 'tiempo_ejecucion', name:'TIEMPO DE EJECUCIÓN' },
                 { label: 'FECHA', value: 'fecha', name:'FECHA' }
             ]
         },
@@ -332,7 +342,8 @@ class InicioMiProyecto extends Component {
         },
         mantenimiento: '',
         tipoTickets: 'proyecto',
-        typePresupuesto: 'proyecto'
+        typePresupuesto: 'proyecto',
+        typeForm:'ticket'
     }
     
     componentDidMount() {
@@ -573,23 +584,33 @@ class InicioMiProyecto extends Component {
         modal.details = true
         this.setState({ ...this.state, modal, formeditado: 0, ticket: ticket })
     }
-    openFilterTickets = () => {
-        const { modal, tipoTickets, options } = this.state
+    openFilterTickets = (type) => {
+        const { modal, tipoTickets, options, typePresupuesto } = this.state
+        let { typeForm } = this.state
         modal.filterTickets = true
-        if(tipoTickets === 'all'){
-            let found = options.filterTickets.some(item => item.value.includes('proyecto'))
+        typeForm = type
+
+        let optionsType = typeForm === 'ticket' ? options.filterTickets : options.filterPresupuesto
+
+        console.log(tipoTickets, 'tipoTickets')
+        console.log(typePresupuesto, 'typePresupuesto')
+        if(tipoTickets === 'all' || typePresupuesto === 'all'){
+            let found = optionsType.some(item => item.value.includes('proyecto'))
             if (!found){
-                options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
+                optionsType.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
             }
         }
-        else{
-            options.filterTickets.forEach((element, index) => {
+        
+        if(tipoTickets === 'proyecto' || typePresupuesto === 'proyecto'){
+            optionsType.forEach((element, index) => {
                 if(element.value === "proyecto"){
-                    options.filterTickets.splice(index,1);
+                    optionsType.splice(index,1);
                 }
             })
         }
-        this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0})
+
+
+        this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0, typeForm})
     }
     handleClose = () => {
         const { modal } = this.state
@@ -996,14 +1017,21 @@ class InicioMiProyecto extends Component {
     }
 
     onChangeTicketTab = (type) => {
+        console.log(type, 'onChangeTicketTab')
         const { tickets_info } = this.state
         tickets_info.numPage = 0
         this.setState({ ...this.state, tipoTickets: type, tickets_info })
         this.getTicketsPage('', type)
     }
-
+    onChangePresupuestoTab = (type) => {
+        console.log(type, 'onChangePresupuestoTab')
+        const { tickets_info } = this.state
+        tickets_info.numPage = 0
+        this.setState({ ...this.state, typePresupuesto: type, tickets_info })
+        this.getTicketsPage('', type)
+    }
     render() {
-        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets, typePresupuesto } = this.state
+        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets, typePresupuesto, typeForm } = this.state
         const { user } = this.props.authUser
         return (
             <div>
@@ -1380,10 +1408,10 @@ class InicioMiProyecto extends Component {
                                         En la siguiente sección, se muestra un listado de los presupuestos generados en dos secciones, el primero son los presupuestos del proyecto seleccionado y
                                         el segundo todos los presupuestos de todos los proyectos asignados.
                                     </div>
-                                    <TablePresupuestos tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles}
-                                    tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} typePresupuesto={typePresupuesto}
-                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets} changeTicketTab = { this.onChangeTicketTab } />
-                                    
+                                    <TablePresupuestos tickets={tickets} openModalSee={this.openModalSee} tickets_info={tickets_info}
+                                        onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} typePresupuesto={typePresupuesto}
+                                        openFilterTickets={this.openFilterTickets} changeTicketTab = { this.onChangePresupuestoTab }
+                                    />
                                 </div>
                                 </Element>
                                 {
@@ -1612,8 +1640,8 @@ class InicioMiProyecto extends Component {
                 }
                 <Modal size="lg" title="Filtrado de tickets" show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" 
                     bgHeader="border-0">
-                    <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } 
-                        onChangeRange = { this.onChangeRangeFilter } onSubmit = { this.filterTickets } tipoTickets = { tipoTickets } />
+                    <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } typeForm={typeForm}
+                        onChangeRange = { this.onChangeRangeFilter } onSubmit = { this.filterTickets } />
                 </Modal>
             </div>
         )
