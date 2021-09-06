@@ -539,11 +539,11 @@ class InicioMiProyecto extends Component {
                         }
                     }
                     break;
+                case 'filterTickets':
+                    break;
                 case 'fechaInicio':
                 case 'fechaFin':
                     form[element] =  new Date()
-                    break;
-                case 'proyecto':
                     break;
                 case 'rubro':
                     form[element] = []
@@ -581,8 +581,13 @@ class InicioMiProyecto extends Component {
             if (!found){
                 options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
             }
-        }else{
-            options.filterTickets.splice(options.filterTickets.findIndex(function(i){ return i.value === "proyecto"; }), 1);
+        }
+        else{
+            options.filterTickets.forEach((element, index) => {
+                if(element.value === "proyecto"){
+                    options.filterTickets.splice(index,1);
+                }
+            })
         }
         this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0})
     }
@@ -592,7 +597,6 @@ class InicioMiProyecto extends Component {
         modal.details = false
         modal.single = false
         modal.mantenimiento = false
-        modal.filterTickets = false
         this.setState({...this.state, form: this.clearForm(), modal, ticket: '', mantenimiento: '' })
     }
     onClickMantenimiento = mantenimiento => {
@@ -1251,7 +1255,7 @@ class InicioMiProyecto extends Component {
                                 </Element>
                                 {
                                     proyecto.adjuntos.length ?
-                                        <Element name = 'adjuntos' className = 'section' >
+                                        <Element name = 'adjuntos' className = 'section border-y-blue' >
                                             <div className="container">
                                                 <div className="header-section link-durante-obra">Durante obra</div>
                                                 <div className="title-proyecto">ADJUNTOS DEL PROYECTO</div>
@@ -1377,7 +1381,7 @@ class InicioMiProyecto extends Component {
                                         el segundo todos los presupuestos de todos los proyectos asignados.
                                     </div>
                                     <TablePresupuestos tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles}
-                                    tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} tipoTickets={tipoTickets}
+                                    tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} typePresupuesto={typePresupuesto}
                                     openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets} changeTicketTab = { this.onChangeTicketTab } />
                                     
                                 </div>
