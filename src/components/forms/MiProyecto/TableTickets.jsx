@@ -38,7 +38,7 @@ class TableTickets extends Component {
                         <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'all' ? 'active' : ''}`} onClick={ () => {changeTicketTab('all')}}>Todos los tickets</button>
                     </div>
                 </div>
-                <div className="d-flex justify-content-end mb-10">
+                <div className="d-flex justify-content-end mb-10 mt-6 mt-md-0">
                     {
                         tipoTickets === 'proyecto'?
                             <span className='btn btn-sm btn-transparent btn-hover-light-success text-success font-weight-bolder font-size-13px box-shadow-button' onClick={openModalLevantamiento}>

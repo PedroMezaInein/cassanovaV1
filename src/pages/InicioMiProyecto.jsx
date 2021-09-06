@@ -606,7 +606,6 @@ class InicioMiProyecto extends Component {
             })
         }
 
-
         this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0, typeForm})
     }
     handleClose = () => {
@@ -963,8 +962,13 @@ class InicioMiProyecto extends Component {
             console.error(error, 'error')
         })
     }
-    filterTickets = async () => {
+    filterTickets = () => {
         waitAlert()
+        const { tipoTickets, form } = this.state
+        console.log(`Tipo: `, tipoTickets)
+        console.log(`Form: `, form.filterTickets)
+        
+        this.getTicketsPage('', tipoTickets)
         // const { access_token } = this.props.authUser
         // const { tickets, form } = this.state
         // await axios.put(`${URL_DEV}v2/mi-proyecto/${proyecto.id}`, form, { headers: setSingleHeader(access_token) }).then(
@@ -1449,11 +1453,10 @@ class InicioMiProyecto extends Component {
                                     el cual abrirá una ventana donde podrás describirnos el problema que tienes y adjuntar o tomar fotografías,
                                     con el objetivo de brindarte una pronta solución.
                                 </div>
-                                <TableTickets tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles}
-                                    tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} tipoTickets={tipoTickets}
-                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets} 
-                                    changeTicketTab = { this.onChangeTicketTab } 
-                                />
+                                <TableTickets tickets = { tickets } openModalSee = { this.openModalSee } openModalDetalles = { this.openModalDetalles }
+                                    tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket } 
+                                    tipoTickets = { tipoTickets } openModalLevantamiento = { this.openModalLevantamiento } 
+                                    openFilterTickets = { this.openFilterTickets } changeTicketTab = { this.onChangeTicketTab } />
                             </Element>       
                             {
                                 proyecto.equipos_instalados.length ? 
