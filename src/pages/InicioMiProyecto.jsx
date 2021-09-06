@@ -337,8 +337,12 @@ class InicioMiProyecto extends Component {
         tickets_info: {
             numPage: 0,
             total: 0,
-            total_paginas: 0,
-            value: "en_contacto"
+            total_paginas: 0
+        },
+        presupuestos_info: {
+            numPage: 0,
+            total: 0,
+            total_paginas: 0
         },
         mantenimiento: '',
         tipoTickets: 'proyecto',
@@ -584,16 +588,13 @@ class InicioMiProyecto extends Component {
         modal.details = true
         this.setState({ ...this.state, modal, formeditado: 0, ticket: ticket })
     }
-    openFilterTickets = (type) => {
+    openFilter = (type) => {
         const { modal, tipoTickets, options, typePresupuesto } = this.state
         let { typeForm } = this.state
         modal.filterTickets = true
         typeForm = type
 
         let optionsType = typeForm === 'ticket' ? options.filterTickets : options.filterPresupuesto
-
-        console.log(tipoTickets, 'tipoTickets')
-        console.log(typePresupuesto, 'typePresupuesto')
         if(tipoTickets === 'all' || typePresupuesto === 'all'){
             let found = optionsType.some(item => item.value.includes('proyecto'))
             if (!found){
@@ -1004,21 +1005,38 @@ class InicioMiProyecto extends Component {
     }
 
     onChangeTicketTab = (type) => {
-        console.log(type, 'onChangeTicketTab')
         const { tickets_info } = this.state
         tickets_info.numPage = 0
         this.setState({ ...this.state, tipoTickets: type, tickets_info })
         this.getTicketsPage('', type)
     }
     onChangePresupuestoTab = (type) => {
-        console.log(type, 'onChangePresupuestoTab')
-        const { tickets_info } = this.state
-        tickets_info.numPage = 0
-        this.setState({ ...this.state, typePresupuesto: type, tickets_info })
-        this.getTicketsPage('', type)
+        const { presupuestos_info } = this.state
+        presupuestos_info.numPage = 0
+        this.setState({ ...this.state, typePresupuesto: type, presupuestos_info })
+    }
+
+    nextPagePresupuesto = (e) => {
+        e.preventDefault()
+        const { presupuestos_info, tipoTickets } = this.state
+        if (presupuestos_info.numPage < presupuestos_info.total_paginas - 1) {
+            presupuestos_info.numPage++
+            this.setState({ presupuestos_info })
+        }
+        this.getTicketsPage('', tipoTickets)
+    }
+
+    prevPagePresupuesto = (e) => {
+        e.preventDefault()
+        const { presupuestos_info, tipoTickets } = this.state
+        if (presupuestos_info.numPage > 0) {
+            presupuestos_info.numPage--
+            this.setState({ presupuestos_info })
+            this.getTicketsPage('', tipoTickets)
+        }
     }
     render() {
-        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets, typePresupuesto, typeForm } = this.state
+        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets, typePresupuesto, typeForm, presupuestos_info } = this.state
         const { user } = this.props.authUser
         return (
             <div>
@@ -1395,9 +1413,9 @@ class InicioMiProyecto extends Component {
                                         En la siguiente sección, se muestra un listado de los presupuestos generados en dos secciones, el primero son los presupuestos del proyecto seleccionado y
                                         el segundo todos los presupuestos de todos los proyectos asignados.
                                     </div>
-                                    <TablePresupuestos tickets={tickets} openModalSee={this.openModalSee} tickets_info={tickets_info}
-                                        onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} typePresupuesto={typePresupuesto}
-                                        openFilterTickets={this.openFilterTickets} changeTicketTab = { this.onChangePresupuestoTab }
+                                    <TablePresupuestos presupuestos={tickets} openModalSee={this.openModalSee} presupuestos_info={presupuestos_info}
+                                        onClickNext={this.nextPagePresupuesto} onClickPrev={this.prevPagePresupuesto} typePresupuesto={typePresupuesto}
+                                        openFilter={this.openFilter} changeTicketTab = { this.onChangePresupuestoTab }
                                     />
                                 </div>
                                 </Element>
@@ -1444,7 +1462,7 @@ class InicioMiProyecto extends Component {
                                 <TableTickets tickets = { tickets } openModalSee = { this.openModalSee } openModalDetalles = { this.openModalDetalles }
                                     tickets_info = { tickets_info } onClickNext = { this.nextPageTicket } onClickPrev = { this.prevPageTicket } 
                                     tipoTickets = { tipoTickets } openModalLevantamiento = { this.openModalLevantamiento } 
-                                    openFilterTickets = { this.openFilterTickets } changeTicketTab = { this.onChangeTicketTab } />
+                                    openFilter = { this.openFilter } changeTicketTab = { this.onChangeTicketTab } />
                             </Element>       
                             {
                                 proyecto.equipos_instalados.length ? 

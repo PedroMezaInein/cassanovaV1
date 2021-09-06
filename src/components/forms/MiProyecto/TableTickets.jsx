@@ -29,7 +29,7 @@ class TableTickets extends Component {
         return false;
     }
     render() {
-        const { tickets, openModalSee, openModalDetalles, onClickPrev, onClickNext, tickets_info, tipoTickets, openModalLevantamiento, openFilterTickets, changeTicketTab } = this.props
+        const { tickets, openModalSee, openModalDetalles, onClickPrev, onClickNext, tickets_info, tipoTickets, openModalLevantamiento, openFilter, changeTicketTab } = this.props
         return (
             <div className="container">
                 <div className="text-center">
@@ -46,7 +46,7 @@ class TableTickets extends Component {
                             </span>
                         :<></>
                     }
-                    <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button'onClick={() => { openFilterTickets('ticket')}}>
+                    <span className='btn btn-sm btn-transparent btn-hover-light-primary text-primary font-weight-bolder font-size-13px box-shadow-button'onClick={() => { openFilter('ticket')}}>
                         <i className="la la-filter icon-xl text-primary"></i> Filtrar
                     </span>
                 </div>
