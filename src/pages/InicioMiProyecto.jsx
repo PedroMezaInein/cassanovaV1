@@ -1374,7 +1374,9 @@ class InicioMiProyecto extends Component {
                                         En la siguiente sección, se muestra un listado de los presupuestos generados en dos secciones, el primero son los presupuestos del proyecto seleccionado y
                                         el segundo todos los presupuestos de todos los proyectos asignados.
                                     </div>
-                                    <TablePresupuestos typePresupuesto={typePresupuesto} tickets={tickets}/>
+                                    <TablePresupuestos tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles}
+                                    tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} tipoTickets={tipoTickets}
+                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets} changeTicketTab = { this.onChangeTicketTab } />
                                     
                                 </div>
                                 </Element>
