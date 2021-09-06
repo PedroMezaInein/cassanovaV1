@@ -331,7 +331,7 @@ class InicioMiProyecto extends Component {
             value: "en_contacto"
         },
         mantenimiento: '',
-        tipoTickets: 'all'
+        tipoTickets: 'proyecto'
     }
     
     componentDidMount() {
@@ -879,7 +879,7 @@ class InicioMiProyecto extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { tickets_info, proyecto } = this.state
-        await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}/${tipo}`, { headers: setSingleHeader(access_token) }).then(
+        await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}&type=${tipo}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { total, page, tickets } = response.data
@@ -984,9 +984,11 @@ class InicioMiProyecto extends Component {
             history.push('/login')
         })
     }
-    openTicketsP = () => { this.getTicketsPage('', 'proyecto') }
-    
-    openAllTickets = () => { this.getTicketsPage('', 'all') }
+
+    onChangeTicketTab = (type) => {
+        this.setState({ ...this.state, tipoTickets: type })
+        this.getTicketsPage('', type)
+    }
 
     render() {
         const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets } = this.state
@@ -1397,7 +1399,7 @@ class InicioMiProyecto extends Component {
                                 </div>
                                 <TableTickets tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles}
                                     tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} tipoTickets={tipoTickets}
-                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets}
+                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets} changeTicketTab = { this.onChangeTicketTab } 
                                 />
                             </Element>       
                             {
