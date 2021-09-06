@@ -591,9 +591,6 @@ class InicioMiProyecto extends Component {
         typeForm = type
 
         let optionsType = typeForm === 'ticket' ? options.filterTickets : options.filterPresupuesto
-
-        console.log(tipoTickets, 'tipoTickets')
-        console.log(typePresupuesto, 'typePresupuesto')
         if(tipoTickets === 'all' || typePresupuesto === 'all'){
             let found = optionsType.some(item => item.value.includes('proyecto'))
             if (!found){
@@ -1017,14 +1014,12 @@ class InicioMiProyecto extends Component {
     }
 
     onChangeTicketTab = (type) => {
-        console.log(type, 'onChangeTicketTab')
         const { tickets_info } = this.state
         tickets_info.numPage = 0
         this.setState({ ...this.state, tipoTickets: type, tickets_info })
         this.getTicketsPage('', type)
     }
     onChangePresupuestoTab = (type) => {
-        console.log(type, 'onChangePresupuestoTab')
         const { tickets_info } = this.state
         tickets_info.numPage = 0
         this.setState({ ...this.state, typePresupuesto: type, tickets_info })
