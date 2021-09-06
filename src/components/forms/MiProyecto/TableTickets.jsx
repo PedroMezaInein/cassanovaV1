@@ -34,8 +34,8 @@ class TableTickets extends Component {
             <div className="container">
                 <div className="text-center">
                     <div className="btn-group btn-group-sm">
-                        <button type="button" className={`button-tickets-list ${tipoTickets === 'proyecto' ? 'active' : 'draw'}`} onClick={ () => { changeTicketTab('all')}}>Tickets del proyecto</button>
-                        <button type="button" className={`button-tickets-list ${tipoTickets === 'all' ? 'active' : 'draw'}`} onClick={ () => {changeTicketTab('proyecto')}}>Todos los tickets</button>
+                        <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'proyecto' ? 'active' : ''}`} onClick={ () => { changeTicketTab('all')}}>Tickets del proyecto</button>
+                        <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'all' ? 'active' : ''}`} onClick={ () => {changeTicketTab('proyecto')}}>Todos los tickets</button>
                     </div>
                 </div>
                 <div className="d-flex justify-content-end mb-10">
