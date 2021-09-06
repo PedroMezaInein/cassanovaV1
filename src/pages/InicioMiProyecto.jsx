@@ -619,21 +619,21 @@ class InicioMiProyecto extends Component {
 
     nextPageTicket = (e) => {
         e.preventDefault()
-        const { tickets_info } = this.state
+        const { tickets_info, tipoTickets } = this.state
         if (tickets_info.numPage < tickets_info.total_paginas - 1) {
             tickets_info.numPage++
             this.setState({ tickets_info })
         }
-        this.getTicketsPage()
+        this.getTicketsPage('', tipoTickets)
     }
 
     prevPageTicket = (e) => {
         e.preventDefault()
-        const { tickets_info } = this.state
+        const { tickets_info, tipoTickets } = this.state
         if (tickets_info.numPage > 0) {
             tickets_info.numPage--
             this.setState({ tickets_info })
-            this.getTicketsPage()
+            this.getTicketsPage('', tipoTickets)
         }
     }
 
@@ -992,7 +992,9 @@ class InicioMiProyecto extends Component {
     }
 
     onChangeTicketTab = (type) => {
-        this.setState({ ...this.state, tipoTickets: type })
+        const { tickets_info } = this.state
+        tickets_info.numPage = 0
+        this.setState({ ...this.state, tipoTickets: type, tickets_info })
         this.getTicketsPage('', type)
     }
 
@@ -1422,7 +1424,8 @@ class InicioMiProyecto extends Component {
                                 </div>
                                 <TableTickets tickets={tickets} openModalSee={this.openModalSee} openModalDetalles={this.openModalDetalles}
                                     tickets_info={tickets_info} onClickNext={this.nextPageTicket} onClickPrev={this.prevPageTicket} tipoTickets={tipoTickets}
-                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets} changeTicketTab = { this.onChangeTicketTab } 
+                                    openModalLevantamiento={this.openModalLevantamiento} openFilterTickets={this.openFilterTickets} 
+                                    changeTicketTab = { this.onChangeTicketTab } 
                                 />
                             </Element>       
                             {
@@ -1599,13 +1602,14 @@ class InicioMiProyecto extends Component {
                         <Modal size="lg" title={<span><i className={`${mantenimiento.iconClass} icon-lg mr-2 
                             ${mantenimiento.tipo==='Instalación'?'color-instalacion': mantenimiento.tipo === 'Mantenimiento correctivo' ? 'color-mantenimiento' : 'color-mantenimiento-preventivo'}`}></i>
                             {`${mantenimiento.tipo} de ${mantenimiento.instalacion.equipo.equipo}`}
-                            </span>} 
-                            show={modal.mantenimiento} handleClose={this.handleClose} classBody="bg-light">
+                            </span>} show={modal.mantenimiento} handleClose={this.handleClose} classBody="bg-light">
                             <DetailsInstalacion instalacion = { mantenimiento } />
                         </Modal>
                 }
-                <Modal size="lg" title="Filtrado de tickets" show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" bgHeader="border-0">
-                    <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } onChangeRange={this.onChangeRangeFilter} onSubmit={this.filterTickets} tipoTickets={tipoTickets}/>
+                <Modal size="lg" title="Filtrado de tickets" show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" 
+                    bgHeader="border-0">
+                    <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } 
+                        onChangeRange = { this.onChangeRangeFilter } onSubmit = { this.filterTickets } tipoTickets = { tipoTickets } />
                 </Modal>
             </div>
         )
