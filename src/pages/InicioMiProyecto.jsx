@@ -12,9 +12,7 @@ import 'moment/locale/es';
 import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
-import { DetailsInstalacion, FormFilterTickets } from '../components/forms'
-import TableTickets from '../components/forms/MiProyecto/TableTickets'
-import TableMantenimiento from '../components/forms/MiProyecto/TableMantenimiento'
+import { DetailsInstalacion, FormFilterTickets, TablePresupuestos, TableTickets, TableMantenimiento } from '../components/forms'
 import $ from "jquery";
 import { Link, Element, scroller } from 'react-scroll'
 import { CommonLottie } from '../components/Lottie'
@@ -115,6 +113,7 @@ class InicioMiProyecto extends Component {
             },
             filterTickets: {
                 filter: [],
+                id:'',
                 estatus: '',
                 fechaInicio: new Date(),
                 fechaFin: new Date(),
@@ -141,6 +140,7 @@ class InicioMiProyecto extends Component {
                 { label: 'FECHA', value: 'fecha', name:'FECHA' },
             ],
             filterTickets:[
+                { label: 'IDENTIFICADOR', value: 'id', name:'IDENTIFICADOR' },
                 { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
                 { label: 'TIPO DE TRABAJO', value: 'tipo_trabajo', name:'TIPO DE TRABAJO' },
                 { label: 'DESCRIPCIÓN', value: 'descripcion', name:'DESCRIPCIÓN' },
@@ -331,7 +331,8 @@ class InicioMiProyecto extends Component {
             value: "en_contacto"
         },
         mantenimiento: '',
-        tipoTickets: 'proyecto'
+        tipoTickets: 'proyecto',
+        typePresupuesto: 'proyecto'
     }
     
     componentDidMount() {
@@ -576,7 +577,12 @@ class InicioMiProyecto extends Component {
         const { modal, tipoTickets, options } = this.state
         modal.filterTickets = true
         if(tipoTickets === 'all'){
-            options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
+            let found = options.filterTickets.some(item => item.value.includes('proyecto'))
+            if (!found){
+                options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
+            }
+        }else{
+            options.filterTickets.splice(options.filterTickets.findIndex(function(i){ return i.value === "proyecto"; }), 1);
         }
         this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0})
     }
@@ -993,7 +999,7 @@ class InicioMiProyecto extends Component {
     }
 
     render() {
-        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets } = this.state
+        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets, typePresupuesto } = this.state
         const { user } = this.props.authUser
         return (
             <div>
@@ -1027,6 +1033,9 @@ class InicioMiProyecto extends Component {
                                                                     </Nav.Item>
                                                                 : ''
                                                             }
+                                                            <Nav.Item className='nav-cliente'>
+                                                                <Link activeClass="active" offset={-50} className="nav-cliente nav-link mt-0 link-durante-obra" to="presupuestos" spy={true} smooth={true} duration={500} >Presupuestos</Link>
+                                                            </Nav.Item>
                                                             {
                                                                 proyecto.avances.length ?
                                                                     <Nav.Item className = 'nav-cliente'>
@@ -1359,6 +1368,18 @@ class InicioMiProyecto extends Component {
                                         </Element>
                                         : ''
                                 }
+                                <Element name = 'presupuestos' className="presupuestos bg-presupuestos section" >
+                                <div className="container">
+                                    <div className="header-section link-durante-obra">Durante obra</div>
+                                    <div className="title-proyecto">PRESUPUESTOS</div>
+                                    <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
+                                        En la siguiente sección, se muestra un listado de los presupuestos generados en dos secciones, el primero son los presupuestos del proyecto seleccionado y
+                                        el segundo todos los presupuestos de todos los proyectos asignados.
+                                    </div>
+                                    <TablePresupuestos typePresupuesto={typePresupuesto} tickets={tickets}/>
+                                    
+                                </div>
+                                </Element>
                                 {
                                     proyecto.avances.length ?
                                         <Element name="avances" className="avances bg-white section border-y-blue ">
@@ -1391,7 +1412,7 @@ class InicioMiProyecto extends Component {
                                         </Element>
                                     : ''
                                 }
-                            <Element name = 'tickets' className = 'border-y-blue section'>
+                            <Element name = 'tickets' className = 'bg-presupuestos section'>
                                 <div className="header-section link-termino-obra">Al termino de obra</div>
                                 <div className="title-proyecto">TICKETS</div>
                                 <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">

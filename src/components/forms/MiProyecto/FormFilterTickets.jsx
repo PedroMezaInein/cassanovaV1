@@ -78,14 +78,14 @@ class FormFilterTickets extends Component {
         return (
             <Form>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
+                    <div className="col-md-12 mb-5">
                         <TagSelectSearchGray placeholder = '¿QUÉ DESEAS FILTRAR?' options = { options.filterTickets } defaultvalue = { form.filter }
                             iconclass = 'las la-user-friends icon-xl' onChange = { this.updateRubro } bgcolor='#fff'/>
                     </div>
                     {
                         this.getActive('proyecto') && tipoTickets==='all'?
                             <div className="col-md-12 mb-5">
-                                <ReactSelectSearch placeholder = 'Selecciona el proyecto' defaultvalue = { form.tipo_trabajo } iconclass='las la-folder icon-xl'
+                                <ReactSelectSearch placeholder = 'Selecciona el proyecto' defaultvalue = { form.proyecto } iconclass='las la-folder icon-xl'
                                     options = { this.transformarOptions(options.proyectos) } onChange = { this.updateProyecto } />
                             </div>
                         :<></>
@@ -103,6 +103,14 @@ class FormFilterTickets extends Component {
                                 <ReactSelectSearch placeholder = 'Selecciona el tipo de trabajo' defaultvalue = { form.tipo_trabajo } iconclass='las la-tools icon-xl'
                                     options = { this.transformarOptions(options.tiposTrabajo) } onChange = { this.updateTipoTrabajo } />
                             </div>
+                    }
+                    {
+                        this.getActive('id') &&
+                        <div className="col-md-12 mb-5">
+                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
+                                placeholder="IDENTIFICADOR" value={form.id} name="id" onChange = { (value) => this.onChange(value)} thousandseparator={true}
+                                customclass='bg-white' iconclass='las la-id-card-alt icon-xl' custom_gtext='bg-white' inputsolid='bg-white border' />
+                        </div>
                     }
                     {
                         this.getActive('descripcion') &&
