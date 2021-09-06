@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
-import { setDateText, setMoneyTable } from '../../../../functions/setters';
+import { setDateText } from '../../../../functions/setters';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { deleteAlert } from '../../../../functions/alert';
 export default class SolicitudesTabla extends Component {
@@ -30,7 +30,7 @@ export default class SolicitudesTabla extends Component {
     }
 
     render() {
-        const { type, title, btn_title, openModalAdd, openModalEditar, deleteSolicitud, solicitudes } = this.props
+        const { type, title, btn_title, openModalAdd, deleteSolicitud, solicitudes } = this.props
         return (
             <Card className="card-custom gutter-b card-stretch">
                 <Card.Header className="border-0 pt-8 pt-md-0">
@@ -38,7 +38,7 @@ export default class SolicitudesTabla extends Component {
                         <div className="font-weight-bold font-size-h5">{title}</div>
                     </Card.Title>
                     <div className="card-toolbar">
-                        <button type="button" className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info btn-text-solicitud font-weight-bolder font-size-13px" onClick = { (e) => { e.preventDefault(); openModalAdd(type); } }>
+                        <button type="button" className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info btn-text-solicitud font-weight-bolder font-size-13px" onClick = { (e) => { e.preventDefault(); openModalAdd(); } }>
                             <i className="flaticon2-plus icon-nm mr-2 px-0"></i>{btn_title}
                         </button>
                     </div>
@@ -49,9 +49,6 @@ export default class SolicitudesTabla extends Component {
                             <thead>
                                 <tr className="white-space-nowrap bg-header">
                                     <th style={{minWidth:'50px'}}></th>
-                                    { type !== 'compra' ? <th>Tipo de pago</th> : <></> }
-                                    { type !== 'compra' ? <th>Monto</th> : <></> }
-                                    { type !== 'compra' ? <th>Factura</th> : <></> }
                                     <th>Fecha</th>
                                     <th>Área</th>
                                     <th>Sub área</th>
@@ -64,22 +61,12 @@ export default class SolicitudesTabla extends Component {
                                 {
                                     solicitudes ?
                                         solicitudes.length === 0 ?
-                                            this.printEmptyTable( type === 'compra' ? 7 : 9 )
+                                            this.printEmptyTable(7)
                                         :
                                             solicitudes.map((sol) => {
                                                 return(
                                                     <tr key = { sol.id } className = 'font-weight-light'>
                                                         <td className="white-space-nowrap text-center">
-                                                            {
-                                                                type !== 'compra' ?
-                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>EDITAR</span></Tooltip>}>
-                                                                        <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-success btn-circle mr-2"
-                                                                            onClick = { (e) => { e.preventDefault(); openModalEditar(type, sol); } } >
-                                                                            <i className="las la-edit icon-xl" />
-                                                                        </div>
-                                                                    </OverlayTrigger>
-                                                                : <></>
-                                                            }
                                                             <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
                                                                 <div className="btn btn-icon btn-sm btn-bg-white btn-text-solicitud btn-hover-light-danger btn-circle"
                                                                     onClick = { (e) => { e.preventDefault(); 
@@ -88,27 +75,6 @@ export default class SolicitudesTabla extends Component {
                                                                 </div>
                                                             </OverlayTrigger>
                                                         </td>
-                                                        {
-                                                            type !== 'compra' ?
-                                                                <td className="text-dark text-center font-size-sm">
-                                                                    { sol.tipo_pago ? sol.tipo_pago.tipo : '' }
-                                                                </td>
-                                                            : <></>
-                                                        }
-                                                        {
-                                                            type !== 'compra' ?
-                                                                <td className="text-dark text-center font-size-sm">
-                                                                    { setMoneyTable(sol.monto) }
-                                                                </td>
-                                                            : <></>
-                                                        }
-                                                        {
-                                                            type !== 'compra' ?
-                                                                <td className="text-dark text-center font-size-sm">
-                                                                    { sol.factura ? 'Con factura' : 'Sin factura' }
-                                                                </td>
-                                                            : <></>
-                                                        }
                                                         <td className="text-dark text-center font-size-sm">
                                                             <div className="w-max-content mx-auto">
                                                                 { setDateText(sol.created_at) }
@@ -150,7 +116,7 @@ export default class SolicitudesTabla extends Component {
                                                 )
                                             })
                                     : 
-                                        this.printEmptyTable( type === 'compra' ? 7 : 9 )
+                                        this.printEmptyTable(7)
                                 }
                             </tbody>
                         </table>

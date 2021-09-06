@@ -96,25 +96,6 @@ class TicketDetails extends Component {
                 }],
                 conceptosNuevos: []
             },
-            solicitud: {
-                proveedor: '',
-                proyecto: '',
-                area: '',
-                subarea: '',
-                empresa: '',
-                descripcion: '',
-                total: '',
-                fecha: new Date(),
-                tipoPago: 0,
-                factura: 'Sin factura',
-                adjuntos: {
-                    adjunto: {
-                        value: '',
-                        placeholder: 'Presupuesto',
-                        files: []
-                    }
-                }
-            },
             presupuesto_generado:{
                 estatus_final:'',
                 fechaEvidencia: new Date(),
@@ -172,6 +153,7 @@ class TicketDetails extends Component {
         if (state) {
             if (state.calidad) {
                 const { calidad } = state
+                this.setNavTabs(calidad.estatus.estatus)
                 if(calidad.estatus_ticket){
                     if (calidad.estatus_ticket.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
                     else { this.getOneTicketAxios(calidad.id) }
@@ -248,7 +230,6 @@ class TicketDetails extends Component {
                 formularios.ticket = this.setForm(ticket)
                 this.setState({ticket: ticket, formularios, options, data })
                 this.showStatusTickets(ticket)
-                this.setNavTabs(ticket)
                 if(ticket.presupuesto_preeliminar){ this.getPresupuestoAxios(ticket.presupuesto_id) }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -266,6 +247,9 @@ class TicketDetails extends Component {
                 if (data.estatus) 
                     doneAlert('El ticket fue actualizado con éxito.')
                 this.getOneTicketAxios(ticket.id)
+                let { defaultNavTabs } = this.state
+                defaultNavTabs = 'adjuntos'
+                this.setState({ defaultNavTabs })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -281,6 +265,11 @@ class TicketDetails extends Component {
             (response) => {
                 doneAlert('Ticket actualizado con éxito')
                 this.getOneTicketAxios(ticket.id)
+                if(type === 'tipo_trabajo'){
+                    let { defaultNavTabs } = this.state
+                    defaultNavTabs = 'adjuntos'
+                    this.setState({ defaultNavTabs })
+                }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -645,7 +634,6 @@ class TicketDetails extends Component {
     }
 
     addVentaAxios = async(id, form) => {
-        console.log(`ID`, id, `FORM`, form)
         waitAlert()
     }
 
@@ -657,30 +645,6 @@ class TicketDetails extends Component {
             { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert(`Solicitud generada con éxito`, () => { this.getSolicitudesAxios('facturacion') } )
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
-    addSolicitudVentaAxios = async () => {
-        const { access_token } = this.props.authUser
-        const { formularios, ticket } = this.state
-
-        /* -------------------------------------------------------------------------- */
-        /*                      ANCHOR ADDING SOLICITUD DE VENTAS                     */
-        /* -------------------------------------------------------------------------- */
-
-        await axios.post(`${URL_DEV}v3/calidad/tickets/${ticket.id}/solicitud-venta`, formularios.solicitud, 
-            { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { modal } = this.state
-                modal.solicitud = false
-                this.setState({...this.state, modal, formularios})
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrada con éxito.',
-                    () => { this.getSolicitudesAxios(`solicitud-venta`) }
-                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -792,52 +756,17 @@ class TicketDetails extends Component {
         })
     }
     
-    openModalSolicitud = type => {
-
+    openModalSolicitud = () => {
         /* -------------------------------------------------------------------------- */
         /*                           ANCHOR MODAL SOLICITUD                           */
         /* -------------------------------------------------------------------------- */
-
         const { modal, formularios, ticket } = this.state
         let { title } = this.state
-        switch(type){
-            case 'compra':
-                title = 'Nueva solicitud de compra'
-                formularios.conceptos = this.clearFormConceptos()
-                break;
-            case 'venta':
-                title = 'Nueva solicitud de venta'
-                if(ticket.subarea){
-                    formularios.solicitud.area = ticket.subarea.area_id.toString()
-                    formularios.solicitud.subarea = ticket.subarea.id.toString()
-                }
-                break;
-            default:
-                break;
-        }
+        title = 'Nueva solicitud de compra'
+        formularios.conceptos = this.clearFormConceptos()
         modal.solicitud = true
-        formularios.solicitud.empresa = ticket.proyecto.empresa.id.toString()
-        formularios.solicitud.proyecto = ticket.proyecto.id.toString()
-        if (ticket.presupuesto.length) {
-            formularios.solicitud.adjuntos.adjunto.files = [{
-                name: ticket.presupuesto[0].name,
-                url: ticket.presupuesto[0].url,
-                id: ticket.presupuesto[0].id
-            }]
-        }
         this.setState({ ...this.state, modal, formeditado: 1, title:title, formularios })
         this.getOptionsAxios()
-    }
-
-    openModalEditarSolicitud = (type, solicitud) => {
-        const { history } = this.props
-        switch(type){
-            case 'venta':
-                history.push({ pathname: '/proyectos/solicitud-venta/edit', state: { solicitud: solicitud } });
-                break;
-            default:
-                break;
-        }
     }
 
     handleCloseSolicitud = () => {
@@ -845,8 +774,7 @@ class TicketDetails extends Component {
         modal.solicitud = false
         this.setState({
             ...this.state,
-            modal,
-            formularios:this.clearFormSolicitud()
+            modal
         })
     }
 
@@ -984,6 +912,9 @@ class TicketDetails extends Component {
             (response) => {
                 doneAlert('El estatus fue actualizado con éxito.')
                 this.getOneTicketAxios(ticket.id)
+                let { defaultNavTabs } = this.state
+                defaultNavTabs = 'solicitud-compra'
+                this.setState({ defaultNavTabs })
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1009,24 +940,6 @@ class TicketDetails extends Component {
         })
         return formularios
     }
-    clearFiles = (name, key) => {
-        const { formularios } = this.state
-        let aux = []
-        for (let counter = 0; counter < formularios.solicitud['adjuntos'][name].files.length; counter++) {
-            if (counter !== key) {
-                aux.push(formularios.solicitud['adjuntos'][name].files[counter])
-            }
-        }
-        if (aux.length < 1) {
-            formularios.solicitud['adjuntos'][name].value = ''
-        }
-        formularios.solicitud['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            formularios
-        })
-    }
-
     clearFormConceptos = () => {
         const { presupuesto } = this.state
         let aux = presupuesto.conceptos
@@ -1091,39 +1004,6 @@ class TicketDetails extends Component {
         })
         return aux2
     }
-
-    clearFormSolicitud = () => {
-        const { formularios } = this.state
-        let aux = Object.keys(formularios.solicitud)
-        aux.map((element) => {
-            switch (element) {
-                case 'tipoPago':
-                    formularios.solicitud[element] = 0
-                    break;
-                case 'factura':
-                    formularios.solicitud[element] = 'Sin factura'
-                    break;
-                case 'fecha':
-                    formularios.solicitud[element] = new Date()
-                    break;
-                case 'adjuntos':
-                    formularios.solicitud[element] = {
-                        adjunto: {
-                            value: '',
-                            placeholder: 'Presupuesto',
-                            files: []
-                        }
-                    }
-                    break;
-                default:
-                    formularios.solicitud[element] = ''
-                    break;
-            }
-            return false
-        })
-        return formularios;
-    }
-    
     /* -------------------------------------------------------------------------- */
     /*                             ANCHOR FORMULARIOS                             */
     /* -------------------------------------------------------------------------- */
@@ -1332,22 +1212,6 @@ class TicketDetails extends Component {
         })
     }
     
-    /* ---------------------- FORMULARIO SOLICITUD ---------------------- */
-    onChangeSolicitud = e => {
-        const { formularios } = this.state
-        const { name, value } = e.target
-        formularios.solicitud[name] = value
-        this.setState({
-            ...this.state,
-            formularios
-        })
-    }
-    
-    onSubmitSVenta = e => {
-        e.preventDefault()
-        this.addSolicitudVentaAxios()
-    }
-    
     /* ---------------------- FORMULARIO TICKET EN PROCESO ---------------------- */
     onChangeTicketProceso = e => {
         const { name, value } = e.target
@@ -1421,10 +1285,12 @@ class TicketDetails extends Component {
         const { ticket, formularios } = this.state
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                const { ticket } = response.data
                 if(flag === true)
                     this.generarReporteFotograficoAxios()
                 else
-                    doneAlert('Presupuesto adjuntado con éxito.', () => this.generarReporteFotografico())
+                    doneAlert('Datos guardados con éxito.', () => this.generarReporteFotografico())
+                    this.getOneTicketAxios(ticket.id)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1721,30 +1587,27 @@ class TicketDetails extends Component {
         this.setState({...this.state, formularios })
     };
 
-    setNavTabs = (ticket) => {
+    setNavTabs = (estatus) => {
         let { defaultNavTabs } = this.state
-        if( ticket ){
-            if(ticket.estatus_ticket){
-                switch(ticket.estatus_ticket.estatus){
-                    case 'En espera':
-                    case 'En revisión':
-                    case 'Rechazado':
-                        defaultNavTabs = 'adjuntos'
-                        break;
-                    case 'Aceptado':
-                    case 'Aprobación pendiente':
-                        defaultNavTabs = 'presupuesto'
-                        break;
-                    case 'En proceso':
-                    case 'Terminado':
-                    case 'Pendiente de pago':
-                        this.getSolicitudesAxios('solicitud-compra');
-                        defaultNavTabs = 'solicitud-compra'
-                        break;
-                    default:
-                        break;
-                }
-            }
+        switch (estatus) {
+            case 'En espera':
+            case 'En revisión':
+            case 'Rechazado':
+                defaultNavTabs = 'adjuntos'
+                break;
+            case 'Aceptado':
+            case 'Aprobación pendiente':
+                defaultNavTabs = 'presupuesto'
+                break;
+            case 'En proceso':
+            case 'Pendiente de pago':
+                this.getSolicitudesAxios('solicitud-compra');
+                defaultNavTabs = 'solicitud-compra'
+                break;
+            case 'Terminado':
+                defaultNavTabs = 'ticket-proceso'
+            default:
+                break;
         }
         this.setState({ defaultNavTabs })
     }
@@ -1763,8 +1626,7 @@ class TicketDetails extends Component {
                     openModalWithInput = { this.openModalWithInput }  changeEstatus = { this.changeEstatus }  addingFotos = { this.addFotosS3 } 
                     onClick = { this.onClick }  onChange = { this.onChangeSwal }  setData = { this.setData }  setOptions = { this.setOptions }
                     onSubmit = { this.onSubmit }  openModalConceptos={this.openModalConceptos}  deleteFile = { this.deleteFile }  
-                    openModalSolicitud = {this.openModalSolicitud}  handleCloseSolicitud={this.handleCloseSolicitud}  onChangeSolicitud={this.onChangeSolicitud} 
-                    clearFiles = { this.clearFiles }  openModalEditarSolicitud = { this.openModalEditarSolicitud}  deleteSolicitud={this.deleteSolicitud}
+                    openModalSolicitud = {this.openModalSolicitud}  handleCloseSolicitud={this.handleCloseSolicitud} deleteSolicitud={this.deleteSolicitud}
                     onSubmitSVenta={this.onSubmitSVenta}  onChangeTicketProceso={this.onChangeTicketProceso}  onSubmitTicketProceso={this.onSubmitTicketProceso} 
                     handleChangeTicketProceso={this.handleChangeTicketProceso}  generateEmailTicketProceso={this.generateEmailTicketProceso}  
                     controlledNav={this.controlledNav}  openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } 
