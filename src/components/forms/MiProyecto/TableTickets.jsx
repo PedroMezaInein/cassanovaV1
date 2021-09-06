@@ -29,13 +29,13 @@ class TableTickets extends Component {
         return false;
     }
     render() {
-        const { tickets, openModalSee, openModalDetalles, onClickPrev, onClickNext, tickets_info, tipoTickets, openModalLevantamiento, openFilterTickets } = this.props
+        const { tickets, openModalSee, openModalDetalles, onClickPrev, onClickNext, tickets_info, tipoTickets, openModalLevantamiento, openFilterTickets, changeTicketTab } = this.props
         return (
             <div className="container">
                 <div className="text-center">
                     <div className="btn-group btn-group-sm">
-                        <button type="button" className={`button-tickets-list ${tipoTickets === 'proyecto' ? 'active' : 'draw'}`} onClick={this.openTicketsP}>Tickets del proyecto</button>
-                        <button type="button" className={`button-tickets-list ${tipoTickets === 'all' ? 'active' : 'draw'}`} onClick={this.openAllTickets}>Todos los tickets</button>
+                        <button type="button" className={`button-tickets-list ${tipoTickets === 'proyecto' ? 'active' : 'draw'}`} onClick={ () => { changeTicketTab('all')}}>Tickets del proyecto</button>
+                        <button type="button" className={`button-tickets-list ${tipoTickets === 'all' ? 'active' : 'draw'}`} onClick={ () => {changeTicketTab('proyecto')}}>Todos los tickets</button>
                     </div>
                 </div>
                 <div className="d-flex justify-content-end mb-10">
