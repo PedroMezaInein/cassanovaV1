@@ -34,8 +34,8 @@ class TableTickets extends Component {
             <div className="container">
                 <div className="text-center">
                     <div className="btn-group btn-group-sm">
-                        <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'proyecto' ? 'active' : ''}`} onClick={ () => { changeTicketTab('all')}}>Tickets del proyecto</button>
-                        <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'all' ? 'active' : ''}`} onClick={ () => {changeTicketTab('proyecto')}}>Todos los tickets</button>
+                        <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'proyecto' ? 'active' : ''}`} onClick={ () => { changeTicketTab('proyecto')}}>Tickets del proyecto</button>
+                        <button type="button" className={`btn btn-fill-vert btn-group-tickets ${tipoTickets === 'all' ? 'active' : ''}`} onClick={ () => {changeTicketTab('all')}}>Todos los tickets</button>
                     </div>
                 </div>
                 <div className="d-flex justify-content-end mb-10">
@@ -51,11 +51,12 @@ class TableTickets extends Component {
                     </span>
                 </div>
                 <div className="tab-content">
-                    <div className="table-responsive" id='table-proyecto'>
-                        <table className="table table-borderless table-vertical-center table-hover">
+                    <div className="table-responsive">
+                        <table className="table table-borderless table-vertical-center table-hover  rounded bg-white" id="table-tickets">
                             <thead>
-                                <tr className="text-center bg-blue-proyecto text-proyecto">
+                                <tr className="text-center text-proyecto">
                                     <th>Estatus</th>
+                                    <th>ID</th>
                                     <th style={{ minWidth: '100px' }}>Fecha</th>
                                     {
                                         tipoTickets === 'all'?
@@ -79,10 +80,10 @@ class TableTickets extends Component {
                                 }
                                 {
                                     tickets.map((ticket, key) => {
-                                        console.log(ticket)
                                         return (
                                             <tr className="text-dark-75 font-weight-light text-center" key={key}>
                                                 <td> {setLabelTable(ticket.estatus_ticket)} </td>
+                                                <td> {ticket.identificador} </td>
                                                 <td> {this.formatDay(ticket.created_at)} </td>
                                                 {
                                                     tipoTickets === 'all'?

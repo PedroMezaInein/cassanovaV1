@@ -113,6 +113,7 @@ class InicioMiProyecto extends Component {
             },
             filterTickets: {
                 filter: [],
+                id:'',
                 estatus: '',
                 fechaInicio: new Date(),
                 fechaFin: new Date(),
@@ -139,6 +140,7 @@ class InicioMiProyecto extends Component {
                 { label: 'FECHA', value: 'fecha', name:'FECHA' },
             ],
             filterTickets:[
+                { label: 'IDENTIFICADOR', value: 'id', name:'IDENTIFICADOR' },
                 { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
                 { label: 'TIPO DE TRABAJO', value: 'tipo_trabajo', name:'TIPO DE TRABAJO' },
                 { label: 'DESCRIPCIÓN', value: 'descripcion', name:'DESCRIPCIÓN' },
@@ -575,7 +577,12 @@ class InicioMiProyecto extends Component {
         const { modal, tipoTickets, options } = this.state
         modal.filterTickets = true
         if(tipoTickets === 'all'){
-            options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
+            let found = options.filterTickets.some(item => item.value.includes('proyecto'))
+            if (!found){
+                options.filterTickets.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
+            }
+        }else{
+            options.filterTickets.splice(options.filterTickets.findIndex(function(i){ return i.value === "proyecto"; }), 1);
         }
         this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0})
     }
