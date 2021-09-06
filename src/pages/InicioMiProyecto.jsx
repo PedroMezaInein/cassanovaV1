@@ -130,7 +130,11 @@ class InicioMiProyecto extends Component {
             tiposTrabajo: [],
             equipos:[],
             estatus:[],
-            areas: [],
+            areas:[
+                { label: 'FASE 1', value: 'fase_1', name:'FASE 1' },
+                { label: 'FASE 2', value: 'fase_2', name:'FASE 2' },
+                { label: 'FASE 3', value: 'fase_3', name:'FASE 3' }
+            ],
             mantenimientos:[
                 { label: 'PREVENTIVO', value: 'preventivo', name:'PREVENTIVO' },
                 { label: 'CORRECTIVO', value: 'correctivo', name:'CORRECTIVO' }
@@ -152,7 +156,7 @@ class InicioMiProyecto extends Component {
             filterPresupuesto:[
                 { label: 'IDENTIFICADOR', value: 'id', name:'IDENTIFICADOR' },
                 { label: 'ESTATUS', value: 'estatus', name:'ESTATUS' },
-                { label: 'ÁREA', value: 'area', name:'ÁREA' },
+                { label: 'FASE', value: 'fase', name:'FASE' },
                 { label: 'TIEMPO DE EJECUCIÓN', value: 'tiempo_ejecucion', name:'TIEMPO DE EJECUCIÓN' },
                 { label: 'FECHA', value: 'fecha', name:'FECHA' }
             ]
@@ -601,8 +605,7 @@ class InicioMiProyecto extends Component {
                 optionsType.push({ label: 'PROYECTO', value: 'proyecto', name:'PROYECTO' })
             }
         }
-        
-        if(tipoTickets === 'proyecto' || typePresupuesto === 'proyecto'){
+        if((tipoTickets === 'proyecto' && typeForm === 'ticket') || (typePresupuesto === 'proyecto' && typeForm === 'presupuesto')){
             optionsType.forEach((element, index) => {
                 if(element.value === "proyecto"){
                     optionsType.splice(index,1);
@@ -1659,7 +1662,7 @@ class InicioMiProyecto extends Component {
                             <DetailsInstalacion instalacion = { mantenimiento } />
                         </Modal>
                 }
-                <Modal size="lg" title="Filtrado de tickets" show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" 
+                <Modal size="lg" title={`Filtrado de ${typeForm}s`}show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" 
                     bgHeader="border-0">
                     <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } typeForm={typeForm}
                         onChangeRange = { this.onChangeRangeFilter } onSubmit = { this.filterTickets } />

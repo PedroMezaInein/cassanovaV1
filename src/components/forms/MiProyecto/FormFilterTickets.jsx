@@ -89,14 +89,14 @@ class FormFilterTickets extends Component {
                         </div>
                     }
                     {
-                        this.getActive(typeForm === 'ticket' ? 'tipo_trabajo' : 'area') &&
+                        this.getActive(typeForm === 'ticket' ? 'tipo_trabajo' : 'fase') &&
                         <div className="col-md-12 mb-5">
                             <ReactSelectSearch
-                                placeholder={`Selecciona el ${typeForm === 'ticket' ? 'tipo de trabajo' : 'area'}`}
+                                placeholder={`Selecciona ${typeForm === 'ticket' ? 'el tipo de trabajo' : 'la fase'}`}
                                 defaultvalue={typeForm === 'ticket' ? form.tipo_trabajo : form.area}
                                 iconclass='las la-tools icon-xl'
                                 options={typeForm === 'ticket' ? this.transformarOptions(options.tiposTrabajo) : this.transformarOptions(options.areas)}
-                                onChange={(value) => { this.updateSelect(value, `${typeForm === 'ticket' ? 'tipo_trabajo' : 'area'}`) }}
+                                onChange={(value) => { this.updateSelect(value, `${typeForm === 'ticket' ? 'tipo_trabajo' : 'fase'}`) }}
                             />
                         </div>
                     }

@@ -55,7 +55,7 @@ class TablePresupuestos extends Component {
                                             <th style={{ minWidth: '100px' }}>Proyecto</th>
                                         :<></>
                                     }
-                                    <th style={{ minWidth: '125px' }}>Área</th>
+                                    <th style={{ minWidth: '125px' }}>Fase</th>
                                     <th>Tiempo de ejecución</th>
                                     <th style={{ minWidth: '90px' }}></th>
                                 </tr>
