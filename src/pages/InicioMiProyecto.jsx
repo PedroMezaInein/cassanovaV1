@@ -629,7 +629,7 @@ class InicioMiProyecto extends Component {
         this.setState({...this.state, modal, mantenimiento: mantenimiento})
     }
     handleCloseFilter = () => {
-        const { modal, form } = this.state
+        const { modal, form, tipoTickets } = this.state
         modal.filterTickets = false
         form.filterTickets.filter = []
         form.filterTickets.estatus = ''
@@ -638,6 +638,7 @@ class InicioMiProyecto extends Component {
         form.filterTickets.fechaInicio = new Date()
         form.filterTickets.fechaFin = new Date()
         this.setState({...this.state, modal, form })
+        this.getTicketsPage('', tipoTickets)
     }
 
     // changeEstatus = estatus => {
@@ -727,7 +728,7 @@ class InicioMiProyecto extends Component {
                 let show = proyectos.length === 1 ? false : true
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
-                options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
+                options.tiposTrabajo = setOptions(tiposTrabajo, 'nombre', 'id')
                 options.estatus = setOptions(status, 'estatus', 'id')
                 this.setState( { ...this.state, options, showSelect: show } )
             }, (error) => { printResponseErrorAlert(error) }
@@ -912,17 +913,19 @@ class InicioMiProyecto extends Component {
     getTicketsPage = async (location, tipo) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { tickets_info, proyecto } = this.state
-        await axios.get(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}&type=${tipo}`, { headers: setSingleHeader(access_token) }).then(
+        const { tickets_info, proyecto, form } = this.state
+        await axios.put(`${URL_DEV}v2/mi-proyecto/tickets/${tickets_info.numPage}?id=${proyecto.id}&type=${tipo}`, 
+            { filtrado: form.filterTickets}, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { total, page, tickets } = response.data
-                const { tickets_info } = this.state
+                const { tickets_info, modal } = this.state
                 tickets_info.total = total
                 tickets_info.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 tickets_info.total_paginas = total_paginas
-                this.setState({ ...this.state, tickets_info, tickets })
+                modal.filterTickets = false
+                this.setState({ ...this.state, tickets_info, tickets, modal })
                 if(location)
                     this.scrolling(location)
             }, (error) => { printResponseErrorAlert(error) }
@@ -971,28 +974,8 @@ class InicioMiProyecto extends Component {
     }
     filterTickets = () => {
         waitAlert()
-        const { tipoTickets, form } = this.state
-        console.log(`Tipo: `, tipoTickets)
-        console.log(`Form: `, form.filterTickets)
-        
+        const { tipoTickets } = this.state
         this.getTicketsPage('', tipoTickets)
-        // const { access_token } = this.props.authUser
-        // const { tickets, form } = this.state
-        // await axios.put(`${URL_DEV}v2/mi-proyecto/${proyecto.id}`, form, { headers: setSingleHeader(access_token) }).then(
-        //     (response) => {
-        //         const { mantenimientos } = response.data
-        //         let aux = []
-        //         mantenimientos.forEach((mantenimiento) => {
-        //             aux.push({mantenimiento: mantenimiento, instalacion: mantenimiento.instalacion})
-        //         })
-        //         this.setState({...this.state, mantenimientos: aux})
-        //         Swal.close()
-        //         /* doneAlert(response.data.message !== undefined ? response.data.message : 'Tabla filtrada con éxito.') */
-        //     }, (error) => { printResponseErrorAlert(error) }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.error(error, 'error')
-        // })
     }
     cleanForm = () => {
         const { form } = this.state
