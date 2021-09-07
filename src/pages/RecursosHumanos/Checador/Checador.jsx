@@ -14,7 +14,7 @@ import Echo from 'laravel-echo';
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 // const day = moment().format('YYYY-MM-DD')
 // const validador = moment("2021-07-01").isSameOrAfter(day);
-const horasPorTrabajar = 8
+const horasPorTrabajar = 9
 class Checador extends Component {
     state = {
         mes: meses[new Date().getMonth()],
