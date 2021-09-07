@@ -643,7 +643,7 @@ class InicioMiProyecto extends Component {
             })
         }
 
-        this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0, typeForm})
+        this.setState({ ...this.state, modal, options, formeditado: 0, typeForm})
     }
 
     handleClose = () => {
@@ -662,16 +662,35 @@ class InicioMiProyecto extends Component {
     }
 
     handleCloseFilter = () => {
-        const { modal, form, tipoTickets } = this.state
+        const { modal, form, tipoTickets, typeForm, typePresupuesto } = this.state
+
+        console.log(form, 'FORM')
+
         modal.filterTickets = false
-        form.filterTickets.filter = []
-        form.filterTickets.estatus = ''
-        form.filterTickets.tipo_trabajo = ''
-        form.filterTickets.descripcion = ''
-        form.filterTickets.fechaInicio = new Date()
-        form.filterTickets.fechaFin = new Date()
-        this.setState({...this.state, modal, form })
-        this.getTicketsPage('', tipoTickets)
+        
+        if(typeForm === 'ticket'){
+            form.filterTickets.filter = []
+            form.filterTickets.area = ''
+            form.filterTickets.descripcion = ''
+            form.filterTickets.estatus = ''
+            form.filterTickets.fechaInicio = new Date()
+            form.filterTickets.fechaFin = new Date()
+            form.filterTickets.id = ''
+            form.filterTickets.proyecto = ''
+            form.filterTickets.tipo_trabajo = ''
+            this.setState({...this.state, modal, form })
+            this.getTicketsPage('', tipoTickets)
+        }else{
+            form.filterPresupuestos.filter = []
+            form.filterPresupuestos.area = ''
+            form.filterPresupuestos.estatus = ''
+            form.filterPresupuestos.fechaInicio = new Date()
+            form.filterPresupuestos.fechaFin = new Date()
+            form.filterPresupuestos.id = ''
+            form.filterPresupuestos.proyecto = ''
+            form.filterPresupuestos.tiempo_ejecucion = ''
+            this.getPresupuestosPage(typePresupuesto)
+        }
     }
 
     nextPageTicket = (e) => {
