@@ -35,6 +35,7 @@ class InicioMiProyecto extends Component {
             tecnico: { nombre: '' }
         },
         tickets: [],
+        presupuestos: [],
         proyecto: '',
         formeditado: 0,
         primeravista: true,
@@ -120,8 +121,17 @@ class InicioMiProyecto extends Component {
                 tipo_trabajo: '',
                 descripcion: '',
                 proyecto: '',
-                tiempo_ejecucion:'',
                 area:''
+            },
+            filterPresupuestos: {
+                filter: [],
+                id:'',
+                proyecto: '',
+                estatus: '',
+                area:'',
+                tiempo_ejecucion:'',
+                fechaInicio: new Date(),
+                fechaFin: new Date()
             }
         },
         options: {
@@ -375,6 +385,13 @@ class InicioMiProyecto extends Component {
         this.changePage(permisos)
     }
 
+    componentDidUpdate() {
+        $(document).scroll(function () {
+            var $nav = $(".fixed-top");
+            $nav.toggleClass('header-scrolled', $(this).scrollTop() > $nav.height());
+        });
+    }
+
     scrolling = (location) => {
         scroller.scrollTo(location,{
             offset: -50,
@@ -382,13 +399,6 @@ class InicioMiProyecto extends Component {
             smooth:'true',
             duration: 800
         })
-    }
-
-    componentDidUpdate() {
-        $(document).scroll(function () {
-            var $nav = $(".fixed-top");
-            $nav.toggleClass('header-scrolled', $(this).scrollTop() > $nav.height());
-        });
     }
 
     updateProyecto = value => {
@@ -505,7 +515,19 @@ class InicioMiProyecto extends Component {
     
     onChangeType = (e, formulario) => {
         const { value, name } = e.target
-        const { form } = this.state
+        const { form, typeForm, tipoTickets, typePresupuesto } = this.state
+        if(name === 'filter'){
+            if(value.length < form[formulario][name].length){
+                form[formulario][name] = value
+                this.setState({...this.state, form})
+                if(typeForm === 'ticket'){
+                    this.getTicketsPage('', tipoTickets)
+                }else{
+                    this.getPresupuestosPage(typePresupuesto)
+                }
+            }
+
+        }
         form[formulario][name] = value
         this.setState({...this.state, form})
     }
@@ -517,13 +539,20 @@ class InicioMiProyecto extends Component {
         form.fechaFin = endDate
         this.setState({ ...this.state, form })
     }
+
     onChangeRangeFilter = range => {
         const { startDate, endDate } = range
-        const { form } = this.state
-        form.filterTickets.fechaInicio = startDate
-        form.filterTickets.fechaFin = endDate
+        const { form, typeForm } = this.state
+        if(typeForm === 'ticket'){
+            form.filterTickets.fechaInicio = startDate
+            form.filterTickets.fechaFin = endDate
+        }else{
+            form.filterPresupuestos.fechaInicio = startDate
+            form.filterPresupuestos.fechaFin = endDate
+        }
         this.setState({ ...this.state, form })
     }
+
     handleChange = (files, item) => {
         if(files.length)
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
@@ -592,6 +621,7 @@ class InicioMiProyecto extends Component {
         modal.details = true
         this.setState({ ...this.state, modal, formeditado: 0, ticket: ticket })
     }
+
     openFilter = (type) => {
         const { modal, tipoTickets, options, typePresupuesto } = this.state
         let { typeForm } = this.state
@@ -615,6 +645,7 @@ class InicioMiProyecto extends Component {
 
         this.setState({ ...this.state, modal, options, tipoTickets, formeditado: 0, typeForm})
     }
+
     handleClose = () => {
         const { modal } = this.state
         modal.tickets = false
@@ -623,11 +654,13 @@ class InicioMiProyecto extends Component {
         modal.mantenimiento = false
         this.setState({...this.state, form: this.clearForm(), modal, ticket: '', mantenimiento: '' })
     }
+
     onClickMantenimiento = mantenimiento => {
         const { modal } = this.state
         modal.mantenimiento = true
         this.setState({...this.state, modal, mantenimiento: mantenimiento})
     }
+
     handleCloseFilter = () => {
         const { modal, form, tipoTickets } = this.state
         modal.filterTickets = false
@@ -640,11 +673,6 @@ class InicioMiProyecto extends Component {
         this.setState({...this.state, modal, form })
         this.getTicketsPage('', tipoTickets)
     }
-
-    // changeEstatus = estatus => {
-    //     const { ticket } = this.state
-    //     questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-    // }
 
     nextPageTicket = (e) => {
         e.preventDefault()
@@ -762,7 +790,7 @@ class InicioMiProyecto extends Component {
         await axios.get(`${URL_DEV}v2/mi-proyecto/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { adjuntos, options, form, tipoTickets } = this.state
+                const { adjuntos, options, form, tipoTickets, typePresupuesto } = this.state
                 const { proyecto } = response.data
                 let activeKey = ''
                 adjuntos.forEach((grupo) => {
@@ -820,6 +848,7 @@ class InicioMiProyecto extends Component {
                 this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options, form })
                 
                 this.getTicketsPage(location, tipoTickets)
+                this.getPresupuestosPage(typePresupuesto)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -937,22 +966,27 @@ class InicioMiProyecto extends Component {
         })
     }
 
-    // changeEstatusAxios = async (data) => {
-    //     const { access_token } = this.props.authUser
-    //     await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-    //         (response) => {
-    //             const { proyecto } = this.state
-    //             this.handleClose()
-    //             if (data.estatus) {
-    //                 doneAlert('El ticket fue actualizado con éxito.')
-    //                 this.getMiProyectoAxios(proyecto.id)
-    //             }
-    //         }, (error) => { printResponseErrorAlert(error) }
-    //     ).catch((error) => {
-    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-    //         console.error(error, 'error')
-    //     })
-    // }
+    getPresupuestosPage = async(tipo) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { presupuestos_info, proyecto, form } = this.state
+        await axios.put(`${URL_DEV}v2/mi-proyecto/presupuestos/${presupuestos_info.numPage}?id=${proyecto.id}&type=${tipo}`, 
+            { filtrado: form.filterPresupuestos }, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { total, page, presupuestos } = response.data
+                const { presupuestos_info, modal } = this.state
+                presupuestos_info.total = total
+                presupuestos_info.numPage = page
+                let total_paginas = Math.ceil(total / 10)
+                presupuestos_info.total_paginas = total_paginas
+                this.setState({ ...this.state, presupuestos_info, presupuestos, modal })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
 
     filtrarTabla = async () => {
         waitAlert()
@@ -967,18 +1001,22 @@ class InicioMiProyecto extends Component {
                 })
                 this.setState({...this.state, mantenimientos: aux})
                 Swal.close()
-                /* doneAlert(response.data.message !== undefined ? response.data.message : 'Tabla filtrada con éxito.') */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
     }
+
     filterTickets = () => {
         waitAlert()
-        const { tipoTickets } = this.state
-        this.getTicketsPage('', tipoTickets)
+        const { tipoTickets, typePresupuesto, typeForm } = this.state
+        if(typeForm === 'ticket')
+            this.getTicketsPage('', tipoTickets)
+        else
+            this.getPresupuestosPage(typePresupuesto)
     }
+
     cleanForm = () => {
         const { form } = this.state
         form.rubro = []
@@ -994,10 +1032,12 @@ class InicioMiProyecto extends Component {
             form
         })
     }
+
     nameAdjunto(name){
         var nombre_adjunto = name.slice(11, -4);
         return nombre_adjunto;
     }
+
     async logoutUserAxios() {
         const { logout, authUser: { access_token }, history } = this.props
         await axios.get(`${URL_DEV}user/logout`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1015,10 +1055,12 @@ class InicioMiProyecto extends Component {
         this.setState({ ...this.state, tipoTickets: type, tickets_info })
         this.getTicketsPage('', type)
     }
+
     onChangePresupuestoTab = (type) => {
         const { presupuestos_info } = this.state
         presupuestos_info.numPage = 0
         this.setState({ ...this.state, typePresupuesto: type, presupuestos_info })
+        this.getPresupuestosPage(type)
     }
 
     nextPagePresupuesto = (e) => {
@@ -1040,8 +1082,11 @@ class InicioMiProyecto extends Component {
             this.getTicketsPage('', tipoTickets)
         }
     }
+
     render() {
-        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets, typePresupuesto, typeForm, presupuestos_info } = this.state
+        const { options, form, proyecto, showSelect, primeravista, subActiveKey, defaultactivekey, adjuntos, showadjuntos, tickets, events, ticket, 
+            modal, formeditado, tickets_info, link_url, activeFlag, mantenimientos, mantenimiento, tipoTickets, typePresupuesto, typeForm, 
+            presupuestos_info, presupuestos } = this.state
         const { user } = this.props.authUser
         return (
             <div>
@@ -1049,7 +1094,7 @@ class InicioMiProyecto extends Component {
                     <header id="header" className="header-cliente fixed-top header-cliente-mobile">
                         <div className="container-fluid padding-container mx-auto container-mobile">
                             <Navbar expand="lg" className="navbar-cliente ">
-                                <Navbar.Brand href={proyecto?proyecto.empresa.pagina_web:''} target="_blank" rel="noopener noreferrer" className="logo d-flex align-items-center">
+                                <Navbar.Brand href={proyecto?proyecto.empresa.pagina_web:''} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center">
                                     { setEmpresaLogo(proyecto) !== '' ? <img alt="" className="img-logo" src={setEmpresaLogo(proyecto)} /> : '' }
                                 </Navbar.Brand>
                                 {
@@ -1063,8 +1108,8 @@ class InicioMiProyecto extends Component {
                                                 <Nav.Item className = 'nav-cliente'>
                                                     <Link activeClass="active" offset = { -50 } className="nav-cliente nav-link pt-13px" to="informacion" spy={true} smooth={true} duration={500} >Información</Link>
                                                 </Nav.Item>
-                                                {
-                                                    proyecto.adjuntos.length ||  proyecto.avances.length || proyecto.bitacora !== null ?
+                                                {/* {
+                                                    proyecto.adjuntos.length ||  proyecto.avances.length || proyecto.bitacora !== null ? */}
                                                     <div className="nav-general-durante">
                                                         <div className="div-nav"><span className="span-nav">Durante obra</span></div>
                                                         <div className="nav-durante-obra">
@@ -1094,8 +1139,8 @@ class InicioMiProyecto extends Component {
                                                             }
                                                         </div>
                                                     </div>
-                                                    :<></>
-                                                }
+                                                    {/* :<></>
+                                                } */}
                                                 <div className="nav-general-termino">
                                                     <div className="div-nav"><span className="span-nav">Al término de obra</span></div>
                                                     <div className="nav-termino-obra">
@@ -1121,20 +1166,21 @@ class InicioMiProyecto extends Component {
                         </div>
                     </header>
                     <Element name = 'inicio' className="section bienvenida-cliente d-flex align-items-center place-content-center" style={{ backgroundImage: "url('/hero-bg.png')" }}>
-                        <div>
-                            {
-                                showSelect &&
-                                    <div className="row mx-0 col-md-12 d-flex justify-content-flex-end mb-20 mt-10">
-                                        <div className="col-md-7 d-flex justify-content-end">
-                                            <div className="col-md-4">
-                                                <SelectSearchGray options = { options.proyectos } placeholder = "SELECCIONE UN PROYECTO" name = "proyecto" 
-                                                    value = { form.proyecto } onChange = { this.updateProyecto } requirevalidation = { 0 }  customdiv = "mb-0" 
-                                                    withtaglabel = { 0 } withtextlabel = { 0 } withicon = { 1 } iconvalid = { 1 } />
+                        <div className="mb-10">
+                            <div className="row mx-auto col-md-11 d-flex">
+                                {
+                                    showSelect &&
+                                        <div className="row mx-0 col-md-12 d-flex justify-content-flex-end mb-20 px-0">
+                                            <div className="col-md-8 d-flex justify-content-end px-0">
+                                                <div className="col-md-4 px-0">
+                                                    <SelectSearchGray options = { options.proyectos } placeholder = "SELECCIONE UN PROYECTO" name = "proyecto" 
+                                                        value = { form.proyecto } onChange = { this.updateProyecto } requirevalidation = { 0 }  customdiv = "mb-0" 
+                                                        withtaglabel = { 0 } withtextlabel = { 0 } withicon = { 1 } iconvalid = { 1 }
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                            }
-                            <div className="row mx-auto col-md-11 d-flex">
+                                }
                                 <div className="col-md-6 d-flex flex-column justify-content-center">
                                     <div className="padding-col-7">
                                         <h1>{proyecto.nombre}</h1>
@@ -1168,11 +1214,11 @@ class InicioMiProyecto extends Component {
                                                 En esta sección encontraras los datos generales e importantes de tu proyecto.
                                             </div>
                                             <div className="row mx-0 col-md-12">
-                                                <div className="col-xl-5 text-center my-10">
+                                                <div className="col-md-5 text-center align-self-center">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Construction-info.svg')} />
                                                 </div>
-                                                <div className="col-xl-7 d-flex content">
-                                                    <div className="row align-self-center gy-4 mx-0">
+                                                <div className="col-md-7 d-flex content d-flex overflow-auto white-space-nowrap">
+                                                    <div className="row align-self-center mx-0">
                                                         {
                                                             proyecto.contacto !== "Sin información" &&
                                                             <div className="col-md-6 icon-box align-items-center mb-7">
@@ -1301,35 +1347,37 @@ class InicioMiProyecto extends Component {
                                                     En este apartado podrás visualizar los archivos que se obtendrán de acuerdo al progreso de tu proyecto, es decir, desde el inicio y
                                                     planeación hasta la entrega del mismo. 
                                                 </div>
-                                                <Nav as="ul" className="nav nav-tabs justify-content-start nav-bolder">
-                                                    {
-                                                        adjuntos.map((grupo, key) => {
-                                                            let aux = false
-                                                            grupo.adjuntos.forEach(element => {
-                                                                if (proyecto[element.value].length)
-                                                                    aux = true
-                                                            });
-                                                            if (aux) {
-                                                                return (
-                                                                    <div key={key}>
-                                                                        <Nav.Item as="li" className="mr-2">
-                                                                            <Nav.Link data-toggle = "tab" className = { primeravista && key === 0 ? "active rounded-0" : " rounded-0" } 
-                                                                                eventKey = { grupo.value } onClick = { () => { this.seleccionaradj(grupo.adjuntos) } }>
-                                                                                <span className="nav-icon"> <i className={`icon-lg ${grupo.icon}`}></i> </span>
-                                                                                <span className="nav-text"> {grupo.name} </span>
-                                                                            </Nav.Link>
-                                                                        </Nav.Item>
-                                                                    </div>
-                                                                )
-                                                            }
-                                                            return aux
-                                                        })
-                                                    }
-                                                </Nav>
+                                                <div className="d-flex overflow-auto">
+                                                    <Nav as="ul" className="nav nav-tabs justify-content-start nav-bolder flex-nowrap white-space-nowrap">
+                                                        {
+                                                            adjuntos.map((grupo, key) => {
+                                                                let aux = false
+                                                                grupo.adjuntos.forEach(element => {
+                                                                    if (proyecto[element.value].length)
+                                                                        aux = true
+                                                                });
+                                                                if (aux) {
+                                                                    return (
+                                                                        <div key={key}>
+                                                                            <Nav.Item as="li" className="mr-2">
+                                                                                <Nav.Link data-toggle = "tab" className = { primeravista && key === 0 ? "active rounded-0" : " rounded-0" } 
+                                                                                    eventKey = { grupo.value } onClick = { () => { this.seleccionaradj(grupo.adjuntos) } }>
+                                                                                    <span className="nav-icon"> <i className={`icon-lg ${grupo.icon}`}></i> </span>
+                                                                                    <span className="nav-text"> {grupo.name} </span>
+                                                                                </Nav.Link>
+                                                                            </Nav.Item>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                return aux
+                                                            })
+                                                        }
+                                                    </Nav>
+                                                </div>
                                                 <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey}
                                                     onSelect={(select) => { this.updateActiveTabContainer(select) }}>
                                                     <Row className="mx-0 bg-blue-proyecto">
-                                                        <Col md={3} className="navi navi-accent nav-bold d-flex align-items-center pl-5 ">
+                                                        <Col md={3} className="navi navi-accent nav-bold d-flex align-items-center">
                                                             <Nav variant="pills" className="flex-column navi navi-accent nav-bolder width-inherit">
                                                                 {
                                                                     showadjuntos.map((adjunto, key) => {
@@ -1411,18 +1459,18 @@ class InicioMiProyecto extends Component {
                                         : ''
                                 }
                                 <Element name = 'presupuestos' className="presupuestos bg-presupuestos section" >
-                                <div className="container">
-                                    <div className="header-section link-durante-obra">Durante obra</div>
-                                    <div className="title-proyecto">PRESUPUESTOS</div>
-                                    <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
-                                        En la siguiente sección, se muestra un listado de los presupuestos generados en dos secciones, el primero son los presupuestos del proyecto seleccionado y
-                                        el segundo todos los presupuestos de todos los proyectos asignados.
+                                    <div className="container">
+                                        <div className="header-section link-durante-obra">Durante obra</div>
+                                        <div className="title-proyecto">PRESUPUESTOS</div>
+                                        <div className="font-weight-lighter font-size-lg text-center px-10 mb-8 col-md-8 mx-auto">
+                                            En la siguiente sección, se muestra un listado de los presupuestos generados en dos secciones, el primero son los presupuestos del proyecto seleccionado y
+                                            el segundo todos los presupuestos de todos los proyectos asignados.
+                                        </div>
+                                        <TablePresupuestos presupuestos = { presupuestos } openModalSee = { this.openModalSee } 
+                                            presupuestos_info = { presupuestos_info } onClickNext = { this.nextPagePresupuesto } 
+                                            onClickPrev = { this.prevPagePresupuesto } typePresupuesto = { typePresupuesto }
+                                            openFilter = { this.openFilter } changeTicketTab = { this.onChangePresupuestoTab } />
                                     </div>
-                                    <TablePresupuestos presupuestos={tickets} openModalSee={this.openModalSee} presupuestos_info={presupuestos_info}
-                                        onClickNext={this.nextPagePresupuesto} onClickPrev={this.prevPagePresupuesto} typePresupuesto={typePresupuesto}
-                                        openFilter={this.openFilter} changeTicketTab = { this.onChangePresupuestoTab }
-                                    />
-                                </div>
                                 </Element>
                                 {
                                     proyecto.avances.length ?
@@ -1541,24 +1589,6 @@ class InicioMiProyecto extends Component {
                     <div className="mt-4">
                         { ticket ? <ItemSlider items = { ticket.presupuesto } item = 'presupuesto' /> : '' }
                     </div>
-                    {/* <div className="d-flex justify-content-center mt-5">
-                        {
-                            ticket ?
-                                ticket.estatus_ticket ?
-                                    ticket.estatus_ticket.estatus === "Aprobación pendiente" ?
-                                        <>
-                                            <Button onClick = { () => { this.changeEstatus('En proceso') } } 
-                                                className = "btn btn-icon btn-light-success btn-sm mr-2" only_icon = "flaticon2-check-mark icon-sm"
-                                                tooltip = { { text: 'ACEPTAR' } } icon = '' />
-                                            <Button onClick = { () => { this.changeEstatus('En espera') } }
-                                                className = "btn btn-icon  btn-light-danger btn-sm pulse pulse-danger" only_icon = "flaticon2-cross icon-sm"
-                                                tooltip = { { text: 'RECHAZAR' } } icon = '' />
-                                        </>
-                                    : ''
-                                : ''
-                            : ''
-                        }
-                    </div> */}
                 </Modal>
                 <Modal size="lg" title="Detalles del levantamiento" show={modal.details} handleClose={this.handleClose} customcontent={true}
                     contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
@@ -1600,23 +1630,6 @@ class InicioMiProyecto extends Component {
                                             </div>
                                             : <></>
                                     }
-                                    {/* {
-                                        ticket.recibe !== "null" ?
-                                            <div className="col-md-6 d-flex align-items-center justify-content-center px-0 mt-5">
-                                                <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
-                                                    <div className="symbol-label">
-                                                        <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className="d-flex flex-column font-weight-bold">
-                                                    <div className="text-dark mb-1">{ticket.recibe}</div>
-                                                    <span className="text-muted ">¿QUIÉN RECIBE?</span>
-                                                </div>
-                                            </div>
-                                            : <></>
-                                    } */}
                                 </div>
                                 {
                                     ticket.descripcion_solucion !== "null"?
@@ -1649,8 +1662,9 @@ class InicioMiProyecto extends Component {
                 }
                 <Modal size="lg" title={`Filtrado de ${typeForm}s`}show={modal.filterTickets} handleClose={this.handleCloseFilter} contentcss="bg-light" 
                     bgHeader="border-0">
-                    <FormFilterTickets form = { form.filterTickets } options = { options } onChange = { this.onChangeType } typeForm={typeForm}
-                        onChangeRange = { this.onChangeRangeFilter } onSubmit = { this.filterTickets } />
+                    <FormFilterTickets form = { typeForm === 'ticket' ? form.filterTickets : form.filterPresupuestos } options = { options } 
+                        onChange = { this.onChangeType } typeForm = { typeForm } onChangeRange = { this.onChangeRangeFilter } 
+                        onSubmit = { this.filterTickets } />
                 </Modal>
             </div>
         )
