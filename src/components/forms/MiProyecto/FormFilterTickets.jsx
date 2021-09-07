@@ -16,21 +16,16 @@ class FormFilterTickets extends Component {
         return options
     }
     updateRubro = value => {
-        const { onChange, options, form } = this.props
-        onChange({target: { value: value, name: 'filter'}}, 'filterTickets', true)
-        if(value !== null){
-            options.filterTickets.forEach((option) => {
-                let valor
-                if(form.filter === null){
-                    valor = undefined
-                }else{
-                    valor = value.find((element) => { return element.value === option.value })
-                }
-                if(valor === undefined){
+        const { onChange, options, form, typeForm } = this.props
+        if(value === null)
+            value = []
+        if(value.length){
+            options[typeForm === 'ticket' ? 'filterTickets' : 'filterPresupuesto'].forEach((option) => {
+                if(form.filter !== null){
                     if(option.value === 'fecha'){
-                        onChange({target: { value: new Date(), name: 'fechaInicio'}}, 'filterTickets', true)
-                        onChange({target: { value: new Date(), name: 'fechaFin'}}, 'filterTickets', true)
-                    }else{ onChange({target: { value: '', name: option.value}}, 'filterTickets', true) }
+                        onChange({target: { value: new Date(), name: 'fechaInicio'}}, typeForm === 'ticket' ? 'filterTickets' : 'filterPresupuestos', true)
+                        onChange({target: { value: new Date(), name: 'fechaFin'}}, typeForm === 'ticket' ? 'filterTickets' : 'filterPresupuestos', true)
+                    }else{ onChange({target: { value: '', name: option.value}}, typeForm === 'ticket' ? 'filterTickets' : 'filterPresupuestos', true) }
                 }
             })
             let { optionsFilter } = this.state
@@ -39,17 +34,18 @@ class FormFilterTickets extends Component {
             optionsFilter = aux
             this.setState({ ...this.state, optionsFilter })
         }
+        onChange({target: { value: value, name: 'filter'}}, typeForm === 'ticket' ? 'filterTickets' : 'filterPresupuestos', true)
     }
     
     onChange = (e) => {
         const { name, value } = e.target
-        const { onChange } = this.props
-        onChange({target: { value: value, name: name}}, 'filterTickets')
+        const { onChange, typeForm } = this.props
+        onChange({target: { value: value, name: name}}, typeForm === 'ticket' ? 'filterTickets' : 'filterPresupuestos',)
     }
 
     updateSelect = (value, name) => {
-        const { onChange } = this.props
-        onChange({ target: { value: value, name: name } }, 'filterTickets')
+        const { onChange, typeForm } = this.props
+        onChange({ target: { value: value, name: name } }, typeForm === 'ticket' ? 'filterTickets' : 'filterPresupuestos',)
     }
 
     getActive = value => {
@@ -65,14 +61,32 @@ class FormFilterTickets extends Component {
         return false
     }
 
+    setEstatus = () => {
+        let aux = []
+        aux.push({
+            label: 'En espera',
+            value: 'En espera',
+            text: 'En espera'
+        },{
+            label: 'Aceptado',
+            value: 'Aceptado',
+            text: 'Aceptado'
+        },{
+            label: 'Rechazado',
+            value: 'Rechazado',
+            text: 'Rechazado'
+        })
+        return aux
+    }
+
     render() {
         const { onSubmit, options, form, onChangeRange, typeForm } = this.props
         return (
             <Form>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12 mb-5">
-                        <TagSelectSearchGray placeholder = '¿QUÉ DESEAS FILTRAR?' options={typeForm === 'ticket' ? options.filterTickets : options.filterPresupuesto} defaultvalue = { form.filter }
-                            iconclass = 'las la-user-friends icon-xl' onChange = { this.updateRubro } bgcolor='#fff'/>
+                        <TagSelectSearchGray placeholder = '¿QUÉ DESEAS FILTRAR?' iconclass = 'las la-user-friends icon-xl' onChange = { this.updateRubro }
+                            options={typeForm === 'ticket' ? options.filterTickets : options.filterPresupuesto} defaultvalue = { form.filter } bgcolor='#fff'/>
                     </div>
                     {
                         this.getActive('proyecto') &&
@@ -83,22 +97,22 @@ class FormFilterTickets extends Component {
                     }
                     {
                         this.getActive('estatus') &&
-                        <div className="col-md-12 mb-5">
-                            <ReactSelectSearch placeholder='Selecciona el estatus' options={this.transformarOptions(options.estatus)}
-                                defaultvalue={form.estatus} iconclass='las la-check-circle icon-xl'  onChange={(value) => { this.updateSelect(value, 'estatus') }} />
-                        </div>
+                            <div className="col-md-12 mb-5">
+                                <ReactSelectSearch placeholder = 'Selecciona el estatus' defaultvalue = { form.estatus } iconclass = 'las la-check-circle icon-xl'
+                                    options={ typeForm === 'ticket' ? this.transformarOptions(options.estatus) : this.setEstatus() }   
+                                    onChange={(value) => { this.updateSelect(value, 'estatus') }} />
+                            </div>
                     }
                     {
                         this.getActive(typeForm === 'ticket' ? 'tipo_trabajo' : 'fase') &&
-                        <div className="col-md-12 mb-5">
-                            <ReactSelectSearch
-                                placeholder={`Selecciona ${typeForm === 'ticket' ? 'el tipo de trabajo' : 'la fase'}`}
-                                defaultvalue={typeForm === 'ticket' ? form.tipo_trabajo : form.area}
-                                iconclass='las la-tools icon-xl'
-                                options={typeForm === 'ticket' ? this.transformarOptions(options.tiposTrabajo) : this.transformarOptions(options.areas)}
-                                onChange={(value) => { this.updateSelect(value, `${typeForm === 'ticket' ? 'tipo_trabajo' : 'fase'}`) }}
-                            />
-                        </div>
+                            <div className="col-md-12 mb-5">
+                                <ReactSelectSearch
+                                    placeholder={`Selecciona ${typeForm === 'ticket' ? 'el tipo de trabajo' : 'la fase'}`}
+                                    defaultvalue={typeForm === 'ticket' ? form.tipo_trabajo : form.area}
+                                    iconclass='las la-tools icon-xl'
+                                    options={typeForm === 'ticket' ? this.transformarOptions(options.tiposTrabajo) : this.transformarOptions(options.areas)}
+                                    onChange={(value) => { this.updateSelect(value, `${typeForm === 'ticket' ? 'tipo_trabajo' : 'fase'}`) }} />
+                            </div>
                     }
                     {
                         this.getActive('id') &&
