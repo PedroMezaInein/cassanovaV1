@@ -762,7 +762,7 @@ class InicioMiProyecto extends Component {
         await axios.get(`${URL_DEV}v2/mi-proyecto/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { adjuntos, options, form } = this.state
+                const { adjuntos, options, form, tipoTickets } = this.state
                 const { proyecto } = response.data
                 let activeKey = ''
                 adjuntos.forEach((grupo) => {
@@ -819,7 +819,7 @@ class InicioMiProyecto extends Component {
                 form.proyecto = proyecto.id.toString()
                 this.setState({ ...this.state, proyecto: proyecto, subActiveKey: activeKey, events: aux, mantenimientos: aux2, options, form })
                 
-                this.getTicketsPage(location)
+                this.getTicketsPage(location, tipoTickets)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -855,11 +855,12 @@ class InicioMiProyecto extends Component {
         await axios.post(`${URL_DEV}v2/mi-proyecto/tickets`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket, proyecto } = response.data
+                const { tipoTickets } = this.state
                 if(form.adjuntos.fotos.value){
                     this.addFotosS3(form.adjuntos.fotos.files, ticket.id, proyecto.id)
                 }else{
                     doneAlert('Ticket creado con éxito')
-                    this.getTicketsPage()
+                    this.getTicketsPage('', tipoTickets)
                     this.handleClose()
                 }
             }, (error) => { printResponseErrorAlert(error) }
@@ -900,8 +901,9 @@ class InicioMiProyecto extends Component {
         form.type = 'fotos'
         await axios.post(`${URL_DEV}v3/calidad/tickets/${id}/s3`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                const { tipoTickets } = this.state
                 doneAlert('Ticket creado con éxito')
-                this.getTicketsPage()
+                this.getTicketsPage('', tipoTickets)
                 this.handleClose()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

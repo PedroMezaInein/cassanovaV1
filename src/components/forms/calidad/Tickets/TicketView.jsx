@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Nav, Tab, Dropdown, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import ItemSlider from '../../../singles/ItemSlider'
-import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, SolicitudVentaForm, PresupuestoGeneradoCalidad, AgregarConcepto } from '../../../../components/forms'
+import { PresupuestoForm, ActualizarPresupuestoForm, SolicitudTabla, PresupuestoGeneradoCalidad, AgregarConcepto } from '../../../../components/forms'
 import { Button, SelectSearchGray,InputGray } from '../../../form-components'
 import 'moment/locale/es'
 import imageCompression from 'browser-image-compression';
@@ -360,7 +360,7 @@ class TicketView extends Component {
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, 
-            activeKeyNav, formularioGuardado, at } = this.props
+            formularioGuardado, at } = this.props
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
             deleteSolicitud, onChangeTicketProceso, onSubmitTicketProceso, 

@@ -760,7 +760,7 @@ class TicketDetails extends Component {
         /* -------------------------------------------------------------------------- */
         /*                           ANCHOR MODAL SOLICITUD                           */
         /* -------------------------------------------------------------------------- */
-        const { modal, formularios, ticket } = this.state
+        const { modal, formularios } = this.state
         let { title } = this.state
         title = 'Nueva solicitud de compra'
         formularios.conceptos = this.clearFormConceptos()
@@ -1606,6 +1606,7 @@ class TicketDetails extends Component {
                 break;
             case 'Terminado':
                 defaultNavTabs = 'ticket-proceso'
+                break;
             default:
                 break;
         }
