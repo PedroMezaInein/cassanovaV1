@@ -1049,7 +1049,7 @@ class InicioMiProyecto extends Component {
                     <header id="header" className="header-cliente fixed-top header-cliente-mobile">
                         <div className="container-fluid padding-container mx-auto container-mobile">
                             <Navbar expand="lg" className="navbar-cliente ">
-                                <Navbar.Brand href={proyecto?proyecto.empresa.pagina_web:''} target="_blank" rel="noopener noreferrer" className="logo d-flex align-items-center">
+                                <Navbar.Brand href={proyecto?proyecto.empresa.pagina_web:''} target="_blank" rel="noopener noreferrer" className="d-flex align-items-center">
                                     { setEmpresaLogo(proyecto) !== '' ? <img alt="" className="img-logo" src={setEmpresaLogo(proyecto)} /> : '' }
                                 </Navbar.Brand>
                                 {
@@ -1121,20 +1121,21 @@ class InicioMiProyecto extends Component {
                         </div>
                     </header>
                     <Element name = 'inicio' className="section bienvenida-cliente d-flex align-items-center place-content-center" style={{ backgroundImage: "url('/hero-bg.png')" }}>
-                        <div>
-                            {
-                                showSelect &&
-                                    <div className="row mx-0 col-md-12 d-flex justify-content-flex-end mb-20 mt-10">
-                                        <div className="col-md-7 d-flex justify-content-end">
-                                            <div className="col-md-4">
-                                                <SelectSearchGray options = { options.proyectos } placeholder = "SELECCIONE UN PROYECTO" name = "proyecto" 
-                                                    value = { form.proyecto } onChange = { this.updateProyecto } requirevalidation = { 0 }  customdiv = "mb-0" 
-                                                    withtaglabel = { 0 } withtextlabel = { 0 } withicon = { 1 } iconvalid = { 1 } />
+                        <div className="mb-10">
+                            <div className="row mx-auto col-md-11 d-flex">
+                                {
+                                    showSelect &&
+                                        <div className="row mx-0 col-md-12 d-flex justify-content-flex-end mb-20 px-0">
+                                            <div className="col-md-8 d-flex justify-content-end px-0">
+                                                <div className="col-md-4 px-0">
+                                                    <SelectSearchGray options = { options.proyectos } placeholder = "SELECCIONE UN PROYECTO" name = "proyecto" 
+                                                        value = { form.proyecto } onChange = { this.updateProyecto } requirevalidation = { 0 }  customdiv = "mb-0" 
+                                                        withtaglabel = { 0 } withtextlabel = { 0 } withicon = { 1 } iconvalid = { 1 }
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                            }
-                            <div className="row mx-auto col-md-11 d-flex">
+                                }
                                 <div className="col-md-6 d-flex flex-column justify-content-center">
                                     <div className="padding-col-7">
                                         <h1>{proyecto.nombre}</h1>
@@ -1168,11 +1169,11 @@ class InicioMiProyecto extends Component {
                                                 En esta sección encontraras los datos generales e importantes de tu proyecto.
                                             </div>
                                             <div className="row mx-0 col-md-12">
-                                                <div className="col-xl-5 text-center my-10">
+                                                <div className="col-md-5 text-center align-self-center">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Construction-info.svg')} />
                                                 </div>
-                                                <div className="col-xl-7 d-flex content">
-                                                    <div className="row align-self-center gy-4 mx-0">
+                                                <div className="col-md-7 d-flex content d-flex overflow-auto white-space-nowrap">
+                                                    <div className="row align-self-center mx-0">
                                                         {
                                                             proyecto.contacto !== "Sin información" &&
                                                             <div className="col-md-6 icon-box align-items-center mb-7">
@@ -1301,35 +1302,37 @@ class InicioMiProyecto extends Component {
                                                     En este apartado podrás visualizar los archivos que se obtendrán de acuerdo al progreso de tu proyecto, es decir, desde el inicio y
                                                     planeación hasta la entrega del mismo. 
                                                 </div>
-                                                <Nav as="ul" className="nav nav-tabs justify-content-start nav-bolder">
-                                                    {
-                                                        adjuntos.map((grupo, key) => {
-                                                            let aux = false
-                                                            grupo.adjuntos.forEach(element => {
-                                                                if (proyecto[element.value].length)
-                                                                    aux = true
-                                                            });
-                                                            if (aux) {
-                                                                return (
-                                                                    <div key={key}>
-                                                                        <Nav.Item as="li" className="mr-2">
-                                                                            <Nav.Link data-toggle = "tab" className = { primeravista && key === 0 ? "active rounded-0" : " rounded-0" } 
-                                                                                eventKey = { grupo.value } onClick = { () => { this.seleccionaradj(grupo.adjuntos) } }>
-                                                                                <span className="nav-icon"> <i className={`icon-lg ${grupo.icon}`}></i> </span>
-                                                                                <span className="nav-text"> {grupo.name} </span>
-                                                                            </Nav.Link>
-                                                                        </Nav.Item>
-                                                                    </div>
-                                                                )
-                                                            }
-                                                            return aux
-                                                        })
-                                                    }
-                                                </Nav>
+                                                <div className="d-flex overflow-auto">
+                                                    <Nav as="ul" className="nav nav-tabs justify-content-start nav-bolder flex-nowrap white-space-nowrap">
+                                                        {
+                                                            adjuntos.map((grupo, key) => {
+                                                                let aux = false
+                                                                grupo.adjuntos.forEach(element => {
+                                                                    if (proyecto[element.value].length)
+                                                                        aux = true
+                                                                });
+                                                                if (aux) {
+                                                                    return (
+                                                                        <div key={key}>
+                                                                            <Nav.Item as="li" className="mr-2">
+                                                                                <Nav.Link data-toggle = "tab" className = { primeravista && key === 0 ? "active rounded-0" : " rounded-0" } 
+                                                                                    eventKey = { grupo.value } onClick = { () => { this.seleccionaradj(grupo.adjuntos) } }>
+                                                                                    <span className="nav-icon"> <i className={`icon-lg ${grupo.icon}`}></i> </span>
+                                                                                    <span className="nav-text"> {grupo.name} </span>
+                                                                                </Nav.Link>
+                                                                            </Nav.Item>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                return aux
+                                                            })
+                                                        }
+                                                    </Nav>
+                                                </div>
                                                 <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey}
                                                     onSelect={(select) => { this.updateActiveTabContainer(select) }}>
                                                     <Row className="mx-0 bg-blue-proyecto">
-                                                        <Col md={3} className="navi navi-accent nav-bold d-flex align-items-center pl-5 ">
+                                                        <Col md={3} className="navi navi-accent nav-bold d-flex align-items-center">
                                                             <Nav variant="pills" className="flex-column navi navi-accent nav-bolder width-inherit">
                                                                 {
                                                                     showadjuntos.map((adjunto, key) => {
