@@ -85,6 +85,7 @@ class ReactSelectSearchGray extends Component {
                         isSearchable={true}
                         name={name}
                         options={options}
+                        value = { defaultvalue }
                         noOptionsMessage={() => "NO HAY MÁS OPCIONES"}
                     />
                 </div>
