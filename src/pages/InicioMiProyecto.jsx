@@ -663,11 +663,7 @@ class InicioMiProyecto extends Component {
 
     handleCloseFilter = () => {
         const { modal, form, tipoTickets, typeForm, typePresupuesto } = this.state
-
-        console.log(form, 'FORM')
-
         modal.filterTickets = false
-        
         if(typeForm === 'ticket'){
             form.filterTickets.filter = []
             form.filterTickets.area = ''
@@ -689,6 +685,7 @@ class InicioMiProyecto extends Component {
             form.filterPresupuestos.id = ''
             form.filterPresupuestos.proyecto = ''
             form.filterPresupuestos.tiempo_ejecucion = ''
+            this.setState({...this.state, modal, form })
             this.getPresupuestosPage(typePresupuesto)
         }
     }
