@@ -90,10 +90,10 @@ class FormFilterTickets extends Component {
                     </div>
                     {
                         this.getActive('proyecto') &&
-                        <div className="col-md-12 mb-5">
-                            <ReactSelectSearch placeholder = 'Selecciona el proyecto' defaultvalue = { form.proyecto } iconclass='las la-folder icon-xl'
-                                options = { this.transformarOptions(options.proyectos) } onChange={(value) => { this.updateSelect(value, 'proyecto') }}/>
-                        </div>
+                            <div className="col-md-12 mb-5">
+                                <ReactSelectSearch placeholder = 'Selecciona el proyecto' defaultvalue = { form.proyecto } iconclass='las la-folder icon-xl'
+                                    options = { this.transformarOptions(options.proyectos) } onChange={(value) => { this.updateSelect(value, 'proyecto') }}/>
+                            </div>
                     }
                     {
                         this.getActive('estatus') &&
@@ -116,39 +116,29 @@ class FormFilterTickets extends Component {
                     }
                     {
                         this.getActive('id') &&
-                        <div className="col-md-12 mb-5">
-                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
-                                placeholder="IDENTIFICADOR" value={form.id} name="id" onChange = { (value) => this.onChange(value)} thousandseparator={true}
-                                customclass='bg-white' iconclass='las la-id-card-alt icon-xl' custom_gtext='bg-white' inputsolid='bg-white border' />
-                        </div>
+                            <div className="col-md-12 mb-5">
+                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
+                                    placeholder="IDENTIFICADOR" value={form.id} name="id" onChange = { (value) => this.onChange(value)} thousandseparator={true}
+                                    customclass='bg-white' iconclass='las la-id-card-alt icon-xl' custom_gtext='bg-white' inputsolid='bg-white border' />
+                            </div>
                     }
                     {
                         this.getActive(typeForm === 'ticket' ? 'descripcion' : 'tiempo_ejecucion') &&
-                        <div className="col-md-12 mb-5">
-                            <InputGray
-                                withtaglabel={1}
-                                withtextlabel={1}
-                                withplaceholder={1}
-                                withicon={1}
-                                requirevalidation={0}
-                                placeholder={`${typeForm === 'ticket' ? 'DESCRIPCIÓN' : 'TIEMPO DE EJECUCIÓN'}`}
-                                value={typeForm === 'ticket' ? form.descripcion : form.tiempo_ejecucion}
-                                name={typeForm === 'ticket' ? 'descripcion' : 'tiempo_ejecucion'}
-                                onChange = { (value) => this.onChange(value)}
-                                thousandseparator={true}
-                                customclass='bg-white'
-                                iconclass={`${typeForm === 'ticket' ? 'las la-grip-lines' : 'flaticon-calendar-with-a-clock-time-tools'}`}
-                                custom_gtext='bg-white'
-                                inputsolid='bg-white border'
-                            />
-                        </div>
+                            <div className="col-md-12 mb-5">
+                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } requirevalidation = { 0 }
+                                    placeholder = { `${typeForm === 'ticket' ? 'DESCRIPCIÓN' : 'TIEMPO DE EJECUCIÓN'}` } thousandseparator = { true }
+                                    value = { typeForm === 'ticket' ? form.descripcion : form.tiempo_ejecucion } customclass = 'bg-white'
+                                    name = { typeForm === 'ticket' ? 'descripcion' : 'tiempo_ejecucion' } onChange = { (value) => this.onChange(value) }
+                                    iconclass = { `${typeForm === 'ticket' ? 'las la-grip-lines' : 'flaticon-calendar-with-a-clock-time-tools'}` }
+                                    custom_gtext = 'bg-white' inputsolid = 'bg-white border' />
+                            </div>
                     }
                     {
                         this.getActive('fecha') &&
-                        <div className="col-md-12 text-center">
-                            <label className="col-form-label my-2 font-weight-bolder text-dark-60">Periodo del ticket</label><br />
-                            <RangeCalendar onChange={onChangeRange} start={form.fechaInicio} end={form.fechaFin} />
-                        </div>
+                            <div className="col-md-12 text-center">
+                                <label className="col-form-label my-2 font-weight-bolder text-dark-60">Periodo del ticket</label><br />
+                                <RangeCalendar onChange={onChangeRange} start={form.fechaInicio} end={form.fechaFin} />
+                            </div>
                     }
                 </div>
                 {
