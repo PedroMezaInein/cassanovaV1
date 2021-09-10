@@ -18,6 +18,15 @@ function compare( a, b ) {
     }
     return 0;
 }
+export const ordenamiento = ( a, b ) => {
+    if ( a.name < b.name ){
+        return -1;
+    }
+    if ( a.name > b.name ){
+        return 1;
+    }
+    return 0;
+}
 
 export const transformarOptions = (options) => {
     options = options ? options : []
@@ -568,7 +577,7 @@ export function setLabelTableReactDom (data, changeEstatus) {
                         style={
                             {
                                 backgroundColor: data.estatus.fondo, color: data.estatus.letra, border: 'transparent', padding: '0.3rem 0.6rem',
-                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10px',
+                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '.65rem',
                                 fontWeight: 600
                             }}>
                         {data.estatus.estatus.toUpperCase()}
@@ -624,7 +633,7 @@ export function setEstatusBancoTableReactDom (data, changeEstatus) {
                         style={
                             {
                                 backgroundColor: text.fondo, color: text.letra, border: 'transparent', padding: '0.3rem 0.6rem',
-                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10px',
+                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '.65rem',
                                 fontWeight: 600
                             }}>
                         {text.estatus.toUpperCase()}
@@ -661,17 +670,22 @@ export function setColor(text) {
 }
 export function setLabelTable(text) {
     return (
-        <div className="text-center white-space-nowrap">
-            <div className="d-none">
-                {text.estatus}
-            </div>
+        <div className="text-center">
             <span style={{
+                display: 'inline-flex',
+                padding: '0.5em 0.85em',
+                fontSize: '.65rem',
+                fontWeight: 600,
+                lineHeight:1,
                 backgroundColor:`${text.fondo}`,
                 color: `${text.letra}`,
-                border: 'transparent', padding: '0.3rem 0.6rem',
-                width:text.estatus==='Aprobación pendiente'?'min-content':'auto', 
-                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '8.5px',
-                fontWeight: 500, borderRadius:'0.42rem'
+                textAlign:'center',
+                border: 'transparent',
+                whiteSpace:'nowrap',
+                verticalAlign:'baseline',
+                borderRadius:'0.475rem',
+                justifyContent: 'center',
+                alignItems: 'center'
             }} >
                 {text.estatus}
             </span>
@@ -681,9 +695,6 @@ export function setLabelTable(text) {
 export function setLabelVentas(text) {
     return (
         <>
-            <div className="d-none">
-                {text.estatus}
-            </div>
             <span className="label label-md label-light-success label-inline font-weight-bold font-size-sm" style={{
                 color: `${text.letra}`,
                 backgroundColor: `${text.fondo}`
@@ -1132,4 +1143,94 @@ export function setDateText(dato){
 
 export function setMoneyText(money){
     return '$'+money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+}
+
+export function setFase(proyecto) {
+    let aux = ''
+    if (proyecto.fase1)
+        aux = 'Fase 1'
+    if (proyecto.fase2)
+        aux = 'Fase 2'
+    if (proyecto.fase3)
+        aux = 'Fase 3'
+    if (proyecto.fase1 && proyecto.fase2)
+        aux = 'Fase 1 y 2'
+    if (proyecto.fase1 && proyecto.fase3)
+        aux = 'Fase 1 y 3'
+    if (proyecto.fase2 && proyecto.fase3)
+        aux = 'Fase 2 y 3'
+    if (proyecto.fase1 && proyecto.fase2 && proyecto.fase3)
+        aux = 'Fase 1, 2 y 3'
+    return aux
+}
+
+export function printTableCP (key, cliente) {
+    return (
+        <tbody key={key}>
+            <tr className="border-top-2px">
+                <td className="text-center w-5">
+                    <i className="las la-user-alt icon-2x text-dark-50"></i>
+                </td>
+                <td className="w-33 font-weight-bolder text-dark-50">
+                    NOMBRE DE CLIENTE
+                </td>
+                <td className="font-weight-light">
+                    <span>{cliente.name}</span>
+                </td>
+            </tr>
+            <tr>
+                <td className="text-center">
+                    <i className="las la-map-pin icon-2x text-dark-50"></i>
+                </td>
+                <td className="font-weight-bolder text-dark-50">
+                    CÓDIGO POSTAL
+                </td>
+                <td className="font-weight-light">
+                    <span>{cliente.cp}</span>
+                </td>
+            </tr>
+            <tr>
+                <td className="text-center">
+                    <i className="las la-globe icon-2x text-dark-50"></i>
+                </td>
+                <td className="font-weight-bolder text-dark-50">ESTADO</td>
+                <td className="font-weight-light">
+                    <span>{cliente.estado}</span>
+                </td>
+            </tr>
+            <tr>
+                <td className="text-center">
+                    <i className="las la-map icon-2x text-dark-50"></i>
+                </td>
+                <td className="font-weight-bolder text-dark-50">
+                    MUNICIPIO/DELEGACIÓN
+                </td>
+                <td className="font-weight-light">
+                    <span>{cliente.municipio}</span>
+                </td>
+            </tr>
+            <tr>
+                <td className="text-center">
+                    <i className="las la-map-marker icon-2x text-dark-50"></i>
+                </td>
+                <td className="font-weight-bolder text-dark-50">
+                    COLONIA
+                </td>
+                <td className="font-weight-light text-justify">
+                    <span>{cliente.colonia}</span>
+                </td>
+            </tr>
+            <tr>
+                <td className="text-center">
+                    <i className="las la-map-marked-alt icon-2x text-dark-50"></i>
+                </td>
+                <td className="font-weight-bolder text-dark-50">
+                    CALLE Y NÚMERO
+                </td>
+                <td className="font-weight-light text-justify">
+                    <span>{cliente.calle}</span>
+                </td>
+            </tr>
+        </tbody>
+    )
 }
