@@ -1,0 +1,330 @@
+// @media (min-width: 1200px) {
+//     .container {
+//         max-width: 1240px;
+//     }
+// }
+
+
+.gtco-news .owl-carousel .card a,
+#gtco-footer .submit-button {
+    background-image: -moz-linear-gradient(0deg, #06c6f9 0%, #38eaf9 100%);
+    background-image: -webkit-linear-gradient(0deg, #06c6f9 0%, #38eaf9 100%);
+    background-image: -ms-linear-gradient(0deg, #06c6f9 0%, #38eaf9 100%);
+    font-size: 18px;
+    color: #fff;
+    border-radius: 50px;
+    padding: 5px 30px;
+    display: inline-block;
+    text-transform: uppercase;
+    padding-right: 5px;
+    text-decoration: none !important;
+}
+
+.gtco-features a .fa,
+.gtco-news .owl-carousel .card a .fa,
+#gtco-footer .submit-button .fa {
+    background: #fff;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    color: #37eaf9;
+    font-size: 22px;
+    text-align: center;
+    padding-top: 5px;
+    margin-left: 15px;
+}
+
+.gtco-features h2 {
+    color: #000000;
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+
+//   .gtco-features {
+//     margin-top: 100px;
+//   }
+.gtco-features svg {
+    position: absolute;
+    margin-left: -100px;
+    margin-top: 100px;
+}
+
+@media (max-width: 767px) {
+    .gtco-features svg {
+        margin: 0 auto;
+        margin-top: 200px;
+    }
+}
+
+.gtco-features .col-lg-4 p {
+    max-width: 320px;
+    margin-bottom: 30px;
+}
+
+.gtco-features .col-cards {
+    padding: 10px 100px;
+}
+
+@media (max-width: 767px) {
+    .gtco-features .col-cards {
+        padding: 10px 0;
+    }
+}
+
+.gtco-features .col-cards .row .col-6:first-child {
+    margin-top: 150px;
+}
+
+@media (max-width: 600px) {
+    .gtco-features .col-cards .row .col-6:first-child {
+        margin-top: 50px;
+    }
+}
+
+// @media (max-width: 600px) {
+//     .gtco-features .col-cards .col {
+//         flex: 0 0 100%;
+//         max-width: 100%;
+//     }
+// }
+
+.gtco-features .col-cards .card {
+    background: #fff;
+    margin: 30px 5px;
+    padding: 20px 10px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.08);
+}
+
+.gtco-features .col-cards .card .oval {
+    background: linear-gradient(to right, #f1f6fd, #f0fbfe);
+    padding: 10px;
+    width: 150px;
+    border-radius: 50%;
+    margin: auto;
+    transform: rotate(20deg);
+    margin-top: 20px;
+    height: 105px;
+}
+
+.gtco-features .col-cards .card .card-img-top {
+    max-width: 0.8in;
+    margin: 0 auto;
+    transform: rotate(-20deg);
+}
+
+.gtco-features .col-cards .card h3 {
+    font-size: 1.4rem;
+    color: #0073f0;
+}
+
+.gtco-features .col-cards .card p {
+    font-size: 16px;
+}
+
+
+.gtco-features-list {
+    margin-top: 100px;
+}
+
+.gtco-features-list .media {
+    margin: 20px 0;
+}
+
+.gtco-features-list .oval {
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    height: 60px;
+    width: 60px;
+}
+
+.gtco-features-list .oval .align-self-start {
+    width: 100%;
+    padding: 3px;
+}
+
+.gtco-features-list .media-body {
+    font-size: 16px;
+    color: #666666;
+    padding-right: 20px;
+}
+
+.gtco-features-list .media-body h5 {
+    margin-bottom: 20px !important;
+    font-size: 22px;
+}
+
+.tb-contacto{
+    td{
+        padding-top: 0;
+        padding-bottom: 0;
+        height:2rem;
+    }
+}
+
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue {
+    border-bottom-color: transparent !important;
+}
+
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link:hover:not(.disabled),
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link.active,
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .show>.nav-link {
+    border-bottom-color: #007af0;
+    color: #007af0;
+}
+
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link:hover:not(.disabled) .nav-text,
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link.active .nav-text,
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .show>.nav-link .nav-text {
+    color: #007af0;
+}
+
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link:hover:not(.disabled) .nav-icon i,
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link.active .nav-icon i,
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .show>.nav-link .nav-icon i {
+    color: #007af0;
+}
+
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link:hover:not(.disabled) .nav-icon .svg-icon svg g [fill],
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link.active .nav-icon .svg-icon svg g [fill],
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .show>.nav-link .nav-icon .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #007af0;
+}
+
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link:hover:not(.disabled) .nav-icon .svg-icon svg:hover g [fill],
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .nav-link.active .nav-icon .svg-icon svg:hover g [fill],
+.nav.nav-tabs.nav-tabs-line.nav-tabs-line-blue .show>.nav-link .nav-icon .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.p-sticky-card{
+    position: sticky;
+    top: 130px;
+    z-index: 1;
+}
+
+
+.btn.btn-light-primary2 {
+    color: #009ef7;
+    border-color: #ecf8ff;
+    background-color: #ecf8ff;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.btn.btn-light-primary2 .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #009ef7
+}
+
+.btn.btn-light-primary2 .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+
+.btn.btn-light-primary2.active,
+.btn.btn-light-primary2.show,
+.btn.btn-light-primary2:active:not(.btn-active),
+.btn.btn-light-primary2:focus:not(.btn-active),
+.btn.btn-light-primary2:hover:not(.btn-active),
+.show>.btn.btn-light-primary2 {
+    color: #fff;
+    border-color: #009ef7;
+    background-color:#009ef7!important
+}
+
+.btn.btn-light-primary2.active .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-primary2.show .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-primary2:active:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-primary2:focus:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-primary2:hover:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.show>.btn.btn-light-primary2 .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #fff
+}
+.btn.btn-primary2 {
+    color: #fff;
+    border-color: #009ef7;
+    background-color: #009ef7
+}
+
+.btn.btn-primary2 i {
+    color: #fff
+}
+
+.btn.btn-primary2 .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #fff
+}
+
+.btn.btn-primary2 .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+.btn.btn-primary2.dropdown-toggle:after {
+    color: #fff
+}
+
+.btn-check:active+.btn.btn-primary2,
+.btn-check:checked+.btn.btn-primary2,
+.btn.btn-primary2.active,
+.btn.btn-primary2.show,
+.btn.btn-primary2:active:not(.btn-active),
+.btn.btn-primary2:focus:not(.btn-active),
+.btn.btn-primary2:hover:not(.btn-active),
+.show>.btn.btn-primary2 {
+    color: #fff;
+    border-color: #0095e8;
+    background-color: #0095e8
+}
+
+.btn-check:active+.btn.btn-primary2 i,
+.btn-check:checked+.btn.btn-primary2 i,
+.btn.btn-primary2.active i,
+.btn.btn-primary2.show i,
+.btn.btn-primary2:active:not(.btn-active) i,
+.btn.btn-primary2:focus:not(.btn-active) i,
+.btn.btn-primary2:hover:not(.btn-active) i,
+.show>.btn.btn-primary2 i {
+    color: #fff
+}
+
+.btn-check:active+.btn.btn-primary2 .svg-icon svg [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-primary2 .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-primary2.active .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-primary2.show .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-primary2:active:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-primary2:focus:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-primary2:hover:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.show>.btn.btn-primary2 .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #fff
+}
+
+.btn-check:active+.btn.btn-primary2 .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-primary2 .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-primary2.active .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-primary2.show .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-primary2:active:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-primary2:focus:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-primary2:hover:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.show>.btn.btn-primary2 .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+.btn-check:active+.btn.btn-primary2.dropdown-toggle:after,
+.btn-check:checked+.btn.btn-primary2.dropdown-toggle:after,
+.btn.btn-primary2.active.dropdown-toggle:after,
+.btn.btn-primary2.show.dropdown-toggle:after,
+.btn.btn-primary2:active:not(.btn-active).dropdown-toggle:after,
+.btn.btn-primary2:focus:not(.btn-active).dropdown-toggle:after,
+.btn.btn-primary2:hover:not(.btn-active).dropdown-toggle:after,
+.show>.btn.btn-primary2.dropdown-toggle:after {
+    color: #fff
+}
