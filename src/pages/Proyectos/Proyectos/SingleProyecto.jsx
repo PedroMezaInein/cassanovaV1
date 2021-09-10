@@ -6,15 +6,30 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
-import { Card, Tab } from 'react-bootstrap'
-import { printDates, printDireccion } from '../../../functions/printers'
-import { setMoneyText } from '../../../functions/setters'
-import { isMobile } from "react-device-detect"
-
-class SingleProyecto extends Component{
+import { Card, Tab, Nav } from 'react-bootstrap'
+import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
+import { InfoProyecto } from '../../../components/forms'
+class SingleProyecto extends Component {
 
     state = {
-        proyecto: null
+        proyecto: null,
+        navs: [
+            { eventKey: 'informacion', icon: 'flaticon-folder-1', name: 'Información' },
+            { eventKey: 'compras', icon: 'flaticon-bag', name: 'Compras' },
+            { eventKey: 'facturacion', icon: 'las la-file-invoice-dollar', name: 'Facturación' },
+            { eventKey: 'avances', icon: 'flaticon-diagram', name: 'Avances' },
+            { eventKey: 'adjuntos', icon: 'flaticon-attachment', name: 'Adjuntos' },
+            { eventKey: 'presupuestos', icon: 'flaticon-list-1', name: 'Presupuestos' },
+        ],
+        activeKeyNav: 'informacion',
+        options:{
+            empresas: [],
+            clientes: [],
+            colonias: [],
+            estatus: [],
+            tipos:[],
+            cp_clientes: []
+        },
     }
 
     componentDidMount = () => {
@@ -26,9 +41,10 @@ class SingleProyecto extends Component{
             const { modulo: { url } } = element
             return pathname === url + '/single/' + id
         })
+        this.getOptionsAxios()
         if (!modulo)
             history.push('/')
-        if(id)
+        if (id)
             this.getOneProyecto(id)
         else
             history.push({ pathname: '/proyectos/proyectos' });
@@ -37,194 +53,138 @@ class SingleProyecto extends Component{
     /* -------------------------------------------------------------------------- */
     /*                         ANCHOR ASYNC CALL FUNCTION                         */
     /* -------------------------------------------------------------------------- */
-    getOneProyecto = async(id) => {
+    getOneProyecto = async (id) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v3/proyectos/proyectos/${id}`, { headers: setSingleHeader(access_token)}).then(
+        await axios.get(`${URL_DEV}v3/proyectos/proyectos/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { proyecto } = response.data
                 Swal.close()
-                this.setState({...this.state, proyecto})
+                this.setState({ ...this.state, proyecto: proyecto })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.error(error, 'error')
+            console.error(error, 'error')
         })
     }
-
-    getEmpresaImage = () => {
-        const { proyecto } = this.state
-        if(proyecto)
-            if(proyecto.empresa)
-                return proyecto.empresa.logoUnico
+    
+    async getOptionsAxios() {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}proyectos/opciones`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { clientes, empresas, estatus } = response.data
+                const { options } = this.state
+                let aux = [];
+                clientes.forEach((element) => {
+                    aux.push({
+                        name: element.empresa,
+                        value: element.id.toString(),
+                        label: element.empresa,
+                        cp: element.cp,
+                        estado: element.estado,
+                        municipio: element.municipio,
+                        colonia: element.colonia,
+                        calle: element.calle
+                    })
+                    return false
+                })
+                options.clientes = aux.sort(ordenamiento)
+                options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['estatus'] = setOptions(estatus, 'estatus', 'id')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
-
-    render(){
-        const { proyecto } = this.state
-        return(
-            <Layout active = 'proyectos' {...this.props}>
-                <Tab.Container>
-                    {
-                        proyecto ?
-                            <Card className = 'card card-custom gutter-b'>
-                                <Card.Body className = 'pb-0 px-0 px-md-4'>
-                                    <div className="text-center">
-                                        <div className = 'font-weight-bold font-size-h1 mb-3'>
-                                            { proyecto.nombre }
+    controlledNav = value => {
+        this.setState({
+            ...this.state,
+            activeKeyNav: value,
+        })
+    }
+    render() {
+        const { proyecto, navs, activeKeyNav, options } = this.state
+        const { access_token } = this.props.authUser
+        return (
+            <Layout active='proyectos' {...this.props}>
+                {
+                    proyecto ?
+                        <div className="d-flex flex-column flex-xl-row">
+                            <div className="flex-column flex-lg-row-auto w-100 w-xl-300px mb-0 mb-xl-10">
+                                <Card className="mb-5 mb-xl-8 p-sticky-card">
+                                    <Card.Body className="pt-15">
+                                        <div className="d-flex flex-center flex-column mb-8">
+                                            <div className="font-size-h5 font-weight-bolder text-dark mb-2 text-center">{proyecto.nombre}</div>
+                                            <div className="font-size-h6 font-weight-bold text-muted">{proyecto.contacto}</div>
                                         </div>
+                                        <div className="separator separator-dashed my-3"></div>
+                                        <div className="font-size-h6 py-3 font-weight-bolder text-dark text-center">INFORMACIÓN DEL PROYECTO</div>
+                                        <div className="font-weight-light text-dark-50 text-justify">
+                                            <div className="text-center">{setLabelTable(proyecto.estatus)}</div>
+                                            <div className="font-weight-bolder text-dark mt-5">FASE</div>{setFase(proyecto)}
+                                            <div className="font-weight-bolder text-dark mt-5">EMPRESA</div>{proyecto.empresa.name}
+                                            {
+                                                proyecto.descripcion !== 'null' && proyecto.descripcion ?
+                                                    <><div className="font-weight-bolder text-dark mt-5">DESCRIPCIÓN</div>{proyecto.descripcion}</>
+                                                    : <></>
+                                            }
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </div>
+                            <Tab.Container activeKey={activeKeyNav}>
+                                <div className="flex-lg-row-fluid ml-lg-10">
+                                    <div className="d-flex overflow-auto">
+                                        <Nav className="nav nav-tabs nav-tabs-line-blue nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end mb-8">
+                                            {
+                                                navs.map((nav, key) => {
+                                                    return (
+                                                        <Nav.Item key={key}>
+                                                            <Nav.Link eventKey={nav.eventKey} onClick={(e) => { e.preventDefault(); this.controlledNav(nav.eventKey) }}>
+                                                                <span className="nav-icon">
+                                                                    <i className={`${nav.icon} icon-lg mr-2`}></i>
+                                                                </span>
+                                                                <span className="nav-text font-weight-bolder">{nav.name}</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                    )
+                                                })
+                                            }
+                                        </Nav>
                                     </div>
-                                    <div className="row mx-0">
-                                        <div className="col-md-6">
-                                            <table className={`table table-vertical-center mx-auto table-borderless table-responsive tcalendar_p_info ${!isMobile ? 'w-80' : ''}`}>
-                                                <tbody>
-                                                    <tr className="border-top-2px">
-                                                        <td className="text-center w-5">
-                                                            <i className="las la-user-alt icon-2x text-dark-50"></i>
-                                                        </td>
-                                                        <td className="w-33 font-weight-bolder text-dark-50">CONTACTO</td>
-                                                        <td className="font-weight-light">
-                                                            <div>
-                                                                <span>{proyecto.contacto}</span>
-                                                            </div>
-                                                            {
-                                                                proyecto.numero_contacto ? 
-                                                                    <div>
-                                                                        <a href = {`tel:+${proyecto.numero_contacto}`}>
-                                                                            {proyecto.numero_contacto}
-                                                                        </a>
-                                                                    </div>
-                                                                : ''
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td> <i className="las la-envelope icon-2x text-dark-50" /> </td>
-                                                        <td className="font-weight-bolder text-dark-50">Correos de contacto</td>
-                                                        <td className="font-weight-light">
-                                                            {
-                                                                proyecto.contactos.map((contacto, key) => {
-                                                                    return ( <div key={key}>• {contacto.correo}</div> )
-                                                                })
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="text-center"> <i className="las la-user-friends icon-2x text-dark-50"/> </td>
-                                                        <td className="font-weight-bolder text-dark-50">Clientes</td>
-                                                        <td className="font-weight-light text-justify">
-                                                            {
-                                                                proyecto.clientes.map((cliente, key) => {
-                                                                    return ( <div key={key}>• {cliente.empresa}</div> )
-                                                                })
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="text-center"> <i className="las la-calendar icon-2x text-dark-50"/> </td>
-                                                        <td className="font-weight-bolder text-dark-50">PERIODO</td>
-                                                        <td className="font-weight-light"> {printDates(proyecto.fecha_inicio, proyecto.fecha_fin)} </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="text-center"> <i className="fas fa-dollar-sign icon-2x text-dark-50"/> </td>
-                                                        <td className="font-weight-bolder text-dark-50">Costo con IVA</td>
-                                                        <td className="font-weight-light"> <span> { setMoneyText(proyecto.costo) } </span> </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="text-center">
-                                                            <i className = {`fas fa-file-invoice-dollar icon-2x text-${ proyecto.costo - proyecto.totalVentas > 0 ? 'danger' : 'dark-50'}`} />
-                                                        </td>
-                                                        <td className="font-weight-bolder text-dark-50"> Total pagado </td>
-                                                        <td className="font-weight-light"> <span> { setMoneyText(proyecto.totalVentas) } </span> </td>
-                                                    </tr>
-                                                    {
-                                                        isMobile ?
-                                                            <>
-                                                                <tr>
-                                                                    <td className="text-center"> <i className="las la-toolbox icon-2x text-dark-50"/> </td>
-                                                                    <td className="font-weight-bolder text-dark-50">TIPO</td>
-                                                                    <td className="font-weight-light"> <span>{proyecto.tipo_proyecto.tipo}</span> </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td className="text-center"> <i className="las la-ruler icon-2x text-dark-50" /> </td>
-                                                                    <td className="font-weight-bolder text-dark-50">M²</td>
-                                                                    <td className="font-weight-light"> <span>{proyecto.m2 ? proyecto.m2 : 0} m²</span> </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td className="text-center"> <i className="las la-tools icon-2x text-dark-50" /> </td>
-                                                                    <td className="font-weight-bolder text-dark-50">FASE</td>
-                                                                    <td className="font-weight-light">
-                                                                        { proyecto.fase1 ? <div>• Fase 1</div> : '' }
-                                                                        { proyecto.fase2 ? <div>• Fase 2</div> : '' }
-                                                                        { proyecto.fase3 ? <div>• Fase 3</div> : '' }
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td className="text-center"> <i className="las la-map-pin icon-2x text-dark-50" /> </td>
-                                                                    <td className="font-weight-bolder text-dark-50">DIRECCIÓN</td>
-                                                                    <td className="font-weight-light"> { printDireccion(proyecto) } </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td className="text-center"> <i className="las la-file-alt icon-2x text-dark-50"/> </td>
-                                                                    <td className="font-weight-bolder text-dark-50">DESCRIPCIÓN</td>
-                                                                    <td className="font-weight-light text-justify">
-                                                                        <span>{proyecto.descripcion !== 'null' && proyecto.descripcion ? proyecto.descripcion : 'Sin especificar'}</span>
-                                                                    </td>
-                                                                </tr>
-                                                            </>
-                                                        : ''
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div className = {`col-md-6 ${isMobile ? 'd-none' : ''}`}>
-                                            <table className={`table table-vertical-center mx-auto table-borderless table-responsive tcalendar_p_info ${!isMobile ? 'w-80' : ''}`}>
-                                                <tbody>
-                                                    <tr className="border-top-2px">
-                                                        <td className="text-center"> <i className="las la-toolbox icon-2x text-dark-50"/> </td>
-                                                        <td className="font-weight-bolder text-dark-50">TIPO</td>
-                                                        <td className="font-weight-light"> <span>{proyecto.tipo_proyecto.tipo}</span> </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="text-center"> <i className="las la-ruler icon-2x text-dark-50" /> </td>
-                                                        <td className="font-weight-bolder text-dark-50">M²</td>
-                                                        <td className="font-weight-light"> <span>{proyecto.m2 ? proyecto.m2 : 0} m²</span> </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="text-center"> <i className="las la-tools icon-2x text-dark-50" /> </td>
-                                                        <td className="font-weight-bolder text-dark-50">FASE</td>
-                                                        <td className="font-weight-light">
-                                                            { proyecto.fase1 ? <div>• Fase 1</div> : '' }
-                                                            { proyecto.fase2 ? <div>• Fase 2</div> : '' }
-                                                            { proyecto.fase3 ? <div>• Fase 3</div> : '' }
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="text-center"> <i className="las la-map-pin icon-2x text-dark-50" /> </td>
-                                                        <td className="font-weight-bolder text-dark-50">DIRECCIÓN</td>
-                                                        <td className="font-weight-light"> { printDireccion(proyecto) } </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="text-center"> <i className="las la-file-alt icon-2x text-dark-50"/> </td>
-                                                        <td className="font-weight-bolder text-dark-50">DESCRIPCIÓN</td>
-                                                        <td className="font-weight-light text-justify">
-                                                            <span>{proyecto.descripcion !== 'null' && proyecto.descripcion ? proyecto.descripcion : 'Sin especificar'}</span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </Card.Body>
-                            </Card>
+                                    <Tab.Content>
+                                        <Tab.Pane eventKey="informacion">
+                                            <Card className="card pt-4 mb-6 mb-xl-9">
+                                                <Card.Header className="border-0">
+                                                    <Card.Title>
+                                                        <h2>INFORMACIÓN DEL LEAD</h2>
+                                                    </Card.Title>
+                                                    <div className="card-toolbar">
+                                                    </div>
+                                                </Card.Header>
+                                            </Card>
+                                            <InfoProyecto proyecto= { proyecto } options = { options } at = { access_token }/>
+                                        </Tab.Pane>
+                                    </Tab.Content>
+                                </div>
+                            </Tab.Container>
+                        </div>
                         : <></>
-                    }
-                    
-                </Tab.Container>
+                }
             </Layout>
         )
     }
 }
 
 const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({ })
+const mapDispatchToProps = dispatch => ({})
 export default connect(mapStateToProps, mapDispatchToProps)(SingleProyecto);
