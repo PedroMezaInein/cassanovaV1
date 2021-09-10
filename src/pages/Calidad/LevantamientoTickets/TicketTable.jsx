@@ -178,7 +178,7 @@ class TicketTable extends Component {
     handleCloseFiltros = () => {
         const { modal } = this.state
         modal.filtros = false
-        this.setState({...this.state, modal, filters : this.clearFilters()})
+        this.setState({...this.state, modal})
     }
     clearFiltros = (e) => {
         e.preventDefault()
@@ -214,8 +214,7 @@ class TicketTable extends Component {
         })
         return filters;
     }
-    onSubmitFilters = (e) => {
-        e.preventDefault()
+    onSubmitFilters = () => {
         const { filters, modal } = this.state
         modal.filtros = false
         this.setState({...this.state, modal})

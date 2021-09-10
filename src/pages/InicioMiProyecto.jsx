@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../constants'
 import { setOptions, setEmpresaLogo, dayDMY, setFase } from '../functions/setters'
-import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert, questionAlertY } from '../functions/alert'
 import { connect } from 'react-redux'
 import { SelectSearchGray, InputGray, Button } from '../components/form-components'
 import { Nav, Navbar, Tab, Col, Row, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -1551,7 +1551,10 @@ class InicioMiProyecto extends Component {
                         user.tipo.tipo !== 'Cliente'?
                         <a href={link_url} className="back-to-top d-flex align-items-center justify-content-center"><i className="la la-arrow-right"></i></a>
                         :
-                        <span onClick={() => { this.logoutUserAxios(); }}className="back-to-top d-flex align-items-center justify-content-center btn btn-icon btn-light-youtube"><i className="las la-sign-out-alt icon-2x"></i></span>
+                        <span onClick = { () => { questionAlertY('Cerrarás sesión', '¿Deseas continuar?', () => {this.logoutUserAxios()} )   } } 
+                            className="back-to-top d-flex align-items-center justify-content-center btn btn-icon btn-light-youtube">
+                            <i className="las la-sign-out-alt icon-2x" />
+                        </span>
                     }
                 </div>
                 <Modal size = "lg" title = 'Levantamiento de tickets' show = {modal.tickets } handleClose = { this.handleClose } 
