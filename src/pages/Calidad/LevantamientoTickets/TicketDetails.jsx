@@ -28,6 +28,7 @@ class TicketDetails extends Component {
             formasPago: [],
             estatusFacturas: [],
             tiposPagos: [],
+            tiposPagosFactura:[],
             conceptos: [],
             clientes:[],
             cuentas:[],
@@ -185,6 +186,7 @@ class TicketDetails extends Component {
                 options.proveedores = setOptions(proveedores, "razon_social", "id")
                 options.unidades = setOptions(unidades, 'nombre', 'id')
                 options.tiposPagos = setSelectOptions(tiposPago, 'tipo')
+                console.log(response.data, 'getOptionsAxios')
                 options.empresas = setOptions(empresas, 'name', 'id')
                 if(title === 'Nueva solicitud de compra' || title === 'Editar solicitud de compra'){
                     options.areas = setOptions(areasCompras, 'nombre', 'id')
@@ -558,11 +560,12 @@ class TicketDetails extends Component {
                 Swal.close()
                 const { formularios, options } = this.state
                 const { solicitudes, metodosPago, formasPago, estatusFacturas, tiposPago, cuentas, tiposImpuestos, estatusCompras, clientes } = response.data
+                console.log(response.data, 'getSolicitudesAxios')
                 if(type === 'facturacion'){
                     options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
                     options.formasPago = setOptions(formasPago, 'nombre', 'id')
                     options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
-                    options.tiposPagos = setOptions(tiposPago, 'tipo', 'id')
+                    options.tiposPagosFactura = setOptions(tiposPago, 'tipo', 'id')
                     // options.conceptos = setOptions(conceptos, 'concepto', 'id')
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
