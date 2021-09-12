@@ -366,7 +366,7 @@ class TicketView extends Component {
             deleteSolicitud, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
             controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
-            addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs, historialPresupuestos
+            addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs, historialPresupuestos, openModalOrdenCompra
         } = this.props
 
         const { checked } = this.state
@@ -652,7 +652,7 @@ class TicketView extends Component {
                                                 </ActualizarPresupuestoForm>
                                             
                                             : presupuesto.estatus.estatus === 'En espera' || presupuesto.estatus.estatus === 'Aceptado' || presupuesto.estatus.estatus === 'Rechazado'?
-                                                <PresupuestoGeneradoCalidad presupuesto={presupuesto} ticket = {data} openAlertChangeStatusP={openAlertChangeStatusP} form={formulario.presupuesto_generado}/>
+                                                <PresupuestoGeneradoCalidad presupuesto={presupuesto} ticket = {data} openAlertChangeStatusP={openAlertChangeStatusP} form={formulario.presupuesto_generado} openModalOrdenCompra={openModalOrdenCompra}/>
                                             :<></>
                                                 
                                         }
