@@ -126,8 +126,8 @@ import HistorialPresupuestos from './calidad/Tickets/HistorialPresupuestos'
 import FormFilterTickets from './MiProyecto/FormFilterTickets'
 import TablePresupuestos from './MiProyecto/TablePresupuestos'
 import TableMantenimiento from './MiProyecto/TableMantenimiento'
-import InfoProyecto from './proyectos/Proyecto/InfoProyecto'
 import EditProyectoForm from './proyectos/Proyecto/EditProyectoForm'
+import InfoProyecto from './proyectos/Proyecto/InfoProyecto'
 import ClienteCPModal from './proyectos/Proyecto/ClienteCPModal'
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
