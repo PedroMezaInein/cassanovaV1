@@ -73,7 +73,7 @@ body {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #464E5F;
+  color: #181c32;
   text-align: left;
   background-color: #ffffff;
 }
@@ -245,6 +245,7 @@ label {
 
 button {
   border-radius: 0;
+  text-transform: uppercase!important;
 }
 
 button:focus {

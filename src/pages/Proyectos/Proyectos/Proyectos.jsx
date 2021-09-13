@@ -574,7 +574,7 @@ class Proyectos extends Component {
 
     changePageEdit = proyecto => {
         const { history } = this.props
-        /* history.push({ pathname: '/proyectos/proyectos/edit', state: { proyecto: proyecto } }); */
+        // history.push({ pathname: '/proyectos/proyectos/edit', state: { proyecto: proyecto } });
         history.push({ pathname: `/proyectos/proyectos/single/${proyecto.id}` });
     }
 

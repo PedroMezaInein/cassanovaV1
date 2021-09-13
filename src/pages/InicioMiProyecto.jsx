@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../constants'
-import { setOptions, setEmpresaLogo, dayDMY } from '../functions/setters'
+import { setOptions, setEmpresaLogo, dayDMY, setFase } from '../functions/setters'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert, questionAlertY } from '../functions/alert'
 import { connect } from 'react-redux'
 import { SelectSearchGray, InputGray, Button } from '../components/form-components'
@@ -436,25 +436,6 @@ class InicioMiProyecto extends Component {
                     return 'dark-75'
             }
         }
-    }
-
-    setFase(proyecto) {
-        let aux = ''
-        if (proyecto.fase1)
-            aux = 'Fase 1'
-        if (proyecto.fase2)
-            aux = 'Fase 2'
-        if (proyecto.fase3)
-            aux = 'Fase 3'
-        if (proyecto.fase1 && proyecto.fase2)
-            aux = 'Fase 1 y 2'
-        if (proyecto.fase1 && proyecto.fase3)
-            aux = 'Fase 1 y 3'
-        if (proyecto.fase2 && proyecto.fase3)
-            aux = 'Fase 2 y 3'
-        if (proyecto.fase1 && proyecto.fase2 && proyecto.fase3)
-            aux = 'Fase 1, 2 y 3'
-        return aux
     }
 
     formatDay(fechaInicio, fechaFinal) {
@@ -1291,9 +1272,7 @@ class InicioMiProyecto extends Component {
                                                                     <i className="las la-tools"></i>
                                                                     <div>
                                                                         <h4>Fase</h4>
-                                                                        <p>
-                                                                            {this.setFase(proyecto)}
-                                                                        </p>
+                                                                        <p>{setFase(proyecto)}</p>
                                                                     </div>
                                                                 </div>
                                                         }

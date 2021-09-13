@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import axios from 'axios'
 import { URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { TicketView } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
@@ -28,6 +28,7 @@ class TicketDetails extends Component {
             formasPago: [],
             estatusFacturas: [],
             tiposPagos: [],
+            tiposPagosFactura:[],
             conceptos: [],
             clientes:[],
             cuentas:[],
@@ -104,6 +105,10 @@ class TicketDetails extends Component {
                 correos_reporte: [],
                 ordenCompra:''
             },
+            orden_compra:{
+                adjunto: '',
+                numero_orden:''
+            },
             mantenimientos:{
                 costo: 0.0,
                 equipo: '',
@@ -116,7 +121,7 @@ class TicketDetails extends Component {
         data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [], adjuntos: [] },
         ticket: '',
         presupuesto: '',
-        modal: { conceptos: false, solicitud: false, solicitud_venta:false, reporte:false, pdfs: false },
+        modal: { conceptos: false, solicitud: false, solicitud_venta:false, reporte:false, pdfs: false, orden_compra:false },
         formeditado: 0,
         key: 'nuevo',
         title:'',
@@ -562,7 +567,7 @@ class TicketDetails extends Component {
                     options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
                     options.formasPago = setOptions(formasPago, 'nombre', 'id')
                     options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
-                    options.tiposPagos = setOptions(tiposPago, 'tipo', 'id')
+                    options.tiposPagosFactura = setOptions(tiposPago, 'tipo', 'id')
                     // options.conceptos = setOptions(conceptos, 'concepto', 'id')
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
                     options.cuentas = setOptions(cuentas, 'nombre', 'id')
@@ -832,7 +837,7 @@ class TicketDetails extends Component {
                                                 <input
                                                     id="adjunto_evidencia"
                                                     type="file"
-                                                    onChange={(e) => { this.onChangeSwal(e.target.files[0], 'adjuntoEvidencia', 'presupuesto_generado'); this.changeNameFile() }}
+                                                    onChange={(e) => { this.onChangeSwal(e.target.files[0], 'adjuntoEvidencia', 'presupuesto_generado'); this.changeNameFile('adjunto_evidencia') }}
                                                     name='adjunto_evidencia'
                                                     accept="image/*, application/pdf"
                                                 />
@@ -887,6 +892,11 @@ class TicketDetails extends Component {
         options.correos_clientes = aux_contactos
         this.setState({ ...this.state, modal, formularios, options })
     }
+    openModalOrdenCompra = () => {
+        const { modal } = this.state
+        modal.orden_compra = true
+        this.setState({ ...this.state, modal })
+    }
     updateStatus = async (estatus) => {
         const { presupuesto, ticket } = this.state
         let { formularios } = this.state
@@ -923,8 +933,8 @@ class TicketDetails extends Component {
         })
     }
 
-    changeNameFile(){
-        var pdrs = document.getElementById('adjunto_evidencia').files[0].name;
+    changeNameFile(id){
+        var pdrs = document.getElementById(id).files[0].name;
         document.getElementById('info').innerHTML = pdrs;
     }
     /* -------------------------------------------------------------------------- */
@@ -1383,6 +1393,12 @@ class TicketDetails extends Component {
         modal.reporte = false
         this.setState({...this.state, modal, formularios })
     }
+    
+    handleCloseModalOrden = () => {
+        const { formularios, modal } = this.state
+        modal.orden_compra = false
+        this.setState({...this.state, modal, formularios })
+    }
     openModalPdfs = () => {
         const { data, presupuesto, modal } = this.state
         modal.pdfs = true
@@ -1449,6 +1465,33 @@ class TicketDetails extends Component {
         })
     }
 
+    onSubmitOrden = async () => {
+        // waitAlert();
+        // const { presupuesto, ticket, modal } = this.state
+        // let { formularios } = this.state
+        // const { access_token } = this.props.authUser
+        
+        // let data = new FormData()
+        // Object.keys(formularios['orden_compra']).forEach((element) => {
+        //     data.append(element, formularios['orden_compra'][element])
+        // })
+        // Swal.close()
+        // await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, { headers: setSingleHeader(access_token) }).then(
+        //     (response) => {
+        //         doneAlert('La orden de compra fue adjuntada con éxito.')
+        //         this.getOneTicketAxios(ticket.id)
+        //         modal.pdfs = false
+        //         this.setState({
+        //             ...this.state,
+        //             modal
+        //         })
+        //     },
+        //     (error) => { printResponseErrorAlert(error) }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.error(error, 'error')
+        // })
+    }
     changeTypeSolicitudes = value => {
         const { formularios } = this.state
         if(value)
@@ -1637,7 +1680,7 @@ class TicketDetails extends Component {
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
                     addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitudFactura = { this.deleteSolicitudAxios } 
                     addVenta = { this.addVentaAxios } getSolicitudes = { this.getSolicitudesAxios } defaultNavTabs={defaultNavTabs}
-                    historialPresupuestos={this.openModalPdfs}
+                    historialPresupuestos={this.openModalPdfs} openModalOrdenCompra={this.openModalOrdenCompra}
                 />
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
@@ -1687,6 +1730,54 @@ class TicketDetails extends Component {
                         elements={data.adjuntos}
                     />
                 </CustomModal>
+                <Modal show = { modal.orden_compra } onHide = { this.handleCloseModalOrden } centered contentClassName = 'swal2-popup d-flex' >
+                    <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>AGREGAR ORDEN DE COMPRA</Modal.Header>
+                    <Modal.Body className = 'p-0 mt-3'>
+                        <Form id="form-orden" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'form-orden') } }>
+                            <div className='row mx-0 justify-content-center'>
+                                <div className="col-md-12">
+                                    <div className="form-group row form-group-marginless mb-1">
+                                        <div className="col-md-12 text-justify">
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} iconclass='las la-hashtag icon-xl'
+                                                requirevalidation={0} value={formularios.orden_compra.numero_orden} name={'numero_orden'}
+                                                onChange={(e) => { this.onChangeSwal(e.target.value, 'numero_orden', 'orden_compra') }}
+                                                swal={true} placeholder='NÚMERO DE ORDEN DE COMPRA'
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="separator separator-dashed mt-5 mb-2"></div>
+                                    <div className="form-group row form-group-marginless mt-5 mb-0">
+                                        <div className="col-md-12">
+                                            <label htmlFor="adjunto" className="drop-files">
+                                                <span className="svg-icon svg-icon-2x svg-icon-primary">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')} />
+                                                </span>
+                                                <input
+                                                    id="adjunto"
+                                                    type="file"
+                                                    onChange={(e) => { this.onChangeSwal(e.target.files[0], 'adjunto', 'orden_compra'); this.changeNameFile('adjunto') }}
+                                                    name='adjunto'
+                                                    accept="image/*, application/pdf"
+                                                />
+                                                <div className="font-weight-bolder font-size-md ml-2" id="info">Subir orden de compra</div>
+                                            </label>
+                                            {
+                                                formularios.orden_compra.adjunto === ''?
+                                                <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden </span>
+                                                :<></>
+                                            }
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer className = 'border-0 justify-content-center'>
+                        <button type="button" className="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex" onClick = { this.handleCloseModalOrden }>CANCELAR</button>
+                        <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { (e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'form-orden') } } >AGREGAR</button>
+                    </Modal.Footer>
+                </Modal>
             </Layout>
         )
     }
