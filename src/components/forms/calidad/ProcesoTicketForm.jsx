@@ -236,27 +236,29 @@ class ProcesoTicketForm extends Component {
                                                     <div className="mb-4 font-weight-bolder">
                                                         <u>{ticket.subarea?ticket.subarea.nombre:''}</u>
                                                     </div>
-                                                    
-                                                        <div className="text-justify d-flex align-items-center">
-                                                            <div className="mr-5">
-                                                                <span className="svg-icon svg-icon-3x svg-icon-info">
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/Hard-drive.svg')} />
-                                                                </span>
-                                                            </div>
-                                                            <div>
-                                                                <div className="d-flex flex-column">
-                                                                    <span className="text-dark font-weight-bold font-size-lg mb-3">EQUIPO INSTALADO:
-                                                                        <span className="text-dark-75 font-weight-light font-size-lg"> {ticket.mantenimiento.instalacion.equipo.texto}</span>
+                                                    {
+                                                        ticket.mantenimiento ?
+                                                            <div className="text-justify d-flex align-items-center">
+                                                                <div className="mr-5">
+                                                                    <span className="svg-icon svg-icon-3x svg-icon-info">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Hard-drive.svg')} />
                                                                     </span>
                                                                 </div>
-                                                                <div className="d-flex flex-column">
-                                                                    <span className="text-dark font-weight-bold font-size-lg">COSTO:
-                                                                        <span className="text-dark-75 font-weight-light font-size-lg"> { setMoneyText(ticket.mantenimiento.costo)}</span>
-                                                                    </span>
+                                                                <div>
+                                                                    <div className="d-flex flex-column">
+                                                                        <span className="text-dark font-weight-bold font-size-lg mb-3">EQUIPO INSTALADO:
+                                                                            <span className="text-dark-75 font-weight-light font-size-lg"> {ticket.mantenimiento.instalacion.equipo.texto}</span>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className="d-flex flex-column">
+                                                                        <span className="text-dark font-weight-bold font-size-lg">COSTO:
+                                                                            <span className="text-dark-75 font-weight-light font-size-lg"> { setMoneyText(ticket.mantenimiento.costo)}</span>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    
+                                                        : <></>
+                                                    }
                                                 </div>
                                             </div>
                                         </Row>
