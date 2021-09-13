@@ -9,7 +9,7 @@ import { URL_DEV } from '../../../constants'
 import axios from 'axios'
 import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAlert, createAlertSA2WithCloseAndHtml } from '../../../functions/alert'
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
-import { setOptions } from '../../../functions/setters'
+import { setOptions, printTableCP } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 import { ProyectoCard } from '../../../components/cards'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
@@ -547,76 +547,6 @@ class Contratar extends Component {
             formProyecto
         })
     }
-    printTable = (key, cliente) => {
-        return (
-            <tbody key={key}>
-                <tr className="border-top-2px">
-                    <td className="text-center w-5">
-                        <i className="las la-user-alt icon-2x text-dark-50"></i>
-                    </td>
-                    <td className="w-33 font-weight-bolder text-dark-50">
-                        NOMBRE DE CLIENTE
-                    </td>
-                    <td className="font-weight-light">
-                        <span>{cliente.name}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="text-center">
-                        <i className="las la-map-pin icon-2x text-dark-50"></i>
-                    </td>
-                    <td className="font-weight-bolder text-dark-50">
-                        CÓDIGO POSTAL
-                    </td>
-                    <td className="font-weight-light">
-                        <span>{cliente.cp}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="text-center">
-                        <i className="las la-globe icon-2x text-dark-50"></i>
-                    </td>
-                    <td className="font-weight-bolder text-dark-50">ESTADO</td>
-                    <td className="font-weight-light">
-                        <span>{cliente.estado}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="text-center">
-                        <i className="las la-map icon-2x text-dark-50"></i>
-                    </td>
-                    <td className="font-weight-bolder text-dark-50">
-                        MUNICIPIO/DELEGACIÓN
-                    </td>
-                    <td className="font-weight-light">
-                        <span>{cliente.municipio}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="text-center">
-                        <i className="las la-map-marker icon-2x text-dark-50"></i>
-                    </td>
-                    <td className="font-weight-bolder text-dark-50">
-                        COLONIA
-                    </td>
-                    <td className="font-weight-light text-justify">
-                        <span>{cliente.colonia}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="text-center">
-                        <i className="las la-map-marked-alt icon-2x text-dark-50"></i>
-                    </td>
-                    <td className="font-weight-bolder text-dark-50">
-                        CALLE Y NÚMERO
-                    </td>
-                    <td className="font-weight-light text-justify">
-                        <span>{cliente.calle}</span>
-                    </td>
-                </tr>
-            </tbody>
-        )
-    }
     render() {
         const { modal, form, formProyecto, options, lead, modalCP, showModal } = this.state
         return (
@@ -742,11 +672,11 @@ class Contratar extends Component {
                                         options.cp_clientes.map((cliente, key) => {
                                             if (formProyecto.cp_ubicacion === cliente.value) {
                                                 return (
-                                                    this.printTable(key, cliente)
+                                                    printTableCP(key, cliente)
                                                 )
                                             }else if(options.cp_clientes.length === 1){
                                                 return (
-                                                    this.printTable(key, cliente)
+                                                    printTableCP(key, cliente)
                                                 )
                                             }
                                             return <></>

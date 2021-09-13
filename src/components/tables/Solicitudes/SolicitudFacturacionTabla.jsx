@@ -619,7 +619,7 @@ export default class SolicitudFacturacionTabla extends Component{
                                     withicon = { 1 }
                                     customdiv="mb-0"
                                     formeditado={0}
-                                    options={options.tiposPagos}
+                                    options={options.tiposPagosFactura}
                                     placeholder="TIPOS DE PAGO"
                                     name="tipo_pago"
                                     value={form.tipo_pago}

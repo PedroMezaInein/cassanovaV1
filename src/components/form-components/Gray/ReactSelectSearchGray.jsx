@@ -90,7 +90,7 @@ class ReactSelectSearchGray extends Component {
                     />
                 </div>
                 {
-                    requirevalidation?(defaultvalue.length>0?'':<span className={"form-text text-danger is-invalid"}> {messageinc} </span>):''
+                    requirevalidation?( defaultvalue.length !== 0 ?'':<span className={"form-text text-danger is-invalid"}> {messageinc} </span>):<></>
                 }
             </div>
         )

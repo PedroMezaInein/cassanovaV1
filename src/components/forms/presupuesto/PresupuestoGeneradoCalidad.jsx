@@ -37,7 +37,7 @@ class PresupuestoGeneradoCalidad extends Component {
     }
 
     render() {
-        const { presupuesto, ticket, openAlertChangeStatusP } = this.props
+        const { presupuesto, ticket, openAlertChangeStatusP, openModalOrdenCompra } = this.props
         return (
             <Row className="mx-0">
                 <Col md='12' className="p-0 mb-5">
@@ -153,29 +153,42 @@ class PresupuestoGeneradoCalidad extends Component {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md='12' className="px-0 py-4">
+                <Col md={`${presupuesto.estatus.estatus === 'Aceptado' ? '6' : '12'}`} className="py-4">
                     <Card className="card-custom card-stretch">
-                        <Card.Body className="py-5 d-flex flex-direction-column justify-content-center">
-                            <div className="row mx-0">
-                                <div className = {`col-md-${presupuesto.estatus.estatus === 'Aceptado' ? 6 : 12} align-self-center`}>
-                                    <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-5 text-center">PRESUPUESTO</div>
-                                    {
-                                        ticket ? 
-                                            <ItemSlider items = { [ {name: ticket.presupuestoAdjunto, url: ticket.presupuestoAdjunto} ] } item='adjuntoEvidencia' />
-                                        : <></>
-                                    }
-                                </div>
+                        <Card.Header className="border-0 pt-8 pt-md-0 align-self-center">
+                            <Card.Title className="m-0">
+                                <div className="font-weight-bold font-size-h5">PRESUPUESTO</div>
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body className="pt-0">
+                            <div className='align-self-center'>
                                 {
-                                    presupuesto.estatus.estatus === 'Aceptado' ? 
-                                        <div className="col-md-6 align-self-center">
-                                            <div className="font-size-h5 text-dark-75 font-weight-bolder mb-1 py-5 text-center">Evidencias Vo.Bo.</div>
-                                            {
-                                                ticket ? 
-                                                    <ItemSlider items = { this.getVobo() } item='adjuntoEvidencia' />
-                                                : <></>
-                                            }
-                                        </div>
-                                    : <></>
+                                    ticket ?
+                                        <ItemSlider items={[{ name: ticket.presupuestoAdjunto, url: ticket.presupuestoAdjunto }]} item='adjuntoEvidencia' />
+                                        : <></>
+                                }
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col md='6' className={`py-4 ${presupuesto.estatus.estatus === 'Aceptado' ? '' : 'd-none'}`}>
+                    <Card className="card-custom card-stretch">
+                        <Card.Header className="border-0 pt-8 pt-md-0">
+                            <Card.Title className="m-0">
+                                <div className="font-weight-bold font-size-h5">Evidencias Vo.Bo.</div>
+                            </Card.Title>
+                            <div className="card-toolbar">
+                                <button type="button" className="btn btn-sm btn-bg-light text-info btn-hover-light-info font-weight-bolder font-size-13px" onClick={(e) => { e.preventDefault(); openModalOrdenCompra() }} >
+                                    <i className="las la-cart-plus icon-xl mr-2 px-0 text-info"/> Agregar orden de compra
+                                </button>
+                            </div>
+                        </Card.Header>
+                        <Card.Body className="pt-0">
+                            <div className="align-self-center">
+                                {
+                                    ticket ?
+                                        <ItemSlider items={this.getVobo()} item='adjuntoEvidencia' />
+                                        : <></>
                                 }
                             </div>
                         </Card.Body>

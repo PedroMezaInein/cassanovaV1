@@ -1765,3 +1765,7 @@ $white: #fff;
         font-weight: 500;
     }
 }
+.btn.btn-flex {
+    display: inline-flex;
+    align-items: flex-end;
+}
