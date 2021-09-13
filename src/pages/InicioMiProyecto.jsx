@@ -1639,9 +1639,9 @@ class InicioMiProyecto extends Component {
                                 {
                                     ticket.reporte_url?
                                         <div className="text-center mt-5">
-                                            <button type="button" href={proyecto.reporte_url} target='_blank' rel="noopener noreferrer" className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px text-uppercase btn btn-primary">
+                                            <a type="button" href={ticket.reporte_url} target='_blank' rel="noopener noreferrer" className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px text-uppercase btn btn-primary">
                                                 <i className="las la-file-pdf icon-xl mr-2 px-0 text-success"></i>VER REPORTE
-                                            </button>
+                                            </a>
                                         </div>
                                     :<></>
                                 }
