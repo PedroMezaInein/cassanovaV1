@@ -1540,31 +1540,35 @@ class TicketDetails extends Component {
     }
 
     onSubmitOrden = async () => {
-        // waitAlert();
-        // const { presupuesto, ticket, modal } = this.state
-        // let { formularios } = this.state
-        // const { access_token } = this.props.authUser
-        
-        // let data = new FormData()
-        // Object.keys(formularios['orden_compra']).forEach((element) => {
-        //     data.append(element, formularios['orden_compra'][element])
-        // })
-        // Swal.close()
-        // await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, { headers: setSingleHeader(access_token) }).then(
-        //     (response) => {
-        //         doneAlert('La orden de compra fue adjuntada con éxito.')
-        //         this.getOneTicketAxios(ticket.id)
-        //         modal.pdfs = false
-        //         this.setState({
-        //             ...this.state,
-        //             modal
-        //         })
-        //     },
-        //     (error) => { printResponseErrorAlert(error) }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.error(error, 'error')
-        // })
+        const { formularios, presupuesto, ticket, modal } = this.state
+        const { access_token } = this.props.authUser
+        waitAlert();
+        let presupuestoId = null
+        if(ticket){
+            if(ticket.presupuesto){
+                if(ticket.presupuesto.length){
+                    presupuestoId = ticket.presupuesto[0].id
+                }
+            }
+        }
+        if(presupuestoId){
+            let data = new FormData()
+            data.append('file', formularios.orden_compra.adjunto)
+            data.append('adjunto', presupuestoId)
+            data.append('orden', formularios.orden_compra.numero_orden)
+            await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/orden-compra?_method=PUT`, data, 
+                { headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    modal.orden_compra = false
+                    this.setState({ ...this.state, modal })
+                    doneAlert('La orden de compra fue adjuntada con éxito.')
+                    this.getOneTicketAxios(ticket.id)
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.error(error, 'error')
+            })
+        }else{ errorAlert(`No fue posible encontrar el presupuesto`) }
     }
     changeTypeSolicitudes = value => {
         const { formularios } = this.state
@@ -1875,16 +1879,15 @@ class TicketDetails extends Component {
                                                     type="file"
                                                     onChange={(e) => { this.onChangeSwal(e.target.files[0], 'adjunto', 'orden_compra'); this.changeNameFile('adjunto') }}
                                                     name='adjunto'
-                                                    accept="image/*, application/pdf"
+                                                    accept="application/pdf"
                                                 />
                                                 <div className="font-weight-bolder font-size-md ml-2" id="info">Subir orden de compra</div>
                                             </label>
                                             {
-                                                formularios.orden_compra.adjunto === ''?
-                                                <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden </span>
+                                                formularios.orden_compra.adjunto === '' ?
+                                                    <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden </span>
                                                 :<></>
                                             }
-                                            
                                         </div>
                                     </div>
                                 </div>
