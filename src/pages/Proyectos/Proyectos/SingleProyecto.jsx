@@ -8,7 +8,7 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import { Card, Tab, Nav } from 'react-bootstrap'
 import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
-import { EditProyectoForm } from '../../../components/forms'
+import { EditProyectoForm, InfoLead, Avances } from '../../../components/forms'
 class SingleProyecto extends Component {
 
     state = {
@@ -18,10 +18,11 @@ class SingleProyecto extends Component {
             { eventKey: 'compras', icon: 'flaticon-bag', name: 'Compras' },
             { eventKey: 'facturacion', icon: 'las la-file-invoice-dollar', name: 'Facturación' },
             { eventKey: 'avances', icon: 'flaticon-diagram', name: 'Avances' },
+            { eventKey: 'notas', icon: 'flaticon-notes', name: 'Notas de obra' },
             { eventKey: 'adjuntos', icon: 'flaticon-attachment', name: 'Adjuntos' },
             { eventKey: 'presupuestos', icon: 'flaticon-list-1', name: 'Presupuestos' },
         ],
-        activeKeyNav: 'informacion',
+        activeKeyNav: 'avances',
         options:{
             empresas: [],
             clientes: [],
@@ -114,6 +115,7 @@ class SingleProyecto extends Component {
     render() {
         const { proyecto, navs, activeKeyNav, options } = this.state
         const { access_token } = this.props.authUser
+        const { user } = this.props.authUser
         return (
             <Layout active='proyectos' {...this.props}>
                 {
@@ -153,7 +155,7 @@ class SingleProyecto extends Component {
                                                                 <span className="nav-icon">
                                                                     <i className={`${nav.icon} icon-lg mr-2`}></i>
                                                                 </span>
-                                                                <span className="nav-text font-weight-bolder">{nav.name}</span>
+                                                                <span className="nav-text font-weight-bolder white-space-nowrap">{nav.name}</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                     )
@@ -163,16 +165,10 @@ class SingleProyecto extends Component {
                                     </div>
                                     <Tab.Content>
                                         <Tab.Pane eventKey="informacion">
-                                            <Card className="card pt-4 mb-6 mb-xl-9">
-                                                <Card.Header className="border-0">
-                                                    <Card.Title>
-                                                        <h2>INFORMACIÓN DEL LEAD</h2>
-                                                    </Card.Title>
-                                                    <div className="card-toolbar">
-                                                    </div>
-                                                </Card.Header>
-                                            </Card>
-                                            <EditProyectoForm proyecto= { proyecto } options = { options } at = { access_token }/>
+                                            <EditProyectoForm proyecto = { proyecto } options = { options } at = { access_token }/>
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="avances">
+                                            <Avances proyecto={proyecto} user={user} at = { access_token }/>
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>
