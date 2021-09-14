@@ -8,7 +8,7 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import { Card, Tab, Nav } from 'react-bootstrap'
 import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
-import { InfoProyecto } from '../../../components/forms'
+import { EditProyectoForm } from '../../../components/forms'
 class SingleProyecto extends Component {
 
     state = {
@@ -172,7 +172,7 @@ class SingleProyecto extends Component {
                                                     </div>
                                                 </Card.Header>
                                             </Card>
-                                            <InfoProyecto proyecto= { proyecto } options = { options } at = { access_token }/>
+                                            <EditProyectoForm proyecto= { proyecto } options = { options } at = { access_token }/>
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>

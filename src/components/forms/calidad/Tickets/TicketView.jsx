@@ -357,6 +357,18 @@ class TicketView extends Component {
         return true
     }
 
+    isGarantia = () => {
+        const { data } = this.props
+        if(data){
+            if(data.subarea){
+                if(data.subarea.nombre === 'VICIOS OCULTOS'){
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, 
@@ -625,12 +637,12 @@ class TicketView extends Component {
                                             : presupuesto.estatus.estatus !== 'En espera' && presupuesto.estatus.estatus !== 'Aceptado' && presupuesto.estatus.estatus !== 'Rechazado'?
                                                 <ActualizarPresupuestoForm showInputsCalidad = { true } form = { formulario.preeliminar } options = { options }
                                                     presupuesto = { presupuesto } onChange = { this.onChangePreeliminar } formeditado = { 1 }
-                                                    checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit('preeliminar') } } 
+                                                    checkButton = { this.checkButtonPreeliminar } onSubmit = { (e) => { onSubmit(this.isGarantia() ? 'vicio-oculto' : 'preeliminar') } } 
                                                     openModal={openModalConceptos} isButtonEnabled = { this.isButtonEnabled() } modulo_calidad={true} aux_presupuestos={aux_presupuestos}
                                                     historialPresupuestos={historialPresupuestos}
                                                     >
                                                     { 
-                                                        presupuesto.estatus.estatus === 'En revisión'?
+                                                        presupuesto.estatus.estatus === 'En revisión' && !this.isGarantia() ?
                                                             this.calcularCantidades() ?
                                                                 <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2" 
                                                                     onClick = { (e) => { e.preventDefault(); onClick('enviar_finanzas'); } } >
@@ -640,7 +652,7 @@ class TicketView extends Component {
                                                         : <></>
                                                     }
                                                     { 
-                                                        presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías' ?
+                                                        (presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías') && !this.isGarantia() ?
                                                             this.calcularCantidades() ?
                                                                 <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2" 
                                                                     onClick = { (e) => { e.preventDefault(); onClick('enviar_compras'); } } >
