@@ -481,6 +481,7 @@ class Proyectos extends Component {
             colonias: [],
             tipos:[],
             proveedores:[],
+            cp_clientes: []
         },
         tipo: '',
         formBitacora: {
