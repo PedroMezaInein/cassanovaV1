@@ -1387,13 +1387,6 @@ class TicketDetails extends Component {
         modal.reporte = false
         this.setState({...this.state, modal, formularios })
     }
-    handleCloseModalReporte = () => {
-        const { formularios, modal } = this.state
-        formularios.presupuesto_generado.correos_reporte = []
-        modal.reporte = false
-        this.setState({...this.state, modal, formularios })
-    }
-    
     handleCloseModalOrden = () => {
         const { formularios, modal } = this.state
         modal.orden_compra = false
