@@ -16,6 +16,7 @@ import folderStatic from './FolderStatic'
 import singleTagify from './SingleTagify'
 import Tag from './Tag'
 import ChecadorButton from './ChecadorButton'
+import ModalSendMail from './ModalSendMail'
 
 export const Card = card;
 export const Modal = modal;
@@ -34,4 +35,4 @@ export const FolderStatic = folderStatic
 export const ItemDoubleSlider = itemDoubleSlider
 export const SingleTagify = singleTagify
 
-export { Tag, ChecadorButton }
+export { Tag, ChecadorButton, ModalSendMail }
