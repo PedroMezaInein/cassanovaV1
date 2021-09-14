@@ -6,7 +6,7 @@ import { URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { TicketView } from '../../../components/forms'
+import { PresupuestoGeneradoNoCrm, TicketView } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
 import { setSingleHeader, setFormHeader, toAbsoluteUrl } from '../../../functions/routers'
 import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
@@ -121,7 +121,7 @@ class TicketDetails extends Component {
         data: { partidas: [],subpartidas: [], conceptos: [], mantenimientos: [], adjuntos: [] },
         ticket: '',
         presupuesto: '',
-        modal: { conceptos: false, solicitud: false, solicitud_venta:false, reporte:false, pdfs: false, orden_compra:false },
+        modal: { conceptos: false, solicitud: false, solicitud_venta:false, reporte:false, pdfs: false, orden_compra:false, historial: false },
         formeditado: 0,
         key: 'nuevo',
         title:'',
@@ -148,7 +148,8 @@ class TicketDetails extends Component {
             rechazado: false,
         },
         defaultNavTabs:'',
-        adjuntos: []
+        adjuntos: [],
+        adjunto: null
     }
     
     componentDidMount() {
@@ -473,29 +474,36 @@ class TicketDetails extends Component {
         const { formularios, presupuesto } = this.state
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                if(presupuesto.estatus){
-                    switch(presupuesto.estatus.estatus){
-                        case 'En revisión':
-                            questionAlert2(
-                                '¿DÓNDE DESEAS ENVIAR EL PRESUPUESTO?',
-                                'Si aún no deseas enviar, solamente cierra',
-                                () => { this.onSubmitUpdatePresupueso() },
-                                <form id = 'updatePresupuestoForm' name = 'updatePresupuestoForm' >
-                                    <Form.Check inline type="radio" label="COMPRAS" name="sendPresupuesto" className="px-0 mb-2" value = 'costos'/>
-                                    <Form.Check inline type="radio" label="FINANZAS" name="sendPresupuesto" className="px-0 mb-2" value = 'finanzas'/>
-                                </form>,
-                                () => { this.patchPresupuesto('estatus', 'En revisión') }
-                            )
-                            break;
-                        default:
-                            doneAlert('Presupuesto actualizado con éxito',
-                                () => questionAlertY(`¡Listo!`, 
-                                    `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?' 
-                                        : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
-                                    () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
-                                    () => this.getPresupuestoAxios(presupuesto.id))
-                            )
-                            break;
+                const { nombre } = this.state.ticket.subarea
+                if(nombre === 'VICIOS OCULTOS'){
+                    questionAlertY(`¡Presupuesto actualizado con éxito!`, `¿Deseas generar el PDF?`,
+                        () => this.onClick('generar-presupuesto'),
+                        () => this.getPresupuestoAxios(presupuesto.id))
+                }else{
+                    if(presupuesto.estatus){
+                        switch(presupuesto.estatus.estatus){
+                            case 'En revisión':
+                                questionAlert2(
+                                    '¿DÓNDE DESEAS ENVIAR EL PRESUPUESTO?',
+                                    'Si aún no deseas enviar, solamente cierra',
+                                    () => { this.onSubmitUpdatePresupueso() },
+                                    <form id = 'updatePresupuestoForm' name = 'updatePresupuestoForm' >
+                                        <Form.Check inline type="radio" label="COMPRAS" name="sendPresupuesto" className="px-0 mb-2" value = 'costos'/>
+                                        <Form.Check inline type="radio" label="FINANZAS" name="sendPresupuesto" className="px-0 mb-2" value = 'finanzas'/>
+                                    </form>,
+                                    () => { this.patchPresupuesto('estatus', 'En revisión') }
+                                )
+                                break;
+                            default:
+                                doneAlert('Presupuesto actualizado con éxito',
+                                    () => questionAlertY(`¡Listo!`, 
+                                        `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?' 
+                                            : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
+                                        () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
+                                        () => this.getPresupuestoAxios(presupuesto.id))
+                                )
+                                break;
+                        }
                     }
                 }
             }, (error) => { printResponseErrorAlert(error) }
@@ -666,6 +674,28 @@ class TicketDetails extends Component {
                 data.mantenimientos = ticket.notas
                 this.setState({ ...this.state, data })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El mantenimiento fue eliminado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    generarPDFAxios = async() =>{
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { presupuesto } = this.state
+        await axios.get(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/pdf`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { adjunto, presupuesto: pres } = response.data
+                this.getPresupuestoAxios(pres.id)
+                const { form, presupuesto, options } = this.state
+                var win = window.open(adjunto.url, '_blank');
+                if (win) {
+                    win.focus();
+                }
+                Swal.close()
+                this.onClick('mostrar-presupuestos')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1076,6 +1106,9 @@ class TicketDetails extends Component {
             case 'preeliminar':
                 this.updatePresupuestoAxios()
                 break;
+            case 'vicio-oculto':
+                this.updatePresupuestoAxios()
+                break;
             default: break;
         }
     }
@@ -1339,7 +1372,8 @@ class TicketDetails extends Component {
             this.getPresupuestoAxios(ticket.presupuesto_id)
     }
     
-    onClick = (type) => {
+    onClick = (type, aux) => {
+        const { presupuesto, modal, formularios } = this.state
         switch(type){
             case 'volumetrias':
                 this.onClickVolumetrias()
@@ -1356,12 +1390,43 @@ class TicketDetails extends Component {
                     () => this.patchPresupuesto('estatus', 'Utilidad'))
                 break;
             case 'ticket-proceso':
-                const { formularios, ticket } = this.state
+                const { ticket } = this.state
                 if(ticket.mantenimiento){
                     formularios.ticket.equipo = ticket.mantenimiento.instalacion.id.toString()
                     formularios.ticket.costo = ticket.mantenimiento.costo
                     this.setState({...this.state, formularios})
                 }
+                break;
+            case 'generar-presupuesto':
+                this.generarPDFAxios()
+                break;
+            case 'mostrar-presupuestos':
+                this.openModalPdfs()
+                break;
+            case 'send-presupuesto':
+                const { modal, presupuesto, options } = this.state
+                const { user } = this.props.authUser
+                modal.pres = true
+                modal.pdfs = false
+                formularios.presupuesto_generado.correos_reporte = []
+                let aux_contactos = [];
+                if (user.email) {
+                    formularios.presupuesto_generado.correos_reporte.push({ value: user.email, label: user.email })
+                    aux_contactos.push({
+                        value: user.email,
+                        label: user.email
+                    })
+                }
+                options.correos_clientes = []
+                presupuesto.proyecto.contactos.forEach(contacto => {
+                    aux_contactos.push({
+                        value: contacto.correo.toLowerCase(),
+                        label: contacto.correo.toLowerCase()
+                    })
+                    return ''
+                })
+                options.correos_clientes = aux_contactos
+                this.setState({ ...this.state, modal, formularios, options, adjunto: aux })
                 break;
             default: break;
         }
@@ -1384,8 +1449,11 @@ class TicketDetails extends Component {
     handleCloseModalReporte = () => {
         const { formularios, modal } = this.state
         formularios.presupuesto_generado.correos_reporte = []
+        if(modal.pres)
+            modal.pdfs = true
+        modal.pres = false
         modal.reporte = false
-        this.setState({...this.state, modal, formularios })
+        this.setState({...this.state, modal, formularios, adjunto: null })
     }
     handleCloseModalOrden = () => {
         const { formularios, modal } = this.state
@@ -1393,26 +1461,14 @@ class TicketDetails extends Component {
         this.setState({...this.state, modal, formularios })
     }
     openModalPdfs = () => {
-        const { data, presupuesto, modal } = this.state
+        const { modal } = this.state
         modal.pdfs = true
-        data.adjuntos = presupuesto.pdfs
-        this.setState({
-            ...this.state,
-            modal,
-            adjuntos: this.setAdjuntosTable(presupuesto.pdfs),
-            data
-        })
+        this.setState({ ...this.state, modal })
     }
     handleClosePdfs = () => {
-        const { data, modal } = this.state
+        const { modal } = this.state
         modal.pdfs = false
-        data.adjuntos = []
-        this.setState({
-            ...this.state,
-            modal,
-            adjuntos: [],
-            data
-        })
+        this.setState({ ...this.state, modal })
     }
     setAdjuntosTable = adjuntos => {
         let aux = []
@@ -1458,32 +1514,61 @@ class TicketDetails extends Component {
         })
     }
 
+    sendPresupuesto = async () => {
+        waitAlert();
+        const { adjunto, formularios, presupuesto, ticket } = this.state
+        const { access_token } = this.props.authUser
+        formularios.presupuesto_generado.presupuestoAdjunto = adjunto
+        var arrayCorreos = formularios.presupuesto_generado.correos_reporte.map(function (obj) {
+            return obj.label;
+        });
+        formularios.presupuesto_generado.correos_presupuesto = arrayCorreos
+        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/correo`, formularios.presupuesto_generado, 
+            { headers: setSingleHeader(access_token) }).then(
+            (response) => { 
+                const { modal } = this.state
+                modal.pdfs = false
+                modal.pres = false
+                this.setState({...this.state, modal})
+                this.getOneTicketAxios(ticket.id)
+                doneAlert('Correo enviado con éxito', () => { this.handleCloseModalReporte() } ) 
+            },  (error) => { this.handleCloseModalReporte(); printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     onSubmitOrden = async () => {
-        // waitAlert();
-        // const { presupuesto, ticket, modal } = this.state
-        // let { formularios } = this.state
-        // const { access_token } = this.props.authUser
-        
-        // let data = new FormData()
-        // Object.keys(formularios['orden_compra']).forEach((element) => {
-        //     data.append(element, formularios['orden_compra'][element])
-        // })
-        // Swal.close()
-        // await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, { headers: setSingleHeader(access_token) }).then(
-        //     (response) => {
-        //         doneAlert('La orden de compra fue adjuntada con éxito.')
-        //         this.getOneTicketAxios(ticket.id)
-        //         modal.pdfs = false
-        //         this.setState({
-        //             ...this.state,
-        //             modal
-        //         })
-        //     },
-        //     (error) => { printResponseErrorAlert(error) }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.error(error, 'error')
-        // })
+        const { formularios, presupuesto, ticket, modal } = this.state
+        const { access_token } = this.props.authUser
+        waitAlert();
+        let presupuestoId = null
+        if(ticket){
+            if(ticket.presupuesto){
+                if(ticket.presupuesto.length){
+                    presupuestoId = ticket.presupuesto[0].id
+                }
+            }
+        }
+        if(presupuestoId){
+            let data = new FormData()
+            data.append('file', formularios.orden_compra.adjunto)
+            data.append('adjunto', presupuestoId)
+            data.append('orden', formularios.orden_compra.numero_orden)
+            await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/orden-compra?_method=PUT`, data, 
+                { headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    modal.orden_compra = false
+                    this.setState({ ...this.state, modal })
+                    doneAlert('La orden de compra fue adjuntada con éxito.')
+                    this.getOneTicketAxios(ticket.id)
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.error(error, 'error')
+            })
+        }else{ errorAlert(`No fue posible encontrar el presupuesto`) }
     }
     changeTypeSolicitudes = value => {
         const { formularios } = this.state
@@ -1576,10 +1661,7 @@ class TicketDetails extends Component {
                         break;
                 }
         }
-        this.setState({
-            ...this.state,
-            aux_presupuestos: auxiliar
-        })
+        this.setState({ ...this.state, aux_presupuestos: auxiliar })
     }
     save = () => {
         const { formularios } = this.state
@@ -1648,8 +1730,29 @@ class TicketDetails extends Component {
         }
         this.setState({ defaultNavTabs })
     }
+
+    canSend = () => {
+        const { presupuesto } = this.state
+        let flag = false
+        if(presupuesto){
+            if(presupuesto.pdfs){
+                if(presupuesto.pdfs.length){
+                    flag = true
+                    presupuesto.pdfs.forEach((pdf) => {
+                        const { enviado, aceptado } = pdf.pivot
+                        if(enviado && aceptado){
+                            flag = false
+                        }
+                    })
+                }
+            }
+        }
+        return flag
+    }
+
     render() {
-        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, defaultNavTabs, adjuntos } = this.state
+        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, 
+            defaultNavTabs, adjuntos, adjunto } = this.state
         const { formulario } = this.props
         const { access_token } = this.props.authUser
         return (
@@ -1697,13 +1800,9 @@ class TicketDetails extends Component {
                             </div>
                             <div className="col-md-11 mt-5">
                                 <div>
-                                    {/* <TagInputGray swal = { true } tags = { formularios.presupuesto_generado.correos_reporte } placeholder = "CORREO(S)" iconclass = "flaticon-email" 
-                                        uppercase = { false } onChange = { this.tagInputChange } />  */}
-                                        
-                                    <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email"
-                                        requirevalidation = { 1 } messageinc = "Selecciona el o los correos" uppercase={false} 
-                                        onChange = { this.handleChangeCreateMSelect } options={options.correos_clientes} elementoactual = { formularios.presupuesto_generado.correos_reporte }
-                                    />
+                                    <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email" uppercase = { false }
+                                        requirevalidation = { 1 } messageinc = "Selecciona el o los correos" onChange = { this.handleChangeCreateMSelect } 
+                                        options = { options.correos_clientes } elementoactual = { formularios.presupuesto_generado.correos_reporte } />
                                 </div>
                             </div>
                         </div>
@@ -1713,15 +1812,45 @@ class TicketDetails extends Component {
                         <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { this.sendMail } >SI, ENVIAR</button>
                     </Modal.Footer>
                 </Modal>
+                <Modal show = { modal.pres } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
+                    <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL PRESUPUESTO?</Modal.Header>
+                    <Modal.Body className = 'p-0 mt-3'>
+                        <div className = 'row mx-0 justify-content-center'>
+                            <div className="col-md-12 text-center py-2">
+                                <div>
+                                    {
+                                        adjunto ?
+                                            adjunto.url !== undefined ?
+                                                <u>
+                                                    <a className="font-weight-bold text-hover-success text-primary" target= '_blank' rel="noreferrer" href = { adjunto.url } >
+                                                        DA CLIC AQUÍ PARA VER <i className="las la-hand-point-right text-primary icon-md ml-1"></i> EL PRESUPUESTO
+                                                    </a>
+                                                </u>
+                                            : <></>
+                                        : <></>
+                                    }
+                                </div>
+                            </div>
+                            <div className="col-md-11 font-weight-light mt-4 text-justify">
+                                Si deseas enviar el presupuesto agrega el o los correos del destinatario, de lo contario da clic en <span onClick = { this.handleCloseModalReporte } className="font-weight-bold">cancelar</span>.
+                            </div>
+                            <div className="col-md-11 mt-5">
+                                <div>
+                                    <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email" uppercase = { false }
+                                        requirevalidation = { 1 } messageinc = "Selecciona el o los correos" onChange = { this.handleChangeCreateMSelect } 
+                                        options = { options.correos_clientes } elementoactual = { formularios.presupuesto_generado.correos_reporte } />
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer className = 'border-0 justify-content-center'>
+                        <button type="button" className="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex" onClick = { this.handleCloseModalReporte }>CANCELAR</button>
+                        <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { this.sendPresupuesto } >SI, ENVIAR</button>
+                    </Modal.Footer>
+                </Modal>
                 <CustomModal show={modal.pdfs} handleClose={this.handleClosePdfs} title="Historial de presupuestos" >
-                    <TableForModals
-                        columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
-                        data={adjuntos}
-                        hideSelector={true}
-                        mostrar_acciones={false}
-                        dataID='adjuntos'
-                        elements={data.adjuntos}
-                    />
+                    <PresupuestoGeneradoNoCrm pdfs = { presupuesto.pdfs } actionsEnable = { this.canSend() ? true : false } 
+                        onClick = { this.onClick } />    
                 </CustomModal>
                 <Modal show = { modal.orden_compra } onHide = { this.handleCloseModalOrden } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>AGREGAR ORDEN DE COMPRA</Modal.Header>
@@ -1750,16 +1879,15 @@ class TicketDetails extends Component {
                                                     type="file"
                                                     onChange={(e) => { this.onChangeSwal(e.target.files[0], 'adjunto', 'orden_compra'); this.changeNameFile('adjunto') }}
                                                     name='adjunto'
-                                                    accept="image/*, application/pdf"
+                                                    accept="application/pdf"
                                                 />
                                                 <div className="font-weight-bolder font-size-md ml-2" id="info">Subir orden de compra</div>
                                             </label>
                                             {
-                                                formularios.orden_compra.adjunto === ''?
-                                                <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden </span>
+                                                formularios.orden_compra.adjunto === '' ?
+                                                    <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden </span>
                                                 :<></>
                                             }
-                                            
                                         </div>
                                     </div>
                                 </div>
