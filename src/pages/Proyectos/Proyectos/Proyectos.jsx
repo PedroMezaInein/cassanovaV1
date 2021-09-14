@@ -2080,7 +2080,7 @@ class Proyectos extends Component {
                         </Card>
                     </div>
                 </Modal>
-                <Modal size="xl" title={title} show={modalAvances} handleClose={this.handleCloseAvances}>
+                <Modal size="lg" title={title} show={modalAvances} handleClose={this.handleCloseAvances}>
                     <Tabs defaultActiveKey = "nuevo" className = "nav nav-tabs nav-tabs-line font-weight-bolder mb-8 justify-content-center border-0 mt-5 nav-tabs-line-2x">
                         <Tab eventKey = "nuevo" title = "Nuevo avance">
                             <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
