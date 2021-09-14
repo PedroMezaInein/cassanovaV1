@@ -14,6 +14,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
 import { TickesFilter } from '../../../components/filters'
 class TicketTable extends Component {
+    
     state = {
         calidad: '',
         form: { fecha: new Date() },
@@ -62,6 +63,7 @@ class TicketTable extends Component {
             }
         }
     }
+    
     getOptionsAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -79,6 +81,7 @@ class TicketTable extends Component {
             console.error(error, 'error')
         })
     }
+    
     openModalDeleteTicket = calidad => {
         deleteAlert('¡BORRARÁS EL TICKET!', '¿DESEAS ELIMINARLO?', () => { this.deleteTicketAxios(calidad) })
     }
@@ -107,6 +110,7 @@ class TicketTable extends Component {
         })
         return aux
     }
+    
     setActionsMantenimientos = (calidad) => {
         return(
             <div className="w-100 d-flex justify-content-center">
@@ -125,6 +129,7 @@ class TicketTable extends Component {
             </div>
         )
     }
+    
     async getCalidadAxios() {
         $('#tickets').DataTable().search({}).draw();
     }
@@ -141,6 +146,7 @@ class TicketTable extends Component {
             console.error(error, 'error')
         })
     }
+    
     changePageSee = calidad => {
         const { history } = this.props
         history.push({
@@ -169,6 +175,7 @@ class TicketTable extends Component {
             console.error(error, 'error')
         })
     }
+    
     openModalFiltros = () => {
         const { modal } = this.state
         modal.filtros = true
@@ -180,6 +187,7 @@ class TicketTable extends Component {
         modal.filtros = false
         this.setState({...this.state, modal})
     }
+    
     clearFiltros = (e) => {
         e.preventDefault()
         const { modal } = this.state
@@ -214,12 +222,14 @@ class TicketTable extends Component {
         })
         return filters;
     }
+    
     onSubmitFilters = () => {
         const { filters, modal } = this.state
         modal.filtros = false
         this.setState({...this.state, modal})
         $('#tickets').DataTable().search( JSON.stringify(filters) ).draw();
     }
+    
     onChangeFilter = e => {
         const { name, value, type, checked } = e.target
         const { filters } = this.state
@@ -255,10 +265,12 @@ class TicketTable extends Component {
         }
         this.setState({...this.state, filters})
     }
+    
     pendingPaymentClick = () => {
         const { restante } = this.state
         pendingPaymentAlert('PENDIENTE DE PAGO', restante)
     }
+
     render() {
         const { modal, filters, options } = this.state
         return (
@@ -266,23 +278,17 @@ class TicketTable extends Component {
                 <NewTable tableName = 'tickets' subtitle = 'Listado de tickets' title = 'Tickets' mostrar_boton = { true } abrir_modal = { false }
                     url = '/calidad/tickets/nuevo-ticket' columns = { PROYECTOS_TICKETS } accessToken = { this.props.authUser.access_token } 
                     setter = { this.setCalidad } urlRender={`${URL_DEV}v3/calidad/tickets`} filterClick = { this.openModalFiltros } exportar_boton = { true } 
-                    onClickExport = { () => this.exportTicketsAxios() } pendingPaymentClick = { this.pendingPaymentClick}
-                />
+                    onClickExport = { () => this.exportTicketsAxios() } pendingPaymentClick = { this.pendingPaymentClick} />
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filtros } handleClose = { this.handleCloseFiltros }>
-                    <TickesFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilters } onChangeFilter={ this.onChangeFilter } options={options}/>
+                    <TickesFilter filters = { filters } clearFiltros = { this.clearFiltros } onSubmitFilters = { this.onSubmitFilters } 
+                        onChangeFilter = { this.onChangeFilter } options = { options } />
                 </Modal>
             </Layout>
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TicketTable);
