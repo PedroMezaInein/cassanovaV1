@@ -22,7 +22,7 @@ class SingleProyecto extends Component {
             { eventKey: 'adjuntos', icon: 'flaticon-attachment', name: 'Adjuntos' },
             { eventKey: 'presupuestos', icon: 'flaticon-list-1', name: 'Presupuestos' },
         ],
-        activeKeyNav: 'avances',
+        activeKeyNav: 'informacion',
         options:{
             empresas: [],
             clientes: [],
@@ -106,12 +106,20 @@ class SingleProyecto extends Component {
             console.error(error, 'error')
         })
     }
+    
     controlledNav = value => {
-        this.setState({
-            ...this.state,
-            activeKeyNav: value,
-        })
+        this.setState({ ...this.state, activeKeyNav: value })
     }
+
+    onClick = (type, aux) => {
+        switch(type){
+            case 'change-tab':
+                this.controlledNav(aux)
+                break;
+            default: break;
+        }
+    }
+    
     render() {
         const { proyecto, navs, activeKeyNav, options } = this.state
         const { access_token } = this.props.authUser
@@ -165,10 +173,12 @@ class SingleProyecto extends Component {
                                     </div>
                                     <Tab.Content>
                                         <Tab.Pane eventKey="informacion">
-                                            <EditProyectoForm proyecto = { proyecto } options = { options } at = { access_token }/>
+                                            <EditProyectoForm proyecto = { proyecto } options = { options } at = { access_token } 
+                                                refresh = { this.getOneProyecto } isActive = { activeKeyNav === 'informacion' ? true : false } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="avances">
-                                            <Avances proyecto={proyecto} user={user} at = { access_token }/>
+                                            <Avances proyecto = { proyecto } user = { user } at = { access_token } 
+                                                isActive = { activeKeyNav === 'avances' ? true : false } onClick = { this.onClick } />
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>
