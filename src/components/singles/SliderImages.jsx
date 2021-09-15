@@ -63,7 +63,7 @@ class SliderImages extends Component {
                     </div>
                 </div>
                 <div className="font-weight-light font-size-lg mt-4 text-justify px-4">
-                    <div className="mb-4 text-center"><span className="font-weight-bold">PORCENTAJE DE AVANCE:</span> {elements.[active].avance}%</div>
+                    <div className="mb-4 text-center"><span className="font-weight-bold">PORCENTAJE DE AVANCE:</span> {elements[active].avance}%</div>
                     {
                         elements[active].descripcion
                     }
