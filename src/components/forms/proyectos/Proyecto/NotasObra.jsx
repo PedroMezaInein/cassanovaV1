@@ -1,15 +1,23 @@
 import React, { Component } from 'react'
+import axios from 'axios'
+import Swal from 'sweetalert2'
+import { URL_DEV } from '../../../../constants'
+import { setSingleHeader } from '../../../../functions/routers'
 import { Card, DropdownButton, Dropdown } from 'react-bootstrap'
 import { dayDMY, setNaviIcon } from '../../../../functions/setters'
-
+import { Link } from 'react-router-dom';
+import { questionAlert, waitAlert, printResponseErrorAlert, errorAlert, doneAlert, deleteAlert} from '../../../../functions/alert'
 class NotasObra extends Component {
     state = {
         activeNota: 'notas',
-        formeditado: 0
+        formeditado: 0,
+        notas: []
     }
     componentDidMount() {
-        const { notas } = this.props
+        const { proyecto } = this.props
+        this.getNotas(proyecto)
         let { activeNota } = this.state
+        const { notas } =  this.state
         if (notas.length > 0) {
             activeNota = 'notas'
         }
@@ -18,17 +26,113 @@ class NotasObra extends Component {
             activeNota
         })
     }
-
+    // componentDidUpdate = prev => {
+    //     const { isActive, notas } = this.props
+    //     const { isActive: prevActive } = prev
+    //     let { activeNota } = this.state
+    //     if(isActive && !prevActive){
+    //         if (notas.length > 0) {
+    //             activeNota = 'notas'
+    //         }else{
+    //             activeNota='new'
+    //         }
+    //         this.setState({ ...this.state, activeNota })
+    //     }
+    // }
     onClickNota = (type) => {
         this.setState({
             ...this.state,
             activeNota: type
         })
     }
+    
+    /* -------------------------------------------------------------------------- */
+    /*                                   GET NOTAS                                */
+    /* -------------------------------------------------------------------------- */
+    getNotas = async(proyecto) => {
+        waitAlert()
+        const { at } = this.props
+        await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, { headers: { Authorization: `Bearer ${at}` } }).then(
+            (response) => {
+                Swal.close()
+                const { proyecto } = response.data
+                let { notas } = this.state
+                notas = proyecto.notas
+                this.setState({
+                    ...this.state,
+                    notas
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+    /* -------------------------------------------------------------------------- */
+    /*                             ANCHOR DELETE NOTA                             */
+    /* -------------------------------------------------------------------------- */
+    openModalDeleteNota = nota => {
+        deleteAlert(`¿DESEAS ELIMINAR LA NOTA ${this.cerosNota(nota.numero_nota)}?`, '', () => this.deleteNotaAxios(nota))
+    }
+    async deleteNotaAxios(nota) {
+        const { proyecto, at } = this.props
+        await axios.delete(`${URL_DEV}v1/proyectos/nota-bitacora/${nota.id}?proyecto=${proyecto.id}`, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { proyecto } = response.data
+                let { activeNota } = this.state
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.')
+                this.getNotas(proyecto)
+                if(proyecto.notas.length > 0){
+                    activeNota = 'notas'
+                }else{
+                    activeNota='new'
+                }
+                this.setState({
+                    ...this.state,
+                    activeNota
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+    cerosNota(num) {
+        if ( num < 10 ){
+            return ( '00' + num.toString () );
+        }else if ( num < 100 ){
+            return ( '0' + num.toString () );
+        }else{
+            return ( num );
+        }
+    }
+    /* -------------------------------------------------------------------------- */
+    /*                           ANCHOR GENERAR NOTA                              */
+    /* -------------------------------------------------------------------------- */
+    generarBitacora = async (e) => {
+        e.preventDefault();
+        questionAlert('¿ESTÁS SEGURO?', 'GENERARÁS EL PDF CON LAS NOTAS DE OBRA GUARDADAS', () => this.generarBitacoraAxios())
+    }
+    generarBitacoraAxios = async() => {
+        waitAlert()
+        const { at } = this.props
+        const { proyecto } = this.props
+        await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { proyecto } = response.data
+                doneAlert('PDF GENERADO CON ÉXITO')
+                window.open(proyecto.bitacora, '_blank').focus();
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     render() {
-        const { activeNota } = this.state
-        const { notas } = this.props
-        console.log(activeNota, 'activeNota')
+        const { activeNota, notas } = this.state
+        const { proyecto } = this.props
+        console.log(notas, 'notas')
         return (
             <>
                 <Card className="card-custom gutter-b">
@@ -39,12 +143,16 @@ class NotasObra extends Component {
                                 <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.onClickNota('new') }}>
                                     {setNaviIcon('las la-plus icon-lg', 'AGREGAR NUEVA NOTA')}
                                 </Dropdown.Item>
-                                <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.onClickNota('pdf') }}>
-                                    {setNaviIcon('las la-file-pdf icon-lg', 'GENERAR PDF')}
+                                <Dropdown.Item className="text-hover-info dropdown-info" tag={Link}  onClick = { this.generarBitacora } >
+                                    {setNaviIcon('las la-file-pdf icon-lg', 'GENERAR BITÁCORA (PDF)')}
                                 </Dropdown.Item>
-                                <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.onClickNota('see') }}>
-                                    {setNaviIcon('las la-search icon-lg', 'VER BITÁCORA')}
-                                </Dropdown.Item>
+                                {
+                                    proyecto.bitacora?
+                                    <Dropdown.Item className="text-hover-info dropdown-info"  href = { proyecto.bitacora } tag={Link} target = '_blank' rel="noopener noreferrer">
+                                        {setNaviIcon('las la-search icon-lg', 'VER BITÁCORA DE OBRA')}
+                                    </Dropdown.Item>
+                                    :<></>
+                                }
                             </DropdownButton>
                         </div>
                     </Card.Header>
@@ -83,19 +191,21 @@ class NotasObra extends Component {
                                                                         {dayDMY(nota.fecha)}
                                                                     </div>
                                                                 </td>
-                                                                <td> {nota.notas} </td>
+                                                                <td className={`text-${nota.notas === null?'center':'justify'}`}> {nota.notas === null?'Sin notas':nota.notas} </td>
                                                                 <td className="text-center  font-weight-bold">
                                                                     <div className="w-max-content mx-auto">
                                                                         {
-                                                                            nota.adjuntos.map((adjunto, key) => {
-                                                                                return (
-                                                                                    <u>
-                                                                                        <a key={key} target='_blank' rel="noreferrer" href={adjunto.url} className="text-dark text-hover-success mb-1 d-block">
-                                                                                            Adjunto {key + 1}
-                                                                                        </a>
-                                                                                    </u>
-                                                                                )
-                                                                            })
+                                                                            nota.adjuntos.length>0?
+                                                                                nota.adjuntos.map((adjunto, key) => {
+                                                                                    return (
+                                                                                        <u>
+                                                                                            <a key={key} target='_blank' rel="noreferrer" href={adjunto.url} className="text-dark text-hover-success mb-1 d-block">
+                                                                                                Adjunto {key + 1}
+                                                                                            </a>
+                                                                                        </u>
+                                                                                    )
+                                                                                })
+                                                                            :<>Sin adjuntos</>
                                                                         }
                                                                     </div>
                                                                 </td>
@@ -111,16 +221,10 @@ class NotasObra extends Component {
                                             </tbody>
                                         </table>
                                     </div>
+                            :activeNota === 'new'?
+                            <>Mostrar formulario</>
                             :<></>
-                            
-                            // activeNota === 'new'?
-                            // :activeNota === 'new'?
-                            // :activeNota === 'new'?
                         }
-                        {/* {
-                            activeNota === 'new'?
-                            :''
-                        } */}
                     </Card.Body>
                 </Card>
             </>

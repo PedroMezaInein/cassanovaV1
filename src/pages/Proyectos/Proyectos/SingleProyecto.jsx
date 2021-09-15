@@ -30,9 +30,6 @@ class SingleProyecto extends Component {
             estatus: [],
             tipos:[],
             cp_clientes: []
-        },
-        data: {
-            notas: []
         }
     }
 
@@ -115,44 +112,17 @@ class SingleProyecto extends Component {
     }
 
     onClick = (type, aux) => {
-        const { proyecto } = this.state
         switch(type){
             case 'change-tab':
                 this.controlledNav(aux)
                 break;
-            case 'notas':
-                this.getNotas(proyecto)
-                break;
             default: break;
         }
-    }
-    /* -------------------------------------------------------------------------- */
-    /*                                   GET NOTAS                                */
-    /* -------------------------------------------------------------------------- */
-    getNotas = async(proyecto) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                Swal.close()
-                const { proyecto } = response.data
-                const { data } = this.state
-                data.notas = proyecto.notas
-                this.setState({
-                    ...this.state,
-                    data
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
     }
     render() {
         const { proyecto, navs, activeKeyNav, options, data } = this.state
         const { access_token } = this.props.authUser
         const { user } = this.props.authUser
-        console.log(data, 'data')
         return (
             <Layout active='proyectos' {...this.props}>
                 {
@@ -210,7 +180,7 @@ class SingleProyecto extends Component {
                                                 isActive = { activeKeyNav === 'avances' ? true : false } onClick = { this.onClick } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="notas">
-                                            <NotasObra notas = { data.notas }/>
+                                            <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }  onClick = { this.onClick }  />
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>
