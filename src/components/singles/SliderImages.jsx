@@ -43,18 +43,13 @@ class SliderImages extends Component {
                             </span>
                         </div>
                     </div>
-                    <div className="w-50 text-center px-2">
+                    <div className="w-50 text-center mx-6">
                         {
                             elements[active].descripcion ?
                                 <>
                                     <div>
                                         <img alt = '' src={elements[active].adjunto.url} className="rounded pdfview-img"/>
                                     </div>
-                                    <p className="font-weight-light font-size-lg mt-4 text-justify px-4">
-                                        {
-                                            elements[active].descripcion
-                                        }
-                                    </p>
                                 </>
                                 : ''
                         }
@@ -66,6 +61,12 @@ class SliderImages extends Component {
                             </span>
                         </div>
                     </div>
+                </div>
+                <div className="font-weight-light font-size-lg mt-4 text-justify px-4">
+                    <div className="mb-4 text-center"><span className="font-weight-bold">PORCENTAJE DE AVANCE:</span> {elements[active].avance}%</div>
+                    {
+                        elements[active].descripcion
+                    }
                 </div>
             </>
         )

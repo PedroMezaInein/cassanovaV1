@@ -1164,6 +1164,16 @@ export function setFase(proyecto) {
     return aux
 }
 
+export function setNaviIcon(icon, text) {
+    return (
+        <span className="navi-icon d-flex align-self-center">
+            <div className="d-flex"><i className={`${icon} mr-2`} /></div>
+            <div className="navi-text align-self-center">
+                {text}
+            </div>
+        </span>
+    )
+}
 export function printTableCP (key, cliente) {
     return (
         <tbody key={key}>

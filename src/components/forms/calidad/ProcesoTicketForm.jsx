@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert, questionAlert } from '../../../functions/alert'
-import { InputGray, Button, CalendarDay, InputMoneyGray, SelectSearchGray } from '../../form-components'
+import { InputGray, Button, CalendarDay, InputMoneyGray, SelectSearchGrayTrue } from '../../form-components'
 import ItemSlider from '../../singles/ItemSlider'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
 import { dayDMY, setMoneyText } from '../../../functions/setters'
@@ -128,11 +128,11 @@ class ProcesoTicketForm extends Component {
                                                         </Col>
                                                         <Col md = { 6 }>
                                                             <div className="col-md-12">
-                                                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } name = "equipo"
+                                                                <SelectSearchGrayTrue withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } name = "equipo"
                                                                     options = { options.equipos } placeholder = 'SELECCIONA EL EQUIPO INSTALADO' 
                                                                     value = { form.equipo } onChange = { (value) => { this.updateSelect(value, 'equipo') } } 
-                                                                    iconclass = "la la-toolbox icon-xl" formeditado = { 0 } 
-                                                                    messageinc = "Incorrecto. Selecciona el equipo instalado" />
+                                                                    iconclass = "la la-toolbox icon-xl" formeditado = { 0 }
+                                                                />
                                                             </div>
                                                         </Col>
                                                     </Row>        

@@ -8,7 +8,7 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import { Card, Tab, Nav } from 'react-bootstrap'
 import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
-import { EditProyectoForm } from '../../../components/forms'
+import { EditProyectoForm, NotasObra, Avances } from '../../../components/forms'
 class SingleProyecto extends Component {
 
     state = {
@@ -18,6 +18,7 @@ class SingleProyecto extends Component {
             { eventKey: 'compras', icon: 'flaticon-bag', name: 'Compras' },
             { eventKey: 'facturacion', icon: 'las la-file-invoice-dollar', name: 'Facturación' },
             { eventKey: 'avances', icon: 'flaticon-diagram', name: 'Avances' },
+            { eventKey: 'notas', icon: 'flaticon-notes', name: 'Notas de obra' },
             { eventKey: 'adjuntos', icon: 'flaticon-attachment', name: 'Adjuntos' },
             { eventKey: 'presupuestos', icon: 'flaticon-list-1', name: 'Presupuestos' },
         ],
@@ -29,7 +30,7 @@ class SingleProyecto extends Component {
             estatus: [],
             tipos:[],
             cp_clientes: []
-        },
+        }
     }
 
     componentDidMount = () => {
@@ -105,17 +106,25 @@ class SingleProyecto extends Component {
             console.error(error, 'error')
         })
     }
+    
     controlledNav = value => {
-        this.setState({
-            ...this.state,
-            activeKeyNav: value,
-        })
+        this.setState({ ...this.state, activeKeyNav: value })
+    }
+
+    onClick = (type, aux) => {
+        switch(type){
+            case 'change-tab':
+                this.controlledNav(aux)
+                break;
+            default: break;
+        }
     }
     render() {
-        const { proyecto, navs, activeKeyNav, options } = this.state
+        const { proyecto, navs, activeKeyNav, options, data } = this.state
         const { access_token } = this.props.authUser
+        const { user } = this.props.authUser
         return (
-            <Layout active='proyectos' {...this.props}>
+            <Layout active = 'proyectos' {...this.props} >
                 {
                     proyecto ?
                         <div className="d-flex flex-column flex-xl-row">
@@ -149,11 +158,11 @@ class SingleProyecto extends Component {
                                                 navs.map((nav, key) => {
                                                     return (
                                                         <Nav.Item key={key}>
-                                                            <Nav.Link eventKey={nav.eventKey} onClick={(e) => { e.preventDefault(); this.controlledNav(nav.eventKey) }}>
+                                                            <Nav.Link eventKey={nav.eventKey} onClick={(e) => { e.preventDefault();this.onClick(nav.eventKey); this.controlledNav(nav.eventKey) }}>
                                                                 <span className="nav-icon">
                                                                     <i className={`${nav.icon} icon-lg mr-2`}></i>
                                                                 </span>
-                                                                <span className="nav-text font-weight-bolder">{nav.name}</span>
+                                                                <span className="nav-text font-weight-bolder white-space-nowrap">{nav.name}</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                     )
@@ -163,22 +172,21 @@ class SingleProyecto extends Component {
                                     </div>
                                     <Tab.Content>
                                         <Tab.Pane eventKey="informacion">
-                                            <Card className="card pt-4 mb-6 mb-xl-9">
-                                                <Card.Header className="border-0">
-                                                    <Card.Title>
-                                                        <h2>INFORMACIÓN DEL LEAD</h2>
-                                                    </Card.Title>
-                                                    <div className="card-toolbar">
-                                                    </div>
-                                                </Card.Header>
-                                            </Card>
-                                            <EditProyectoForm proyecto= { proyecto } options = { options } at = { access_token }/>
+                                            <EditProyectoForm proyecto = { proyecto } options = { options } at = { access_token } 
+                                                refresh = { this.getOneProyecto } isActive = { activeKeyNav === 'informacion' ? true : false } />
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="avances">
+                                            <Avances proyecto = { proyecto } user = { user } at = { access_token } refresh = { this.getOneProyecto }
+                                                isActive = { activeKeyNav === 'avances' ? true : false } onClick = { this.onClick } />
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="notas">
+                                            <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }  onClick = { this.onClick }  />
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>
                             </Tab.Container>
                         </div>
-                        : <></>
+                    : <></>
                 }
             </Layout>
         )
