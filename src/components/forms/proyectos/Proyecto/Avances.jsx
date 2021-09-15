@@ -324,7 +324,7 @@ class Avances extends Component {
         await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { alma } = response.data
-                let urlPath = `test/proyectos/${proyecto.id}/avance/${form.semana}/`
+                let urlPath = `proyectos/${proyecto.id}/avance/${form.semana}/`
                 if(tabAvance !== 'attached'){
                     form.avances.forEach((avance, key) => {
                         avance.adjuntos.files.forEach((file, index) => {
