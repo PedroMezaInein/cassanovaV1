@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { renderToString } from "react-dom/server";
 import axios from 'axios'
-import { URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
@@ -19,7 +19,6 @@ import { CreatableMultiselectGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
 import { Modal as CustomModal } from '../../../components/singles'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import TableForModals from '../../../components/tables/TableForModals'
 class TicketDetails extends Component {
 
     state = {
@@ -689,7 +688,6 @@ class TicketDetails extends Component {
             (response) => {
                 const { adjunto, presupuesto: pres } = response.data
                 this.getPresupuestoAxios(pres.id)
-                const { form, presupuesto, options } = this.state
                 var win = window.open(adjunto.url, '_blank');
                 if (win) {
                     win.focus();
@@ -1373,7 +1371,7 @@ class TicketDetails extends Component {
     }
     
     onClick = (type, aux) => {
-        const { presupuesto, modal, formularios } = this.state
+        const { formularios } = this.state
         switch(type){
             case 'volumetrias':
                 this.onClickVolumetrias()
@@ -1752,7 +1750,7 @@ class TicketDetails extends Component {
 
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, 
-            defaultNavTabs, adjuntos, adjunto } = this.state
+            defaultNavTabs, adjunto } = this.state
         const { formulario } = this.props
         const { access_token } = this.props.authUser
         return (
