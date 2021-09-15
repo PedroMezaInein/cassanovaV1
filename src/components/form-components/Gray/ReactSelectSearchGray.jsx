@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 class ReactSelectSearchGray extends Component {
     render() {
-        const { options, placeholder, onChange, defaultvalue, name, requirevalidation, messageinc, iconclass} = this.props
+        const { options, placeholder, onChange, defaultvalue, name, requirevalidation, messageinc, iconclass, customdiv} = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'
@@ -70,7 +70,7 @@ class ReactSelectSearchGray extends Component {
             }),
         }
         return (
-            <div>
+            <div className={customdiv}>
                 <label className="col-form-label font-weight-bold text-dark-60">{placeholder}</label>
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
