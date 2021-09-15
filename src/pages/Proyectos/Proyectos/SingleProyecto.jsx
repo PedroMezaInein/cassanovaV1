@@ -8,7 +8,7 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import { Card, Tab, Nav } from 'react-bootstrap'
 import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
-import { EditProyectoForm, InfoLead, Avances } from '../../../components/forms'
+import { EditProyectoForm, NotasObra, Avances } from '../../../components/forms'
 class SingleProyecto extends Component {
 
     state = {
@@ -30,7 +30,7 @@ class SingleProyecto extends Component {
             estatus: [],
             tipos:[],
             cp_clientes: []
-        },
+        }
     }
 
     componentDidMount = () => {
@@ -119,9 +119,8 @@ class SingleProyecto extends Component {
             default: break;
         }
     }
-    
     render() {
-        const { proyecto, navs, activeKeyNav, options } = this.state
+        const { proyecto, navs, activeKeyNav, options, data } = this.state
         const { access_token } = this.props.authUser
         const { user } = this.props.authUser
         return (
@@ -159,7 +158,7 @@ class SingleProyecto extends Component {
                                                 navs.map((nav, key) => {
                                                     return (
                                                         <Nav.Item key={key}>
-                                                            <Nav.Link eventKey={nav.eventKey} onClick={(e) => { e.preventDefault(); this.controlledNav(nav.eventKey) }}>
+                                                            <Nav.Link eventKey={nav.eventKey} onClick={(e) => { e.preventDefault();this.onClick(nav.eventKey); this.controlledNav(nav.eventKey) }}>
                                                                 <span className="nav-icon">
                                                                     <i className={`${nav.icon} icon-lg mr-2`}></i>
                                                                 </span>
@@ -179,6 +178,9 @@ class SingleProyecto extends Component {
                                         <Tab.Pane eventKey="avances">
                                             <Avances proyecto = { proyecto } user = { user } at = { access_token } refresh = { this.getOneProyecto }
                                                 isActive = { activeKeyNav === 'avances' ? true : false } onClick = { this.onClick } />
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="notas">
+                                            <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }  onClick = { this.onClick }  />
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>

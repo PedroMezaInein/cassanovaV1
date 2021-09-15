@@ -1229,13 +1229,13 @@ class Proyectos extends Component {
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             },
-            {
-                text: 'Avances',
-                btnclass: 'dark',
-                iconclass: 'flaticon2-photo-camera',
-                action: 'avances',
-                tooltip: { id: 'avances', text: 'Avances' }
-            },
+            // {
+            //     text: 'Avances',
+            //     btnclass: 'dark',
+            //     iconclass: 'flaticon2-photo-camera',
+            //     action: 'avances',
+            //     tooltip: { id: 'avances', text: 'Avances' }
+            // },
             {
                 text: 'Nota&nbsp;de&nbsp;obra',
                 btnclass: 'info',
@@ -2191,61 +2191,6 @@ class Proyectos extends Component {
                                                 })
                                             }
                                         </tbody>
-                                        {/* <tbody>
-                                            <tr>
-                                                <th scope="row" className="bg-gray-200">PRECIO DISEÑO</th>
-                                                <td>
-                                                    {
-                                                        form.precio_esquema_1 !== '-' ?
-                                                            setMoneyTableForNominas(form.precio_esquema_1)
-                                                            : '-'
-                                                    }
-                                                </td>
-                                                <td>
-                                                    {
-                                                        form.precio_esquema_2 !== '-' ?
-                                                            setMoneyTableForNominas(form.precio_esquema_2)
-                                                            : '-'
-                                                    }
-                                                </td>
-                                                <td>
-                                                    {
-                                                        form.precio_esquema_3 !== '-' ?
-                                                            setMoneyTableForNominas(form.precio_esquema_3)
-                                                            : '-'
-                                                    }
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row" className="bg-gray-200">INCREMENTO</th>
-                                                <td>-</td>
-                                                <td className="px-1">
-                                                    <div className="d-flex justify-content-center">
-                                                        <InputNumberSinText
-                                                            requirevalidation={0}
-                                                            name="incremento_esquema_2"
-                                                            onChange={onChange}
-                                                            value={form.incremento_esquema_2}
-                                                            prefix='%'
-                                                            identificador='incremento_esquema_2'
-                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
-                                                        />
-                                                    </div>
-                                                </td>
-                                                <td className="px-1">
-                                                    <div className="d-flex justify-content-center">
-                                                        <InputNumberSinText
-                                                            requirevalidation={0}
-                                                            name="incremento_esquema_3"
-                                                            onChange={onChange}
-                                                            value={form.incremento_esquema_3}
-                                                            prefix='%'
-                                                            customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark"
-                                                        />
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody> */}
                                     </table>
                                 </Tab>
                         }

@@ -101,6 +101,41 @@
         color: #009ef7 !important; 
     }
 }
+
+#dropdown-proyectos-light-primary {
+    color: #009ef7;
+    background-color: #f1faff;
+    border-color: #f1faff;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 0.4rem 0.6rem;
+    &:hover {
+        background-color: #009ef7;
+        border-color: #009ef7;
+        color: white !important;
+    }
+    &:active {
+        background-color: #f1faff;
+        border-color: #f1faff;
+        color: white !important;
+    }
+    i {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        color: #009ef7;
+        &:hover { color: white; }
+        &:active { color: white; }
+    }
+    &:hover i {
+        color: white !important; 
+    }
+}
 .toolbar-dropdown{
     .dropdown-menu.show{
         padding: 0;

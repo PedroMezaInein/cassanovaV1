@@ -129,7 +129,7 @@ import TableMantenimiento from './MiProyecto/TableMantenimiento'
 import EditProyectoForm from './proyectos/Proyecto/EditProyectoForm'
 import InfoProyecto from './proyectos/Proyecto/InfoProyecto'
 import ClienteCPModal from './proyectos/Proyecto/ClienteCPModal'
-import InfoLead from './proyectos/Proyecto/InfoLead'
+import NotasObra from './proyectos/Proyecto/NotasObra'
 import Avances from './proyectos/Proyecto/Avances'
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -241,4 +241,4 @@ export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
     PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
-    InfoProyecto, EditProyectoForm, ClienteCPModal, InfoLead, Avances}
+    InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances}

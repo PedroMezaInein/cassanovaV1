@@ -425,3 +425,20 @@
 .btn.btn-color-primary2.dropdown-toggle:after {
     color: #009ef7
 }
+.symbol.symbol-light-primary2 .symbol-label {
+    color: #009ef7;
+    background-color: #ecf8ff;
+}
+.symbol.symbol-light-success2 .symbol-label {
+    color: #50cd89;
+    background-color: #e8fff3;
+}
+.table-notas thead{
+    font-weight: 600;
+    color: #212121 !important;
+    font-size: 1rem;
+    letter-spacing: 0.1rem;
+}
+.table-notas td{
+    border-top: 1px dashed #ECF0F3;
+}

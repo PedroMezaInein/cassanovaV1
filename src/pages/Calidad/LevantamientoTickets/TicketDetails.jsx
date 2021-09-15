@@ -8,13 +8,12 @@ import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAler
 import Layout from '../../../components/layout/layout'
 import { PresupuestoGeneradoNoCrm, TicketView } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
-import { setSingleHeader, setFormHeader, toAbsoluteUrl } from '../../../functions/routers'
+import { setSingleHeader, setFormHeader } from '../../../functions/routers'
 import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import moment from 'moment'
 import 'moment/locale/es'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
-import SVG from "react-inlinesvg";
 import { CreatableMultiselectGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
 import { Modal as CustomModal } from '../../../components/singles'
@@ -859,17 +858,15 @@ class TicketDetails extends Component {
                                     <div className="form-group row form-group-marginless mt-5 mb-0">
                                         <div className="col-md-12">
                                             <label htmlFor="adjunto_evidencia" className="drop-files">
-                                                <span className="svg-icon svg-icon-2x svg-icon-primary">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')} />
-                                                </span>
+                                                <i className="las la-file-pdf icon-xl text-primary"></i>
                                                 <input
                                                     id="adjunto_evidencia"
                                                     type="file"
                                                     onChange={(e) => { this.onChangeSwal(e.target.files[0], 'adjuntoEvidencia', 'presupuesto_generado'); this.changeNameFile('adjunto_evidencia') }}
                                                     name='adjunto_evidencia'
-                                                    accept="image/*, application/pdf"
+                                                    accept="application/pdf"
                                                 />
-                                                <div className="font-weight-bolder font-size-md ml-2" id="info">Subir evidencia</div>
+                                                <div className="font-weight-bolder font-size-md ml-2" id="info">Subir evidencia (PDF)</div>
                                             </label>
                                         </div>
                                     </div>
@@ -1869,9 +1866,7 @@ class TicketDetails extends Component {
                                     <div className="form-group row form-group-marginless mt-5 mb-0">
                                         <div className="col-md-12">
                                             <label htmlFor="adjunto" className="drop-files">
-                                                <span className="svg-icon svg-icon-2x svg-icon-primary">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/Uploaded-file.svg')} />
-                                                </span>
+                                                <i className="las la-file-pdf icon-xl text-primary"></i>
                                                 <input
                                                     id="adjunto"
                                                     type="file"
@@ -1879,11 +1874,11 @@ class TicketDetails extends Component {
                                                     name='adjunto'
                                                     accept="application/pdf"
                                                 />
-                                                <div className="font-weight-bolder font-size-md ml-2" id="info">Subir orden de compra</div>
+                                                <div className="font-weight-bolder font-size-md ml-2" id="info">Subir orden de compra (PDF)</div>
                                             </label>
                                             {
                                                 formularios.orden_compra.adjunto === '' ?
-                                                    <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden </span>
+                                                    <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden (PDF) </span>
                                                 :<></>
                                             }
                                         </div>
