@@ -335,7 +335,7 @@ class EditProyectoForm extends Component {
                                     </button>
                                 </div>
                             </Card.Header>
-                            <Card.Body>
+                            <Card.Body className = 'px-0 px-md-4'>
                                 {
                                     showInfo ?
                                         <InfoProyecto proyecto={proyecto}/>
