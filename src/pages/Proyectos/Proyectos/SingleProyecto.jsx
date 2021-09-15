@@ -8,7 +8,7 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import { Card, Tab, Nav } from 'react-bootstrap'
 import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
-import { EditProyectoForm, InfoLead, Avances } from '../../../components/forms'
+import { EditProyectoForm, NotasObra, Avances } from '../../../components/forms'
 class SingleProyecto extends Component {
 
     state = {
@@ -22,7 +22,7 @@ class SingleProyecto extends Component {
             { eventKey: 'adjuntos', icon: 'flaticon-attachment', name: 'Adjuntos' },
             { eventKey: 'presupuestos', icon: 'flaticon-list-1', name: 'Presupuestos' },
         ],
-        activeKeyNav: 'avances',
+        activeKeyNav: 'notas',
         options:{
             empresas: [],
             clientes: [],
@@ -31,6 +31,9 @@ class SingleProyecto extends Component {
             tipos:[],
             cp_clientes: []
         },
+        data: {
+            notas: []
+        }
     }
 
     componentDidMount = () => {
@@ -112,10 +115,42 @@ class SingleProyecto extends Component {
             activeKeyNav: value,
         })
     }
+    onClick = (type) => {
+        const { proyecto } = this.state
+        switch(type){
+            case 'notas':
+                this.getNotas(proyecto)
+                break;
+            default: break;
+        }
+    }
+    /* -------------------------------------------------------------------------- */
+    /*                                   GET NOTAS                                */
+    /* -------------------------------------------------------------------------- */
+    getNotas = async(proyecto) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { proyecto } = response.data
+                const { data } = this.state
+                data.notas = proyecto.notas
+                this.setState({
+                    ...this.state,
+                    data
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
     render() {
-        const { proyecto, navs, activeKeyNav, options } = this.state
+        const { proyecto, navs, activeKeyNav, options, data } = this.state
         const { access_token } = this.props.authUser
         const { user } = this.props.authUser
+        console.log(data, 'data')
         return (
             <Layout active='proyectos' {...this.props}>
                 {
@@ -151,7 +186,7 @@ class SingleProyecto extends Component {
                                                 navs.map((nav, key) => {
                                                     return (
                                                         <Nav.Item key={key}>
-                                                            <Nav.Link eventKey={nav.eventKey} onClick={(e) => { e.preventDefault(); this.controlledNav(nav.eventKey) }}>
+                                                            <Nav.Link eventKey={nav.eventKey} onClick={(e) => { e.preventDefault();this.onClick(nav.eventKey); this.controlledNav(nav.eventKey) }}>
                                                                 <span className="nav-icon">
                                                                     <i className={`${nav.icon} icon-lg mr-2`}></i>
                                                                 </span>
@@ -169,6 +204,9 @@ class SingleProyecto extends Component {
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="avances">
                                             <Avances proyecto={proyecto} user={user} at = { access_token }/>
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="notas">
+                                            <NotasObra notas = { data.notas }/>
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>
