@@ -37,7 +37,6 @@ class AvanceForm extends Component {
         const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, onSubmit, formeditado, handleChange, isNew,
             deleteRowAvance, 
             
-            
             // tagInputChange, sendMail, proyecto, onChangeAdjunto,  ...props
         } = this.props
         // const { activeKey } = this.state
@@ -328,12 +327,8 @@ class AvanceForm extends Component {
                                 <div className="separator separator-dashed mt-5 mb-2"></div>
                                 <div className='mt-2 col-md-12 text-center'>
                                     <label className="col-form-label mb-2 font-weight-bolder text-dark-60">Adjuntar avance</label><br />
-                                    <ItemSlider
-                                        items={form.adjuntos.avance.files}
-                                        item='avance'
-                                        multiple={false}
-                                        handleChange={handleChange}
-                                    />
+                                    <ItemSlider items={form.adjuntos.avance.files} item='avance' multiple={false} accept = 'application/pdf' 
+                                        handleChange={handleChange} />
                                 </div>
                                 <div className="d-flex justify-content-end border-top mt-5 pt-3">
                                     <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-avance') }} >Enviar

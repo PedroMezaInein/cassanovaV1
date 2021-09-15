@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Card, DropdownButton, Dropdown, OverlayTrigger, Tooltip, Form, Col, Row } from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import axios from 'axios'
-import { toAbsoluteUrl } from "../../../../functions/routers"
+import { setFormHeader, toAbsoluteUrl } from "../../../../functions/routers"
 import SliderImages from '../../../singles/SliderImages'
 import { dayDMY } from "../../../../functions/setters"
 import { ItemSlider, ModalSendMail, Modal } from '../../../singles'
@@ -11,6 +11,7 @@ import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert} from '../../
 import { URL_DEV } from '../../../../constants'
 import { setSingleHeader } from '../../../../functions/routers'
 import { AvanceForm } from '../../../../components/forms'
+import S3 from 'react-aws-s3';
 class Avances extends Component {
 
     state = {
@@ -197,10 +198,11 @@ class Avances extends Component {
 
     handleCloseAvances = () => {
         const { modal } = this.state
-        const { onClick } = this.props
+        const { onClick, proyecto } = this.props
         modal.add_avance = false
         this.setState({ ...this.state, modal, form: this.clearForm() })
-        onClick('change-tab', 'informacion')
+        if(proyecto.avances.length === 0)
+            onClick('change-tab', 'informacion')
     }
 
     clearForm = () => {
@@ -314,63 +316,109 @@ class Avances extends Component {
         })
     }
 
-    onSubmitNewAvance = e => {
-        e.preventDefault()
-        waitAlert();
-        this.addAvanceFileAxios()
+    onSubmitNewAvance = async() => {
+        const { form, tabAvance } = this.state
+        const { proyecto, at } = this.props
+        let auxPromises = []
+        let files = []
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { alma } = response.data
+                let urlPath = `test/proyectos/${proyecto.id}/avance/${form.semana}/`
+                if(tabAvance !== 'attached'){
+                    form.avances.forEach((avance, key) => {
+                        avance.adjuntos.files.forEach((file, index) => {
+                            files.push({ file: file, key: key })
+                        })
+                    })
+                    let auxPromises  = files.map((file) => {
+                        return new Promise((resolve, reject) => {
+                            new S3(alma).uploadFile(file.file.file, `${urlPath}${file.key}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+                                .then((data) =>{
+                                    const { location,status } = data
+                                    console.log(`Data: `, data)
+                                    if(status === 204) resolve({ name: file.file.name, url: location, key: file.key })
+                                    else reject(data)
+                                }).catch(err => reject(err))
+                        })
+                    })
+                    Promise.all(auxPromises).then(values => { this.addNewAvance(values) }).catch(err => console.error(err))
+                }else{
+                    if(form.adjuntos.avance.files.length === 1){
+                        let auxPromises  = form.adjuntos.avance.files.map((file) => {
+                            return new Promise((resolve, reject) => {
+                                new S3(alma).uploadFile(file.file, `${urlPath}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+                                    .then((data) =>{
+                                        const { location,status } = data
+                                        console.log(`Data: `, data)
+                                        if(status === 204) resolve({ name: file.file.name, url: location })
+                                        else reject(data)
+                                    }).catch(err => reject(err))
+                            })
+                        })
+                        Promise.all(auxPromises).then(values => { this.attachAvance(values) }).catch(err => console.error(err))
+                    }else{ errorAlert('Agrega UN archivo con el avance del proyecto') }
+                }
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+        
     }
 
-    async addAvanceFileAxios() {
+    attachAvance = async(values) => {
         const { form } = this.state
-        const { proyecto, at } = this.props
+        const { at, proyecto, refresh } = this.props
+        let data = {}
+        data.semana = form.semana
+        data.actividades = form.actividades_realizadas
+        data.fechaInicio = form.fechaInicio
+        data.fechaFin = form.fechaFin
+        data.archivo = values[0]
+        await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/avances`, data, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { avance } = response.data
+                var win = window.open(avance.pdf, '_blank');
+                win.focus();
+                doneAlert(`Avance generado con éxito`, ()=> {refresh(proyecto.id)})
+                this.handleCloseAvances()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
 
-        console.log(proyecto, 'proyecto add')
-        console.log(form, 'form add')
-        // const data = new FormData();
-        // let aux = Object.keys(form)
-        // aux.map((element) => {
-        //     switch (element) {
-        //         case 'fechaInicio':
-        //         case 'fechaFin':
-        //             data.append(element, (new Date(form[element])).toDateString())
-        //             break
-        //         case 'semana':
-        //             data.append(element, form[element])
-        //             break;
-        //         default:
-        //             break
-        //     }
-        //     return false
-        // })
-        // aux = Object.keys(form.adjuntos)
-        // aux.map((element) => {
-        //     if (form.adjuntos[element].value !== '') {
-        //         for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-        //             data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-        //             data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-        //         }
-        //     }
-        //     return ''
-        // })
-        // await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances/file', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${at}` } }).then(
-        //     (response) => {
-        //         const { avance, proyecto } = response.data
-        //         console.log(response.data, 'response.data')
-        //         doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue adjuntado con éxito.')
-        //         var win = window.open(avance.pdf, '_blank');
-        //         win.focus();
-        //         this.setState({
-        //             ...this.state,
-        //             form: this.clearForm()
-        //         })
-        //     },
-        //     (error) => {
-        //         printResponseErrorAlert(error)
-        //     }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.error(error, 'error')
-        // })
+    addNewAvance = async(files) => {
+        const { form } = this.state
+        const { at, proyecto, refresh } = this.props
+        files.forEach((file) => {
+            if(!form.avances[file.key].files){
+                form.avances[file.key].files = []
+            }
+            form.avances[file.key].files.push( file )
+            form.avances[file.key].adjuntos.files = []
+            form.avances[file.key].adjuntos.value = null
+        })
+        let data = {}
+        data.semana = form.semana
+        data.actividades = form.actividades_realizadas
+        data.fechaInicio = form.fechaInicio
+        data.fechaFin = form.fechaFin
+        data.avances = form.avances
+        await axios.post(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/avances`, data, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { avance } = response.data
+                var win = window.open(avance.pdf, '_blank');
+                win.focus();
+                doneAlert(`Avance generado con éxito`, ()=> {refresh(proyecto.id)})
+                this.handleCloseAvances()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
 
     onChange = e => {
@@ -459,31 +507,31 @@ class Avances extends Component {
                                                                     </Card.Header>
                                                                     <Card.Body className={`card-body px-10 ${avance.isActive ? 'collapse show' : 'collapse'}`}>
                                                                         <Row className="mx-0">
-                                                                        {
-                                                                            avance.actividades !== null?
-                                                                            <div className="col-md-12">
-                                                                                <div className="w-max-content mx-auto">
-                                                                                    <div className="font-weight-bold mb-2 text-center"><span className="bg-light px-3 font-size-lg rounded">Actividades realizadas</span></div>
-                                                                                    <ul className="mb-0">
-                                                                                        { 
-                                                                                            avance.actividades.split('\n').map(( actividad, index) =>  {
-                                                                                                return(
-                                                                                                    <li key = { index }>{actividad}</li>
-                                                                                                )
-                                                                                            })
-                                                                                        }
-                                                                                    </ul>
-                                                                                <div className="separator separator-dashed my-6"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            :<></>
-                                                                        }
+                                                                            {
+                                                                                avance.actividades !== null ?
+                                                                                    <div className="col-md-12">
+                                                                                        <div className="mx-auto">
+                                                                                            <div className="font-weight-bold mb-2 text-center"><span className="bg-light px-3 font-size-lg rounded">Actividades realizadas</span></div>
+                                                                                            <ul className="mb-0">
+                                                                                                { 
+                                                                                                    avance.actividades.split('\n').map(( actividad, index) =>  {
+                                                                                                        return(
+                                                                                                            <li key = { index }>{actividad}</li>
+                                                                                                        )
+                                                                                                    })
+                                                                                                }
+                                                                                            </ul>
+                                                                                        <div className="separator separator-dashed my-6"></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                :<></>
+                                                                            }
                                                                             <Col md={9} className="mb-5 mx-auto">
                                                                                 {
                                                                                     avance.adjuntos.length > 0 ?
-                                                                                    <SliderImages elements={avance.adjuntos} />
+                                                                                        <SliderImages elements={avance.adjuntos} />
                                                                                     :
-                                                                                    <ItemSlider  items={[{ url: avance.pdf, name: 'ficha_tecnica.pdf' }]}/>
+                                                                                        <ItemSlider  items={[{ url: avance.pdf, name: 'ficha_tecnica.pdf' }]}/>
                                                                                 }
                                                                             </Col>
                                                                         </Row>
@@ -515,8 +563,9 @@ class Avances extends Component {
                 <Modal size="lg" title='AVANCES DEL PROYECTO' show={modal.add_avance} handleClose={this.handleCloseAvances}>
                     <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
                         clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } deleteRowAvance = { this.deleteRowAvance }
-                        onSubmit = { this.onSubmitNewAvance } onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail }
-                        handleChange = { this.handleChangeAvance } formeditado = { formeditado } isNew = { tabAvance === 'attached' ? true : false } />
+                        onSubmit = { (e) => {e.preventDefault(); waitAlert(); this.onSubmitNewAvance() } } onChange = { this.onChange } proyecto = { proyecto } 
+                        sendMail = { this.sendMail } handleChange = { this.handleChangeAvance } formeditado = { formeditado } 
+                        isNew = { tabAvance === 'attached' ? true : false } />
                 </Modal>
             </div>
         )

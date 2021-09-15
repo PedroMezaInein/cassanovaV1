@@ -125,7 +125,7 @@ class SingleProyecto extends Component {
         const { access_token } = this.props.authUser
         const { user } = this.props.authUser
         return (
-            <Layout active='proyectos' {...this.props}>
+            <Layout active = 'proyectos' {...this.props} >
                 {
                     proyecto ?
                         <div className="d-flex flex-column flex-xl-row">
@@ -177,7 +177,7 @@ class SingleProyecto extends Component {
                                                 refresh = { this.getOneProyecto } isActive = { activeKeyNav === 'informacion' ? true : false } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="avances">
-                                            <Avances proyecto = { proyecto } user = { user } at = { access_token } 
+                                            <Avances proyecto = { proyecto } user = { user } at = { access_token } refresh = { this.getOneProyecto }
                                                 isActive = { activeKeyNav === 'avances' ? true : false } onClick = { this.onClick } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="notas">
@@ -187,7 +187,7 @@ class SingleProyecto extends Component {
                                 </div>
                             </Tab.Container>
                         </div>
-                        : <></>
+                    : <></>
                 }
             </Layout>
         )
