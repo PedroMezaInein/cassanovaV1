@@ -293,16 +293,13 @@ class EditProyectoForm extends Component {
     render() {
         const { showInfo, showModal, form, formeditado, modal } = this.state
         const { proyecto, options } = this.props
-        console.log(form,'form')
-        console.log(proyecto,'proyecto')
-        console.log(options, 'options')
         return (
             <>
                 {
                     proyecto ?
                         <Card className='card card-custom gutter-b'>
                             <Card.Header className="border-0 align-items-center">
-                                <div className="font-weight-bold font-size-h3 text-dark">INFORMACIÓN DEL PROYECTO</div>
+                                <div className="font-weight-bold font-size-h4 text-dark">INFORMACIÓN DEL PROYECTO</div>
                                 <div className="card-toolbar">
                                     <button type="button" className="btn btn-sm btn-flex btn-light-primary2" onClick={() => { this.mostrarFormulario() }} >
                                         {
@@ -338,7 +335,7 @@ class EditProyectoForm extends Component {
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            <div id="wizard-2" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={(e) => { openWizard2() }}>
+                                                            <div id="wizard-2" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={() => { openWizard2() }}>
                                                                 <div className="wizard-wrapper pr-lg-7 pr-5">
                                                                     <div className="wizard-icon">
                                                                         <i className="wizard-check fas fa-check"></i>
@@ -503,7 +500,7 @@ class EditProyectoForm extends Component {
                                                             </div>
                                                         </Row>
                                                         <div className="d-flex justify-content-end pt-3 border-top mt-10">
-                                                            <button type="button" className="btn btn-sm btn-flex btn-primary2 font-weight-bold" onClick={() => { openWizard2() }}>Siguiente
+                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard2() }}>Siguiente
                                                                 <span className="svg-icon svg-icon-md ml-2 mr-0">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
                                                                 </span>
@@ -580,12 +577,12 @@ class EditProyectoForm extends Component {
                                                             </div>
                                                         </div>
                                                         <div className="d-flex justify-content-between border-top pt-3">
-                                                            <button type="button" className="btn btn-sm btn-flex btn-light-primary2 font-weight-bold" onClick={() => { openWizard1() }}>
+                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold" onClick={() => { openWizard1() }}>
                                                                 <span className="svg-icon svg-icon-md mr-2">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
                                                                 </span>Anterior
                                                             </button>
-                                                            <button type="button" className="btn btn-sm btn-flex btn-primary2 font-weight-bold" onClick={() => { openWizard3(); if (showModal) { this.openModalCP(); } }}>Siguiente
+                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard3(); if (showModal) { this.openModalCP(); } }}>Siguiente
                                                                 <span className="svg-icon svg-icon-md ml-2 mr-0">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
                                                                 </span>
@@ -690,12 +687,12 @@ class EditProyectoForm extends Component {
                                                             </div>
                                                         </div>
                                                         <div className="d-flex justify-content-between border-top pt-3">
-                                                            <button type="button" className="btn btn-sm btn-flex btn-light-primary2 font-weight-bold" onClick={() => { openWizard2() }}>
+                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold" onClick={() => { openWizard2() }}>
                                                                 <span className="svg-icon svg-icon-md mr-2">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
                                                                 </span>Anterior
                                                             </button>
-                                                            <button type="button" className="btn btn-sm btn-flex btn-primary2 font-weight-bold" onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'wizard-3-content') }} >Editar
+                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'wizard-3-content') }} >Editar
                                                                 <span className="svg-icon svg-icon-md ml-2 mr-0">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Sending.svg')} />
                                                                 </span>

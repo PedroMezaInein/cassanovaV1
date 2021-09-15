@@ -66,6 +66,41 @@
         color: #ffffff !important; 
     }
 }
+
+#dropdown-proyectos {
+    color: #7e8299;
+    background-color: #f5f8fa;
+    border-color: #f5f8fa;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 0.4rem 0.6rem;
+    &:hover {
+        background-color: #f1faff;
+        border-color: #f1faff;
+        color: #009ef7 !important;
+    }
+    &:active {
+        background-color: #f1faff;
+        border-color: #f1faff;
+        color: #009ef7 !important;
+    }
+    i {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        color: #7e8299;
+        &:hover { color: #009ef7; }
+        &:active { color: #009ef7; }
+    }
+    &:hover i {
+        color: #009ef7 !important; 
+    }
+}
 .toolbar-dropdown{
     .dropdown-menu.show{
         padding: 0;
