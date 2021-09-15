@@ -26,10 +26,11 @@ class SingleProyecto extends Component {
         options:{
             empresas: [],
             clientes: [],
-            colonias: [],
+            // colonias: [],
             estatus: [],
-            tipos:[],
-            cp_clientes: []
+            // tipos:[],
+            cp_clientes: [],
+            proveedores:[]
         }
     }
 
@@ -180,7 +181,7 @@ class SingleProyecto extends Component {
                                                 isActive = { activeKeyNav === 'avances' ? true : false } onClick = { this.onClick } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="notas">
-                                            <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }  onClick = { this.onClick }  />
+                                            <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }  onClick = { this.onClick } options = { options } />
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>

@@ -11,13 +11,13 @@ class SelectSearchGrayTrue extends Component {
                 <div className={`form-group ${customdiv}`}>
                     <div className="input-group input-group-solid rounded-0">
                         {
-                            withicon?
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">
-                                    <i className = {`${iconclass ? iconclass : 'flaticon2-search-1'} icon-md text-dark-50`}></i>
-                                </span>
-                            </div>
-                            :''
+                            withicon ?
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text">
+                                        <i className={`${iconclass ? iconclass : 'flaticon2-search-1'} icon-md text-dark-50`}></i>
+                                    </span>
+                                </div>
+                                : ''
                         }
                         <input
                             className={`${customclass} form-control text-dark-50 font-weight-bold text-uppercase`}
@@ -30,24 +30,24 @@ class SelectSearchGrayTrue extends Component {
             </>
         );
     }
-    
+
     render() {
-        const { options, placeholder, iconclass, customlabel, withtaglabel, withtextlabel} = this.props
+        const { options, placeholder, iconclass, customlabel, withtaglabel, withtextlabel } = this.props
         return (
             <>
                 {
                     options.length >= 0 ?
                         <>
-                            {   withtaglabel ?
-                                    <label className = { `col-form-label font-weight-bold text-dark-60  ${customlabel}` } >
-                                        { withtextlabel ? placeholder : '' }
-                                    </label>
+                            {withtaglabel ?
+                                <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`} >
+                                    {withtextlabel ? placeholder : ''}
+                                </label>
                                 : ''
                             }
                             <SelectSearch renderValue={this.renderFontValue} search {...this.props} />
                         </>
-                    : <InputGray withtaglabel = { 1 } withformgroup = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
-                            withicon = { 1 } iconclass = { iconclass } readOnly type = "text" {...this.props} />
+                        : <InputGray withtaglabel={1} withformgroup={1} withtextlabel={1} withplaceholder={1}
+                            withicon={1} iconclass={iconclass} readOnly type="text" {...this.props} />
                 }
             </>
         )
