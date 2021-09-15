@@ -45,6 +45,15 @@ class EditProyectoForm extends Component {
         },
         formeditado:1
     }
+
+    componentDidUpdate = prev => {
+        const { isActive } = this.props
+        const { isActive: prevActive } = prev
+        if(isActive && !prevActive){
+            this.setState({ ...this.state, showInfo: true })
+        }
+    }
+
     getForm(){
         const { proyecto, options } = this.props
         const { form } = this.state
@@ -99,6 +108,16 @@ class EditProyectoForm extends Component {
         form.municipio = proyecto.municipio
         form.colonia = proyecto.colonia
         form.calle = proyecto.calle
+        if(proyecto.cliente){
+            form.cliente_principal = {
+                value: proyecto.cliente.id.toString(),
+                name: proyecto.cliente.empresa,
+                label: proyecto.cliente.empresa
+            }
+        }else{
+            form.cliente_principal = ''
+        }
+        this.setState({ ...this.state, form })
     }
     onChange = e => {
         const { name, value, type } = e.target
@@ -221,11 +240,13 @@ class EditProyectoForm extends Component {
     }
 
     async editProyectoAxios() {
-        const { at, proyecto } = this.props
+        const { at, proyecto, refresh } = this.props
         const { form } = this.state
         await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}`, form, { headers: { Authorization: `Bearer ${at}` } }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
+                const { proyecto } = response.data
+                this.setState({...this.state, showInfo: true});
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.', () => {refresh(proyecto.id)})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -273,7 +294,11 @@ class EditProyectoForm extends Component {
                 form.cp = cliente.cp
                 form.estado = cliente.estado
                 form.municipio = cliente.municipio
-                form.colonia = cliente.colonia.toUpperCase()
+                if(cliente.colonia){
+                    form.colonia = cliente.colonia.toUpperCase()
+                }else{
+                    form.colonia = ''
+                }
                 form.calle = cliente.calle
             }else if(options.cp_clientes.length === 1){
                 form.cp = cliente.cp

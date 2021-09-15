@@ -687,7 +687,6 @@ class TicketDetails extends Component {
             (response) => {
                 const { adjunto, presupuesto: pres } = response.data
                 this.getPresupuestoAxios(pres.id)
-                const { form, presupuesto, options } = this.state
                 var win = window.open(adjunto.url, '_blank');
                 if (win) {
                     win.focus();
@@ -1369,7 +1368,7 @@ class TicketDetails extends Component {
     }
     
     onClick = (type, aux) => {
-        const { presupuesto, modal, formularios } = this.state
+        const { formularios } = this.state
         switch(type){
             case 'volumetrias':
                 this.onClickVolumetrias()
@@ -1748,7 +1747,7 @@ class TicketDetails extends Component {
 
     render() {
         const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, 
-            defaultNavTabs, adjuntos, adjunto } = this.state
+            defaultNavTabs, adjunto } = this.state
         const { formulario } = this.props
         const { access_token } = this.props.authUser
         return (

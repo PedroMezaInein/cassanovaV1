@@ -12,6 +12,7 @@ import { URL_DEV } from '../../../../constants'
 import { setSingleHeader } from '../../../../functions/routers'
 import { AvanceForm } from '../../../../components/forms'
 class Avances extends Component {
+
     state = {
         tabAvance: '',
         accordion: [],
@@ -51,6 +52,17 @@ class Avances extends Component {
             correos_clientes:[]
         }
     }
+
+    componentDidUpdate = prev => {
+        const { isActive, proyecto } = this.props
+        const { isActive: prevActive } = prev
+        if(isActive && !prevActive){
+            if(proyecto.avances.length === 0){
+                this.openFormAvance('new')
+            }
+        }
+    }
+    
     setNaviIcon(icon, text) {
         return (
             <span className="navi-icon d-flex align-self-center">
@@ -61,12 +73,14 @@ class Avances extends Component {
             </span>
         )
     }
+
     openFormAvance = (type) => {
         this.setState({
             ...this.state,
             tabAvance: type
         })
     }
+
     handleAccordion = (indiceClick) => {
         const { proyecto: { avances } } = this.props;
         avances.map((element, key) => {
@@ -131,6 +145,7 @@ class Avances extends Component {
         modal.avance_cliente = false
         this.setState({...this.state, modal, form })
     }
+
     handleChangeCreateMSelect = (newValue) => {
         const { form } = this.state
         if(newValue == null){
@@ -167,6 +182,7 @@ class Avances extends Component {
             console.error(error, 'error')
         })
     }
+
     // ADD AVANCES
     openFormAvance = (typeform) => {
         const { modal } = this.state
@@ -178,11 +194,15 @@ class Avances extends Component {
             tabAvance:typeform
         })
     }
+
     handleCloseAvances = () => {
         const { modal } = this.state
+        const { onClick } = this.props
         modal.add_avance = false
         this.setState({ ...this.state, modal, form: this.clearForm() })
+        onClick('change-tab', 'informacion')
     }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -229,12 +249,14 @@ class Avances extends Component {
         })
         return form
     }
+
     onChangeAvance = (key, e, name) => {
         const { value } = e.target
         const { form } = this.state
         form.avances[key][name] = value
         this.setState({ ...this.state, form })
     }
+
     onChangeAdjuntoAvance = (e, key, name) => {
         const { form } = this.state
         const { files, value } = e.target
@@ -253,6 +275,7 @@ class Avances extends Component {
         form.avances[key][name].files = aux
         this.setState({ ...this.state, form })
     }
+
     clearFilesAvances = (name, key, _key) => {
         const { form } = this.state
         let aux = []
@@ -281,6 +304,7 @@ class Avances extends Component {
         )
         this.setState({ ...this.state, form })
     }
+
     deleteRowAvance = () => {
         const { form } = this.state
         form.avances.pop()
@@ -289,11 +313,13 @@ class Avances extends Component {
             form
         })
     }
+
     onSubmitNewAvance = e => {
         e.preventDefault()
         waitAlert();
         this.addAvanceFileAxios()
     }
+
     async addAvanceFileAxios() {
         const { form } = this.state
         const { proyecto, at } = this.props
@@ -346,6 +372,7 @@ class Avances extends Component {
         //     console.error(error, 'error')
         // })
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -373,11 +400,12 @@ class Avances extends Component {
         form.adjuntos[name].files = aux
         this.setState({ ...this.state, form })
     }
+
     render() {
         const { proyecto } = this.props
         const { modal, form, options, formeditado, tabAvance } = this.state
         return (
-            <>
+            <div>
                 <Card className="card-custom gutter-b">
                     <Card.Header className="border-0 align-items-center">
                         <div className="font-weight-bold font-size-h4 text-dark">Historial de avances</div>
@@ -474,43 +502,23 @@ class Avances extends Component {
                         }
                     </Card.Body>
                 </Card>
-                <ModalSendMail
-                    show={modal.avance_cliente}
-                    handleClose={this.handleCloseModalEnviarAvance}
-                    header='¿DESEAS ENVIAR EL AVANCE?'
-                    validation='url_avance !=='
-                    url={form.url_avance}
-                    url_text='EL AVANCE'
-                    sendMail = { this.sendMail }
-                >
+                <ModalSendMail show = { modal.avance_cliente } handleClose = { this.handleCloseModalEnviarAvance } header = '¿DESEAS ENVIAR EL AVANCE?' 
+                    validation = 'url_avance !==' url = { form.url_avance } url_text = 'EL AVANCE' sendMail = { this.sendMail } >
                     <div className="col-md-11 mt-5">
                         <div>
-                            <CreatableMultiselectGray placeholder="SELECCIONA/AGREGA EL O LOS CORREOS" iconclass="flaticon-email"
-                                requirevalidation={1} messageinc="Selecciona el o los correos" uppercase={false}
-                                onChange={this.handleChangeCreateMSelect} options={options.correos_clientes} 
-                                elementoactual={form.correos_avances}
-                            />
+                            <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email"
+                                requirevalidation = { 1 } messageinc = "Selecciona el o los correos" uppercase = { false }
+                                onChange = { this.handleChangeCreateMSelect } options = { options.correos_clientes } elementoactual = { form.correos_avances } />
                         </div>
                     </div>
                 </ModalSendMail>
                 <Modal size="lg" title='AVANCES DEL PROYECTO' show={modal.add_avance} handleClose={this.handleCloseAvances}>
-                    <AvanceForm
-                        form={form}
-                        onChangeAvance={this.onChangeAvance}
-                        onChangeAdjuntoAvance={this.onChangeAdjuntoAvance}
-                        clearFilesAvances={this.clearFilesAvances}
-                        addRowAvance={this.addRowAvance}
-                        deleteRowAvance={this.deleteRowAvance}
-                        onSubmit={this.onSubmitNewAvance}
-                        onChange={this.onChange}
-                        proyecto={proyecto}
-                        sendMail={this.sendMail}
-                        handleChange={this.handleChangeAvance}
-                        formeditado={formeditado}
-                        isNew={tabAvance==='attached'?true:false}
-                    />
+                    <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                        clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } deleteRowAvance = { this.deleteRowAvance }
+                        onSubmit = { this.onSubmitNewAvance } onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail }
+                        handleChange = { this.handleChangeAvance } formeditado = { formeditado } isNew = { tabAvance === 'attached' ? true : false } />
                 </Modal>
-            </>
+            </div>
         )
     }
 }
