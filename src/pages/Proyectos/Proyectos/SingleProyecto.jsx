@@ -121,7 +121,7 @@ class SingleProyecto extends Component {
         }
     }
     render() {
-        const { proyecto, navs, activeKeyNav, options, data } = this.state
+        const { proyecto, navs, activeKeyNav, options } = this.state
         const { access_token } = this.props.authUser
         const { user } = this.props.authUser
         return (
