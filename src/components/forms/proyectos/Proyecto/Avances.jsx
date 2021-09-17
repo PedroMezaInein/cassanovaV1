@@ -5,7 +5,7 @@ import axios from 'axios'
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import SliderImages from '../../../singles/SliderImages'
 import { dayDMY } from "../../../../functions/setters"
-import { ItemSlider, ModalSendMail, Modal } from '../../../singles'
+import { ItemSlider, ModalSendMail } from '../../../singles'
 import { CreatableMultiselectGray } from '../../../../components/form-components'
 import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert} from '../../../../functions/alert'
 import { URL_DEV } from '../../../../constants'
@@ -15,12 +15,11 @@ import S3 from 'react-aws-s3';
 class Avances extends Component {
 
     state = {
-        tabAvance: '',
+        tabAvance: 'avances',
         accordion: [],
         formeditado:0,
         modal:{
-            avance_cliente:false,
-            add_avance:false
+            avance_cliente:false
         },
         form:{
             correos_avances: [],
@@ -57,9 +56,14 @@ class Avances extends Component {
     componentDidUpdate = prev => {
         const { isActive, proyecto } = this.props
         const { isActive: prevActive } = prev
+        let { tabAvance } = this.state
         if(isActive && !prevActive){
             if(proyecto.avances.length === 0){
-                this.openFormAvance('new')
+                tabAvance = 'new'
+                this.setState({
+                    ...this.state,
+                    tabAvance
+                })
             }
         }
     }
@@ -78,7 +82,8 @@ class Avances extends Component {
     openFormAvance = (type) => {
         this.setState({
             ...this.state,
-            tabAvance: type
+            tabAvance: type,
+            form: this.clearForm()
         })
     }
 
@@ -182,27 +187,6 @@ class Avances extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
-    }
-
-    // ADD AVANCES
-    openFormAvance = (typeform) => {
-        const { modal } = this.state
-        modal.add_avance = true
-        this.setState({
-            ...this.state,
-            modal,
-            formeditado: 0,
-            tabAvance:typeform
-        })
-    }
-
-    handleCloseAvances = () => {
-        const { modal } = this.state
-        const { onClick, proyecto } = this.props
-        modal.add_avance = false
-        this.setState({ ...this.state, modal, form: this.clearForm() })
-        if(proyecto.avances.length === 0)
-            onClick('change-tab', 'informacion')
     }
 
     clearForm = () => {
@@ -448,7 +432,19 @@ class Avances extends Component {
         form.adjuntos[name].files = aux
         this.setState({ ...this.state, form })
     }
-
+    getTitle = () => {
+        const { tabAvance } = this.state
+        switch(tabAvance){
+            case 'new':
+                return 'NUEVO AVANCE'
+            case 'attached':
+                return 'ADJUNTAR AVANCE'
+            case 'avances':
+                return 'HISTORIAL DE AVANCES'
+            default:
+                return ''
+        }
+    }
     render() {
         const { proyecto } = this.props
         const { modal, form, options, formeditado, tabAvance } = this.state
@@ -456,97 +452,146 @@ class Avances extends Component {
             <div>
                 <Card className="card-custom gutter-b">
                     <Card.Header className="border-0 align-items-center">
-                        <div className="font-weight-bold font-size-h4 text-dark">Historial de avances</div>
+                        <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
                         <div className="card-toolbar toolbar-dropdown">
                             <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
-                                <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.openFormAvance('new') }}>
-                                    {this.setNaviIcon('las la-camera-retro icon-xl', 'NUEVO AVANCE')}
-                                </Dropdown.Item>
-                                <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.openFormAvance('attached') }}>
+                                {
+                                    proyecto ?
+                                        proyecto.avances ?
+                                            proyecto.avances.length > 0 && (tabAvance === 'new' || tabAvance === 'attached')?
+                                                <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.openFormAvance('avances') }}>
+                                                    {this.setNaviIcon('las la-clipboard-list icon-xl', 'HISTORIAL DE AVANCES')}
+                                                </Dropdown.Item>
+                                            : <></>
+                                        : <></>
+                                    : <></>
+                                }
+                                {
+                                    tabAvance === 'new'?<></>:
+                                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.openFormAvance('new') }}>
+                                        {this.setNaviIcon('las la-camera-retro icon-xl', 'NUEVO AVANCE')}
+                                    </Dropdown.Item>
+                                }
+                                <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => { this.openFormAvance('attached') }}>
                                     {this.setNaviIcon('las la-paperclip icon-xl', 'ADJUNTAR AVANCE')}
                                 </Dropdown.Item>
                             </DropdownButton>
                         </div>
                     </Card.Header>
                     <Card.Body>
+                        
                         {
-                            proyecto ?
-                                proyecto.avances ?
-                                    proyecto.avances.length ?
-                                        <div className="d-flex justify-content-center">
-                                            <div className="col-md-11">
-                                                <div className="accordion accordion-light accordion-svg-toggle">
-                                                    {
-                                                        proyecto.avances.map((avance, key) => {
-                                                            return (
-                                                                <Card className="w-auto" key={key}>
-                                                                    <Card.Header >
-                                                                        <Card.Title className={`rounded-0 ${(avance.isActive) ? 'text-primary2 collapsed' : 'text-dark'}`} onClick={() => { this.handleAccordion(avance.id) }}>
-                                                                            <span className={`svg-icon ${avance.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
-                                                                                <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
-                                                                            </span>
-                                                                            <div className="card-label ml-3 row mx-0 justify-content-between">
-                                                                                <div>
-                                                                                    <div className="font-size-lg">Semana {avance.semana}</div>
-                                                                                    <div className="font-weight-light font-size-sm text-dark-75">{dayDMY(avance.fecha_inicio)} - {dayDMY(avance.fecha_fin)}</div>
-                                                                                </div>
-                                                                                <div className="align-self-center">
-                                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER PDF</span></Tooltip>}>
-                                                                                        <a rel="noopener noreferrer" href={avance.pdf} target="_blank" className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
-                                                                                            <i className="las la-file-download icon-xl"></i>
-                                                                                        </a>
-                                                                                    </OverlayTrigger>
-                                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ENVIAR A CLIENTE</span></Tooltip>}>
-                                                                                        <span onClick={() => { this.openModalEnviarAvance(avance) }} className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px`}>
-                                                                                            <i className="las la-envelope icon-xl"></i>
-                                                                                        </span>
-                                                                                    </OverlayTrigger>
-                                                                                </div>
-                                                                            </div>
-                                                                        </Card.Title>
-                                                                    </Card.Header>
-                                                                    <Card.Body className={`card-body px-10 ${avance.isActive ? 'collapse show' : 'collapse'}`}>
-                                                                        <Row className="mx-0">
-                                                                            {
-                                                                                avance.actividades !== null ?
-                                                                                    <div className="col-md-12">
-                                                                                        <div className="mx-auto w-max-content">
-                                                                                            <div className="font-weight-bold mb-2 text-center"><span className="bg-light px-3 font-size-lg rounded">Actividades realizadas</span></div>
-                                                                                            <ul className="mb-0">
-                                                                                                { 
-                                                                                                    avance.actividades.split('\n').map(( actividad, index) =>  {
-                                                                                                        return(
-                                                                                                            <li key = { index }>{actividad}</li>
-                                                                                                        )
-                                                                                                    })
-                                                                                                }
-                                                                                            </ul>
-                                                                                        <div className="separator separator-dashed my-6"></div>
-                                                                                        </div>
+                            tabAvance === 'avances' ?
+                                proyecto ?
+                                    proyecto.avances ?
+                                        proyecto.avances.length ?
+                                            <div className="d-flex justify-content-center">
+                                                <div className="col-md-11">
+                                                    <div className="accordion accordion-light accordion-svg-toggle">
+                                                        {
+                                                            proyecto.avances.map((avance, key) => {
+                                                                return (
+                                                                    <Card className="w-auto" key={key}>
+                                                                        <Card.Header >
+                                                                            <Card.Title className={`rounded-0 ${(avance.isActive) ? 'text-primary2 collapsed' : 'text-dark'}`} onClick={() => { this.handleAccordion(avance.id) }}>
+                                                                                <span className={`svg-icon ${avance.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
+                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
+                                                                                </span>
+                                                                                <div className="card-label ml-3 row mx-0 justify-content-between">
+                                                                                    <div>
+                                                                                        <div className="font-size-lg">Semana {avance.semana}</div>
+                                                                                        <div className="font-weight-light font-size-sm text-dark-75">{dayDMY(avance.fecha_inicio)} - {dayDMY(avance.fecha_fin)}</div>
                                                                                     </div>
-                                                                                :<></>
-                                                                            }
-                                                                            <Col md={9} className="mb-5 mx-auto">
+                                                                                    <div className="align-self-center">
+                                                                                        <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER PDF</span></Tooltip>}>
+                                                                                            <a rel="noopener noreferrer" href={avance.pdf} target="_blank" className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
+                                                                                                <i className="las la-file-download icon-xl"></i>
+                                                                                            </a>
+                                                                                        </OverlayTrigger>
+                                                                                        <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ENVIAR A CLIENTE</span></Tooltip>}>
+                                                                                            <span onClick={() => { this.openModalEnviarAvance(avance) }} className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px`}>
+                                                                                                <i className="las la-envelope icon-xl"></i>
+                                                                                            </span>
+                                                                                        </OverlayTrigger>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </Card.Title>
+                                                                        </Card.Header>
+                                                                        <Card.Body className={`card-body px-10 ${avance.isActive ? 'collapse show' : 'collapse'}`}>
+                                                                            <Row className="mx-0">
                                                                                 {
-                                                                                    avance.adjuntos.length > 0 ?
-                                                                                        <SliderImages elements={avance.adjuntos} />
-                                                                                    :
-                                                                                        <ItemSlider  items={[{ url: avance.pdf, name: 'ficha_tecnica.pdf' }]}/>
+                                                                                    avance.actividades !== null ?
+                                                                                        <div className="col-md-12">
+                                                                                            <div className="mx-auto w-max-content">
+                                                                                                <div className="font-weight-bold mb-2 text-center"><span className="bg-light px-3 font-size-lg rounded">Actividades realizadas</span></div>
+                                                                                                <ul className="mb-0">
+                                                                                                    { 
+                                                                                                        avance.actividades.split('\n').map(( actividad, index) =>  {
+                                                                                                            return(
+                                                                                                                <li key = { index }>{actividad}</li>
+                                                                                                            )
+                                                                                                        })
+                                                                                                    }
+                                                                                                </ul>
+                                                                                            <div className="separator separator-dashed my-6"></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    :<></>
                                                                                 }
-                                                                            </Col>
-                                                                        </Row>
-                                                                    </Card.Body>
-                                                                </Card>
+                                                                                <Col md={9} className="mb-5 mx-auto">
+                                                                                    {
+                                                                                        avance.adjuntos.length > 0 ?
+                                                                                            <SliderImages elements={avance.adjuntos} />
+                                                                                        :
+                                                                                            <ItemSlider  items={[{ url: avance.pdf, name: 'ficha_tecnica.pdf' }]}/>
+                                                                                    }
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </Card.Body>
+                                                                    </Card>
+                                                                )
+                                                            }
                                                             )
                                                         }
-                                                        )
-                                                    }
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                            : ''
                                         : ''
                                     : ''
-                                : ''
+                            :tabAvance === 'new' ?
+                                <AvanceForm
+                                    form = { form }
+                                    onChangeAvance = { this.onChangeAvance }
+                                    onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                                    clearFilesAvances = { this.clearFilesAvances }
+                                    addRowAvance = { this.addRowAvance }
+                                    deleteRowAvance = { this.deleteRowAvance }
+                                    onSubmit = { (e) => {e.preventDefault(); waitAlert(); this.onSubmitNewAvance() } }
+                                    onChange = { this.onChange }
+                                    proyecto = { proyecto } 
+                                    sendMail = { this.sendMail }
+                                    handleChange = { this.handleChangeAvance }
+                                    formeditado = { formeditado } 
+                                    isNew = { tabAvance === 'attached' ? true : false }
+                                />
+                            :tabAvance === 'attached' ?
+                                <AvanceForm
+                                    form = { form }
+                                    onChangeAvance = { this.onChangeAvance }
+                                    onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                                    clearFilesAvances = { this.clearFilesAvances }
+                                    addRowAvance = { this.addRowAvance }
+                                    deleteRowAvance = { this.deleteRowAvance }
+                                    onSubmit = { (e) => {e.preventDefault(); waitAlert(); this.onSubmitNewAvance() } }
+                                    onChange = { this.onChange }
+                                    proyecto = { proyecto } 
+                                    sendMail = { this.sendMail }
+                                    handleChange = { this.handleChangeAvance }
+                                    formeditado = { formeditado } 
+                                    isNew = { tabAvance === 'attached' ? true : false }
+                                />
+                            :<></>
                         }
                     </Card.Body>
                 </Card>
@@ -560,13 +605,6 @@ class Avances extends Component {
                         </div>
                     </div>
                 </ModalSendMail>
-                <Modal size="lg" title='AVANCES DEL PROYECTO' show={modal.add_avance} handleClose={this.handleCloseAvances}>
-                    <AvanceForm form = { form } onChangeAvance = { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
-                        clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } deleteRowAvance = { this.deleteRowAvance }
-                        onSubmit = { (e) => {e.preventDefault(); waitAlert(); this.onSubmitNewAvance() } } onChange = { this.onChange } proyecto = { proyecto } 
-                        sendMail = { this.sendMail } handleChange = { this.handleChangeAvance } formeditado = { formeditado } 
-                        isNew = { tabAvance === 'attached' ? true : false } />
-                </Modal>
             </div>
         )
     }
