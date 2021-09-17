@@ -741,3 +741,126 @@
 .btn.btn-color-danger.dropdown-toggle:after {
     color: #f1416c
 }
+
+.nav.nav-pills.nav-primary2 .show>.nav-link,
+.nav.nav-pills.nav-primary2 .nav-link:hover:not(.active) {
+    color: #009ef7;
+    background-color: transparent;
+}
+
+.nav.nav-pills.nav-primary2 .show>.nav-link .nav-text,
+.nav.nav-pills.nav-primary2 .nav-link:hover:not(.active) .nav-text {
+    color: #009ef7;
+}
+
+.nav.nav-pills.nav-primary2 .show>.nav-link .nav-icon i,
+.nav.nav-pills.nav-primary2 .nav-link:hover:not(.active) .nav-icon i {
+    color: #009ef7;
+}
+
+.nav.nav-pills.nav-primary2 .show>.nav-link .nav-icon .svg-icon svg g [fill],
+.nav.nav-pills.nav-primary2 .nav-link:hover:not(.active) .nav-icon .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #009ef7;
+}
+
+.nav.nav-pills.nav-primary2 .show>.nav-link .nav-icon .svg-icon svg:hover g [fill],
+.nav.nav-pills.nav-primary2 .nav-link:hover:not(.active) .nav-icon .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.nav.nav-pills.nav-primary2 .show>.nav-link:after,
+.nav.nav-pills.nav-primary2 .nav-link:hover:not(.active):after {
+    color: #009ef7;
+}
+
+.nav.nav-pills.nav-primary2 .nav-link.active {
+    color: #ffffff;
+    background-color: #0095e8;
+}
+
+.nav.nav-pills.nav-primary2 .nav-link.active .nav-text {
+    color: #ffffff;
+}
+
+.nav.nav-pills.nav-primary2 .nav-link.active .nav-icon i {
+    color: #ffffff;
+}
+
+.nav.nav-pills.nav-primary2 .nav-link.active .nav-icon .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #ffffff !important;
+}
+
+.nav.nav-pills.nav-primary2 .nav-link.active .nav-icon .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.nav.nav-pills.nav-primary2 .nav-link.active:after {
+    color: #ffffff;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link:hover {
+    color: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link:hover .navi-text {
+    color: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link:hover .navi-icon i {
+    color: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link:hover .navi-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link:hover .navi-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link:hover .navi-arrow {
+    color: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link.active {
+    color: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link.active .navi-text {
+    color: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link.active .navi-icon i {
+    color: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link.active .navi-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link.active .navi-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link.active .navi-arrow {
+    color: #009ef7;
+}
+
+.navi.navi-accent.navi-primary2 .navi-item .navi-link.active:before {
+    background-color: #009ef7;
+}
+.bg-light-primary2{
+    background-color: #ecf8ff;
+}

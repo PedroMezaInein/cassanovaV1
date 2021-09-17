@@ -8,7 +8,8 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import { Card, Tab, Nav } from 'react-bootstrap'
 import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
-import { EditProyectoForm, NotasObra, Avances } from '../../../components/forms'
+import { EditProyectoForm, NotasObra, Avances, Adjuntos } from '../../../components/forms'
+
 class SingleProyecto extends Component {
 
     state = {
@@ -183,6 +184,9 @@ class SingleProyecto extends Component {
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="notas">
                                             <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }  onClick = { this.onClick } options = { options } />
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="adjuntos">
+                                            <Adjuntos proyecto={proyecto} at = { access_token }/>
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>
