@@ -28,32 +28,24 @@ class NotasObra extends Component {
             },
         },
     }
+    componentDidUpdate = prev => {
+        const { isActive } = this.props
+        let { activeNota } = this.state
+        const { notas } = this.state
+        const { isActive: prevActive } = prev
+        if(isActive && !prevActive){
+            if(notas.length === 0){
+                activeNota = 'new'
+                this.setState({
+                    activeNota
+                })
+            }
+        }
+    }
     componentDidMount() {
         const { proyecto } = this.props
         this.getNotas(proyecto)
-        let { activeNota } = this.state
-        const { notas } = this.state
-        if (notas.length > 0) {
-            activeNota = 'notas'
-        }
-        this.setState({
-            ...this.state,
-            activeNota
-        })
     }
-    // componentDidUpdate = prev => {
-    //     const { isActive, notas } = this.props
-    //     const { isActive: prevActive } = prev
-    //     let { activeNota } = this.state
-    //     if(isActive && !prevActive){
-    //         if (notas.length > 0) {
-    //             activeNota = 'notas'
-    //         }else{
-    //             activeNota='new'
-    //         }
-    //         this.setState({ ...this.state, activeNota })
-    //     }
-    // }
     onClickNota = (type) => {
         this.setState({
             ...this.state,
@@ -173,7 +165,7 @@ class NotasObra extends Component {
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR ONSUMBIT                              */
     /* -------------------------------------------------------------------------- */
-    onSubmitNotaBitacora = async (e) => {
+    onSubmit = async (e) => {
         e.preventDefault();
         waitAlert();
         const { at, proyecto } = this.props
@@ -199,7 +191,6 @@ class NotasObra extends Component {
         await axios.post(`${URL_DEV}v1/proyectos/nota-bitacora`, data, { headers: setFormHeader(at) }).then(
             (response) => {
                 Swal.close()
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La bitácora registrada con éxito.')
                 this.setState({
                     ...this.state,
@@ -251,32 +242,61 @@ class NotasObra extends Component {
         }
         this.onChange({ target: { value: value, name: name } }, true)
     }
+    getTitle = () => {
+        const { activeNota } = this.state
+        switch(activeNota){
+            case 'new':
+                return 'Agregar nota de obra'
+            case 'notas':
+                return 'Historial de notas'
+            default:
+                return ''
+        }
+    }
     render() {
         const { activeNota, notas, form, formeditado } = this.state
         const { proyecto, options } = this.props
-        console.log(form, 'form')
         return (
             <>
                 <Card className="card-custom gutter-b">
                     <Card.Header className="border-0 align-items-center">
-                        <div className="font-weight-bold font-size-h4 text-dark">Notas de obra</div>
-                        <div className="card-toolbar toolbar-dropdown">
-                            <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos-light-primary' >
-                                <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.onClickNota('new') }}>
-                                    {setNaviIcon('las la-plus icon-lg', 'AGREGAR NUEVA NOTA')}
-                                </Dropdown.Item>
-                                <Dropdown.Item className="text-hover-info dropdown-info" tag={Link} onClick={this.generarBitacora} >
-                                    {setNaviIcon('las la-file-pdf icon-lg', 'GENERAR BITÁCORA (PDF)')}
-                                </Dropdown.Item>
-                                {
-                                    proyecto.bitacora ?
-                                        <Dropdown.Item className="text-hover-info dropdown-info" href={proyecto.bitacora} tag={Link} target='_blank' rel="noopener noreferrer">
-                                            {setNaviIcon('las la-search icon-lg', 'VER BITÁCORA DE OBRA')}
+                        <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
+                        {
+                            notas.length > 0 ?
+                            <div className="card-toolbar toolbar-dropdown">
+                                <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos-light-primary' >
+                                    {
+                                        activeNota === 'notas'?
+                                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.onClickNota('new')}}>
+                                            {setNaviIcon(`las la-plus icon-lg`, 'AGREGAR NUEVA NOTA')}
+                                        </Dropdown.Item>
+                                        :<></>
+                                    }
+                                    {
+                                        activeNota === 'new' && notas.length > 0 ?
+                                        <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.onClickNota('notas')}}>
+                                            {setNaviIcon(`las la-clipboard-list icon-lg`, 'HISTORIAL DE NOTAS')}
+                                        </Dropdown.Item>
+                                        :<></>
+                                    }
+                                    {
+                                        notas.length > 0 ?
+                                        <Dropdown.Item className="text-hover-warning dropdown-warning" tag={Link} onClick={this.generarBitacora} >
+                                            {setNaviIcon('las la-file-pdf icon-lg', 'GENERAR BITÁCORA (PDF)')}
                                         </Dropdown.Item>
                                         : <></>
-                                }
-                            </DropdownButton>
-                        </div>
+                                    }
+                                    {
+                                        proyecto.bitacora ?
+                                            <Dropdown.Item className="text-hover-primary dropdown-primary" href={proyecto.bitacora} tag={Link} target='_blank' rel="noopener noreferrer">
+                                                {setNaviIcon('las la-search icon-lg', 'VER PDF BITÁCORA DE OBRA')}
+                                            </Dropdown.Item>
+                                            : <></>
+                                    }
+                                </DropdownButton>
+                            </div>
+                            :''
+                        }
                     </Card.Header>
                     <Card.Body>
                         {
@@ -391,12 +411,8 @@ class NotasObra extends Component {
                                                     <ItemSlider items={form.adjuntos.adjuntos.files} item='adjuntos' handleChange={this.handleChange} accept='image/*' />
                                                 </Col>
                                             </Row>
-                                            <div className="card-footer py-3 pr-1">
-                                                <div className="row mx-0">
-                                                    <div className="col-lg-12 text-right pr-0 pb-0">
-                                                        <Button icon='' text='ENVIAR' className="btn btn-primary mr-2" onClick={(e) => { e.preventDefault(); this.onSubmit(e) }} />
-                                                    </div>
-                                                </div>
+                                            <div className="card-footer pb-0 px-0 pt-3 mt-5 text-right">
+                                                <Button icon='' text='ENVIAR' className="btn btn-primary" onClick={(e) => { e.preventDefault(); this.onSubmit(e) }} />
                                             </div>
                                         </Form>
                                     </>
