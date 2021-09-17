@@ -510,7 +510,7 @@ class Avances extends Component {
                                                                             {
                                                                                 avance.actividades !== null ?
                                                                                     <div className="col-md-12">
-                                                                                        <div className="mx-auto">
+                                                                                        <div className="mx-auto w-max-content">
                                                                                             <div className="font-weight-bold mb-2 text-center"><span className="bg-light px-3 font-size-lg rounded">Actividades realizadas</span></div>
                                                                                             <ul className="mb-0">
                                                                                                 { 
