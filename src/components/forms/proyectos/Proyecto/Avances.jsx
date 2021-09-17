@@ -467,7 +467,8 @@ class Avances extends Component {
                     <Card.Header className="border-0 align-items-center">
                         <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
                         <div className="card-toolbar toolbar-dropdown">
-                            <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
+                            <DropdownButton menualign="right" 
+                                title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
                                 {
                                     proyecto ?
                                         proyecto.avances ?
@@ -506,23 +507,45 @@ class Avances extends Component {
                                                                 return (
                                                                     <Card className="w-auto" key={key}>
                                                                         <Card.Header >
-                                                                            <Card.Title className={`rounded-0 ${(avance.isActive) ? 'text-primary2 collapsed' : 'text-dark'}`} onClick={() => { this.handleAccordion(avance.id) }}>
-                                                                                <span className={`svg-icon ${avance.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
+                                                                            <Card.Title 
+                                                                                className = { `rounded-0 ${ (avance.isActive) ? 
+                                                                                    'text-primary2 collapsed' 
+                                                                                    : 'text-dark'}`} 
+                                                                                onClick={() => { this.handleAccordion(avance.id) }}>
+                                                                                <span className = { `svg-icon ${avance.isActive ? 
+                                                                                        'svg-icon-primary2' 
+                                                                                    : 'svg-icon-dark'}`}>
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
                                                                                 </span>
                                                                                 <div className="card-label ml-3 row mx-0 justify-content-between">
                                                                                     <div>
                                                                                         <div className="font-size-lg">Semana {avance.semana}</div>
-                                                                                        <div className="font-weight-light font-size-sm text-dark-75">{dayDMY(avance.fecha_inicio)} - {dayDMY(avance.fecha_fin)}</div>
+                                                                                        <div className="font-weight-light font-size-sm text-dark-75">
+                                                                                            {dayDMY(avance.fecha_inicio)} - {dayDMY(avance.fecha_fin)}
+                                                                                        </div>
                                                                                     </div>
                                                                                     <div className="align-self-center">
-                                                                                        <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER PDF</span></Tooltip>}>
-                                                                                            <a rel="noopener noreferrer" href={avance.pdf} target="_blank" className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
+                                                                                        <OverlayTrigger rootClose 
+                                                                                            overlay={
+                                                                                                <Tooltip>
+                                                                                                    <span className='font-weight-bolder'>VER PDF</span>
+                                                                                                </Tooltip>}>
+                                                                                            <a rel="noopener noreferrer" href={avance.pdf} target="_blank" 
+                                                                                                className={`btn btn-icon ${avance.isActive ? 
+                                                                                                    'btn-color-primary2' 
+                                                                                                : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
                                                                                                 <i className="las la-file-download icon-xl"></i>
                                                                                             </a>
                                                                                         </OverlayTrigger>
-                                                                                        <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ENVIAR A CLIENTE</span></Tooltip>}>
-                                                                                            <span onClick={() => { this.openModalEnviarAvance(avance) }} className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
+                                                                                        <OverlayTrigger rootClose 
+                                                                                            overlay={
+                                                                                                <Tooltip>
+                                                                                                    <span className='font-weight-bolder'>ENVIAR A CLIENTE</span>
+                                                                                                </Tooltip>}>
+                                                                                            <span onClick={() => { this.openModalEnviarAvance(avance) }} 
+                                                                                                className={`btn btn-icon ${avance.isActive ? 
+                                                                                                        'btn-color-primary2' 
+                                                                                                    : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
                                                                                                 <i className="las la-envelope icon-xl"></i>
                                                                                             </span>
                                                                                         </OverlayTrigger>
@@ -531,9 +554,15 @@ class Avances extends Component {
                                                                                                 <Tooltip>
                                                                                                     <span className='font-weight-bolder'>ELIMINAR</span>
                                                                                                 </Tooltip>}>
-                                                                                            <span className={`btn btn-icon ${avance.isActive ? 'btn-color-danger' : ''}  btn-active-light-danger w-30px h-30px mr-2`}
-                                                                                                onClick = { (e) => { e.preventDefault(); deleteAlert(`ELIMINARÁS EL AVANCE DE LA SEMANA ${avance.semana}`, '¿DESEAS CONTINUAR?', 
-                                                                                                    () => this.deleteAvance(avance.id)) } }>
+                                                                                            <span className={`btn btn-icon ${avance.isActive ? 
+                                                                                                    'btn-color-danger' 
+                                                                                                : ''}  btn-active-light-danger w-30px h-30px mr-2`}
+                                                                                                onClick = { (e) => { 
+                                                                                                        e.preventDefault(); 
+                                                                                                        deleteAlert(
+                                                                                                            `ELIMINARÁS EL AVANCE DE LA SEMANA ${avance.semana}`, 
+                                                                                                            '¿DESEAS CONTINUAR?', 
+                                                                                                            () => this.deleteAvance(avance.id)) } }>
                                                                                                 <i className="las la-trash icon-xl"></i>
                                                                                             </span>
                                                                                         </OverlayTrigger>
@@ -547,7 +576,11 @@ class Avances extends Component {
                                                                                     avance.actividades !== null ?
                                                                                         <div className="col-md-12">
                                                                                             <div className="mx-auto w-max-content">
-                                                                                                <div className="font-weight-bold mb-2 text-center"><span className="bg-light px-3 font-size-lg rounded">Actividades realizadas</span></div>
+                                                                                                <div className="font-weight-bold mb-2 text-center">
+                                                                                                    <span className="bg-light px-3 font-size-lg rounded">
+                                                                                                        Actividades realizadas
+                                                                                                    </span>
+                                                                                                </div>
                                                                                                 <ul className="mb-0">
                                                                                                     { 
                                                                                                         avance.actividades.split('\n').map(( actividad, index) =>  {
@@ -557,7 +590,7 @@ class Avances extends Component {
                                                                                                         })
                                                                                                     }
                                                                                                 </ul>
-                                                                                            <div className="separator separator-dashed my-6"></div>
+                                                                                                <div className="separator separator-dashed my-6"/>
                                                                                             </div>
                                                                                         </div>
                                                                                     :<></>
