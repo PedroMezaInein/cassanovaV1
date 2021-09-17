@@ -1236,13 +1236,13 @@ class Proyectos extends Component {
             //     action: 'avances',
             //     tooltip: { id: 'avances', text: 'Avances' }
             // },
-            {
-                text: 'Nota&nbsp;de&nbsp;obra',
-                btnclass: 'info',
-                iconclass: 'flaticon-notes',
-                action: 'nota',
-                tooltip: { id: 'nota', text: 'Nota&nbsp;de&nbsp;obra' }
-            }
+            // {
+            //     text: 'Nota&nbsp;de&nbsp;obra',
+            //     btnclass: 'info',
+            //     iconclass: 'flaticon-notes',
+            //     action: 'nota',
+            //     tooltip: { id: 'nota', text: 'Nota&nbsp;de&nbsp;obra' }
+            // }
         )
         if(proyecto.fase3 !== 1)
             aux.push({
