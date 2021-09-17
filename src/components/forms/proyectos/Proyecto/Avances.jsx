@@ -522,7 +522,7 @@ class Avances extends Component {
                                                                                             </a>
                                                                                         </OverlayTrigger>
                                                                                         <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ENVIAR A CLIENTE</span></Tooltip>}>
-                                                                                            <span onClick={() => { this.openModalEnviarAvance(avance) }} className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px`}>
+                                                                                            <span onClick={() => { this.openModalEnviarAvance(avance) }} className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
                                                                                                 <i className="las la-envelope icon-xl"></i>
                                                                                             </span>
                                                                                         </OverlayTrigger>
