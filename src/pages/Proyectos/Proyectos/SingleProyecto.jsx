@@ -75,7 +75,7 @@ class SingleProyecto extends Component {
         await axios.get(`${URL_DEV}proyectos/opciones`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { clientes, empresas, estatus } = response.data
+                const { clientes, empresas, estatus, proveedores } = response.data
                 const { options } = this.state
                 let aux = [];
                 clientes.forEach((element) => {
@@ -94,6 +94,7 @@ class SingleProyecto extends Component {
                 options.clientes = aux.sort(ordenamiento)
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['estatus'] = setOptions(estatus, 'estatus', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 this.setState({
                     ...this.state,
                     options
@@ -121,7 +122,7 @@ class SingleProyecto extends Component {
         }
     }
     render() {
-        const { proyecto, navs, activeKeyNav, options, data } = this.state
+        const { proyecto, navs, activeKeyNav, options } = this.state
         const { access_token } = this.props.authUser
         const { user } = this.props.authUser
         return (

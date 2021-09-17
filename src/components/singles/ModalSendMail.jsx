@@ -25,7 +25,7 @@ class ModalSendMail extends Component {
                                 </div>
                             </div>
                             <div className="col-md-11 font-weight-light mt-4 text-justify">
-                                Si deseas enviar {url_text} agrega el o los correos del destinatario, de lo contario da clic en <a onClick = { handleClose } className="font-weight-bold">cancelar</a>.
+                                Si deseas enviar {url_text} agrega el o los correos del destinatario, de lo contario da clic en <span onClick = { handleClose } className="font-weight-bold">cancelar</span>.
                             </div>
                             {children}
                         </div>

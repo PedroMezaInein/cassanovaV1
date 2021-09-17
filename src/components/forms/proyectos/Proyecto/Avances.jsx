@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Card, DropdownButton, Dropdown, OverlayTrigger, Tooltip, Form, Col, Row } from 'react-bootstrap'
+import { Card, DropdownButton, Dropdown, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import axios from 'axios'
-import { setFormHeader, toAbsoluteUrl } from "../../../../functions/routers"
+import { toAbsoluteUrl } from "../../../../functions/routers"
 import SliderImages from '../../../singles/SliderImages'
 import { dayDMY } from "../../../../functions/setters"
 import { ItemSlider, ModalSendMail, Modal } from '../../../singles'
@@ -84,7 +84,7 @@ class Avances extends Component {
 
     handleAccordion = (indiceClick) => {
         const { proyecto: { avances } } = this.props;
-        avances.map((element, key) => {
+        avances.forEach((element, key) => {
             if (element.id === indiceClick) {
                 element.isActive = element.isActive ? false : true
             }else {
@@ -331,7 +331,7 @@ class Avances extends Component {
                             files.push({ file: file, key: key })
                         })
                     })
-                    let auxPromises  = files.map((file) => {
+                    auxPromises  = files.map((file) => {
                         return new Promise((resolve, reject) => {
                             new S3(alma).uploadFile(file.file.file, `${urlPath}${file.key}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
                                 .then((data) =>{
@@ -497,9 +497,9 @@ class Avances extends Component {
                                                                                         </a>
                                                                                     </OverlayTrigger>
                                                                                     <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ENVIAR A CLIENTE</span></Tooltip>}>
-                                                                                        <a onClick={() => { this.openModalEnviarAvance(avance) }} className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px`}>
+                                                                                        <span onClick={() => { this.openModalEnviarAvance(avance) }} className={`btn btn-icon ${avance.isActive ? 'btn-color-primary2' : ''}  btn-active-light-primary2 w-30px h-30px`}>
                                                                                             <i className="las la-envelope icon-xl"></i>
-                                                                                        </a>
+                                                                                        </span>
                                                                                     </OverlayTrigger>
                                                                                 </div>
                                                                             </div>
@@ -510,7 +510,7 @@ class Avances extends Component {
                                                                             {
                                                                                 avance.actividades !== null ?
                                                                                     <div className="col-md-12">
-                                                                                        <div className="mx-auto">
+                                                                                        <div className="mx-auto w-max-content">
                                                                                             <div className="font-weight-bold mb-2 text-center"><span className="bg-light px-3 font-size-lg rounded">Actividades realizadas</span></div>
                                                                                             <ul className="mb-0">
                                                                                                 { 
