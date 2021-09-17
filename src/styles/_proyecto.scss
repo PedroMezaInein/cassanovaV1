@@ -4,7 +4,6 @@
 //     }
 // }
 
-
 .gtco-news .owl-carousel .card a,
 #gtco-footer .submit-button {
     background-image: -moz-linear-gradient(0deg, #06c6f9 0%, #38eaf9 100%);
@@ -39,7 +38,6 @@
     font-size: 36px;
     margin-bottom: 30px;
 }
-
 
 //   .gtco-features {
 //     margin-top: 100px;
@@ -122,7 +120,6 @@
 .gtco-features .col-cards .card p {
     font-size: 16px;
 }
-
 
 .gtco-features-list {
     margin-top: 100px;
@@ -209,7 +206,6 @@
     z-index: 1;
 }
 
-
 .btn.btn-light-primary2 {
     color: #009ef7;
     border-color: #ecf8ff;
@@ -226,7 +222,6 @@
 .btn.btn-light-primary2 .svg-icon svg:hover [fill]:not(.permanent):not(g) {
     transition: fill .3s ease
 }
-
 
 .btn.btn-light-primary2.active,
 .btn.btn-light-primary2.show,
@@ -342,7 +337,6 @@
     transition: fill .3s ease
 }
 
-
 .btn-check:active+.btn.btn-active-light-primary2,
 .btn-check:checked+.btn.btn-active-light-primary2,
 .btn.btn-active-light-primary2.active,
@@ -441,4 +435,309 @@
 }
 .table-notas td{
     border-top: 1px dashed #ECF0F3;
+}
+
+.btn.btn-danger {
+    color: #fff;
+    border-color: #f1416c;
+    background-color: #f1416c
+}
+
+.btn.btn-danger i {
+    color: #fff
+}
+
+.btn.btn-danger .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #fff
+}
+
+.btn.btn-danger .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+.btn.btn-danger.dropdown-toggle:after {
+    color: #fff
+}
+
+.btn-check:active+.btn.btn-danger,
+.btn-check:checked+.btn.btn-danger,
+.btn.btn-danger.active,
+.btn.btn-danger.show,
+.btn.btn-danger:active:not(.btn-active),
+.btn.btn-danger:focus:not(.btn-active),
+.btn.btn-danger:hover:not(.btn-active),
+.show>.btn.btn-danger {
+    color: #fff;
+    border-color: #d9214e;
+    background-color: #d9214e
+}
+
+.btn-check:active+.btn.btn-danger i,
+.btn-check:checked+.btn.btn-danger i,
+.btn.btn-danger.active i,
+.btn.btn-danger.show i,
+.btn.btn-danger:active:not(.btn-active) i,
+.btn.btn-danger:focus:not(.btn-active) i,
+.btn.btn-danger:hover:not(.btn-active) i,
+.show>.btn.btn-danger i {
+    color: #fff
+}
+
+.btn-check:active+.btn.btn-danger .svg-icon svg [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-danger .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-danger.active .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-danger.show .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-danger:active:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-danger:focus:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-danger:hover:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.show>.btn.btn-danger .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #fff
+}
+
+.btn-check:active+.btn.btn-danger .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-danger .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-danger.active .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-danger.show .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-danger:active:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-danger:focus:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-danger:hover:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.show>.btn.btn-danger .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+.btn-check:active+.btn.btn-danger.dropdown-toggle:after,
+.btn-check:checked+.btn.btn-danger.dropdown-toggle:after,
+.btn.btn-danger.active.dropdown-toggle:after,
+.btn.btn-danger.show.dropdown-toggle:after,
+.btn.btn-danger:active:not(.btn-active).dropdown-toggle:after,
+.btn.btn-danger:focus:not(.btn-active).dropdown-toggle:after,
+.btn.btn-danger:hover:not(.btn-active).dropdown-toggle:after,
+.show>.btn.btn-danger.dropdown-toggle:after {
+    color: #fff
+}
+
+.btn.btn-light-danger {
+    color: #f1416c;
+    border-color: #fff5f8;
+    background-color: #fff5f8
+}
+
+.btn.btn-light-danger i {
+    color: #f1416c
+}
+
+.btn.btn-light-danger .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #f1416c
+}
+
+.btn.btn-light-danger .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+.btn.btn-light-danger.dropdown-toggle:after {
+    color: #f1416c
+}
+
+.btn-check:active+.btn.btn-light-danger,
+.btn-check:checked+.btn.btn-light-danger,
+.btn.btn-light-danger.active,
+.btn.btn-light-danger.show,
+.btn.btn-light-danger:active:not(.btn-active),
+.btn.btn-light-danger:focus:not(.btn-active),
+.btn.btn-light-danger:hover:not(.btn-active),
+.show>.btn.btn-light-danger {
+    color: #fff;
+    border-color: #f1416c;
+    background-color: #f1416c
+}
+
+.btn-check:active+.btn.btn-light-danger i,
+.btn-check:checked+.btn.btn-light-danger i,
+.btn.btn-light-danger.active i,
+.btn.btn-light-danger.show i,
+.btn.btn-light-danger:active:not(.btn-active) i,
+.btn.btn-light-danger:focus:not(.btn-active) i,
+.btn.btn-light-danger:hover:not(.btn-active) i,
+.show>.btn.btn-light-danger i {
+    color: #fff
+}
+
+.btn-check:active+.btn.btn-light-danger .svg-icon svg [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-light-danger .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-danger.active .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-danger.show .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-danger:active:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-danger:focus:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-light-danger:hover:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.show>.btn.btn-light-danger .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #fff
+}
+
+.btn-check:active+.btn.btn-light-danger .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-light-danger .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-light-danger.active .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-light-danger.show .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-light-danger:active:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-light-danger:focus:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-light-danger:hover:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.show>.btn.btn-light-danger .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+.btn-check:active+.btn.btn-light-danger.dropdown-toggle:after,
+.btn-check:checked+.btn.btn-light-danger.dropdown-toggle:after,
+.btn.btn-light-danger.active.dropdown-toggle:after,
+.btn.btn-light-danger.show.dropdown-toggle:after,
+.btn.btn-light-danger:active:not(.btn-active).dropdown-toggle:after,
+.btn.btn-light-danger:focus:not(.btn-active).dropdown-toggle:after,
+.btn.btn-light-danger:hover:not(.btn-active).dropdown-toggle:after,
+.show>.btn.btn-light-danger.dropdown-toggle:after {
+    color: #fff
+}
+
+.btn.btn-bg-danger {
+    border-color: #f1416c;
+    background-color: #f1416c
+}
+
+.btn-check:active+.btn.btn-active-danger,
+.btn-check:checked+.btn.btn-active-danger,
+.btn.btn-active-danger.active,
+.btn.btn-active-danger.show,
+.btn.btn-active-danger:active:not(.btn-active),
+.btn.btn-active-danger:focus:not(.btn-active),
+.btn.btn-active-danger:hover:not(.btn-active),
+.show>.btn.btn-active-danger {
+    color: #fff;
+    border-color: #f1416c;
+    background-color: #f1416c
+}
+
+.btn-check:active+.btn.btn-active-danger i,
+.btn-check:checked+.btn.btn-active-danger i,
+.btn.btn-active-danger.active i,
+.btn.btn-active-danger.show i,
+.btn.btn-active-danger:active:not(.btn-active) i,
+.btn.btn-active-danger:focus:not(.btn-active) i,
+.btn.btn-active-danger:hover:not(.btn-active) i,
+.show>.btn.btn-active-danger i {
+    color: #fff
+}
+
+.btn-check:active+.btn.btn-active-danger .svg-icon svg [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-active-danger .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-danger.active .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-danger.show .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-danger:active:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-danger:focus:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-danger:hover:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.show>.btn.btn-active-danger .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #fff
+}
+
+.btn-check:active+.btn.btn-active-danger .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-active-danger .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-danger.active .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-danger.show .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-danger:active:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-danger:focus:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-danger:hover:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.show>.btn.btn-active-danger .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+.btn-check:active+.btn.btn-active-danger.dropdown-toggle:after,
+.btn-check:checked+.btn.btn-active-danger.dropdown-toggle:after,
+.btn.btn-active-danger.active.dropdown-toggle:after,
+.btn.btn-active-danger.show.dropdown-toggle:after,
+.btn.btn-active-danger:active:not(.btn-active).dropdown-toggle:after,
+.btn.btn-active-danger:focus:not(.btn-active).dropdown-toggle:after,
+.btn.btn-active-danger:hover:not(.btn-active).dropdown-toggle:after,
+.show>.btn.btn-active-danger.dropdown-toggle:after {
+    color: #fff
+}
+
+.btn-check:active+.btn.btn-active-light-danger,
+.btn-check:checked+.btn.btn-active-light-danger,
+.btn.btn-active-light-danger.active,
+.btn.btn-active-light-danger.show,
+.btn.btn-active-light-danger:active:not(.btn-active),
+.btn.btn-active-light-danger:focus:not(.btn-active),
+.btn.btn-active-light-danger:hover:not(.btn-active),
+.show>.btn.btn-active-light-danger {
+    color: #f1416c;
+    border-color: #fff5f8;
+    background-color: #fff5f8
+}
+
+.btn-check:active+.btn.btn-active-light-danger i,
+.btn-check:checked+.btn.btn-active-light-danger i,
+.btn.btn-active-light-danger.active i,
+.btn.btn-active-light-danger.show i,
+.btn.btn-active-light-danger:active:not(.btn-active) i,
+.btn.btn-active-light-danger:focus:not(.btn-active) i,
+.btn.btn-active-light-danger:hover:not(.btn-active) i,
+.show>.btn.btn-active-light-danger i {
+    color: #f1416c
+}
+
+.btn-check:active+.btn.btn-active-light-danger .svg-icon svg [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-active-light-danger .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger.active .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger.show .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger:active:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger:focus:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger:hover:not(.btn-active) .svg-icon svg [fill]:not(.permanent):not(g),
+.show>.btn.btn-active-light-danger .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #f1416c
+}
+
+.btn-check:active+.btn.btn-active-light-danger .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn-check:checked+.btn.btn-active-light-danger .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger.active .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger.show .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger:active:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger:focus:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.btn.btn-active-light-danger:hover:not(.btn-active) .svg-icon svg:hover [fill]:not(.permanent):not(g),
+.show>.btn.btn-active-light-danger .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
+.btn-check:active+.btn.btn-active-light-danger.dropdown-toggle:after,
+.btn-check:checked+.btn.btn-active-light-danger.dropdown-toggle:after,
+.btn.btn-active-light-danger.active.dropdown-toggle:after,
+.btn.btn-active-light-danger.show.dropdown-toggle:after,
+.btn.btn-active-light-danger:active:not(.btn-active).dropdown-toggle:after,
+.btn.btn-active-light-danger:focus:not(.btn-active).dropdown-toggle:after,
+.btn.btn-active-light-danger:hover:not(.btn-active).dropdown-toggle:after,
+.show>.btn.btn-active-light-danger.dropdown-toggle:after {
+    color: #f1416c
+}
+
+.btn.btn-active-light-danger.btn-outline:not(.btn-outline-default) {
+    border-color: #f1416c !important
+}
+
+.btn.btn-color-danger {
+    color: #f1416c
+}
+
+.btn.btn-color-danger i {
+    color: #f1416c
+}
+.btn.btn-color-danger .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #f1416c
+}
+.btn.btn-color-danger .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+.btn.btn-color-danger.dropdown-toggle:after {
+    color: #f1416c
 }

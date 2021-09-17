@@ -7,7 +7,7 @@ import SliderImages from '../../../singles/SliderImages'
 import { dayDMY } from "../../../../functions/setters"
 import { ItemSlider, ModalSendMail, Modal } from '../../../singles'
 import { CreatableMultiselectGray } from '../../../../components/form-components'
-import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert} from '../../../../functions/alert'
+import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, deleteAlert } from '../../../../functions/alert'
 import { URL_DEV } from '../../../../constants'
 import { setSingleHeader } from '../../../../functions/routers'
 import { AvanceForm } from '../../../../components/forms'
@@ -421,6 +421,19 @@ class Avances extends Component {
         })
     }
 
+    deleteAvance = async(id) => {
+        const { at, proyecto, refresh } = this.props
+        waitAlert()
+        await axios.delete(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/avances/${id}`, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                doneAlert(`Avance eliminado con éxito`, ()=> {refresh(proyecto.id)})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -501,6 +514,17 @@ class Avances extends Component {
                                                                                             <i className="las la-envelope icon-xl"></i>
                                                                                         </span>
                                                                                     </OverlayTrigger>
+                                                                                    <OverlayTrigger rootClose 
+                                                                                        overlay = { 
+                                                                                            <Tooltip>
+                                                                                                <span className='font-weight-bolder'>ELIMINAR</span>
+                                                                                            </Tooltip>}>
+                                                                                        <span className={`btn btn-icon ${avance.isActive ? 'btn-color-danger' : ''}  btn-active-light-danger w-30px h-30px mr-2`}
+                                                                                            onClick = { (e) => { e.preventDefault(); deleteAlert(`ELIMINARÁS EL AVANCE DE LA SEMANA ${avance.semana}`, '¿DESEAS CONTINUAR?', 
+                                                                                                () => this.deleteAvance(avance.id)) } }>
+                                                                                            <i className="las la-trash icon-xl"></i>
+                                                                                        </span>
+                                                                                    </OverlayTrigger>
                                                                                 </div>
                                                                             </div>
                                                                         </Card.Title>
@@ -510,7 +534,7 @@ class Avances extends Component {
                                                                             {
                                                                                 avance.actividades !== null ?
                                                                                     <div className="col-md-12">
-                                                                                        <div className="mx-auto w-max-content">
+                                                                                        <div className="mx-auto">
                                                                                             <div className="font-weight-bold mb-2 text-center"><span className="bg-light px-3 font-size-lg rounded">Actividades realizadas</span></div>
                                                                                             <ul className="mb-0">
                                                                                                 { 
