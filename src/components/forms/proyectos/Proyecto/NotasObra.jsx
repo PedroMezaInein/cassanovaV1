@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../../constants'
-import { setSingleHeader, setFormHeader } from '../../../../functions/routers'
+import { setSingleHeader } from '../../../../functions/routers'
 import { Card, DropdownButton, Dropdown, Form, Row, Col } from 'react-bootstrap'
 import { dayDMY, setNaviIcon } from '../../../../functions/setters'
 import { Link } from 'react-router-dom';
 import { questionAlert, waitAlert, printResponseErrorAlert, errorAlert, doneAlert, deleteAlert, validateAlert } from '../../../../functions/alert'
 import { CalendarDay, InputGray, ReactSelectSearchGray, Button } from '../../../form-components'
 import ItemSlider from '../../../../components/singles/ItemSlider'
+import S3 from 'react-aws-s3';
 class NotasObra extends Component {
     state = {
         activeNota: 'notas',
@@ -53,6 +54,8 @@ class NotasObra extends Component {
         })
     }
 
+    onClickNota = (type) => { this.setState({ ...this.state, activeNota: type }) }
+
     /* -------------------------------------------------------------------------- */
     /*                                   GET NOTAS                                */
     /* -------------------------------------------------------------------------- */
@@ -65,22 +68,21 @@ class NotasObra extends Component {
                 const { proyecto } = response.data
                 let { notas } = this.state
                 notas = proyecto.notas
-                this.setState({
-                    ...this.state,
-                    notas
-                })
+                this.setState({ ...this.state, notas })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
     }
+    
     /* -------------------------------------------------------------------------- */
     /*                             ANCHOR DELETE NOTA                             */
     /* -------------------------------------------------------------------------- */
     openModalDeleteNota = nota => {
         deleteAlert(`¿DESEAS ELIMINAR LA NOTA ${this.cerosNota(nota.numero_nota)}?`, '', () => this.deleteNotaAxios(nota))
     }
+
     async deleteNotaAxios(nota) {
         const { proyecto, at } = this.props
         await axios.delete(`${URL_DEV}v1/proyectos/nota-bitacora/${nota.id}?proyecto=${proyecto.id}`, { headers: setSingleHeader(at) }).then(
@@ -94,16 +96,14 @@ class NotasObra extends Component {
                 } else {
                     activeNota = 'new'
                 }
-                this.setState({
-                    ...this.state,
-                    activeNota
-                })
+                this.setState({ ...this.state, activeNota })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
     }
+    
     cerosNota(num) {
         if (num < 10) {
             return ('00' + num.toString());
@@ -113,6 +113,7 @@ class NotasObra extends Component {
             return (num);
         }
     }
+    
     /* -------------------------------------------------------------------------- */
     /*                           ANCHOR GENERAR NOTA                              */
     /* -------------------------------------------------------------------------- */
@@ -120,6 +121,7 @@ class NotasObra extends Component {
         e.preventDefault();
         questionAlert('¿ESTÁS SEGURO?', 'GENERARÁS EL PDF CON LAS NOTAS DE OBRA GUARDADAS', () => this.generarBitacoraAxios())
     }
+    
     generarBitacoraAxios = async () => {
         waitAlert()
         const { at } = this.props
@@ -151,57 +153,78 @@ class NotasObra extends Component {
         }
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
         this.setState({ ...this.state, form })
     }
+    
     /* -------------------------------------------------------------------------- */
     /*                               ANCHOR ONSUMBIT                              */
     /* -------------------------------------------------------------------------- */
-    onSubmit = async (e) => {
+    onSubmitNotaBitacora = async (e) => {
         e.preventDefault();
         waitAlert();
         const { at, proyecto } = this.props
         const { form } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.forEach((element) => {
-            switch (element) {
-                case 'fecha':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, form[element]);
-                    break
-            }
-        })
-        form.adjuntos.adjuntos.files.forEach((file) => {
-            data.append(`files[]`, file.file)
-        })
-        data.append('proyecto', proyecto.id)
-        await axios.post(`${URL_DEV}v1/proyectos/nota-bitacora`, data, { headers: setFormHeader(at) }).then(
+        await axios.post(`${URL_DEV}v2/proyectos/nota-bitacora/${proyecto.id}`, form, { headers: setSingleHeader(at) }).then(
             (response) => {
+                const { nota } = response.data
                 Swal.close()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La bitácora registrada con éxito.')
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm()
-                })
+                this.addFilesToS3(nota)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
     }
+
+    addFilesToS3 = async(nota) => {
+        const { proyecto, at } = this.props
+        const { form } = this.state
+        let auxPromises = []
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { alma } = response.data
+                let urlPath = `proyectos/${proyecto.id}/notas/${nota.id}/`
+                console.log(form.adjuntos.adjuntos.files)
+                auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${urlPath}${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.file.name, url: location})
+                                else reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addFilesToNota(values, nota) }).catch(err => console.error(err))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    addFilesToNota = async(values, nota) => {
+        const { at, proyecto } = this.props
+        await axios.put(`${URL_DEV}v2/proyectos/nota-bitacora/${nota.id}/files`, { archivos: values }, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                this.getNotas(proyecto)
+                this.setState({ ...this.state, form: this.clearForm(), activeNota: 'notas' })
+                doneAlert('Nota generada con éxito', () => { this.getNotas(proyecto) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+    
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -227,6 +250,7 @@ class NotasObra extends Component {
         })
         return form;
     }
+    
     transformarOptions (options) {
         options = options ? options : []
         options.map((value) => {
@@ -344,7 +368,8 @@ class NotasObra extends Component {
                                                                                         <a key={key} target='_blank' rel="noreferrer" href={adjunto.url} className="text-dark text-hover-success mb-1 d-block">
                                                                                             Adjunto {key + 1}
                                                                                         </a>
-                                                                                    </u>
+                                                         
+                                       </u>
                                                                                 )
                                                                             })
                                                                             : <>Sin adjuntos</>
@@ -369,7 +394,7 @@ class NotasObra extends Component {
                                             onSubmit={
                                                 (e) => {
                                                     e.preventDefault();
-                                                    validateAlert(this.onSubmit, e, 'wizard-3-content')
+                                                    validateAlert(this.onSubmitNotaBitacora, e, 'wizard-3-content')
                                                 }
                                             }>
                                             <Row className="mx-0 no-gutters justify-content-center">
@@ -412,7 +437,7 @@ class NotasObra extends Component {
                                                 </Col>
                                             </Row>
                                             <div className="card-footer pb-0 px-0 pt-3 mt-5 text-right">
-                                                <Button icon='' text='ENVIAR' className="btn btn-primary" onClick={(e) => { e.preventDefault(); this.onSubmit(e) }} />
+                                                <Button icon='' text='ENVIAR' className="btn btn-primary" onClick={(e) => { e.preventDefault(); this.onSubmitNotaBitacora(e) }} />
                                             </div>
                                         </Form>
                                     </>
