@@ -1324,11 +1324,12 @@ class TicketDetails extends Component {
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
-                if(flag === true)
+                if(flag === true){
                     this.generarReporteFotograficoAxios()
-                else
+                }else{
                     doneAlert('Datos guardados con éxito.', () => this.generarReporteFotografico())
                     this.getOneTicketAxios(ticket.id)
+                }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
