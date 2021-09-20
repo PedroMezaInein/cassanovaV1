@@ -8,19 +8,21 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import { Card, Tab, Nav } from 'react-bootstrap'
 import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
-import { EditProyectoForm, NotasObra, Avances } from '../../../components/forms'
+import { EditProyectoForm, NotasObra, Avances, Adjuntos, ComentariosProyectos } from '../../../components/forms'
+
 class SingleProyecto extends Component {
 
     state = {
         proyecto: null,
         navs: [
             { eventKey: 'informacion', icon: 'flaticon-folder-1', name: 'Información' },
-            { eventKey: 'compras', icon: 'flaticon-bag', name: 'Compras' },
-            { eventKey: 'facturacion', icon: 'las la-file-invoice-dollar', name: 'Facturación' },
+            { eventKey: 'comentarios', icon: 'flaticon-comment', name: 'Comentarios' },
             { eventKey: 'avances', icon: 'flaticon-diagram', name: 'Avances' },
             { eventKey: 'notas', icon: 'flaticon-notes', name: 'Notas de obra' },
             { eventKey: 'adjuntos', icon: 'flaticon-attachment', name: 'Adjuntos' },
             { eventKey: 'presupuestos', icon: 'flaticon-list-1', name: 'Presupuestos' },
+            { eventKey: 'compras', icon: 'flaticon-bag', name: 'Compras' },
+            { eventKey: 'facturacion', icon: 'las la-file-invoice-dollar', name: 'Facturación' },
         ],
         activeKeyNav: 'informacion',
         options:{
@@ -155,7 +157,7 @@ class SingleProyecto extends Component {
                             <Tab.Container activeKey={activeKeyNav}>
                                 <div className="flex-lg-row-fluid ml-lg-10">
                                     <div className="d-flex overflow-auto">
-                                        <Nav className="nav nav-tabs nav-tabs-line-blue nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end mb-8">
+                                        <Nav className="nav nav-tabs nav-tabs-line-blue nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end mb-4">
                                             {
                                                 navs.map((nav, key) => {
                                                     return (
@@ -177,12 +179,18 @@ class SingleProyecto extends Component {
                                             <EditProyectoForm proyecto = { proyecto } options = { options } at = { access_token } 
                                                 refresh = { this.getOneProyecto } isActive = { activeKeyNav === 'informacion' ? true : false } />
                                         </Tab.Pane>
+                                        <Tab.Pane eventKey="comentarios">
+                                            <ComentariosProyectos proyecto = { proyecto } at = { access_token }/>
+                                        </Tab.Pane>
                                         <Tab.Pane eventKey="avances">
                                             <Avances proyecto = { proyecto } user = { user } at = { access_token } refresh = { this.getOneProyecto }
                                                 isActive = { activeKeyNav === 'avances' ? true : false } onClick = { this.onClick } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="notas">
                                             <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }  onClick = { this.onClick } options = { options } />
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="adjuntos">
+                                            <Adjuntos proyecto={proyecto} at = { access_token }/>
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>

@@ -4,11 +4,11 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../../constants'
 import { setTextTable, setLabelTable, setTextTableCenter, setMoneyTable, setDateTable, setOptions } from '../../../functions/setters'
-import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, waitAlert, pendingPaymentAlert } from '../../../functions/alert'
+import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, /* waitAlert, */ pendingPaymentAlert } from '../../../functions/alert'
 import { setSingleHeader } from '../../../functions/routers'
 import axios from 'axios'
 import $ from "jquery";
-import Swal from 'sweetalert2'
+/* import Swal from 'sweetalert2' */
 import { NewTable } from '../../../components/NewTables';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
@@ -65,7 +65,7 @@ class TicketTable extends Component {
     }
     
     getOptionsAxios = async() => {
-        waitAlert()
+        /* waitAlert() */
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(access_token) }).then(
             (response) => {
@@ -74,7 +74,7 @@ class TicketTable extends Component {
                 options.estatus = setOptions(estatus, 'estatus', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'nombre', 'id')
                 this.setState({ ...this.state, options, data, formularios, restante: restante })
-                Swal.close()
+                /* Swal.close() */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

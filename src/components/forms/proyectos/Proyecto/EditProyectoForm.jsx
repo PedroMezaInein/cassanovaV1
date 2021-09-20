@@ -323,7 +323,7 @@ class EditProyectoForm extends Component {
                 {
                     proyecto ?
                         <Card className='card card-custom gutter-b'>
-                            <Card.Header className="border-0 align-items-center">
+                            <Card.Header className="border-0 align-items-center pt-8 pt-md-0">
                                 <div className="font-weight-bold font-size-h4 text-dark">INFORMACIÓN DEL PROYECTO</div>
                                 <div className="card-toolbar">
                                     <button type="button" className="btn btn-sm btn-flex btn-light-primary2" onClick={() => { this.mostrarFormulario() }} >
@@ -335,7 +335,7 @@ class EditProyectoForm extends Component {
                                     </button>
                                 </div>
                             </Card.Header>
-                            <Card.Body className = 'px-0 px-md-4'>
+                            <Card.Body className = {`px-0 px-md-4 ${showInfo?'pt-0':''}`}>
                                 {
                                     showInfo ?
                                         <InfoProyecto proyecto={proyecto}/>
