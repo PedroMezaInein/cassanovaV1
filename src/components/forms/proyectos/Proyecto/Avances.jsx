@@ -320,7 +320,6 @@ class Avances extends Component {
                             new S3(alma).uploadFile(file.file.file, `${urlPath}${file.key}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
                                 .then((data) =>{
                                     const { location,status } = data
-                                    console.log(`Data: `, data)
                                     if(status === 204) resolve({ name: file.file.name, url: location, key: file.key })
                                     else reject(data)
                                 }).catch(err => reject(err))
@@ -334,7 +333,6 @@ class Avances extends Component {
                                 new S3(alma).uploadFile(file.file, `${urlPath}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
                                     .then((data) =>{
                                         const { location,status } = data
-                                        console.log(`Data: `, data)
                                         if(status === 204) resolve({ name: file.file.name, url: location })
                                         else reject(data)
                                     }).catch(err => reject(err))
@@ -366,7 +364,11 @@ class Avances extends Component {
                 var win = window.open(avance.pdf, '_blank');
                 win.focus();
                 doneAlert(`Avance generado con éxito`, ()=> {refresh(proyecto.id)})
-                this.handleCloseAvances()
+                this.setState({
+                    ...this.state,
+                    tabAvance: 'avances',
+                    form: this.clearForm()
+                })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -397,7 +399,11 @@ class Avances extends Component {
                 var win = window.open(avance.pdf, '_blank');
                 win.focus();
                 doneAlert(`Avance generado con éxito`, ()=> {refresh(proyecto.id)})
-                this.handleCloseAvances()
+                this.setState({
+                    ...this.state,
+                    tabAvance: 'avances',
+                    form: this.clearForm()
+                })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
