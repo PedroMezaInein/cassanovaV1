@@ -587,7 +587,7 @@ class Adjuntos extends Component {
         const { form, showadjuntos, primeravista, subActiveKey, defaultactivekey, proyecto } = this.state
         return (
             <Card className="card-custom gutter-b">
-                <Card.Header className="border-0 align-items-center">
+                <Card.Header className="border-0 align-items-center pt-8 pt-md-0">
                     <div className="font-weight-bold font-size-h4 text-dark">ADJUNTOS DEL PROYECTO</div>
                 </Card.Header>
                 <Card.Body>
@@ -596,7 +596,7 @@ class Adjuntos extends Component {
                             form.adjuntos_grupo.map((grupo, key) => {
                                 return (
                                     <Nav.Item as="li" className="mr-2" key={key}>
-                                        <Nav.Link data-toggle="tab" className={`rounded-0 ${primeravista && key === 0 ? "active" : ""}`} eventKey={grupo.id} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>
+                                        <Nav.Link data-toggle="tab" className={`rounded ${primeravista && key === 0 ? "active" : ""}`} eventKey={grupo.id} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>
                                             <span className="nav-icon"> <i className={`icon-lg ${grupo.icon}`}></i> </span>
                                             <span className="nav-text"> {grupo.text} </span>
                                         </Nav.Link>
@@ -606,7 +606,7 @@ class Adjuntos extends Component {
                         }
                     </Nav>
                     <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey} onSelect={(select) => { this.updateActiveTabContainer(select) }}>
-                        <Row className="mx-0 mt-4">
+                        <Row className="mx-0 mt-10">
                             <Col md={4} className="navi navi-primary2 navi-accent nav-bold d-flex align-items-center">
                                 <Nav variant="pills" className="flex-column navi navi-accent nav-bolder width-inherit rounded" style={{backgroundColor:'#f5f8fa'}}>
                                     {
@@ -635,7 +635,7 @@ class Adjuntos extends Component {
                                                                     <div className={`d-flex justify-content-${proyecto[adjunto.id].length ?'between':'center'} mb-5`}>
                                                                         {
                                                                             proyecto[adjunto.id].length ?
-                                                                                <a className="d-flex align-items-center bg-light-info rounded px-3 py-2 cursor-pointer" onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
+                                                                                <div className="d-flex align-items-center bg-light-info rounded px-3 py-2 cursor-pointer" onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
                                                                                     <span className="svg-icon svg-icon-info mr-1">
                                                                                         <span className="svg-icon svg-icon-lg">
                                                                                             <SVG src={toAbsoluteUrl('/images/svg/DownloadedFile.svg')} />
@@ -644,7 +644,7 @@ class Adjuntos extends Component {
                                                                                     <div className="d-flex font-weight-bolder text-info font-size-13px mr-2">
                                                                                         Descargar ZIP
                                                                                     </div>
-                                                                                </a>
+                                                                                </div>
                                                                             : ''
                                                                         }
                                                                         <div className="d-flex align-items-center bg-light-success rounded px-3 py-2 cursor-pointer">

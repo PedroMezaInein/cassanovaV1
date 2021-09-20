@@ -464,7 +464,7 @@ class Avances extends Component {
         return (
             <div>
                 <Card className="card-custom gutter-b">
-                    <Card.Header className="border-0 align-items-center">
+                    <Card.Header className="border-0 align-items-center pt-6 pt-md-0">
                         <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
                         <div className="card-toolbar toolbar-dropdown">
                             <DropdownButton menualign="right" 

@@ -70,15 +70,15 @@
     }
 }
 
-.gtco-features .col-cards .row .col-6:first-child {
+.gtco-features .col-cards .row .col-md-6:first-child {
     margin-top: 150px;
 }
 
-@media (max-width: 600px) {
-    .gtco-features .col-cards .row .col-6:first-child {
-        margin-top: 50px;
-    }
-}
+// @media (max-width: 600px) {
+//     .gtco-features .col-cards .row .col-md-6:first-child {
+//         margin-top: 50px;
+//     }
+// }
 
 // @media (max-width: 600px) {
 //     .gtco-features .col-cards .col {
@@ -136,6 +136,17 @@
     padding: 15px;
     height: 60px;
     width: 60px;
+}
+@media (max-width: 750px) {
+    .gtco-features .col-cards .card{
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+    }
+    .gtco-features svg{
+        display:none;
+    }
+    .gtco-features .col-cards .row .col-md-6:first-child{
+        margin-top: 0 !important;
+    }
 }
 
 .gtco-features-list .oval .align-self-start {
@@ -863,4 +874,57 @@
 }
 .bg-light-primary2{
     background-color: #ecf8ff;
+}
+
+a.text-hover-primary2, .text-hover-primary2 {
+    -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease;
+}
+
+a.text-hover-primary2:hover, .text-hover-primary2:hover {
+    -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease;
+    color: #009ef7 !important;
+}
+
+a.text-hover-primary2:hover i, .text-hover-primary2:hover i {
+    color: #009ef7 !important;
+}
+
+a.text-hover-primary2:hover .svg-icon svg g [fill], .text-hover-primary2:hover .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #009ef7;
+}
+
+a.text-hover-primary2:hover .svg-icon svg:hover g [fill], .text-hover-primary2:hover .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.hoverable:hover a.text-hover-primary2, .hoverable:hover .text-hover-primary2 {
+    -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease;
+    color: #009ef7 !important;
+}
+
+.hoverable:hover a.text-hover-primary2 i, .hoverable:hover .text-hover-primary2 i {
+    color: #009ef7 !important;
+}
+
+.hoverable:hover a.text-hover-primary2 .svg-icon svg g [fill], .hoverable:hover .text-hover-primary2 .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #009ef7 !important;
+}
+
+.hoverable:hover a.text-hover-primary2 .svg-icon svg:hover g [fill], .hoverable:hover .text-hover-primary2 .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
 }

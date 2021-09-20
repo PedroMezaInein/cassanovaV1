@@ -25,9 +25,9 @@ class NotasObra extends Component {
                     value: '',
                     placeholder: 'Adjunto',
                     files: []
-                },
-            },
-        },
+                }
+            }
+        }
     }
     componentDidUpdate = prev => {
         const { isActive } = this.props
@@ -283,7 +283,7 @@ class NotasObra extends Component {
         return (
             <>
                 <Card className="card-custom gutter-b">
-                    <Card.Header className="border-0 align-items-center">
+                    <Card.Header className="border-0 align-items-center pt-8 pt-md-0">
                         <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
                         {
                             notas.length > 0 ?
@@ -368,8 +368,7 @@ class NotasObra extends Component {
                                                                                         <a key={key} target='_blank' rel="noreferrer" href={adjunto.url} className="text-dark text-hover-success mb-1 d-block">
                                                                                             Adjunto {key + 1}
                                                                                         </a>
-                                                         
-                                       </u>
+                                                                                    </u>
                                                                                 )
                                                                             })
                                                                             : <>Sin adjuntos</>
