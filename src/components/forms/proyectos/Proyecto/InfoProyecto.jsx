@@ -119,10 +119,14 @@ class InfoProyecto extends Component {
                                                                 </tr>
                                                                 : <></>
                                                         }
-                                                        <tr>
-                                                            <td className="font-weight-bolder">Cliente principal</td>
-                                                            <td className="font-weight-light">{proyecto.cliente.empresa}</td>
-                                                        </tr>
+                                                        {
+                                                            proyecto.cliente !== null?
+                                                                <tr>
+                                                                    <td className="font-weight-bolder">Cliente principal</td>
+                                                                    <td className="font-weight-light">{proyecto.cliente.empresa}</td>
+                                                                </tr>
+                                                            : <></>
+                                                        }
                                                         <tr>
                                                             <td className="font-weight-bolder">{proyecto.clientes.length > 1 ? 'Clientes' : 'Cliente'}</td>
                                                             <td className="font-weight-light">
