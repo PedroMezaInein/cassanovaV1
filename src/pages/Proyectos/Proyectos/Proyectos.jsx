@@ -1202,11 +1202,11 @@ class Proyectos extends Component {
         let aux = []
         aux.push(
             {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
+                text: 'Ver proyecto',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
                 action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' }
+                tooltip: { id: 'edit', text: 'Ver proyecto' }
             },
             {
                 text: 'Eliminar',
@@ -1215,20 +1215,20 @@ class Proyectos extends Component {
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
-            {
-                text: 'Mostrar&nbsp;información',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-magnifier-tool',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
-            },
-            {
-                text: 'Adjuntos',
-                btnclass: 'info',
-                iconclass: 'flaticon-attachment',
-                action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
+            // {
+            //     text: 'Mostrar&nbsp;información',
+            //     btnclass: 'primary',
+            //     iconclass: 'flaticon2-magnifier-tool',
+            //     action: 'see',
+            //     tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            // },
+            // {
+            //     text: 'Adjuntos',
+            //     btnclass: 'info',
+            //     iconclass: 'flaticon-attachment',
+            //     action: 'adjuntos',
+            //     tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            // },
             // {
             //     text: 'Avances',
             //     btnclass: 'dark',
@@ -1260,13 +1260,13 @@ class Proyectos extends Component {
                 action: 'lead',
                 tooltip: { id: 'lead', text: 'Información&nbsp;del&nbsp;lead' }
             })
-        aux.push({
-            text: 'Comentarios',
-            btnclass: 'info',
-            iconclass: 'flaticon2-talk',
-            action: 'comment',
-            tooltip: { id: 'comment', text: 'Comentarios' }
-        })
+        // aux.push({
+        //     text: 'Comentarios',
+        //     btnclass: 'info',
+        //     iconclass: 'flaticon2-talk',
+        //     action: 'comment',
+        //     tooltip: { id: 'comment', text: 'Comentarios' }
+        // })
                 
         return aux
     }
