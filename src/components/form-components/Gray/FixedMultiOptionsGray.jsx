@@ -17,7 +17,7 @@ class FixedMultiOptionsGray extends Component {
 
     onChange(value, { action, removedValue }) {
         console.log(value, 'valueee')
-        const { options, onChange } = this.props
+        const { options, update, name } = this.props
         switch (action) {
             case 'remove-value':
             case 'pop-value':
@@ -32,7 +32,7 @@ class FixedMultiOptionsGray extends Component {
                 break;
         }
         value = this.orderOptions(value);
-        onChange(value, 'name')
+        update(value, name)
         this.setState({
             value: value
         });

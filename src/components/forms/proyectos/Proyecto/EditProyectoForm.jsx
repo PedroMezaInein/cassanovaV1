@@ -224,16 +224,24 @@ class EditProyectoForm extends Component {
     onChangeContratar = e => {
         const { name, value } = e.target
         console.log('entreee')
+        
         const { formContratar } = this.state
         formContratar[name] = value
         console.log(formContratar,'formContratar')
         this.setState({ ...this.state, formContratar })
     }
     updateSelectContratar = (value, name) => {
+        
+        console.log(value, 'valueee')
+        console.log(name, 'name')
         if (value === null) {
             value = []
         }
-        this.onChangeContratar({ target: { value: value.value, name: name } }, true)
+        
+        const { formContratar } = this.state
+        formContratar[name] = value
+        console.log(formContratar,'formContratar')
+        this.setState({ ...this.state, formContratar })
     }
     transformarOptions = options => {
         options = options ? options : []
@@ -379,7 +387,7 @@ class EditProyectoForm extends Component {
         
     }
     render() {
-        const { showModal, form, formeditado, modal, navInfo, formContratar } = this.state
+        const { showModal, form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
         const { proyecto, options } = this.props
         // console.log(formContratar, 'form onChange')
         // console.log(form, 'form onChange')
@@ -849,9 +857,9 @@ class EditProyectoForm extends Component {
                                                             <FixedMultiOptionsGray
                                                                 requirevalidation={1}
                                                                 placeholder="SELECCIONA LA FASE"
-                                                                options={optionsFases()}
+                                                                options={stateOptions.fases}
                                                                 defaultvalue={formContratar.fases}
-                                                                onChange={this.updateSelectContratar}
+                                                                update={this.updateSelectContratar}
                                                                 iconclass="las la-pencil-ruler icon-xl"
                                                                 messageinc="Selecciona la fase."
                                                                 name="fases"
