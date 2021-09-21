@@ -1,23 +1,31 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import $ from "jquery";
-
 class FixedMultiOptionsGray extends Component {
     state = {
-        value : this.props.defaultvalue
+        value: this.props.defaultvalue,
+        countFixed: 0
     };
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
     }
-
     componentDidMount() {
-        $('.css-2b097c-container').attr('id','css-2b097c-container-gray')
+        const { options } = this.props
+        $('.css-2b097c-container').attr('id', 'css-2b097c-container-gray')
+        let count = 0;
+        options.forEach((option) => {
+            if (option.isFixed) {
+                count++;
+            }
+            return false
+        })
+        this.setState({
+            countFixed: count
+        });
     }
-
     onChange(value, { action, removedValue }) {
-        console.log(value, 'valueee')
-        const { options, update, name } = this.props
+        const { options, onChange, name } = this.props
         switch (action) {
             case 'remove-value':
             case 'pop-value':
@@ -32,21 +40,21 @@ class FixedMultiOptionsGray extends Component {
                 break;
         }
         value = this.orderOptions(value);
-        update(value, name)
+        onChange(value, name)
         this.setState({
             value: value
         });
     }
     orderOptions = values => {
+        console.log(values, 'values')
         return values.filter(v => v.isFixed).concat(values.filter(v => !v.isFixed));
     };
     render() {
         const { options, placeholder, defaultvalue, iconclass, requirevalidation, messageinc, bgcolor, name } = this.props
-        const { value } = this.state
-
+        const { value, countFixed } = this.state
         const customStyles = {
-            indicatorSeparator: () => ({ 
-                backgroundColor:'transparent !important'
+            indicatorSeparator: () => ({
+                backgroundColor: 'transparent !important'
             }),
             multiValue: (base, state) => ({
                 backgroundColor: `${state.data.isFixed ? '#2171c1' : '#e5e5e8'}`,
@@ -131,7 +139,7 @@ class FixedMultiOptionsGray extends Component {
                     />
                 </div>
                 {
-                    requirevalidation?(defaultvalue.length>0?'':<span className={"form-text text-danger is-invalid"}> {messageinc} </span>):''
+                    requirevalidation ? (defaultvalue.length > countFixed ? '' : <span className={"form-text text-danger is-invalid"}> {messageinc} </span>) : ''
                 }
             </div>
         );
