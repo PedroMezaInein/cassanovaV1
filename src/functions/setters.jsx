@@ -126,6 +126,14 @@ export function setOptions(arreglo, name, value) {
     return aux
 }
 
+export function setOptionsWithLabel(arreglo, name, value) {
+    let aux = setOptions(arreglo, name, value)
+    aux.forEach((elemento) => {
+        elemento.label = elemento.name
+    })
+    return aux
+}
+
 export function setCheckedOptions(arreglo, name) {
     let aux = []
     arreglo.map((element) => {
@@ -586,27 +594,39 @@ export function setLabelTableReactDom (data, changeEstatus) {
                         <Dropdown.Header>
                             <span className="font-size-11px">Elige una opción</span>
                         </Dropdown.Header>
-                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Detenido', data) }} >
-                            <span className="navi-link w-100">
-                                <span className="navi-text">
-                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-size-12px">DETENIDO</span>
-                                </span>
-                            </span>
-                        </Dropdown.Item>
-                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Terminado', data) }} >
-                            <span className="navi-link w-100">
-                                <span className="navi-text">
-                                    <span className="label label-xl label-inline label-light-primary rounded-0 w-100 font-size-12px">TERMINADO</span>
-                                </span>
-                            </span>
-                        </Dropdown.Item>
-                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('En proceso', data) }} >
-                            <span className="navi-link w-100">
-                                <span className="navi-text">
-                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100 font-size-12px">EN PROCESO</span>
-                                </span>
-                            </span>
-                        </Dropdown.Item>
+                        {
+                            data.estatus.estatus !== 'Detenido' ?
+                                <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Detenido', data) }} >
+                                    <span className="navi-link w-100">
+                                        <span className="navi-text">
+                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-size-12px">DETENIDO</span>
+                                        </span>
+                                    </span>
+                                </Dropdown.Item>
+                            : <></>
+                        }
+                        {
+                            data.estatus.estatus !== 'Terminado' ?
+                                <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Terminado', data) }} >
+                                    <span className="navi-link w-100">
+                                        <span className="navi-text">
+                                            <span className="label label-xl label-inline label-light-primary rounded-0 w-100 font-size-12px">TERMINADO</span>
+                                        </span>
+                                    </span>
+                                </Dropdown.Item>
+                            : <></>
+                        }
+                        {
+                            data.estatus.estatus !== 'En proceso' ?
+                                <Dropdown.Item className="p-0" onClick={() => { changeEstatus('En proceso', data) }} >
+                                    <span className="navi-link w-100">
+                                        <span className="navi-text">
+                                            <span className="label label-xl label-inline label-light-success rounded-0 w-100 font-size-12px">EN PROCESO</span>
+                                        </span>
+                                    </span>
+                                </Dropdown.Item>
+                            : <></>
+                        }
                     </Dropdown.Menu>
                 </Dropdown>
             : ''
