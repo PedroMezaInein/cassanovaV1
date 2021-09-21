@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert';
-import { Button, InputGray, ReactSelectSearchGray, RangeCalendar } from '../../form-components';
+import { Button, InputGray, ReactSelectSearchGray, RangeCalendar, InputNumberGray } from '../../form-components';
 import axios from 'axios';
 import { setSingleHeader } from '../../../functions/routers';
 import Swal from 'sweetalert2';
@@ -18,7 +18,10 @@ class ProyectoFilter extends Component {
             empresa: '',
             tipo: '',
             cliente: '',
-            fechas: { start: null, end: null }
+            fechas: { start: null, end: null },
+            m2:'',
+            cp:'',
+            estado:''
         },
         options: {
             empresas: [], estatus: [], tipos: [], clientes: []
@@ -70,6 +73,12 @@ class ProyectoFilter extends Component {
                     form.descripcion = filtrado.descripcion
                 if(filtrado.fechas)
                     form.fechas = filtrado.fechas
+                if(filtrado.m2)
+                    form.m2 = filtrado.m2
+                if(filtrado.cp)
+                    form.cp = filtrado.cp
+                if(filtrado.estado)
+                    form.estado = filtrado.estado
                 this.setState({...this.state, options, form })
                 Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
@@ -97,6 +106,9 @@ class ProyectoFilter extends Component {
         form.tipo = ''
         form.cliente = ''
         form.fechas = { start: null, end: null }
+        form.m2 = ''
+        form.cp = ''
+        form.estado = ''
         filtering(form)
         this.setState({ ...this.state, form })
     }
@@ -105,7 +117,7 @@ class ProyectoFilter extends Component {
         const { form, options } = this.state
         return (
             <Form onSubmit={ this.onSubmit} >
-                <div className="form-group row form-group-marginless mx-0">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-6">
                         <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } requirevalidation = { 0 }
                             withformgroup = { 0 } name = 'nombre' placeholder = 'NOMBRE' value = { form.nombre } onChange = { this.onChange } 
@@ -115,33 +127,54 @@ class ProyectoFilter extends Component {
                         <ReactSelectSearchGray placeholder = 'Selecciona el estatus' defaultvalue = { form.estatus } iconclass = 'las la-check-circle icon-xl'
                             options = { options.estatus } onChange={(value) => { this.updateSelect(value, 'estatus') }} />
                     </div>
-                    <div className="col-12 px-0">
-                        <div className="separator separator-dashed " />
-                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-6">
-                        <ReactSelectSearchGray placeholder = 'Selecciona la empresa' defaultvalue = { form.empresa } iconclass = 'las la-check-circle icon-xl'
+                        <ReactSelectSearchGray placeholder = 'Selecciona la empresa' defaultvalue = { form.empresa } iconclass = 'las la-building icon-xl'
                             options = { options.empresas } onChange={(value) => { this.updateSelect(value, 'empresa') }} />
                     </div>
                     <div className="col-md-6">
                         <ReactSelectSearchGray placeholder = 'Selecciona el tipo de proyecto' defaultvalue = { form.tipo } 
-                            iconclass = 'las la-check-circle icon-xl' options = { options.tipos } 
+                            iconclass = 'las la-tools icon-xl' options = { options.tipos } 
                             onChange={(value) => { this.updateSelect(value, 'tipo') }} />
                     </div>
-                    <div className="col-12 px-0">
-                        <div className="separator separator-dashed " />
-                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-6">
-                        <ReactSelectSearchGray placeholder = 'Selecciona el cliente' defaultvalue = { form.cliente } iconclass = 'las la-check-circle icon-xl'
+                        <ReactSelectSearchGray placeholder = 'Selecciona el cliente' defaultvalue = { form.cliente } iconclass = 'las la-user icon-xl'
                             options = { options.clientes } onChange={(value) => { this.updateSelect(value, 'cliente') }} />
                     </div>
                     <div className="col-md-6">
+                        <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
+                            withformgroup={0} name='m2' placeholder='M²' value={form.m2}
+                            onChange={this.onChange} iconclass="las la-ruler-combined icon-xl" />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-6">
+                        <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } requirevalidation = { 0 }
+                            withformgroup = { 0 } name = 'cp' placeholder = 'CP' value = { form.cp }
+                            onChange = { this.onChange } iconclass='las la-map-marker icon-xl' customclass="px-2"  />
+                    </div>
+                    <div className="col-md-6">
+                        <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } requirevalidation = { 0 }
+                            withformgroup = { 0 } name = 'estado' placeholder = 'ESTADO' value = { form.estado }
+                            onChange = { this.onChange } iconclass='las la-map icon-xl' customclass="px-2"  />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
                         <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 }
                             withformgroup = { 0 } name = 'descripcion' placeholder = 'DESCRIPCIÓN' value = { form.descripcion }
                             onChange = { this.onChange } iconclass='las la-folder icon-xl' customclass="px-2"  />
                     </div>
-                    <div className="col-12 px-0">
-                        <div className="separator separator-dashed " />
-                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-12 text-center">
                         <label className="col-form-label font-weight-bold text-dark-60">Fechas</label><br />
                         <RangeCalendar start = { form.fechas.start } end = { form.fechas.end } 
