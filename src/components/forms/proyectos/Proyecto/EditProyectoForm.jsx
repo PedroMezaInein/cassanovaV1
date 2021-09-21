@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Card, Form, Row } from 'react-bootstrap';
-import { setOptions } from '../../../../functions/setters';
+import { Card, Form, Row, DropdownButton, Dropdown, Col } from 'react-bootstrap';
+import { setOptions, setNaviIcon } from '../../../../functions/setters';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { InfoProyecto } from "../..";
-import { TagSelectSearchGray, InputGray, InputMoneyGray, TagInputGray, InputPhoneGray, InputNumberGray, ReactSelectSearchGray, RangeCalendar } from '../../../form-components'
+import { TagSelectSearchGray, InputGray, InputMoneyGray, TagInputGray, InputPhoneGray, InputNumberGray, ReactSelectSearchGray, RangeCalendar, Button, FixedMultiOptionsGray } from '../../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../../functions/wizard'
 import { validateAlert, waitAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../../../functions/alert'
 import { TEL, URL_DEV } from '../../../../constants'
@@ -15,7 +15,7 @@ import { ClienteCPModal } from '../../../../components/forms'
 import Swal from 'sweetalert2'
 class EditProyectoForm extends Component {
     state = {
-        showInfo: true,
+        navInfo: 'info',
         showModal:false,
         modal:{
             cp:false
@@ -43,20 +43,33 @@ class EditProyectoForm extends Component {
             ubicacion_cliente: '',
             cp_ubicacion:[]
         },
-        formeditado:1
+        formContratar: {
+            fases: [],
+            costo: '',
+            fechaInicio: new Date(),
+            fechaFin: new Date()
+        },
+        formeditado:1,
+        stateOptions:{
+            fases:[]
+        }
     }
 
     componentDidUpdate = prev => {
         const { isActive } = this.props
         const { isActive: prevActive } = prev
         if(isActive && !prevActive){
-            this.setState({ ...this.state, showInfo: true })
+            this.setState({ ...this.state, navInfo: 'info' })
         }
     }
 
     getForm(){
         const { proyecto, options } = this.props
-        const { form } = this.state
+        const { form, formContratar } = this.state
+        let { stateOptions } = this.state
+
+        stateOptions.fases = optionsFases()
+
         form.nombre = proyecto.nombre
         if (proyecto.empresa){
             form.empresa = {name: proyecto.empresa.name, value: proyecto.empresa.id.toString(), label: proyecto.empresa.name}
@@ -117,7 +130,16 @@ class EditProyectoForm extends Component {
         }else{
             form.cliente_principal = ''
         }
-        this.setState({ ...this.state, form })
+        
+        formContratar.costo = proyecto.costo
+        formContratar.fechaInicio = new Date(proyecto.fecha_inicio)
+        formContratar.fechaFin = new Date(proyecto.fecha_fin)
+        let auxFasesContratar = []
+        if(proyecto.fase1){ auxFasesContratar.push({name: 'Fase 1', value: 'fase1', label: 'Fase 1'}) }
+        if(proyecto.fase2){ auxFasesContratar.push({name: 'Fase 2', value: 'fase2', label: 'Fase 2', isFixed:true}) } 
+        if(proyecto.fase3){ auxFasesContratar.push({name: 'Fase 3', value: 'fase3', label: 'Fase 3'}) }
+        formContratar.fases = auxFasesContratar
+        this.setState({ ...this.state, form, formContratar })
     }
     onChange = e => {
         const { name, value, type } = e.target
@@ -189,6 +211,38 @@ class EditProyectoForm extends Component {
             form
         })
     }
+    onChangeRangeContratar = range => {
+        const { startDate, endDate } = range
+        const { formContratar } = this.state
+        formContratar.fechaInicio = startDate
+        formContratar.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            formContratar
+        })
+    }
+    onChangeContratar = e => {
+        const { name, value } = e.target
+        console.log('entreee')
+        
+        const { formContratar } = this.state
+        formContratar[name] = value
+        console.log(formContratar,'formContratar')
+        this.setState({ ...this.state, formContratar })
+    }
+    updateSelectContratar = (value, name) => {
+        
+        console.log(value, 'valueee')
+        console.log(name, 'name')
+        if (value === null) {
+            value = []
+        }
+        
+        const { formContratar } = this.state
+        formContratar[name] = value
+        console.log(formContratar,'formContratar')
+        this.setState({ ...this.state, formContratar })
+    }
     transformarOptions = options => {
         options = options ? options : []
         options.map((value) => {
@@ -245,7 +299,7 @@ class EditProyectoForm extends Component {
         await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}`, form, { headers: { Authorization: `Bearer ${at}` } }).then(
             (response) => {
                 const { proyecto } = response.data
-                this.setState({...this.state, showInfo: true});
+                this.setState({...this.state, navInfo: 'info'});
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.', () => {refresh(proyecto.id)})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -253,12 +307,11 @@ class EditProyectoForm extends Component {
             console.error(error, 'error')
         })
     }
-    mostrarFormulario() {
-        let { showInfo } = this.state
+    onClickInfo = (type) => {
         this.getForm()
         this.setState({
             ...this.state,
-            showInfo: !showInfo
+            navInfo: type
         })
     }
 
@@ -315,31 +368,74 @@ class EditProyectoForm extends Component {
             form
         })
     }
+    getTitle = () => {
+        const { navInfo } = this.state
+        switch(navInfo){
+            case 'info':
+                return 'INFORMACIÓN DEL PROYECTO'
+            case 'edit':
+                return 'EDITAR PROYECTO'
+            case 'contratar':
+                return 'CONTRATAR FASE'
+            default:
+                return ''
+        }
+    }
+
+    sendFormContratar = async () => {
+        waitAlert()
+        
+    }
     render() {
-        const { showInfo, showModal, form, formeditado, modal } = this.state
+        const { showModal, form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
         const { proyecto, options } = this.props
+        // console.log(formContratar, 'form onChange')
+        // console.log(form, 'form onChange')
         return (
             <>
                 {
                     proyecto ?
                         <Card className='card card-custom gutter-b'>
                             <Card.Header className="border-0 align-items-center pt-8 pt-md-0">
-                                <div className="font-weight-bold font-size-h4 text-dark">INFORMACIÓN DEL PROYECTO</div>
+                                <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
                                 <div className="card-toolbar">
-                                    <button type="button" className="btn btn-sm btn-flex btn-light-primary2" onClick={() => { this.mostrarFormulario() }} >
-                                        {
-                                            showInfo ?
-                                                <><span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} /></span><div>EDITAR PROYECTO</div></>
-                                                : <><span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/File.svg')} /></span><div>DATOS DEL PROYECTO</div></>
-                                        }
-                                    </button>
+                                    {/*
+                                        <button type="button" className="btn btn-sm btn-flex btn-light-primary2" onClick={() => { this.mostrarFormulario() }} >
+                                            span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} /></span><div>EDITAR PROYECTO</div>
+                                        </button> 
+                                    */}
+                                    <div className="card-toolbar toolbar-dropdown">
+                                        <DropdownButton menualign="right" 
+                                            title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
+                                            {
+                                                (navInfo === 'edit' || navInfo === 'contratar') ?
+                                                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.onClickInfo('info') }}>
+                                                        {setNaviIcon('las la-clipboard-list icon-xl', 'INFORMACIÓN')}
+                                                    </Dropdown.Item>
+                                                : <></>
+                                            }
+                                            {
+                                                navInfo === 'edit'?<></>:
+                                                <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.onClickInfo('edit') }}>
+                                                    {setNaviIcon('las la-pencil-alt icon-xl', 'EDITAR PROYECTO')}
+                                                </Dropdown.Item>
+                                            }
+                                            {
+                                                (proyecto.fase3 !== 1 && navInfo !== 'contratar')?
+                                                <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => { this.onClickInfo('contratar') }}>
+                                                    {setNaviIcon('las la-handshake icon-xl', 'CONTRATAR FASES')}
+                                                </Dropdown.Item>
+                                                :<></>
+                                            }
+                                        </DropdownButton>
+                                    </div>
                                 </div>
                             </Card.Header>
-                            <Card.Body className = {`px-0 px-md-4 ${showInfo?'pt-0':''}`}>
+                            <Card.Body className = {`px-0 px-md-4 ${navInfo === 'info'?'pt-0':''}`}>
                                 {
-                                    showInfo ?
+                                    navInfo === 'info' ?
                                         <InfoProyecto proyecto={proyecto}/>
-                                        :
+                                        :navInfo === 'edit' ?
                                         <div className="wizard wizard-6" id="wizardP" data-wizard-state="first">
                                             <div className="wizard-content d-flex flex-column mx-auto">
                                                 <div className="d-flex flex-column-auto flex-column px-0">
@@ -727,7 +823,62 @@ class EditProyectoForm extends Component {
                                                 </Form>
                                             </div>
                                         </div>
-                                }
+                                        :navInfo === 'contratar' ?
+                                        <Form id="form-contratar" onSubmit={(e) => { e.preventDefault(); waitAlert(); validateAlert(this.sendFormContratar, e, 'form-contratar') }} >
+                                            <Row className="mx-auto justify-content-center">
+                                                <Col md="6" className="text-center">
+                                                    <div className="col-form-label mb-3 p-0 font-weight-bolder text-dark-60">Periodo inicio - final</div>
+                                                    <RangeCalendar
+                                                        onChange={this.onChangeRangeContratar}
+                                                        start={formContratar.fechaInicio}
+                                                        end={formContratar.fechaFin}
+                                                    />
+                                                </Col>
+                                                <Col md="5" className="align-self-center">
+                                                    <div className="form-group row form-group-marginless">
+                                                        <div className="col-md-12">
+                                                            <InputMoneyGray
+                                                                withtaglabel={1}
+                                                                withtextlabel={1}
+                                                                withplaceholder={1}
+                                                                withicon={1}
+                                                                withformgroup={1}
+                                                                requirevalidation={1}
+                                                                formeditado={formeditado}
+                                                                thousandseparator={true}
+                                                                placeholder="Costo con IVA"
+                                                                value={formContratar.costo}
+                                                                name="costo"
+                                                                onChange={this.onChangeContratar}
+                                                                iconclass="las la-coins"
+                                                            />
+                                                        </div>
+                                                        <div className="col-md-12">
+                                                            <FixedMultiOptionsGray
+                                                                requirevalidation={1}
+                                                                placeholder="SELECCIONA LA FASE"
+                                                                options={stateOptions.fases}
+                                                                defaultvalue={formContratar.fases}
+                                                                update={this.updateSelectContratar}
+                                                                iconclass="las la-pencil-ruler icon-xl"
+                                                                messageinc="Selecciona la fase."
+                                                                name="fases"
+                                                            />
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                            <div className="card-footer p-0 mt-8 pt-3">
+                                                <div className="row mx-0">
+                                                    <div className="col-md-12 text-right p-0">
+                                                        <Button icon='' className="btn btn-light-primary2" text="CONTRATAR" onClick = { (e) => { e.preventDefault(); validateAlert(this.sendFormContratar, e, 'form-contratar') } } />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Form>
+                                        :<></>    
+                            }
                             </Card.Body>
                         </Card>
                         : <></>
