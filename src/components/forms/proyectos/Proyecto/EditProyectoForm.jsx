@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, Form, Row, DropdownButton, Dropdown, Col } from 'react-bootstrap';
 import { setOptions, setNaviIcon } from '../../../../functions/setters';
 import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../../functions/routers"
+import { toAbsoluteUrl, setSingleHeader } from "../../../../functions/routers"
 import { InfoProyecto } from "../..";
 import { TagSelectSearchGray, InputGray, InputMoneyGray, TagInputGray, InputPhoneGray, InputNumberGray, ReactSelectSearchGray, RangeCalendar, Button, FixedMultiOptionsGray } from '../../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../../functions/wizard'
@@ -66,9 +66,6 @@ class EditProyectoForm extends Component {
     getForm(){
         const { proyecto, options } = this.props
         const { form, formContratar } = this.state
-        let { stateOptions } = this.state
-
-        stateOptions.fases = optionsFases()
 
         form.nombre = proyecto.nombre
         if (proyecto.empresa){
@@ -135,11 +132,35 @@ class EditProyectoForm extends Component {
         formContratar.fechaInicio = new Date(proyecto.fecha_inicio)
         formContratar.fechaFin = new Date(proyecto.fecha_fin)
         let auxFasesContratar = []
-        if(proyecto.fase1){ auxFasesContratar.push({name: 'Fase 1', value: 'fase1', label: 'Fase 1'}) }
+        if(proyecto.fase1){ auxFasesContratar.push({name: 'Fase 1', value: 'fase1', label: 'Fase 1', isFixed:true}) }
         if(proyecto.fase2){ auxFasesContratar.push({name: 'Fase 2', value: 'fase2', label: 'Fase 2', isFixed:true}) } 
-        if(proyecto.fase3){ auxFasesContratar.push({name: 'Fase 3', value: 'fase3', label: 'Fase 3'}) }
+        if(proyecto.fase3){ auxFasesContratar.push({name: 'Fase 3', value: 'fase3', label: 'Fase 3', isFixed:true}) }
         formContratar.fases = auxFasesContratar
+        this.optionsFixed()
         this.setState({ ...this.state, form, formContratar })
+    }
+    optionsFixed = () => {
+        const { proyecto } = this.props
+        let { stateOptions } = this.state
+        stateOptions.fases = optionsFases()
+        stateOptions.fases.forEach((fase) => {
+            if (proyecto.fase1) {
+                if (fase.label === 'Fase 1') {
+                    fase.isFixed = true;
+                }
+            }
+            if (proyecto.fase2) {
+                if (fase.label === 'Fase 2') {
+                    fase.isFixed = true;
+                }
+            }
+            if (proyecto.fase3) {
+                if (fase.label === 'Fase 3') {
+                    fase.isFixed = true;
+                }
+            }
+        })
+        this.setState({ ...this.state, stateOptions })
     }
     onChange = e => {
         const { name, value, type } = e.target
@@ -223,24 +244,16 @@ class EditProyectoForm extends Component {
     }
     onChangeContratar = e => {
         const { name, value } = e.target
-        console.log('entreee')
-        
         const { formContratar } = this.state
         formContratar[name] = value
-        console.log(formContratar,'formContratar')
         this.setState({ ...this.state, formContratar })
     }
     updateSelectContratar = (value, name) => {
-        
-        console.log(value, 'valueee')
-        console.log(name, 'name')
         if (value === null) {
             value = []
         }
-        
         const { formContratar } = this.state
         formContratar[name] = value
-        console.log(formContratar,'formContratar')
         this.setState({ ...this.state, formContratar })
     }
     transformarOptions = options => {
@@ -382,15 +395,24 @@ class EditProyectoForm extends Component {
         }
     }
 
-    sendFormContratar = async () => {
+    sendFormContratar  = async() => {
+        const { at, proyecto, refresh } = this.props
+        const { form } = this.state
         waitAlert()
-        
+        await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/contratar`, form.formContratar, { headers: { headers: setSingleHeader(at) } }).then(
+            (response) => {
+                const { proyecto } = response.data
+                this.setState({...this.state, navInfo: 'info'});
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Se contrató nueva fase con éxito.', () => {refresh(proyecto.id)})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
     render() {
         const { showModal, form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
         const { proyecto, options } = this.props
-        // console.log(formContratar, 'form onChange')
-        // console.log(form, 'form onChange')
         return (
             <>
                 {
@@ -823,8 +845,8 @@ class EditProyectoForm extends Component {
                                                 </Form>
                                             </div>
                                         </div>
-                                        :navInfo === 'contratar' ?
-                                        <Form id="form-contratar" onSubmit={(e) => { e.preventDefault(); waitAlert(); validateAlert(this.sendFormContratar, e, 'form-contratar') }} >
+                                        :navInfo === 'contratar' ? 
+                                        <Form id="form-contratar" onSubmit={ (e) => { e.preventDefault(); validateAlert(this.sendFormContratar, e, 'form-contratar') }} >
                                             <Row className="mx-auto justify-content-center">
                                                 <Col md="6" className="text-center">
                                                     <div className="col-form-label mb-3 p-0 font-weight-bolder text-dark-60">Periodo inicio - final</div>
@@ -859,7 +881,7 @@ class EditProyectoForm extends Component {
                                                                 placeholder="SELECCIONA LA FASE"
                                                                 options={stateOptions.fases}
                                                                 defaultvalue={formContratar.fases}
-                                                                update={this.updateSelectContratar}
+                                                                onChange={this.updateSelectContratar}
                                                                 iconclass="las la-pencil-ruler icon-xl"
                                                                 messageinc="Selecciona la fase."
                                                                 name="fases"
