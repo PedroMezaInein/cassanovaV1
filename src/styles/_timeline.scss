@@ -164,7 +164,7 @@
 .li.complete_proceso .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #807999, #7d6f91, #7a6588, #785b7e, #765174, #7c5074, #834f73, #894e71, #9a5679, #ac5e81, #be6788, #d0708e);
+    border-image-source: linear-gradient(to right, #807999, #736d8a, #67627b, #5b566c, #4f4b5e, #524a5c, #544859, #564756, #674f5b, #76585e, #836261, #8d6e63);
 }
 .li.complete_proceso .status:before {
     background-color: #807999;
@@ -175,10 +175,10 @@
 .li.complete_pendiente_pago .status {
     border-top: 2px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #d0708e, #cc718e, #c7718e, #c3728d, #bf728d, #b87598, #ae79a1, #a47da8, #8e87b4, #778fb8, #6896b4, #649baa);
+    border-image-source: linear-gradient(to right, #8d6e63, #8b6c61, #896a5f, #87685d, #85665b, #856a59, #836f57, #7f7458, #758063, #688c77, #5f9591, #649baa);
 }
 .li.complete_pendiente_pago .status:before {
-    background-color: #d0708e;
+    background-color: #8d6e63;
     border: none;
     transition: all 200ms ease-in;
 }
