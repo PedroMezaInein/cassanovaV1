@@ -296,18 +296,17 @@ export const PRESTACIONES_COLUMNS = [
 ]
 
 export const PROYECTOS_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions' },
-    { Header: 'Costos', accessor: 'costos', customRender: true, searchable: false, orderable: false },
+    { Header: 'OPCIONES', accessor: 'actions', orderable: false, customRender: true },
     { Header: 'Estatus', accessor: 'status', customRender: true },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'T.Proyecto', accessor: 'tipo_proyecto', customRender: true },
-    { Header: 'Cliente', accessor: 'cliente', customRender: true },
-    { Header: 'Dirección', accessor: 'direccion' },
-    { Header: 'Contacto', accessor: 'contacto', customRender: true },
+    { Header: 'Cliente', accessor: 'cliente', customRender: true, orderable: false },
+    { Header: 'Dirección', accessor: 'direccion', orderable: false },
+    { Header: 'Contacto', accessor: 'contacto', customRender: true, orderable: false },
     { Header: 'Empresa', accessor: 'empresa' },
     { Header: 'F.Inicio', accessor: 'fechaInicio', customRender: true },
     { Header: 'F.Fin', accessor: 'fechaFin', customRender: true },
-    { Header: 'Fases', accessor: 'fases' },
+    { Header: 'Fases', accessor: 'fases', orderable: false },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
