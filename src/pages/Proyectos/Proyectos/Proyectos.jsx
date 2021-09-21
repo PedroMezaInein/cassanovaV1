@@ -107,7 +107,7 @@ class Proyectos extends Component {
         return(
             <div className="w-100 d-flex justify-content-center">
                 <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Ver proyecto</span></Tooltip> } >
-                    <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-info btn-hover-info'
+                    <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-primary btn-hover-primary'
                         onClick = { (e) => { e.preventDefault(); this.changePageSee(element) } }>
                         <i className = 'far fa-eye' />
                     </button>
@@ -147,10 +147,10 @@ class Proyectos extends Component {
             return(
                 <div>
                     <NewTable tableName = {`proyectos-${tab}`} subtitle = 'Listado de proyectos' title = 'Proyectos ' mostrar_boton = { true } 
-                        abrir_modal = { false } url = '/calidad/tickets/nuevo-ticket' columns = { PROYECTOS_COLUMNS } 
+                        abrir_modal = { false } url = '/proyectos/proyectos/add' columns = { PROYECTOS_COLUMNS } 
                         accessToken = { this.props.authUser.access_token } setter = { this.setProyectos } 
                         filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => this.exportProyectosAxios() } 
-                        pendingPaymentClick = { this.pendingPaymentClick} urlRender={`${URL_DEV}v3/proyectos/proyectos?type=${key}`} />
+                        pendingPaymentClick = { this.pendingPaymentClick} urlRender={`${URL_DEV}v3/proyectos/proyectos?type=${key}`} type = { 'tab' }/>
                 </div>
             )
         }
