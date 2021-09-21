@@ -5,9 +5,10 @@ import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import axios from 'axios'
 import { PUSHER_OBJECT, URL_DEV } from '../../../constants'
 import { getMeses, getAños, getQuincena } from '../../../functions/setters'
-import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { SelectSearchGray } from '../../../components/form-components'
 import Echo from 'laravel-echo';
+import { setSingleHeader } from '../../../functions/routers'
 /* import Pusher from 'pusher-js'; */
 // import moment from 'moment'
 
@@ -109,6 +110,28 @@ class Checador extends Component {
             console.error(error, 'error')
         })
     }
+
+    exportAxios = async() => {
+        const { quincena, mes, año } = this.state
+        let mes_number=this.mesNumber(mes)
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/checador/exportar?quincena=${quincena}&mes=${mes_number}&anio=${año}`, 
+            { responseType:'blob', headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `${quincena}Q-${mes_number}-${año}.xlsx`);
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Proyectos exportados con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }    
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     getHours(user, day) {
         let timeFechaStart=''
         let timeFechaEnd=''
@@ -353,7 +376,7 @@ class Checador extends Component {
                             </h3>
                         </Card.Title>
                         <div className="card-toolbar row mx-0 row-paddingless d-flex justify-content-end ">
-                            <div className="col-md-3 mr-4">
+                            <div className="col-md-3 mr-4 mb-4 mb-md-0">
                                 <SelectSearchGray
                                     name='año' options={getAños()}
                                     customdiv='mb-0'
@@ -363,7 +386,7 @@ class Checador extends Component {
                                     withicon={1}
                                 />
                             </div>
-                            <div className="col-md-3 mr-4">
+                            <div className="col-md-3 mr-4 mb-4 mb-md-0">
                                 <SelectSearchGray
                                     name='mes'
                                     options={getMeses()} 
@@ -374,7 +397,7 @@ class Checador extends Component {
                                     withicon={1}
                                 />
                             </div>
-                            <div className="col-md-2 mr-4">
+                            <div className="col-md-2 mr-4 mb-4 mb-md-0">
                                 <SelectSearchGray
                                     name='quincena'
                                     options={getQuincena()} 
@@ -384,6 +407,12 @@ class Checador extends Component {
                                     iconclass="fas fa-calendar-day"
                                     withicon={1}
                                 />
+                            </div>
+                            <div className="col-md-auto mr-4 mb-4 mb-md-0">
+                                <span className="btn btn-light-info font-weight-bold" 
+                                    onClick = { (e) => { e.preventDefault(); this.exportAxios() } } >
+                                    <i className="far fa-file-excel" /> EXPORTAR
+                                </span>
                             </div>
                         </div>
                     </Card.Header>
