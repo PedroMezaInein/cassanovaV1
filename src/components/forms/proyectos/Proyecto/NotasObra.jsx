@@ -377,7 +377,7 @@ class NotasObra extends Component {
                                                                 <Card.Body className={`card-body px-10 ${nota.isActive ? 'collapse show' : 'collapse'}`}>
                                                                     {
                                                                         nota.adjuntos.length > 0 ?
-                                                                            <Col md={8} className="mx-auto text-center">
+                                                                            <Col md={8} className="mx-auto text-center mt-5">
                                                                                 <div className="font-weight-bold mb-5"><span className="bg-gray-300 text-dark-75 px-2 rounded">Adjuntos</span></div>
                                                                                 <ItemSlider items={nota.adjuntos} item='' />
                                                                             </Col>
