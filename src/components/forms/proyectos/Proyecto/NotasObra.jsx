@@ -3,16 +3,19 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../../constants'
 import { setSingleHeader } from '../../../../functions/routers'
-import { Card, DropdownButton, Dropdown, Form, Row, Col } from 'react-bootstrap'
+import { Card, DropdownButton, Dropdown, Form, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { dayDMY, setNaviIcon } from '../../../../functions/setters'
 import { Link } from 'react-router-dom';
 import { questionAlert, waitAlert, printResponseErrorAlert, errorAlert, doneAlert, deleteAlert, validateAlert } from '../../../../functions/alert'
 import { CalendarDay, InputGray, ReactSelectSearchGray, Button } from '../../../form-components'
 import ItemSlider from '../../../../components/singles/ItemSlider'
 import S3 from 'react-aws-s3';
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../../functions/routers"
 class NotasObra extends Component {
     state = {
         activeNota: 'notas',
+        accordion: [],
         formeditado: 0,
         notas: [],
         form: {
@@ -55,6 +58,20 @@ class NotasObra extends Component {
     }
 
     onClickNota = (type) => { this.setState({ ...this.state, activeNota: type }) }
+
+    handleAccordion = (indiceClick) => {
+        const { notas } = this.state;
+        notas.forEach((element, key) => {
+            if (element.id === indiceClick) {
+                element.isActive = element.isActive ? false : true
+            }else {
+                element.isActive = false
+            }
+        })
+        this.setState({
+            accordion: notas
+        });
+    }
 
     /* -------------------------------------------------------------------------- */
     /*                                   GET NOTAS                                */
@@ -326,67 +343,121 @@ class NotasObra extends Component {
                         {
                             activeNota === 'notas' ?
                                 notas.length > 0 &&
-                                <div className="table-responsive rounded-top">
-                                    <table className="table table-notas table-vertical-center w-100">
-                                        <thead className="font-size-h6 bg-light">
-                                            <tr>
-                                                <th style={{ width: '5%' }} >#</th>
-                                                <th className="text-align-last-left">Proveedor y tipo</th>
-                                                <th style={{ width: '10%' }}>Fecha</th>
-                                                <th style={{ minWidth: '300px' }}>Nota</th>
-                                                <th style={{ width: '10%' }}>Adjunto</th>
-                                                <th style={{ width: '5%' }}></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                notas.map((nota, index) => {
-                                                    return (
-                                                        <tr key={index} className="text-dark-75 font-weight-light text-justify">
-                                                            <td>
-                                                                <div className={`symbol symbol-45 symbol-light-${index % 2 ? 'success2' : 'primary2'}`}>
-                                                                    <span className="symbol-label font-size-sm">{nota.numero_nota.toString().padStart(4, 0)}</span>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <span className="font-weight-bold mb-1 font-size-lg text-dark">{nota.proveedor ? nota.proveedor.razon_social : '-'}</span>
-                                                                <span className="text-muted font-weight-bold d-block">{nota.tipo_nota}</span>
-                                                            </td>
-                                                            <td>
-                                                                <div className="w-max-content mx-auto">
-                                                                    {dayDMY(nota.fecha)}
-                                                                </div>
-                                                            </td>
-                                                            <td className={`text-${nota.notas === null ? 'center' : 'justify'}`}> {nota.notas === null ? 'Sin notas' : nota.notas} </td>
-                                                            <td className="text-center  font-weight-bold">
-                                                                <div className="w-max-content mx-auto">
+                                <>
+                                    <div className="d-flex justify-content-center">
+                                        <div className="col-md-11">
+                                            <div className="accordion accordion-light accordion-svg-toggle">
+                                                {
+                                                    notas.map((nota, index) => {
+                                                        return (
+                                                            <Card className="w-auto" key={index}>
+                                                                <Card.Header >
+                                                                    <Card.Title className={`rounded-0 ${(nota.isActive) ? 'text-primary2 collapsed' : 'text-dark'}`} onClick={() => { this.handleAccordion(nota.id) }}>
+                                                                        <span className={`svg-icon ${nota.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
+                                                                            <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
+                                                                        </span>
+                                                                        <div className="card-label ml-3 row mx-0 justify-content-between">
+                                                                            <div>
+                                                                                <div className="font-size-lg">N<span className="font-size-xs">o</span>. {nota.numero_nota.toString().padStart(4, 0)}</div>
+                                                                                <div className="font-weight-light font-size-sm text-dark-75">
+                                                                                    {nota.tipo_nota} - {dayDMY(nota.fecha)}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="align-self-center">
+                                                                                <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
+                                                                                    <span className={`btn btn-icon ${nota.isActive ? 'btn-color-danger': ''}  btn-active-light-danger w-30px h-30px mr-2`}
+                                                                                        onClick={(e) => { e.preventDefault(); this.openModalDeleteNota(nota) }}>
+                                                                                        <i className="las la-trash icon-xl"></i>
+                                                                                    </span>
+                                                                                </OverlayTrigger>
+                                                                            </div>
+                                                                        </div>
+                                                                    </Card.Title>
+                                                                </Card.Header>
+                                                                <Card.Body className={`card-body px-10 ${nota.isActive ? 'collapse show' : 'collapse'}`}>
                                                                     {
                                                                         nota.adjuntos.length > 0 ?
-                                                                            nota.adjuntos.map((adjunto, key) => {
-                                                                                return (
-                                                                                    <u>
-                                                                                        <a key={key} target='_blank' rel="noreferrer" href={adjunto.url} className="text-dark text-hover-success mb-1 d-block">
-                                                                                            Adjunto {key + 1}
-                                                                                        </a>
-                                                                                    </u>
-                                                                                )
-                                                                            })
-                                                                            : <>Sin adjuntos</>
+                                                                            <Col md={8} className="mx-auto text-center">
+                                                                                <div className="font-weight-bold mb-5"><span className="bg-gray-300 text-dark-75 px-2 rounded">Adjuntos</span></div>
+                                                                                <ItemSlider items={nota.adjuntos} item='' />
+                                                                            </Col>
+                                                                        : <></>
                                                                     }
-                                                                </div>
-                                                            </td>
-                                                            <td className="pr-0 text-center">
-                                                                <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger' onClick={(e) => { e.preventDefault(); this.openModalDeleteNota(nota) }} >
-                                                                    <i className='flaticon2-rubbish-bin' />
-                                                                </button>
-                                                            </td>
-                                                        </tr>
+                                                                    <Col md={8} className='mx-auto w-max-content text-justify my-10'>
+                                                                        {nota.proveedor ? <div className="font-weight-light mb-3"><span className="font-weight-bold"><u>Proveedor:</u> </span>{nota.proveedor.razon_social}</div>:'Sin proveedor'}
+                                                                        {nota.notas === null ? 'Sin notas' : <span className="font-weight-light"><span className="font-weight-bold"><u>Nota:</u> </span>{nota.notas}</span>}
+                                                                    </Col>
+                                                                </Card.Body>
+                                                            </Card>
+                                                        )
+                                                    }
                                                     )
-                                                })
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* <div className="table-responsive rounded-top">
+                                        <table className="table table-notas table-vertical-center w-100">
+                                            <thead className="font-size-h6 bg-light">
+                                                <tr>
+                                                    <th style={{ width: '5%' }} >#</th>
+                                                    <th className="text-align-last-left">Proveedor y tipo</th>
+                                                    <th style={{ width: '10%' }}>Fecha</th>
+                                                    <th style={{ minWidth: '300px' }}>Nota</th>
+                                                    <th style={{ width: '10%' }}>Adjunto</th>
+                                                    <th style={{ width: '5%' }}></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    notas.map((nota, index) => {
+                                                        return (
+                                                            <tr key={index} className="text-dark-75 font-weight-light text-justify">
+                                                                <td>
+                                                                    <div className={`symbol symbol-45 symbol-light-${index % 2 ? 'success2' : 'primary2'}`}>
+                                                                        <span className="symbol-label font-size-sm">{nota.numero_nota.toString().padStart(4, 0)}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <span className="font-weight-bold mb-1 font-size-lg text-dark">{nota.proveedor ? nota.proveedor.razon_social : '-'}</span>
+                                                                    <span className="text-muted font-weight-bold d-block">{nota.tipo_nota}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div className="w-max-content mx-auto">
+                                                                        {dayDMY(nota.fecha)}
+                                                                    </div>
+                                                                </td>
+                                                                <td className={`text-${nota.notas === null ? 'center' : 'justify'}`}> {nota.notas === null ? 'Sin notas' : nota.notas} </td>
+                                                                <td className="text-center  font-weight-bold">
+                                                                    <div className="w-max-content mx-auto">
+                                                                        {
+                                                                            nota.adjuntos.length > 0 ?
+                                                                                nota.adjuntos.map((adjunto, key) => {
+                                                                                    return (
+                                                                                        <u>
+                                                                                            <a key={key} target='_blank' rel="noreferrer" href={adjunto.url} className="text-dark text-hover-success mb-1 d-block">
+                                                                                                Adjunto {key + 1}
+                                                                                            </a>
+                                                                                        </u>
+                                                                                    )
+                                                                                })
+                                                                                : <>Sin adjuntos</>
+                                                                        }
+                                                                    </div>
+                                                                </td>
+                                                                <td className="pr-0 text-center">
+                                                                    <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger' onClick={(e) => { e.preventDefault(); this.openModalDeleteNota(nota) }} >
+                                                                        <i className='flaticon2-rubbish-bin' />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div> */}
+                                </>
                                 : activeNota === 'new' ?
                                     <>
                                         <Form
