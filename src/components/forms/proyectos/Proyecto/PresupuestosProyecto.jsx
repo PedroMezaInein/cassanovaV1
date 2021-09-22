@@ -101,7 +101,9 @@ class PresupuestosProyecto extends Component {
     onClick = (type, aux) => {
         switch(type){
             case 'enviar_compras':
-                questionAlertY(`¿Deseas enviar a compras?`, 'Enviarás a compras tus volumetrías para la estimación de costos', () => this.patchPresupuesto('estatus', 'Costos'))
+                questionAlertY(`¿Deseas enviar a compras?`, 
+                    'Enviarás a compras tus volumetrías para la estimación de costos', 
+                    () => this.updatePresupuestoAxios(false))
                 break;
             // case 'enviar_finanzas':
             //     questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
@@ -120,10 +122,10 @@ class PresupuestosProyecto extends Component {
                 this.addPresupuestosAxios()
                 break;
             case 'preeliminar':
-                this.updatePresupuestoAxios()
+                this.updatePresupuestoAxios(true)
                 break;
             case 'vicio-oculto':
-                this.updatePresupuestoAxios()
+                this.updatePresupuestoAxios(true)
                 break;
             default: break;
         }
@@ -305,7 +307,7 @@ class PresupuestosProyecto extends Component {
         }
         this.onChange(valor, 'conceptos', 'preeliminar')
     }
-    updatePresupuestoAxios = async() => {
+    updatePresupuestoAxios = async(flag) => {
         const { at } = this.props
         const { form, presupuesto } = this.state
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, form.preeliminar, { headers: setSingleHeader(at) }).then(
@@ -325,14 +327,18 @@ class PresupuestosProyecto extends Component {
                             )
                             break;
                         default:
-                            doneAlert('Presupuesto actualizado con éxito',
-                                () => questionAlertY(`¡Listo!`,
-                                    `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?'
-                                        : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
-                                    () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
-                                    // () => this.getPresupuestoAxios(presupuesto.id)
+                            if(flag){
+                                doneAlert('Presupuesto actualizado con éxito',
+                                    () => questionAlertY(`¡Listo!`,
+                                        `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?'
+                                            : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
+                                        () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
+                                        () => this.getPresupuestoAxios(presupuesto.id)
+                                    )
                                 )
-                            )
+                            }else{
+                                this.patchPresupuesto('estatus', 'Costos')
+                            }
                             break;
                     }
                 }
