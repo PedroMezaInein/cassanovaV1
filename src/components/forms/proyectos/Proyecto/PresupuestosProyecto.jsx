@@ -762,7 +762,7 @@ class PresupuestosProyecto extends Component {
                                 {
                                     (presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías') && !this.isGarantia() ?
                                         this.calcularCantidades() ?
-                                            <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2"
+                                            <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2 mb-4 mb-md-0"
                                                 onClick={(e) => { e.preventDefault(); this.onClick('enviar_compras'); }} >
                                                 ENVIAR A COTIZAR
                                             </button>

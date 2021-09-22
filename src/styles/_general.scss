@@ -3288,3 +3288,9 @@ table#calendario-proyectos tr:last-child td {
 .swal2-title {
     text-transform: uppercase;
 }
+
+td.descripcion{
+    @include down-screen($md) {
+        min-width: 100vw;
+    }
+}
