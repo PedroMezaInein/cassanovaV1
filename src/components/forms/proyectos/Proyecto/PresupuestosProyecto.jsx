@@ -46,23 +46,17 @@ class PresupuestosProyecto extends Component {
         aux_estatus: { espera: false, revision: false, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false },
         aux_presupuestos: { conceptos: false, volumetrias: false, costos: false, revision:false, utilidad: false, espera: false, aceptado: false, rechazado: false },
     }
-    navPresupuesto = (type) => {
-        this.setState({
-            ...this.state,
-            navPresupuesto: type
-        })
-    }
-    componentDidMount() {
-        this.getOptionsAxios();
-    }
+
+    navPresupuesto = (type) => { this.setState({ ...this.state, navPresupuesto: type }) }
+
+    componentDidMount() { this.getOptionsAxios(); }
+    
     setOptions = (name, array) => {
         const { options } = this.state;
         options[name] = setOptions(array, "nombre", "id");
-        this.setState({
-            ...this.state,
-            options,
-        });
+        this.setState({ ...this.state, options, });
     };
+
     async getOptionsAxios() {
         waitAlert();
         const { at } = this.props;
@@ -94,6 +88,7 @@ class PresupuestosProyecto extends Component {
             console.error(error, "error");
         });
     }
+    
     /* -------------------------------------------------------------------------- */
     /*                                ADD PRESUPUESTO                             */
     /* -------------------------------------------------------------------------- */
@@ -137,6 +132,7 @@ class PresupuestosProyecto extends Component {
             form
         })
     }
+
     onSubmit = type => {
         waitAlert()
         switch(type){
@@ -152,6 +148,7 @@ class PresupuestosProyecto extends Component {
             default: break;
         }
     }
+
     async addPresupuestosAxios() {
         const { at, proyecto } = this.props
         const { form } = this.state
@@ -171,6 +168,7 @@ class PresupuestosProyecto extends Component {
             console.error(error, 'error')
         })
     }
+
     /* -------------------------------------------------------------------------- */
     /*                             UPDATE PRESUPUESTO                             */
     /* -------------------------------------------------------------------------- */
@@ -235,6 +233,7 @@ class PresupuestosProyecto extends Component {
             console.error(error, 'error')
         })
     }
+
     /* -------------------------------------------------------------------------- */
     /*                                       DATA                                 */
     /* -------------------------------------------------------------------------- */
@@ -282,6 +281,7 @@ class PresupuestosProyecto extends Component {
         }
         return title
     }
+
     isButtonEnabled = () => {
         const { presupuesto } = this.state
         if( presupuesto ){
@@ -298,6 +298,7 @@ class PresupuestosProyecto extends Component {
         }
         return true
     }
+
     isGarantia = () => {
         const { data } = this.state
         if(data){
@@ -309,6 +310,7 @@ class PresupuestosProyecto extends Component {
         }
         return false
     }
+
     showStatusPresupuestos= (presupuesto) => {
         let auxiliar = '';
         if (presupuesto) {
@@ -344,9 +346,10 @@ class PresupuestosProyecto extends Component {
         }
         this.setState({ ...this.state, aux_presupuestos: auxiliar })
     }
+
     render() {
         const { navPresupuesto, form, title, titleCard, options, formeditado, data, presupuesto, aux_presupuestos } = this.state
-        const { proyecto } = this.props
+        const { proyecto, at } = this.props
         console.log(presupuesto, 'presupuesto')
         return (
             <div>
@@ -374,9 +377,9 @@ class PresupuestosProyecto extends Component {
                     </Card.Header>
                     {
                         navPresupuesto === 'historial' ?
-                            <Card.Body>
-                                <PresupuestoList proyecto={proyecto} />
-                            </Card.Body>
+                                <Card.Body>
+                                    <PresupuestoList proyecto={proyecto} at = { at }/>
+                                </Card.Body>
                             : <></>
                     }
                 </Card>
