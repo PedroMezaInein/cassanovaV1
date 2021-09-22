@@ -13,6 +13,7 @@ export const IM_DORADO = '#bdab71'
 
 export const PROD_LINK = 'https://proyectosadmin.xyz/api/'
 export const DEV_LINK = 'http://localhost:8000/api/'
+export const FRONT_LINK = process.env.NODE_ENV === 'production' ? 'https://inein.com.mx/' : 'localhost:3000/';
 //export const DEV_LINK = 'https://apiapp1.inein.com.mx/api/'
 
 export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_LINK

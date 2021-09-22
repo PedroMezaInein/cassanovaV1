@@ -13,6 +13,7 @@ import axios from 'axios'
 import { Modal } from '../../../../components/singles'
 import { ClienteCPModal } from '../../../../components/forms'
 import Swal from 'sweetalert2'
+import moment from 'moment'
 class EditProyectoForm extends Component {
     state = {
         navInfo: 'info',
@@ -129,19 +130,28 @@ class EditProyectoForm extends Component {
         }
         
         formContratar.costo = proyecto.costo
-        formContratar.fechaInicio = new Date(proyecto.fecha_inicio)
-        formContratar.fechaFin = new Date(proyecto.fecha_fin)
+        formContratar.fechaInicio = new Date( moment(proyecto.fecha_fin))
+        formContratar.fechaFin = null
         let auxFasesContratar = []
         if(proyecto.fase1){ auxFasesContratar.push({name: 'Fase 1', value: 'fase1', label: 'Fase 1', isFixed:true}) }
         if(proyecto.fase2){ auxFasesContratar.push({name: 'Fase 2', value: 'fase2', label: 'Fase 2', isFixed:true}) } 
         if(proyecto.fase3){ auxFasesContratar.push({name: 'Fase 3', value: 'fase3', label: 'Fase 3', isFixed:true}) }
         formContratar.fases = auxFasesContratar
+        formContratar.nombre = this.getNameWithoutFases( proyecto.nombre )
         this.optionsFixed()
         this.setState({ ...this.state, form, formContratar })
     }
+
+    getNameWithoutFases = cadena => {
+        let auxiliar = cadena.split(' - FASE 1')[0]
+        auxiliar = auxiliar.split(' - FASE 2')[0]
+        return auxiliar.split(' - FASE 3')[0]
+    }
+
     optionsFixed = () => {
         const { proyecto } = this.props
         let { stateOptions } = this.state
+        stateOptions.fases = optionsFases()
         stateOptions.fases = optionsFases()
         stateOptions.fases.forEach((fase) => {
             if (proyecto.fase1) {
@@ -249,10 +259,22 @@ class EditProyectoForm extends Component {
         this.setState({ ...this.state, formContratar })
     }
     updateSelectContratar = (value, name) => {
+        const { proyecto } = this.props
         if (value === null) {
             value = []
         }
         const { formContratar } = this.state
+        if(name === 'fases'){
+            let nombre = this.getNameWithoutFases( proyecto.nombre )
+            if(value.length){
+                value.forEach((element) => {
+                    if(!element.isFixed){
+                        nombre += ` - ${element.label.toUpperCase()}`
+                    }
+                })
+            }
+            formContratar.nombre = nombre
+        }
         formContratar[name] = value
         this.setState({ ...this.state, formContratar })
     }
@@ -397,13 +419,12 @@ class EditProyectoForm extends Component {
 
     sendFormContratar  = async() => {
         const { at, proyecto, refresh } = this.props
-        const { form } = this.state
+        const { formContratar } = this.state
         waitAlert()
-        await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/contratar`, form.formContratar, { headers: { headers: setSingleHeader(at) } }).then(
+        await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/contratar`, formContratar, { headers: setSingleHeader(at) }).then(
             (response) => {
-                const { proyecto } = response.data
                 this.setState({...this.state, navInfo: 'info'});
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Se contrató nueva fase con éxito.', () => {refresh(proyecto.id)})
+                doneAlert('Fase contratada con éxito.', () => {refresh(proyecto.id)})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -859,35 +880,24 @@ class EditProyectoForm extends Component {
                                                 <Col md="5" className="align-self-center">
                                                     <div className="form-group row form-group-marginless">
                                                         <div className="col-md-12">
-                                                            <InputMoneyGray
-                                                                withtaglabel={1}
-                                                                withtextlabel={1}
-                                                                withplaceholder={1}
-                                                                withicon={1}
-                                                                withformgroup={1}
-                                                                requirevalidation={1}
-                                                                formeditado={formeditado}
-                                                                thousandseparator={true}
-                                                                placeholder="Costo con IVA"
-                                                                value={formContratar.costo}
-                                                                name="costo"
-                                                                onChange={this.onChangeContratar}
-                                                                iconclass="las la-coins"
-                                                            />
+                                                            <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
+                                                                withformgroup = { 1 } requirevalidation = { 1 } formeditado = { formeditado }
+                                                                thousandseparator = { true } placeholder = "Costo con IVA" value = { formContratar.costo }
+                                                                name = "costo" onChange = { this.onChangeContratar } iconclass = "las la-coins" />
                                                         </div>
                                                         <div className="col-md-12">
-                                                            <FixedMultiOptionsGray
-                                                                requirevalidation={1}
-                                                                placeholder="SELECCIONA LA FASE"
-                                                                options={stateOptions.fases}
-                                                                defaultvalue={formContratar.fases}
-                                                                onChange={this.updateSelectContratar}
-                                                                iconclass="las la-pencil-ruler icon-xl"
-                                                                messageinc="Selecciona la fase."
-                                                                name="fases"
-                                                            />
+                                                            <FixedMultiOptionsGray requirevalidation = { 1 } placeholder = "SELECCIONA LA FASE"
+                                                                options = { stateOptions.fases } defaultvalue = { formContratar.fases }
+                                                                onChange = { this.updateSelectContratar } iconclass = "las la-pencil-ruler icon-xl"
+                                                                messageinc = "Selecciona la fase." name = "fases" />
                                                         </div>
-                                                        
+                                                        <div className="col-md-12">
+                                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
+                                                                withformgroup = { 1 } requirevalidation = { 1 } formeditado = { formeditado }
+                                                                placeholder = 'NOMBRE' value = { formContratar.nombre } name = 'nombre'
+                                                                onChange = { this.onChangeContratar } iconclass="far fa-folder-open"
+                                                                messageinc="Ingresa el nombre del proyecto." />
+                                                        </div>
                                                     </div>
                                                 </Col>
                                             </Row>
