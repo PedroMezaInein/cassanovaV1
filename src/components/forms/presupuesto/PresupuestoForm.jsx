@@ -101,7 +101,7 @@ class PresupuestoForm extends Component {
         return clave
     }
     render() {
-        const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad } = this.props
+        const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad, showFormProyecto } = this.props
         const { showForm } = this.state
         let options_conceptos  = {}
         data.partidas.forEach((partida) => {
@@ -125,25 +125,23 @@ class PresupuestoForm extends Component {
                         <div className="d-flex flex-column flex-grow-1">
                             <div className="row">
                                 <div className="col-xl-6">
-                                    <div className="card card-custom card-stretch" id="kt_todo_list">
-                                        <div className="card-header align-items-center flex-wrap py-4 border-0 h-auto">
-                                            <div className="d-flex flex-wrap align-items-center">
-                                                <div className="d-flex align-items-center mx-3 my-2">
-                                                    <label data-inbox="group-select" className="checkbox checkbox-single checkbox-primary mr-3">
-                                                        <input
-                                                            type="checkbox"
-                                                            onChange={(e) => { this.onChange(e) }}
-                                                            checked={this.checkGroupButton()}
-                                                            value={this.checkGroupButton()}
-                                                            disabled={this.disableButton()} />
-                                                        <span className="symbol-label"></span>
-                                                    </label>
-                                                    <div className="d-flex flex-column mr-2 py-2">
-                                                        <span className="text-dark font-weight-bold font-size-h4 mx-3">CONCEPTOS</span>
-                                                    </div>
+                                    <div className="card card-custom card-stretch">
+                                    <div className="card-header align-items-center flex-wrap py-4 border-0 h-auto">
+                                            <div className="d-flex align-items-center mx-3 my-2">
+                                                <label data-inbox="group-select" className="checkbox checkbox-single checkbox-primary mr-3">
+                                                    <input
+                                                        type="checkbox"
+                                                        onChange={(e) => { this.onChange(e) }}
+                                                        checked={this.checkGroupButton()}
+                                                        value={this.checkGroupButton()}
+                                                        disabled={this.disableButton()} />
+                                                    <span className="symbol-label"></span>
+                                                </label>
+                                                <div className="d-flex flex-column mr-2 py-2">
+                                                    <span className="text-dark font-weight-bold font-size-h4 mx-3">CONCEPTOS</span>
                                                 </div>
                                             </div>
-                                            <div className="d-flex flex-column mr-2 py-2 d-flex justify-content-end ">
+                                            <div className="card-toolbar">
                                                 <SelectSearchGray
                                                     formeditado={formeditado}
                                                     options={options.partidas}
@@ -245,79 +243,83 @@ class PresupuestoForm extends Component {
                                     </div>
                                 </div>
                                 <div className="col-xl-6 pt-4 pt-xl-0">
-                                    <div className="card card-custom card-stretch" id="kt_todo_view">
+                                    <div className="card card-custom card-stretch">
+                                        <div className="card-header align-items-center flex-wrap py-4 border-0 h-auto">
+                                            <div className="text-dark font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</div>
+                                            {
+                                                (!showFormCalidad) && (!showFormProyecto) ?
+                                                    <div className="card-toolbar">
+                                                        <Button icon='' className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
+                                                            onClick={() => { this.mostrarFormulario() }} only_icon="las la-clipboard-list icon-lg mr-3 px-0" type="button" text="LLENAR FORMULARIO" />
+                                                    </div>
+                                                    : !showForm ? this.mostrarFormulario() : ''
+                                            }
+                                        </div>
                                         <div className="card-body p-0">
-                                            <div className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
-                                                <div className="text-dark font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</div>
-                                                <div className="d-flex py-2">
-                                                    {
-                                                        !showFormCalidad ? 
-                                                            <Button icon = '' className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-light-primary text-primary font-weight-bolder font-size-13px"
-                                                            onClick = { () => { this.mostrarFormulario() } } only_icon="las la-clipboard-list icon-lg mr-3 px-0" type="button" text="LLENAR FORMULARIO" />
-                                                        : !showForm ? this.mostrarFormulario() : ''
-                                                    }
-                                                    
-                                                </div>
-                                            </div>
                                             <Form id="form-presupuesto" className={`${!showForm ? 'd-none' : 'card-spacer pt-0'}`}
                                                 onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } >
                                                 <div className="col-md-12">
-                                                    <div className="form-group row form-group-marginless pt-4 justify-content-center">
+                                                    <div className="form-group row form-group-marginless justify-content-center">
                                                         {
                                                             !showFormCalidad ?
                                                                 <>
-                                                                    <div className="col-md-6">
-                                                                        <SelectSearchGray
-                                                                            formeditado={formeditado}
-                                                                            options={options.proyectos}
-                                                                            placeholder="SELECCIONA EL PROYECTO"
-                                                                            name="proyecto"
-                                                                            value={form.proyecto}
-                                                                            onChange={this.updateProyecto}
-                                                                            iconclass="las la-swatchbook icon-2x"
-                                                                            customdiv="mb-0"
-                                                                            iconvalid={1}
-                                                                            withtaglabel={1}
-                                                                            withtextlabel={1}
-                                                                            withicon={1}
-                                                                        />
-                                                                    </div>
-                                                                    <div className="col-md-6">
-                                                                        {
-                                                                            form.facturaObject ?
-                                                                                <InputGray
-                                                                                    placeholder="EMPRESA"
-                                                                                    name="empresa"
-                                                                                    readOnly
-                                                                                    value={form.empresa}
-                                                                                    onChange={onChange}
-                                                                                    iconclass="las la-building icon-xl"
-                                                                                    withtaglabel={1}
-                                                                                    withtextlabel={1}
-                                                                                    withplaceholder={1}
-                                                                                    withicon={1}
-                                                                                    withformgroup={1}
-                                                                                    requirevalidation={1}
-                                                                                />
-                                                                                :
+                                                                    {
+                                                                        showFormProyecto ?'':
+                                                                        <>
+                                                                            <div className="col-md-6">
                                                                                 <SelectSearchGray
                                                                                     formeditado={formeditado}
-                                                                                    options={options.empresas}
-                                                                                    placeholder="SELECCIONA LA EMPRESA"
-                                                                                    name="empresas"
-                                                                                    value={form.empresa}
-                                                                                    onChange={this.updateEmpresa}
-                                                                                    iconclass="las la-building icon-xl"
+                                                                                    options={options.proyectos}
+                                                                                    placeholder="SELECCIONA EL PROYECTO"
+                                                                                    name="proyecto"
+                                                                                    value={form.proyecto}
+                                                                                    onChange={this.updateProyecto}
+                                                                                    iconclass="las la-swatchbook icon-2x"
                                                                                     customdiv="mb-0"
                                                                                     iconvalid={1}
                                                                                     withtaglabel={1}
                                                                                     withtextlabel={1}
                                                                                     withicon={1}
                                                                                 />
-                                                                        }
-                                                                    </div>
-                                                                    <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
-                                                                    <div className="col-md-6">
+                                                                            </div>
+                                                                            <div className="col-md-6">
+                                                                                {
+                                                                                    form.facturaObject ?
+                                                                                        <InputGray
+                                                                                            placeholder="EMPRESA"
+                                                                                            name="empresa"
+                                                                                            readOnly
+                                                                                            value={form.empresa}
+                                                                                            onChange={onChange}
+                                                                                            iconclass="las la-building icon-xl"
+                                                                                            withtaglabel={1}
+                                                                                            withtextlabel={1}
+                                                                                            withplaceholder={1}
+                                                                                            withicon={1}
+                                                                                            withformgroup={1}
+                                                                                            requirevalidation={1}
+                                                                                        />
+                                                                                        :
+                                                                                        <SelectSearchGray
+                                                                                            formeditado={formeditado}
+                                                                                            options={options.empresas}
+                                                                                            placeholder="SELECCIONA LA EMPRESA"
+                                                                                            name="empresas"
+                                                                                            value={form.empresa}
+                                                                                            onChange={this.updateEmpresa}
+                                                                                            iconclass="las la-building icon-xl"
+                                                                                            customdiv="mb-0"
+                                                                                            iconvalid={1}
+                                                                                            withtaglabel={1}
+                                                                                            withtextlabel={1}
+                                                                                            withicon={1}
+                                                                                        />
+                                                                                }
+                                                                            </div>
+                                                                            <div className="col-md-12 separator separator-dashed mt-6 mb-2"></div>
+                                                                        </>
+                                                                    }
+                                                                    <div className='col-md-6'>
                                                                         <SelectSearchGray
                                                                             formeditado={formeditado}
                                                                             options={options.areas}
@@ -342,7 +344,7 @@ class PresupuestoForm extends Component {
                                                                 withtextlabel={1}
                                                                 withplaceholder={1}
                                                                 withicon={1}
-                                                                withformgroup={0}
+                                                                withformgroup={1}
                                                                 iconvalid={1}
                                                                 requirevalidation={1}
                                                                 placeholder='TIEMPO DE EJECUCIÓN (DÍAS NATURALES)'
@@ -350,7 +352,7 @@ class PresupuestoForm extends Component {
                                                                 name="tiempo_ejecucion"
                                                                 value={form.tiempo_ejecucion}
                                                                 onChange={onChange}
-                                                                customdiv="mb-0"
+                                                                customdiv="mb-0 text-truncate"
                                                                 iconclass='flaticon-calendar-with-a-clock-time-tools icon-xl'
                                                             />
                                                         </div>
