@@ -357,13 +357,13 @@ class NotasObra extends Component {
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
                                                                         </span>
                                                                         <div className="card-label ml-3 row mx-0 justify-content-between">
-                                                                            <div>
+                                                                            <div className="col-md-11 px-0">
                                                                                 <div className="font-size-lg">N<span className="font-size-xs">o</span>. {nota.numero_nota.toString().padStart(4, 0)}</div>
                                                                                 <div className="font-weight-light font-size-sm text-dark-75">
-                                                                                    {nota.tipo_nota} - {dayDMY(nota.fecha)}
+                                                                                    {nota.tipo_nota} {nota.proveedor?<><span className="font-weight-bolder text-primary2"> - </span><em>{nota.proveedor.razon_social}</em></>:''} <span className="font-weight-bolder text-primary2"> - </span> {dayDMY(nota.fecha)}
                                                                                 </div>
                                                                             </div>
-                                                                            <div className="align-self-center">
+                                                                            <div className="align-self-center col-md-1">
                                                                                 <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
                                                                                     <span className={`btn btn-icon ${nota.isActive ? 'btn-color-danger': ''}  btn-active-light-danger w-30px h-30px mr-2`}
                                                                                         onClick={(e) => { e.preventDefault(); this.openModalDeleteNota(nota) }}>
@@ -384,7 +384,7 @@ class NotasObra extends Component {
                                                                         : <></>
                                                                     }
                                                                     <Col md={8} className='mx-auto w-max-content text-justify my-10'>
-                                                                        {nota.proveedor ? <div className="font-weight-light mb-3"><span className="font-weight-bold"><u>Proveedor:</u> </span>{nota.proveedor.razon_social}</div>:'Sin proveedor'}
+                                                                        {/* {nota.proveedor ? <div className="font-weight-light mb-3"><span className="font-weight-bold"><u>Proveedor:</u> </span>{nota.proveedor.razon_social}</div>:'Sin proveedor'} */}
                                                                         {nota.notas === null ? 'Sin notas' : <span className="font-weight-light"><span className="font-weight-bold"><u>Nota:</u> </span>{nota.notas}</span>}
                                                                     </Col>
                                                                 </Card.Body>
