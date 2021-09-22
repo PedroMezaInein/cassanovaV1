@@ -498,7 +498,8 @@ class TicketDetails extends Component {
                                         `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?' 
                                             : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
                                         () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
-                                        () => this.getPresupuestoAxios(presupuesto.id))
+                                        // () => this.getPresupuestoAxios(presupuesto.id)
+                                    )
                                 )
                                 break;
                         }
