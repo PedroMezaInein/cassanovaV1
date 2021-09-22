@@ -137,7 +137,7 @@ class SingleProyecto extends Component {
                                     <Card.Body className="pt-15">
                                         <div className="d-flex flex-center flex-column mb-8">
                                             <div className="font-size-h5 font-weight-bolder text-dark mb-2 text-center">{proyecto.nombre}</div>
-                                            <div className="font-size-h6 font-weight-bold text-muted">{proyecto.contacto}</div>
+                                            <div className="font-size-h6 font-weight-bold text-muted text-center">{proyecto.contacto}</div>
                                         </div>
                                         <div className="separator separator-dashed my-3"></div>
                                         <div className="font-size-h6 py-3 font-weight-bolder text-dark text-center">INFORMACIÓN DEL PROYECTO</div>
