@@ -686,7 +686,6 @@ class PresupuestosProyecto extends Component {
     render() {
         const { navPresupuesto, form, title, options, formeditado, data, presupuesto, aux_presupuestos, modal, key } = this.state
         const { proyecto, at } = this.props
-        console.log(presupuesto, 'presupuesto')
         return (
             <>
                 <Card className={`card-custom ${navPresupuesto !== 'historial'?'shadow-none bg-transparent':'gutter-b'}`}>
