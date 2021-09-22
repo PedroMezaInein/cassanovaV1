@@ -683,6 +683,12 @@ class PresupuestosProyecto extends Component {
             return true
         return false
     }
+
+    editPresupuesto = (pres) => {
+        this.setState({ ...this.state, navPresupuesto: 'add' })
+        this.getPresupuestoAxios(pres.id)
+    }
+
     render() {
         const { navPresupuesto, form, title, options, formeditado, data, presupuesto, aux_presupuestos, modal, key } = this.state
         const { proyecto, at } = this.props
@@ -713,7 +719,7 @@ class PresupuestosProyecto extends Component {
                     {
                         navPresupuesto === 'historial' ?
                                 <Card.Body>
-                                    <PresupuestoList proyecto={proyecto} at = { at }/>
+                                    <PresupuestoList proyecto={proyecto} at = { at } editPresupuesto = { this.editPresupuesto } />
                                 </Card.Body>
                             : <></>
                     }

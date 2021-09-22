@@ -108,15 +108,13 @@ class PresupuestoList extends Component {
                         }
                     </span>
                 )
-                
-                return ''
-                break;
         }
         
     }
 
     printPresupuestos = () => {
         const { presupuestos } = this.state
+        const { editPresupuesto } = this.props
         return(
             <div className="d-flex justify-content-center">
                 <div className="col-md-11">
@@ -157,7 +155,8 @@ class PresupuestoList extends Component {
                                                                     overlay={ <Tooltip> <span className='font-weight-bolder'>EDITAR</span> </Tooltip>}>
                                                                     <span className={`btn btn-icon ${presupuesto.isActive ?
                                                                         'btn-color-success2'
-                                                                        : ''}  btn-active-light-success2 w-30px h-30px mr-2`}>
+                                                                        : ''}  btn-active-light-success2 w-30px h-30px mr-2`}
+                                                                        onClick = { (e) => { e.preventDefault(); editPresupuesto(presupuesto); } } >
                                                                         <i className="las la-pencil-alt icon-xl"></i>
                                                                     </span>
                                                                 </OverlayTrigger>
