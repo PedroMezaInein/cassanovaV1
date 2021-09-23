@@ -106,7 +106,7 @@ class ActualizarPresupuesto extends Component {
             form: this.clearForm()
         })
     }
-    componentDidMount() {
+    componentDidMount = () => {
         const { authUser: { user: { permisos } } } = this.props;
         const { history: { location: { pathname } } } = this.props;
         const { history, location: { state } } = this.props;
@@ -240,14 +240,19 @@ class ActualizarPresupuesto extends Component {
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { presupuesto } = response.data
-                doneAlert('Presupuesto actualizado con éxito', 
-                    presupuesto.hasTickets ?
-                        () => questionAlertY(`¡Presupuesto actualizado!`, 
-                            '¿Deseas enviar a calidad la estimación de costos?', 
-                            () => this.patchPresupuesto('estatus', 'En revisión'), 
-                            () => this.getOnePresupuestoAxios(presupuesto.id))
-                    :''
-                )
+                console.log(presupuesto, `Presupuesto`)
+                switch(presupuesto.estatus.estatus){
+                    case 'Costos':
+                        doneAlert('Presupuesto actualizado con éxito', 
+                                () => questionAlertY(`¡Presupuesto actualizado!`, 
+                                    `¿Deseas enviar a ${presupuesto.hasTickets ? 'calidad' : 'proyectos'} la estimación de costos?`, 
+                                    () => this.patchPresupuesto('estatus', 'En revisión'), 
+                                    () => this.getOnePresupuestoAxios(presupuesto.id))
+                            )
+                        break;
+                    default: break;
+                }
+                
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -569,21 +574,10 @@ class ActualizarPresupuesto extends Component {
         const { formulario } = this.props
         return (
             <Layout active={"presupuesto"} {...this.props}>
-                <ActualizarPresupuestoForm
-                    formeditado={formeditado}
-                    form={form}
-                    onChange={this.onChange}
-                    checkButton={this.checkButton}
-                    onSubmit={this.onSubmit}
-                    presupuesto={presupuesto}
-                    openModal={this.openModal}
-                    showInputsCalidad={false}
-                    options={options}
-                    modulo_calidad={false}
-                    aux_presupuestos={aux_presupuestos}
-                    historialPresupuestos={this.openModalDownloadPDF}
-                    {...this.props}
-                />
+                <ActualizarPresupuestoForm formeditado = { formeditado } form = { form } onChange = { this.onChange } checkButton = { this.checkButton }
+                    onSubmit = { this.onSubmit } presupuesto = { presupuesto } openModal = { this.openModal } showInputsCalidad = { false }
+                    options = { options } modulo_calidad = { false } aux_presupuestos = { aux_presupuestos }
+                    historialPresupuestos = { this.openModalDownloadPDF } {...this.props} />
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
                     <AgregarConcepto
                         options={options}
