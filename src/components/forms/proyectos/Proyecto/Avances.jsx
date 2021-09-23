@@ -505,8 +505,8 @@ class Avances extends Component {
                                 proyecto ?
                                     proyecto.avances ?
                                         proyecto.avances.length ?
-                                            <div className="d-flex justify-content-center">
-                                                <div className="col-md-11">
+                                            <div className="table-responsive">
+                                                <div className="list min-w-400px col-md-11 mx-auto">
                                                     <div className="accordion accordion-light accordion-svg-toggle">
                                                         {
                                                             proyecto.avances.map((avance, key) => {

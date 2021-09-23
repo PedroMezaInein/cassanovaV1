@@ -115,8 +115,8 @@ class PresupuestoList extends Component {
         const { presupuestos } = this.state
         const { editPresupuesto } = this.props
         return(
-            <div className="d-flex justify-content-center">
-                <div className="col-md-11">
+            <div className="table-responsive">
+                <div className="list min-w-650px col-md-11 mx-auto">
                     <div className="accordion accordion-light accordion-svg-toggle">
                         {
                             presupuestos.map((presupuesto, key) => {
@@ -128,8 +128,8 @@ class PresupuestoList extends Component {
                                                 <span className={`svg-icon ${presupuesto.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
                                                     <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
                                                 </span>
-                                                <div className="card-label ml-3 row mx-0 justify-content-between">
-                                                    <div>
+                                                <div className="card-label ml-3 row mx-0 justify-content-between w-100">
+                                                    <div className="w-70">
                                                         <div className="font-size-lg mb-1">
                                                             { this.printIdentificadores(presupuesto.pdfs)}
                                                         </div>
@@ -137,48 +137,50 @@ class PresupuestoList extends Component {
                                                             { presupuesto.area.nombre } - {dayDMY(presupuesto.fecha)}
                                                         </div>
                                                     </div>
-                                                    <div className="align-self-center d-flex">
-                                                        <div className="align-self-center">
-                                                            <span className="mr-15"
-                                                                style={{ display: 'inline-flex', padding: '0.5em 0.85em', fontSize: '.65rem',
-                                                                    fontWeight: 600, lineHeight:1, backgroundColor:`${presupuesto.estatus.fondo}`, 
-                                                                    color: `${presupuesto.estatus.letra}`, textAlign:'center', border: 'transparent', 
-                                                                    whiteSpace:'nowrap', verticalAlign:'baseline', borderRadius:'0.475rem', 
-                                                                    justifyContent: 'center', alignItems: 'center' }}>
-                                                                { presupuesto.estatus.estatus }
-                                                            </span>
+                                                    <div className="align-self-center d-flex w-30">
+                                                        <div className="w-100 d-flex">
+                                                            <div className="align-self-center w-60 text-center">
+                                                                <span style={{ display: 'inline-flex', padding: '0.5em 0.85em', fontSize: '.68rem',
+                                                                        fontWeight: 600, lineHeight:1, backgroundColor:`${presupuesto.estatus.fondo}`, 
+                                                                        color: `${presupuesto.estatus.letra}`, textAlign:'center', border: 'transparent', 
+                                                                        whiteSpace:'nowrap', verticalAlign:'baseline', borderRadius:'0.475rem', 
+                                                                        justifyContent: 'center', alignItems: 'center' }}>
+                                                                    { presupuesto.estatus.estatus }
+                                                                </span>
+                                                            </div>
+                                                            <div className="w-40 text-right">
+                                                                {
+                                                                    this.canWork(presupuesto) ? 
+                                                                        <OverlayTrigger rootClose 
+                                                                            overlay={ <Tooltip> <span className='font-weight-bolder'>EDITAR</span> </Tooltip>}>
+                                                                            <span className={`btn btn-icon ${presupuesto.isActive ?
+                                                                                'btn-color-primary2'
+                                                                                : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}
+                                                                                onClick = { (e) => { e.preventDefault(); editPresupuesto(presupuesto); } } >
+                                                                                <i className="las la-pencil-alt icon-xl"></i>
+                                                                            </span>
+                                                                        </OverlayTrigger>
+                                                                    : <></>
+                                                                }
+                                                                {
+                                                                    this.canWork(presupuesto) ?
+                                                                        <OverlayTrigger rootClose
+                                                                            overlay={ <Tooltip> <span className='font-weight-bolder'>ELIMINAR</span> </Tooltip>}>
+                                                                            <span className={`btn btn-icon ${presupuesto.isActive ? 'btn-color-danger': ''} btn-active-light-danger w-30px h-30px`}
+                                                                                onClick={(e) => {
+                                                                                    e.preventDefault();
+                                                                                    deleteAlert(
+                                                                                        `ELIMINARÁS EL PRESUPUESTO`,
+                                                                                        '¿DESEAS CONTINUAR?',
+                                                                                        () => this.deletePresupuesto(presupuesto.id))
+                                                                                    }} >
+                                                                                <i className="las la-trash icon-xl"></i>
+                                                                            </span>
+                                                                        </OverlayTrigger>
+                                                                    : <></>
+                                                                }
+                                                            </div>
                                                         </div>
-                                                        {
-                                                            this.canWork(presupuesto) ? 
-                                                                <OverlayTrigger rootClose 
-                                                                    overlay={ <Tooltip> <span className='font-weight-bolder'>EDITAR</span> </Tooltip>}>
-                                                                    <span className={`btn btn-icon ${presupuesto.isActive ?
-                                                                        'btn-color-success2'
-                                                                        : ''}  btn-active-light-success2 w-30px h-30px mr-2`}
-                                                                        onClick = { (e) => { e.preventDefault(); editPresupuesto(presupuesto); } } >
-                                                                        <i className="las la-pencil-alt icon-xl"></i>
-                                                                    </span>
-                                                                </OverlayTrigger>
-                                                            : <></>
-                                                        }
-                                                        {
-                                                            this.canWork(presupuesto) ?
-                                                                <OverlayTrigger rootClose
-                                                                    overlay={ <Tooltip> <span className='font-weight-bolder'>ELIMINAR</span> </Tooltip>}>
-                                                                    <span className={`btn btn-icon ${presupuesto.isActive ? 'btn-color-danger': ''} btn-active-light-danger w-30px h-30px mr-2`}
-                                                                        onClick={(e) => {
-                                                                            e.preventDefault();
-                                                                            deleteAlert(
-                                                                                `ELIMINARÁS EL PRESUPUESTO`,
-                                                                                '¿DESEAS CONTINUAR?',
-                                                                                () => this.deletePresupuesto(presupuesto.id))
-                                                                            }} >
-                                                                        <i className="las la-trash icon-xl"></i>
-                                                                    </span>
-                                                                </OverlayTrigger>
-                                                            : <></>
-                                                        }
-                                                        
                                                     </div>      
                                                 </div>
                                             </Card.Title>
