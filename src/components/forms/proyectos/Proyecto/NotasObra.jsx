@@ -344,8 +344,8 @@ class NotasObra extends Component {
                             activeNota === 'notas' ?
                                 notas.length > 0 &&
                                 <>
-                                    <div className="d-flex justify-content-center">
-                                        <div className="col-md-11">
+                                    <div className="table-responsive">
+                                        <div className="list min-w-500px col-md-11 mx-auto">
                                             <div className="accordion accordion-light accordion-svg-toggle">
                                                 {
                                                     notas.map((nota, index) => {
@@ -356,14 +356,14 @@ class NotasObra extends Component {
                                                                         <span className={`svg-icon ${nota.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
                                                                         </span>
-                                                                        <div className="card-label ml-3 row mx-0 justify-content-between">
-                                                                            <div className="col-md-11 px-0">
+                                                                        <div className="card-label ml-3 w-100 d-flex">
+                                                                            <div className="w-90">
                                                                                 <div className="font-size-lg">N<span className="font-size-xs">o</span>. {nota.numero_nota.toString().padStart(4, 0)}</div>
                                                                                 <div className="font-weight-light font-size-sm text-dark-75">
                                                                                     {nota.tipo_nota} {nota.proveedor?<><span className="font-weight-bolder text-primary2"> - </span><em>{nota.proveedor.razon_social}</em></>:''} <span className="font-weight-bolder text-primary2"> - </span> {dayDMY(nota.fecha)}
                                                                                 </div>
                                                                             </div>
-                                                                            <div className="align-self-center col-md-1">
+                                                                            <div className="align-self-center w-10 text-right">
                                                                                 <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>ELIMINAR</span></Tooltip>}>
                                                                                     <span className={`btn btn-icon ${nota.isActive ? 'btn-color-danger': ''}  btn-active-light-danger w-30px h-30px mr-2`}
                                                                                         onClick={(e) => { e.preventDefault(); this.openModalDeleteNota(nota) }}>
