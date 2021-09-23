@@ -146,7 +146,7 @@ class ActualizarPresupuestoForm extends Component {
         return css
     }
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, children, options, isButtonEnabled, modulo_calidad, aux_presupuestos, historialPresupuestos } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, showInputsProyecto, children, options, isButtonEnabled, modulo_calidad, aux_presupuestos, historialPresupuestos } = this.props
         const { desperdicio } = this.state
         if (presupuesto)
             return (
@@ -158,7 +158,7 @@ class ActualizarPresupuestoForm extends Component {
                                     <div className="px-9 py-6">
                                         <div>
                                             {
-                                                !showInputsCalidad &&
+                                                (!showInputsCalidad && !showInputsProyecto)?
                                                 <div className="d-flex justify-content-between align-items-center mb-4">
                                                     <div className="text-dark font-size-h4 font-weight-bold">
                                                         {presupuesto.proyecto.nombre}
@@ -179,6 +179,7 @@ class ActualizarPresupuestoForm extends Component {
                                                         }
                                                     </div>
                                                 </div>
+                                                :<></>
                                             }
                                             <div>
                                                 <div className="d-flex flex-wrap justify-content-center">
@@ -362,14 +363,14 @@ class ActualizarPresupuestoForm extends Component {
                                                     </div>
                                                 </th>
                                                 {
-                                                    (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
+                                                    (presupuesto.estatus.estatus === 'En revisión' || (!showInputsCalidad && !showInputsProyecto)) &&
                                                     <th className="border-0 center_content" style={{minWidth:'120px'}}>
                                                         <div className="font-size-sm text-center">Costo</div>
                                                     </th>
                                                 }
                                                 <th className="border-0 center_content"> <div className="font-size-sm text-center">Cantidad</div> </th>
                                                 {
-                                                    (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
+                                                    (presupuesto.estatus.estatus === 'En revisión' || (!showInputsCalidad && !showInputsProyecto)) &&
                                                         <th className="border-0 center_content">
                                                             <div className="font-size-sm text-center">Importe</div>
                                                             <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
@@ -492,7 +493,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                         customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 border text-center`} />
                                                                 </td>
                                                                 {
-                                                                    (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) &&
+                                                                    (presupuesto.estatus.estatus === 'En revisión' || (!showInputsCalidad && !showInputsProyecto)) &&
                                                                         <td className="text-center">
                                                                             <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "costo"
                                                                                 value = { form['conceptos'][key]['costo'] } onChange = { e => onChange(key, e, 'costo') } 
@@ -511,7 +512,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     </div>
                                                                 </td>
                                                                 {
-                                                                    (presupuesto.estatus.estatus === 'En revisión' || !showInputsCalidad) ?
+                                                                    (presupuesto.estatus.estatus === 'En revisión' || (!showInputsCalidad && !showInputsProyecto)) ?
                                                                     <td className="text-center">
                                                                         <div className="font-weight-bold font-size-sm">
                                                                             <NumberFormat

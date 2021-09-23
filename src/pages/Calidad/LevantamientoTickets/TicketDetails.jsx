@@ -158,8 +158,8 @@ class TicketDetails extends Component {
             if (state.calidad) {
                 const { calidad } = state
                 this.setNavTabs(calidad.estatus.estatus)
-                if(calidad.estatus_ticket){
-                    if (calidad.estatus_ticket.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
+                if(calidad.estatus){
+                    if (calidad.estatus.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
                     else { this.getOneTicketAxios(calidad.id) }
                 }else { this.getOneTicketAxios(calidad.id) }
             } else history.push('/calidad/tickets')
@@ -498,7 +498,8 @@ class TicketDetails extends Component {
                                         `${presupuesto.estatus.estatus === 'En revisión' ? '¿Deseas enviar a finanzas el presupuesto preeliminar?' 
                                             : '¿Deseas enviar a compras tus volumetrías para la estimación de costos?'}`,
                                         () => this.patchPresupuesto('estatus', presupuesto.estatus.estatus === 'En revisión' ? 'Utilidad' : 'Costos'),
-                                        () => this.getPresupuestoAxios(presupuesto.id))
+                                        // () => this.getPresupuestoAxios(presupuesto.id)
+                                    )
                                 )
                                 break;
                         }

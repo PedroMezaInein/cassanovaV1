@@ -293,7 +293,7 @@ td.descripcion.text-center {
     }
 
     @include screen ($xxl) {
-        min-width: 1000px;
+        min-width: 945px;
     }
 }
 
@@ -3283,4 +3283,14 @@ table#calendario-proyectos tr:last-child td {
 
 .place-items-center{
     place-items: center;
+}
+
+.swal2-title {
+    text-transform: uppercase;
+}
+
+td.descripcion{
+    @include down-screen($md) {
+        min-width: 100vw;
+    }
 }

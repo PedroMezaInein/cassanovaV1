@@ -8,7 +8,7 @@ import { setSingleHeader } from '../../../functions/routers'
 import Swal from 'sweetalert2'
 import { Card, Tab, Nav } from 'react-bootstrap'
 import { setFase, setLabelTable, ordenamiento, setOptions } from '../../../functions/setters'
-import { EditProyectoForm, NotasObra, Avances, Adjuntos, ComentariosProyectos } from '../../../components/forms'
+import { EditProyectoForm, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto } from '../../../components/forms'
 
 class SingleProyecto extends Component {
 
@@ -131,13 +131,13 @@ class SingleProyecto extends Component {
             <Layout active = 'proyectos' {...this.props} >
                 {
                     proyecto ?
-                        <div className="d-flex flex-column flex-xl-row">
-                            <div className="flex-column flex-lg-row-auto w-100 w-xl-300px mb-0 mb-xl-10">
+                        <div className={`d-flex flex-column flex-${activeKeyNav === 'presupuestos'?'xxl':'xl'}-row`}>
+                            <div className={`flex-column flex-lg-row-auto w-100 w-xl-300px mb-0 mb-xl-10 ${activeKeyNav === 'presupuestos' ? 'd-lg-none d-xxl-block' : '' } `}>
                                 <Card className="mb-5 mb-xl-8 p-sticky-card">
                                     <Card.Body className="pt-15">
                                         <div className="d-flex flex-center flex-column mb-8">
                                             <div className="font-size-h5 font-weight-bolder text-dark mb-2 text-center">{proyecto.nombre}</div>
-                                            <div className="font-size-h6 font-weight-bold text-muted">{proyecto.contacto}</div>
+                                            <div className="font-size-h6 font-weight-bold text-muted text-center">{proyecto.contacto}</div>
                                         </div>
                                         <div className="separator separator-dashed my-3"></div>
                                         <div className="font-size-h6 py-3 font-weight-bolder text-dark text-center">INFORMACIÓN DEL PROYECTO</div>
@@ -155,7 +155,7 @@ class SingleProyecto extends Component {
                                 </Card>
                             </div>
                             <Tab.Container activeKey={activeKeyNav}>
-                                <div className="flex-lg-row-fluid ml-lg-10">
+                                <div className={`${activeKeyNav === 'presupuestos' ? 'flex-xxl-row-fluid ml-xxl-10 ' : 'flex-lg-row-fluid ml-lg-10 ' } `}>
                                     <div className="d-flex overflow-auto">
                                         <Nav className="nav nav-tabs nav-tabs-line-blue nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end mb-4">
                                             {
@@ -191,6 +191,9 @@ class SingleProyecto extends Component {
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="adjuntos">
                                             <Adjuntos proyecto={proyecto} at = { access_token }/>
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="presupuestos">
+                                            <PresupuestosProyecto proyecto={proyecto} at = { access_token }/>
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>
