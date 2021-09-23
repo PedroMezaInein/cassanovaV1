@@ -109,7 +109,6 @@ class PresupuestoList extends Component {
                     </span>
                 )
         }
-        
     }
 
     printPresupuestos = () => {
