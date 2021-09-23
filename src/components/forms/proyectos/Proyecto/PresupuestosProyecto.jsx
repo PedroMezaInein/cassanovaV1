@@ -601,6 +601,7 @@ class PresupuestosProyecto extends Component {
                 break;
             case 'historial':
                 title = 'HISTORIAL DE PRESUPUESTOS'
+                break;
             default:break;
         }
         return title
