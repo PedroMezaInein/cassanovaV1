@@ -43,7 +43,8 @@ class AccesosForm extends Component {
         },
         editables: {
             usuarios: [],
-            empresas: []
+            empresas: [],
+            departamentos: []
         }
     }
     componentDidMount() {
