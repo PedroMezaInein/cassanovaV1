@@ -50,7 +50,13 @@ class PresupuestosProyecto extends Component {
 
     navPresupuesto = (type) => { this.setState({ ...this.state, navPresupuesto: type }) }
 
-    componentDidMount() { this.getOptionsAxios(); }
+    componentDidMount() { 
+        const { presupuestoId } = this.props
+        if(presupuestoId){
+            this.setState({...this.state, navPresupuesto: 'add'})
+        }
+        this.getOptionsAxios();
+    }
     
     setOptions = (name, array) => {
         const { options } = this.state;
@@ -63,29 +69,25 @@ class PresupuestosProyecto extends Component {
         const { at } = this.props;
         await axios.get(`${URL_DEV}presupuestos/options`, { headers: setSingleHeader(at) }).then(
             (response) => {
-                Swal.close();
                 const { areas, partidas, conceptos, unidades, proveedores } = response.data;
                 const { options, data, form } = this.state;
+                const { presupuestoId } = this.props
                 data.partidas = partidas
                 let aux = {}
-                conceptos.map((concepto) => {
-                    return aux[concepto.clave] = false
-                })
+                conceptos.map((concepto) => { return aux[concepto.clave] = false })
                 form.conceptos = aux;
                 options.areas = setOptions(areas, "nombre", "id")
                 options.partidas = setOptions(partidas, "nombre", "id")
                 options.unidades = setOptions(unidades, 'nombre', 'id')
                 options.proveedores = setOptions(proveedores, "razon_social", "id")
-                this.setState({
-                    ...this.state,
-                    options,
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        )
-        .catch((error) => {
+                Swal.close();
+                if(presupuestoId){
+                    waitAlert()
+                    this.getPresupuestoAxios(presupuestoId)
+                }
+                this.setState({ ...this.state, options });
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
             errorAlert("Ocurrió un error desconocido catch, intenta de nuevo.");
             console.error(error, "error");
         });
@@ -201,7 +203,7 @@ class PresupuestosProyecto extends Component {
         const { at } = this.props
         await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
-                Swal.close()
+                
                 const { presupuesto } = response.data
                 const { form } = this.state
                 let aux = []
@@ -249,6 +251,7 @@ class PresupuestosProyecto extends Component {
                     })
                 })
                 form.preeliminar.conceptos = aux
+                Swal.close()
                 this.showStatusPresupuestos(presupuesto)
                 this.setState({ ...this.state, presupuesto: presupuesto, form, formeditado: 1 })
             }, (error) => { printResponseErrorAlert(error) }
@@ -624,18 +627,6 @@ class PresupuestosProyecto extends Component {
         return true
     }
 
-    isGarantia = () => {
-        const { data } = this.state
-        if(data){
-            if(data.subarea){
-                if(data.subarea.nombre === 'VICIOS OCULTOS'){
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
     showStatusPresupuestos= (presupuesto) => {
         let auxiliar = '';
         if (presupuesto) {
@@ -696,6 +687,65 @@ class PresupuestosProyecto extends Component {
         this.getPresupuestoAxios(pres.id)
     }
 
+    printActiveNav = () => {
+        const { navPresupuesto, form, title, options, formeditado, data, presupuesto, aux_presupuestos } = this.state
+        const { presupuestoId } = this.props
+        let type = ''
+        if(navPresupuesto === 'add'){
+            if(presupuestoId){
+                if(presupuesto !== ''){
+                    type = 'form'
+                }
+            }else{
+                if(presupuesto !== ''){
+                    type = 'form'
+                }else{
+                    type = 'new'
+                }
+            }
+        }
+        switch(type){
+            case 'new':
+                return(
+                    <PresupuestoForm formeditado = { formeditado } title = { title } form = { form.presupuesto } onChange = { this.onChangePresupuesto }
+                        checkButton = { this.checkButtonPresupuesto } options = { options } setOptions = { this.setOptions }
+                        onSubmit = { (e) => { this.onSubmit('presupuesto') } } data = { data } showFormProyecto = { true } />
+                )
+            case 'form':
+                return(
+                    <ActualizarPresupuestoForm showInputsProyecto = { true } form = { form.preeliminar } options = { options } presupuesto = { presupuesto }
+                        onChange = { this.onChangePreeliminar } formeditado = { 1 } checkButton = { this.checkButtonPreeliminar }
+                        onSubmit = { (e) => { this.onSubmit('preeliminar') } } openModal = { this.openModalConceptos } 
+                        isButtonEnabled = { this.isButtonEnabled() } modulo_proyectos = { true } aux_presupuestos = { aux_presupuestos }
+                        // historialPresupuestos={historialPresupuestos}
+                        >
+                        {
+                            presupuesto.estatus.estatus === 'En revisión' ?
+                                this.calcularCantidades() ?
+                                    <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2"
+                                        onClick={(e) => { e.preventDefault(); this.onClick('enviar_finanzas'); }} >
+                                        GUARDAR Y ENVIAR A FINANZAS
+                                    </button>
+                                : <></>
+                            : <></>
+                        }
+                        {
+                            (presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías') ?
+                                this.calcularCantidades() ?
+                                    <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2 mb-4 mb-md-0"
+                                        onClick={(e) => { e.preventDefault(); this.onClick('enviar_compras'); }} >
+                                        ENVIAR A COTIZAR
+                                    </button>
+                                : <></>
+                            : <></>
+                        }
+                    </ActualizarPresupuestoForm>
+                )
+            default:
+                return ''
+        }
+    }
+
     render() {
         const { navPresupuesto, form, title, options, formeditado, data, presupuesto, aux_presupuestos, modal, key } = this.state
         const { proyecto, at } = this.props
@@ -731,61 +781,7 @@ class PresupuestosProyecto extends Component {
                             : <></>
                     }
                 </Card>
-                {
-                    navPresupuesto === 'add' ?
-                        presupuesto === '' ?
-                            <PresupuestoForm
-                                formeditado={formeditado}
-                                title={title}
-                                form={form.presupuesto}
-                                onChange={this.onChangePresupuesto}
-                                checkButton={this.checkButtonPresupuesto}
-                                options={options}
-                                setOptions={this.setOptions}
-                                onSubmit={(e) => { this.onSubmit('presupuesto') }}
-                                data={data}
-                                showFormProyecto={true}
-                            />
-                        : presupuesto.estatus.estatus !== 'En espera' && presupuesto.estatus.estatus !== 'Aceptado' && presupuesto.estatus.estatus !== 'Rechazado' ?
-                            <ActualizarPresupuestoForm
-                                showInputsProyecto={true}
-                                form={form.preeliminar}
-                                options={options}
-                                presupuesto={presupuesto}
-                                onChange={this.onChangePreeliminar}
-                                formeditado={1}
-                                checkButton={this.checkButtonPreeliminar}
-                                onSubmit={(e) => { this.onSubmit(this.isGarantia() ? 'vicio-oculto' : 'preeliminar') }}
-                                openModal={this.openModalConceptos}
-                                isButtonEnabled={this.isButtonEnabled()}
-                                modulo_proyectos={true} 
-                                aux_presupuestos={aux_presupuestos}
-                                // historialPresupuestos={historialPresupuestos}
-                            >
-                                {
-                                    presupuesto.estatus.estatus === 'En revisión' && !this.isGarantia() ?
-                                        this.calcularCantidades() ?
-                                            <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2"
-                                                onClick={(e) => { e.preventDefault(); this.onClick('enviar_finanzas'); }} >
-                                                GUARDAR Y ENVIAR A FINANZAS
-                                            </button>
-                                            : <></>
-                                        : <></>
-                                }
-                                {
-                                    (presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías') && !this.isGarantia() ?
-                                        this.calcularCantidades() ?
-                                            <button type="button" className="btn btn-sm btn-light-success font-weight-bolder font-size-13px mr-2 mb-4 mb-md-0"
-                                                onClick={(e) => { e.preventDefault(); this.onClick('enviar_compras'); }} >
-                                                ENVIAR A COTIZAR
-                                            </button>
-                                        : <></>
-                                    : <></>
-                                }
-                            </ActualizarPresupuestoForm>
-                        : <></>
-                    : <></>
-                }
+                { this.printActiveNav() }
                 <Modal size = "xl" title = 'Agregar concepto' show = { modal.conceptos } handleClose = { this.handleCloseConceptos } >
                     <AgregarConcepto 
                         options = { options }
