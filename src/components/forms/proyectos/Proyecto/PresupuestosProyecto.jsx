@@ -105,10 +105,10 @@ class PresupuestosProyecto extends Component {
                     'Enviarás a compras tus volumetrías para la estimación de costos', 
                     () => this.updatePresupuestoAxios(false))
                 break;
-            // case 'enviar_finanzas':
-            //     questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
-            //         () => this.patchPresupuesto('estatus', 'Utilidad'))
-            //     break;
+            case 'enviar_finanzas':
+                questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
+                    () => this.patchPresupuesto('estatus', 'Utilidad'))
+                break;
             default: break;
         }
     }
@@ -762,16 +762,16 @@ class PresupuestosProyecto extends Component {
                                 aux_presupuestos={aux_presupuestos}
                                 // historialPresupuestos={historialPresupuestos}
                             >
-                                {/* {
+                                {
                                     presupuesto.estatus.estatus === 'En revisión' && !this.isGarantia() ?
                                         this.calcularCantidades() ?
                                             <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2"
-                                                onClick={(e) => { e.preventDefault(); onClick('enviar_finanzas'); }} >
+                                                onClick={(e) => { e.preventDefault(); this.onClick('enviar_finanzas'); }} >
                                                 GUARDAR Y ENVIAR A FINANZAS
                                             </button>
                                             : <></>
                                         : <></>
-                                } */}
+                                }
                                 {
                                     (presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías') && !this.isGarantia() ?
                                         this.calcularCantidades() ?
