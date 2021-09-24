@@ -5,4 +5,5 @@ import * as QuestionBoy from './question-boy.json'
 import * as Trash from './trash-clean.json'
 import * as Bye from './bye.json'
 import * as Hi from './hi.json'
-export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi }
+import * as Lock from './lock.json'
+export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock }

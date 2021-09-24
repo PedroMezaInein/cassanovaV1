@@ -7,7 +7,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
 import { setOptions, setSelectOptions, setTextTableReactDom, setTagLabelReactDom } from '../../../functions/setters'
-import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlertY, customInputAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlertY, customInputAlert, questionAlertWithLottie } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import FloatButtons from '../../../components/singles/FloatButtons'
@@ -18,6 +18,7 @@ import { Update } from '../../../components/Lottie'
 import { InputGray } from '../../../components/form-components'
 import { setSingleHeader } from '../../../functions/routers'
 import $ from "jquery";
+import { Lock } from '../../../assets/animate'
 
 class Usuarios extends Component {
 
@@ -635,8 +636,18 @@ class Usuarios extends Component {
         deleteForm()
     }
     inhabilitar = (user) => {
-        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR EL USUARIO?', () => this.inhabilitarUsuario(user, true))
+        questionAlertWithLottie(
+            `Inhabilitarás al usuario ${user.name}`,
+            `¿Deseas continuar?`,
+            Lock,
+            { confirm: 'SI', cancel: 'NO' },
+            {
+                cancel: null,
+                success: () => this.inhabilitarUsuario(user, true)
+            }
+        )
     }
+
     async inhabilitarUsuario(user, estatus) {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -683,7 +694,16 @@ class Usuarios extends Component {
         })
     }
     habilitar = (user) => {
-        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS HABILITAR AL USUARIO?', () => this.inhabilitarUsuario(user, false))
+        questionAlertWithLottie(
+            `Habilitarás al usuario ${user.name}`,
+            `¿Deseas continuar?`,
+            Lock,
+            { confirm: 'SI', cancel: 'NO' },
+            {
+                cancel: null,
+                success: () => this.inhabilitarUsuario(user, false)
+            }
+        )
     }
     openModalHabilitar = async () => {
         waitAlert()
