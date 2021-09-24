@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { deleteAlert, validateAlert } from '../../../functions/alert'
-import { Form, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstrap'
+import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { InputGray, RangeCalendar, InputNumberGray, FileInput, CalendarDay } from '../../form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
@@ -64,7 +64,6 @@ class FormularioContrato extends Component {
                     break;
                 case 'indefinido':
                     return true
-                    break;
                 default: break;
             }
         }
