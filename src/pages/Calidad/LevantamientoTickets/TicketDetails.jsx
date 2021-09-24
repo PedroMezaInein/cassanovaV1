@@ -6,7 +6,7 @@ import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { PresupuestoGeneradoNoCrm, TicketView } from '../../../components/forms'
+import { TicketView, HistorialPresupuestos } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
 import { setSingleHeader, setFormHeader } from '../../../functions/routers'
 import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
@@ -949,7 +949,11 @@ class TicketDetails extends Component {
                 doneAlert('El estatus fue actualizado con éxito.')
                 this.getOneTicketAxios(ticket.id)
                 let { defaultNavTabs } = this.state
-                defaultNavTabs = 'solicitud-compra'
+                if(estatus === 'Rechazado'){
+                    defaultNavTabs = 'presupuesto'
+                }else{
+                    defaultNavTabs = 'solicitud-compra'
+                }
                 this.setState({ defaultNavTabs })
             },
             (error) => { printResponseErrorAlert(error) }
@@ -1846,8 +1850,7 @@ class TicketDetails extends Component {
                     </Modal.Footer>
                 </Modal>
                 <CustomModal show={modal.pdfs} handleClose={this.handleClosePdfs} title="Historial de presupuestos" >
-                    <PresupuestoGeneradoNoCrm pdfs = { presupuesto.pdfs } actionsEnable = { this.canSend() ? true : false } 
-                        onClick = { this.onClick } />    
+                    <HistorialPresupuestos presupuesto={presupuesto} actionsEnable = { this.canSend() ? true : false }  onClick = { this.onClick }/>        
                 </CustomModal>
                 <Modal show = { modal.orden_compra } onHide = { this.handleCloseModalOrden } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>AGREGAR ORDEN DE COMPRA</Modal.Header>

@@ -12,7 +12,7 @@ import { Modal } from '../../../../components/singles'
 class PresupuestosProyecto extends Component {
     state = {
         key: 'nuevo',
-        navPresupuesto: 'add',
+        navPresupuesto: '',
         formeditado: 0,
         title: "Nuevo presupuesto",
         form: {
@@ -46,18 +46,39 @@ class PresupuestosProyecto extends Component {
         presupuesto: '',
         aux_presupuestos: { conceptos: false, volumetrias: false, costos: false, revision:false, utilidad: false, espera: false, aceptado: false, rechazado: false },
         modal: { conceptos: false },
+        presupuestos: []
     }
 
     navPresupuesto = (type) => { this.setState({ ...this.state, navPresupuesto: type }) }
 
     componentDidMount() { 
-        const { presupuestoId } = this.props
+        const { presupuestoId, proyecto } = this.props
         if(presupuestoId){
             this.setState({...this.state, navPresupuesto: 'add'})
         }
         this.getOptionsAxios();
+        this.getPresupuestos(proyecto)
     }
-    
+    getPresupuestos = async() => {
+        const { at, proyecto } = this.props
+        let { navPresupuesto } = this.state
+        waitAlert()
+        await axios.get(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { presupuestos } = response.data
+                Swal.close()
+                if(presupuestos.length === 0){
+                    navPresupuesto = 'add'
+                }else{
+                    navPresupuesto = 'historial'
+                }
+                this.setState({ ...this.state, presupuestos: presupuestos, navPresupuesto })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
     setOptions = (name, array) => {
         const { options } = this.state;
         options[name] = setOptions(array, "nombre", "id");
@@ -107,10 +128,10 @@ class PresupuestosProyecto extends Component {
                     'Enviarás a compras tus volumetrías para la estimación de costos', 
                     () => this.updatePresupuestoAxios(false))
                 break;
-            // case 'enviar_finanzas':
-            //     questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
-            //         () => this.patchPresupuesto('estatus', 'Utilidad'))
-            //     break;
+            case 'enviar_finanzas':
+                questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
+                    () => this.patchPresupuesto('estatus', 'Utilidad'))
+                break;
             default: break;
         }
     }
@@ -719,16 +740,16 @@ class PresupuestosProyecto extends Component {
                         isButtonEnabled = { this.isButtonEnabled() } modulo_proyectos = { true } aux_presupuestos = { aux_presupuestos }
                         // historialPresupuestos={historialPresupuestos}
                         >
-                        {/* {
+                        {
                             presupuesto.estatus.estatus === 'En revisión' ?
                                 this.calcularCantidades() ?
                                     <button type="button" className="btn btn-sm btn-light-primary font-weight-bolder font-size-13px mr-2"
-                                        onClick={(e) => { e.preventDefault(); onClick('enviar_finanzas'); }} >
+                                        onClick={(e) => { e.preventDefault(); this.onClick('enviar_finanzas'); }} >
                                         GUARDAR Y ENVIAR A FINANZAS
                                     </button>
                                 : <></>
                             : <></>
-                        } */}
+                        }
                         {
                             (presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías') ?
                                 this.calcularCantidades() ?
@@ -747,34 +768,38 @@ class PresupuestosProyecto extends Component {
     }
 
     render() {
-        const { navPresupuesto, form, title, options, formeditado, data, presupuesto, aux_presupuestos, modal, key } = this.state
+        const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key } = this.state
         const { proyecto, at } = this.props
         return (
             <>
                 <Card className={`card-custom ${navPresupuesto !== 'historial'?'shadow-none bg-transparent':'gutter-b'}`}>
                     <Card.Header className={`border-0 align-items-center pt-6 pt-md-0 ${navPresupuesto !== 'historial'?'px-0':''}`}>
                         <div className="font-weight-bold font-size-h4 text-dark">{this.cardTitlePresupuesto(navPresupuesto)}</div>
-                        <div className="toolbar-dropdown">
-                            <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>}
-                                id={`${navPresupuesto !== 'historial' ? 'dropdown-white' : 'dropdown-proyectos'}`}>
-                                {
-                                    navPresupuesto === 'add' ? <></> :
-                                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.navPresupuesto('add') }}>
-                                            {setNaviIcon('las la-plus icon-xl', 'AGREGAR PRESUPUESTO')}
-                                        </Dropdown.Item>
-                                }
-                                {
-                                    navPresupuesto === 'add' ?
-                                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => { this.navPresupuesto('historial') }}>
-                                            {setNaviIcon('las la-file-invoice-dollar icon-xl', 'HISTORIAL DE PRESUPUESTOS')}
-                                        </Dropdown.Item>
-                                        : <></>
-                                }
-                            </DropdownButton>
-                        </div>
+                        {
+                            presupuestos.length > 0 ?
+                            <div className="toolbar-dropdown">
+                                <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>}
+                                    id={`${navPresupuesto !== 'historial' ? 'dropdown-white' : 'dropdown-proyectos'}`}>
+                                    {
+                                        navPresupuesto === 'add' ? <></> :
+                                            <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.navPresupuesto('add') }}>
+                                                {setNaviIcon('las la-plus icon-xl', 'AGREGAR PRESUPUESTO')}
+                                            </Dropdown.Item>
+                                    }
+                                    {
+                                            presupuestos.length > 0 && navPresupuesto === 'add' ?
+                                            <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => { this.navPresupuesto('historial') }}>
+                                                {setNaviIcon('las la-file-invoice-dollar icon-xl', 'HISTORIAL DE PRESUPUESTOS')}
+                                            </Dropdown.Item>
+                                            : <></>
+                                    }
+                                </DropdownButton>
+                            </div>
+                            :<></>
+                        }
                     </Card.Header>
                     {
-                        navPresupuesto === 'historial' ?
+                        navPresupuesto === 'historial' && presupuestos.length ?
                                 <Card.Body>
                                     <PresupuestoList proyecto={proyecto} at = { at } editPresupuesto = { this.editPresupuesto } />
                                 </Card.Body>
