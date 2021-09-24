@@ -11,10 +11,11 @@ import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
 import { Notificacion } from '../singles'
 import { Zoom, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert, questionAlertY } from '../../functions/alert'
+import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert, questionAlertWithLottie } from '../../functions/alert'
 import {Helmet} from "react-helmet";
 import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
+import { Bye, Hi } from '../../assets/animate'
 
 /* function openUserProfile() {
     if (document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
@@ -121,7 +122,16 @@ class Layout extends Component {
 	}
 
     checador = (tipo) => {
-        questionAlertY(`¿DESEAS CHECAR ${tipo}?`, '', () => this.actualizarChecadorAxios(tipo))
+        questionAlertWithLottie(
+            `Checarás la ${tipo}`,
+            '¿Deseas continuar?',
+            tipo === 'salida' ? Bye : Hi,
+            { confirm: 'SI', cancel: 'NO' },
+            {
+                cancel: null,
+                success: () => this.actualizarChecadorAxios(tipo)
+            }
+        )
     }
     async getNotificacionesAxios() {
         const options = {
