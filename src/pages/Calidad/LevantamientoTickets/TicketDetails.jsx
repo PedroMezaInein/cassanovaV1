@@ -1849,7 +1849,7 @@ class TicketDetails extends Component {
                         <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { this.sendPresupuesto } >SI, ENVIAR</button>
                     </Modal.Footer>
                 </Modal>
-                <CustomModal show={modal.pdfs} handleClose={this.handleClosePdfs} title="Historial de presupuestos" >
+                <CustomModal size="lg" show={modal.pdfs} handleClose={this.handleClosePdfs} title="Historial de presupuestos" >
                     <HistorialPresupuestos presupuesto={presupuesto} actionsEnable = { this.canSend() ? true : false }  onClick = { this.onClick }/>        
                 </CustomModal>
                 <Modal show = { modal.orden_compra } onHide = { this.handleCloseModalOrden } centered contentClassName = 'swal2-popup d-flex' >
