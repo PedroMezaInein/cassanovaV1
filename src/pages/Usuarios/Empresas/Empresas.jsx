@@ -8,7 +8,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { setTextTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
-import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlertY, customInputAlert } from '../../../functions/alert'
+import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlertY, customInputAlert, questionAlertWithLottie } from '../../../functions/alert'
 import { EmpresaCard } from '../../../components/cards'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import Swal from 'sweetalert2'
@@ -19,6 +19,7 @@ import { InputGray } from '../../../components/form-components'
 /* import Pusher from 'pusher-js'; */
 import Echo from 'laravel-echo';
 import $ from "jquery";
+import { Lock } from '../../../assets/animate'
 const MySwal = withReactContent(Swal)
 class Empresas extends Component {
     state = {
@@ -486,10 +487,28 @@ class Empresas extends Component {
         })
     }
     inhabilitar = (empresa) => {
-        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR LA EMPRESA?', () => this.inhabilitarEmpresa(empresa, true))
+        questionAlertWithLottie(
+            `Inhabilitarás la empresa ${empresa.name}`,
+            `¿Deseas continuar?`,
+            Lock,
+            { confirm: 'SI', cancel: 'NO' },
+            {
+                cancel: null,
+                success: () => this.inhabilitarEmpresa(empresa, true)
+            }
+        )
     }
     habilitar = (empresa) => {
-        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS HABILITAR LA EMPRESA?', () => this.inhabilitarEmpresa(empresa, false))
+        questionAlertWithLottie(
+            `Habilitarás la empresa ${empresa.name}`,
+            `¿Deseas continuar?`,
+            Lock,
+            { confirm: 'SI', cancel: 'NO' },
+            {
+                cancel: null,
+                success: () => this.inhabilitarEmpresa(empresa, false)
+            }
+        )
     }
     async inhabilitarEmpresa(empresa, estatus) {
         waitAlert()
