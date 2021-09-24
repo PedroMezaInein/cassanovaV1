@@ -68,10 +68,13 @@ class PresupuestosProyecto extends Component {
             (response) => {
                 const { presupuestos } = response.data
                 Swal.close()
-                if(presupuestos.length === 0){
-                    navPresupuesto = 'add'
-                }else{
-                    navPresupuesto = 'historial'
+                const { presupuestoId } = this.props
+                if(!presupuestoId){
+                    if(presupuestos.length === 0){
+                        navPresupuesto = 'add'
+                    }else{
+                        navPresupuesto = 'historial'
+                    }
                 }
                 this.setState({ ...this.state, presupuestos: presupuestos, navPresupuesto })
             }, (error) => { printResponseErrorAlert(error) }
@@ -741,7 +744,7 @@ class PresupuestosProyecto extends Component {
                 }
             }
         }else{
-            return null
+            return ''
         }
         switch(type){
             case 'new':
