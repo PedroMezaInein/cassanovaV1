@@ -43,15 +43,17 @@ class SingleProyecto extends Component {
         const { match: { params: { id } } } = this.props
         const modulo = permisos.find(function (element, index) {
             const { modulo: { url } } = element
-            return pathname === url + '/single/' + id
+            return pathname === `${url}/single/${id}`
         })
+        if (!modulo){ history.push('/') }
+        if (id){ this.getOneProyecto(id) }
         this.getOptionsAxios()
-        if (!modulo)
-            history.push('/')
-        if (id)
-            this.getOneProyecto(id)
-        else
-            history.push({ pathname: '/proyectos/proyectos' });
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let paramPres = params.get('presupuesto')
+            if(paramPres){ this.setState({...this.state, activeKeyNav: 'presupuestos' }) }
+        }
     }
 
     /* -------------------------------------------------------------------------- */
@@ -61,8 +63,7 @@ class SingleProyecto extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v3/proyectos/proyectos/${id}`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { proyecto } = response.data
+            (response) => {const { proyecto } = response.data
                 Swal.close()
                 this.setState({ ...this.state, proyecto: proyecto })
             }, (error) => { printResponseErrorAlert(error) }
@@ -76,7 +77,6 @@ class SingleProyecto extends Component {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}proyectos/opciones`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
                 const { clientes, empresas, estatus, proveedores } = response.data
                 const { options } = this.state
                 let aux = [];
@@ -97,10 +97,8 @@ class SingleProyecto extends Component {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['estatus'] = setOptions(estatus, 'estatus', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                this.setState({
-                    ...this.state,
-                    options
-                })
+                Swal.close()
+                this.setState({ ...this.state, options })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -123,6 +121,17 @@ class SingleProyecto extends Component {
             default: break;
         }
     }
+
+    getPresupuestoFromUrl = () => {
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let paramPres = params.get('presupuesto')
+            if(paramPres){  return paramPres }
+        }
+        return null
+    }
+
     render() {
         const { proyecto, navs, activeKeyNav, options } = this.state
         const { access_token } = this.props.authUser
@@ -193,7 +202,7 @@ class SingleProyecto extends Component {
                                             <Adjuntos proyecto={proyecto} at = { access_token }/>
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="presupuestos">
-                                            <PresupuestosProyecto proyecto={proyecto} at = { access_token }/>
+                                            <PresupuestosProyecto proyecto={proyecto} at = { access_token } presupuestoId = { this.getPresupuestoFromUrl() } />
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>

@@ -74,7 +74,7 @@ class ContratosRhForm extends Component {
                         form.empleado = contrato.empleado.id.toString()
                         form.fechaInicio = contrato.fecha_inicio !== null ? new Date(moment(contrato.fecha_inicio)):''
                         form.fechaFin = contrato.fecha_fin !== null ? new Date(moment(contrato.fecha_fin)):''
-                        form.periodo = contrato.indefinido === 1?false:true
+                        form.periodo = contrato.indefinido
                         form.dias = contrato.dias
                         form.periodo_pago = contrato.periodo_pago
                         form.ubicacion_obra = contrato.ubicacion_obra

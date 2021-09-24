@@ -1,15 +1,25 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
+import { setDateTableLG, setMoneyText } from '../../../../functions/setters';
 export default class HistorialPresupuestos extends Component {
-
-    render() {
+    hasMontos = () => {
         const { presupuesto } = this.props
+        let flag = false
+        presupuesto.pdfs.forEach((pdf) => {
+            if(pdf.pivot.hasOwnProperty('monto'))
+                flag = true
+        })
+        return flag
+    }
+    render() {
+        const { presupuesto, actionsEnable, onClick } = this.props
         return (
             <div className="timeline mt-9">
                 {
                     presupuesto ?
                         presupuesto.pdfs.map((pdf, index) => {
+                            let flag = this.hasMontos()
                             return (
                                 <div className="timeline-item-dashed" key={index}>
                                     <div className="timeline-line-dashed w-40px"></div>
@@ -27,9 +37,32 @@ export default class HistorialPresupuestos extends Component {
                                             }
                                         </div>
                                     </div>
-                                    <div className="timeline-content-dashed mb-8 mt-n1">
+                                    <div className={`timeline-content-dashed mt-n1 ${ index === presupuesto.pdfs.length - 1 ? 'mb-0':'mb-15'}`}>
                                         <div className="mb-5 pr-3">
-                                            <div className="font-size-h6 font-weight-bold text-dark-75 mb-2">Presupuesto {pdf.pivot.identificador}</div>
+                                            <div className="font-size-h6 font-weight-bold text-dark-75 d-flex justify-content-between">
+                                                <div className="align-self-center">Presupuesto {pdf.pivot.identificador}</div>
+                                                {
+                                                    actionsEnable ? 
+                                                        <div>
+                                                            <span onClick = { (e) => { e.preventDefault(); onClick('send-presupuesto', pdf); } } 
+                                                                className="btn btn-default btn-icon btn-sm btn-hover-text-success">
+                                                                <span className="svg-icon svg-icon-md svg-icon-primary">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Sending-mail.svg')} />
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    : <></>
+                                                }
+                                            </div>
+                                            
+                                                    <span className="text-dark-75 font-weight-bolder d-block my-3">
+                                                        FECHA: <span className="text-dark-75 font-weight-normal font-size-sm">{setDateTableLG(pdf.created_at)}</span>
+                                                        {
+                                                            flag ?
+                                                                <span className="ml-3">MONTO: <span className="text-dark-75 font-weight-normal font-size-sm">{setMoneyText(pdf.pivot.monto)}</span></span>
+                                                            : <></>
+                                                        }
+                                                    </span>
                                             {
                                                 pdf.pivot.motivo_cancelacion !== null ?
                                                     <div className="d-flex align-items-center mt-1">
