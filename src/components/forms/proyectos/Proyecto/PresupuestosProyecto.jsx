@@ -724,6 +724,8 @@ class PresupuestosProyecto extends Component {
                     type = 'new'
                 }
             }
+        }else{
+            return null
         }
         switch(type){
             case 'new':
