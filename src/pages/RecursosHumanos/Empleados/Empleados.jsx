@@ -209,6 +209,7 @@ class Empleados extends Component {
         })
     }
     clearFormContrato = () => {
+
         const { formContrato } = this.state
         let aux = Object.keys(formContrato)
         aux.map((element) => {
@@ -756,13 +757,13 @@ class Empleados extends Component {
         })
     }
     onChangeContrato= e => {
+        
         const { name, value, type } = e.target
         let { formContrato, empleado } = this.state
         formContrato[name] = value
-
         if(type === 'radio'){
-            formContrato.periodo = value === "true" ? true : false
-            if(formContrato.periodo === false){
+            formContrato.periodo = value
+            if(formContrato.periodo === 'indefinido'){
                 formContrato.dias = ''
             }
         }
