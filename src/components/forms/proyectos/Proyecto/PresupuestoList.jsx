@@ -9,6 +9,7 @@ import { dayDMY } from '../../../../functions/setters'
 import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
 import { Budget } from '../../../../components/Lottie/'
 import Swal from 'sweetalert2';
+import { PresupuestoAnswer } from '../../../forms'
 class PresupuestoList extends Component {
 
     state = {
@@ -119,6 +120,7 @@ class PresupuestoList extends Component {
                     <div className="accordion accordion-light accordion-svg-toggle">
                         {
                             presupuestos.map((presupuesto, key) => {
+                                console.log(presupuesto, 'presupuesto')
                                 return (
                                     <Card className="w-auto" key={key}>
                                         <Card.Header >
@@ -133,7 +135,7 @@ class PresupuestoList extends Component {
                                                             { this.printIdentificadores(presupuesto.pdfs)}
                                                         </div>
                                                         <div className="font-weight-light font-size-sm text-dark-75">
-                                                            { presupuesto.area.nombre } - {dayDMY(presupuesto.fecha)}
+                                                            { presupuesto.area.nombre } - {dayDMY(presupuesto.fecha)} - {`${presupuesto.tiempo_ejecucion} ${presupuesto.tiempo_ejecucion === '1'?'día':'días'}`} 
                                                         </div>
                                                     </div>
                                                     <div className="align-self-center d-flex w-30">
@@ -186,8 +188,8 @@ class PresupuestoList extends Component {
                                         </Card.Header>
                                         <Card.Body className={`card-body px-10 ${presupuesto.isActive ? 'collapse show' : 'collapse'}`}>
                                             <Row className="mx-0">
-                                                <Col md={9} className="mb-5 mx-auto d-flex justify-content-center">
-                                                    PDF PRESUPUESTO
+                                                <Col md={10} className="mb-5 mx-auto d-flex justify-content-center">
+                                                    <PresupuestoAnswer presupuestos = { presupuestos } presupuesto = { presupuesto }/>
                                                 </Col>
                                             </Row>
                                         </Card.Body>
