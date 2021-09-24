@@ -7,8 +7,9 @@ import { DropdownButton, Dropdown, Card, Form } from 'react-bootstrap'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAlert2, questionAlertY } from '../../../../functions/alert'
 import { setNaviIcon, setOptions } from '../../../../functions/setters'
 import { PresupuestoList } from "../..";
-import { PresupuestoForm, ActualizarPresupuestoForm, AgregarConcepto } from "../../../../components/forms"
+import { PresupuestoForm, ActualizarPresupuestoForm, AgregarConcepto, FilterPresupuestos } from "../../../../components/forms"
 import { Modal } from '../../../../components/singles'
+import { Budget } from '../../../../components/Lottie/'
 class PresupuestosProyecto extends Component {
     state = {
         key: 'nuevo',
@@ -41,11 +42,12 @@ class PresupuestosProyecto extends Component {
             areas: [],
             partidas: [],
             subpartidas: [],
+            unidades:[]
         },
         data: { partidas: [],subpartidas: [], conceptos: [] /*, mantenimientos: [], adjuntos: []*/ },
         presupuesto: '',
         aux_presupuestos: { conceptos: false, volumetrias: false, costos: false, revision:false, utilidad: false, espera: false, aceptado: false, rechazado: false },
-        modal: { conceptos: false },
+        modal: { conceptos: false, filter:false },
         presupuestos: []
     }
 
@@ -62,15 +64,20 @@ class PresupuestosProyecto extends Component {
     getPresupuestos = async() => {
         const { at, proyecto } = this.props
         let { navPresupuesto } = this.state
-        waitAlert()
+        // waitAlert()
         await axios.get(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { presupuestos } = response.data
                 Swal.close()
-                if(presupuestos.length === 0){
-                    navPresupuesto = 'add'
+                const { presupuestoId } = this.props
+                if(!presupuestoId){
+                    if(presupuestos.length === 0){
+                        navPresupuesto = 'add'
+                    }else{
+                        navPresupuesto = 'historial'
+                    }
                 }else{
-                    navPresupuesto = 'historial'
+                    navPresupuesto = 'add'
                 }
                 this.setState({ ...this.state, presupuestos: presupuestos, navPresupuesto })
             }, (error) => { printResponseErrorAlert(error) }
@@ -86,7 +93,7 @@ class PresupuestosProyecto extends Component {
     };
 
     async getOptionsAxios() {
-        waitAlert();
+        // waitAlert();
         const { at } = this.props;
         await axios.get(`${URL_DEV}presupuestos/options`, { headers: setSingleHeader(at) }).then(
             (response) => {
@@ -103,7 +110,7 @@ class PresupuestosProyecto extends Component {
                 options.proveedores = setOptions(proveedores, "razon_social", "id")
                 Swal.close();
                 if(presupuestoId){
-                    waitAlert()
+                    // waitAlert()
                     this.getPresupuestoAxios(presupuestoId)
                 }
                 this.setState({ ...this.state, options });
@@ -220,7 +227,7 @@ class PresupuestosProyecto extends Component {
     /*                             UPDATE PRESUPUESTO                             */
     /* -------------------------------------------------------------------------- */
     getPresupuestoAxios = async (id, conceptosNuevos) => {
-        waitAlert()
+        // waitAlert()
         const { at } = this.props
         await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
@@ -569,8 +576,23 @@ class PresupuestosProyecto extends Component {
             form: this.clearModalConceptos()
         })
     }
+    
+    openFormFilter = () => {
+        const { modal } = this.state
+        modal.filter = true
+        this.setState({
+            ...this.state,
+            modal,
+            formeditado: 0
+        })
+    }
+    handleCloseFilter = () => {
+        const { modal } = this.state
+        modal.filter = false
+        this.setState({ ...this.state, modal})
+    }
     /* -------------------------------------------------------------------------- */
-    /*                                CLEAR MODALS                               */
+    /*                                 CLEAR MODALS                               */
     /* -------------------------------------------------------------------------- */
     clearModalConceptos = () => {
         const { form } = this.state
@@ -620,7 +642,7 @@ class PresupuestosProyecto extends Component {
                         }
                     }
                 }else{
-                    title = 'Agregar presupuesto'
+                    title = ''
                 }
                 break;
             case 'historial':
@@ -724,6 +746,8 @@ class PresupuestosProyecto extends Component {
                     type = 'new'
                 }
             }
+        }else{
+            return ''
         }
         switch(type){
             case 'new':
@@ -763,10 +787,34 @@ class PresupuestosProyecto extends Component {
                     </ActualizarPresupuestoForm>
                 )
             default:
-                return ''
+                return(
+                <Card className='card-custom gutter-b'>
+                    <Card.Header className='border-0 align-items-center pt-6 pt-md-0'>
+                        <div className="font-weight-bold font-size-h4 text-dark">CARGANDO DATOS</div>
+                    </Card.Header>
+                    <Card.Body><Budget/></Card.Body>
+                </Card>
+                )
         }
     }
-
+    /* -------------------------------------------------------------------------- */
+    /*                           FILTRADO PRESUPUESTOS                            */
+    /* -------------------------------------------------------------------------- */
+    filterTable = async(form) => {
+        waitAlert()
+        // const { at, proyecto } = this.props
+        // await axios.put(`${URL_DEV}v2/${proyecto.id}`, form, { headers: setSingleHeader(at) }).then(
+        //     (response) => {
+        //         const { modal } = this.state
+        //         modal.filter = false
+        //         this.setState({...this.state, modal})
+        //         Swal.close()
+        //     }, (error) => { printResponseErrorAlert(error) }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.error(error, 'error')
+        // })
+    }
     render() {
         const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key } = this.state
         const { proyecto, at } = this.props
@@ -777,25 +825,32 @@ class PresupuestosProyecto extends Component {
                         <div className="font-weight-bold font-size-h4 text-dark">{this.cardTitlePresupuesto(navPresupuesto)}</div>
                         {
                             presupuestos.length > 0 ?
-                            <div className="toolbar-dropdown">
-                                <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>}
-                                    id={`${navPresupuesto !== 'historial' ? 'dropdown-white' : 'dropdown-proyectos'}`}>
-                                    {
-                                        navPresupuesto === 'add' ? <></> :
-                                            <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.navPresupuesto('add') }}>
-                                                {setNaviIcon('las la-plus icon-xl', 'AGREGAR PRESUPUESTO')}
-                                            </Dropdown.Item>
-                                    }
-                                    {
+                                <div className="toolbar-dropdown">
+                                    <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>}
+                                        id={`${navPresupuesto !== 'historial' ? 'dropdown-white' : 'dropdown-proyectos'}`}>
+                                        {
+                                            navPresupuesto === 'add' ? <></> :
+                                                <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.navPresupuesto('add') }}>
+                                                    {setNaviIcon('las la-plus icon-xl', 'AGREGAR PRESUPUESTO')}
+                                                </Dropdown.Item>
+                                        }
+                                        {
                                             presupuestos.length > 0 && navPresupuesto === 'add' ?
-                                            <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => { this.navPresupuesto('historial') }}>
-                                                {setNaviIcon('las la-file-invoice-dollar icon-xl', 'HISTORIAL DE PRESUPUESTOS')}
-                                            </Dropdown.Item>
-                                            : <></>
-                                    }
-                                </DropdownButton>
-                            </div>
-                            :<></>
+                                                <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => { this.navPresupuesto('historial') }}>
+                                                    {setNaviIcon('las la-file-invoice-dollar icon-xl', 'HISTORIAL DE PRESUPUESTOS')}
+                                                </Dropdown.Item>
+                                                : <></>
+                                        }
+                                        {
+                                            navPresupuesto === 'historial' ?
+                                                <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.openFormFilter('filter') }}>
+                                                    {setNaviIcon('las la-filter icon-xl', 'FILTRAR HISTORIAL')}
+                                                </Dropdown.Item>
+                                            :<></>
+                                        }
+                                    </DropdownButton>
+                                </div>
+                                : <></>
                         }
                     </Card.Header>
                     {
@@ -820,6 +875,9 @@ class PresupuestosProyecto extends Component {
                         activeKey = { key }
                         onSubmit = { this.onSubmitConcept }
                     />
+                </Modal>
+                <Modal size = "lg" title = 'Filtrar historial' show = { modal.filter } handleClose = { this.handleCloseFilter} >
+                    <FilterPresupuestos at={at} filtering = { this.filterTable }/>
                 </Modal>
             </>
         )
