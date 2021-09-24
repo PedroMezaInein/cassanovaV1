@@ -20,6 +20,17 @@ class ChangePasswordFrom extends Component {
 		return ' ' + aux
 	}
 
+	printContratoType = contrato => {
+        switch(contrato.indefinido){
+            case 'servicios':
+                return `SERVICIOS PROFESIONALES POR ${contrato.dias} DÍAS`
+            case 'determinado':
+                return `TIEMPO DETERMINADO POR ${contrato.dias} DÍAS`
+            default:
+                return `TIEMPO INDETERMINADO`
+        }
+    }
+
 	render() {
 		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendCorreo, empresas, onClickEmpresa, activeKey, formeditado, cropped } = this.props
 		
@@ -99,7 +110,7 @@ class ChangePasswordFrom extends Component {
 														user ?
 															user.empleado.contratos ?
 																user.empleado.contratos[0] ?
-																	user.empleado.contratos[0].indefinido === 1 ? 'INDEFINIDO' : 'TIEMPO DETERMINADO'
+																		this.printContratoType(user.empleado.contratos[0])
 																	: '-'
 																: '-'
 															: '-'

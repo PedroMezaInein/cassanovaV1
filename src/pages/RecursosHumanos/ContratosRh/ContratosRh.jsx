@@ -62,13 +62,24 @@ class ContratosRh extends Component {
             history.push('/')
     }
 
+    printContratoType = contrato => {
+        switch(contrato.indefinido){
+            case 'servicios':
+                return `SERVICIOS PROFESIONALES POR ${contrato.dias} DÍAS`
+            case 'determinado':
+                return `TIEMPO DETERMINADO POR ${contrato.dias} DÍAS`
+            default:
+                return `TIEMPO INDETERMINADO`
+        }
+    }
+
     setContratos = contratos => {
         let aux = []
         contratos.forEach((contrato) => {
             aux.push({
                 actions: this.setActions(contrato),
                 empleado:renderToString(setTextTableCenter(contrato.empleado?contrato.empleado.nombre:'')),
-                periodo: renderToString(setTextTableCenter(contrato.indefinido === 1 ? 'Tiempo indefinido' :`${contrato.dias === null?'-':contrato.dias+' días'}`)),
+                periodo: renderToString(setTextTableCenter(this.printContratoType(contrato))),
                 fecha_inicio: renderToString(setDateTable(contrato.fecha_inicio)),
                 fecha_fin: renderToString(setDateTable(contrato.fecha_fin)),
                 estatus: renderToString(setTextTableCenter(contrato.terminado ? 'Terminado' : 'En curso')),
