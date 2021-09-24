@@ -9,6 +9,7 @@ import { setNaviIcon, setOptions } from '../../../../functions/setters'
 import { PresupuestoList } from "../..";
 import { PresupuestoForm, ActualizarPresupuestoForm, AgregarConcepto, FilterPresupuestos } from "../../../../components/forms"
 import { Modal } from '../../../../components/singles'
+import { Budget } from '../../../../components/Lottie/'
 class PresupuestosProyecto extends Component {
     state = {
         key: 'nuevo',
@@ -63,7 +64,7 @@ class PresupuestosProyecto extends Component {
     getPresupuestos = async() => {
         const { at, proyecto } = this.props
         let { navPresupuesto } = this.state
-        waitAlert()
+        // waitAlert()
         await axios.get(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { presupuestos } = response.data
@@ -75,6 +76,8 @@ class PresupuestosProyecto extends Component {
                     }else{
                         navPresupuesto = 'historial'
                     }
+                }else{
+                    navPresupuesto = 'add'
                 }
                 this.setState({ ...this.state, presupuestos: presupuestos, navPresupuesto })
             }, (error) => { printResponseErrorAlert(error) }
@@ -90,7 +93,7 @@ class PresupuestosProyecto extends Component {
     };
 
     async getOptionsAxios() {
-        waitAlert();
+        // waitAlert();
         const { at } = this.props;
         await axios.get(`${URL_DEV}presupuestos/options`, { headers: setSingleHeader(at) }).then(
             (response) => {
@@ -107,7 +110,7 @@ class PresupuestosProyecto extends Component {
                 options.proveedores = setOptions(proveedores, "razon_social", "id")
                 Swal.close();
                 if(presupuestoId){
-                    waitAlert()
+                    // waitAlert()
                     this.getPresupuestoAxios(presupuestoId)
                 }
                 this.setState({ ...this.state, options });
@@ -224,7 +227,7 @@ class PresupuestosProyecto extends Component {
     /*                             UPDATE PRESUPUESTO                             */
     /* -------------------------------------------------------------------------- */
     getPresupuestoAxios = async (id, conceptosNuevos) => {
-        waitAlert()
+        // waitAlert()
         const { at } = this.props
         await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
@@ -639,7 +642,7 @@ class PresupuestosProyecto extends Component {
                         }
                     }
                 }else{
-                    title = 'Agregar presupuesto'
+                    title = ''
                 }
                 break;
             case 'historial':
@@ -784,7 +787,14 @@ class PresupuestosProyecto extends Component {
                     </ActualizarPresupuestoForm>
                 )
             default:
-                return ''
+                return(
+                <Card className='card-custom gutter-b'>
+                    <Card.Header className='border-0 align-items-center pt-6 pt-md-0'>
+                        <div className="font-weight-bold font-size-h4 text-dark">CARGANDO DATOS</div>
+                    </Card.Header>
+                    <Card.Body><Budget/></Card.Body>
+                </Card>
+                )
         }
     }
     /* -------------------------------------------------------------------------- */

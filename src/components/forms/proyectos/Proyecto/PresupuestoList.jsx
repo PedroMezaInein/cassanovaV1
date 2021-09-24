@@ -7,6 +7,7 @@ import { URL_DEV } from '../../../../constants'
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { dayDMY } from '../../../../functions/setters'
 import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
+import { Budget } from '../../../../components/Lottie/'
 import Swal from 'sweetalert2';
 class PresupuestoList extends Component {
 
@@ -61,9 +62,7 @@ class PresupuestoList extends Component {
 
     printEmpty = () => {
         return(
-            <div>
-                VACIO
-            </div>
+            <Budget/>
         )
     }
 
