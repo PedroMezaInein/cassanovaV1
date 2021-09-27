@@ -250,12 +250,18 @@ class Diseño extends Component {
                         form.incremento_esquema_2 = empresa.incremento_esquema_2
                         form.incremento_esquema_3 = empresa.incremento_esquema_3
 
-                        empresa.variaciones.map((variacion, index) => {
-                            this.onChangeVariaciones(index, { target: { value: variacion.superior } }, 'superior')
-                            this.onChangeVariaciones(index, { target: { value: variacion.inferior } }, 'inferior')
-                            this.onChangeVariaciones(index, { target: { value: variacion.cambio } }, 'cambio')
-                            return ''
+                        form.variaciones = []
+                        empresa.variaciones.forEach((variacion, index) => {
+                            form.variaciones.push({
+                                'superior': parseInt(variacion.superior),
+                                'inferior': parseInt(variacion.inferior),
+                                'cambio': parseFloat(variacion.cambio)
+                            })
                         })
+
+                        form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
+                        form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
+                        form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_3 / 100))
 
                         let aux = []
                         empresa.tipos.map((tipo) => {
@@ -297,18 +303,19 @@ class Diseño extends Component {
                         form.esquema_2 = auxEsquema2
                         form.esquema_3 = auxEsquema3
 
+                        this.setState({...this.state, form})
+
                         grafica = this.setGrafica(empresa)
                     }
 
                     options.tipos = []
 
-                    empresa.tipos_planos.map((tipo) => {
+                    empresa.tipos_planos.forEach((tipo) => {
                         options.tipos.push({
                             text: tipo.tipo,
                             value: tipo.id,
                             label: tipo.tipo
                         })
-                        return ''
                     })
                 }
                 
@@ -317,7 +324,6 @@ class Diseño extends Component {
                     options,
                     data,
                     empresa,
-                    form,
                     grafica,
                     activeTipo
                 })
@@ -332,6 +338,7 @@ class Diseño extends Component {
     }
 
     async getSingleDiseño(id) {
+        waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'empresa/tabulador/one/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -364,16 +371,22 @@ class Diseño extends Component {
                     form.incremento_esquema_2 = empresa.incremento_esquema_2
                     form.incremento_esquema_3 = empresa.incremento_esquema_3
 
-                    empresa.variaciones.map((variacion, index) => {
-                        this.onChangeVariaciones(index, { target: { value: variacion.superior } }, 'superior')
-                        this.onChangeVariaciones(index, { target: { value: variacion.inferior } }, 'inferior')
-                        this.onChangeVariaciones(index, { target: { value: variacion.cambio } }, 'cambio')
-                        return ''
+                    form.variaciones = []
+                    empresa.variaciones.forEach((variacion, index) => {
+                        form.variaciones.push({
+                            'superior': parseInt(variacion.superior),
+                            'inferior': parseInt(variacion.inferior),
+                            'cambio': parseFloat(variacion.cambio)
+                        })
                     })
+
+                    form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
+                    form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
+                    form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_3 / 100))
 
                     let aux = []
 
-                    empresa.tipos.map((tipo) => {
+                    empresa.tipos.forEach((tipo) => {
                         aux.push({
                             name: tipo.tipo,
                             id: tipo.id,
@@ -386,7 +399,6 @@ class Diseño extends Component {
                                 mobiliario_sup: tipo.mobiliario_sup
                             }
                         })
-                        return ''
                     })
                     form.tipos = aux
 
@@ -412,22 +424,20 @@ class Diseño extends Component {
                     form.esquema_2 = auxEsquema2
                     form.esquema_3 = auxEsquema3
 
+                    this.setState({...this.state, form})
                     grafica = this.setGrafica(empresa)
                 }
                 
+                Swal.close()
                 this.setState({
                     ...this.state,
                     options,
                     data,
                     empresa,
-                    form,
                     grafica,
                     activeTipo
                 })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
@@ -972,8 +982,32 @@ class Diseño extends Component {
             form, options
         });
     }
+
+    printTabDiseño = () => {
+        const { grafica, form } = this.state
+        return(
+            <div className="row mx-0">
+                <div className="col-lg-5">
+                    <DiseñoForm form = { form } onChange = { this.onChange } onSubmit = { this.onSubmit } addRow = { this.addRow }
+                        deleteRow = { this.deleteRow } onChangeVariaciones = { this.onChangeVariaciones } grafica = { grafica } />
+                </div>
+                <div className="col-lg-7">
+                    {
+                        grafica !== '' ?
+                            <div className="row mx-0 justify-content-center align-items center">
+                                <div className="col-md-11">
+                                    <Line data={grafica} />
+                                </div>
+                            </div>
+                        : <></>
+                    }
+                </div>
+            </div>
+        )      
+    }
+
     render() {
-        const { form, empresa, data, grafica, options } = this.state
+        const { form, empresa, data, options } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tab.Container activeKey={empresa !== '' ? empresa.id : ''} >
@@ -1032,28 +1066,7 @@ class Diseño extends Component {
                                 </Nav>
                                 <Tab.Content className="py-5">
                                     <Tab.Pane eventKey="diseño">
-                                    <div className="row mx-0">
-                                        <div className="col-md-5">
-                                            <DiseñoForm
-                                                form={form}
-                                                onChange={this.onChange}
-                                                onSubmit={this.onSubmit}
-                                                addRow={this.addRow}
-                                                deleteRow={this.deleteRow}
-                                                onChangeVariaciones={this.onChangeVariaciones}
-                                                grafica={grafica}
-                                            />
-                                        </div>
-                                        <div className="col-lg-7 d-flex justify-content-center align-items-center">
-                                            {
-                                                grafica !== '' ?
-                                                        <div className="col-md-11">
-                                                            <Line data={grafica} />
-                                                        </div>
-                                                    : <></>
-                                            }
-                                        </div>
-                                    </div>
+                                        { this.printTabDiseño() }
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="obra">
                                         <ObraForm
