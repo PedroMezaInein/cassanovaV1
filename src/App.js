@@ -185,7 +185,6 @@ const Vacaciones = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/V
 const TicketTable = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketTable') )
 const AddTicket = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/AddTicket') )
 const TicketDetails = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails') )
-//const TicketDetails2 = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails2') )
 
 const CartasGarantia = React.lazy(() => import('./pages/Calidad/CartasGarantia/CartasGarantia') )
 
