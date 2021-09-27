@@ -167,8 +167,14 @@ class PresupuestoAnswer extends Component {
                         </Form>
                     </Modal.Body>
                     <Modal.Footer className = 'border-0 justify-content-center'>
-                        <button type="button" className="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex" onClick = { this.handleCloseOrden }>CANCELAR</button>
-                        <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" onClick = { (e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'form-orden') } } >AGREGAR</button>
+                        <button type="button" className="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex" 
+                            onClick = { this.handleCloseOrden }>
+                            CANCELAR
+                        </button>
+                        <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex" 
+                            onClick = { (e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'form-orden') } } >
+                            AGREGAR
+                        </button>
                     </Modal.Footer>
                 </Modal>
             </>
