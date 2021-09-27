@@ -188,7 +188,8 @@ class PresupuestoList extends Component {
                                         <Card.Body className={`card-body px-10 ${presupuesto.isActive ? 'collapse show' : 'collapse'}`}>
                                             <Row className="mx-0">
                                                 <Col md={10} className="mb-5 mx-auto d-flex justify-content-center">
-                                                    <PresupuestoAnswer presupuestos = { presupuestos } presupuesto = { presupuesto } at = { at } getPresupuestos={this.getPresupuestos}/>
+                                                    <PresupuestoAnswer presupuestos = { presupuestos } presupuesto = { presupuesto } at = { at } 
+                                                        getPresupuestos = {this.getPresupuestos} />
                                                 </Col>
                                             </Row>
                                         </Card.Body>

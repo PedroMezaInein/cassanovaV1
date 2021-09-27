@@ -65,21 +65,11 @@ class PresupuestoAnswer extends Component {
             }else{ errorAlert(`No fue posible encontrar el presupuesto`) }
         }else{
             let data = new FormData()
-            let formAdd = {
-                estatus_final: "Aceptado", 
-                fechaEvidencia: form.fechaEvidencia,
-                adjuntoEvidencia: form.adjunto,
-                motivo_rechazo:'',
-                correos_reporte: [],
-                ordenCompra: form.numero_orden
-            }
-            Object.keys(formAdd).forEach((element) => {
-                if(element === 'fechaEvidencia'){
-                    data.append(element, (new Date(form[element])).toDateString())
-                }else{
-                    data.append(element, form[element])
-                }
-            })
+            data.append(`adjuntoEvidencia`, form.adjunto)
+            data.append(`estatus_final`, `Aceptado`)
+            data.append(`fechaEvidencia`, (new Date(form.fechaEvidencia)).toDateString())
+            data.append(`orden_compra`, form.numero_orden)
+            data.append(`pdfId`, pdfId)
             await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, 
                 { headers: setSingleHeader(at) }).then(
                 (response) => {
@@ -108,32 +98,30 @@ class PresupuestoAnswer extends Component {
         const { modal, form, typeModal } = this.state
         return (
             <>
-                <HistorialPresupuestos presupuesto={presupuesto} actionsEnable = { false } btnOrden = { true } onClickOrden={this.onClickOrden}/>
+                <HistorialPresupuestos presupuesto = { presupuesto } actionsEnable = { false } btnOrden = { true } onClickOrden = { this.onClickOrden }/>
                 <Modal show = { modal.orden_compra } onHide = { this.handleCloseOrden } centered contentClassName = 'swal2-popup d-flex' >
-                    <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>{typeModal === 'add'?'AGREGAR':'Modificar'} ORDEN DE COMPRA</Modal.Header>
+                    <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>
+                        {typeModal === 'add'?'AGREGAR':'Modificar'} ORDEN DE COMPRA
+                    </Modal.Header>
                     <Modal.Body className = 'p-0'>
                         <Form id="form-orden" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'form-orden') } }>
                             <div className='row mx-0 justify-content-center'>
                                 <div className="col-md-12 mt-6">
                                     {
-                                        typeModal === 'add'?
-                                        <>
-                                            <div className="form-group row form-group-marginless mb-0">
-                                                <div className="col-md-12 text-center">
-                                                    <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                                        <label className="text-center font-weight-bolder">Fecha de visto bueno</label>
+                                        typeModal === 'add' ?
+                                            <>
+                                                <div className="form-group row form-group-marginless mb-0">
+                                                    <div className="col-md-12 text-center">
+                                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                            <label className="text-center font-weight-bolder">Fecha de visto bueno</label>
+                                                        </div>
+                                                        <CalendarDaySwal
+                                                            value = { form.fechaEvidencia } name = 'fechaEvidencia' date = { form.fechaEvidencia }
+                                                            onChange = { (e) => { this.onChange(e.target.value, 'fechaEvidencia') } } withformgroup = { 0 } />
                                                     </div>
-                                                    <CalendarDaySwal
-                                                        value={form.fechaEvidencia}
-                                                        onChange={(e) => { this.onChange(e.target.value, 'fechaEvidencia') }}
-                                                        name='fechaEvidencia'
-                                                        date={form.fechaEvidencia}
-                                                        withformgroup={0}
-                                                    />
                                                 </div>
-                                            </div>
-                                            <div className="separator separator-dashed my-5"></div>
-                                        </>
+                                                <div className="separator separator-dashed my-5"></div>
+                                            </>
                                         :<></>
                                     }
                                     <div className="row mx-0 form-group-marginless">
