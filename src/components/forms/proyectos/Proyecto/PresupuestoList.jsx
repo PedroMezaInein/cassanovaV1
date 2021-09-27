@@ -121,7 +121,7 @@ class PresupuestoList extends Component {
                         {
                             presupuestos.map((presupuesto, key) => {
                                 return (
-                                    <Card className="w-auto" key={key} className={`${(presupuesto.isActive) ? 'border-top-0' : ''}`} >
+                                    <Card key={key} className={`w-auto ${(presupuesto.isActive) ? 'border-top-0' : ''}`} >
                                         <Card.Header >
                                             <Card.Title className={`rounded ${(presupuesto.isActive) ? 'collapsed bg-light' : 'text-dark'}`} 
                                                 onClick={() => { this.handleAccordion(presupuesto) }}>
