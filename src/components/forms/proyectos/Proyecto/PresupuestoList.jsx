@@ -9,6 +9,7 @@ import { dayDMY } from '../../../../functions/setters'
 import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
 import { Budget } from '../../../../components/Lottie/'
 import Swal from 'sweetalert2';
+import { PresupuestoAnswer } from '../../../forms'
 class PresupuestoList extends Component {
 
     state = {
@@ -112,7 +113,7 @@ class PresupuestoList extends Component {
 
     printPresupuestos = () => {
         const { presupuestos } = this.state
-        const { editPresupuesto } = this.props
+        const { editPresupuesto, at } = this.props
         return(
             <div className="table-responsive">
                 <div className="list min-w-650px col-md-11 mx-auto">
@@ -120,20 +121,27 @@ class PresupuestoList extends Component {
                         {
                             presupuestos.map((presupuesto, key) => {
                                 return (
-                                    <Card className="w-auto" key={key}>
+                                    <Card className="w-auto" key={key} className={`${(presupuesto.isActive) ? 'border-top-0' : ''}`} >
                                         <Card.Header >
-                                            <Card.Title className={`rounded-0 ${(presupuesto.isActive) ? 'text-primary2 collapsed' : 'text-dark'}`} 
+                                            <Card.Title className={`rounded ${(presupuesto.isActive) ? 'collapsed bg-light' : 'text-dark'}`} 
                                                 onClick={() => { this.handleAccordion(presupuesto) }}>
-                                                <span className={`svg-icon ${presupuesto.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
+                                                <span className={`d-none svg-icon ${presupuesto.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
                                                     <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
                                                 </span>
                                                 <div className="card-label ml-3 row mx-0 justify-content-between w-100">
-                                                    <div className="w-70">
-                                                        <div className="font-size-lg mb-1">
-                                                            { this.printIdentificadores(presupuesto.pdfs)}
+                                                    <div className="w-70 d-flex">
+                                                        <div className="mx-2 align-self-center">
+                                                            <div className="d-flex align-items-center justify-content-center">
+                                                                <i style={{ color: `${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}` }} className={`las la-${presupuesto.hasTickets ? 'ticket-alt' : 'hard-hat'} icon-xl mr-2`}></i>
+                                                            </div>
                                                         </div>
-                                                        <div className="font-weight-light font-size-sm text-dark-75">
-                                                            { presupuesto.area.nombre } - {dayDMY(presupuesto.fecha)}
+                                                        <div>
+                                                            <div className="font-size-lg mb-1">
+                                                                { this.printIdentificadores(presupuesto.pdfs)}
+                                                            </div>
+                                                            <div className="font-weight-light font-size-sm text-dark-75">
+                                                                { presupuesto.area.nombre } - {dayDMY(presupuesto.fecha)} - {`${presupuesto.tiempo_ejecucion} ${presupuesto.tiempo_ejecucion === '1'?'día':'días'}`} 
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div className="align-self-center d-flex w-30">
@@ -186,8 +194,9 @@ class PresupuestoList extends Component {
                                         </Card.Header>
                                         <Card.Body className={`card-body px-10 ${presupuesto.isActive ? 'collapse show' : 'collapse'}`}>
                                             <Row className="mx-0">
-                                                <Col md={9} className="mb-5 mx-auto d-flex justify-content-center">
-                                                    PDF PRESUPUESTO
+                                                <Col md={10} className="mb-5 mx-auto d-flex justify-content-center">
+                                                    <PresupuestoAnswer presupuestos = { presupuestos } presupuesto = { presupuesto } at = { at } 
+                                                        getPresupuestos = {this.getPresupuestos} />
                                                 </Col>
                                             </Row>
                                         </Card.Body>

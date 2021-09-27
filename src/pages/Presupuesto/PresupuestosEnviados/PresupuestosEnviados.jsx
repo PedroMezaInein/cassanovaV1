@@ -125,7 +125,7 @@ class PresupuestosEnviados extends Component {
                     proyecto: renderToString(setTextTableCenter(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
                     area: renderToString(setTextTableCenter(presupuesto.area ? presupuesto.area.nombre : '')),
                     fecha: renderToString(setDateTable(presupuesto.fecha)),
-                    tiempo_ejecucion: renderToString(setTextTableCenter(`${presupuesto.tiempo_ejecucion} días`))
+                    tiempo_ejecucion: renderToString(setTextTableCenter(`${presupuesto.tiempo_ejecucion} ${presupuesto.tiempo_ejecucion === '1'?'día':'días'}`))
                 }
             )
         })
