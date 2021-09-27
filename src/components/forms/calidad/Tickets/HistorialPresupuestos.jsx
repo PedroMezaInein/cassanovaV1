@@ -23,7 +23,7 @@ export default class HistorialPresupuestos extends Component {
         return flag
     }
     render() {
-        const { presupuesto, actionsEnable, onClick, btnOrden } = this.props
+        const { presupuesto, actionsEnable, onClick, btnOrden, onClickOrden } = this.props
         return (
             <div className="timeline mt-9">
                 {
@@ -71,10 +71,10 @@ export default class HistorialPresupuestos extends Component {
                                                     : <></>
                                                 }
                                                 {
-                                                    btnOrden && !flagOrden?
+                                                    btnOrden && !flagOrden && pdf.pivot.enviado ?
                                                     <OverlayTrigger rootClose overlay={<Tooltip>Agregar orden de compra</Tooltip>}>
                                                         <div>
-                                                            <span onClick = { (e) => { e.preventDefault(); onClick('send-presupuesto', pdf); } } 
+                                                            <span onClick = { (e) => { e.preventDefault(); onClickOrden('add-orden', pdf); } } 
                                                                 className="btn btn-default btn-icon btn-sm btn-text-primary btn-hover-text-success">
                                                                 <i className="las la-cart-plus icon-xl"></i>
                                                             </span>
@@ -86,7 +86,7 @@ export default class HistorialPresupuestos extends Component {
                                                     btnOrden && flagOrden ?
                                                     <OverlayTrigger rootClose overlay={<Tooltip>Modificar orden de compra</Tooltip>}>
                                                         <div>
-                                                            <span onClick = { (e) => { e.preventDefault(); onClick('send-presupuesto', pdf); } } 
+                                                            <span onClick = { (e) => { e.preventDefault(); onClickOrden('modify-orden', pdf); } } 
                                                                 className="btn btn-default btn-icon btn-sm btn-text-primary btn-hover-text-success">
                                                                 <i className="las flaticon-cart icon-lg"></i>
                                                             </span>
