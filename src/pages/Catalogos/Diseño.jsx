@@ -259,6 +259,10 @@ class Diseño extends Component {
                             })
                         })
 
+                        form.variaciones = form.variaciones.sort(function (a, b) {
+                            return parseInt(a.inferior) - parseInt(b.inferior);
+                        });
+
                         form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
                         form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
                         form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_3 / 100))
@@ -379,6 +383,10 @@ class Diseño extends Component {
                             'cambio': parseFloat(variacion.cambio)
                         })
                     })
+
+                    form.variaciones = form.variaciones.sort(function (a, b) {
+                        return parseInt(a.inferior) - parseInt(b.inferior);
+                    });
 
                     form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
                     form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
@@ -631,18 +639,22 @@ class Diseño extends Component {
             value = parseFloat(value)
         if (name === 'inferior' || name === 'superior')
             value = parseInt(value)
+    
         form.variaciones[key][name] = value
-        form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
-        form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
-        form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_3 / 100))
 
+        const { inferior, superior, cambio } = form.variaciones[key]
+        if(inferior !== '' && superior !== '' && cambio !== ''){
+            form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
+            form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
+            form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_3 / 100))
+        }
+        
         let aux = true
-        form.variaciones.map((variacion) => {
+        form.variaciones.forEach((variacion) => {
             if (variacion.superior === '' || variacion.inferior === '' || variacion.cambio === '' || variacion.cambio === 0 ||
                 variacion.cambio === '0.' || variacion.cambio === '.' || variacion.superior < variacion.inferior) {
                 aux = false
             }
-            return ''
         })
 
         if (aux) {
@@ -809,9 +821,9 @@ class Diseño extends Component {
             })
             if (aux) {
                 auxilar = form.variaciones
-                auxilar = auxilar.sort(function (a, b) {
+                /* auxilar = auxilar.sort(function (a, b) {
                     return parseInt(a.inferior) - parseInt(b.inferior);
-                });
+                }); */
                 if (auxilar.length) {
                     let limiteInf = parseInt(auxilar[0].inferior)
                     let limiteSup = parseInt(auxilar[auxilar.length - 1].superior)
