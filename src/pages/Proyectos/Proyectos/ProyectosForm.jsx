@@ -619,6 +619,7 @@ class ProyectosForm extends Component {
                     break;
                 case 'correos':
                 case 'clientes':
+                case 'cliente_principal':
                     data.append(element, JSON.stringify(form[element]))
                     break;
                 default:
