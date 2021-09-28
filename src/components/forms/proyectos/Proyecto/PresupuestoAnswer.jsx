@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV } from '../../../../constants'
 import { HistorialPresupuestos } from '../../../forms'
-import { Modal, Form, Row } from "react-bootstrap"
+import { Modal, Form } from "react-bootstrap"
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, errorAlert } from '../../../../functions/alert'
 import { CalendarDaySwal, InputGray } from '../../../../components/form-components'
 import { setSingleHeader } from '../../../../functions/routers'

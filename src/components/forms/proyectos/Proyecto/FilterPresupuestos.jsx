@@ -71,7 +71,6 @@ class FilterPresupuestos extends Component {
     }
     render() {
         const { form, options } = this.state
-        console.log(form, 'form')
         return (
             <Form onSubmit={this.onSubmit} >
                 <Row className="mx-0 mt-5 mb-8">
