@@ -816,7 +816,7 @@ class EditProyectoForm extends Component {
                                                         </div>
                                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                                         <div className="form-group row form-group-marginless">
-                                                            <div className="col-md-5">
+                                                            <div className="col-md-4">
                                                                 <InputGray
                                                                     letterCase={true}
                                                                     withtaglabel={1}
@@ -834,7 +834,7 @@ class EditProyectoForm extends Component {
                                                                     iconclass={"fas fa-map-pin"}
                                                                 />
                                                             </div>
-                                                            <div className="col-md-7">
+                                                            <div className="col-md-8">
                                                                 <InputGray
                                                                     letterCase={true}
                                                                     withtaglabel={1}
