@@ -60,6 +60,7 @@ class ProyectosForm extends Component {
             correo: '',
             correos: [],
             clientes: [],
+            cliente_principal: '',
             tipoProyecto:'',
             m2:'',
             costo: 0.0,
