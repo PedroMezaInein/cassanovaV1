@@ -240,7 +240,6 @@ class ActualizarPresupuesto extends Component {
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { presupuesto } = response.data
-                console.log(presupuesto, `Presupuesto`)
                 switch(presupuesto.estatus.estatus){
                     case 'Costos':
                         doneAlert('Presupuesto actualizado con éxito', 

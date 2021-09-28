@@ -641,7 +641,7 @@ class Adjuntos extends Component {
                                                                                             <SVG src={toAbsoluteUrl('/images/svg/DownloadedFile.svg')} />
                                                                                         </span>
                                                                                     </span>
-                                                                                    <div className="d-flex font-weight-bolder text-info font-size-13px mr-2">
+                                                                                    <div className="d-flex font-weight-bolder text-info font-size-13px">
                                                                                         Descargar ZIP
                                                                                     </div>
                                                                                 </div>
@@ -654,7 +654,7 @@ class Adjuntos extends Component {
                                                                                         <SVG src={toAbsoluteUrl('/images/svg/Attachment2.svg')} />
                                                                                     </span>
                                                                                 </span>
-                                                                                <div className="d-flex font-weight-bolder text-success font-size-13px mr-2">
+                                                                                <div className="d-flex font-weight-bolder text-success font-size-13px">
                                                                                     Adjuntar archivo
                                                                                 </div>
                                                                             </label>

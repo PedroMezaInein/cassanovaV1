@@ -53,7 +53,7 @@ export default class HistorialPresupuestos extends Component {
                                         </div>
                                     </div>
                                     <div className={`timeline-content-dashed mt-n1 ${ index === presupuesto.pdfs.length - 1 ? 'mb-0':'mb-15'}`}>
-                                        <div className="mb-5 pr-3">
+                                        <div className="mb-5">
                                             <div className="font-size-h6 font-weight-bold text-dark-75 d-flex justify-content-between">
                                                 <div className="align-self-center">Identificador {pdf.pivot.identificador}</div>
                                                 {
@@ -72,18 +72,20 @@ export default class HistorialPresupuestos extends Component {
                                                 }
                                                 {
                                                     btnOrden && !flagOrden && pdf.pivot.enviado ?
-                                                    <OverlayTrigger rootClose overlay={<Tooltip>Agregar orden de compra</Tooltip>}>
-                                                        <div>
-                                                            <span onClick = { (e) => { e.preventDefault(); onClickOrden('add-orden', pdf); } } 
-                                                                className="btn btn-default btn-icon btn-sm btn-text-primary btn-hover-text-success">
-                                                                <i className="las la-cart-plus icon-xl"></i>
+                                                        <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer" onClick={(e) => { e.preventDefault(); onClickOrden('add-orden', pdf); }} >
+                                                            <span className="svg-icon svg-icon-primary2 mr-1">
+                                                                <span className="svg-icon svg-icon-md">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
+                                                                </span>
                                                             </span>
+                                                            <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
+                                                                Estatus presupuesto
+                                                            </div>
                                                         </div>
-                                                    </OverlayTrigger>
-                                                    : <></>
+                                                        : <></>
                                                 }
                                                 {
-                                                    btnOrden && flagOrden ?
+                                                    btnOrden && flagOrden && pdf.pivot.enviado ?
                                                     <OverlayTrigger rootClose overlay={<Tooltip>Modificar orden de compra</Tooltip>}>
                                                         <div>
                                                             <span onClick = { (e) => { e.preventDefault(); onClickOrden('modify-orden', pdf); } } 

@@ -26,8 +26,6 @@ class TickesFilter extends Component {
     componentDidMount = () => {
         const { filters } = this.props
         const { form } = this.state
-        console.log(form)
-        console.log(filters)
         Object.keys(filters).forEach((elemento) => {
             form[elemento] = filters[elemento]
         })

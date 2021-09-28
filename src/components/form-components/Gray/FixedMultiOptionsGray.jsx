@@ -46,7 +46,6 @@ class FixedMultiOptionsGray extends Component {
         });
     }
     orderOptions = values => {
-        console.log(values, 'values')
         return values.filter(v => v.isFixed).concat(values.filter(v => !v.isFixed));
     };
     render() {
