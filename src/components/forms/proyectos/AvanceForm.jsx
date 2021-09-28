@@ -266,7 +266,7 @@ class AvanceForm extends Component {
                                 }
                             >
                                 <Row className="mx-0 mt-5">
-                                    <div className="text-center col-md-4">
+                                    <div className="text-center col-md-auto">
                                         <label className="col-form-label mb-2 font-weight-bolder text-dark-60">Periodo del avance</label><br />
                                         <RangeCalendar
                                             onChange={this.updateRangeCalendar}
