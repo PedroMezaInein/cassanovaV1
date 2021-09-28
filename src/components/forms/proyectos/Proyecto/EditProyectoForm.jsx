@@ -67,10 +67,14 @@ class EditProyectoForm extends Component {
     getForm(){
         const { proyecto, options } = this.props
         const { form, formContratar } = this.state
-
         form.nombre = proyecto.nombre
         if (proyecto.empresa){
             form.empresa = {name: proyecto.empresa.name, value: proyecto.empresa.id.toString(), label: proyecto.empresa.name}
+            options.empresas.forEach(empresa => {
+                if(proyecto.empresa.name === empresa.name){
+                    options.tipos = setOptions(empresa.tipos, 'tipo', 'id')
+                }
+            });
         }
         if (proyecto.tipo_proyecto){
             form.tipoProyecto = {name: proyecto.tipo_proyecto.tipo, value: proyecto.tipo_proyecto.id.toString(), label: proyecto.tipo_proyecto.tipo}
@@ -812,7 +816,7 @@ class EditProyectoForm extends Component {
                                                         </div>
                                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                                         <div className="form-group row form-group-marginless">
-                                                            <div className="col-md-5">
+                                                            <div className="col-md-4">
                                                                 <InputGray
                                                                     letterCase={true}
                                                                     withtaglabel={1}
@@ -830,7 +834,7 @@ class EditProyectoForm extends Component {
                                                                     iconclass={"fas fa-map-pin"}
                                                                 />
                                                             </div>
-                                                            <div className="col-md-7">
+                                                            <div className="col-md-8">
                                                                 <InputGray
                                                                     letterCase={true}
                                                                     withtaglabel={1}

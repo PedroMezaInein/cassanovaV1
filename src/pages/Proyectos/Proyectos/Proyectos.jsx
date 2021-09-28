@@ -202,7 +202,6 @@ class Proyectos extends Component {
         const { form } = this.state
         switch(tipo){
             case 'tipo_proyecto':
-                console.log(data, tipo)
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
                 break

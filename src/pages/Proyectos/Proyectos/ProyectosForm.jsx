@@ -60,6 +60,7 @@ class ProyectosForm extends Component {
             correo: '',
             correos: [],
             clientes: [],
+            cliente_principal: '',
             tipoProyecto:'',
             m2:'',
             costo: 0.0,
@@ -618,6 +619,7 @@ class ProyectosForm extends Component {
                     break;
                 case 'correos':
                 case 'clientes':
+                case 'cliente_principal':
                     data.append(element, JSON.stringify(form[element]))
                     break;
                 default:

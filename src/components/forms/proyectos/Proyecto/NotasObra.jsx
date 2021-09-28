@@ -209,7 +209,6 @@ class NotasObra extends Component {
             (response) => {
                 const { alma } = response.data
                 let urlPath = `proyectos/${proyecto.id}/notas/${nota.id}/`
-                console.log(form.adjuntos.adjuntos.files)
                 auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
                     return new Promise((resolve, reject) => {
                         new S3(alma).uploadFile(file.file, `${urlPath}${Math.floor(Date.now() / 1000)}-${file.file.name}`)
