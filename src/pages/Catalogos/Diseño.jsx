@@ -774,7 +774,7 @@ class Diseño extends Component {
                 let limite = (limiteInf + (i * (limiteSup - limiteInf) / 20))
                 limite = parseInt(parseFloat(limite).toFixed(2))
                 labels.push(limite)
-                data.push(this.getPrecioEsquemas(form, limite))
+                data.push(this.getPrecioEsquemas(form, limite).toFixed(2))
             }
             labels.push(limiteSup)
             data.push(this.getPrecioEsquemas(form, limiteSup))
