@@ -53,7 +53,7 @@ class PresupuestoAnswer extends Component {
         }
     }
     onSubmitOrden = async () => {
-        const { form, modal, pdfId, typeModal } = this.state
+        const { form, pdfId, typeModal } = this.state
         const { at, presupuesto, getPresupuestos } = this.props
         waitAlert();
         if(typeModal === 'modify'){
@@ -65,8 +65,7 @@ class PresupuestoAnswer extends Component {
                 await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/orden-compra?_method=PUT`, data, 
                     { headers: setSingleHeader(at) }).then(
                     (response) => {
-                        modal.orden_compra = false
-                        this.setState({ ...this.state, modal })
+                        this.handleCloseOrden()
                         doneAlert('La orden de compra fue adjuntada con éxito.', () => { getPresupuestos() })
                     }, (error) => { printResponseErrorAlert(error) }
                 ).catch((error) => {
@@ -86,8 +85,7 @@ class PresupuestoAnswer extends Component {
             await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, 
                 { headers: setSingleHeader(at) }).then(
                 (response) => {
-                    modal.orden_compra = false
-                    this.setState({ ...this.state, modal })
+                    this.handleCloseOrden()
                     doneAlert(
                         `${form.estatus_presupuesto===1 ? 'La orden de compra fue adjuntada con éxito.' : 'El presupuesto fue rechazado con éxito'}`
                         , () => { getPresupuestos() })

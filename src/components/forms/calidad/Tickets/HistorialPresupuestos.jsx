@@ -13,24 +13,42 @@ export default class HistorialPresupuestos extends Component {
         })
         return flag
     }
-    hasOrdenCompra = () => {
-        const { presupuesto } = this.props
+    addOrden = (pdf) => {
+        const { btnOrden } = this.props
         let flag = false
-        presupuesto.pdfs.forEach((pdf) => {
-            if(pdf.pivot.url)
-                flag = true
-        })
+        if(btnOrden){
+            if(pdf.pivot.url === null){
+                if(pdf.pivot.enviado){
+                    if(pdf.pivot.motivo_cancelacion === null){
+                        flag = true
+                    }
+                }
+            }
+        }
+        return flag
+    }
+    modifyOrden = (pdf) => {
+        const { btnOrden } = this.props
+        let flag = false
+        if(btnOrden){
+            if(pdf.pivot.url){
+                if(pdf.pivot.enviado){
+                    if(pdf.pivot.motivo_cancelacion === null){
+                        flag = true
+                    }
+                }
+            }
+        }
         return flag
     }
     render() {
-        const { presupuesto, actionsEnable, onClick, btnOrden, onClickOrden } = this.props
+        const { presupuesto, actionsEnable, onClick, onClickOrden } = this.props
         return (
             <div className="timeline mt-9">
                 {
                     presupuesto ?
                         presupuesto.pdfs.map((pdf, index) => {
                             let flag = this.hasMontos()
-                            let flagOrden = this.hasOrdenCompra()
                             return (
                                 <div className="timeline-item-dashed" key={index}>
                                     <div className="timeline-line-dashed w-40px"></div>
@@ -71,7 +89,7 @@ export default class HistorialPresupuestos extends Component {
                                                     : <></>
                                                 }
                                                 {
-                                                    btnOrden && !flagOrden && pdf.pivot.enviado ?
+                                                    this.addOrden(pdf)?
                                                         <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer" onClick={(e) => { e.preventDefault(); onClickOrden('add-orden', pdf); }} >
                                                             <span className="svg-icon svg-icon-primary2 mr-1">
                                                                 <span className="svg-icon svg-icon-md">
@@ -85,7 +103,7 @@ export default class HistorialPresupuestos extends Component {
                                                         : <></>
                                                 }
                                                 {
-                                                    btnOrden && flagOrden && pdf.pivot.enviado ?
+                                                    this.modifyOrden(pdf)?
                                                     <OverlayTrigger rootClose overlay={<Tooltip>Modificar orden de compra</Tooltip>}>
                                                         <div>
                                                             <span onClick = { (e) => { e.preventDefault(); onClickOrden('modify-orden', pdf); } } 

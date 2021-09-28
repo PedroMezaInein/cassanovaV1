@@ -146,7 +146,7 @@ class ActualizarPresupuestoForm extends Component {
         return css
     }
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, showInputsProyecto, children, options, isButtonEnabled, modulo_calidad, aux_presupuestos, historialPresupuestos } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, showInputsProyecto, children, options, isButtonEnabled, modulo_calidad, modulo_proyectos, aux_presupuestos, historialPresupuestos } = this.props
         const { desperdicio } = this.state
         if (presupuesto)
             return (
@@ -276,7 +276,7 @@ class ActualizarPresupuestoForm extends Component {
                             <div className="card-toolbar" >
                                 {children}
                                 {
-                                    (!modulo_calidad) || (presupuesto.estatus.estatus === 'En revisión' || presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías')?
+                                    (presupuesto.estatus.estatus === 'En revisión' || presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías') && (!modulo_calidad || !modulo_proyectos)?
                                     <button type="button" className="btn btn-sm btn-light-info font-weight-bolder font-size-13px" onClick={openModal}>
                                         AGREGAR CONCEPTO
                                     </button>
