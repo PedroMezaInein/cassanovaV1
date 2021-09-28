@@ -67,10 +67,14 @@ class EditProyectoForm extends Component {
     getForm(){
         const { proyecto, options } = this.props
         const { form, formContratar } = this.state
-
         form.nombre = proyecto.nombre
         if (proyecto.empresa){
             form.empresa = {name: proyecto.empresa.name, value: proyecto.empresa.id.toString(), label: proyecto.empresa.name}
+            options.empresas.forEach(empresa => {
+                if(proyecto.empresa.name === empresa.name){
+                    options.tipos = setOptions(empresa.tipos, 'tipo', 'id')
+                }
+            });
         }
         if (proyecto.tipo_proyecto){
             form.tipoProyecto = {name: proyecto.tipo_proyecto.tipo, value: proyecto.tipo_proyecto.id.toString(), label: proyecto.tipo_proyecto.tipo}
