@@ -81,6 +81,9 @@ class PresupuestoList extends Component {
     }
 
     printIdentificadores = (pdfs) => {
+        pdfs.sort(function(a, b) {
+            return a.id - b.id;
+        });
         switch(pdfs.length){
             case 0:
                 return 'Sin identificador'
@@ -99,9 +102,8 @@ class PresupuestoList extends Component {
                         Identificadores: {
                             pdfs.map((pdf, key) => {
                                 return(
-                                    <a key = { key } href = { pdf.url } target = '_blank' rel="noopener noreferrer" className = 'ml-2'>
-                                    { key === pdfs.length - 1 ? 'Y ' : '' }     
-                                        {pdf.pivot.identificador}
+                                    <a key = { key } href = { pdf.url } target = '_blank' rel="noopener noreferrer">
+                                        { key === pdfs.length - 1 ? ' Y ' : ' ' }{pdf.pivot.identificador}{ key === pdfs.length - 1 || key === pdfs.length - 2 ? '' : ',' }  
                                     </a>
                                 )
                             })
