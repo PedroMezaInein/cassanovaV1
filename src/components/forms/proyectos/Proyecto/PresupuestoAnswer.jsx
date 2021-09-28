@@ -82,13 +82,15 @@ class PresupuestoAnswer extends Component {
             data.append(`fechaEvidencia`, (new Date(form.fechaEvidencia)).toDateString())
             data.append(`orden_compra`, form.numero_orden)
             data.append(`pdfId`, pdfId)
-            data.append('motivo_cancelacion', form.motivo_cancelacion)
+            data.append('motivo_rechazo', form.motivo_cancelacion)
             await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/estatus?_method=PUT`, data, 
                 { headers: setSingleHeader(at) }).then(
                 (response) => {
                     modal.orden_compra = false
                     this.setState({ ...this.state, modal })
-                    doneAlert('La orden de compra fue adjuntada con éxito.', () => { getPresupuestos() })
+                    doneAlert(
+                        `${form.estatus_presupuesto===1 ? 'La orden de compra fue adjuntada con éxito.' : 'El presupuesto fue rechazado con éxito'}`
+                        , () => { getPresupuestos() })
                 },
                 (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {

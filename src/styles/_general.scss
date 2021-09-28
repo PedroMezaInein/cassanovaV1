@@ -292,9 +292,9 @@ td.descripcion.text-center {
         min-width: 500px;
     }
 
-    @include screen ($xxl) {
+    /* @include screen ($xxl) {
         min-width: 945px;
-    }
+    } */
 }
 
 // Fin: Tabla actualización de presupuestos
