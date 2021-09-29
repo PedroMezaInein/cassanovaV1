@@ -140,8 +140,8 @@ class SingleProyecto extends Component {
             <Layout active = 'proyectos' {...this.props} >
                 {
                     proyecto ?
-                        <div className={`d-flex flex-column flex-${activeKeyNav === 'presupuestos'?'xxl':'xl'}-row`}>
-                            <div className={`flex-column flex-lg-row-auto w-100 w-xl-300px mb-0 mb-xl-10 ${activeKeyNav === 'presupuestos' ? 'd-lg-none d-xxl-block' : '' } `}>
+                        <div className={`d-flex flex-column flex-${activeKeyNav === 'presupuestos'?'xxl':'lg'}-row`}>
+                            <div className={`flex-column flex-lg-row-auto w-100 w-lg-300px mb-0 mb-xl-10 ${activeKeyNav === 'presupuestos' ? 'd-lg-none d-xxl-block' : '' } `}>
                                 <Card className="mb-5 mb-xl-8 p-sticky-card">
                                     <Card.Body className="pt-15">
                                         <div className="d-flex flex-center flex-column mb-8">

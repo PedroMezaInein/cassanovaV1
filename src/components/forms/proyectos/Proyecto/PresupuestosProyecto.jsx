@@ -8,9 +8,12 @@ import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAler
 import { setNaviIcon, setOptions } from '../../../../functions/setters'
 import { PresupuestoList } from "../..";
 import { PresupuestoForm, ActualizarPresupuestoForm, AgregarConcepto, FilterPresupuestos } from "../../../../components/forms"
-import { Modal } from '../../../../components/singles'
+import { Modal, ModalSendMail } from '../../../../components/singles'
 import { Budget } from '../../../../components/Lottie/'
+import PresupuestoTable from '../../../tables/Presupuestos/PresupuestoTable'
+import { CreatableMultiselectGray } from '../../../form-components'
 class PresupuestosProyecto extends Component {
+
     state = {
         key: 'nuevo',
         navPresupuesto: '',
@@ -37,30 +40,66 @@ class PresupuestosProyecto extends Component {
                 }],
                 conceptosNuevos: []
             },
+            correos: []
         },
         options: {
             areas: [],
             partidas: [],
             subpartidas: [],
-            unidades:[]
+            unidades:[],
+            correos: []
         },
         data: { partidas: [],subpartidas: [], conceptos: [] /*, mantenimientos: [], adjuntos: []*/ },
         presupuesto: '',
         aux_presupuestos: { conceptos: false, volumetrias: false, costos: false, revision:false, utilidad: false, espera: false, aceptado: false, rechazado: false },
-        modal: { conceptos: false, filter:false },
+        modal: { conceptos: false, filter:false, presupuestos: false, email: false },
         presupuestos: []
+    }
+
+    componentDidMount() { 
+        const { presupuestoId, proyecto } = this.props
+        const { options } = this.state
+        options.correos = []
+        proyecto.contactos.forEach(contacto => {
+            options.correos.push({
+                value: contacto.correo.toLowerCase(),
+                label: contacto.correo.toLowerCase(),
+                id: contacto.id.toString()
+            })
+        })
+        this.setState({options})
+        if(presupuestoId){ this.setState({...this.state, navPresupuesto: 'add'}) }
+        this.getOptionsAxios();
+        this.getPresupuestos(proyecto)
     }
 
     navPresupuesto = (type) => { this.setState({ ...this.state, navPresupuesto: type }) }
 
-    componentDidMount() { 
-        const { presupuestoId, proyecto } = this.props
-        if(presupuestoId){
-            this.setState({...this.state, navPresupuesto: 'add'})
+    sendPresupuestoToClient = async() => {
+        waitAlert()
+        const { adjunto, presupuesto, form } = this.state
+        const { at } = this.props
+        let aux = {
+            presupuestoAdjunto: adjunto,
+            correos_presupuesto: []
         }
-        this.getOptionsAxios();
-        this.getPresupuestos(proyecto)
+        form.correos.forEach((correo) => { aux.correos_presupuesto.push(correo.label) })
+        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/correo`, aux, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { modal } = this.state
+                modal.email = false
+                this.setState({ ...this.state, modal, adjunto: null })
+                doneAlert(
+                    `Presupuesto enviado con éxito`,
+                    () => { this.getPresupuestoAxios(presupuesto.id); this.openModalHistorialPdfs(); }
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
+
     getPresupuestos = async() => {
         const { at, proyecto } = this.props
         let { navPresupuesto } = this.state
@@ -86,13 +125,14 @@ class PresupuestosProyecto extends Component {
             console.error(error, 'error')
         })
     }
+
     setOptions = (name, array) => {
         const { options } = this.state;
         options[name] = setOptions(array, "nombre", "id");
         this.setState({ ...this.state, options });
     };
 
-    async getOptionsAxios() {
+    getOptionsAxios = async() => {
         // waitAlert();
         const { at } = this.props;
         await axios.get(`${URL_DEV}presupuestos/options`, { headers: setSingleHeader(at) }).then(
@@ -120,6 +160,7 @@ class PresupuestosProyecto extends Component {
             console.error(error, "error");
         });
     }
+
     onChange = (value, tipo, formulario) => {
         const { form } = this.state
         form[formulario][tipo] = value
@@ -203,7 +244,7 @@ class PresupuestosProyecto extends Component {
             form
         })
     }
-    async addPresupuestosAxios() {
+    addPresupuestosAxios = async() => {
         const { at, proyecto } = this.props
         const { form } = this.state
         form.presupuesto.proyecto = proyecto.id
@@ -288,6 +329,7 @@ class PresupuestosProyecto extends Component {
             console.error(error, 'error')
         })
     }
+    
     onChangePreeliminar = (key, e, name) => {
         let { value } = e.target
         const { form, presupuesto } = this.state
@@ -591,6 +633,32 @@ class PresupuestosProyecto extends Component {
         modal.filter = false
         this.setState({ ...this.state, modal})
     }
+
+    openModalHistorialPdfs = () => {
+        const { modal } = this.state
+        modal.presupuestos = true
+        this.setState({ ...this.state, modal })
+    }
+
+    handleCloseModalHistorialPdfs = () => {
+        const { modal } = this.state
+        modal.presupuestos = false
+        this.setState({ ...this.state, modal })
+    }
+
+    openModalSendToClient = ( adj ) => {
+        const { modal } = this.state
+        modal.email = true
+        modal.presupuestos = false
+        this.setState({ ...this.state, modal, adjunto: adj })
+    }
+
+    handleCloseMail = () => {
+        const { modal } = this.state
+        modal.email = false
+        this.setState({ ...this.state, modal, adjunto: null })
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                                 CLEAR MODALS                               */
     /* -------------------------------------------------------------------------- */
@@ -762,6 +830,7 @@ class PresupuestosProyecto extends Component {
                         onChange = { this.onChangePreeliminar } formeditado = { 1 } checkButton = { this.checkButtonPreeliminar }
                         onSubmit = { (e) => { this.onSubmit('preeliminar') } } openModal = { this.openModalConceptos } 
                         isButtonEnabled = { this.isButtonEnabled() } modulo_proyectos = { true } aux_presupuestos = { aux_presupuestos }
+                        historialPresupuestos = { this.openModalHistorialPdfs }
                         // historialPresupuestos={historialPresupuestos}
                         >
                         {
@@ -815,11 +884,30 @@ class PresupuestosProyecto extends Component {
         //     console.error(error, 'error')
         // })
     }
+
+    handleChangeCreateMSelect = (newValue) => {
+        const { form } = this.state
+        if(newValue == null){
+            newValue = []
+        }
+        let currentValue = []
+        newValue.forEach(valor => {
+            currentValue.push({
+                value: valor.value,
+                label: valor.label,
+                id:valor.id
+            })
+            return ''
+        })
+        form.correos = currentValue
+        this.setState({...this.state, form })
+    };
+
     render() {
-        const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key } = this.state
+        const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key, presupuesto, adjunto } = this.state
         const { proyecto, at } = this.props
         return (
-            <>
+            <div>
                 <Card className={`card-custom ${navPresupuesto !== 'historial'?'shadow-none bg-transparent':'gutter-b'}`}>
                     <Card.Header className={`border-0 align-items-center pt-6 pt-md-0 ${navPresupuesto !== 'historial'?'px-0':''}`}>
                         <div className="font-weight-bold font-size-h4 text-dark">{this.cardTitlePresupuesto(navPresupuesto)}</div>
@@ -879,7 +967,20 @@ class PresupuestosProyecto extends Component {
                 <Modal size = "lg" title = 'Filtrar historial' show = { modal.filter } handleClose = { this.handleCloseFilter} >
                     <FilterPresupuestos at={at} filtering = { this.filterTable }/>
                 </Modal>
-            </>
+                <Modal show = { modal.presupuestos } handleClose={this.handleCloseModalHistorialPdfs} title="Historial de presupuestos" >
+                    <PresupuestoTable datos = { presupuesto.pdfs } sendClient = { this.openModalSendToClient } presupuesto = { presupuesto } />
+                </Modal>
+                <ModalSendMail header = '¿Deseas enviar el presupuesto?' show = { modal.email } handleClose = { this.handleCloseMail }
+                    validation = { true } url = { adjunto ? adjunto.url : '' } url_text = 'EL PRESUPUESTO' sendMail = { this.sendPresupuestoToClient } >
+                    <div className="col-md-11 mt-5">
+                        <div>
+                            <CreatableMultiselectGray placeholder = 'SELECCIONA/AGREGA EL O LOS CORREOS' iconclass = 'flaticon-email'
+                                requirevalidation = { 1 } messageinc = 'Selecciona el o los correos' uppercase = { false }
+                                onChange = { this.handleChangeCreateMSelect } options = { options.correos } elementoactual = { form.correos } />
+                        </div>
+                    </div>
+                </ModalSendMail>
+            </div>
         )
     }
 }

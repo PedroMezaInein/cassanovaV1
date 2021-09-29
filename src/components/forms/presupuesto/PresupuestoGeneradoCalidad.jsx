@@ -35,7 +35,17 @@ class PresupuestoGeneradoCalidad extends Component {
             return 'danger';
         return 'success'
     }
-
+    getIdentificador = () => {
+        const { presupuesto } = this.props
+        if(presupuesto){
+            if(presupuesto.pdfs_accepeted.length){
+                return presupuesto.pdfs_accepeted[0].pivot.identificador
+            }else if(presupuesto.pdfs.length){
+                return presupuesto.pdfs[0].pivot.identificador
+            }
+        }
+        return '-'
+    }
     render() {
         const { presupuesto, ticket, openAlertChangeStatusP, openModalOrdenCompra } = this.props
         return (
@@ -71,8 +81,8 @@ class PresupuestoGeneradoCalidad extends Component {
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
-                                <div className="row form-group-marginless mt-8">
-                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
+                                <div className="row form-group-marginless mt-8 mx-0 justify-content-around">
+                                    <div className="col-md-auto mb-4 mb-md-0">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
@@ -80,12 +90,12 @@ class PresupuestoGeneradoCalidad extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.identificador}</div>
+                                                <div className="text-dark mb-1 font-size-lg">{this.getIdentificador()}</div>
                                                 <span className="text-muted font-weight-light">NO. DEL PRESUPUESTO</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
+                                    <div className="col-md-auto mb-4 mb-md-0">
                                         <div className="d-flex">
                                             <div className="symbol symbol-40 symbol-light-info mr-5">
                                                 <span className="symbol-label">
@@ -98,35 +108,35 @@ class PresupuestoGeneradoCalidad extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3 mb-4 mb-md-0">
+                                    <div className="col-md-auto mb-4 mb-md-0">
                                         <div className="d-flex">
-                                            <div className="symbol symbol-40 symbol-light-info mr-5">
+                                            <div className="symbol symbol-40 symbol-light-primary mr-5">
                                                 <span className="symbol-label">
-                                                    <i className="flaticon-calendar-with-a-clock-time-tools icon-xl text-info"></i>
+                                                    <i className="flaticon-calendar-with-a-clock-time-tools icon-xl text-primary"></i>
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.tiempo_ejecucion}</div>
+                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.tiempo_ejecucion} {presupuesto.tiempo_ejecucion === '1'?'día':'días'}</div>
                                                 <span className="text-muted font-weight-light">TIEMPO DE EJECUCIÓN</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className = {`col-md-${this.isActiveSumaVentas() ? 2 : 3} mb-4 mb-md-0`}>
+                                    <div className="col-md-auto mb-4 mb-md-0">
                                         <div className="d-flex">
-                                            <div className="symbol symbol-40 symbol-light-primary mr-5">
+                                            <div className="symbol symbol-40 symbol-light-info mr-5">
                                                 <span className="symbol-label">
-                                                    <i className="flaticon2-calendar-5 icon-lg text-primary"></i>
+                                                    <i className="flaticon2-calendar-5 icon-lg text-info"></i>
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.tiempo_valido} DÍAS</div>
+                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.tiempo_valido} {presupuesto.tiempo_valido === '1'?'día':'días'}</div>
                                                 <span className="text-muted font-weight-light">TIEMPO VALIDO</span>
                                             </div>
                                         </div>
                                     </div>
                                     {
                                         this.isActiveSumaVentas() ?
-                                            <div className="col-md-3">
+                                            <div className="col-md-auto">
                                                 <div className="d-flex">
                                                     <div className = {`symbol symbol-40 symbol-light-${this.getStatus()} mr-5`}>
                                                         <span className="symbol-label">
