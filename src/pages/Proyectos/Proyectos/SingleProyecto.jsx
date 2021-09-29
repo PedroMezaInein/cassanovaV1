@@ -21,8 +21,8 @@ class SingleProyecto extends Component {
             { eventKey: 'notas', icon: 'flaticon-notes', name: 'Notas de obra' },
             { eventKey: 'adjuntos', icon: 'flaticon-attachment', name: 'Adjuntos' },
             { eventKey: 'presupuestos', icon: 'flaticon-list-1', name: 'Presupuestos' },
-            { eventKey: 'compras', icon: 'flaticon-bag', name: 'Compras' },
-            { eventKey: 'facturacion', icon: 'las la-file-invoice-dollar', name: 'Facturación' },
+            // { eventKey: 'compras', icon: 'flaticon-bag', name: 'Compras' },
+            // { eventKey: 'facturacion', icon: 'las la-file-invoice-dollar', name: 'Facturación' },
         ],
         activeKeyNav: 'informacion',
         options:{

@@ -966,6 +966,12 @@ class LeadInfo extends Component {
                 })
                 break;
             case 'tiempo_ejecucion_diseno':
+                formDiseño.conceptos.map((concepto) => {
+                    if(concepto.name === 'concepto7'){
+                        concepto.value = formDiseño.tiempo_ejecucion_diseno
+                    }
+                    return false
+                })
                 formDiseño.semanas = this.calculateSemanas(value)
                 break;
             case 'construccion_interiores_inf':
