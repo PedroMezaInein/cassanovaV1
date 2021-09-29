@@ -47,13 +47,15 @@ class ActualizarPresupuesto extends Component {
                 bg_cantidad:true,
                 vicio_oculto:false
             }],
-            conceptosNuevos: []
+            conceptosNuevos: [],
+            correos: []
         },
         options: {
             unidades: [],
             partidas: [],
             subpartidas: [],
             proveedores: [],
+            correos: []
         },
         data: {
             partidas: [],
@@ -91,6 +93,8 @@ class ActualizarPresupuesto extends Component {
         aux.map((element) => {
             if (element !== 'conceptos' && element !== 'conceptosNuevos')
                 form[element] = ''
+            if(element === 'correos')
+                form[element] = []
             return false
         })
         return form
@@ -307,6 +311,29 @@ class ActualizarPresupuesto extends Component {
         })
     }
 
+    sendPresupuestoToClient = async() => {
+        waitAlert()
+        const { adjunto, presupuesto, form } = this.state
+        const { access_token } = this.props.authUser
+        let aux = {
+            presupuestoAdjunto: adjunto,
+            correos_presupuesto: []
+        }
+        form.correos.forEach((correo) => { aux.correos_presupuesto.push(correo.label) })
+        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/correo`, aux, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                this.setState({ ...this.state, modal_mail: false, adjunto: null })
+                doneAlert(
+                    `Presupuesto enviado con éxito`,
+                    () => { this.getOnePresupuestoAxios(presupuesto.id); this.openModalDownloadPDF(); }
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -424,6 +451,25 @@ class ActualizarPresupuesto extends Component {
             form
         })
     }
+
+    handleChangeCreateMSelect = (newValue) => {
+        const { form } = this.state
+        if(newValue == null){
+            newValue = []
+        }
+        let currentValue = []
+        newValue.forEach(valor => {
+            currentValue.push({
+                value: valor.value,
+                label: valor.label,
+                id:valor.id
+            })
+            return ''
+        })
+        form.correos = currentValue
+        this.setState({...this.state, form })
+    };
+
     getCantidad(key){
         const { form } = this.state
         let cantidad = (form.conceptos[key].cantidad_preliminar * (1 + (form.conceptos[key].desperdicio / 100))).toFixed(2)
@@ -439,11 +485,8 @@ class ActualizarPresupuesto extends Component {
         const { form /*, presupuesto*/ } = this.state
         form.conceptos[key][name] = checked
         if(name === 'vicio_oculto'){
-            if(form.conceptos[key].vicio_oculto){
-                form.conceptos[key].importe = (0).toFixed(2)
-            }else{
-                form.conceptos[key].importe = this.getImporte(key)
-            }
+            if(form.conceptos[key].vicio_oculto){ form.conceptos[key].importe = (0).toFixed(2) }
+            else{ form.conceptos[key].importe = this.getImporte(key) }
         }
         // if (!checked) {
         //     let pre = presupuesto.conceptos[key]
@@ -454,10 +497,7 @@ class ActualizarPresupuesto extends Component {
         //     this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
         //     this.onChange(key, { target: { value: aux } }, 'mensajes')
         // }
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
     onSubmit = e => {
         e.preventDefault()
@@ -550,7 +590,7 @@ class ActualizarPresupuesto extends Component {
     }
 
     openModalSendToClient = adj => { 
-        this.setState({ ...this.state, modal_mail: true, adjunto: adj, modal_adjuntos: false, adjuntos: [] }) 
+        this.setState({ ...this.state, modal_mail: true, adjunto: adj, modal_adjuntos: false }) 
     }
     handleCloseMail = () => { 
         
@@ -562,17 +602,6 @@ class ActualizarPresupuesto extends Component {
     }
     handleCloseModalDownloadPDF = () => {
         this.setState({ ...this.state, modal_adjuntos:false })
-    }
-
-    getStatusPdf = ( pdf ) => {
-        console.log(pdf, 'PDF')
-        if(pdf.pivot.enviado === 0)
-            return 'Sin enviar'
-        if(pdf.pivot.url)
-            return 'Aceptado'
-        if(pdf.pivot.motivo_cancelacion)
-            return 'Rechazado'
-        return 'En espera'
     }
 
     render() {
@@ -609,12 +638,12 @@ class ActualizarPresupuesto extends Component {
                     <PresupuestoTable datos = { presupuesto.pdfs } presupuesto = { presupuesto } sendClient = { this.openModalSendToClient }/>
                 </Modal>
                 <ModalSendMail header = '¿Deseas enviar el presupuesto?' show = { modal_mail } handleClose = { this.handleCloseMail }
-                    validation = { true } url = { adjunto ? adjunto.url : '' } url_text = 'EL PRESUPUESTO' >
+                    validation = { true } url = { adjunto ? adjunto.url : '' } url_text = 'EL PRESUPUESTO' sendMail = { this.sendPresupuestoToClient } >
                     <div className="col-md-11 mt-5">
                         <div>
                             <CreatableMultiselectGray placeholder = 'SELECCIONA/AGREGA EL O LOS CORREOS' iconclass = 'flaticon-email'
                                 requirevalidation = { 1 } messageinc = 'Selecciona el o los correos' uppercase = { false }
-                                onChange = { this.handleChangeCreateMSelect } options = { options.correos } elementoactual = { [] } />
+                                onChange = { this.handleChangeCreateMSelect } options = { options.correos } elementoactual = { form.correos } />
                         </div>
                     </div>
                 </ModalSendMail>
@@ -624,10 +653,6 @@ class ActualizarPresupuesto extends Component {
 }
 
 const mapStateToProps = state => { return { authUser: state.authUser, formulario: state.formulario } }
-
-const mapDispatchToProps = dispatch => ({
-    save: payload => dispatch(save(payload)),
-    deleteForm: () => dispatch(deleteForm()),
-})
+const mapDispatchToProps = dispatch => ({ save: payload => dispatch(save(payload)), deleteForm: () => dispatch(deleteForm()), })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActualizarPresupuesto);
