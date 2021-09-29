@@ -1,10 +1,9 @@
 import React, { Component } from "react"
-import { renderToString } from "react-dom/server";
 import { connect } from "react-redux"
 import axios from "axios"
 import Swal from 'sweetalert2'
-import { URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from "../../../constants"
-import { setOptions, setAdjuntosList, setTextTableCenter } from "../../../functions/setters"
+import { URL_DEV } from "../../../constants"
+import { setOptions } from "../../../functions/setters"
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../../functions/alert"
 import Layout from "../../../components/layout/layout"
 import { UltimoPresupuestoForm } from "../../../components/forms"
@@ -13,8 +12,9 @@ import { setSingleHeader } from "../../../functions/routers"
 import { Modal } from "react-bootstrap"
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import FloatButtons from '../../../components/singles/FloatButtons'
-import TableForModals from '../../../components/tables/TableForModals'
 import { Modal as ModalSingles } from '../../../components/singles'
+import PresupuestoTable from "../../../components/tables/Presupuestos/PresupuestoTable"
+
 class PresupuestosEnviadosFinish extends Component {
     state = {
         modal: false,
@@ -101,10 +101,24 @@ class PresupuestosEnviadosFinish extends Component {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}presupuestos/${id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { form } = this.state
+                const { form, options } = this.state
                 const { presupuesto } = response.data
                 let aux = []
                 let mensajeAux = {}
+                if(presupuesto.proyecto){
+                    if(presupuesto.proyecto.contactos){
+                        if(presupuesto.proyecto.contactos.length){
+                            options.correos_clientes = []
+                            presupuesto.proyecto.contactos.forEach(contacto => {
+                                options.correos_clientes.push({
+                                    value: contacto.correo.toLowerCase(),
+                                    label: contacto.correo.toLowerCase(),
+                                    id: contacto.id.toString()
+                                })
+                            })
+                        }
+                    }
+                }
                 presupuesto.conceptos.map((concepto) => {
                     if (concepto.mensaje) {
                         mensajeAux.active = true
@@ -145,7 +159,8 @@ class PresupuestosEnviadosFinish extends Component {
                     ...this.state,
                     presupuesto: presupuesto,
                     form,
-                    formeditado: 1
+                    formeditado: 1,
+                    options
                 })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -421,7 +436,11 @@ class PresupuestosEnviadosFinish extends Component {
         form.correos_presupuesto = arrayCorreos
         await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/correo`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => { 
-                doneAlert('Correo enviado con éxito', () => { this.handleCloseModal() } ) 
+                this.handleCloseModal();
+                doneAlert(
+                    `Presupuesto enviado con éxito`,
+                    () => { this.openModalDownloadPDF(); }
+                )
             },  (error) => { this.handleCloseModal(); printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -541,43 +560,16 @@ class PresupuestosEnviadosFinish extends Component {
         this.setState({...this.state, form })
     };
     
-    openModalDownloadPDF = () => {
-        const { data, presupuesto } = this.state
-        data.adjuntos = presupuesto.pdfs
-        this.setState({
-            ...this.state,
-            modal_adjuntos:true,
-            adjuntos: this.setAdjuntosTable(presupuesto.pdfs),
-            data
-        })
-    }
-    handleCloseModalDownloadPDF = () => {
-        const { data } = this.state
-        data.adjuntos = []
-        this.setState({
-            ...this.state,
-            modal_adjuntos:false,
-            adjuntos: [],
-            data
-        })
+    openModalDownloadPDF = () => { this.setState({ ...this.state, modal_adjuntos:true }) }
+    handleCloseModalDownloadPDF = () => { this.setState({ ...this.state, modal_adjuntos:false }) }
+    openModalSendToClient = adjunto => {
+        const { modalObject } = this.state
+        modalObject.adjunto = adjunto
+        this.setState({ ...this.state, modalObject, modal: true, modal_adjuntos: false })
     }
 
-    setAdjuntosTable = adjuntos => {
-        let aux = []
-        adjuntos.map((adjunto) => {
-            aux.push({
-                url: renderToString(
-                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
-                ),
-                identificador: renderToString(setTextTableCenter(adjunto.pivot.identificador)),
-                id: adjunto.id
-            })
-            return false
-        })
-        return aux
-    }
     render() {
-        const { form, presupuesto, modal, modalObject, aux_presupuestos, options, modal_adjuntos, adjuntos, data } = this.state
+        const { form, presupuesto, modal, modalObject, aux_presupuestos, options, modal_adjuntos } = this.state
         const { formulario } = this.props
         return (
             <Layout active={"presupuesto"} {...this.props}>
@@ -638,14 +630,15 @@ class PresupuestosEnviadosFinish extends Component {
                     title='del presupuesto'
                 />
                 <ModalSingles show={modal_adjuntos} handleClose={this.handleCloseModalDownloadPDF} title="Historial de presupuestos" >
-                    <TableForModals
+                    <PresupuestoTable  datos = { presupuesto.pdfs } presupuesto = { presupuesto } sendClient = { this.openModalSendToClient }/>
+                    {/* <TableForModals
                         columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
                         data={adjuntos}
                         hideSelector={true}
                         mostrar_acciones={false}
                         dataID='adjuntos'
                         elements={data.adjuntos}
-                    />
+                    /> */}
                 </ModalSingles>
             </Layout>
         );
