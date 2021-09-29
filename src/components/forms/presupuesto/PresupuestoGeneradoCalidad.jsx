@@ -35,7 +35,17 @@ class PresupuestoGeneradoCalidad extends Component {
             return 'danger';
         return 'success'
     }
-
+    getIdentificador = () => {
+        const { presupuesto } = this.props
+        if(presupuesto){
+            if(presupuesto.pdfs_accepeted.length){
+                return presupuesto.pdfs_accepeted[0].pivot.identificador
+            }else if(presupuesto.pdfs.length){
+                return presupuesto.pdfs[0].pivot.identificador
+            }
+        }
+        return '-'
+    }
     render() {
         const { presupuesto, ticket, openAlertChangeStatusP, openModalOrdenCompra } = this.props
         return (
@@ -80,7 +90,7 @@ class PresupuestoGeneradoCalidad extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.pdfs_accepeted[0].pivot.identificador}</div>
+                                                <div className="text-dark mb-1 font-size-lg">{this.getIdentificador()}</div>
                                                 <span className="text-muted font-weight-light">NO. DEL PRESUPUESTO</span>
                                             </div>
                                         </div>
