@@ -725,6 +725,12 @@ class PresupuestoDiseñoForm extends Component {
                 })
                 break;
             case 'tiempo_ejecucion_diseno':
+                form.conceptos.map((concepto) => {
+                    if(concepto.name === 'concepto7'){
+                        concepto.value = form.tiempo_ejecucion_diseno
+                    }
+                    return false
+                })
                 form.semanas = this.calculateSemanas(value)
                 break;
             case 'tipoProyecto':
