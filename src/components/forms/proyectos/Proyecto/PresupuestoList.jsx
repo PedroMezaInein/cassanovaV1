@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import { Card, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap'
 import { setSingleHeader } from '../../../../functions/routers'
-import SVG from "react-inlinesvg";
 import axios from 'axios'
 import { URL_DEV } from '../../../../constants'
-import { toAbsoluteUrl } from "../../../../functions/routers"
 import { dayDMY } from '../../../../functions/setters'
 import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
 import { Budget } from '../../../../components/Lottie/'
@@ -53,9 +51,14 @@ class PresupuestoList extends Component {
         const { presupuestos } = this.state;
         presupuestos.forEach((element, key) => {
             if (element.id === presupuesto.id) {
-                element.isActive = element.isActive ? false : true
+                if(presupuesto.pdfs.length){
+                    element.isActive = element.isActive ? false : true
+                }else{
+                    element.hiddenActive = element.hiddenActive ? false : true
+                }
             }else {
                 element.isActive = false
+                element.hiddenActive = false
             }
         })
         this.setState({ ...this.state, accordion: presupuestos });
@@ -112,25 +115,60 @@ class PresupuestoList extends Component {
                 )
         }
     }
-
+    labelStatus = presupuesto => {
+        return(
+            <span style={{
+                display: 'inline-flex', padding: '0.5em 0.85em', fontSize: '.68rem',
+                fontWeight: 600, lineHeight: 1, backgroundColor: `${presupuesto.estatus.fondo}`,
+                color: `${presupuesto.estatus.letra}`, textAlign: 'center', border: 'transparent',
+                whiteSpace: 'nowrap', verticalAlign: 'baseline', borderRadius: '0.475rem',
+                justifyContent: 'center', alignItems: 'center'
+            }}>
+                {presupuesto.estatus.estatus}
+            </span>
+        )
+    }
+    getSVG = presupuesto => {
+        return (
+            presupuesto.pdfs.length?
+                !presupuesto.isActive ?
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                        <rect x="10.8891" y="17.8033" width="12" height="2" rx="1" transform="rotate(-90 10.8891 17.8033)" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                        <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                    </svg>
+                :
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                    <rect x="6.0104" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                </svg>
+            :
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill='none'></rect>
+                    <rect x="6.0104" y="10.9247" width="12" height="2" rx="1" fill='none'></rect>
+                </svg>
+        )
+    }
     printPresupuestos = () => {
         const { presupuestos } = this.state
         const { editPresupuesto, at } = this.props
         return(
             <div className="table-responsive">
                 <div className="list min-w-650px col-md-11 mx-auto">
-                    <div className="accordion accordion-light accordion-svg-toggle">
+                    <div className="accordion accordion-light">
                         {
                             presupuestos.map((presupuesto, key) => {
                                 return (
-                                    <Card key={key} className={`w-auto ${(presupuesto.isActive) ? 'border-top-0' : ''}`} >
+                                    <Card key={key} className={`w-auto ${(presupuesto.isActive || presupuesto.hiddenActive) ? 'border-top-0' : ''}`} >
                                         <Card.Header >
-                                            <Card.Title className={`rounded ${(presupuesto.isActive) ? 'collapsed bg-light' : 'text-dark'}`} 
-                                                onClick={() => { this.handleAccordion(presupuesto) }}>
-                                                <span className={`d-none svg-icon ${presupuesto.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
-                                                    <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
+                                            <Card.Title className={`rounded px-2 ${(presupuesto.isActive || presupuesto.hiddenActive) ? 'collapsed bg-light' : 'text-dark'}`} 
+                                                onClick={() => { this.handleAccordion(presupuesto) }}
+                                                >
+                                                <span className='svg-icon svg-icon-sm'>
+                                                    {this.getSVG(presupuesto)}
+                                                    
                                                 </span>
-                                                <div className="card-label ml-3 row mx-0 justify-content-between w-100">
+                                                <div className="card-label ml-2 row mx-0 justify-content-between w-100">
                                                     <div className="w-70 d-flex">
                                                         <div className="mx-2 align-self-center">
                                                             <div className="d-flex align-items-center justify-content-center">
@@ -138,31 +176,25 @@ class PresupuestoList extends Component {
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <div className="font-size-lg mb-1">
+                                                            <div className="font-size-lg mb-2">
                                                                 { this.printIdentificadores(presupuesto.pdfs)}
                                                             </div>
                                                             <div className="font-weight-light font-size-sm text-dark-75">
-                                                                { presupuesto.area.nombre } - {dayDMY(presupuesto.fecha)} - {`${presupuesto.tiempo_ejecucion} ${presupuesto.tiempo_ejecucion === '1'?'día':'días'}`} 
+                                                                { presupuesto.area.nombre } - {dayDMY(presupuesto.fecha)} - {`${presupuesto.tiempo_ejecucion} ${presupuesto.tiempo_ejecucion === '1'?'día':'días'} de ejecución`} 
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="align-self-center d-flex w-30">
                                                         <div className="w-100 d-flex">
                                                             <div className="align-self-center w-60 text-center">
-                                                                <span style={{ display: 'inline-flex', padding: '0.5em 0.85em', fontSize: '.68rem',
-                                                                        fontWeight: 600, lineHeight:1, backgroundColor:`${presupuesto.estatus.fondo}`, 
-                                                                        color: `${presupuesto.estatus.letra}`, textAlign:'center', border: 'transparent', 
-                                                                        whiteSpace:'nowrap', verticalAlign:'baseline', borderRadius:'0.475rem', 
-                                                                        justifyContent: 'center', alignItems: 'center' }}>
-                                                                    { presupuesto.estatus.estatus }
-                                                                </span>
+                                                                {this.labelStatus(presupuesto)}
                                                             </div>
                                                             <div className="w-40 text-right">
                                                                 {
                                                                     this.canWork(presupuesto) ? 
                                                                         <OverlayTrigger rootClose 
                                                                             overlay={ <Tooltip> <span className='font-weight-bolder'>EDITAR</span> </Tooltip>}>
-                                                                            <span className={`btn btn-icon ${presupuesto.isActive ?
+                                                                            <span className={`btn btn-icon ${(presupuesto.isActive || presupuesto.hiddenActive) ?
                                                                                 'btn-color-primary2'
                                                                                 : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}
                                                                                 onClick = { (e) => { e.preventDefault(); editPresupuesto(presupuesto); } } >
@@ -175,7 +207,7 @@ class PresupuestoList extends Component {
                                                                     this.canWork(presupuesto) ?
                                                                         <OverlayTrigger rootClose
                                                                             overlay={ <Tooltip> <span className='font-weight-bolder'>ELIMINAR</span> </Tooltip>}>
-                                                                            <span className={`btn btn-icon ${presupuesto.isActive ? 'btn-color-danger': ''} btn-active-light-danger w-30px h-30px`}
+                                                                            <span className={`btn btn-icon ${(presupuesto.isActive || presupuesto.hiddenActive) ? 'btn-color-danger': ''} btn-active-light-danger w-30px h-30px`}
                                                                                 onClick={(e) => {
                                                                                     e.preventDefault();
                                                                                     deleteAlert(
