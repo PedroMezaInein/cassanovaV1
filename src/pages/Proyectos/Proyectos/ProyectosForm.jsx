@@ -253,6 +253,13 @@ class ProyectosForm extends Component {
                     options
                 })
                 break;
+            case 'fase1':
+            case 'fase2':
+            case 'fase3':
+                let nombre = this.getNameWithoutFases( form.nombre )
+                nombre += `${this.namefases()}`
+                form.nombre = nombre
+                break;
             default:
                 break;
         }
@@ -262,6 +269,30 @@ class ProyectosForm extends Component {
             showModal,
             options
         })
+    }
+    namefases(){
+        const { form } = this.state
+        let aux = ''
+        if (form.fase1)
+            aux = ' - FASE 1'
+        if (form.fase2)
+            aux = ' - FASE 2'
+        if (form.fase3)
+            aux = ' - FASE 3'
+        if (form.fase1 && form.fase2)
+            aux = ' - FASE 1 - FASE 2'
+        if (form.fase1 && form.fase3)
+            aux = ' - FASE 1 - FASE 3'
+        if (form.fase2 && form.fase3)
+            aux = ' - FASE 2 - FASE 3'
+        if (form.fase1 && form.fase2 && form.fase3)
+            aux = ' - FASE 1 - FASE 2 - FASE 3'
+        return aux
+    }
+    getNameWithoutFases = cadena => {
+        let auxiliar = cadena.split(' - FASE 1')[0]
+        auxiliar = auxiliar.split(' - FASE 2')[0]
+        return auxiliar.split(' - FASE 3')[0]
     }
     onChangeOptions = (e, arreglo) => {
         const { value } = e.target
