@@ -929,13 +929,13 @@ class PresupuestosProyecto extends Component {
                                                 </Dropdown.Item>
                                                 : <></>
                                         }
-                                        {/* {
+                                        {
                                             navPresupuesto === 'historial' ?
                                                 <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.openFormFilter('filter') }}>
                                                     {setNaviIcon('las la-filter icon-xl', 'FILTRAR HISTORIAL')}
                                                 </Dropdown.Item>
                                             :<></>
-                                        } */}
+                                        }
                                     </DropdownButton>
                                 </div>
                                 : <></>
