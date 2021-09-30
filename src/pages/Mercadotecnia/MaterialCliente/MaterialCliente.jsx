@@ -339,6 +339,58 @@ class MaterialCliente extends Component {
         } catch (error) { console.error("error", error); }  
     }
 
+    addAdjuntoInCasoExito = async() => {
+        const { levelItem, form, empresa } = this.state
+        const { access_token } = this.props.authUser
+        console.log(levelItem, 'Levelitem')
+        let filePath = `empresas/${empresa.id}/casos-exito/${levelItem.tipo}/adjuntos/`;
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { alma } = response.data
+                let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204)
+                                    resolve({ name: file.name, url: location })
+                                else
+                                    reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addS3FilesInCasoExitoAxios(values)}).catch(err => console.error(err))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    addS3FilesInCasoExitoAxios = async(arreglo) => {
+        const { access_token } = this.props.authUser
+        const { levelItem, empresa } = this.state
+        waitAlert()
+        try{
+            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/s3/casos-exito/${levelItem.id}`, { empresa: empresa.id, archivos: arreglo }, 
+            {  headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    doneAlert('Adjunto generado con éxito')
+                    const { empresa, carpeta } = response.data
+                    const { form } = this.state
+                    let { levelItem } = this.state
+                    form.adjuntos.adjuntos.files = []
+                    form.adjuntos.adjuntos.value = ''
+                    levelItem = carpeta
+                    this.setState({...this.state, form, empresa:empresa, levelItem})
+            }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.error(error, 'error')
+            })
+        } catch (error) { console.error("error", error); }  
+    }
+
     /* ANCHOR ADD ADJUNTO RENDER */
     /* addAdjuntoInRender = async() => {
         const { url, levelItem, form, submenuactive, empresa } = this.state
@@ -410,7 +462,7 @@ class MaterialCliente extends Component {
     }
     
     /* ANCHOR ADD ADJUNTO CASOS EXITO */
-    addAdjuntoInCasoExito = async() => {
+    /* addAdjuntoInCasoExito = async() => {
         const { levelItem, form, empresa } = this.state
         const { access_token } = this.props.authUser
         const data = new FormData();
@@ -429,15 +481,12 @@ class MaterialCliente extends Component {
                 form.adjuntos.adjuntos.value = ''
                 levelItem = carpeta
                 this.setState({...this.state, form, empresa:empresa, levelItem})
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
-    }
+    } */
 
     /* ANCHOR DELETE SINGLE FILE */
     deleteAdjunto = async (id, tipo) => {
@@ -563,10 +612,7 @@ class MaterialCliente extends Component {
                 const { form } = this.state
                 form.carpeta = ''
                 this.setState({ ...this.state, empresa: empresa, levelItem: carpeta, newFolder: false, form })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
