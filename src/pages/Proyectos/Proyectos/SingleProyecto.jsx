@@ -53,6 +53,8 @@ class SingleProyecto extends Component {
             let params = new URLSearchParams(queryString)
             let paramPres = params.get('presupuesto')
             if(paramPres){ this.setState({...this.state, activeKeyNav: 'presupuestos' }) }
+            let paramCom = params.get('comentario')
+            if(paramCom){ this.setState({...this.state, activeKeyNav: 'comentarios' }) }
         }
     }
 

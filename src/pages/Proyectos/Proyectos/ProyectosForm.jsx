@@ -848,6 +848,7 @@ class ProyectosForm extends Component {
     sendForm = async() => {
         let { form } = this.state
         const { options } = this.state
+        if(form.ubicacion_cliente === true){
             options.cp_clientes.forEach((cliente) => {
                 if(form.cp_ubicacion === cliente.value){
                     form.cp = cliente.cp
@@ -855,7 +856,6 @@ class ProyectosForm extends Component {
                     form.municipio = cliente.municipio
                     form.colonia = cliente.colonia
                     form.calle = cliente.calle
-
                 }else if(options.cp_clientes.length === 1){
                     form.cp = cliente.cp
                     form.estado = cliente.estado
@@ -864,6 +864,13 @@ class ProyectosForm extends Component {
                     form.calle = cliente.calle
                 }
             })
+        }else{
+            form.cp = ''
+            form.estado = ''
+            form.municipio = ''
+            form.colonia = ''
+            form.calle = ''
+        }
         Swal.close()
         // form.ubicacion_cliente = ''
         // form.cp_ubicacion = ''
