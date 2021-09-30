@@ -6,10 +6,20 @@ import { printComentario } from '../../functions/printers'
 
 class TimelineComments extends Component {
 
+    isSameComment = (comentario) => {
+        const { comentarioId } = this.props
+        if(comentarioId){
+            if(comentarioId.toString() === comentario.id.toString()){
+                return true
+            }
+        }
+        return false
+    }
+
     render() {
         const { comentariosObj, color, col, proyectos } = this.props
         return (
-            <>
+            <div>
                 {
                 comentariosObj &&
                     <div className="col-md-12 mx-0 row d-flex justify-content-center">
@@ -24,7 +34,10 @@ class TimelineComments extends Component {
                                                     <div className="timeline-items">
                                                         <div className="timeline-item">
                                                             <div className="timeline-media border-0">
-                                                                <img alt="Pic" src={comentario.user.avatar ? comentario.user.avatar : "/default.jpg"} />
+                                                                <div className = 'position-relative'>
+                                                                    { this.isSameComment(comentario) ? <span className = 'dot-2 bg-danger' /> : <></> }
+                                                                    <img alt="Pic" src={comentario.user.avatar ? comentario.user.avatar : "/default.jpg"} />
+                                                                </div>
                                                             </div>
                                                             <div className="timeline-content">
                                                                 <span className={`text-${color} font-weight-bolder`}>{comentario.user.name}</span>
@@ -57,7 +70,7 @@ class TimelineComments extends Component {
                         </div>
                     </div>
                 }
-            </>
+            </div>
         )
     }
 }
