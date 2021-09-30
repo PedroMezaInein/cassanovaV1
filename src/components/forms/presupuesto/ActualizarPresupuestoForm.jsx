@@ -145,6 +145,31 @@ class ActualizarPresupuestoForm extends Component {
         }
         return css
     }
+    inputColor(key){
+        let css = ''
+        const { form } = this.props
+        if(form.conceptos[key].vicio_oculto){
+            css= 'vicio_oculto-presupuesto'
+        }
+        if(!form.conceptos[key].active){ 
+            css= 'disable-presupuesto'
+        }
+        return css
+    }
+    disabledDesperdicio(concepto){
+        switch (concepto.unidad.nombre) {
+            case 'VIAJE':
+            case 'SAL':
+            case 'PZA':
+            case 'LOTE':
+            case 'JGO':
+            case 'EQUIPO':
+            case 'BULTO':
+                return true
+            default:
+                return false
+        }
+    }
     render() {
         const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit, showInputsCalidad, showInputsProyecto, children, options, isButtonEnabled, modulo_calidad, modulo_proyectos, aux_presupuestos, historialPresupuestos } = this.props
         const { desperdicio } = this.state
@@ -460,7 +485,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                 <td className="descripcion text-center">
                                                                     <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "descipcion" as = "textarea"
                                                                         value = { form['conceptos'][key]['descripcion'] } onChange = { (e) => { onChange(key, e, 'descripcion')} }  
-                                                                        disabled = { !form.conceptos[key].active } customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 border text-justify textarea-input`}/>
+                                                                        disabled = { !form.conceptos[key].active } customclass={`${this.inputColor(key)} rounded-pill px-2 border text-justify textarea-input`}/>
                                                                 </td>
                                                                 <td className="text-center">
                                                                     <div className="unidad-tickets">
@@ -471,12 +496,12 @@ class ActualizarPresupuestoForm extends Component {
                                                                             withtextlabel={0}
                                                                             withicon={0}
                                                                             customdiv="mb-0"
-                                                                            customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} form-control-sm rounded-pill px-2 border text-center bg-white w-70px`}
+                                                                            customclass={`${this.inputColor(key)} form-control-sm rounded-pill px-2 border text-center bg-white w-70px`}
                                                                             options={options.unidades}
                                                                             name="unidad_id"
                                                                             value={form['conceptos'][key]['unidad_id']}
                                                                             onChange={(e) => this.updateUnidad(e, key)}
-                                                                            disabled = { !form.conceptos[key].active }
+                                                                            disabled = { !form.conceptos[key].active  }
                                                                         />
                                                                     </div>
                                                                 </td>
@@ -484,13 +509,13 @@ class ActualizarPresupuestoForm extends Component {
                                                                     <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "cantidad_preliminar"
                                                                         value = { form['conceptos'][key]['cantidad_preliminar'] } onChange = { e => onChange(key, e, 'cantidad_preliminar') }
                                                                         thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active } 
-                                                                        customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].bg_cantidad ?'input-conceptos font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}/>
+                                                                        customclass={`${this.inputColor(key)} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].bg_cantidad ?'input-conceptos font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`}/>
                                                                 </td>
                                                                 <td className="text-center">
                                                                     <InputNumberSinText requirevalidation = { 0 } formeditado = { formeditado } name = "desperdicio" 
                                                                         value = { form['conceptos'][key]['desperdicio'] } onChange = { e => onChange(key, e, 'desperdicio') }
-                                                                        thousandseparator = { true } prefix = '%' disabled = { !form.conceptos[key].active } 
-                                                                        customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 border text-center`} />
+                                                                        thousandseparator = { true } prefix = '%' disabled = { !form.conceptos[key].active || this.disabledDesperdicio(concepto) } 
+                                                                        customclass={`${this.disabledDesperdicio(concepto)?'disable-concepto':''} ${this.inputColor(key)} rounded-pill px-2 border text-center`} />
                                                                 </td>
                                                                 {
                                                                     (presupuesto.estatus.estatus === 'En revisión' || (!showInputsCalidad && !showInputsProyecto)) &&
@@ -498,7 +523,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                             <InputMoneySinText requirevalidation = { 1 } formeditado = { formeditado } name = "costo"
                                                                                 value = { form['conceptos'][key]['costo'] } onChange = { e => onChange(key, e, 'costo') } 
                                                                                 thousandseparator = { true } typeformat = "###########" disabled = { !form.conceptos[key].active }
-                                                                                customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Costos'?form.conceptos[key].bg_costo ?'input-costos font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`} />
+                                                                                customclass={`${this.inputColor(key)} rounded-pill px-2 text-center ${ presupuesto.estatus.estatus === 'Costos'?form.conceptos[key].bg_costo ?'input-costos font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'}`} />
                                                                         </td>
                                                                 }
                                                                 <td className="text-center">
