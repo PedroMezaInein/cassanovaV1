@@ -1551,7 +1551,7 @@ class InicioMiProyecto extends Component {
                         user.tipo.tipo !== 'Cliente'?
                         <a href={link_url} className="back-to-top d-flex align-items-center justify-content-center"><i className="la la-arrow-right"></i></a>
                         :
-                        <span onClick = { () => { questionAlertY('Cerrarás sesión', '¿Deseas continuar?', () => {this.logoutUserAxios()} )   } } 
+                        <span onClick = { () => { questionAlertY('Cerrarás sesión', '¿DESEAS CONTINUAR?', () => {this.logoutUserAxios()} )   } } 
                             className="back-to-top d-flex align-items-center justify-content-center btn btn-icon btn-light-youtube">
                             <i className="las la-sign-out-alt icon-2x" />
                         </span>

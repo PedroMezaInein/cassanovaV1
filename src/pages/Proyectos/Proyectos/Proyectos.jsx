@@ -118,7 +118,7 @@ class Proyectos extends Component {
                             e.preventDefault(); 
                             deleteAlert(
                                 `Eliminarás el proyecto ${element.nombre}`,
-                                `¿Deseas continuar?`,
+                                `¿DESEAS CONTINUAR?`,
                                 () => { this.deleteProyectoAxios(element.id) }
                             )
                         } }>

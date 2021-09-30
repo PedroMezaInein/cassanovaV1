@@ -489,7 +489,7 @@ class Empresas extends Component {
     inhabilitar = (empresa) => {
         questionAlertWithLottie(
             `Inhabilitarás la empresa ${empresa.name}`,
-            `¿Deseas continuar?`,
+            `¿DESEAS CONTINUAR?`,
             Lock,
             { confirm: 'SI', cancel: 'NO' },
             {
@@ -501,7 +501,7 @@ class Empresas extends Component {
     habilitar = (empresa) => {
         questionAlertWithLottie(
             `Habilitarás la empresa ${empresa.name}`,
-            `¿Deseas continuar?`,
+            `¿DESEAS CONTINUAR?`,
             Lock,
             { confirm: 'SI', cancel: 'NO' },
             {

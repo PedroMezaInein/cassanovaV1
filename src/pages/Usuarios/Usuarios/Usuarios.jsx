@@ -638,7 +638,7 @@ class Usuarios extends Component {
     inhabilitar = (user) => {
         questionAlertWithLottie(
             `Inhabilitarás al usuario ${user.name}`,
-            `¿Deseas continuar?`,
+            `¿DESEAS CONTINUAR?`,
             Lock,
             { confirm: 'SI', cancel: 'NO' },
             {
@@ -696,7 +696,7 @@ class Usuarios extends Component {
     habilitar = (user) => {
         questionAlertWithLottie(
             `Habilitarás al usuario ${user.name}`,
-            `¿Deseas continuar?`,
+            `¿DESEAS CONTINUAR?`,
             Lock,
             { confirm: 'SI', cancel: 'NO' },
             {

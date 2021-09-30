@@ -362,7 +362,7 @@ class CalendarioInstalacion extends Component {
                                 return(
                                     <Dropdown.Item className = 'p-0' key = { index } 
                                         onClick = { () => { questionAlert(`CAMBIARÁS EL ESTATUS A ${status.estatus.toUpperCase()}`, 
-                                            `¿Deseas continuar?`, () => { this.changeStatusAxios(status.id, mante.id) } ) }} >
+                                            `¿DESEAS CONTINUAR?`, () => { this.changeStatusAxios(status.id, mante.id) } ) }} >
                                         <span className="navi-link w-100">
                                             <span className="navi-text">
                                                 <span style = { { backgroundColor: status.fondo, color: status.letra } }
