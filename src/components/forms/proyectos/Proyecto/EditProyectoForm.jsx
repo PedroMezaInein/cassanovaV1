@@ -45,6 +45,7 @@ class EditProyectoForm extends Component {
             cp_ubicacion:[]
         },
         formContratar: {
+            nombre:'',
             fases: [],
             costo: '',
             fechaInicio: new Date(),
@@ -231,8 +232,22 @@ class EditProyectoForm extends Component {
         })
     }
     updateSelect = (value, name) => {
+        const { proyecto } = this.props
         if (value === null) {
             value = []
+        }
+        const { form } = this.state
+        if(name === 'fases'){
+            let nombre = this.getNameWithoutFases( proyecto.nombre )
+            let ordenValue = value
+            ordenValue.sort( (a, b) => (a.value > b.value) ? 1 : -1)
+            if(value.length){
+                value.forEach((element) => {
+                    nombre += ` - ${element.label.toUpperCase()}`
+                })
+            }
+            form.nombre = nombre
+            this.setState({ ...this.state, form })
         }
         this.onChange({ target: { value: value, name: name } }, true)
     }

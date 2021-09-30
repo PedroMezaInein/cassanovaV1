@@ -124,7 +124,7 @@ class Layout extends Component {
     checador = (tipo) => {
         questionAlertWithLottie(
             `Checarás la ${tipo}`,
-            '¿Deseas continuar?',
+            '¿DESEAS CONTINUAR?',
             tipo === 'salida' ? Bye : Hi,
             { confirm: 'SI', cancel: 'NO' },
             {
