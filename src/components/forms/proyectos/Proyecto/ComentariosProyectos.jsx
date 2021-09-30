@@ -125,6 +125,7 @@ class ComentariosProyectos extends Component {
     }
     render() {
         const { proyecto, activeComment, form } = this.state
+        const { comentarioId } = this.props
         return (
             <>
                 <Card className="card-custom gutter-b">
@@ -164,6 +165,7 @@ class ComentariosProyectos extends Component {
                                     comentariosObj={proyecto}
                                     col='8'
                                     color='primary2'
+                                    comentarioId = { comentarioId }
                                 />
                                 : activeComment === 'new' ?
                                     <ComentarioForm

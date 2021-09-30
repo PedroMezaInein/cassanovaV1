@@ -1763,6 +1763,16 @@ span.font-weight-bolder.text-hover-error:hover {
     columns: 2 auto;
 }
 
+.dot-2 {
+    height: 15px;
+    width: 15px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    top: -3px;
+    left: -5px;
+}
 .dot {
     height: 25px;
     width: 25px;

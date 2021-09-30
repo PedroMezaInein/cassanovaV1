@@ -134,6 +134,16 @@ class SingleProyecto extends Component {
         return null
     }
 
+    getComentarioFromUrl = () => {
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let paramPres = params.get('comentario')
+            if(paramPres){  return paramPres }
+        }
+        return null
+    }
+
     render() {
         const { proyecto, navs, activeKeyNav, options } = this.state
         const { access_token } = this.props.authUser
@@ -191,7 +201,8 @@ class SingleProyecto extends Component {
                                                 refresh = { this.getOneProyecto } isActive = { activeKeyNav === 'informacion' ? true : false } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="comentarios">
-                                            <ComentariosProyectos proyecto = { proyecto } at = { access_token }/>
+                                            <ComentariosProyectos proyecto = { proyecto } at = { access_token }
+                                                comentarioId = { this.getComentarioFromUrl() }/>
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="avances">
                                             <Avances proyecto = { proyecto } user = { user } at = { access_token } refresh = { this.getOneProyecto }
