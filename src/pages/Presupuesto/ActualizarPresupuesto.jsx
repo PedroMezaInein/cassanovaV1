@@ -133,11 +133,11 @@ class ActualizarPresupuesto extends Component {
     /*                                ANCHOR async                                */
     /* -------------------------------------------------------------------------- */
     getOptionsAxios = async () => {
-        waitAlert()
+        /* waitAlert() */
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}presupuestos/options`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
+                /* Swal.close() */
                 const { empresas, proyectos, areas, partidas, proveedores, unidades, conceptos } = response.data
                 const { options, data } = this.state
                 data.partidas = partidas
