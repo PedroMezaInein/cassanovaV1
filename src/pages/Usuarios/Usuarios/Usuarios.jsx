@@ -10,7 +10,7 @@ import { setOptions, setSelectOptions, setTextTableReactDom, setTagLabelReactDom
 import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, customInputAlert, questionAlertWithLottie } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import FloatButtons from '../../../components/singles/FloatButtons'
+// import FloatButtons from '../../../components/singles/FloatButtons'
 import { setTextTableCenter } from '../../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap' 
 import { UsuarioCard } from '../../../components/cards'
@@ -755,7 +755,7 @@ class Usuarios extends Component {
     }
     render(){
         const { modal, title, user, form, options, key, detenidos } = this.state
-        const { formulario } = this.props
+        // const { formulario } = this.props
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <Tabs id = "tabsUsuarios" defaultActiveKey="administrador" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
@@ -859,9 +859,9 @@ class Usuarios extends Component {
                     show = { modal.form } 
                     handleClose = { this.handleClose } >
                     <div className="position-relative">
-                        <div>
+                        {/* <div>
                             <FloatButtons save = { this.save } recover =  { this.recover } formulario = { formulario } url = { 'usuarios/usuarios' } />
-                        </div>
+                        </div> */}
                         <RegisterUserForm 
                             className = 'px-3' form = { form } options = { options }
                             onSubmit = { this.onSubmit } onChange = { this.onChange }
