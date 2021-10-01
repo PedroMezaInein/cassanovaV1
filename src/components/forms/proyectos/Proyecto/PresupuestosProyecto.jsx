@@ -149,7 +149,13 @@ class PresupuestosProyecto extends Component {
                 let aux = {}
                 conceptos.map((concepto) => { return aux[concepto.clave] = false })
                 form.conceptos = aux;
-                options.areas = setOptions(areas, "nombre", "id")
+                aux = setOptions(areas, "nombre", "id")
+                options.areas = []
+                aux.forEach((element) => {
+                    if(element.name !== 'FASE 3' && element.name !== 'DEVOLUCION'){
+                        options.areas.push(element)
+                    }
+                })
                 options.partidas = setOptions(partidas, "nombre", "id")
                 options.unidades = setOptions(unidades, 'nombre', 'id')
                 options.proveedores = setOptions(proveedores, "razon_social", "id")

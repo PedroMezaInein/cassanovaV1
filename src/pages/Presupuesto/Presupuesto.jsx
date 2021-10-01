@@ -13,6 +13,7 @@ import TableForModals from '../../components/tables/TableForModals'
 import $ from "jquery";
 import { NewTable } from '../../components/NewTables';
 import { PresupuestoFilter } from '../../components/filters';
+import { setSingleHeader } from '../../functions/routers'
 
 const DatatableName = 'presupuestos'
 class Presupuesto extends Component {
@@ -85,31 +86,24 @@ class Presupuesto extends Component {
             options
         })
     }
-    async getOptionsAxios() {
-        waitAlert()
+    getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuestos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'presupuestos/options', { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
                 const { empresas, proyectos, areas, partidas } = response.data
                 const { options } = this.state
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, options })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
     }
+
     async deletePresupuestoAxios(id) {
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
