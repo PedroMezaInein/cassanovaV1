@@ -236,20 +236,41 @@ class EditProyectoForm extends Component {
         if (value === null) {
             value = []
         }
-        const { form } = this.state
-        if(name === 'fases'){
-            let nombre = this.getNameWithoutFases( proyecto.nombre )
-            let ordenValue = value
-            ordenValue.sort( (a, b) => (a.value > b.value) ? 1 : -1)
-            if(value.length){
-                value.forEach((element) => {
-                    nombre += ` - ${element.label.toUpperCase()}`
-                })
-            }
-            form.nombre = nombre
-            this.setState({ ...this.state, form })
-        }
         this.onChange({ target: { value: value, name: name } }, true)
+        const { form } = this.state
+        switch (name) {
+            case 'fases':
+                let nombre = this.getNameWithoutFases( proyecto.nombre )
+                let ordenValue = value
+                ordenValue.sort( (a, b) => (a.value > b.value) ? 1 : -1)
+                if(value.length){
+                    value.forEach((element) => {
+                        nombre += ` - ${element.label.toUpperCase()}`
+                    })
+                }
+                form.nombre = nombre
+                this.setState({ ...this.state, form })
+                break;
+            case 'cliente_principal':
+                // console.log(value, 'value')
+                // console.log(form, 'form')
+                let aux = []
+                let arr3 = []
+                const found = form.clientes.some(item => item.value === value.value);
+                // console.log(found, 'found')
+                if ( !found ) {
+                    if(value.length !== 0){
+                        aux.push(value)
+                        arr3 = [...form.clientes, ...aux]
+                        form.clientes = arr3
+                    }
+                }
+                // console.log(arr3, 'arr3')
+                this.setState({ ...this.state, form })
+                break;
+            default:
+                break;
+        }
     }
     onChangeRange = range => {
         const { startDate, endDate } = range

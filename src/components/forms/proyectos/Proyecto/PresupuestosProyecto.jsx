@@ -36,6 +36,7 @@ class PresupuestosProyecto extends Component {
                     mensajes: { active: false, mensaje: '' },
                     unidad_id:'',
                     bg_cantidad:true,
+                    bg_desperdicio:true,
                     vicio_oculto:false
                 }],
                 conceptosNuevos: []
@@ -316,6 +317,7 @@ class PresupuestosProyecto extends Component {
                         unidad: concepto.unidad ? concepto.unidad.nombre : '',
                         unidad_id: concepto.unidad ? concepto.unidad.id.toString() : '',
                         bg_cantidad:true,
+                        bg_desperdicio:true,
                         vicio_oculto:concepto.vicio_oculto ? true : false
                     })
                 })
@@ -335,6 +337,7 @@ class PresupuestosProyecto extends Component {
         const { form, presupuesto } = this.state
         let valor = form.preeliminar.conceptos
         if (name === 'desperdicio') { value = value.replace('%', '') }
+        console.log(name, 'name')
         if (name === 'cantidad_preliminar'){
             if (presupuesto.conceptos[key][name].toString() !== value) {
                 valor[key]['bg_cantidad'] = false
@@ -360,9 +363,11 @@ class PresupuestosProyecto extends Component {
             if (presupuesto.conceptos[key][name].toString() !== valor[key][name].toString()) {
                 valor[key].mensajes.active = true
                 valor[key].mensajes.mensaje = ('Actualización del desperdicio a un ' + value + '%').toUpperCase()
+                valor[key]['desperdicio'] = true
             } else {
                 valor[key].mensajes.active = false
                 valor[key].mensajes.mensaje = ''
+                valor[key]['desperdicio'] = false
             }
         this.onChange(valor, 'conceptos', 'preeliminar')
     }
