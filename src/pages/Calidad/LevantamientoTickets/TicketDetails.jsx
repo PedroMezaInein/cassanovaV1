@@ -91,6 +91,7 @@ class TicketDetails extends Component {
                     mensajes: { active: false, mensaje: '' },
                     unidad_id:'',
                     bg_cantidad:true,
+                    bg_desperdicio:true,
                     vicio_oculto:false
                 }],
                 conceptosNuevos: []
@@ -431,6 +432,7 @@ class TicketDetails extends Component {
                         unidad: concepto.unidad ? concepto.unidad.nombre : '',
                         unidad_id: concepto.unidad ? concepto.unidad.id.toString() : '',
                         bg_cantidad:true,
+                        bg_desperdicio:true,
                         vicio_oculto:concepto.vicio_oculto ? true : false
                     })
                 })

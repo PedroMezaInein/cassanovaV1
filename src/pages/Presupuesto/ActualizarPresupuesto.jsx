@@ -262,8 +262,8 @@ class ActualizarPresupuesto extends Component {
                 switch(presupuesto.estatus.estatus){
                     case 'Costos':
                         doneAlert('Presupuesto actualizado con éxito', 
-                                () => questionAlertY(`¡Presupuesto actualizado!`, 
-                                    `¿Deseas enviar a ${presupuesto.hasTickets ? 'calidad' : 'proyectos'} la estimación de costos?`, 
+                                () => questionAlertY(`¡Presupuesto estimado!`, 
+                                    `¿Deseas enviar el presupuesto preeliminar a ${presupuesto.hasTickets ? 'calidad' : 'proyectos'}?`, 
                                     () => this.patchPresupuesto('estatus', 'En revisión'), 
                                     () => this.getOnePresupuestoAxios(presupuesto.id))
                             )
