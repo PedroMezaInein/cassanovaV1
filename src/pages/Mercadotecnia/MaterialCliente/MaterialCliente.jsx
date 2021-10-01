@@ -342,7 +342,6 @@ class MaterialCliente extends Component {
     addAdjuntoInCasoExito = async() => {
         const { levelItem, form, empresa } = this.state
         const { access_token } = this.props.authUser
-        console.log(levelItem, 'Levelitem')
         let filePath = `empresas/${empresa.id}/casos-exito/${levelItem.tipo}/adjuntos/`;
         await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
@@ -392,101 +391,60 @@ class MaterialCliente extends Component {
     }
 
     /* ANCHOR ADD ADJUNTO RENDER */
-    /* addAdjuntoInRender = async() => {
-        const { url, levelItem, form, submenuactive, empresa } = this.state
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        let tipo = ''
-        if(url.length > 2)
-            tipo = url[url.length - 2]
-        data.append('empresa', empresa.id)
-        form.adjuntos.adjuntos.files.map((file)=>{
-            data.append(`files_name[]`, file.name)
-            data.append(`files[]`, file.file)
-            return ''
-        })
-        data.append('tipo', tipo)
-        data.append('categoria', submenuactive)
-        await axios.post(`${URL_DEV}mercadotecnia/material-clientes/renders/carpeta/${levelItem.id}`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                Swal.close()
-                const { empresa, carpeta } = response.data
-                let { levelItem } = this.state
-                form.adjuntos.adjuntos.files = []
-                form.adjuntos.adjuntos.value = ''
-                levelItem = carpeta
-                this.setState({...this.state, form, empresa:empresa, levelItem})
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    } */
-
-    /* ANCHOR ADD ADJUNTO RENDER */
     addAdjuntoInFotografias = async() => {
-        const { url, levelItem, form, submenuactive, empresa } = this.state
+        const { submenuactive, levelItem, empresa, form } = this.state
         const { access_token } = this.props.authUser
-        const data = new FormData();
-        let tipo = ''
-        if(url.length > 2)
-            tipo = url[url.length - 2]
-        data.append('empresa', empresa.id)
-        form.adjuntos.adjuntos.files.map((file)=>{
-            data.append(`files_name[]`, file.name)
-            data.append(`files[]`, file.file)
-            return ''
-        })
-        data.append('tipo', tipo)
-        data.append('categoria', submenuactive)
-        await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/empresas/${empresa.id}/fotografias/carpeta/${levelItem.id}`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        let filePath = `empresas/${empresa.id}/tipo-proyecto/${submenuactive}/fotografias/${levelItem.id}/`;
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
-                const { empresa, carpeta } = response.data
-                let { levelItem } = this.state
-                form.adjuntos.adjuntos.files = []
-                form.adjuntos.adjuntos.value = ''
-                levelItem = carpeta
-                this.setState({...this.state, form, empresa:empresa, levelItem})
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
-    /* ANCHOR ADD ADJUNTO CASOS EXITO */
-    /* addAdjuntoInCasoExito = async() => {
-        const { levelItem, form, empresa } = this.state
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        form.adjuntos.adjuntos.files.map((file)=>{
-            data.append(`files_name[]`, file.name)
-            data.append(`files[]`, file.file)
-            return '';
-        })
-        data.append('tipo', levelItem.id)
-        await axios.post(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/caso-exito/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                Swal.close()
-                const { empresa, carpeta } = response.data
-                let { levelItem } = this.state
-                form.adjuntos.adjuntos.files = []
-                form.adjuntos.adjuntos.value = ''
-                levelItem = carpeta
-                this.setState({...this.state, form, empresa:empresa, levelItem})
+                const { alma } = response.data
+                let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204)
+                                    resolve({ name: file.name, url: location })
+                                else
+                                    reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addS3FilesInFotografiasAxios(values)}).catch(err => console.error(err))
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
-    } */
+    }
+
+    addS3FilesInFotografiasAxios = async(arreglo) => {
+        const { access_token } = this.props.authUser
+        const { levelItem, empresa, url, submenuactive, form } = this.state
+        let tipo = ''
+        if(url.length > 2)
+            tipo = url[url.length - 2]
+        waitAlert()
+        try{
+            await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/s3/fotografias/${levelItem.id}`, 
+            { empresa: empresa.id, archivos: arreglo, tipo: tipo, categoria: submenuactive }, 
+            {  headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    Swal.close()
+                    doneAlert(`Fotografías adjuntadas con éxito`)
+                    const { empresa, carpeta } = response.data
+                    let { levelItem } = this.state
+                    form.adjuntos.adjuntos.files = []
+                    form.adjuntos.adjuntos.value = ''
+                    levelItem = carpeta
+                    this.setState({...this.state, form, empresa:empresa, levelItem})
+            }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.error(error, 'error')
+            })
+        } catch (error) { console.error("error", error); }  
+    }
 
     /* ANCHOR DELETE SINGLE FILE */
     deleteAdjunto = async (id, tipo) => {
@@ -588,10 +546,7 @@ class MaterialCliente extends Component {
                 const { form } = this.state
                 form.carpeta = ''
                 this.setState({ ...this.state, empresa: empresa, levelItem: carpeta, newFolder: false, form })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
