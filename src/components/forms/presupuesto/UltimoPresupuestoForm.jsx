@@ -541,7 +541,7 @@ class UltimoPresupuesto extends Component {
                                         }
                                     />
                                     <Button icon='' className="btn btn-bg-light btn-hover-light-primary font-weight-bolder text-primary align-self-center font-size-13px ml-2 px-2 btn-sm"
-                                        only_icon="las la-file-pdf icon-lg mr-1 px-0 text-primary" text="GENERAR PDF"
+                                        only_icon="las la-file-pdf icon-lg mr-1 px-0 text-primary" text="GUARDAR Y GENERAR PDF"
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();
