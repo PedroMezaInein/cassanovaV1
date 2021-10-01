@@ -8,7 +8,7 @@ import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAler
 import Layout from "../../components/layout/layout"
 import { ActualizarPresupuestoForm, AgregarConcepto } from "../../components/forms"
 import { Modal, ModalSendMail } from '../../components/singles'
-import FloatButtons from '../../components/singles/FloatButtons'
+import FloatBtnPresupuesto from '../../components/FloatButtons/FloatBtnPresupuesto'
 import { save, deleteForm } from '../../redux/reducers/formulario'
 import { setSingleHeader } from "../../functions/routers"
 import { CreatableMultiselectGray } from "../../components/form-components"
@@ -627,12 +627,12 @@ class ActualizarPresupuesto extends Component {
                         onSubmit={this.onSubmitConcept}
                     />
                 </Modal>
-                <FloatButtons
-                    save={this.save}
+                <FloatBtnPresupuesto
+                    save={this.onSubmit}
+                    saveTempData={this.save}
                     recover={this.recover}
                     formulario={formulario}
                     url={'presupuesto/presupuesto/update'}
-                    title='del presupuesto'
                 />
                 <Modal show={modal_adjuntos} handleClose={this.handleCloseModalDownloadPDF} title="Historial de presupuestos" >
                     <PresupuestoTable datos = { presupuesto.pdfs } presupuesto = { presupuesto } sendClient = { this.openModalSendToClient }/>
