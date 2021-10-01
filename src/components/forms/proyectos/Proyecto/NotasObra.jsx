@@ -101,7 +101,7 @@ class NotasObra extends Component {
     }
 
     async deleteNotaAxios(nota) {
-        const { proyecto, at } = this.props
+        const { proyecto, at, refresh } = this.props
         await axios.delete(`${URL_DEV}v1/proyectos/nota-bitacora/${nota.id}?proyecto=${proyecto.id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { proyecto } = response.data
@@ -113,6 +113,7 @@ class NotasObra extends Component {
                 } else {
                     activeNota = 'new'
                 }
+                refresh(proyecto.id)
                 this.setState({ ...this.state, activeNota })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -145,9 +146,11 @@ class NotasObra extends Component {
         const { proyecto } = this.props
         await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
+                const { refresh } = this.props
                 const { proyecto } = response.data
                 doneAlert('PDF GENERADO CON ÉXITO')
                 window.open(proyecto.bitacora, '_blank').focus();
+                refresh(proyecto.id)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
