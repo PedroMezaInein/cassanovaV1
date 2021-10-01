@@ -145,7 +145,13 @@ class PresupuestosProyecto extends Component {
                 let aux = {}
                 conceptos.map((concepto) => { return aux[concepto.clave] = false })
                 form.conceptos = aux;
-                options.areas = setOptions(areas, "nombre", "id")
+                aux = setOptions(areas, "nombre", "id")
+                options.areas = []
+                aux.forEach((element) => {
+                    if(element.name !== 'FASE 3' && element.name !== 'DEVOLUCION'){
+                        options.areas.push(element)
+                    }
+                })
                 options.partidas = setOptions(partidas, "nombre", "id")
                 options.unidades = setOptions(unidades, 'nombre', 'id')
                 options.proveedores = setOptions(proveedores, "razon_social", "id")
@@ -337,7 +343,6 @@ class PresupuestosProyecto extends Component {
         const { form, presupuesto } = this.state
         let valor = form.preeliminar.conceptos
         if (name === 'desperdicio') { value = value.replace('%', '') }
-        console.log(name, 'name')
         if (name === 'cantidad_preliminar'){
             if (presupuesto.conceptos[key][name].toString() !== value) {
                 valor[key]['bg_cantidad'] = false
@@ -359,16 +364,17 @@ class PresupuestosProyecto extends Component {
             } else {
                 valor[key].mensajes.active = false
             }
-        if (name === 'desperdicio')
+        if (name === 'desperdicio'){
             if (presupuesto.conceptos[key][name].toString() !== valor[key][name].toString()) {
                 valor[key].mensajes.active = true
                 valor[key].mensajes.mensaje = ('Actualización del desperdicio a un ' + value + '%').toUpperCase()
-                valor[key]['desperdicio'] = true
+                valor[key]['bg_desperdicio'] = false
             } else {
                 valor[key].mensajes.active = false
                 valor[key].mensajes.mensaje = ''
-                valor[key]['desperdicio'] = false
+                valor[key]['bg_desperdicio'] = true
             }
+        }
         this.onChange(valor, 'conceptos', 'preeliminar')
     }
     checkButtonPreeliminar = (key, e) => {

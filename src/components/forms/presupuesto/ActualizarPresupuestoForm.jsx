@@ -516,8 +516,9 @@ class ActualizarPresupuestoForm extends Component {
                                                                         value = { form['conceptos'][key]['desperdicio'] } onChange = { e => onChange(key, e, 'desperdicio') }
                                                                         thousandseparator = { true } prefix = '%' disabled = { !form.conceptos[key].active || this.disabledDesperdicio(concepto) } 
                                                                         customclass={`
-                                                                            ${this.disabledDesperdicio(concepto)?'disable-concepto':presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].desperdicio ?'input-conceptos font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'} 
-                                                                            ${this.inputColor(key)} rounded-pill px-2 border text-center`} />
+                                                                            ${this.disabledDesperdicio(concepto)?'disable-concepto':presupuesto.estatus.estatus === 'Conceptos'?form.conceptos[key].bg_desperdicio ?'input-conceptos font-weight-bolder border-0':'bg-light text-dark-50 font-weight-bolder border-0':'border'} 
+                                                                            ${this.inputColor(key)} rounded-pill px-2 border text-center
+                                                                        `} />
                                                                 </td>
                                                                 {
                                                                     (presupuesto.estatus.estatus === 'En revisión' || (!showInputsCalidad && !showInputsProyecto)) &&

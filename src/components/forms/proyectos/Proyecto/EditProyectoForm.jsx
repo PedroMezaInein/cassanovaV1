@@ -252,12 +252,9 @@ class EditProyectoForm extends Component {
                 this.setState({ ...this.state, form })
                 break;
             case 'cliente_principal':
-                // console.log(value, 'value')
-                // console.log(form, 'form')
                 let aux = []
                 let arr3 = []
                 const found = form.clientes.some(item => item.value === value.value);
-                // console.log(found, 'found')
                 if ( !found ) {
                     if(value.length !== 0){
                         aux.push(value)
@@ -265,7 +262,6 @@ class EditProyectoForm extends Component {
                         form.clientes = arr3
                     }
                 }
-                // console.log(arr3, 'arr3')
                 this.setState({ ...this.state, form })
                 break;
             default:

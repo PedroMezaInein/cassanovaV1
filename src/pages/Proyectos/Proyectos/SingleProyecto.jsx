@@ -209,7 +209,8 @@ class SingleProyecto extends Component {
                                                 isActive = { activeKeyNav === 'avances' ? true : false } onClick = { this.onClick } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="notas">
-                                            <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }  onClick = { this.onClick } options = { options } />
+                                            <NotasObra isActive = { activeKeyNav === 'notas' ? true : false } proyecto={proyecto} at = { access_token }
+                                                onClick = { this.onClick } options = { options } refresh = { this.getOneProyecto } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="adjuntos">
                                             <Adjuntos proyecto={proyecto} at = { access_token }/>

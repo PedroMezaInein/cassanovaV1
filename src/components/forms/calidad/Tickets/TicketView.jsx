@@ -140,9 +140,11 @@ class TicketView extends Component {
             if (presupuesto.conceptos[key][name].toString() !== valor[key][name].toString()) {
                 valor[key].mensajes.active = true
                 valor[key].mensajes.mensaje = ('Actualización del desperdicio a un ' + value + '%').toUpperCase()
+                valor[key]['bg_desperdicio'] = false
             } else {
                 valor[key].mensajes.active = false
                 valor[key].mensajes.mensaje = ''
+                valor[key]['bg_desperdicio'] = true
             }
         onChange(valor, 'conceptos', 'preeliminar')
     }
