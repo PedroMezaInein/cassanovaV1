@@ -43,7 +43,13 @@ class FilterPresupuestos extends Component {
         await axios.get(`${URL_DEV}presupuestos/options`, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { areas } = response.data;
-                options.areas = setOptions(areas, "nombre", "id")
+                let aux = setOptions(areas, "nombre", "id")
+                options.areas = []
+                aux.forEach((element) => {
+                    if(element.name !== 'DEVOLUCION' && element.name !== 'FASE 3'){
+                        options.areas.push(element)
+                    }
+                })
                 Swal.close();
             this.setState({...this.state, options })
             }, (error) => { printResponseErrorAlert(error) }
