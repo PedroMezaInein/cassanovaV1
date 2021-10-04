@@ -38,9 +38,9 @@ class FilterPresupuestos extends Component {
 
     componentDidMount = async() => {
         waitAlert()
-        const { at} = this.props
-        const { options } = this.state
-        await axios.get(`${URL_DEV}presupuestos/options`, { headers: setSingleHeader(at) }).then(
+        const { at, filters } = this.props
+        const { options, form } = this.state
+        await axios.options(`${URL_DEV}v2/presupuesto/presupuestos?type=single`, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { areas } = response.data;
                 let aux = setOptions(areas, "nombre", "id")
@@ -50,8 +50,18 @@ class FilterPresupuestos extends Component {
                         options.areas.push(element)
                     }
                 })
+                if(Object.keys(filters).length > 0){
+                    if(filters.area)
+                        form.area = filters.area
+                    if(filters.estatus)
+                        form.estatus = filters.estatus
+                    if(filters.identificador)
+                        form.identificador = filters.identificador
+                    if(filters.fechas)
+                        form.fechas = filters.fechas
+                }
                 Swal.close();
-            this.setState({...this.state, options })
+            this.setState({...this.state, options, form })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert("Ocurrió un error desconocido catch, intenta de nuevo.");
@@ -66,7 +76,7 @@ class FilterPresupuestos extends Component {
         form.estatus = ''
         form.identificador = ''
         form.fechas = { start: null, end: null }
-        filtering(form)
+        filtering({})
         this.setState({ ...this.state, form })
     }
     onSubmit = (e) => {
