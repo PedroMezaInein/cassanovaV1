@@ -80,10 +80,11 @@ class PresupuestosProyecto extends Component {
     }
 
     componentDidUpdate = (prev) => {
-        const { isActive, proyecto } = this.props
+        const { isActive } = this.props
         const { isActive: prevActive } = prev
         if(isActive && !prevActive){
-            this.getPresupuestos();
+            this.setState({ ...this.state, filtering: {} })
+            this.getPresupuestos({});
         }
     }
 
