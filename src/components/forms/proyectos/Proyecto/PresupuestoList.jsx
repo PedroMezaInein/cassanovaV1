@@ -6,7 +6,6 @@ import { URL_DEV } from '../../../../constants'
 import { dayDMY } from '../../../../functions/setters'
 import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
 import { Budget } from '../../../../components/Lottie/'
-import Swal from 'sweetalert2';
 import { PresupuestoAnswer } from '../../../forms'
 class PresupuestoList extends Component {
 
@@ -15,26 +14,6 @@ class PresupuestoList extends Component {
         presupuestos: [],
         activeAccordion: null
     }
-
-    componentDidMount = () => {
-        
-        /* this.getPresupuestos() */
-    }
-
-    /* getPresupuestos = async() => {
-        const { at, proyecto, filtering } = this.props
-        waitAlert()
-        await axios.get(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, {filter: filtering}, { headers: setSingleHeader(at) }).then(
-            (response) => {
-                const { presupuestos } = response.data
-                Swal.close()
-                this.setState({ ...this.state, presupuestos: presupuestos })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    } */
 
     deletePresupuesto = async(id) => {
         waitAlert()
