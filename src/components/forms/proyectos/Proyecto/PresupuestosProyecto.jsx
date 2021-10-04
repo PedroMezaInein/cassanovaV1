@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import { connect } from "react-redux"
 import axios from "axios"
 import Swal from 'sweetalert2'
+import FloatBtnPresupuesto from '../../../FloatButtons/FloatBtnPresupuesto'
 import { URL_DEV } from "../../../../constants"
 import { setSingleHeader } from '../../../../functions/routers'
 import { DropdownButton, Dropdown, Card, Form } from 'react-bootstrap'
@@ -12,6 +14,8 @@ import { Modal, ModalSendMail } from '../../../../components/singles'
 import { Budget } from '../../../../components/Lottie/'
 import PresupuestoTable from '../../../tables/Presupuestos/PresupuestoTable'
 import { CreatableMultiselectGray } from '../../../form-components'
+import { save, deleteForm } from '../../../../redux/reducers/formulario'
+
 class PresupuestosProyecto extends Component {
 
     state = {
@@ -54,7 +58,8 @@ class PresupuestosProyecto extends Component {
         presupuesto: '',
         aux_presupuestos: { conceptos: false, volumetrias: false, costos: false, revision:false, utilidad: false, espera: false, aceptado: false, rechazado: false },
         modal: { conceptos: false, filter:false, presupuestos: false, email: false },
-        presupuestos: []
+        presupuestos: [],
+        filtering: {}
     }
 
     componentDidMount() { 
@@ -71,10 +76,24 @@ class PresupuestosProyecto extends Component {
         this.setState({options})
         if(presupuestoId){ this.setState({...this.state, navPresupuesto: 'add'}) }
         this.getOptionsAxios();
-        this.getPresupuestos(proyecto)
+        this.getPresupuestos()
     }
 
-    navPresupuesto = (type) => { this.setState({ ...this.state, navPresupuesto: type }) }
+    componentDidUpdate = (prev) => {
+        const { isActive, proyecto } = this.props
+        const { isActive: prevActive } = prev
+        if(isActive && !prevActive){
+            this.getPresupuestos();
+        }
+    }
+
+    navPresupuesto = (type) => { 
+        const { filtering } = this.state
+        if(this.navPresupuesto === 'historial'){
+            this.getPresupuestos(filtering)
+        }   
+        this.setState({ ...this.state, navPresupuesto: type }) 
+    }
 
     sendPresupuestoToClient = async() => {
         waitAlert()
@@ -101,18 +120,21 @@ class PresupuestosProyecto extends Component {
         })
     }
 
-    getPresupuestos = async() => {
+    getPresupuestos = async(filtering) => {
         const { at, proyecto } = this.props
         let { navPresupuesto } = this.state
         // waitAlert()
-        await axios.get(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, { headers: setSingleHeader(at) }).then(
+        await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, {filters: filtering}, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { presupuestos } = response.data
                 Swal.close()
                 const { presupuestoId } = this.props
                 if(!presupuestoId){
                     if(presupuestos.length === 0){
-                        navPresupuesto = 'add'
+                        if(filtering !== {})
+                            navPresupuesto = 'historial'
+                        else
+                            navPresupuesto = 'add'
                     }else{
                         navPresupuesto = 'historial'
                     }
@@ -809,6 +831,23 @@ class PresupuestosProyecto extends Component {
         this.getPresupuestoAxios(pres.id)
     }
 
+    showForm() {
+        const { navPresupuesto, presupuesto } = this.state
+        const { presupuestoId } = this.props
+        let type = ''
+        if (navPresupuesto === 'add') {
+            if (presupuestoId) {
+                if (presupuesto !== '') {
+                    type = 'form'
+                }
+            } else {
+                if (presupuesto !== '') {
+                    type = 'form'
+                }
+            }
+        }
+        return type
+    }
     printActiveNav = () => {
         const { navPresupuesto, form, title, options, formeditado, data, presupuesto, aux_presupuestos } = this.state
         const { presupuestoId } = this.props
@@ -882,18 +921,10 @@ class PresupuestosProyecto extends Component {
     /* -------------------------------------------------------------------------- */
     filterTable = async(form) => {
         waitAlert()
-        // const { at, proyecto } = this.props
-        // await axios.put(`${URL_DEV}v2/${proyecto.id}`, form, { headers: setSingleHeader(at) }).then(
-        //     (response) => {
-        //         const { modal } = this.state
-        //         modal.filter = false
-        //         this.setState({...this.state, modal})
-        //         Swal.close()
-        //     }, (error) => { printResponseErrorAlert(error) }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.error(error, 'error')
-        // })
+        const { modal } = this.state
+        modal.filter = false
+        this.setState({ ...this.state, filtering: form, modal })
+        this.getPresupuestos(form)
     }
 
     handleChangeCreateMSelect = (newValue) => {
@@ -913,17 +944,45 @@ class PresupuestosProyecto extends Component {
         form.correos = currentValue
         this.setState({...this.state, form })
     };
+    save = () => {
+        const { form } = this.state
+        const { save, proyecto } = this.props
+        let auxObject = {}
+        let aux = Object.keys(form.preeliminar)
+        aux.map((element) => {
+            auxObject[element] = form.preeliminar[element]
+            return false
+        })
+        save({
+            form: auxObject,
+            page: `/proyectos/proyectos/single/${proyecto.id}`
+        })
+    }
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        let { form } = this.state
+        form.preeliminar = formulario.form
+        this.setState({
+            ...this.state,
+            form
+        })
+        deleteForm()
+    }
+    refreshPresupuestos = () => {
+        const { filtering } = this.state
+        this.getPresupuestos(filtering)
+    }
 
     render() {
-        const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key, presupuesto, adjunto } = this.state
-        const { proyecto, at } = this.props
+        const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key, presupuesto, adjunto, filtering } = this.state
+        const { proyecto, at, formulario } = this.props
         return (
-            <div>
+            <>
                 <Card className={`card-custom ${navPresupuesto !== 'historial'?'shadow-none bg-transparent':'gutter-b'}`}>
                     <Card.Header className={`border-0 align-items-center pt-6 pt-md-0 ${navPresupuesto !== 'historial'?'px-0':''}`}>
                         <div className="font-weight-bold font-size-h4 text-dark">{this.cardTitlePresupuesto(navPresupuesto)}</div>
                         {
-                            presupuestos.length > 0 ?
+                            presupuestos.length > 0 || filtering !== {} ?
                                 <div className="toolbar-dropdown">
                                     <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>}
                                         id={`${navPresupuesto !== 'historial' ? 'dropdown-white' : 'dropdown-proyectos'}`}>
@@ -953,11 +1012,12 @@ class PresupuestosProyecto extends Component {
                         }
                     </Card.Header>
                     {
-                        navPresupuesto === 'historial' && presupuestos.length ?
-                                <Card.Body>
-                                    <PresupuestoList proyecto={proyecto} at = { at } editPresupuesto = { this.editPresupuesto } />
-                                </Card.Body>
-                            : <></>
+                        navPresupuesto === 'historial' ?
+                            <Card.Body>
+                                <PresupuestoList proyecto={proyecto} at = { at } editPresupuesto = { this.editPresupuesto }
+                                    presupuestos = { presupuestos }  refresh = { this.refreshPresupuestos } />
+                            </Card.Body>
+                        : <></>
                     }
                 </Card>
                 { this.printActiveNav() }
@@ -976,7 +1036,12 @@ class PresupuestosProyecto extends Component {
                     />
                 </Modal>
                 <Modal size = "lg" title = 'Filtrar historial' show = { modal.filter } handleClose = { this.handleCloseFilter} >
-                    <FilterPresupuestos at={at} filtering = { this.filterTable }/>
+                    {
+                        modal.filter ?
+                            <FilterPresupuestos at={at} filtering = { this.filterTable } filters = { filtering } />
+                        : <></>
+                    }
+                    
                 </Modal>
                 <Modal show = { modal.presupuestos } handleClose={this.handleCloseModalHistorialPdfs} title="Historial de presupuestos" >
                     <PresupuestoTable datos = { presupuesto.pdfs } sendClient = { this.openModalSendToClient } presupuesto = { presupuesto } />
@@ -991,9 +1056,33 @@ class PresupuestosProyecto extends Component {
                         </div>
                     </div>
                 </ModalSendMail>
-            </div>
+                {
+                    this.isButtonEnabled() !== false && this.showForm() === 'form'?
+                        <FloatBtnPresupuesto
+                            save = { (e) => { this.onSubmit('preeliminar') } }
+                            saveTempData = { this.save }
+                            recover = { this.recover }
+                            formulario = { formulario }
+                            url = {`/proyectos/proyectos/single/${proyecto.id}`}
+                        />
+                    : <></>
+                }
+            </>
         )
     }
 }
 
-export default PresupuestosProyecto
+// export default PresupuestosProyecto
+
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser,
+        formulario: state.formulario
+    }
+}
+const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PresupuestosProyecto);

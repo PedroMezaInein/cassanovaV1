@@ -7,6 +7,10 @@ import { validateAlert } from '../../../functions/alert'
 // import ItemSlider from '../../singles/ItemSlider'
 import $ from "jquery"
 class ProyectosForm extends Component {
+    state = {
+        cliente_seleccionado:[],
+        clientes_add:[]
+    }
 
     addCorreo = () => {
         const { onChange, form } = this.props
@@ -31,7 +35,11 @@ class ProyectosForm extends Component {
 
     nuevoUpdateCliente = seleccionados =>{
         const { form,deleteOption } = this.props
+        let { clientes_add } = this.state
         seleccionados = seleccionados?seleccionados:[];
+        clientes_add = seleccionados
+        console.log(clientes_add,'clientes_add')
+        this.setState({ clientes_add })
         if(seleccionados.length>form.clientes.length){
             let diferencia = $(seleccionados).not(form.clientes).get();
             let val_diferencia = diferencia[0].value
@@ -105,11 +113,47 @@ class ProyectosForm extends Component {
         onChange({ target: { name: 'tipoProyecto', value: value.toString() } })
     }
     updateSelect = (value, name) => {
-        const { onChange } = this.props
+        const { onChange, form } = this.props
+        let { cliente_seleccionado, clientes_add } = this.state
         if (value === null) {
             value = []
         }
         onChange({ target: { value: value, name: name } }, true)
+        switch (name) {
+            case 'cliente_principal':
+                let arr3 = []
+                if(value.length === 0){ 
+                    if(cliente_seleccionado.length>0){
+                        clientes_add.forEach((clientes, index1) => {
+                            if(clientes.value === cliente_seleccionado[0].value){ 
+                                clientes_add.splice(index1,1); 
+                            }
+                        }) 
+                        cliente_seleccionado.splice(0,1); 
+                    }
+                    form.clientes = clientes_add
+                } else { 
+                    clientes_add.forEach((clientes, index1) => {
+                        if(clientes.value === value.value){ 
+                            clientes_add.splice(index1,1); 
+                        }
+                    })
+                    if(cliente_seleccionado.length>0){
+                        clientes_add.forEach((clientes, index1) => {
+                            if(clientes.value === cliente_seleccionado[0].value){ 
+                                clientes_add.splice(index1,1); 
+                            }
+                        }) 
+                        cliente_seleccionado.splice(0,1); 
+                    }
+                    cliente_seleccionado.push(value)
+                    arr3 = [...clientes_add, ...cliente_seleccionado]
+                    form.clientes = arr3
+                }
+                break;
+            default:
+                break;
+        }
     }
     render() {
         const { title, children, form, onChange, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, 
@@ -154,7 +198,7 @@ class ProyectosForm extends Component {
                                     <Col md="8" className="align-self-center">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 } requirevalidation = { 1 }
+                                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 } requirevalidation = { 0 }
                                                     formeditado = { formeditado } type = "text" name = "nombre" value = { form.nombre } onChange = { onChange }
                                                     placeholder = "NOMBRE DEL PROYECTO" iconclass = "far fa-folder-open" messageinc="Ingresa el nombre del proyecto."
                                                 />
@@ -228,20 +272,20 @@ class ProyectosForm extends Component {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {
+                                                {/* {
                                                     form.fase1 || form.fase2 || form.fase3 ? <></>:
                                                     <span className="form-text text-danger text-center is-invalid"> Selecciona una fase </span>
-                                                }
+                                                } */}
                                             </div>
                                             <div className="col-md-4">
-                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={1} 
+                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} 
                                                     formeditado = { formeditado } placeholder = "M²"
                                                     value = { form.m2 } name = "m2" onChange = { onChange } iconclass = "fas fa-ruler-combined"
                                                     messageinc = "Ingresa los m²."
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputMoneyGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1}
+                                                <InputMoneyGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0}
                                                     formeditado = { formeditado } thousandseparator = { true }
                                                     prefix = '$' name = 'costo' value = { form.costo } onChange = { onChange } placeholder = "COSTO CON IVA"
                                                     iconclass = "fas fa-money-bill-wave-alt"

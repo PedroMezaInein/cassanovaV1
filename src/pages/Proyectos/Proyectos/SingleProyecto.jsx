@@ -75,7 +75,7 @@ class SingleProyecto extends Component {
         })
     }
     
-    async getOptionsAxios() {
+    getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}proyectos/opciones`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
@@ -216,7 +216,8 @@ class SingleProyecto extends Component {
                                             <Adjuntos proyecto={proyecto} at = { access_token }/>
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="presupuestos">
-                                            <PresupuestosProyecto proyecto={proyecto} at = { access_token } presupuestoId = { this.getPresupuestoFromUrl() } />
+                                            <PresupuestosProyecto proyecto={proyecto} at = { access_token } presupuestoId = { this.getPresupuestoFromUrl() } 
+                                                isActive = { activeKeyNav === 'presupuestos' ? true : false } />
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </div>

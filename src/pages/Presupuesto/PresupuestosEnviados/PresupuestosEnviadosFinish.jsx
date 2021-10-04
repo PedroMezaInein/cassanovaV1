@@ -11,7 +11,7 @@ import { CreatableMultiselectGray } from '../../../components/form-components'
 import { setSingleHeader } from "../../../functions/routers"
 import { Modal } from "react-bootstrap"
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import FloatButtons from '../../../components/singles/FloatButtons'
+import FloatBtnPresupuesto from '../../../components/FloatButtons/FloatBtnPresupuesto'
 import { Modal as ModalSingles } from '../../../components/singles'
 import PresupuestoTable from "../../../components/tables/Presupuestos/PresupuestoTable"
 
@@ -622,12 +622,14 @@ class PresupuestosEnviadosFinish extends Component {
                             onClick = { this.sendMail } >ENVIAR</button>
                     </Modal.Footer>
                 </Modal>
-                <FloatButtons
-                    save={this.save}
+                <FloatBtnPresupuesto
+                    save= { (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(); } } 
+                    saveTempData={this.save}
+                    generarPDF = { (e) => { e.preventDefault(); waitAlert(); this.sendPresupuestoAxios(true); } } 
+                    pdf = { true }
                     recover={this.recover}
                     formulario={formulario}
                     url={'presupuesto/utilidad-presupuestos/finish'}
-                    title='del presupuesto'
                 />
                 <ModalSingles show={modal_adjuntos} handleClose={this.handleCloseModalDownloadPDF} title="Historial de presupuestos" >
                     <PresupuestoTable  datos = { presupuesto.pdfs } presupuesto = { presupuesto } sendClient = { this.openModalSendToClient }/>

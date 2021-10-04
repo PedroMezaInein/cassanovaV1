@@ -575,8 +575,8 @@ class ActualizarPresupuestoForm extends Component {
                                 </div>
                                 {
                                     isButtonEnabled !== false ?
-                                        <div className="mt-3 text-center">
-                                            <Button icon = '' className = "mx-auto" onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } 
+                                        <div className="mt-8 border-top pt-5 d-flex justify-content-center">
+                                            <Button only_icon='las la-save icon-lg d-flex' className="btn btn-light-success btn-sm font-weight-bolder d-flex align-items-center" onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-presupuesto') } } 
                                                 text="GUARDAR" />
                                         </div>
                                     : <></>

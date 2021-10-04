@@ -12,17 +12,19 @@ class PresupuestoList extends Component {
 
     state = {
         accordion: [],
-        presupuestos: []
+        presupuestos: [],
+        activeAccordion: null
     }
 
     componentDidMount = () => {
-        this.getPresupuestos()
+        
+        /* this.getPresupuestos() */
     }
 
-    getPresupuestos = async() => {
-        const { at, proyecto } = this.props
+    /* getPresupuestos = async() => {
+        const { at, proyecto, filtering } = this.props
         waitAlert()
-        await axios.get(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, { headers: setSingleHeader(at) }).then(
+        await axios.get(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, {filter: filtering}, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { presupuestos } = response.data
                 Swal.close()
@@ -32,14 +34,15 @@ class PresupuestoList extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
-    }
+    } */
 
     deletePresupuesto = async(id) => {
         waitAlert()
         const { at } = this.props
         await axios.delete(`${URL_DEV}v2/presupuesto/presupuestos/${id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
-                doneAlert(`Presupuesto eliminado con éxito`,  () => { this.getPresupuestos() })
+                const { refresh } = this.props
+                doneAlert(`Presupuesto eliminado con éxito`,  () => { refresh() } )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -48,20 +51,16 @@ class PresupuestoList extends Component {
     }
 
     handleAccordion = (presupuesto) => {
-        const { presupuestos } = this.state;
-        presupuestos.forEach((element, key) => {
-            if (element.id === presupuesto.id) {
-                if(presupuesto.pdfs.length){
-                    element.isActive = element.isActive ? false : true
-                }else{
-                    element.hiddenActive = element.hiddenActive ? false : true
-                }
-            }else {
-                element.isActive = false
-                element.hiddenActive = false
+        const { activeAccordion } = this.state
+        if(activeAccordion === null){
+            this.setState({ ...this.state, activeAccordion: presupuesto.id })
+        }else{
+            if(presupuesto.id.toString() === activeAccordion.toString()){
+                this.setState({ ...this.state, activeAccordion: null })
+            }else{
+                this.setState({ ...this.state, activeAccordion: presupuesto.id })
             }
-        })
-        this.setState({ ...this.state, accordion: presupuestos });
+        }
     }
 
     printEmpty = () => {
@@ -129,29 +128,44 @@ class PresupuestoList extends Component {
         )
     }
     getSVG = presupuesto => {
-        return (
-            presupuesto.pdfs.length?
-                !presupuesto.isActive ?
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
-                        <rect x="10.8891" y="17.8033" width="12" height="2" rx="1" transform="rotate(-90 10.8891 17.8033)" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
-                        <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
-                    </svg>
-                :
+        const { activeAccordion } = this.state
+        if(activeAccordion === null){
+            return(
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
-                    <rect x="6.0104" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                    <rect x="10.8891" y="17.8033" width="12" height="2" rx="1" transform="rotate(-90 10.8891 17.8033)" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                    <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
                 </svg>
-            :
+            )
+        }
+        if(presupuesto.pdfs.length <= 0){
+            return(
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill='none'></rect>
                     <rect x="6.0104" y="10.9247" width="12" height="2" rx="1" fill='none'></rect>
                 </svg>
-        )
+            )
+        }
+        if(presupuesto.id.toString() === activeAccordion.toString()){
+            return(
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                    <rect x="6.0104" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                </svg>
+            )
+        }else{
+            return(
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                    <rect x="10.8891" y="17.8033" width="12" height="2" rx="1" transform="rotate(-90 10.8891 17.8033)" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                    <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                </svg>
+            )
+        }
     }
     printPresupuestos = () => {
-        const { presupuestos } = this.state
-        const { editPresupuesto, at } = this.props
+        const { activeAccordion } = this.state
+        const { editPresupuesto, at, presupuestos, refresh } = this.props
         return(
             <div className="table-responsive">
                 <div className="list min-w-650px col-md-11 mx-auto">
@@ -159,9 +173,9 @@ class PresupuestoList extends Component {
                         {
                             presupuestos.map((presupuesto, key) => {
                                 return (
-                                    <Card key={key} className={`w-auto ${(presupuesto.isActive || presupuesto.hiddenActive) ? 'border-top-0' : ''}`} >
+                                    <Card key={key} className={`w-auto ${(presupuesto.id ===  activeAccordion) ? 'border-top-0' : ''}`} >
                                         <Card.Header >
-                                            <Card.Title className={`rounded px-2 ${(presupuesto.isActive || presupuesto.hiddenActive) ? 'collapsed bg-light' : 'text-dark'}`} 
+                                            <Card.Title className={`rounded px-2 ${(presupuesto.id ===  activeAccordion) ? 'collapsed bg-light' : 'text-dark'}`} 
                                                 onClick={() => { this.handleAccordion(presupuesto) }}
                                                 >
                                                 <span className='svg-icon svg-icon-sm'>
@@ -194,7 +208,7 @@ class PresupuestoList extends Component {
                                                                     this.canWork(presupuesto) ? 
                                                                         <OverlayTrigger rootClose 
                                                                             overlay={ <Tooltip> <span className='font-weight-bolder'>EDITAR</span> </Tooltip>}>
-                                                                            <span className={`btn btn-icon ${(presupuesto.isActive || presupuesto.hiddenActive) ?
+                                                                            <span className={`btn btn-icon ${(presupuesto.id ===  activeAccordion) ?
                                                                                 'btn-color-primary2'
                                                                                 : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}
                                                                                 onClick = { (e) => { e.preventDefault(); editPresupuesto(presupuesto); } } >
@@ -207,7 +221,7 @@ class PresupuestoList extends Component {
                                                                     this.canWork(presupuesto) ?
                                                                         <OverlayTrigger rootClose
                                                                             overlay={ <Tooltip> <span className='font-weight-bolder'>ELIMINAR</span> </Tooltip>}>
-                                                                            <span className={`btn btn-icon ${(presupuesto.isActive || presupuesto.hiddenActive) ? 'btn-color-danger': ''} btn-active-light-danger w-30px h-30px`}
+                                                                            <span className={`btn btn-icon ${(presupuesto.id ===  activeAccordion) ? 'btn-color-danger': ''} btn-active-light-danger w-30px h-30px`}
                                                                                 onClick={(e) => {
                                                                                     e.preventDefault();
                                                                                     deleteAlert(
@@ -226,7 +240,7 @@ class PresupuestoList extends Component {
                                                 </div>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Card.Body className={`card-body px-10 ${presupuesto.isActive ? 'collapse show' : 'collapse'}`}>
+                                        <Card.Body className={`card-body px-10 ${presupuesto.id ===  activeAccordion ? 'collapse show' : 'collapse'}`}>
                                             <div className="d-flex justify-content-center border border-gray-300 border-dashed rounded mt-8 mb-5 px-5 py-4 mx-auto w-fit-content">
                                                 <div className="d-flex align-items-center">
                                                     <div className="symbol symbol-35 mr-3 flex-shrink-0">
@@ -254,7 +268,7 @@ class PresupuestoList extends Component {
                                             <Row className="mx-0">
                                                 <Col md={10} className="mb-5 mx-auto d-flex justify-content-center">
                                                     <PresupuestoAnswer presupuestos = { presupuestos } presupuesto = { presupuesto } at = { at } 
-                                                        getPresupuestos = {this.getPresupuestos} />
+                                                        getPresupuestos = {refresh}  />
                                                 </Col>
                                             </Row>
                                         </Card.Body>
@@ -269,7 +283,7 @@ class PresupuestoList extends Component {
     }
 
     render() {
-        const { presupuestos } = this.state
+        const { presupuestos } = this.props
         return ( <div> { presupuestos.length ? this.printPresupuestos() : this.printEmpty() } </div> )
     }
 }
