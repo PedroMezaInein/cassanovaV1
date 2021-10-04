@@ -16,6 +16,8 @@ import Swal from 'sweetalert2'
 import moment from 'moment'
 class EditProyectoForm extends Component {
     state = {
+        cliente_seleccionado:[],
+        clientes_add:[],
         navInfo: 'info',
         showModal:false,
         modal:{
@@ -68,6 +70,7 @@ class EditProyectoForm extends Component {
     getForm(){
         const { proyecto, options } = this.props
         const { form, formContratar } = this.state
+        let { cliente_seleccionado, clientes_add } = this.state
         form.nombre = proyecto.nombre
         if (proyecto.empresa){
             form.empresa = {name: proyecto.empresa.name, value: proyecto.empresa.id.toString(), label: proyecto.empresa.name}
@@ -93,6 +96,8 @@ class EditProyectoForm extends Component {
         form.contacto = proyecto.contacto
         form.numeroContacto = proyecto.numero_contacto
         let auxClientes = []
+        
+        let aux_clientesPrincipal = []
         if (proyecto.clientes) {
             proyecto.clientes.forEach(cliente => {
                 options.clientes.forEach(option => {
@@ -107,10 +112,20 @@ class EditProyectoForm extends Component {
                             colonia: option.colonia,
                             calle: option.calle
                         })
+                        aux_clientesPrincipal.push({
+                            name: cliente.empresa,
+                            value: cliente.id.toString(),
+                            label: cliente.empresa,
+                            cp: option.cp,
+                            estado: option.estado,
+                            municipio: option.municipio,
+                            colonia: option.colonia,
+                            calle: option.calle
+                        })
                     }
                 });
             });
-            form.clientes = auxClientes
+            form.clientes = aux_clientesPrincipal
         }
         let auxEmail = []
         if (proyecto.contactos) {
@@ -130,10 +145,15 @@ class EditProyectoForm extends Component {
                 name: proyecto.cliente.empresa,
                 label: proyecto.cliente.empresa
             }
+            aux_clientesPrincipal.push({
+                value: proyecto.cliente.id.toString(),
+                name: proyecto.cliente.empresa,
+                label: proyecto.cliente.empresa
+            })
+            cliente_seleccionado.push(form.cliente_principal)
         }else{
             form.cliente_principal = ''
         }
-        
         formContratar.costo = proyecto.costo
         formContratar.fechaInicio = new Date( moment(proyecto.fecha_fin))
         formContratar.fechaFin = null
@@ -143,8 +163,11 @@ class EditProyectoForm extends Component {
         if(proyecto.fase3){ auxFasesContratar.push({name: 'Fase 3', value: 'fase3', label: 'Fase 3', isFixed:true}) }
         formContratar.fases = auxFasesContratar
         formContratar.nombre = this.getNameWithoutFases( proyecto.nombre )
+
+        
+        clientes_add = aux_clientesPrincipal
         this.optionsFixed()
-        this.setState({ ...this.state, form, formContratar })
+        this.setState({ ...this.state, form, formContratar, cliente_seleccionado, clientes_add })
     }
 
     getNameWithoutFases = cadena => {
@@ -233,11 +256,12 @@ class EditProyectoForm extends Component {
     }
     updateSelect = (value, name) => {
         const { proyecto } = this.props
+        const { form } = this.state
+        let { cliente_seleccionado, clientes_add } = this.state
         if (value === null) {
             value = []
         }
         this.onChange({ target: { value: value, name: name } }, true)
-        const { form } = this.state
         switch (name) {
             case 'fases':
                 let nombre = this.getNameWithoutFases( proyecto.nombre )
@@ -251,18 +275,40 @@ class EditProyectoForm extends Component {
                 form.nombre = nombre
                 this.setState({ ...this.state, form })
                 break;
-            case 'cliente_principal':
-                let aux = []
-                let arr3 = []
-                const found = form.clientes.some(item => item.value === value.value);
-                if ( !found ) {
-                    if(value.length !== 0){
-                        aux.push(value)
-                        arr3 = [...form.clientes, ...aux]
+                case 'cliente_principal':
+                    let arr3 = []
+                    if(value.length === 0){ 
+                        if(cliente_seleccionado.length>0){
+                            clientes_add.forEach((clientes, index1) => {
+                                if(clientes.value === cliente_seleccionado[0].value){ 
+                                    clientes_add.splice(index1,1); 
+                                }
+                            }) 
+                            cliente_seleccionado.splice(0,1); 
+                        }
+                        form.clientes = clientes_add
+                    } else { 
+                        clientes_add.forEach((clientes, index1) => {
+                            if(clientes.value === value.value){ 
+                                clientes_add.splice(index1,1); 
+                            }
+                        })
+                        if(cliente_seleccionado.length>0){
+                            clientes_add.forEach((clientes, index1) => {
+                                if(clientes.value === cliente_seleccionado[0].value){ 
+                                    clientes_add.splice(index1,1); 
+                                }
+                            }) 
+                            cliente_seleccionado.splice(0,1); 
+                        }
+                        cliente_seleccionado.push(value)
+                        arr3 = [...clientes_add, ...cliente_seleccionado]
                         form.clientes = arr3
                     }
-                }
-                this.setState({ ...this.state, form })
+                    break;
+                case 'clientes':
+                    clientes_add = value
+                    this.setState({ ...this.state, clientes_add })
                 break;
             default:
                 break;
@@ -381,7 +427,7 @@ class EditProyectoForm extends Component {
     onClickInfo = (type) => {
         this.getForm()
         this.setState({
-            ...this.state,
+            // ...this.state,
             navInfo: type
         })
     }
@@ -468,7 +514,7 @@ class EditProyectoForm extends Component {
         })
     }
     render() {
-        const { showModal, form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
+        const { showModal, form, formeditado, modal, navInfo, formContratar, stateOptions, cliente_seleccionado, clientes_add } = this.state
         const { proyecto, options } = this.props
         return (
             <>
