@@ -8,7 +8,6 @@ import { validateAlert } from '../../../functions/alert'
 import $ from "jquery"
 class ProyectosForm extends Component {
     state = {
-        id_cliente_seleccionado:'',
         cliente_seleccionado:[],
         clientes_add:[]
     }

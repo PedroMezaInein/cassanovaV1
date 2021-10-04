@@ -514,7 +514,7 @@ class EditProyectoForm extends Component {
         })
     }
     render() {
-        const { showModal, form, formeditado, modal, navInfo, formContratar, stateOptions, cliente_seleccionado, clientes_add } = this.state
+        const { showModal, form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
         const { proyecto, options } = this.props
         return (
             <>
