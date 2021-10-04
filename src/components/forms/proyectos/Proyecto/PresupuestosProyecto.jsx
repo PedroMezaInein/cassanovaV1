@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import { connect } from "react-redux"
 import axios from "axios"
 import Swal from 'sweetalert2'
+import FloatBtnPresupuesto from '../../../FloatButtons/FloatBtnPresupuesto'
 import { URL_DEV } from "../../../../constants"
 import { setSingleHeader } from '../../../../functions/routers'
 import { DropdownButton, Dropdown, Card, Form } from 'react-bootstrap'
@@ -12,6 +14,8 @@ import { Modal, ModalSendMail } from '../../../../components/singles'
 import { Budget } from '../../../../components/Lottie/'
 import PresupuestoTable from '../../../tables/Presupuestos/PresupuestoTable'
 import { CreatableMultiselectGray } from '../../../form-components'
+import { save, deleteForm } from '../../../../redux/reducers/formulario'
+
 class PresupuestosProyecto extends Component {
 
     state = {
@@ -827,6 +831,23 @@ class PresupuestosProyecto extends Component {
         this.getPresupuestoAxios(pres.id)
     }
 
+    showForm() {
+        const { navPresupuesto, presupuesto } = this.state
+        const { presupuestoId } = this.props
+        let type = ''
+        if (navPresupuesto === 'add') {
+            if (presupuestoId) {
+                if (presupuesto !== '') {
+                    type = 'form'
+                }
+            } else {
+                if (presupuesto !== '') {
+                    type = 'form'
+                }
+            }
+        }
+        return type
+    }
     printActiveNav = () => {
         const { navPresupuesto, form, title, options, formeditado, data, presupuesto, aux_presupuestos } = this.state
         const { presupuestoId } = this.props
@@ -923,7 +944,30 @@ class PresupuestosProyecto extends Component {
         form.correos = currentValue
         this.setState({...this.state, form })
     };
-
+    save = () => {
+        const { form } = this.state
+        const { save, proyecto } = this.props
+        let auxObject = {}
+        let aux = Object.keys(form.preeliminar)
+        aux.map((element) => {
+            auxObject[element] = form.preeliminar[element]
+            return false
+        })
+        save({
+            form: auxObject,
+            page: `/proyectos/proyectos/single/${proyecto.id}`
+        })
+    }
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        let { form } = this.state
+        form.preeliminar = formulario.form
+        this.setState({
+            ...this.state,
+            form
+        })
+        deleteForm()
+    }
     refreshPresupuestos = () => {
         const { filtering } = this.state
         this.getPresupuestos(filtering)
@@ -931,9 +975,9 @@ class PresupuestosProyecto extends Component {
 
     render() {
         const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key, presupuesto, adjunto, filtering } = this.state
-        const { proyecto, at } = this.props
+        const { proyecto, at, formulario } = this.props
         return (
-            <div>
+            <>
                 <Card className={`card-custom ${navPresupuesto !== 'historial'?'shadow-none bg-transparent':'gutter-b'}`}>
                     <Card.Header className={`border-0 align-items-center pt-6 pt-md-0 ${navPresupuesto !== 'historial'?'px-0':''}`}>
                         <div className="font-weight-bold font-size-h4 text-dark">{this.cardTitlePresupuesto(navPresupuesto)}</div>
@@ -1012,9 +1056,33 @@ class PresupuestosProyecto extends Component {
                         </div>
                     </div>
                 </ModalSendMail>
-            </div>
+                {
+                    this.isButtonEnabled() !== false && this.showForm() === 'form'?
+                        <FloatBtnPresupuesto
+                            save = { (e) => { this.onSubmit('preeliminar') } }
+                            saveTempData = { this.save }
+                            recover = { this.recover }
+                            formulario = { formulario }
+                            url = {`/proyectos/proyectos/single/${proyecto.id}`}
+                        />
+                    : <></>
+                }
+            </>
         )
     }
 }
 
-export default PresupuestosProyecto
+// export default PresupuestosProyecto
+
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser,
+        formulario: state.formulario
+    }
+}
+const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PresupuestosProyecto);

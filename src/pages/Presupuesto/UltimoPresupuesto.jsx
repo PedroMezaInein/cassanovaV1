@@ -7,7 +7,7 @@ import { setOptions } from "../../functions/setters"
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlertY } from "../../functions/alert"
 import Layout from "../../components/layout/layout"
 import { UltimoPresupuestoForm } from "../../components/forms"
-import FloatButtons from '../../components/singles/FloatButtons'
+import FloatBtnPresupuesto from '../../components/FloatButtons/FloatBtnPresupuesto'
 import { save, deleteForm } from '../../redux/reducers/formulario'
 class UltimoPresupuesto extends Component {
     state = {
@@ -396,14 +396,14 @@ class UltimoPresupuesto extends Component {
                     // aceptarPresupuesto={this.aceptarPresupuesto}
                     sendPresupuesto={this.sendPresupuesto}
                 />
-                <FloatButtons
-                    save={this.save}
+                <FloatBtnPresupuesto
+                    save={this.sendPresupuesto}
+                    saveTempData={this.save}
+                    generarPDF={this.generarPDF}
+                    pdf = { true }
                     recover={this.recover}
                     formulario={formulario}
-                    descargar={() => this.generarPDFAxios()}
                     url={'presupuesto/presupuesto/finish'}
-                    exportar={true}
-                    title='del presupuesto'
                 />
             </Layout>
         );

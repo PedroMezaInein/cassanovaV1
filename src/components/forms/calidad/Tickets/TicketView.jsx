@@ -11,7 +11,7 @@ import { Modal } from '../../../../components/singles'
 import { ProcesoTicketForm } from '../../../../components/forms'
 import Scrollbar from 'perfect-scrollbar-react'
 import { SolicitudFacturacionTabla } from '../../../tables'
-import FloatButtons from '../../../../components/singles/FloatButtons'
+import FloatBtnPresupuesto from '../../../../components/FloatButtons/FloatBtnPresupuesto'
 import 'perfect-scrollbar-react/dist/style.min.css'
 class TicketView extends Component {
 
@@ -952,12 +952,12 @@ class TicketView extends Component {
                 </Modal>
                 {
                     this.isButtonEnabled() !== false && defaultNavTabs === 'presupuesto'?
-                        <FloatButtons
-                            save={save}
+                        <FloatBtnPresupuesto
+                            save= { (e) => { onSubmit(this.isGarantia() ? 'vicio-oculto' : 'preeliminar') } }
+                            saveTempData={save}
                             recover={recover}
                             formulario={formularioGuardado}
                             url='calidad/tickets/detalles-ticket'
-                            title='del presupuesto'
                         />
                     : <></>
                 }
