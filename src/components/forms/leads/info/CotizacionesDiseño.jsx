@@ -75,7 +75,7 @@ class CotizacionesDiseño extends Component {
                                         :<></>
                                     }
                                     {
-                                        activeCotizacion === 'new' && this.hasCorizaciones(lead) || activeCotizacion === 'contratar' ?
+                                        ( activeCotizacion === 'new' && this.hasCorizaciones(lead) ) || ( activeCotizacion === 'contratar' ) ?
                                             <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.onClickCotizacion('historial')}}>
                                                 {setNaviIcon(`las la-clipboard-list icon-lg`, 'HISTORIAL DE COTIZACIONES')}
                                             </Dropdown.Item>
