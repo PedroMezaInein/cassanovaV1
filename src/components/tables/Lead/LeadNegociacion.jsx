@@ -51,7 +51,7 @@ class LeadNegociacion extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, /* changePageCierreVenta, */ changePageContratar, /* sendEmail, */ clickOneLead } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, /* changePageCierreVenta, changePageContratar, sendEmail, */ clickOneLead } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive">
@@ -251,11 +251,11 @@ class LeadNegociacion extends Component {
                                                                     </span>
                                                                 </OverlayTrigger> */
                                                         }
-                                                        <OverlayTrigger rootClose overlay={<Tooltip>CONTRATAR</Tooltip>}>
+                                                        {/* <OverlayTrigger rootClose overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                             <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
                                                                 <i className="fas fa-file-signature icon-14px"></i>
                                                             </span>
-                                                        </OverlayTrigger>
+                                                        </OverlayTrigger> */}
                                                         {/* <OverlayTrigger rootClose overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
                                                             <span onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-brown">
                                                                 <span className="svg-icon svg-icon-md">
