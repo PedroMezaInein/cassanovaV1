@@ -38,7 +38,6 @@ class ProyectosForm extends Component {
         let { clientes_add } = this.state
         seleccionados = seleccionados?seleccionados:[];
         clientes_add = seleccionados
-        console.log(clientes_add,'clientes_add')
         this.setState({ clientes_add })
         if(seleccionados.length>form.clientes.length){
             let diferencia = $(seleccionados).not(form.clientes).get();
