@@ -11,7 +11,7 @@ import { diffCommentDate, replaceAll } from '../../../../functions/functions'
 import axios from 'axios'
 import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert, customInputAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
-import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, /*PresupuestoGenerado,*/ InformacionGeneral, CotizacionesDiseño } from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, /*PresupuestoGenerado,*/ InformacionGeneral, CotizacionesDiseño } from '../../../../components/forms'
 import { Update } from '../../../../components/Lottie'
 // import { Modal } from '../../../../components/singles'
 import Pagination from "react-js-pagination"
@@ -1480,10 +1480,10 @@ class LeadInfo extends Component {
     }
 
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav, solicitud } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav, solicitud } = this.state
         const { history } = this.props
         return (
-            <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
+            <Layout active = 'leads' { ...this.props } botonHeader = { this.botonHeader } >
                 <Tab.Container
                     className="p-5"
                     defaultActiveKey={activeNav}
