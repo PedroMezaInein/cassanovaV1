@@ -11,7 +11,7 @@ import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAle
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions, printTableCP } from '../../../functions/setters'
 import Swal from 'sweetalert2'
-import { ProyectoCard } from '../../../components/cards'
+import { ContratarCard } from '../../../components/cards'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
 import { setSingleHeader } from '../../../functions/routers'
 class Contratar extends Component {
@@ -613,13 +613,13 @@ class Contratar extends Component {
                             changeNameFile={this.changeNameFile}
                             onChangeFile={this.onChangeFile}
                         >
-                            <Accordion>
+                            <Accordion className="px-5">
                                 {
                                     lead !== '' ? 
                                         lead.prospecto ?
-                                            <div className="d-flex justify-content-end">
-                                                <Accordion.Toggle as = { Button }  only_icon={"far fa-eye icon-15px mr-2"} text="INFORMACIÓN LEAD"
-                                                eventKey = 'prospecto' className={"btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2"}
+                                            <div className="d-flex justify-content-end px-md-6 px-0 mb-5">
+                                                <Accordion.Toggle as = { Button }  only_icon="far fa-eye icon-15px mr-2" text="INFORMACIÓN LEAD"
+                                                eventKey = 'prospecto' className="btn btn-icon btn-xs w-auto p-3 btn-light-info"
                                                 />
                                             </div>
                                         : ''
@@ -631,7 +631,7 @@ class Contratar extends Component {
                                             lead !== ''?
                                                 lead.prospecto ?
                                                     <div>
-                                                        <ProyectoCard data={lead.prospecto} />
+                                                        <ContratarCard lead={lead} />
                                                     </div>
                                                 : ''
                                             : ''
@@ -642,10 +642,8 @@ class Contratar extends Component {
                         </ProyectosFormGray>
                     </Card.Body>
                 </Card>
-                <Modal size = 'xl' title = 'Nuevo cliente' show = { modal }
-                    handleClose = { this.handleClose }>
-                        <ClienteForm formeditado = { 0 } form = { form } onChange = { this.onChange } onSubmit = { this.onSubmitCliente } 
-                            className="mt-4" />
+                <Modal size = 'xl' title = 'Nuevo cliente' show = { modal } handleClose = { this.handleClose }>
+                    <ClienteForm formeditado = { 0 } form = { form } onChange = { this.onChange } onSubmit = { this.onSubmitCliente } className="mt-4" />
                 </Modal>
                 <Modal size="lg" show = { modalCP } title = 'ACTUALIZAR DATOS DEL CLIENTE' handleClose = { this.handleCloseCP } >
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendForm(); }}>
