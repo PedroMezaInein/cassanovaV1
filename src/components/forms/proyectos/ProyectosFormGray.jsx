@@ -246,7 +246,7 @@ class ProyectosForm extends Component {
                             {...props}
                         >
                             {children}
-                            <div id="wizard-1-content" class="px-8" data-wizard-type="step-content" data-wizard-state="current">
+                            <div id="wizard-1-content" className="px-8" data-wizard-type="step-content" data-wizard-state="current">
                                 <Row className="mx-0 mt-10">
                                     <div className="text-center col-md-4">
                                         <div className="col-form-label mb-3 p-0 font-weight-bolder text-dark-60">Periodo del proyecto</div>
@@ -352,7 +352,7 @@ class ProyectosForm extends Component {
                                     </button>
                                 </div>
                             </div>
-                            <div id="wizard-2-content" class="px-8" data-wizard-type="step-content">
+                            <div id="wizard-2-content" className="px-8" data-wizard-type="step-content">
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputGray
@@ -435,7 +435,7 @@ class ProyectosForm extends Component {
                                     </button>
                                 </div>
                             </div>
-                            <div id="wizard-3-content" class="px-8" data-wizard-type="step-content">
+                            <div id="wizard-3-content" className="px-8" data-wizard-type="step-content">
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputNumberGray
@@ -545,7 +545,7 @@ class ProyectosForm extends Component {
                                     </button>
                                 </div>
                             </div>
-                            <div id="wizard-4-content" class="px-8" data-wizard-type="step-content">
+                            <div id="wizard-4-content" className="px-8" data-wizard-type="step-content">
                                 <Row className="mx-auto mt-5 mb-8 col-md-9 col-xxl-7">
                                     <div className="text-center col-md-6">
                                         <div>
