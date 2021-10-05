@@ -58,7 +58,7 @@ class HistorialCotizacionesDiseño extends Component {
     }
     
     render() {
-        const { pdfs, sendPresupuesto, changePageContratar } = this.props
+        const { pdfs, sendPresupuesto, onClickOrden } = this.props
         return (
             <div className="table-responsive">
                 <div className="list min-w-500px col-md-11 mx-auto">
@@ -91,35 +91,28 @@ class HistorialCotizacionesDiseño extends Component {
                                                             <div className="align-self-center w-50 text-center">
                                                                 {this.labelStatus(pdf)}
                                                             </div>
-                                                            <div className="min-w-fit-content text-right">
-                                                                <OverlayTrigger rootClose overlay={ <Tooltip><span className='font-weight-bolder'>VER PDF</span></Tooltip>}>
+                                                            <div className="w-30 text-right">
+                                                                {
+                                                                    pdf.pivot.fecha_envio === null ?
+                                                                        <OverlayTrigger rootClose overlay={<Tooltip> <span className='font-weight-bolder'>ENVIAR A CLIENTE</span> </Tooltip>}>
+                                                                            <span onClick={(e) => { e.preventDefault(); sendPresupuesto(pdf); }}
+                                                                                className={`btn btn-icon ${pdf.isActive ?
+                                                                                    'btn-color-info2'
+                                                                                    : ''}  btn-active-light-info2 w-30px h-30px`}>
+                                                                                <i className="las la-envelope icon-xl"></i>
+                                                                            </span>
+                                                                        </OverlayTrigger>
+                                                                        :
+                                                                        <></>
+                                                                }
+                                                                <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER PDF</span></Tooltip>}>
                                                                     <a rel="noopener noreferrer" href={pdf.url} target="_blank"
                                                                         className={`btn btn-icon ${pdf.isActive ?
                                                                             'btn-color-primary2'
-                                                                            : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
+                                                                            : ''}  btn-active-light-primary2 w-30px h-30px ml-3`}>
                                                                         <i className="las la-file-pdf icon-xl mt-1"></i>
                                                                     </a>
                                                                 </OverlayTrigger>
-                                                                {
-                                                                    pdf.pivot.fecha_envio === null?
-                                                                    <OverlayTrigger rootClose overlay={ <Tooltip> <span className='font-weight-bolder'>ENVIAR A CLIENTE</span> </Tooltip>}>
-                                                                        <span onClick = { (e) => { e.preventDefault(); sendPresupuesto(pdf); } }
-                                                                            className={`btn btn-icon ${pdf.isActive ?
-                                                                                'btn-color-info2'
-                                                                                : ''}  btn-active-light-info2 w-30px h-30px`}>
-                                                                            <i className="las la-envelope icon-xl"></i>
-                                                                        </span>
-                                                                    </OverlayTrigger>
-                                                                    :
-                                                                    <OverlayTrigger rootClose overlay={ <Tooltip><span className='font-weight-bolder'>CONTRATAR</span></Tooltip>}>
-                                                                        <span onClick={() => { changePageContratar(pdf)}}
-                                                                            className={`btn btn-icon ${pdf.isActive ?
-                                                                                'btn-color-success2'
-                                                                                : ''}  btn-active-light-success2 w-30px h-30px`}>
-                                                                            <i className="las la-file-signature icon-xl mt-1"></i>
-                                                                        </span>
-                                                                    </OverlayTrigger>
-                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
@@ -129,8 +122,20 @@ class HistorialCotizacionesDiseño extends Component {
                                         <Card.Body className={`card-body px-10 ${pdf.isActive ? 'collapse show' : 'collapse'}`}>
                                             {
                                                 pdf.pivot.fecha_envio !== null?
-                                                    <div className="mx-auto w-max-content text-justify mb-5 col-md-10 mt-5">
-                                                        <span className="font-weight-light"><span className="font-weight-bolder"><u>Fecha de envio:</u> </span>{dayDMY(pdf.pivot.fecha_envio)}</span>
+                                                    <div className="d-flex col-md-9 mx-auto my-6 justify-content-between">
+                                                        <div className="text-justify">
+                                                            <span className="font-weight-light"><span className="font-weight-bolder"><u>Fecha de envio:</u> </span>{dayDMY(pdf.pivot.fecha_envio)}</span>
+                                                        </div>
+                                                            <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden(pdf); }} >
+                                                            <span className="svg-icon svg-icon-primary2 mr-1">
+                                                                <span className="svg-icon svg-icon-md">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
+                                                                </span>
+                                                            </span>
+                                                            <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
+                                                                Cambiar estatus de cotización
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 :<></>
                                             }
