@@ -1470,7 +1470,7 @@ class LeadInfo extends Component {
                     <div style = {{ maxWidth: isMobile ? '100%' : '80%' }} 
                     className = {`border rounded bg-light-${own ? 'info' : 'primary'} text-justify px-3 py-2`} >
                         { coment.texto }
-                        <span class="blockquote-footer font-weight-lighter ml-2 d-inline">
+                        <span className="blockquote-footer font-weight-lighter ml-2 d-inline">
                             <span className = 'font-weight-boldest'>{usuario.name}</span> / { diffCommentDate(coment) }
                         </span>
                     </div>
