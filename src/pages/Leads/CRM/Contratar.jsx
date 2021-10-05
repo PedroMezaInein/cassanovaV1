@@ -13,6 +13,7 @@ import { setOptions, printTableCP } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 import { ProyectoCard } from '../../../components/cards'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
+import { setSingleHeader } from '../../../functions/routers'
 class Contratar extends Component {
     state = {
         modal: false,
@@ -44,6 +45,7 @@ class Contratar extends Component {
             semana: '',
             nombre: '',
             cliente: '',
+            cliente_principal: '',
             contacto: '',
             numeroContacto: '',
             empresa: '',
@@ -68,6 +70,10 @@ class Contratar extends Component {
             tipoProyecto:'',
             m2:'',
             ubicacion_cliente: '',
+            fechaEvidencia: new Date(),
+            adjunto: '',
+            numero_orden: '',
+            cotizacionId:0
         },
         options:{
             empresas: [],
@@ -132,7 +138,7 @@ class Contratar extends Component {
                             cp: cliente.cp,
                             estado: cliente.estado,
                             municipio: cliente.municipio,
-                            colonia: cliente.colonia,
+                            colonia: cliente.colonia.toUpperCase(),
                             calle: cliente.calle
                         })
                     }
@@ -325,8 +331,9 @@ class Contratar extends Component {
             arreglo.push(state.lead.email)
             formProyecto.correos = arreglo
         }
-        formProyecto.tipoProyecto = state.lead.prospecto.tipo_proyecto.id.toString()
+        formProyecto.tipoProyecto = {name: state.lead.prospecto.tipo_proyecto.tipo, value: state.lead.prospecto.tipo_proyecto.id.toString(), label: state.lead.prospecto.tipo_proyecto.tipo}
         formProyecto.m2 = state.lead.presupuesto_diseño!==null?state.lead.presupuesto_diseño.m2:''
+        formProyecto.cotizacionId = state.cotizacionId.pivot.identificador
         this.setState({
             ...this.state,
             lead: state.lead,
@@ -391,7 +398,13 @@ class Contratar extends Component {
         let sendCorreoValue = document.sendCorreoForm.sendCorreo.value;
         if(sendCorreoValue === 'si' || sendCorreoValue === 'no'){
             formProyecto.sendCorreo = sendCorreoValue
-            await axios.post( `${URL_DEV}v2/leads/crm/convert/${lead.id}`, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+
+            let data = new FormData()
+            data.append(`adjuntoEvidencia`, formProyecto.adjunto)
+            data.append(`fechaEvidencia`, (new Date(formProyecto.fechaEvidencia)).toDateString())
+            data.append(`orden_compra`, formProyecto.numero_orden)
+            data.append(`pdfId`, formProyecto.cotizacionId)
+            await axios.post( `${URL_DEV}v2/leads/crm/convert/${lead.id}`, formProyecto, { headers: setSingleHeader(access_token) }).then(
                 (response) => {
                     const { proyecto } = response.data
                     const { history } = this.props;
@@ -522,21 +535,29 @@ class Contratar extends Component {
     sendForm = async() => {
         let { formProyecto } = this.state
         const { options } = this.state
-        options.cp_clientes.forEach((cliente) => {
-            if (formProyecto.cp_ubicacion === cliente.value) {
-                formProyecto.cp = cliente.cp
-                formProyecto.estado = cliente.estado
-                formProyecto.municipio = cliente.municipio
-                formProyecto.colonia = cliente.colonia
-                formProyecto.calle = cliente.calle
-            }else if(options.cp_clientes.length === 1){
-                formProyecto.cp = cliente.cp
-                formProyecto.estado = cliente.estado
-                formProyecto.municipio = cliente.municipio
-                formProyecto.colonia = cliente.colonia
-                formProyecto.calle = cliente.calle
-            }
-        })
+        if(formProyecto.ubicacion_cliente === true){
+            options.cp_clientes.forEach((cliente) => {
+                if (formProyecto.cp_ubicacion === cliente.value) {
+                    formProyecto.cp = cliente.cp
+                    formProyecto.estado = cliente.estado
+                    formProyecto.municipio = cliente.municipio
+                    formProyecto.colonia = cliente.colonia
+                    formProyecto.calle = cliente.calle
+                }else if(options.cp_clientes.length === 1){
+                    formProyecto.cp = cliente.cp
+                    formProyecto.estado = cliente.estado
+                    formProyecto.municipio = cliente.municipio
+                    formProyecto.colonia = cliente.colonia
+                    formProyecto.calle = cliente.calle
+                }
+            })
+        }else{
+            formProyecto.cp = ''
+            formProyecto.estado = ''
+            formProyecto.municipio = ''
+            formProyecto.colonia = ''
+            formProyecto.calle = ''
+        }
         Swal.close()
         // formProyecto.ubicacion_cliente = ''
         // formProyecto.cp_ubicacion = ''
@@ -546,6 +567,15 @@ class Contratar extends Component {
             modalCP: false,
             formProyecto
         })
+    }
+    changeNameFile(id){
+        var pdrs = document.getElementById(id).files[0].name;
+        document.getElementById('info').innerHTML = pdrs;
+    }
+    onChangeFile = (value, name) => {
+        const { formProyecto } = this.state
+        formProyecto[name] = value
+        this.setState({...this.state, formProyecto})
     }
     render() {
         const { modal, form, formProyecto, options, lead, modalCP, showModal } = this.state
@@ -579,6 +609,8 @@ class Contratar extends Component {
                             onSubmit = { this.onSubmit }
                             openModalCP={this.openModalCP}
                             showModal={showModal}
+                            changeNameFile={this.changeNameFile}
+                            onChangeFile={this.onChangeFile}
                         >
                             <Accordion>
                                 {

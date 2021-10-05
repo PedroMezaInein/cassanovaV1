@@ -53,9 +53,7 @@ class CotizacionesDiseño extends Component {
     }
     changePageContratar = (pdf) => {
         const { history, lead } = this.props
-        // console.log(pdf, 'pdf')
-        // console.log(lead, 'lead')
-        history.push({ pathname: '/leads/crm/contratar', state: { lead: lead } })
+        history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, cotizacionId : pdf} })
     }
     render() {
         const { lead, sendPresupuesto, options, formDiseño, onChange, onChangeConceptos, checkButtonSemanas, onChangeCheckboxes,
