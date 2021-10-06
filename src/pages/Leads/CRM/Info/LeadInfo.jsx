@@ -1662,7 +1662,8 @@ class LeadInfo extends Component {
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
-                                                <div className="text-center">
+                                            </h3>
+                                            <div className="card-toolbar">
                                                     <Button id="solicitar_cita" icon='' className="btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"
                                                         onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita()) }}
                                                         only_icon="far fa-calendar-check icon-15px mr-2" text='SOLICITAR CITA' />
@@ -1673,7 +1674,6 @@ class LeadInfo extends Component {
                                                         onClick={() => { this.mostrarFormulario() }} only_icon="flaticon2-plus icon-13px"
                                                         tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }} />
                                                 </div>
-                                            </h3>
                                         </Card.Header>
                                         <Card.Body className="d-flex justify-content-center pt-0 row">
                                             <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
@@ -1782,77 +1782,32 @@ class LeadInfo extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="cotizacion">
-                                        {
-                                            lead ?
-                                                lead.prospecto ?
-                                                    lead.prospecto.diseño ?
-                                                        <>
-                                                            <CotizacionesDiseño
-                                                                au = { authUser } 
-                                                                lead={lead} sendPresupuesto={this.onClickSendPresupuesto}
-                                                                options = { options } formDiseño = { formDiseño }
-                                                                onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }
-                                                                checkButtonSemanas = { this.checkButtonSemanas } onChangeCheckboxes = { this.handleChangeCheckbox }
-                                                                onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
-                                                                formeditado = { formeditado } onClickTab = { this.handleClickTab }
-                                                                activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas}
-                                                                history={history} at={access_token} isActive = { activeNav === 'cotizacion' ? true : false }
-                                                            />
-                                                        </>
-                                                    :<></>
-                                                :<></>
-                                            :<></>
-                                        }
-                                        <Card className="card-custom card-stretch">
-                                        <Card.Header className="border-0 mt-4 pt-3">
-                                            <h3 className="card-title d-flex justify-content-between">
-                                                <span className="font-weight-bolder text-dark align-self-center">
-                                                    {
-                                                        lead ?
-                                                            lead.prospecto ?
-                                                                lead.prospecto.obra ?
-                                                                    'Presupuesto de obra'
-                                                                : ''
-                                                            : ''
-                                                        : ''
-                                                    }
-                                                </span>
-                                                {/* {
-                                                    lead ?
-                                                        lead.presupuesto_diseño ?
-                                                            lead.presupuesto_diseño.pdfs ?
-                                                                lead.presupuesto_diseño.pdfs.length ?
-                                                                    <div>
-                                                                        <Button icon='' className = "btn btn-icon btn-xs w-auto p-3 btn-light-gray"
-                                                                            onClick={() => { this.openModalPresupuesto() }} only_icon = "far fa-file-pdf icon-15px mr-2"
-                                                                            text = 'COTIZACIONES GENERADAS' />
-                                                                    </div>
-                                                                    : ''
-                                                                : ''
-                                                            : ''
-                                                        : ''
-                                                } */}
-                                            </h3>
-                                        </Card.Header>
-
-                                        <Card.Body className = {`pt-0 ${isMobile ? 'px-1' : ''}`}>
-                                            {
-                                                lead ?
-                                                    lead.prospecto ?
-                                                        // lead.prospecto.diseño ?
-                                                        //     <PresupuestoDiseñoCRMForm options = { options } formDiseño = { formDiseño }
-                                                        //         onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }
-                                                        //         checkButtonSemanas = { this.checkButtonSemanas } onChangeCheckboxes = { this.handleChangeCheckbox }
-                                                        //         onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
-                                                        //         formeditado = { formeditado } onClickTab = { this.handleClickTab }
-                                                        //         activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
-                                                        // : 
-                                                            lead.prospecto.obra ?
-                                                                solicitud !== '' ? 
+                                    {
+                                        lead ?
+                                            lead.prospecto ?
+                                                lead.prospecto.diseño ?
+                                                    <CotizacionesDiseño
+                                                        lead={lead} sendPresupuesto={this.onClickSendPresupuesto}
+                                                        options={options} formDiseño={formDiseño}
+                                                        onChange={this.onChangePresupuesto} onChangeConceptos={this.onChangeConceptos}
+                                                        checkButtonSemanas={this.checkButtonSemanas} onChangeCheckboxes={this.handleChangeCheckbox}
+                                                        onSubmit={this.onSubmitPresupuestoDiseño} submitPDF={this.onSubmitPDF}
+                                                        formeditado={formeditado} onClickTab={this.handleClickTab}
+                                                        activeKey={activeKey} defaultKey={defaultKey} onChangePartidas={this.onChangePartidas}
+                                                        history={history} at={access_token} isActive={activeNav === 'cotizacion' ? true : false}
+                                                    />
+                                                    :lead.prospecto.obra ?
+                                                        solicitud !== '' ?
+                                                            <Card className='card card-custom gutter-b'>
+                                                                <Card.Header className="border-0 align-items-center pt-8 pt-md-0">
+                                                                    <div className="font-weight-bold font-size-h4 text-dark">Presupuesto de obra</div>
+                                                                    <div className="card-toolbar"></div>
+                                                                </Card.Header>
+                                                                <Card.Body>
                                                                     <div className="row mx-0">
                                                                         <div className="col-md-6">
                                                                             <div className="table-responsive-lg border rounded p-2">
-                                                                                <table className={`table table-vertical-center w-${isMobile ? '100' : '80'} mx-auto table-borderless`} 
+                                                                                <table className={`table table-vertical-center w-${isMobile ? '100' : '80'} mx-auto table-borderless`}
                                                                                     id="tcalendar_p_info">
                                                                                     <thead>
                                                                                         <tr>
@@ -1860,7 +1815,7 @@ class LeadInfo extends Component {
                                                                                                 {
                                                                                                     solicitud.empresa ? solicitud.empresa.logoPrincipal ?
                                                                                                         <img alt='' width="170" src={solicitud.empresa.logoPrincipal} />
-                                                                                                    : '' : ''
+                                                                                                        : '' : ''
                                                                                                 }
                                                                                             </th>
                                                                                         </tr>
@@ -1895,7 +1850,7 @@ class LeadInfo extends Component {
                                                                                                         <span>{solicitud.area.nombre}</span>
                                                                                                     </td>
                                                                                                 </tr>
-                                                                                            : ''
+                                                                                                : ''
                                                                                         }
                                                                                         <tr>
                                                                                             <td className="text-center">
@@ -1904,7 +1859,7 @@ class LeadInfo extends Component {
                                                                                             <td className="font-weight-bolder text-dark-50">Presupuesto</td>
                                                                                             <td className="font-weight-light">
                                                                                                 <span>
-                                                                                                    { !solicitud.presupuesto ? 'En espera' : '' }
+                                                                                                    {!solicitud.presupuesto ? 'En espera' : ''}
                                                                                                 </span>
                                                                                             </td>
                                                                                         </tr>
@@ -1913,29 +1868,31 @@ class LeadInfo extends Component {
                                                                             </div>
                                                                         </div>
                                                                         <div className="col-md-6 mt-3 mt-md-0">
-                                                                            <Form onSubmit = { (e) => { e.preventDefault(); } } >
+                                                                            <Form onSubmit={(e) => { e.preventDefault(); }} >
                                                                                 <div className="row mx-0 border rounded p-3">
                                                                                     <div className="col md-12">
-                                                                                        <InputGray withtaglabel = { 1 } withtextlabel = { 1 } rows  = '3'
-                                                                                            withplaceholder = { 1 } withicon = { 0 } as = 'textarea' 
-                                                                                            value = { form.comentario } requirevalidation = { 1 } 
-                                                                                            name = 'comentario' placeholder = 'ESCRIBE UN COMENTARIO'
-                                                                                            onChange = { this.onChange }
-                                                                                            />
+                                                                                        <InputGray withtaglabel={1} withtextlabel={1} rows='3'
+                                                                                            withplaceholder={1} withicon={0} as='textarea'
+                                                                                            value={form.comentario} requirevalidation={1}
+                                                                                            name='comentario' placeholder='ESCRIBE UN COMENTARIO'
+                                                                                            onChange={this.onChange}
+                                                                                        />
                                                                                     </div>
                                                                                     <div className="col-md-12 mt-3 text-right">
-                                                                                        <Button icon = '' text = "Enviar"
-                                                                                            className="btn btn-light-success font-weight-bold text-uppercase" 
-                                                                                            onClick = { (e) => { questionAlert('¿DESEAS ENVIAR TU COMENTARIO?', 
-                                                                                                '', () => this.comentarAxios()) } } />
+                                                                                        <Button icon='' text="Enviar"
+                                                                                            className="btn btn-light-success font-weight-bold text-uppercase"
+                                                                                            onClick={(e) => {
+                                                                                                questionAlert('¿DESEAS ENVIAR TU COMENTARIO?',
+                                                                                                    '', () => this.comentarAxios())
+                                                                                            }} />
                                                                                     </div>
                                                                                 </div>
                                                                             </Form>
                                                                             <div className="row mx-0 my-3 border rounded">
                                                                                 {
-                                                                                    solicitud.comentarios.map((coment, index) =>{
-                                                                                        return(
-                                                                                            <div className = 'col-md-12 my-4' key = { index }>
+                                                                                    solicitud.comentarios.map((coment, index) => {
+                                                                                        return (
+                                                                                            <div className='col-md-12 my-4' key={index}>
                                                                                                 {
                                                                                                     this.printComment(coment)
                                                                                                 }
@@ -1946,31 +1903,18 @@ class LeadInfo extends Component {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                : ''
-                                                            : ''
-                                                    : ''
-                                                : ''
-                                            }
-                                        </Card.Body>
-                                    </Card>
+                                                                </Card.Body>
+                                                            </Card> 
+                                                            : <></>
+                                                        : <></>
+                                                : <></>
+                                            : <></>
+                                    }
                                     </Tab.Pane>
                             </Tab.Content>
                         </Col>
                     </Row >
                 </Tab.Container>
-                {/* <Modal title="Cotizaciones generadas" size={"lg"} show={modal.presupuesto} handleClose={this.handleCloseModalPresupuesto} >
-                    {
-                        lead ?
-                            lead.presupuesto_diseño ?
-                                lead.presupuesto_diseño.pdfs ?
-                                    lead.presupuesto_diseño.pdfs.length ?
-                                        <PresupuestoGenerado pdfs={lead.presupuesto_diseño.pdfs} onClick={this.onClickSendPresupuesto} />
-                                        : ''
-                                    : ''
-                                : ''
-                            : ''
-                    }
-                </Modal> */}
             </Layout >
         )
     }
