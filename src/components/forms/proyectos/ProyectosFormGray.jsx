@@ -221,7 +221,7 @@ class ProyectosForm extends Component {
                                 </div>
                             </div>
                         </div>
-                        <Form
+                        <Form id="wizard-4-content"
                             onSubmit={
                                 (e) => {
                                     e.preventDefault();
