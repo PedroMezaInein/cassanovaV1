@@ -14,7 +14,10 @@ import Swal from 'sweetalert2'
 import { ContratarCard } from '../../../components/cards'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
 import { setSingleHeader } from '../../../functions/routers'
+import S3 from 'react-aws-s3';
+
 class Contratar extends Component {
+
     state = {
         modal: false,
         formModal: {
@@ -108,15 +111,6 @@ class Contratar extends Component {
         })
     }
 
-    // onChangeProyecto = e => {
-    //     const { name, value } = e.target
-    //     const { formProyecto } = this.state
-    //     formProyecto[name] = value
-    //     this.setState({
-    //         ...this.state,
-    //         formProyecto
-    //     })
-    // }
     onChangeProyecto = e => {
         const { name, value, type } = e.target
         const { formProyecto, options } = this.state
@@ -208,6 +202,7 @@ class Contratar extends Component {
             options
         })
     }
+    
     deleteOption = (element, array) => {
         let { formProyecto, showModal } = this.state
         const { options } = this.state
@@ -301,7 +296,7 @@ class Contratar extends Component {
         questionAlert2(
             '¿DESEAS ENVIAR CORREO Y GENERAR NUEVO USUARIO?', 
             '', 
-            () => this.convertLeadAxios(),
+            () => this.uploadFilesS3(),
             <form id = 'sendCorreoForm' name = 'sendCorreoForm'>
                 <div className="form-group">
                     <div className="radio-inline">
@@ -319,7 +314,35 @@ class Contratar extends Component {
         )
     }
 
-    async getOneLead() {
+    uploadFilesS3 = async() => {
+        const { lead, form } = this.state
+        const { location: { state: { cotizacionId: presupuesto } } } = this.props
+        const filePath = `presupuesto-diseño/${lead.empresa.name}/${presupuesto.pivot.identificador}/`
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { alma } = response.data
+                let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204)
+                                    resolve({ name: file.name, url: location })
+                                else
+                                    reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { /* this.addS3FilesAxios(values) */ console.log(`VALUES: `, values) } ).catch(err => console.error(err))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    getOneLead = async() => {
         const { location: { state } } = this.props
         const { formProyecto, options} = this.state
         options.tipos = setOptions(state.lead.empresa.tipos, 'tipo', 'id')
@@ -342,7 +365,7 @@ class Contratar extends Component {
         })
     }
 
-    async getOptionsAxios() {
+    getOptionsAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
@@ -384,22 +407,13 @@ class Contratar extends Component {
             console.error(error, 'error')
         })
     }
-    compare( a, b ) {
-        if ( a.name < b.name ){
-            return -1;
-        }
-        if ( a.name > b.name ){
-            return 1;
-        }
-        return 0;
-    }
-    async convertLeadAxios(){
+    
+    convertLeadAxios = async() => {
         const { access_token } = this.props.authUser
         let { formProyecto, lead } = this.state
         let sendCorreoValue = document.sendCorreoForm.sendCorreo.value;
         if(sendCorreoValue === 'si' || sendCorreoValue === 'no'){
             formProyecto.sendCorreo = sendCorreoValue
-
             let data = new FormData()
             data.append(`adjuntoEvidencia`, formProyecto.adjunto)
             data.append(`fechaEvidencia`, (new Date(formProyecto.fechaEvidencia)).toDateString())
@@ -445,7 +459,7 @@ class Contratar extends Component {
         }else{ errorAlert('Selecciona una opción') }
     }
 
-    async addCajaChicaAxios(proyecto){
+    addCajaChicaAxios = async(proyecto) => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cuentas/proyecto/caja/' + proyecto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -462,7 +476,7 @@ class Contratar extends Component {
         })
     }
 
-    async addClienteAxios() {
+    addClienteAxios = async() => {
         const { access_token } = this.props.authUser
         let { form } = this.state
         await axios.post(URL_DEV + 'cliente', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -491,48 +505,6 @@ class Contratar extends Component {
         })
     }
 
-    tagInputChange = (nuevosCorreos) => {
-        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
-        const { formProyecto } = this.state 
-        let unico = {};
-        uppercased.forEach(function (i) {
-            if (!unico[i]) { unico[i] = true }
-        })
-        formProyecto.correos = uppercased ? Object.keys(unico) : [];
-        this.setState({
-            formProyecto
-        })
-    }
-
-    onChangeRange = range => {
-        const { startDate, endDate } = range
-        const { formProyecto } = this.state
-        formProyecto.fechaInicio = startDate
-        formProyecto.fechaFin = endDate
-        this.setState({
-            ...this.state,
-            formProyecto
-        })
-    }
-    openModalCP = () => {
-        this.setState({
-            ...this.state,
-            modalCP:true
-        })
-    }
-    handleCloseCP = () => { 
-        let { formProyecto } = this.state
-        formProyecto.ubicacion_cliente = ''
-        formProyecto.cp_ubicacion = ''
-        this.setState({
-            ...this.state,
-            modalCP: false,
-            formProyecto
-        })
-    }
-    updateSelectCP = value => {
-        this.onChangeProyecto({ target: { name: 'cp_ubicacion', value: value.toString() } })
-    }
     sendForm = async() => {
         let { formProyecto } = this.state
         const { options } = this.state
@@ -560,24 +532,80 @@ class Contratar extends Component {
             formProyecto.calle = ''
         }
         Swal.close()
-        // formProyecto.ubicacion_cliente = ''
-        // formProyecto.cp_ubicacion = ''
-        
         this.setState({
             ...this.state,
             modalCP: false,
             formProyecto
         })
     }
+
+    compare( a, b ) {
+        if ( a.name < b.name ){
+            return -1;
+        }
+        if ( a.name > b.name ){
+            return 1;
+        }
+        return 0;
+    }
+
+    tagInputChange = (nuevosCorreos) => {
+        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
+        const { formProyecto } = this.state 
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        formProyecto.correos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            formProyecto
+        })
+    }
+
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { formProyecto } = this.state
+        formProyecto.fechaInicio = startDate
+        formProyecto.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            formProyecto
+        })
+    }
+
+    openModalCP = () => {
+        this.setState({
+            ...this.state,
+            modalCP:true
+        })
+    }
+
+    handleCloseCP = () => { 
+        let { formProyecto } = this.state
+        formProyecto.ubicacion_cliente = ''
+        formProyecto.cp_ubicacion = ''
+        this.setState({
+            ...this.state,
+            modalCP: false,
+            formProyecto
+        })
+    }
+
+    updateSelectCP = value => {
+        this.onChangeProyecto({ target: { name: 'cp_ubicacion', value: value.toString() } })
+    }
+
     changeNameFile(id){
         var pdrs = document.getElementById(id).files[0].name;
         document.getElementById('info').innerHTML = pdrs;
     }
+
     onChangeFile = (value, name) => {
         const { formProyecto } = this.state
         formProyecto[name] = value
         this.setState({...this.state, formProyecto})
     }
+
     render() {
         const { modal, form, formProyecto, options, lead, modalCP, showModal } = this.state
         return (
@@ -588,39 +616,22 @@ class Contratar extends Component {
                             <span className="font-weight-bolder text-dark align-self-center font-size-h3">CONVERTIR LEAD</span>
                         </div>
                         <div className="d-flex justify-content-end">
-                            <Button
-                                icon=''
-                                className={"btn btn-icon btn-xs w-auto p-3 btn-light-success"}
-                                onClick = { this.openModal }
-                                only_icon={"flaticon2-plus icon-15px mr-2"}
-                                text="NUEVO CLIENTE"
-                            />
+                            <Button icon = '' className = "btn btn-icon btn-xs w-auto p-3 btn-light-success" onClick = { this.openModal }
+                                only_icon = "flaticon2-plus icon-15px mr-2" text = "NUEVO CLIENTE" />
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ProyectosFormGray 
-                            form = { formProyecto }
-                            options = { options } 
-                            onChange = { this.onChangeProyecto } 
-                            onChangeOptions = { this.onChangeOptions } 
-                            removeCorreo = { this.removeCorreo } 
-                            deleteOption = { this.deleteOption }
-                            tagInputChange={(e) => this.tagInputChange(e)}
-                            onChangeRange = { this.onChangeRange }
-                            onSubmit = { this.onSubmit }
-                            openModalCP={this.openModalCP}
-                            showModal={showModal}
-                            changeNameFile={this.changeNameFile}
-                            onChangeFile={this.onChangeFile}
-                        >
+                        <ProyectosFormGray form = { formProyecto } options = { options }  onChange = { this.onChangeProyecto } 
+                            onChangeOptions = { this.onChangeOptions }  removeCorreo = { this.removeCorreo }  deleteOption = { this.deleteOption }
+                            tagInputChange={(e) => this.tagInputChange(e)} onChangeRange = { this.onChangeRange } onSubmit = { this.onSubmit }
+                            openModalCP={this.openModalCP} showModal={showModal} changeNameFile={this.changeNameFile} onChangeFile={this.onChangeFile} >
                             <Accordion className="px-5">
                                 {
                                     lead !== '' ? 
                                         lead.prospecto ?
                                             <div className="d-flex justify-content-end px-md-6 px-0 mb-5">
                                                 <Accordion.Toggle as = { Button }  only_icon="far fa-eye icon-15px mr-2" text="INFORMACIÓN LEAD"
-                                                eventKey = 'prospecto' className="btn btn-icon btn-xs w-auto p-3 btn-light-info"
-                                                />
+                                                    eventKey = 'prospecto' className="btn btn-icon btn-xs w-auto p-3 btn-light-info" />
                                             </div>
                                         : ''
                                     : ''
