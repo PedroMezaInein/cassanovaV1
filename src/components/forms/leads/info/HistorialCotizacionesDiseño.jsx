@@ -121,7 +121,7 @@ class HistorialCotizacionesDiseño extends Component {
                                         </Card.Header>
                                         <Card.Body className={`card-body px-10 ${pdf.isActive ? 'collapse show' : 'collapse'}`}>
                                             {
-                                                pdf.pivot.fecha_envio !== null?
+                                                pdf.pivot.fecha_envio !== null && pdf.pivot.fecha_aceptacion === null?
                                                     <div className="d-flex col-md-9 mx-auto my-6 justify-content-between">
                                                         <div className="text-justify">
                                                             <span className="font-weight-light"><span className="font-weight-bolder"><u>Fecha de envio:</u> </span>{dayDMY(pdf.pivot.fecha_envio)}</span>
@@ -136,18 +136,18 @@ class HistorialCotizacionesDiseño extends Component {
                                                                 Cambiar estatus de cotización
                                                             </div>
                                                         </div>
-                                                        <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden('modify-orden', pdf); }} >
-                                                            <span className="svg-icon svg-icon-primary2 mr-1">
-                                                                <span className="svg-icon svg-icon-md">
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
-                                                                </span>
+                                                    </div>
+                                                :
+                                                    <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden('modify-orden', pdf); }} >
+                                                        <span className="svg-icon svg-icon-primary2 mr-1">
+                                                            <span className="svg-icon svg-icon-md">
+                                                                <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
                                                             </span>
-                                                            <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
-                                                                Modificar orden de compra
-                                                            </div>
+                                                        </span>
+                                                        <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
+                                                            Modificar orden de compra
                                                         </div>
                                                     </div>
-                                                :<></>
                                             }
                                             <Col md={10} className="mx-auto text-center mt-5">
                                                 <ItemSlider items={[{ url: pdf.url, name: pdf.name }]}/>
