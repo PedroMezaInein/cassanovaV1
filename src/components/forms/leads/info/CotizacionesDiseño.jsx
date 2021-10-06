@@ -27,7 +27,8 @@ class CotizacionesDiseño extends Component {
             motivo_cancelacion: '',
             pdf_id: 0
         },
-        filtering: {}
+        filtering: {},
+        pdfs: []
     }
     componentDidMount() {
         const { lead } = this.props
@@ -57,7 +58,7 @@ class CotizacionesDiseño extends Component {
         const { at, lead } = this.props
         let { activeCotizacion } = this.state
         waitAlert()
-        await axios.put(`${URL_DEV}v2/leads/crm/info/info/${lead.id}`, {filters: filtering}, { headers: setSingleHeader(at) }).then(
+        await axios.put(`${URL_DEV}v2/leads/crm/presupuestos/${lead.id}`, {filters: filtering}, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { pdfs } = response.data
                 if (pdfs.length === 0) {
@@ -358,7 +359,7 @@ class CotizacionesDiseño extends Component {
     render() {
         const { lead, sendPresupuesto, options, formDiseño, onChange, onChangeConceptos, checkButtonSemanas, onChangeCheckboxes,
             onSubmit, submitPDF, formeditado, onClickTab, activeKey, defaultKey, onChangePartidas, at } = this.props
-        const { activeCotizacion, modal, form, typeModal, filtering } = this.state
+        const { activeCotizacion, modal, form, typeModal, filtering, pdfs } = this.state
         return (
             <>
                 <Card className='card card-custom gutter-b'>
@@ -393,7 +394,7 @@ class CotizacionesDiseño extends Component {
                     <Card.Body>
                         {
                             activeCotizacion === 'historial' ?
-                                <HistorialCotizacionesDiseño pdfs={lead.presupuesto_diseño.pdfs} sendPresupuesto={sendPresupuesto} changePageContratar={this.changePageContratar} onClickOrden={this.onClickOrden} options={options} />
+                                <HistorialCotizacionesDiseño pdfs={pdfs} sendPresupuesto={sendPresupuesto} changePageContratar={this.changePageContratar} onClickOrden={this.onClickOrden} options={options} />
                                 : activeCotizacion === 'new' ?
                                     <PresupuestoDiseñoCRMForm
                                         options={options}
