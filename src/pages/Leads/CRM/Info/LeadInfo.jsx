@@ -1481,7 +1481,7 @@ class LeadInfo extends Component {
 
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav, solicitud } = this.state
-        const { history } = this.props
+        const { history, authUser } = this.props
         return (
             <Layout active = 'leads' { ...this.props } botonHeader = { this.botonHeader } >
                 <Tab.Container
@@ -1787,6 +1787,7 @@ class LeadInfo extends Component {
                                                     lead.prospecto.diseño ?
                                                         <>
                                                             <CotizacionesDiseño
+                                                                au = { authUser } 
                                                                 lead={lead} sendPresupuesto={this.onClickSendPresupuesto}
                                                                 options = { options } formDiseño = { formDiseño }
                                                                 onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }

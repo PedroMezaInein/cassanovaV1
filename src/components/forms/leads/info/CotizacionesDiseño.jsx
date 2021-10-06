@@ -52,7 +52,13 @@ class CotizacionesDiseño extends Component {
         return false
     }
     changePageContratar = (pdf) => {
+        const { au } = this.props
+        console.log(`AU`, au)
+        /* window.location.href = `http://localhost:3001?tag=${au.access_token}` */
+
+        /* window.location.href = '/enrollment-form/citizenship'; */
         const { history, lead } = this.props
+        
         history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, cotizacionId : pdf} })
     }
     render() {
