@@ -16,6 +16,7 @@ class CotizacionesDiseño extends Component {
     state = {
         activeCotizacion: '',
         modal: { orden_compra: false },
+        typeModal: '',
         form: {
             fechaEvidencia: new Date(),
             adjunto: '',
@@ -97,14 +98,24 @@ class CotizacionesDiseño extends Component {
                         return true
         return false
     }
-    onClickOrden = (pdf) => {
-        let { form } = this.state
+    onClickOrden = (type, pdf) => {
+        let { typeModal, form } = this.state
         const { modal } = this.state
         modal.orden_compra = true
-        form.pdf_id = pdf
-        this.setState({ ...this.state, modal, form })
+        switch(type){
+            case 'add-orden':
+                typeModal = 'add'
+                form.pdf_id = pdf
+                this.setState({...this.state, typeModal, modal, form})
+                break;
+            case 'modify-orden':
+                typeModal = 'modify'
+                form.pdf_id = pdf
+                this.setState({...this.state, typeModal, modal, form})
+                break;
+            default: break;
+        }
     }
-
     handleCloseOrden = () => {
         const { modal } = this.state
         let { form } = this.state
@@ -139,35 +150,171 @@ class CotizacionesDiseño extends Component {
         document.getElementById('info').innerHTML = pdrs;
     }
     onSubmitOrden = async () => {
-        const { form } = this.state
+        const { form, typeModal } = this.state
         const { at, history, lead } = this.props
         waitAlert();
-        if (form.estatus_cotizacion === 2) {
-            await axios.post(`${URL_DEV}v2/leads/crm/info/info/${lead.id}`, form, { headers: setSingleHeader(at) }).then(
-                (response) => {
-                    this.handleCloseOrden()
-                    doneAlert('La cotización fue rechazado con éxito')
-                },
-                (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.error(error, 'error')
-            })
-        } else {
-            history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, form_orden: form } })
+        // if (form.estatus_cotizacion === 2) {
+        //     await axios.post(`${URL_DEV}v2/leads/crm/info/info/${lead.id}`, form, { headers: setSingleHeader(at) }).then(
+        //         (response) => {
+        //             this.handleCloseOrden()
+        //             doneAlert('La cotización fue rechazada con éxito')
+        //         },
+        //         (error) => { printResponseErrorAlert(error) }
+        //     ).catch((error) => {
+        //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //         console.error(error, 'error')
+        //     })
+        // } else {
+            if(typeModal === 'add'){
+                history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, form_orden: form } })
+            }else{
+                let data = new FormData()
+                data.append(`adjuntoEvidencia`, form.adjunto)
+                data.append(`estatus_final`, `${form.estatus_cotizacion===1?'Aceptado':'Rechazado'}`)
+                data.append(`fechaEvidencia`, (new Date(form.fechaEvidencia)).toDateString())
+                data.append(`orden_compra`, form.numero_orden)
+                data.append(`pdfId`, form.pdf_id)
+                data.append('motivo_rechazo', form.motivo_cancelacion)
+                await axios.post(`${URL_DEV}2/leads/crm/info/info/${lead.id}/estatus?_method=PUT`, data, 
+                    { headers: setSingleHeader(at) }).then(
+                    (response) => {
+                        this.handleCloseOrden()
+                        doneAlert( `${form.estatus_cotizacion===1 ? 'La orden de compra fue adjuntada con éxito.' : 'La cotización fue rechazada con éxito'}`)
+                    },
+                    (error) => { printResponseErrorAlert(error) }
+                ).catch((error) => {
+                    errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                    console.error(error, 'error')
+                })
+            }
+        // }
+    }
+    showBtnHistorial(lead){
+        const { activeCotizacion } = this.state
+        if(activeCotizacion === 'new' && this.hasCorizaciones(lead) || (activeCotizacion === 'contratar')){
+            return true
         }
+        return false
+    }
+    formAceptar(form, typeModal) {
+        return (
+            <>
+                {
+                    form.estatus_cotizacion === 1 || typeModal === 'modify'?
+                        <div className='row mx-0 justify-content-center'>
+                            <div className="col-md-12 mt-6">
+                                {
+                                    typeModal === 'add' ?
+                                        <>
+                                            <div className="form-group row form-group-marginless mb-0">
+                                                <div className="col-md-12 text-center">
+                                                    <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                                        <label className="text-center font-weight-bolder">Fecha de visto bueno</label>
+                                                    </div>
+                                                    <CalendarDaySwal
+                                                        value={form.fechaEvidencia} name='fechaEvidencia' date={form.fechaEvidencia}
+                                                        onChange={(e) => { this.onChange(e.target.value, 'fechaEvidencia') }} withformgroup={0} />
+                                                </div>
+                                            </div>
+                                            <div className="separator separator-dashed my-5"></div>
+                                        </>
+                                        : <></>
+                                }
+                                <div className="row mx-0 form-group-marginless">
+                                    <div className="col-md-12 text-justify">
+                                        <InputGray
+                                            withtaglabel={0}
+                                            withtextlabel={0}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            iconclass='las la-hashtag icon-xl'
+                                            requirevalidation={0}
+                                            value={form.numero_orden}
+                                            name='numero_orden'
+                                            onChange={(e) => { this.onChange(e.target.value, 'numero_orden') }}
+                                            swal={true}
+                                            placeholder='NÚMERO DE ORDEN DE COMPRA'
+                                        />
+                                    </div>
+                                </div>
+                                <div className="separator separator-dashed mt-5 mb-2"></div>
+                                <div className="form-group row form-group-marginless mt-5 mb-0">
+                                    <div className="col-md-12">
+                                        <label htmlFor="adjunto" className="drop-files">
+                                            <i className="las la-file-pdf icon-xl text-primary"></i>
+                                            <input
+                                                id="adjunto"
+                                                type="file"
+                                                onChange={(e) => { this.onChange(e.target.files[0], 'adjunto'); this.changeNameFile('adjunto') }}
+                                                name='adjunto'
+                                                accept="application/pdf"
+                                            />
+                                            <div className="font-weight-bolder font-size-md ml-2" id="info">Subir orden de compra (PDF)</div>
+                                        </label>
+                                        {
+                                            form.adjunto === '' ?
+                                                <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden (PDF) </span>
+                                                : <></>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        :form.estatus_cotizacion === 2?
+                        <div className="row mx-0 form-group-marginless mt-5">
+                            <div className="col-md-12 text-justify">
+                                <InputGray
+                                    withtaglabel={0}
+                                    withtextlabel={0}
+                                    withplaceholder={1}
+                                    withicon={0}
+                                    value={form.motivo_cancelacion}
+                                    name='motivo_cancelacion'
+                                    onChange={(e) => { this.onChange(e.target.value, 'motivo_cancelacion') }}
+                                    swal={true}
+                                    requirevalidation={1}
+                                    rows="3"
+                                    as="textarea"
+                                    placeholder="MOTIVO DE RECHAZO"
+                                    customclass="px-2"
+                                    messageinc="Incorrecto. Ingresa el motivo de rechazo."
+                                />
+                            </div>
+                        </div>
+                        :<></>
+                }
+            </>
+        )
     }
     render() {
         const { lead, sendPresupuesto, options, formDiseño, onChange, onChangeConceptos, checkButtonSemanas, onChangeCheckboxes,
             onSubmit, submitPDF, formeditado, onClickTab, activeKey, defaultKey, onChangePartidas } = this.props
-        const { activeCotizacion, modal, form } = this.state
+        const { activeCotizacion, modal, form, typeModal } = this.state
         return (
             <>
                 <Card className='card card-custom gutter-b'>
                     <Card.Header className="border-0 align-items-center pt-8 pt-md-0">
                         <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
                         <div className="card-toolbar">
-                            <div className="card-toolbar toolbar-dropdown">
+
+                            <button type="button" 
+                                    className="btn btn-sm btn-flex btn-light-primary2" 
+                                    onClick={() => { this.onClickCotizacion(`${this.showBtnHistorial(lead)?'historial':'new'}`) }} 
+                                >
+                                <span className="svg-icon">
+                                    {
+                                        this.showBtnHistorial(lead) ? <SVG src={toAbsoluteUrl('/images/svg/File.svg')} /> : activeCotizacion === 'historial' ?
+                                        !this.hasCorizaciones(lead) ? <SVG src={toAbsoluteUrl('/images/svg/Plus.svg')} /> : <SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} /> :<></>
+                                    }
+                                </span>
+                                <div>
+                                    { 
+                                        this.showBtnHistorial(lead) ? 'HISTORIAL DE COTIZACIONES' : activeCotizacion === 'historial' ?
+                                        !this.hasCorizaciones(lead) ? 'AGREGAR NUEVA COTIZACIÓN' : 'MODIFICAR COTIZACIÓN' :<></>
+                                    }
+                                </div>
+                            </button>
+                            {/* <div className="card-toolbar toolbar-dropdown">
                                 <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
                                     {
                                         activeCotizacion === 'historial' ?
@@ -184,7 +331,7 @@ class CotizacionesDiseño extends Component {
                                             : <></>
                                     }
                                 </DropdownButton>
-                            </div>
+                            </div> */}
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -212,179 +359,123 @@ class CotizacionesDiseño extends Component {
                     </Card.Body>
                 </Card>
                 <Modal show={modal.orden_compra} onHide={this.handleCloseOrden} centered contentClassName='swal2-popup d-flex w-40rem'>
-                    <Modal.Header className={`${form.estatus_cotizacion ? 'd-none' : 'mt-5'} border-0 justify-content-center swal2-title text-center font-size-h4`}>
-                        LA COTIZACIÓN FUE:
+                    <Modal.Header className={`${typeModal === 'add' && (form.estatus_cotizacion === 1 || form.estatus_cotizacion === 2) ? 'd-none':'mt-5'} border-0 justify-content-center swal2-title text-center font-size-h4`}>
+                        {typeModal === 'modify'? 'MODIFICAR ORDEN DE COMPRA': 'LA COTIZACIÓN FUE:'}
                     </Modal.Header>
                     <Modal.Body className='p-0'>
-                        <div className="wizard wizard-6" id="validateWizard" data-wizard-state="first">
-                            <div className="wizard-content d-flex flex-column mx-auto">
-                                <div className={`${form.estatus_cotizacion ? 'd-flex' : 'd-none'} flex-column-auto flex-column px-0`}>
-                                    <div className="wizard-nav d-flex flex-column align-items-center align-items-md-center">
-                                        <div className="wizard-steps d-flex flex-column flex-md-row">
-                                            <div id="wizard-1" className="wizard-step flex-grow-1 flex-basis-0 mb-0" data-wizard-state="current" data-wizard-type="step" onClick={() => { this.openWizard1() }}>
-                                                <div className="wizard-wrapper pr-lg-7 pr-5">
-                                                    <div className="wizard-icon">
-                                                        <i className="wizard-check fas fa-check"></i>
-                                                        <span className="wizard-number">1</span>
+                        {
+                            typeModal === 'add' ?
+                                <div className="wizard wizard-6" id="validateWizard" data-wizard-state="first">
+                                    <div className="wizard-content d-flex flex-column mx-auto">
+                                        <div className={`${form.estatus_cotizacion ? 'd-flex' : 'd-none'} flex-column-auto flex-column px-0`}>
+                                            <div className="wizard-nav d-flex flex-column align-items-center align-items-md-center">
+                                                <div className="wizard-steps d-flex flex-column flex-md-row">
+                                                    <div id="wizard-1" className="wizard-step flex-grow-1 flex-basis-0 mb-0" data-wizard-state="current" data-wizard-type="step" onClick={() => { this.openWizard1() }}>
+                                                        <div className="wizard-wrapper pr-lg-7 pr-5">
+                                                            <div className="wizard-icon">
+                                                                <i className="wizard-check fas fa-check"></i>
+                                                                <span className="wizard-number">1</span>
+                                                            </div>
+                                                            <div className="wizard-label mr-3">
+                                                                <h3 className="wizard-title mb-0">{form.estatus_cotizacion ? 'Cotización' : 'Estatus de cotización'}</h3>
+                                                                <div className="wizard-desc">{form.estatus_cotizacion === 1 ? 'Aceptada' : 'Rechazada'}</div>
+                                                            </div>
+                                                            <span className={`${form.estatus_cotizacion === 1 ? 'svg-icon' : 'd-none'}`}>
+                                                                <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                    <div className="wizard-label mr-3">
-                                                        <h3 className="wizard-title mb-0">{form.estatus_cotizacion ? 'Cotización' : 'Estatus de cotización'}</h3>
-                                                        <div className="wizard-desc">{form.estatus_cotizacion === 1 ? 'Aceptada' : 'Rechazada'}</div>
-                                                    </div>
-                                                    <span className={`${form.estatus_cotizacion === 1 ? 'svg-icon' : 'd-none'}`}>
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div id="wizard-2" className="wizard-step flex-grow-1 flex-basis-0 mb-0" data-wizard-type="step" onClick={() => { this.openWizard2() }}>
-                                                <div className={`${form.estatus_cotizacion ? 'wizard-wrapper' : 'd-none'}`}>
-                                                    <div className="wizard-icon">
-                                                        <i className="wizard-check fas fa-check"></i>
-                                                        <span className="wizard-number">2</span>
-                                                    </div>
-                                                    <div className="wizard-label">
-                                                        <h3 className="wizard-title mb-0">{form.estatus_cotizacion === 1 ? 'Orden de compra' : 'Motivo de rechazo'}</h3>
-                                                        <div className="wizard-desc">{form.estatus_cotizacion === 1 ? 'Agregar orden' : 'Agregar de motivo'}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <Form
-                                    onSubmit={
-                                        (e) => {
-                                            e.preventDefault();
-                                            validateAlert(this.onSubmitOrden, e, 'validateWizard')
-                                        }
-                                    }
-                                >
-                                    <div id="wizard-1-content" data-wizard-type="step-content" data-wizard-state="current">
-                                        <div className="d-flex justify-content-center mt-5">
-                                            <div className="text-center">
-                                                <label className={`${form.estatus_cotizacion ? 'd-flex' : 'd-none'} w-auto py-0 col-form-label text-dark-75 font-weight-bolder font-size-h6 mb-5 justify-content-center`}>La cotización fue:</label>
-                                                <div className="w-auto">
-                                                    <div className="radio-inline">
-                                                        <label className="radio radio-outline radio-brand text-dark-75 font-weight-light">
-                                                            <input type="radio" name='estatus_cotizacion' value={1} onChange={this.onChangeRadio} checked={form.estatus_cotizacion === 1 ? true : false} />Aceptada
-                                                            <span></span>
-                                                        </label>
-                                                        <label className="radio radio-outline radio-brand text-dark-75 font-weight-light">
-                                                            <input type="radio" name='estatus_cotizacion' value={2} onChange={this.onChangeRadio} checked={form.estatus_cotizacion === 2 ? true : false} />Rechazada
-                                                            <span></span>
-                                                        </label>
+                                                    <div id="wizard-2" className="wizard-step flex-grow-1 flex-basis-0 mb-0" data-wizard-type="step" onClick={() => { this.openWizard2() }}>
+                                                        <div className={`${form.estatus_cotizacion ? 'wizard-wrapper' : 'd-none'}`}>
+                                                            <div className="wizard-icon">
+                                                                <i className="wizard-check fas fa-check"></i>
+                                                                <span className="wizard-number">2</span>
+                                                            </div>
+                                                            <div className="wizard-label">
+                                                                <h3 className="wizard-title mb-0">{form.estatus_cotizacion === 1 ? 'Orden de compra' : 'Motivo de rechazo'}</h3>
+                                                                <div className="wizard-desc">{form.estatus_cotizacion === 1 ? 'Agregar orden' : 'Agregar de motivo'}</div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        {
-                                            form.estatus_cotizacion ?
-                                                <div className="d-flex justify-content-end pt-3 border-top mt-5">
-                                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold mt-0" onClick={() => { this.openWizard2() }}>Siguiente
+                                        <Form
+                                            onSubmit={
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(this.onSubmitOrden, e, 'validateWizard')
+                                                }
+                                            }
+                                        >
+                                            <div id="wizard-1-content" data-wizard-type="step-content" data-wizard-state="current">
+                                                <div className="d-flex justify-content-center mt-5">
+                                                    <div className="text-center">
+                                                        <label className={`${form.estatus_cotizacion ? 'd-flex' : 'd-none'} w-auto py-0 col-form-label text-dark-75 font-weight-bolder font-size-h6 mb-5 justify-content-center`}>La cotización fue:</label>
+                                                        <div className="w-auto">
+                                                            <div className="radio-inline">
+                                                                <label className="radio radio-outline radio-brand text-dark-75 font-weight-light">
+                                                                    <input type="radio" name='estatus_cotizacion' value={1} onChange={this.onChangeRadio} checked={form.estatus_cotizacion === 1 ? true : false} />Aceptada
+                                                                    <span></span>
+                                                                </label>
+                                                                <label className="radio radio-outline radio-brand text-dark-75 font-weight-light">
+                                                                    <input type="radio" name='estatus_cotizacion' value={2} onChange={this.onChangeRadio} checked={form.estatus_cotizacion === 2 ? true : false} />Rechazada
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {
+                                                    form.estatus_cotizacion ?
+                                                        <div className="d-flex justify-content-end pt-3 border-top mt-5">
+                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold mt-0" onClick={() => { this.openWizard2() }}>Siguiente
+                                                                <span className="svg-icon svg-icon-md ml-2 mr-0">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        : <></>
+                                                }
+                                            </div>
+                                            <div id="wizard-2-content" data-wizard-type="step-content">
+                                                {this.formAceptar(form, typeModal)}
+                                                <div className="d-flex justify-content-between border-top pt-3 mt-5">
+                                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold mt-0" onClick={() => { this.openWizard1() }}>
+                                                        <span className="svg-icon svg-icon-md mr-2">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
+                                                        </span>Anterior
+                                                    </button>
+                                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold mt-0" onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'validateWizard') }} >Enviar
                                                         <span className="svg-icon svg-icon-md ml-2 mr-0">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Sending.svg')} />
                                                         </span>
                                                     </button>
                                                 </div>
-                                                : <></>
-                                        }
+                                            </div>
+                                        </Form>
                                     </div>
-                                    <div id="wizard-2-content" data-wizard-type="step-content">
-                                        {
-                                            form.estatus_cotizacion === 1 ?
-                                                <div className='row mx-0 justify-content-center'>
-                                                    <div className="col-md-12 mt-6">
-                                                        <div className="form-group row form-group-marginless mb-0">
-                                                            <div className="col-md-12 text-center">
-                                                                <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                                                    <label className="text-center font-weight-bolder">Fecha de visto bueno</label>
-                                                                </div>
-                                                                <CalendarDaySwal
-                                                                    value={form.fechaEvidencia} name='fechaEvidencia' date={form.fechaEvidencia}
-                                                                    onChange={(e) => { this.onChange(e.target.value, 'fechaEvidencia') }} withformgroup={0} />
-                                                            </div>
-                                                        </div>
-                                                        <div className="separator separator-dashed my-5"></div>
-                                                        <div className="row mx-0 form-group-marginless">
-                                                            <div className="col-md-12 text-justify">
-                                                                <InputGray
-                                                                    withtaglabel={0}
-                                                                    withtextlabel={0}
-                                                                    withplaceholder={1}
-                                                                    withicon={1}
-                                                                    iconclass='las la-hashtag icon-xl'
-                                                                    requirevalidation={0}
-                                                                    value={form.numero_orden}
-                                                                    name='numero_orden'
-                                                                    onChange={(e) => { this.onChange(e.target.value, 'numero_orden') }}
-                                                                    swal={true}
-                                                                    placeholder='NÚMERO DE ORDEN DE COMPRA'
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="separator separator-dashed mt-5 mb-2"></div>
-                                                        <div className="form-group row form-group-marginless mt-5 mb-0">
-                                                            <div className="col-md-12">
-                                                                <label htmlFor="adjunto" className="drop-files">
-                                                                    <i className="las la-file-pdf icon-xl text-primary"></i>
-                                                                    <input
-                                                                        id="adjunto"
-                                                                        type="file"
-                                                                        onChange={(e) => { this.onChange(e.target.files[0], 'adjunto'); this.changeNameFile('adjunto') }}
-                                                                        name='adjunto'
-                                                                        accept="application/pdf"
-                                                                    />
-                                                                    <div className="font-weight-bolder font-size-md ml-2" id="info">Subir orden de compra (PDF)</div>
-                                                                </label>
-                                                                {
-                                                                    form.adjunto === '' ?
-                                                                        <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden (PDF) </span>
-                                                                        : <></>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                : form.estatus_cotizacion === 2 ?
-                                                    <div className="row mx-0 form-group-marginless mt-5">
-                                                        <div className="col-md-12 text-justify">
-                                                            <InputGray
-                                                                withtaglabel={0}
-                                                                withtextlabel={0}
-                                                                withplaceholder={1}
-                                                                withicon={0}
-                                                                value={form.motivo_cancelacion}
-                                                                name='motivo_cancelacion'
-                                                                onChange={(e) => { this.onChange(e.target.value, 'motivo_cancelacion') }}
-                                                                swal={true}
-                                                                requirevalidation={1}
-                                                                rows="3"
-                                                                as="textarea"
-                                                                placeholder="MOTIVO DE RECHAZO"
-                                                                customclass="px-2"
-                                                                messageinc="Incorrecto. Ingresa el motivo de rechazo."
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    : <></>
-                                        }
-                                        <div className="d-flex justify-content-between border-top pt-3 mt-5">
-                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold mt-0" onClick={() => { this.openWizard1() }}>
-                                                <span className="svg-icon svg-icon-md mr-2">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
-                                                </span>Anterior
-                                            </button>
-                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold mt-0" onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'validateWizard') }} >Enviar
-                                                <span className="svg-icon svg-icon-md ml-2 mr-0">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/Sending.svg')} />
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
+                                </div>
+                                :
+                                <Form id="form-orden" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'form-orden') }}>
+                                    {this.formAceptar(form, typeModal)}
                                 </Form>
-                            </div>
-                        </div>
+                        }
                     </Modal.Body>
+                    {
+                        typeModal === 'modify' ?
+                            <Modal.Footer className='border-0 justify-content-center'>
+                                <button type="button" className="swal2-cancel btn-light-gray-sweetalert2 swal2-styled d-flex"
+                                    onClick={this.handleCloseOrden}>
+                                    CANCELAR
+                                </button>
+                                <button type="button" className="swal2-confirm btn-light-success-sweetalert2 swal2-styled d-flex"
+                                    onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmitOrden, e, 'form-orden') }} >
+                                    MODIFICAR
+                                </button>
+                            </Modal.Footer>
+                        : <></>
+                    }
                 </Modal>
             </>
         )

@@ -126,7 +126,7 @@ class HistorialCotizacionesDiseño extends Component {
                                                         <div className="text-justify">
                                                             <span className="font-weight-light"><span className="font-weight-bolder"><u>Fecha de envio:</u> </span>{dayDMY(pdf.pivot.fecha_envio)}</span>
                                                         </div>
-                                                            <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden(pdf); }} >
+                                                        <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden('add-orden', pdf); }} >
                                                             <span className="svg-icon svg-icon-primary2 mr-1">
                                                                 <span className="svg-icon svg-icon-md">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
@@ -134,6 +134,16 @@ class HistorialCotizacionesDiseño extends Component {
                                                             </span>
                                                             <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
                                                                 Cambiar estatus de cotización
+                                                            </div>
+                                                        </div>
+                                                        <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden('modify-orden', pdf); }} >
+                                                            <span className="svg-icon svg-icon-primary2 mr-1">
+                                                                <span className="svg-icon svg-icon-md">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
+                                                                </span>
+                                                            </span>
+                                                            <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
+                                                                Modificar orden de compra
                                                             </div>
                                                         </div>
                                                     </div>
