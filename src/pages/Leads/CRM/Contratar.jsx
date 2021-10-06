@@ -11,9 +11,13 @@ import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAle
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions, printTableCP } from '../../../functions/setters'
 import Swal from 'sweetalert2'
-import { ProyectoCard } from '../../../components/cards'
+import { ContratarCard } from '../../../components/cards'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
+import { setSingleHeader } from '../../../functions/routers'
+import S3 from 'react-aws-s3';
+
 class Contratar extends Component {
+
     state = {
         modal: false,
         formModal: {
@@ -44,6 +48,7 @@ class Contratar extends Component {
             semana: '',
             nombre: '',
             cliente: '',
+            cliente_principal: '',
             contacto: '',
             numeroContacto: '',
             empresa: '',
@@ -68,6 +73,10 @@ class Contratar extends Component {
             tipoProyecto:'',
             m2:'',
             ubicacion_cliente: '',
+            fechaEvidencia: new Date(),
+            adjunto: '',
+            numero_orden: '',
+            cotizacionId:0
         },
         options:{
             empresas: [],
@@ -102,15 +111,6 @@ class Contratar extends Component {
         })
     }
 
-    // onChangeProyecto = e => {
-    //     const { name, value } = e.target
-    //     const { formProyecto } = this.state
-    //     formProyecto[name] = value
-    //     this.setState({
-    //         ...this.state,
-    //         formProyecto
-    //     })
-    // }
     onChangeProyecto = e => {
         const { name, value, type } = e.target
         const { formProyecto, options } = this.state
@@ -132,7 +132,7 @@ class Contratar extends Component {
                             cp: cliente.cp,
                             estado: cliente.estado,
                             municipio: cliente.municipio,
-                            colonia: cliente.colonia,
+                            colonia: cliente.colonia.toUpperCase(),
                             calle: cliente.calle
                         })
                     }
@@ -202,6 +202,7 @@ class Contratar extends Component {
             options
         })
     }
+    
     deleteOption = (element, array) => {
         let { formProyecto, showModal } = this.state
         const { options } = this.state
@@ -295,7 +296,7 @@ class Contratar extends Component {
         questionAlert2(
             '¿DESEAS ENVIAR CORREO Y GENERAR NUEVO USUARIO?', 
             '', 
-            () => this.convertLeadAxios(),
+            () => this.uploadFilesS3(),
             <form id = 'sendCorreoForm' name = 'sendCorreoForm'>
                 <div className="form-group">
                     <div className="radio-inline">
@@ -313,7 +314,35 @@ class Contratar extends Component {
         )
     }
 
-    async getOneLead() {
+    uploadFilesS3 = async() => {
+        const { lead, form } = this.state
+        const { location: { state: { cotizacionId: presupuesto } } } = this.props
+        const filePath = `presupuesto-diseño/${lead.empresa.name}/${presupuesto.pivot.identificador}/`
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { alma } = response.data
+                let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204)
+                                    resolve({ name: file.name, url: location })
+                                else
+                                    reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { /* this.addS3FilesAxios(values) */ console.log(`VALUES: `, values) } ).catch(err => console.error(err))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    getOneLead = async() => {
         const { location: { state } } = this.props
         const { formProyecto, options} = this.state
         options.tipos = setOptions(state.lead.empresa.tipos, 'tipo', 'id')
@@ -325,8 +354,10 @@ class Contratar extends Component {
             arreglo.push(state.lead.email)
             formProyecto.correos = arreglo
         }
-        formProyecto.tipoProyecto = state.lead.prospecto.tipo_proyecto.id.toString()
+        formProyecto.tipoProyecto = {name: state.lead.prospecto.tipo_proyecto.tipo, value: state.lead.prospecto.tipo_proyecto.id.toString(), label: state.lead.prospecto.tipo_proyecto.tipo}
         formProyecto.m2 = state.lead.presupuesto_diseño!==null?state.lead.presupuesto_diseño.m2:''
+        formProyecto.cotizacionId = state.form_orden.pdf_id.pivot.identificador
+        formProyecto.costo = state.form_orden.pdf_id.pivot.costo
         this.setState({
             ...this.state,
             lead: state.lead,
@@ -334,7 +365,7 @@ class Contratar extends Component {
         })
     }
 
-    async getOptionsAxios() {
+    getOptionsAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
@@ -376,22 +407,19 @@ class Contratar extends Component {
             console.error(error, 'error')
         })
     }
-    compare( a, b ) {
-        if ( a.name < b.name ){
-            return -1;
-        }
-        if ( a.name > b.name ){
-            return 1;
-        }
-        return 0;
-    }
-    async convertLeadAxios(){
+    
+    convertLeadAxios = async() => {
         const { access_token } = this.props.authUser
         let { formProyecto, lead } = this.state
         let sendCorreoValue = document.sendCorreoForm.sendCorreo.value;
         if(sendCorreoValue === 'si' || sendCorreoValue === 'no'){
             formProyecto.sendCorreo = sendCorreoValue
-            await axios.post( `${URL_DEV}v2/leads/crm/convert/${lead.id}`, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            let data = new FormData()
+            data.append(`adjuntoEvidencia`, formProyecto.adjunto)
+            data.append(`fechaEvidencia`, (new Date(formProyecto.fechaEvidencia)).toDateString())
+            data.append(`orden_compra`, formProyecto.numero_orden)
+            data.append(`pdfId`, formProyecto.cotizacionId)
+            await axios.post( `${URL_DEV}v2/leads/crm/convert/${lead.id}`, formProyecto, { headers: setSingleHeader(access_token) }).then(
                 (response) => {
                     const { proyecto } = response.data
                     const { history } = this.props;
@@ -431,7 +459,7 @@ class Contratar extends Component {
         }else{ errorAlert('Selecciona una opción') }
     }
 
-    async addCajaChicaAxios(proyecto){
+    addCajaChicaAxios = async(proyecto) => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cuentas/proyecto/caja/' + proyecto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -448,7 +476,7 @@ class Contratar extends Component {
         })
     }
 
-    async addClienteAxios() {
+    addClienteAxios = async() => {
         const { access_token } = this.props.authUser
         let { form } = this.state
         await axios.post(URL_DEV + 'cliente', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -477,6 +505,50 @@ class Contratar extends Component {
         })
     }
 
+    sendForm = async() => {
+        let { formProyecto } = this.state
+        const { options } = this.state
+        if(formProyecto.ubicacion_cliente === true){
+            options.cp_clientes.forEach((cliente) => {
+                if (formProyecto.cp_ubicacion === cliente.value) {
+                    formProyecto.cp = cliente.cp
+                    formProyecto.estado = cliente.estado
+                    formProyecto.municipio = cliente.municipio
+                    formProyecto.colonia = cliente.colonia
+                    formProyecto.calle = cliente.calle
+                }else if(options.cp_clientes.length === 1){
+                    formProyecto.cp = cliente.cp
+                    formProyecto.estado = cliente.estado
+                    formProyecto.municipio = cliente.municipio
+                    formProyecto.colonia = cliente.colonia
+                    formProyecto.calle = cliente.calle
+                }
+            })
+        }else{
+            formProyecto.cp = ''
+            formProyecto.estado = ''
+            formProyecto.municipio = ''
+            formProyecto.colonia = ''
+            formProyecto.calle = ''
+        }
+        Swal.close()
+        this.setState({
+            ...this.state,
+            modalCP: false,
+            formProyecto
+        })
+    }
+
+    compare( a, b ) {
+        if ( a.name < b.name ){
+            return -1;
+        }
+        if ( a.name > b.name ){
+            return 1;
+        }
+        return 0;
+    }
+
     tagInputChange = (nuevosCorreos) => {
         const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
         const { formProyecto } = this.state 
@@ -500,12 +572,14 @@ class Contratar extends Component {
             formProyecto
         })
     }
+
     openModalCP = () => {
         this.setState({
             ...this.state,
             modalCP:true
         })
     }
+
     handleCloseCP = () => { 
         let { formProyecto } = this.state
         formProyecto.ubicacion_cliente = ''
@@ -516,37 +590,22 @@ class Contratar extends Component {
             formProyecto
         })
     }
+
     updateSelectCP = value => {
         this.onChangeProyecto({ target: { name: 'cp_ubicacion', value: value.toString() } })
     }
-    sendForm = async() => {
-        let { formProyecto } = this.state
-        const { options } = this.state
-        options.cp_clientes.forEach((cliente) => {
-            if (formProyecto.cp_ubicacion === cliente.value) {
-                formProyecto.cp = cliente.cp
-                formProyecto.estado = cliente.estado
-                formProyecto.municipio = cliente.municipio
-                formProyecto.colonia = cliente.colonia
-                formProyecto.calle = cliente.calle
-            }else if(options.cp_clientes.length === 1){
-                formProyecto.cp = cliente.cp
-                formProyecto.estado = cliente.estado
-                formProyecto.municipio = cliente.municipio
-                formProyecto.colonia = cliente.colonia
-                formProyecto.calle = cliente.calle
-            }
-        })
-        Swal.close()
-        // formProyecto.ubicacion_cliente = ''
-        // formProyecto.cp_ubicacion = ''
-        
-        this.setState({
-            ...this.state,
-            modalCP: false,
-            formProyecto
-        })
+
+    changeNameFile(id){
+        var pdrs = document.getElementById(id).files[0].name;
+        document.getElementById('info').innerHTML = pdrs;
     }
+
+    onChangeFile = (value, name) => {
+        const { formProyecto } = this.state
+        formProyecto[name] = value
+        this.setState({...this.state, formProyecto})
+    }
+
     render() {
         const { modal, form, formProyecto, options, lead, modalCP, showModal } = this.state
         return (
@@ -557,37 +616,22 @@ class Contratar extends Component {
                             <span className="font-weight-bolder text-dark align-self-center font-size-h3">CONVERTIR LEAD</span>
                         </div>
                         <div className="d-flex justify-content-end">
-                            <Button
-                                icon=''
-                                className={"btn btn-icon btn-xs w-auto p-3 btn-light-success"}
-                                onClick = { this.openModal }
-                                only_icon={"flaticon2-plus icon-15px mr-2"}
-                                text="NUEVO CLIENTE"
-                            />
+                            <Button icon = '' className = "btn btn-icon btn-xs w-auto p-3 btn-light-success" onClick = { this.openModal }
+                                only_icon = "flaticon2-plus icon-15px mr-2" text = "NUEVO CLIENTE" />
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ProyectosFormGray 
-                            form = { formProyecto }
-                            options = { options } 
-                            onChange = { this.onChangeProyecto } 
-                            onChangeOptions = { this.onChangeOptions } 
-                            removeCorreo = { this.removeCorreo } 
-                            deleteOption = { this.deleteOption }
-                            tagInputChange={(e) => this.tagInputChange(e)}
-                            onChangeRange = { this.onChangeRange }
-                            onSubmit = { this.onSubmit }
-                            openModalCP={this.openModalCP}
-                            showModal={showModal}
-                        >
-                            <Accordion>
+                        <ProyectosFormGray form = { formProyecto } options = { options }  onChange = { this.onChangeProyecto } 
+                            onChangeOptions = { this.onChangeOptions }  removeCorreo = { this.removeCorreo }  deleteOption = { this.deleteOption }
+                            tagInputChange={(e) => this.tagInputChange(e)} onChangeRange = { this.onChangeRange } onSubmit = { this.onSubmit }
+                            openModalCP={this.openModalCP} showModal={showModal} changeNameFile={this.changeNameFile} onChangeFile={this.onChangeFile} >
+                            <Accordion className="px-5">
                                 {
                                     lead !== '' ? 
                                         lead.prospecto ?
-                                            <div className="d-flex justify-content-end">
-                                                <Accordion.Toggle as = { Button }  only_icon={"far fa-eye icon-15px mr-2"} text="INFORMACIÓN LEAD"
-                                                eventKey = 'prospecto' className={"btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2"}
-                                                />
+                                            <div className="d-flex justify-content-end px-md-6 px-0 mb-5">
+                                                <Accordion.Toggle as = { Button }  only_icon="far fa-eye icon-15px mr-2" text="INFORMACIÓN LEAD"
+                                                    eventKey = 'prospecto' className="btn btn-icon btn-xs w-auto p-3 btn-light-info" />
                                             </div>
                                         : ''
                                     : ''
@@ -598,7 +642,7 @@ class Contratar extends Component {
                                             lead !== ''?
                                                 lead.prospecto ?
                                                     <div>
-                                                        <ProyectoCard data={lead.prospecto} />
+                                                        <ContratarCard lead={lead} />
                                                     </div>
                                                 : ''
                                             : ''
@@ -609,10 +653,8 @@ class Contratar extends Component {
                         </ProyectosFormGray>
                     </Card.Body>
                 </Card>
-                <Modal size = 'xl' title = 'Nuevo cliente' show = { modal }
-                    handleClose = { this.handleClose }>
-                        <ClienteForm formeditado = { 0 } form = { form } onChange = { this.onChange } onSubmit = { this.onSubmitCliente } 
-                            className="mt-4" />
+                <Modal size = 'xl' title = 'Nuevo cliente' show = { modal } handleClose = { this.handleClose }>
+                    <ClienteForm formeditado = { 0 } form = { form } onChange = { this.onChange } onSubmit = { this.onSubmitCliente } className="mt-4" />
                 </Modal>
                 <Modal size="lg" show = { modalCP } title = 'ACTUALIZAR DATOS DEL CLIENTE' handleClose = { this.handleCloseCP } >
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendForm(); }}>

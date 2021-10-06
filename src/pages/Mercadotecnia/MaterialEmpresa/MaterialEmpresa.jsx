@@ -10,6 +10,8 @@ import { Build, NoFiles} from '../../../components/Lottie'
 import { Button, TablePagination } from '../../../components/form-components'
 import { Modal } from '../../../components/singles'
 import Swal from 'sweetalert2'
+import { setSingleHeader } from '../../../functions/routers'
+import S3 from 'react-aws-s3';
 class MaterialEmpresa extends Component {
 
     state = {
@@ -139,26 +141,44 @@ class MaterialEmpresa extends Component {
     /* ANCHOR ADD ADJUNTO SINGLE */
     addAdjunto = async() => {
         const { access_token } = this.props.authUser
-        const data = new FormData();
         const { form, menuactive, opciones_adjuntos, empresa } = this.state
-        data.append('tipo', opciones_adjuntos[menuactive].slug)
-        form.adjuntos.adjuntos.files.map((file)=>{
-            data.append(`files_name[]`, file.name)
-            data.append(`files[]`, file.file)
-            return ''
-        })
-        data.append('empresa', empresa.id)
-        await axios.post(`${URL_DEV}mercadotecnia/material-empresas`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        const tipo = opciones_adjuntos[menuactive].slug
+        const filePath = `empresas/${empresa.id}/adjuntos/${tipo}/`
+        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                Swal.close()
+                const { alma } = response.data
+                let auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location })
+                                else reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addAdjuntosFromS3(values, tipo)}).catch(err => console.error(err))        
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    addAdjuntosFromS3 = async(values, type) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        let form = {}
+        form.archivos = values
+        form.type = type
+        form.empresa = empresa.id
+        await axios.post(`${URL_DEV}v2/material-empresas/s3`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
                 const { empresa } = response.data
                 form.adjuntos.adjuntos.files = []
                 form.adjuntos.adjuntos.value = ''
-                this.setState({...this.state,modal:false,form,empresa:empresa})
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState( { ...this.state, modal:false, form, empresa:empresa } )
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
@@ -352,9 +372,7 @@ class MaterialEmpresa extends Component {
                                             this.printFiles()
                                         : 
                                             <div className='col-md-12'>
-                                                <div>
-                                                    <Build />
-                                                </div>
+                                                <div> <Build /> </div>
                                                 <div className='text-center mt-5 font-weight-bolder font-size-h3 text-primary'>
                                                     Selecciona la empresa
                                                 </div>
@@ -367,9 +385,7 @@ class MaterialEmpresa extends Component {
                 </Tab.Container>
                 <Modal show = { modal } title = 'Agregar adjuntos' handleClose = { this.handleCloseModal } size = 'lg' >
                     <div className = ''>
-                        <div className="text-center font-weight-bolder my-2 pt-3">
-                            {form.adjuntos.adjuntos.placeholder}
-                        </div>
+                        <div className="text-center font-weight-bolder my-2 pt-3"> {form.adjuntos.adjuntos.placeholder} </div>
                         <ItemSlider item = 'adjuntos' items = { form.adjuntos.adjuntos.files } handleChange = { this.handleChange } multiple={true} />
                     </div>
                 </Modal>
@@ -378,13 +394,7 @@ class MaterialEmpresa extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MaterialEmpresa);

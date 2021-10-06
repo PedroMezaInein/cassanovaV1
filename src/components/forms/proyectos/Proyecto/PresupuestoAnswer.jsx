@@ -217,7 +217,7 @@ class PresupuestoAnswer extends Component {
                 <HistorialPresupuestos presupuesto = { presupuesto } actionsEnable = { false } btnOrden = { true } onClickOrden = { this.onClickOrden }/>
                 <Modal show = { modal.orden_compra } onHide = { this.handleCloseOrden } centered contentClassName = 'swal2-popup d-flex w-40rem'>
                     <Modal.Header className = {`${typeModal === 'add' && (form.estatus_presupuesto === 1 || form.estatus_presupuesto === 2) ? 'd-none':'mt-5'} border-0 justify-content-center swal2-title text-center font-size-h4`}>
-                        {typeModal === 'modify'? 'MODIFICAR NOTA DE OBRA': 'EL PRESUPUESTO FUE:'}
+                        {typeModal === 'modify'? 'MODIFICAR ORDEN DE COMPRA': 'EL PRESUPUESTO FUE:'}
                     </Modal.Header>
                     <Modal.Body className='p-0'>
                         {

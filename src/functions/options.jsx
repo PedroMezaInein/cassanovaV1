@@ -17,6 +17,13 @@ export function optionsPresupuestos (){
         { name: 'Rechazado', value: 'Rechazado', label: 'Rechazado' }
     ]
 }
+export function optionsEsquemas (){
+    return [
+        { name: 'Esquema 1', value: 'esquema_1', label: 'Esquema 1'},
+        { name: 'Esquema 2', value: 'esquema_2', label: 'Esquema 2'},
+        { name: 'Esquema 3', value: 'esquema_3', label: 'Esquema 3'}
+    ]
+}
 
 export function transformOptions (options){
     options = options ? options : []

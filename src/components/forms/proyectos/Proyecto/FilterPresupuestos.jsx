@@ -111,7 +111,7 @@ class FilterPresupuestos extends Component {
                         <div className="col-md-12 px-0">
                             <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
                                 withformgroup={0} name='identificador' placeholder='IDENTIFICADOR' value={form.identificador}
-                                onChange={this.onChange} iconclass="las la-ruler-combined icon-xl" />
+                                onChange={this.onChange} iconclass="las la-hashtag icon-xl" />
                         </div>
                     </Col>
                 </Row>

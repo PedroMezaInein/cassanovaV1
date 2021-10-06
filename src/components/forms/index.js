@@ -137,6 +137,8 @@ import PresupuestosProyecto from './proyectos/Proyecto/PresupuestosProyecto'
 import PresupuestoList from './proyectos/Proyecto/PresupuestoList'
 import FilterPresupuestos from './proyectos/Proyecto/FilterPresupuestos'
 import PresupuestoAnswer from './proyectos/Proyecto/PresupuestoAnswer'
+import CotizacionesDiseño from './leads/info/CotizacionesDiseño'
+import HistorialCotizacionesDiseño from './leads/info/HistorialCotizacionesDiseño'
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
@@ -247,4 +249,5 @@ export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
     PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
-    InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer}
+    InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
+    CotizacionesDiseño, HistorialCotizacionesDiseño}

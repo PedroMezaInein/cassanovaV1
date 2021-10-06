@@ -1734,10 +1734,10 @@ class Crm extends Component {
         });
     }
 
-    changePageContratar = lead => {
-        const { history } = this.props
-        history.push({ pathname: '/leads/crm/contratar', state: { lead: lead } })
-    }
+    // changePageContratar = lead => {
+    //     const { history } = this.props
+    //     history.push({ pathname: '/leads/crm/contratar', state: { lead: lead } })
+    // }
 
     submitForm = e => {
         this.addLeadInfoAxios()
@@ -2124,7 +2124,7 @@ class Crm extends Component {
                                             sendEmail = { this.sendEmailLeadNegociacion }
                                             openModalWithInput={this.openModalWithInput}
                                             changePageDetails={this.changePageDetailsNegociacion}
-                                            changePageContratar={this.changePageContratar}
+                                            // changePageContratar={this.changePageContratar}
                                             changePageCierreVenta={this.changePageCierreVenta}
                                             options={options}
                                             clickOneLead = { this.getOneLeadInfoAxios }

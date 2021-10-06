@@ -3315,3 +3315,18 @@ td.descripcion{
 .w-40rem{
     width: 40rem
 }
+.label-status{
+    display:inline-flex;
+    padding: 0.4rem 0.5rem;
+    font-size: .65rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    border: transparent;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.475rem;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 0.3px;
+}
