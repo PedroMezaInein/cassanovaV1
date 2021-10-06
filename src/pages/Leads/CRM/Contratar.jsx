@@ -356,8 +356,8 @@ class Contratar extends Component {
         }
         formProyecto.tipoProyecto = {name: state.lead.prospecto.tipo_proyecto.tipo, value: state.lead.prospecto.tipo_proyecto.id.toString(), label: state.lead.prospecto.tipo_proyecto.tipo}
         formProyecto.m2 = state.lead.presupuesto_diseño!==null?state.lead.presupuesto_diseño.m2:''
-        formProyecto.cotizacionId = state.cotizacionId.pivot.identificador
-        formProyecto.costo = state.cotizacionId.pivot.costo
+        formProyecto.cotizacionId = state.form_orden.pdf_id.pivot.identificador
+        formProyecto.costo = state.form_orden.pdf_id.pivot.costo
         this.setState({
             ...this.state,
             lead: state.lead,

@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { Form, Row } from 'react-bootstrap'
-import { RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, CalendarDay, ReactSelectSearchGray } from '../../form-components'
+import { RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, ReactSelectSearchGray } from '../../form-components'
 import { TEL } from '../../../constants'
-import { openWizard1_4TABS, openWizard2_4TABS, openWizard3_4TABS, openWizard4_4TABS } from '../../../functions/wizard'
+import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import $ from "jquery";
 import { optionsFases } from "../../../functions/options"
@@ -176,7 +176,7 @@ class ProyectosForm extends Component {
                         <div className="d-flex flex-column-auto flex-column px-0">
                             <div className="wizard-nav d-flex flex-column align-items-center align-items-md-center">
                                 <div className="wizard-steps d-flex flex-column flex-md-row">
-                                    <div id="wizard-1" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_4TABS() }}>
+                                    <div id="wizard-1" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1() }}>
                                         <div className="wizard-wrapper pr-lg-7 pr-5">
                                             <div className="wizard-icon">
                                                 <i className="wizard-check fas fa-check"></i>
@@ -191,7 +191,7 @@ class ProyectosForm extends Component {
                                             </span>
                                         </div>
                                     </div>
-                                    <div id="wizard-2" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={() => { openWizard2_4TABS() }}>
+                                    <div id="wizard-2" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={() => { openWizard2() }}>
                                         <div className="wizard-wrapper pr-lg-7 pr-5">
                                             <div className="wizard-icon">
                                                 <i className="wizard-check fas fa-check"></i>
@@ -206,7 +206,7 @@ class ProyectosForm extends Component {
                                             </span>
                                         </div>
                                     </div>
-                                    <div id="wizard-3" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={(e) => { e.preventDefault(e); openWizard3_4TABS(); if (showModal) { openModalCP(); } }}>
+                                    <div id="wizard-3" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={(e) => { e.preventDefault(e); openWizard3(); if (showModal) { openModalCP(); } }}>
                                         <div className="wizard-wrapper pr-lg-7 pr-5">
                                             <div className="wizard-icon">
                                                 <i className="wizard-check fas fa-check"></i>
@@ -215,21 +215,6 @@ class ProyectosForm extends Component {
                                             <div className="wizard-label mr-3">
                                                 <h3 className="wizard-title">Ubicación</h3>
                                                 <div className="wizard-desc">Ubicación del proyecto</div>
-                                            </div>
-                                            <span className="svg-icon">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div id="wizard-4" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={() => { openWizard4_4TABS() }}>
-                                        <div className="wizard-wrapper">
-                                            <div className="wizard-icon">
-                                                <i className="wizard-check fas fa-check"></i>
-                                                <span className="wizard-number">4</span>
-                                            </div>
-                                            <div className="wizard-label mr-3">
-                                                <h3 className="wizard-title">Orden de compra</h3>
-                                                <div className="wizard-desc">Evidencia de orden</div>
                                             </div>
                                         </div>
                                     </div>
@@ -345,7 +330,7 @@ class ProyectosForm extends Component {
                                     </div>
                                 </Row>
                                 <div className="d-flex justify-content-end pt-3 border-top mt-10">
-                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard2_4TABS() }}>Siguiente
+                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard2() }}>Siguiente
                                         <span className="svg-icon svg-icon-md ml-2 mr-0">
                                             <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
                                         </span>
@@ -423,12 +408,12 @@ class ProyectosForm extends Component {
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top pt-3">
-                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold" onClick={() => { openWizard1_4TABS() }}>
+                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold" onClick={() => { openWizard1() }}>
                                         <span className="svg-icon svg-icon-md mr-2">
                                             <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
                                         </span>Anterior
                                     </button>
-                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard3_4TABS(); if (showModal) { this.openModalCP(); } }}>Siguiente
+                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard3(); if (showModal) { this.openModalCP(); } }}>Siguiente
                                         <span className="svg-icon svg-icon-md ml-2 mr-0">
                                             <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
                                         </span>
@@ -533,70 +518,7 @@ class ProyectosForm extends Component {
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top pt-3">
-                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold" onClick={() => { openWizard2_4TABS() }}>
-                                        <span className="svg-icon svg-icon-md mr-2">
-                                            <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
-                                        </span>Anterior
-                                    </button>
-                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard4_4TABS() }}>Siguiente
-                                        <span className="svg-icon svg-icon-md ml-2 mr-0">
-                                            <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
-                                        </span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="wizard-4-content" className="px-8" data-wizard-type="step-content">
-                                <Row className="mx-auto mt-5 mb-8 col-md-9 col-xxl-7">
-                                    <div className="text-center col-md-6">
-                                        <div>
-                                            <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                                <label className="text-center font-weight-bolder">Fecha de orden de compra</label>
-                                            </div>
-                                            <CalendarDay value = { form.fechaEvidencia } date = { form.fechaEvidencia } onChange = { onChange } name = 'fechaEvidencia' withformgroup={0} requirevalidation={1}/>
-                                        </div>
-                                    </div>
-                                    <div className="align-self-center col-md-6">
-                                        <div className="col-md-12 mb-9">
-                                            <InputGray
-                                                letterCase={true}
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withplaceholder={1}
-                                                withicon={1}
-                                                requirevalidation={0}
-                                                withformgroup={0}
-                                                formeditado={formeditado}
-                                                name="numero_orden"
-                                                value={form.numero_orden}
-                                                onChange={onChange}
-                                                type="text"
-                                                placeholder="NÚMERO DE ORDEN DE COMPRA"
-                                                iconclass="las la-hashtag"
-                                                messageinc="Incorrecto. Ingresa el número de orden."
-                                            />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <label htmlFor="adjunto" className="drop-files">
-                                                <i className="las la-file-pdf icon-xl text-primary"></i>
-                                                <input
-                                                    id="adjunto"
-                                                    type="file"
-                                                    onChange={(e) => { onChangeFile(e.target.files[0], 'adjunto'); changeNameFile('adjunto') }}
-                                                    name='adjunto'
-                                                    accept="application/pdf"
-                                                />
-                                                <div className="font-weight-bolder font-size-md ml-2" id="info">Subir orden de compra (PDF)</div>
-                                            </label>
-                                            {
-                                                form.adjunto === '' ?
-                                                    <span className="form-text text-danger is-invalid font-size-xs text-center"> Adjunta la orden (PDF) </span>
-                                                    : <></>
-                                            }
-                                        </div>
-                                    </div>
-                                </Row>
-                                <div className="d-flex justify-content-between border-top pt-3">
-                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold" onClick={() => { openWizard3_4TABS() }}>
+                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold" onClick={() => { openWizard2() }}>
                                         <span className="svg-icon svg-icon-md mr-2">
                                             <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
                                         </span>Anterior
