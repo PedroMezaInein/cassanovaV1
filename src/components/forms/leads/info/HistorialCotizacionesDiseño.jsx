@@ -56,7 +56,20 @@ class HistorialCotizacionesDiseño extends Component {
             </span>
         )
     }
-    
+    addOrden = (pdf) => {
+        let flag = false
+        if (pdf.pivot.fecha_envio) {
+            flag = true
+        }
+        return flag
+    }
+    modifyOrden = (pdf) => {
+        let flag = false
+        if (pdf.pivot.fecha_aceptacion) {
+            flag = true
+        }
+        return flag
+    }
     render() {
         const { pdfs, sendPresupuesto, onClickOrden } = this.props
         return (
@@ -65,6 +78,7 @@ class HistorialCotizacionesDiseño extends Component {
                     <div className="accordion accordion-light accordion-svg-toggle">
                         {
                             pdfs.map((pdf, index) => {
+                                console.log(pdf,'pdf')
                                 return (
                                     <Card key={index} className={`w-auto ${pdf.isActive? 'border-top-0' : ''}`} >
                                         <Card.Header >
@@ -121,23 +135,7 @@ class HistorialCotizacionesDiseño extends Component {
                                         </Card.Header>
                                         <Card.Body className={`card-body px-10 ${pdf.isActive ? 'collapse show' : 'collapse'}`}>
                                             {
-                                                pdf.pivot.fecha_envio !== null && pdf.pivot.fecha_aceptacion === null?
-                                                    <div className="d-flex col-md-9 mx-auto my-6 justify-content-between">
-                                                        <div className="text-justify">
-                                                            <span className="font-weight-light"><span className="font-weight-bolder"><u>Fecha de envio:</u> </span>{dayDMY(pdf.pivot.fecha_envio)}</span>
-                                                        </div>
-                                                        <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden('add-orden', pdf); }} >
-                                                            <span className="svg-icon svg-icon-primary2 mr-1">
-                                                                <span className="svg-icon svg-icon-md">
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
-                                                                </span>
-                                                            </span>
-                                                            <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
-                                                                Cambiar estatus de cotización
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                :
+                                                this.modifyOrden(pdf) ?
                                                     <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden('modify-orden', pdf); }} >
                                                         <span className="svg-icon svg-icon-primary2 mr-1">
                                                             <span className="svg-icon svg-icon-md">
@@ -148,6 +146,23 @@ class HistorialCotizacionesDiseño extends Component {
                                                             Modificar orden de compra
                                                         </div>
                                                     </div>
+                                                    : this.addOrden(pdf) ?
+                                                        <div className="d-flex col-md-9 mx-auto my-6 justify-content-between">
+                                                            <div className="text-justify">
+                                                                <span className="font-weight-light"><span className="font-weight-bolder"><u>Fecha de envio:</u> </span>{dayDMY(pdf.pivot.fecha_envio)}</span>
+                                                            </div>
+                                                            <div className="d-flex align-items-center bg-light-primary2 rounded p-1 cursor-pointer w-fit-content" onClick={(e) => { e.preventDefault(); onClickOrden('add-orden', pdf); }} >
+                                                                <span className="svg-icon svg-icon-primary2 mr-1">
+                                                                    <span className="svg-icon svg-icon-md">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
+                                                                    </span>
+                                                                </span>
+                                                                <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
+                                                                    Cambiar estatus de cotización
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        : <></>
                                             }
                                             <Col md={10} className="mx-auto text-center mt-5">
                                                 <ItemSlider items={[{ url: pdf.url, name: pdf.name }]}/>
