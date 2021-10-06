@@ -1,21 +1,23 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { URL_DEV } from '../../../../constants'
-import { Card, Dropdown, DropdownButton, Modal, Form } from 'react-bootstrap'
-import { setNaviIcon } from '../../../../functions/setters'
-import HistorialCotizacionesDiseño from '../info/HistorialCotizacionesDiseño'
-import PresupuestoDiseñoCRMForm from '../../leads/info/PresupuestoDiseñoCRMForm'
+import Swal from 'sweetalert2'
 import SVG from "react-inlinesvg";
+import { URL_DEV } from '../../../../constants'
+import { setNaviIcon } from '../../../../functions/setters'
 import { toAbsoluteUrl } from "../../../../functions/routers"
+import { setSingleHeader } from '../../../../functions/routers'
+import { FilterCotizaciones } from "../../../../components/filters"
+import { Modal as ModalCustom } from '../../../../components/singles'
+import HistorialCotizacionesDiseño from '../info/HistorialCotizacionesDiseño'
+import { Card, Dropdown, DropdownButton, Modal, Form } from 'react-bootstrap'
+import PresupuestoDiseñoCRMForm from '../../leads/info/PresupuestoDiseñoCRMForm'
 import { CalendarDaySwal, InputGray } from '../../../../components/form-components'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, errorAlert } from '../../../../functions/alert'
-import { setSingleHeader } from '../../../../functions/routers'
-
-import Swal from 'sweetalert2'
 class CotizacionesDiseño extends Component {
     state = {
         activeCotizacion: '',
-        modal: { orden_compra: false },
+        pdfs:'',
+        modal: { orden_compra: false, filter: false },
         typeModal: '',
         form: {
             fechaEvidencia: new Date(),
@@ -24,7 +26,8 @@ class CotizacionesDiseño extends Component {
             estatus_cotizacion: '',
             motivo_cancelacion: '',
             pdf_id: 0
-        }
+        },
+        filtering: {}
     }
     componentDidMount() {
         const { lead } = this.props
@@ -36,6 +39,41 @@ class CotizacionesDiseño extends Component {
         }
         this.setState({
             activeCotizacion
+        })
+    }
+
+    // componentDidMount() {
+    //     this.getCotizaciones()
+    // }
+    componentDidUpdate = (prev) => {
+        const { isActive } = this.props
+        const { isActive: prevActive } = prev
+        if(isActive && !prevActive){
+            this.setState({ ...this.state, filtering: {} })
+            this.getCotizaciones({});
+        }
+    }
+    getCotizaciones = async(filtering) => {
+        const { at, lead } = this.props
+        let { activeCotizacion } = this.state
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/leads/crm/info/info/${lead.id}`, {filters: filtering}, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { pdfs } = response.data
+                if (pdfs.length === 0) {
+                    if (filtering !== {})
+                        activeCotizacion = 'historial'
+                    else
+                        activeCotizacion = 'new'
+                } else {
+                    activeCotizacion = 'historial'
+                }
+                Swal.close()
+                this.setState({ ...this.state, pdfs: pdfs, activeCotizacion })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
         })
     }
     openWizard1() {
@@ -84,12 +122,24 @@ class CotizacionesDiseño extends Component {
                 return ''
         }
     }
+    showBtnHistorial(lead){
+        const { activeCotizacion } = this.state
+        if((activeCotizacion === 'new' && this.hasCorizaciones(lead)) || (activeCotizacion === 'contratar')){
+            return true
+        }
+        return false
+    }
     onClickCotizacion = (type) => {
+        const { filtering } = this.state
+        if( type === 'historial'){
+            this.getCotizaciones(filtering)
+        }
         this.setState({
             ...this.state,
             activeCotizacion: type
         })
     }
+
     hasCorizaciones(lead) {
         if (lead)
             if (lead.presupuesto_diseño)
@@ -98,6 +148,9 @@ class CotizacionesDiseño extends Component {
                         return true
         return false
     }
+    /* -------------------------------------------------------------------------- */
+    /*                              ORDEN DE COMPRA                               */
+    /* -------------------------------------------------------------------------- */
     onClickOrden = (type, pdf) => {
         let { typeModal, form } = this.state
         const { modal } = this.state
@@ -153,18 +206,6 @@ class CotizacionesDiseño extends Component {
         const { form, typeModal } = this.state
         const { at, history, lead } = this.props
         waitAlert();
-        // if (form.estatus_cotizacion === 2) {
-        //     await axios.post(`${URL_DEV}v2/leads/crm/info/info/${lead.id}`, form, { headers: setSingleHeader(at) }).then(
-        //         (response) => {
-        //             this.handleCloseOrden()
-        //             doneAlert('La cotización fue rechazada con éxito')
-        //         },
-        //         (error) => { printResponseErrorAlert(error) }
-        //     ).catch((error) => {
-        //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //         console.error(error, 'error')
-        //     })
-        // } else {
             if(typeModal === 'add'){
                 history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, form_orden: form } })
             }else{
@@ -188,13 +229,6 @@ class CotizacionesDiseño extends Component {
                 })
             }
         // }
-    }
-    showBtnHistorial(lead){
-        const { activeCotizacion } = this.state
-        if(activeCotizacion === 'new' && this.hasCorizaciones(lead) || (activeCotizacion === 'contratar')){
-            return true
-        }
-        return false
     }
     formAceptar(form, typeModal) {
         return (
@@ -286,58 +320,70 @@ class CotizacionesDiseño extends Component {
             </>
         )
     }
+    /* -------------------------------------------------------------------------- */
+    /*                           FILTRADO COTIZACIONES                            */
+    /* -------------------------------------------------------------------------- */
+    openFormFilter = () => {
+        const { modal } = this.state
+        modal.filter = true
+        this.setState({
+            ...this.state,
+            modal,
+            formeditado: 0
+        })
+    }
+    handleCloseFilter = () => {
+        const { modal } = this.state
+        modal.filter = false
+        this.setState({ ...this.state, modal})
+    }
+    filterTable = async(form) => {
+        waitAlert()
+        const { modal } = this.state
+        modal.filter = false
+        this.setState({ ...this.state, filtering: form, modal })
+        this.getCotizaciones(form)
+    }
+    
     render() {
         const { lead, sendPresupuesto, options, formDiseño, onChange, onChangeConceptos, checkButtonSemanas, onChangeCheckboxes,
-            onSubmit, submitPDF, formeditado, onClickTab, activeKey, defaultKey, onChangePartidas } = this.props
-        const { activeCotizacion, modal, form, typeModal } = this.state
+            onSubmit, submitPDF, formeditado, onClickTab, activeKey, defaultKey, onChangePartidas, at } = this.props
+        const { activeCotizacion, modal, form, typeModal, filtering } = this.state
         return (
             <>
                 <Card className='card card-custom gutter-b'>
                     <Card.Header className="border-0 align-items-center pt-8 pt-md-0">
                         <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
                         <div className="card-toolbar">
-
-                            <button type="button" 
-                                    className="btn btn-sm btn-flex btn-light-primary2" 
-                                    onClick={() => { this.onClickCotizacion(`${this.showBtnHistorial(lead)?'historial':'new'}`) }} 
-                                >
-                                <span className="svg-icon">
-                                    {
-                                        this.showBtnHistorial(lead) ? <SVG src={toAbsoluteUrl('/images/svg/File.svg')} /> : activeCotizacion === 'historial' ?
-                                        !this.hasCorizaciones(lead) ? <SVG src={toAbsoluteUrl('/images/svg/Plus.svg')} /> : <SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} /> :<></>
-                                    }
-                                </span>
-                                <div>
-                                    { 
-                                        this.showBtnHistorial(lead) ? 'HISTORIAL DE COTIZACIONES' : activeCotizacion === 'historial' ?
-                                        !this.hasCorizaciones(lead) ? 'AGREGAR NUEVA COTIZACIÓN' : 'MODIFICAR COTIZACIÓN' :<></>
-                                    }
-                                </div>
-                            </button>
-                            {/* <div className="card-toolbar toolbar-dropdown">
+                            <div className="card-toolbar toolbar-dropdown">
                                 <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
                                     {
                                         activeCotizacion === 'historial' ?
-                                            <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.onClickCotizacion('new') }}>
-                                                {setNaviIcon(`las icon-lg la-${!this.hasCorizaciones(lead) ? 'plus' : 'edit'}`, `${!this.hasCorizaciones(lead) ? 'AGREGAR NUEVA COTIZACIÓN' : 'MODIFICAR COTIZACIÓN'}`)}
-                                            </Dropdown.Item>
-                                            : <></>
+                                            <>
+                                                <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.onClickCotizacion('new') }}>
+                                                    {setNaviIcon(`las icon-lg la-${!this.hasCorizaciones(lead) ? 'plus' : 'edit'}`, `${!this.hasCorizaciones(lead) ? 'AGREGAR NUEVA COTIZACIÓN' : 'MODIFICAR COTIZACIÓN'}`)}
+                                                </Dropdown.Item>
+                                                <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => { this.openFormFilter('filter') }}>
+                                                    {setNaviIcon(`las la-filter icon-lg`, 'FILTRAR COTIZACIONES')}
+                                                </Dropdown.Item>
+                                            </>
+                                        : <></>
                                     }
                                     {
-                                        (activeCotizacion === 'new' && this.hasCorizaciones(lead)) || (activeCotizacion === 'contratar') ?
+                                        this.showBtnHistorial(lead) ?
                                             <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.onClickCotizacion('historial') }}>
                                                 {setNaviIcon(`las la-clipboard-list icon-lg`, 'HISTORIAL DE COTIZACIONES')}
                                             </Dropdown.Item>
-                                            : <></>
+                                        : <></>
                                     }
                                 </DropdownButton>
-                            </div> */}
+                            </div>
                         </div>
                     </Card.Header>
                     <Card.Body>
                         {
                             activeCotizacion === 'historial' ?
-                                <HistorialCotizacionesDiseño pdfs={lead.presupuesto_diseño.pdfs} sendPresupuesto={sendPresupuesto} changePageContratar={this.changePageContratar} onClickOrden={this.onClickOrden} />
+                                <HistorialCotizacionesDiseño pdfs={lead.presupuesto_diseño.pdfs} sendPresupuesto={sendPresupuesto} changePageContratar={this.changePageContratar} onClickOrden={this.onClickOrden} options={options} />
                                 : activeCotizacion === 'new' ?
                                     <PresupuestoDiseñoCRMForm
                                         options={options}
@@ -477,6 +523,9 @@ class CotizacionesDiseño extends Component {
                         : <></>
                     }
                 </Modal>
+                <ModalCustom size = "lg" title = 'Filtrar historial' show = { modal.filter } handleClose = { this.handleCloseFilter} >
+                    <FilterCotizaciones at={at} filtering = { this.filterTable } filters = { filtering } />
+                </ModalCustom>
             </>
         )
     }
