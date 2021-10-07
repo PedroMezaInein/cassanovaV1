@@ -316,17 +316,15 @@ class Contratar extends Component {
 
     uploadFilesS3 = async() => {
         let mustSendCorreo = document.sendCorreoForm.sendCorreo.value
+        waitAlert()
         if(mustSendCorreo === 'no' || mustSendCorreo === 'si'){
             const { lead } = this.state
             const { form_orden } = this.props.location.state
             const filePath = `presupuesto-diseño/${lead.empresa.name}/${form_orden.pdf_id.pivot.identificador}/orden-compra/${Math.floor(Date.now() / 1000)}-${form_orden.adjunto.name}`
             const { access_token } = this.props.authUser
-            console.log(form_orden.adjunto, 'FORM ORDEN ADJUNTO')
-
             await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
                 (response) => {
                     const { alma } = response.data
-                    console.log(filePath, form_orden)
                     new S3(alma).uploadFile(form_orden.adjunto, `${filePath}`)
                         .then((data) =>{
                             const { location,status } = data
@@ -334,7 +332,7 @@ class Contratar extends Component {
                                 this.createProyectoAxios({ name: form_orden.adjunto.name, url: location }, mustSendCorreo)
                             }
                             else{ errorAlert('Ocurrió un error al enviar la información') }
-                        }).catch(err => console.log(err))
+                        }).catch(err => console.error(err))
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -345,7 +343,6 @@ class Contratar extends Component {
     }
 
     createProyectoAxios = async(value, flag) => {
-        console.log(`VALUE: `, value)
         const { form_orden } = this.props.location.state
         const { formProyecto, lead } = this.state
         const { access_token } = this.props.authUser
