@@ -61,7 +61,7 @@ class CotizacionesDiseño extends Component {
             (response) => {
                 const { pdfs } = response.data
                 if (pdfs.length === 0) {
-                    if (filtering !== {})
+                    if(Object.entries(filtering).length > 0)
                         activeCotizacion = 'historial'
                     else
                         activeCotizacion = 'new'
