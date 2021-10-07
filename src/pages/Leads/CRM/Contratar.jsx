@@ -398,7 +398,7 @@ class Contratar extends Component {
 
     getOneLead = async() => {
         const { location: { state } } = this.props
-        const { lead, form_orden } = state
+        const { lead } = state
         const { formProyecto, options } = this.state
         options.tipos = setOptions(lead.empresa.tipos, 'tipo', 'id')
         let arreglo = []
