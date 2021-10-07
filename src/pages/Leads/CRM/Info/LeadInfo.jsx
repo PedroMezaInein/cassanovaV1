@@ -1794,8 +1794,7 @@ class LeadInfo extends Component {
                                                         onSubmit={this.onSubmitPresupuestoDiseño} submitPDF={this.onSubmitPDF}
                                                         formeditado={formeditado} onClickTab={this.handleClickTab}
                                                         activeKey={activeKey} defaultKey={defaultKey} onChangePartidas={this.onChangePartidas}
-                                                        history={history} at={access_token} isActive={activeNav === 'cotizacion' ? true : false}
-                                                    />
+                                                        history={history} at={access_token} isActive={activeNav === 'cotizacion' ? true : false} />
                                                     :lead.prospecto.obra ?
                                                         solicitud !== '' ?
                                                             <Card className='card card-custom gutter-b'>

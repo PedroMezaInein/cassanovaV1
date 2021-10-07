@@ -217,8 +217,26 @@ class CotizacionesDiseño extends Component {
         const { at, history, lead } = this.props
         waitAlert();
             if(typeModal === 'add'){
-                // Cambiar a página contratar desde la sección de cotización de diseño
-                history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, form_orden: form } })
+                if(form.estatus_cotizacion === 1){
+                    history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, form_orden: form } })  
+                }else{
+                    let formulario = {
+                        motivo_rechazo: form.motivo_cancelacion,
+                        pdf: form.pdf_id
+                    }
+                    await axios.post(`${URL_DEV}v3/leads/crm/${lead.id}/rechazar`, formulario, 
+                        { headers: setSingleHeader(at) }).then(
+                        (response) => {
+                            this.handleCloseOrden()
+                            doneAlert( `La cotización fue rechazada con éxito`, () => {
+                                this.getCotizaciones({})
+                            })
+                        }, (error) => { printResponseErrorAlert(error) }
+                    ).catch((error) => {
+                        errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                        console.error(error, 'error')
+                    })
+                }
             }else{
                 let data = new FormData()
                 data.append(`adjuntoEvidencia`, form.adjunto)
@@ -394,7 +412,8 @@ class CotizacionesDiseño extends Component {
                     <Card.Body>
                         {
                             activeCotizacion === 'historial' ?
-                                <HistorialCotizacionesDiseño pdfs={pdfs} sendPresupuesto={sendPresupuesto} changePageContratar={this.changePageContratar} onClickOrden={this.onClickOrden} options={options} />
+                                    <HistorialCotizacionesDiseño pdfs={pdfs} sendPresupuesto={sendPresupuesto} changePageContratar={this.changePageContratar} 
+                                        onClickOrden={this.onClickOrden} options={options} />
                                 : activeCotizacion === 'new' ?
                                     <PresupuestoDiseñoCRMForm
                                         options={options}
