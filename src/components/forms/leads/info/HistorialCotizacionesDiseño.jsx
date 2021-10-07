@@ -158,7 +158,7 @@ class HistorialCotizacionesDiseño extends Component {
                                                                     </span>
                                                                 </span>
                                                                 <div className="d-flex font-weight-bolder text-primary2 font-size-sm">
-                                                                    Cambiar estatus de cotización
+                                                                    Aceptar o rechazar cotización
                                                                 </div>
                                                             </div>
                                                         </div>

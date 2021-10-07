@@ -315,26 +315,80 @@ class Contratar extends Component {
     }
 
     uploadFilesS3 = async() => {
-        const { lead, form } = this.state
-        const { location: { state: { cotizacionId: presupuesto } } } = this.props
-        const filePath = `presupuesto-diseño/${lead.empresa.name}/${presupuesto.pivot.identificador}/`
+        let mustSendCorreo = document.sendCorreoForm.sendCorreo.value
+        if(mustSendCorreo === 'no' || mustSendCorreo === 'si'){
+            const { lead } = this.state
+            const { form_orden } = this.props.location.state
+            const filePath = `presupuesto-diseño/${lead.empresa.name}/${form_orden.pdf_id.pivot.identificador}/orden-compra/${Math.floor(Date.now() / 1000)}-${form_orden.adjunto.name}`
+            const { access_token } = this.props.authUser
+            console.log(form_orden.adjunto, 'FORM ORDEN ADJUNTO')
+
+            await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+                (response) => {
+                    const { alma } = response.data
+                    console.log(filePath, form_orden)
+                    new S3(alma).uploadFile(form_orden.adjunto, `${filePath}`)
+                        .then((data) =>{
+                            const { location,status } = data
+                            if(status === 204){ 
+                                this.createProyectoAxios({ name: form_orden.adjunto.name, url: location }, mustSendCorreo)
+                            }
+                            else{ errorAlert('Ocurrió un error al enviar la información') }
+                        }).catch(err => console.log(err))
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.error(error, 'error')
+            })
+        }else{ errorAlert(`Vuelve a intentarlo y selecciona una opción.`) }
+        
+    }
+
+    createProyectoAxios = async(value, flag) => {
+        console.log(`VALUE: `, value)
+        const { form_orden } = this.props.location.state
+        const { formProyecto, lead } = this.state
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+        let aceptacion = {
+            fecha_aceptacion: form_orden.fechaEvidencia,
+            orden_compra: form_orden.numero_orden,
+            visto_bueno: value,
+            pdf: form_orden.pdf_id.id
+        }
+        formProyecto.aceptacion = aceptacion
+        formProyecto.sendCorreo = flag
+        await axios.post(`${URL_DEV}v3/leads/crm/${lead.id}/contratar`, formProyecto, { headers: setSingleHeader( access_token ) }).then(
             (response) => {
-                const { alma } = response.data
-                let auxPromises = form.adjuntos.adjuntos.files.map((file) => {
-                    return new Promise((resolve, reject) => {
-                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
-                            .then((data) =>{
-                                const { location,status } = data
-                                if(status === 204)
-                                    resolve({ name: file.name, url: location })
-                                else
-                                    reject(data)
-                            }).catch(err => reject(err))
-                    })
-                })
-                Promise.all(auxPromises).then(values => { /* this.addS3FilesAxios(values) */ console.log(`VALUES: `, values) } ).catch(err => console.error(err))
+                const { proyecto } = response.data
+                const { history } = this.props;
+                createAlertSA2WithCloseAndHtml(
+                    <div>
+                        <h2 className = 'swal2-title mb-10 mt-2'>
+                            <span className="text-primary">¡FELICIDADES!</span> CREASTE EL PROYECTO <span className="text-success">{proyecto.nombre}</span>
+                        </h2>
+                        <span className = 'mb-2'>
+                            ¿DESEAS CREAR LA CAJA CHICA?
+                        </span>
+                        <form id = 'formulario_swal' name = 'formulario_swal'>
+                            <div className="my-5">
+                                <div className="radio-inline">
+                                    <label className="radio">
+                                        <input type = "radio" name = 'caja' value = { true } />Si
+                                        <span></span>
+                                    </label>
+                                    <label className="radio">
+                                        <input type = "radio" name = 'caja' value = { false } />No
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>,
+                    () => { 
+                        if(document.formulario_swal.caja.value){ this.addCajaChicaAxios(proyecto)}
+                        else{ history.push({pathname: '/leads/crm/info/info',state: { lead: lead, tipo: 'Contratado' }}) }
+                    }, () => { history.push({pathname: '/leads/crm/info/info',state: { lead: lead, tipo: 'Contratado' }}) }
+                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -344,25 +398,26 @@ class Contratar extends Component {
 
     getOneLead = async() => {
         const { location: { state } } = this.props
-        const { formProyecto, options} = this.state
-        options.tipos = setOptions(state.lead.empresa.tipos, 'tipo', 'id')
+        const { lead, form_orden } = state
+        const { formProyecto, options } = this.state
+        options.tipos = setOptions(lead.empresa.tipos, 'tipo', 'id')
         let arreglo = []
-        formProyecto.numeroContacto = state.lead.telefono
-        formProyecto.contacto = state.lead.nombre.toUpperCase()
+        formProyecto.numeroContacto = lead.telefono
+        formProyecto.contacto = lead.nombre.toUpperCase()
         //formProyecto.nombre = state.lead.prospecto.nombre_proyecto
-        if(state.lead.email){
-            arreglo.push(state.lead.email)
+        if(lead.email){
+            arreglo.push(lead.email)
             formProyecto.correos = arreglo
         }
-        formProyecto.tipoProyecto = {name: state.lead.prospecto.tipo_proyecto.tipo, value: state.lead.prospecto.tipo_proyecto.id.toString(), label: state.lead.prospecto.tipo_proyecto.tipo}
+        formProyecto.tipoProyecto = {
+            name: lead.prospecto.tipo_proyecto.tipo, 
+            value: lead.prospecto.tipo_proyecto.id.toString(), 
+            label: lead.prospecto.tipo_proyecto.tipo
+        }
         formProyecto.m2 = state.lead.presupuesto_diseño!==null?state.lead.presupuesto_diseño.m2:''
         formProyecto.cotizacionId = state.form_orden.pdf_id.pivot.identificador
         formProyecto.costo = state.form_orden.pdf_id.pivot.costo
-        this.setState({
-            ...this.state,
-            lead: state.lead,
-            formProyecto
-        })
+        this.setState({ ...this.state, lead: state.lead, formProyecto })
     }
 
     getOptionsAxios = async() => {
@@ -408,68 +463,16 @@ class Contratar extends Component {
         })
     }
     
-    convertLeadAxios = async() => {
-        const { access_token } = this.props.authUser
-        let { formProyecto, lead } = this.state
-        let sendCorreoValue = document.sendCorreoForm.sendCorreo.value;
-        if(sendCorreoValue === 'si' || sendCorreoValue === 'no'){
-            formProyecto.sendCorreo = sendCorreoValue
-            let data = new FormData()
-            data.append(`adjuntoEvidencia`, formProyecto.adjunto)
-            data.append(`fechaEvidencia`, (new Date(formProyecto.fechaEvidencia)).toDateString())
-            data.append(`orden_compra`, formProyecto.numero_orden)
-            data.append(`pdfId`, formProyecto.cotizacionId)
-            await axios.post( `${URL_DEV}v2/leads/crm/convert/${lead.id}`, formProyecto, { headers: setSingleHeader(access_token) }).then(
-                (response) => {
-                    const { proyecto } = response.data
-                    const { history } = this.props;
-                    createAlertSA2WithCloseAndHtml(
-                        <div>
-                            <h2 className = 'swal2-title mb-10 mt-2'>
-                                <span className="text-primary">¡FELICIDADES!</span> CREASTE EL PROYECTO <span className="text-success">{proyecto.nombre}</span>
-                            </h2>
-                            <span className = 'mb-2'>
-                                ¿DESEAS CREAR LA CAJA CHICA?
-                            </span>
-                            <form id = 'formulario_swal' name = 'formulario_swal'>
-                                <div className="my-5">
-                                    <div className="radio-inline">
-                                        <label className="radio">
-                                            <input type = "radio" name = 'caja' value = { true } />Si
-                                            <span></span>
-                                        </label>
-                                        <label className="radio">
-                                            <input type = "radio" name = 'caja' value = { false } />No
-                                            <span></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>,
-                        () => { 
-                            if(document.formulario_swal.caja.value){ this.addCajaChicaAxios(proyecto)}
-                            else{ history.push({pathname: '/leads/crm'}) }
-                        }, () => { history.push({pathname: '/leads/crm'}) }
-                    )
-                }, (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.error(error, 'error')
-            })
-        }else{ errorAlert('Selecciona una opción') }
-    }
-
     addCajaChicaAxios = async(proyecto) => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cuentas/proyecto/caja/' + proyecto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
-                doneAlert('Caja chica generada con éxito.')
-                history.push({pathname: '/leads/crm'})
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                const { lead } = this.state
+                doneAlert('Caja chica generada con éxito.',
+                    () => { history.push({pathname: '/leads/crm/info/info',state: { lead: lead, tipo: 'Contratado' }}) }
+                )
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')

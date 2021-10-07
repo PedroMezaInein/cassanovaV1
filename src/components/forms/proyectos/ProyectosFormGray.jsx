@@ -225,7 +225,7 @@ class ProyectosForm extends Component {
                             onSubmit={
                                 (e) => {
                                     e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-4-content')
+                                    validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             {...props}
@@ -523,7 +523,7 @@ class ProyectosForm extends Component {
                                             <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
                                         </span>Anterior
                                     </button>
-                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'wizard-4-content') }} >
+                                    <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'wizard-3-content') }} >
                                         Convertir
                                         <span className="svg-icon svg-icon-md ml-2 mr-0">
                                             <SVG src={toAbsoluteUrl('/images/svg/Sending.svg')} />

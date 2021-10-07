@@ -16,7 +16,6 @@ import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, errorAler
 class CotizacionesDiseño extends Component {
     state = {
         activeCotizacion: '',
-        pdfs:'',
         modal: { orden_compra: false, filter: false },
         typeModal: '',
         form: {
@@ -218,6 +217,7 @@ class CotizacionesDiseño extends Component {
         const { at, history, lead } = this.props
         waitAlert();
             if(typeModal === 'add'){
+                // Cambiar a página contratar desde la sección de cotización de diseño
                 history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, form_orden: form } })
             }else{
                 let data = new FormData()
