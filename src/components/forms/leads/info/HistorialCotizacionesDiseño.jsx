@@ -78,7 +78,6 @@ class HistorialCotizacionesDiseño extends Component {
                     <div className="accordion accordion-light accordion-svg-toggle">
                         {
                             pdfs.map((pdf, index) => {
-                                console.log(pdf,'pdf')
                                 return (
                                     <Card key={index} className={`w-auto ${pdf.isActive? 'border-top-0' : ''}`} >
                                         <Card.Header >
