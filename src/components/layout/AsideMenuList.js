@@ -4,7 +4,6 @@ import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl} from "../../functions/routers"
 
-
 function openSubmenu(modulo){
     let aux = document.getElementById(`submenu-${modulo}`);
     let x = document.getElementsByClassName("submenu-asidemenu");
@@ -33,6 +32,15 @@ function closeAside(){
     } 
 }
 
+function getUrlFromSub(sub){
+    const { name, url } = sub
+    switch(name){
+        /* case 'CRM':
+            return `https://leads.inein.com.mx/${url}` */
+        default:
+            return url;
+    }
+}
 
 export function AsideMenuList({ props }) {
     /* const location = useLocation();
@@ -85,18 +93,33 @@ export function AsideMenuList({ props }) {
                                                 </li>
                                                 {
                                                     modulo.modulos.map( (submodulo) => {
-                                                        return(
-                                                            <li  key={submodulo.url} className={`menu-item `}
-                                                                // aria-haspopup="true"
-                                                                >
-                                                                <NavLink className="menu-link" to={submodulo.url} onClick = { () => { closeAside() } }>
-                                                                    <span className="svg-icon menu-icon">
-                                                                        <SVG src={toAbsoluteUrl(submodulo.icon)} />
-                                                                    </span>
-                                                                    <span className="menu-text text-uppercase">{submodulo.name}</span>
-                                                                </NavLink>
-                                                            </li>
-                                                        )
+                                                        let url = getUrlFromSub(submodulo)
+                                                        if(url.includes('https://')){
+                                                            return(
+                                                                <li  key={submodulo.url} className={`menu-item `}>
+                                                                    <a className="menu-link" href = { url } 
+                                                                        onClick = { () => { closeAside() } }>
+                                                                        <span className="svg-icon menu-icon">
+                                                                            <SVG src={toAbsoluteUrl(submodulo.icon)} />
+                                                                        </span>
+                                                                        <span className="menu-text text-uppercase">{submodulo.name}</span>
+                                                                    </a>
+                                                                </li>
+                                                            )
+                                                        }else{
+                                                            return(
+                                                                <li  key={submodulo.url} className={`menu-item `}>
+                                                                    <NavLink className="menu-link" to = { submodulo.url } 
+                                                                        onClick = { () => { closeAside() } }>
+                                                                        <span className="svg-icon menu-icon">
+                                                                            <SVG src={toAbsoluteUrl(submodulo.icon)} />
+                                                                        </span>
+                                                                        <span className="menu-text text-uppercase">{submodulo.name}</span>
+                                                                    </NavLink>
+                                                                </li>
+                                                            )
+                                                        }
+                                                        
                                                     })
                                                 }
                                             </ul>
