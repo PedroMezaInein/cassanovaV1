@@ -1,69 +1,56 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { Component } from "react";
 import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl} from "../../functions/routers"
 
-function openSubmenu(modulo){
-    let aux = document.getElementById(`submenu-${modulo}`);
-    let x = document.getElementsByClassName("submenu-asidemenu");
-    let cont = 0;
-    for(cont = 0; cont < x.length; cont ++){
-        if(x[cont] !== aux){
-            x[cont].classList.remove('d-block')
-        }else{
-            if (!aux.classList.contains('d-block')) {
-                x[cont].classList.add('d-block')
-            }else{
+class AsideMenuList extends Component{
+
+    openSubmenu = modulo => {
+        let aux = document.getElementById(`submenu-${modulo}`);
+        let x = document.getElementsByClassName("submenu-asidemenu");
+        let cont = 0;
+        for(cont = 0; cont < x.length; cont ++){
+            if(x[cont] !== aux){
                 x[cont].classList.remove('d-block')
-            }       
+            }else{
+                if (!aux.classList.contains('d-block')) {
+                    x[cont].classList.add('d-block')
+                }else{
+                    x[cont].classList.remove('d-block')
+                }       
+            }
         }
     }
-}
 
-function closeAside(){  
-    if(document.body.classList.contains('aside-minimize-hover') )
-    {
-        document.body.classList.remove('aside-minimize-hover');       
-        document.body.classList.add('aside-minimize');
+    closeAside = () => {
+        if(document.body.classList.contains('aside-minimize-hover') ){
+            document.body.classList.remove('aside-minimize-hover');       
+            document.body.classList.add('aside-minimize');
+        }
     }
-    else
-    {            
-    } 
-}
 
-function getUrlFromSub(sub){
-    const { name, url } = sub
-    switch(name){
-        /* case 'CRM':
-            return `https://leads.inein.com.mx/${url}` */
-        default:
-            return url;
+    getUrlFromSub = (sub) => {
+        const { name, url } = sub
+        const { access_token } = this.props.props.authUser
+        switch(name){
+            case 'CRM':
+                return `https://leads.inein.com.mx/${url}?tag=${access_token}`
+            default:
+                return url;
+        }
     }
-}
 
-export function AsideMenuList({ props }) {
-    /* const location = useLocation();
-    const getMenuItemActive = (url) => {
-        return checkIsActive(location, url)
-            ? " menu-item-active menu-item-open "
-            : "";
-    }; */
-
-    const modulos = props.authUser.modulos ? props.authUser.modulos : []
-    return (
-        <>
-            <ul className={`menu-nav`}>
+    render(){
+        const modulos = this.props.props.authUser.modulos ? this.props.props.authUser.modulos : [] 
+        return(
+            <ul className = 'menu-nav'>
                 {
                     modulos.map( (modulo, key) => {
                         return(
-                            <li className={`menu-item menu-item-submenu`}
-                                /* className={`menu-item menu-item-submenu ${getMenuItemActive(modulo.url)}`} */
-                                key = {key}
-                                // aria-haspopup="true"
-                                data-menu-toggle="hover"
-                                onClick = { () => { openSubmenu(modulo.slug) } }>
-                                <div className="menu-link menu-toggle" to={modulo.url}>
+                            <li className = 'menu-item menu-item-submenu' key = { key } data-menu-toggle = "hover"
+                                onClick = { () => { this.openSubmenu(modulo.slug) } }>
+                                <div className="menu-link menu-toggle" to = { modulo.url } >
                                     <span className="svg-icon menu-icon">
                                         <SVG src={toAbsoluteUrl(modulo.icon)}/>
                                     </span>
@@ -75,7 +62,7 @@ export function AsideMenuList({ props }) {
                                     }
                                     {
                                         modulo.modulos.length > 1 || modulo.url === null  ? 
-                                            <i className="menu-arrow"  onClick = { () => { openSubmenu(modulo.slug) } }/>
+                                            <i className="menu-arrow"  onClick = { () => { this.openSubmenu(modulo.slug) } }/>
                                         : ''
                                     }
                                 </div>
@@ -84,21 +71,19 @@ export function AsideMenuList({ props }) {
                                         <div className="menu-submenu submenu-asidemenu" id = {`submenu-${modulo.slug}`}>
                                             <i className="menu-arrow"  />
                                             <ul className="menu-subnav">
-                                                <li className="menu-item  menu-item-parent" 
-                                                    // aria-haspopup="true"
-                                                >
+                                                <li className="menu-item  menu-item-parent">
                                                     <span className="menu-link">
                                                         <span className="menu-text">{modulo.name}</span>
                                                     </span>
                                                 </li>
                                                 {
                                                     modulo.modulos.map( (submodulo) => {
-                                                        let url = getUrlFromSub(submodulo)
+                                                        let url = this.getUrlFromSub(submodulo)
                                                         if(url.includes('https://')){
                                                             return(
                                                                 <li  key={submodulo.url} className={`menu-item `}>
                                                                     <a className="menu-link" href = { url } 
-                                                                        onClick = { () => { closeAside() } }>
+                                                                        onClick = { () => { this.closeAside() } }>
                                                                         <span className="svg-icon menu-icon">
                                                                             <SVG src={toAbsoluteUrl(submodulo.icon)} />
                                                                         </span>
@@ -110,7 +95,7 @@ export function AsideMenuList({ props }) {
                                                             return(
                                                                 <li  key={submodulo.url} className={`menu-item `}>
                                                                     <NavLink className="menu-link" to = { submodulo.url } 
-                                                                        onClick = { () => { closeAside() } }>
+                                                                        onClick = { () => { this.closeAside() } }>
                                                                         <span className="svg-icon menu-icon">
                                                                             <SVG src={toAbsoluteUrl(submodulo.icon)} />
                                                                         </span>
@@ -131,6 +116,8 @@ export function AsideMenuList({ props }) {
                     })
                 }
             </ul>
-        </>
-    );
+        )
+    }
 }
+
+export default AsideMenuList
