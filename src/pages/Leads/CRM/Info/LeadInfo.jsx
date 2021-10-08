@@ -658,11 +658,12 @@ class LeadInfo extends Component {
             (response) => {
                 const { history } = this.props
                 doneAlert('Correo enviado con éxito')
-                history.push({ pathname: '/leads/crm' });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                if(lead.prospecto.estatus_prospecto.estatus === 'En contacto')
+                    history.push({ pathname: '/leads/crm' }); 
+                else
+                    this.getOneLead(lead)
+                /* history.push({ pathname: '/leads/crm' }); */
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
