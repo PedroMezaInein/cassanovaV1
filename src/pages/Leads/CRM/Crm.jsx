@@ -192,7 +192,12 @@ class Crm extends Component {
 
     componentDidMount() {
         $("body").removeClass('bg-white d-flex justify-content-center');
-        const { authUser: { user: { permisos } } } = this.props
+        const { authUser: { user: { permisos }, access_token } } = this.props
+        if(access_token){
+            //window.location.href = `https://leads.inein.com.mx/leads/crm?tag=${access_token}`
+            window.location.href = `http://localhost:3001/leads/crm?tag=${access_token}`
+        }
+            
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const crm = permisos.find(function (element, index) {
