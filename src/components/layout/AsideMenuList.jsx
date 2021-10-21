@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl} from "../../functions/routers"
+import { LEADS_FRONT } from "../../constants";
 
 class AsideMenuList extends Component{
 
@@ -35,7 +36,7 @@ class AsideMenuList extends Component{
         const { access_token } = this.props.props.authUser
         switch(name){
             case 'CRM':
-                return `https://leads.inein.com.mx/${url}?tag=${access_token}`
+                return `${LEADS_FRONT}${url}?tag=${access_token}`
             default:
                 return url;
         }
@@ -79,7 +80,7 @@ class AsideMenuList extends Component{
                                                 {
                                                     modulo.modulos.map( (submodulo) => {
                                                         let url = this.getUrlFromSub(submodulo)
-                                                        if(url.includes('https://')){
+                                                        if(url.includes('https://') || url.includes('http://')){
                                                             return(
                                                                 <li  key={submodulo.url} className={`menu-item `}>
                                                                     <a className="menu-link" href = { url } 
