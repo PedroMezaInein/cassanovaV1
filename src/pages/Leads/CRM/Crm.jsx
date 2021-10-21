@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
+import { LEADS_FRONT, URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout'
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setOptions, setDateTableLG, setContactoIcon, setEmpresaLogo, dayDMY } from '../../../functions/setters'
@@ -194,8 +194,7 @@ class Crm extends Component {
         $("body").removeClass('bg-white d-flex justify-content-center');
         const { authUser: { user: { permisos }, access_token } } = this.props
         if(access_token){
-            //window.location.href = `https://leads.inein.com.mx/leads/crm?tag=${access_token}`
-            window.location.href = `http://localhost:3001/leads/crm?tag=${access_token}`
+            window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
         }
             
         const { history: { location: { pathname } } } = this.props
