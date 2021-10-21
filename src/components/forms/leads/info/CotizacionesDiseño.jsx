@@ -149,8 +149,6 @@ class CotizacionesDiseño extends Component {
         return false
     }
     changePageContratar = (pdf) => {
-        /* const { au } = this.props */
-        /* window.location.href = `http://localhost:3001?tag=${au.access_token}` */
         const { history, lead } = this.props
         history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, cotizacionId : pdf} })
     }
