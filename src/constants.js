@@ -797,3 +797,16 @@ export const MANTENIMIENTOS = [
     { Header: 'Presupuesto', accessor: 'presupuesto', customRender: true, searchable: false, orderable: false },
     { Header: 'Fecha', accessor: 'fecha', customRender: true, tipo: 'fecha' }
 ]
+
+export const SOLICITUD_FACTURA_COLUMNS = [
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false, orderable: false },
+    { Header: 'Emisor', accessor: 'emisor', customRender: true },
+    { Header: 'Receptor', accessor: 'receptor', customRender: true },
+    { Header: 'Detalle', accessor: 'detalle', customRender: true },
+    { Header: 'Monto', accessor: 'monto', customRender: true },
+    { Header: 'Tipo de pago', accessor: 'tipoPago', customRender: true },
+    { Header: 'Forma de pago', accessor: 'formaPago', customRender: true },
+    { Header: 'Método de pago', accessor: 'metodoPago', customRender: true },
+    { Header: 'Estatus', accessor: 'estatusFactura', customRender: true },
+    { Header: 'Origen', accessor: 'origen', customRender: true },
+]

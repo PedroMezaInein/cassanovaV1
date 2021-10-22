@@ -84,11 +84,13 @@ const ContratosForm = React.lazy(() => import('./pages/Administracion/Contratos/
 const Facturacion = React.lazy(() => import('./pages/Administracion/Facturacion') )
 const Flujos = React.lazy(() => import('./pages/Administracion/Flujos') )
 
-const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
-const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
-
 const Documentos = React.lazy(() => import('./pages/Administracion/Documentos/Documentos') )
 const DocumentosForm = React.lazy(() => import('./pages/Administracion/Documentos/DocumentosForm') )
+
+const SolicitudFactura = React.lazy( () => import('./pages/Administracion/SolicitudFactura/SolicitudFactura') )
+
+const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
+const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
 
 const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos') )
 const Proyectos2 = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos2') )
@@ -381,6 +383,8 @@ class App extends Component{
 
                     <Route path = "/administracion/documentos" exact component ={ Documentos } />
                     <Route path = "/administracion/documentos/:action" exact component ={ DocumentosForm } />
+
+                    <Route path = "/administracion/solicitud-factura" exact component = { SolicitudFactura } />
                     
                     <Route path = "/administracion/utilidad" exact component ={ Utilidad } />
 
