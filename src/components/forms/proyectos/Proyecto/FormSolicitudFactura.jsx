@@ -41,9 +41,9 @@ class FormSolicitudFactura extends Component {
     }
     onSubmit = async () => {
         waitAlert()
-        const { at, proyecto, getPresupuestos } = this.props
+        const { at, proyecto, getPresupuestos, presupuesto } = this.props
         const { form } = this.state
-        await axios.post(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/solicitud-factura`, form, { headers: setSingleHeader(at) }).then(
+        await axios.post(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/solicitud-factura/${presupuesto.id}`, form, { headers: setSingleHeader(at) }).then(
             (response) => {
                 doneAlert(`Solicitud generada con éxito`, () => { getPresupuestos() })
             }, (error) => { printResponseErrorAlert(error) }
