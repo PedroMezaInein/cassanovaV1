@@ -808,5 +808,5 @@ export const SOLICITUD_FACTURA_COLUMNS = [
     { Header: 'Forma de pago', accessor: 'formaPago', customRender: true },
     { Header: 'Método de pago', accessor: 'metodoPago', customRender: true },
     { Header: 'Estatus', accessor: 'estatusFactura', customRender: true },
-    { Header: 'Origen', accessor: 'origen', customRender: true },
+    { Header: 'Origen', accessor: 'origen', customRender: true , orderable: false },
 ]
