@@ -93,7 +93,6 @@ const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor')
 const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
 
 const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos') )
-const Proyectos2 = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos2') )
 const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
 const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto') )
@@ -325,7 +324,6 @@ class App extends Component{
                     {/*  ANCHOR Routes for proyectos */}
 
                     <Route path = "/proyectos/proyectos" exact component = { Proyectos } />
-                    <Route path = "/proyectos/proyectos2" exact component = { Proyectos2 } />
                     
                     <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
                     <Route path = "/proyectos/proyectos/single/:id" exact component ={ SingleProyecto } />

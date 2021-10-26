@@ -5,8 +5,29 @@ import { NewTable } from '../../../components/NewTables'
 import { URL_DEV, SOLICITUD_FACTURA_COLUMNS } from '../../../constants'
 import { setMoneyText, setTextTableCenter } from '../../../functions/setters'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { deleteAlert, doneAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { apiDelete, catchErrors } from '../../../functions/api'
+import $ from 'jquery'
+import { Modal } from '../../../components/singles'
+import { FiltersSolicitudFactura } from '../../../components/filters'
 
 class SolicitudFactura extends Component {
+
+    state = {
+        modal: { filtros: false },
+        filters: {}
+    }
+
+    deleteSolicitud = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiDelete(`v1/administracion/solicitud-factura/${id}`, access_token).then(
+            (response) => {
+                const { filters } = this.state
+                doneAlert(`Solicitud eliminada con éxito`, () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
 
     setTable = (datos) => {
         let aux = []
@@ -59,23 +80,75 @@ class SolicitudFactura extends Component {
     setActions = (element) => {
         return(
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Ver proyecto</span></Tooltip> } >
-                    <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-primary btn-hover-primary'
-                        onClick = { (e) => { e.preventDefault(); this.changePageSee(element) } }>
-                        <i className = 'far fa-eye' />
+                {
+                    element.hasVenta === false ?
+                        <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Convertir</span></Tooltip> } >
+                            <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-success btn-hover-success'
+                                onClick = { (e) => { e.preventDefault(); this.changePageSee(element) } }>
+                                <i className = 'las la-sync' />
+                            </button>
+                        </OverlayTrigger>
+                    : <></>
+                }
+                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Eliminar</span></Tooltip> } >
+                    <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
+                        onClick = { (e) => { 
+                            e.preventDefault(); 
+                            deleteAlert(
+                                `Eliminarás la solicitud de facturación`,
+                                `¿Deseas continuar?`,
+                                () => { this.deleteSolicitud(element.id) }
+                            )
+                        } }>
+                        <i className = 'las la-trash' />
                     </button>
                 </OverlayTrigger>
             </div>
         )
     }
 
+    reloadTable = (filter) => {
+        $(`#solicitud-factura`).DataTable().search(JSON.stringify(filter)).draw();
+    }
+
+    openModalFiltros = () => {
+        const { modal } = this.state
+        modal.filtros = true
+        this.setState({ ...this.state, modal })
+    }
+
+    handleClose = () => {
+        const { modal } = this.state
+        modal.filtros = false
+        this.setState({ ...this.state, modal })
+    }
+
+    sendFilters = filtro => {
+        const { modal } = this.state
+        modal.filtros = false
+        this.setState({
+            ...this.state,
+            filters: filtro,
+            modal
+        })
+        this.reloadTable(filtro)
+    }
+
     render(){
         const { authUser: {access_token} } = this.props
+        const { modal, filters } = this.state
         return(
             <Layout active = 'administracion' { ...this.props } >
                 <NewTable tableName = 'solicitud-factura' subtitle = 'Listado de solicitudes de facturas' title = 'Solicitudes de facturas' 
                     url='' accessToken = { access_token } columns = { SOLICITUD_FACTURA_COLUMNS } setter = { this.setTable } 
-                    urlRender = {`${URL_DEV}v1/administracion/solicitud-factura`}  filterClick = { this.openModalFiltros } />
+                    urlRender = {`${URL_DEV}v1/administracion/solicitud-factura`}  filterClick = { this.openModalFiltros } hideNew = { true }/>
+                <Modal size = 'lg' show = { modal.filtros } handleClose = { this.handleClose } title = 'Filtros'>
+                    {   
+                        modal.filtros ? 
+                            <FiltersSolicitudFactura at = { access_token } sendFilters = { this.sendFilters } filters = { filters } /> 
+                        : <></> 
+                    }
+                </Modal>
             </Layout>
         )
     }

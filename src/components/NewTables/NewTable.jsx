@@ -304,7 +304,7 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick, children, exportar_boton, pendingPaymentClick } = this.props
+        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
                 <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
@@ -318,14 +318,16 @@ class NewTable extends Component{
                     <div className="card-toolbar toolbar-dropdown">
                         <DropdownButton menualign="right" title={<span>OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-newtable-options' >
                             {
-                                abrirModal === true ?
-                                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={this.clickHandler} >
-                                        {this.setNaviIcon('flaticon-add', 'AGREGAR')}
-                                    </Dropdown.Item>
-                                    :
-                                    <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
-                                        {this.setNaviIcon('flaticon-add', 'AGREGAR')}
-                                    </Dropdown.Item>
+                                hideNew !== true ? 
+                                    abrirModal === true ?
+                                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={this.clickHandler} >
+                                            {this.setNaviIcon('flaticon-add', 'AGREGAR')}
+                                        </Dropdown.Item>
+                                        :
+                                        <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
+                                            {this.setNaviIcon('flaticon-add', 'AGREGAR')}
+                                        </Dropdown.Item>
+                                : <></>
                             }
                             <Dropdown.Item className="text-hover-info dropdown-info" onClick={filterClick}>
                                 {this.setNaviIcon('fas fa-filter', 'FILTRAR')}
