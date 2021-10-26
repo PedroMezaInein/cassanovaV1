@@ -195,20 +195,14 @@ export function errorAlertRedirectOnDissmis(text, history, ruta) {
     })
 }
 
-export function deleteAlert(title,text,action, text_button) {
+export function deleteAlert(title, text, action, text_button) {
     MySwal.fire({
-        title: title,
-        text:text,
         html: <div>
-            <div className="row mx-0 justify-content-center">
-                <div className="col-md-8">
-                    <CommonLottie animationData = { Trash } />
-                </div>
-            </div>
-            <div className="row row-paddingless form-group-marginless">
-                <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins" style = {{ textTransform: 'none' }} >
-                    {text}
-                </div>
+            <div className="col-md-8 mx-auto"><CommonLottie animationData = { Trash } /></div>
+                
+            <div className="col-md-12 font-weight-light text-center font-size-lg">
+                <div className="font-weight-bolder mb-3">{text}</div>
+                {title}
             </div>
         </div>,
         showConfirmButton: true,
@@ -217,9 +211,11 @@ export function deleteAlert(title,text,action, text_button) {
         cancelButtonText: 'CANCELAR',
         reverseButtons: true,
         customClass: {
+            title:'d-none',
+            htmlContainer:'m-0',
             content: text?'':'d-none',
-            confirmButton: 'btn-light-danger-sweetalert2',
-            cancelButton:'btn-light-gray-sweetalert2'
+            confirmButton:'delete-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert'
         }
     }).then((result) => {
         if (result.value) {

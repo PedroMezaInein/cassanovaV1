@@ -3330,3 +3330,20 @@ td.descripcion{
     align-items: center;
     letter-spacing: 0.3px;
 }
+
+.delete-confirm{
+    background-color: #e34646!important;
+}
+.btn_custom-alert{
+    font-size: 1rem!important;
+    padding: .625em 1.1em;
+}
+.btn-cancel-alert{
+    font-size: 1rem!important;
+    background-color: #e3e5e7!important;
+    color: #616161!important;
+    padding: .625em 1.1em;
+}
+.overflow-visible {
+    overflow: visible !important;
+}

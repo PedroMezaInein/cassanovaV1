@@ -2,19 +2,19 @@ import React, { Component } from 'react'
 import { connect } from "react-redux"
 import axios from "axios"
 import Swal from 'sweetalert2'
-import FloatBtnPresupuesto from '../../../FloatButtons/FloatBtnPresupuesto'
-import { URL_DEV } from "../../../../constants"
-import { setSingleHeader } from '../../../../functions/routers'
-import { DropdownButton, Dropdown, Card, Form } from 'react-bootstrap'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAlert2, questionAlertY } from '../../../../functions/alert'
-import { setNaviIcon, setOptions } from '../../../../functions/setters'
-import { PresupuestoList } from "../..";
-import { PresupuestoForm, ActualizarPresupuestoForm, AgregarConcepto, FilterPresupuestos } from "../../../../components/forms"
-import { Modal, ModalSendMail } from '../../../../components/singles'
+import { PresupuestoList } from '../..'
+import { URL_DEV } from '../../../../constants'
 import { Budget } from '../../../../components/Lottie/'
-import PresupuestoTable from '../../../tables/Presupuestos/PresupuestoTable'
+import { setSingleHeader } from '../../../../functions/routers'
 import { CreatableMultiselectGray } from '../../../form-components'
+import { Modal, ModalSendMail } from '../../../../components/singles'
+import { DropdownButton, Dropdown, Card, Form } from 'react-bootstrap'
+import { setNaviIcon, setOptions } from '../../../../functions/setters'
 import { save, deleteForm } from '../../../../redux/reducers/formulario'
+import FloatBtnPresupuesto from '../../../FloatButtons/FloatBtnPresupuesto'
+import PresupuestoTable from '../../../tables/Presupuestos/PresupuestoTable'
+import { PresupuestoForm, ActualizarPresupuestoForm, AgregarConcepto, FilterPresupuestos } from '../../../../components/forms'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAlert2, questionAlertY } from '../../../../functions/alert'
 
 class PresupuestosProyecto extends Component {
 
@@ -132,10 +132,12 @@ class PresupuestosProyecto extends Component {
                 const { presupuestoId } = this.props
                 if(!presupuestoId){
                     if(presupuestos.length === 0){
-                        if(filtering !== {})
+                        if(filtering !== {}){
                             navPresupuesto = 'historial'
-                        else
+                        }else{
                             navPresupuesto = 'add'
+                        }
+                        navPresupuesto = 'add'
                     }else{
                         navPresupuesto = 'historial'
                     }

@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Card, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap'
-import { setSingleHeader } from '../../../../functions/routers'
 import axios from 'axios'
 import { URL_DEV } from '../../../../constants'
-import { dayDMY } from '../../../../functions/setters'
-import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
-import { Budget } from '../../../../components/Lottie/'
 import { PresupuestoAnswer } from '../../../forms'
+import { dayDMY } from '../../../../functions/setters'
+import { Budget } from '../../../../components/Lottie/'
+import { setSingleHeader } from '../../../../functions/routers'
+import { Card, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap'
+import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
 class PresupuestoList extends Component {
 
     state = {
@@ -144,7 +144,7 @@ class PresupuestoList extends Component {
     }
     printPresupuestos = () => {
         const { activeAccordion } = this.state
-        const { editPresupuesto, at, presupuestos, refresh } = this.props
+        const { editPresupuesto, at, presupuestos, refresh, proyecto } = this.props
         return(
             <div className="table-responsive">
                 <div className="list min-w-650px col-md-11 mx-auto">
@@ -247,7 +247,7 @@ class PresupuestoList extends Component {
                                             <Row className="mx-0">
                                                 <Col md={10} className="mb-5 mx-auto d-flex justify-content-center">
                                                     <PresupuestoAnswer presupuestos = { presupuestos } presupuesto = { presupuesto } at = { at } 
-                                                        getPresupuestos = {refresh}  />
+                                                        getPresupuestos = {refresh} proyecto={ proyecto } />
                                                 </Col>
                                             </Row>
                                         </Card.Body>

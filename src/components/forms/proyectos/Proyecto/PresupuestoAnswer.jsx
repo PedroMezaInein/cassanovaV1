@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import SVG from 'react-inlinesvg'
+import { Modal, Form } from 'react-bootstrap'
 import { URL_DEV } from '../../../../constants'
-import { HistorialPresupuestos } from '../../../forms'
-import { Modal, Form } from "react-bootstrap"
-import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, errorAlert } from '../../../../functions/alert'
-import { CalendarDaySwal, InputGray } from '../../../../components/form-components'
+import { toAbsoluteUrl } from '../../../../functions/routers'
+import { HistorialPresupuestosProyecto } from '../../../forms'
 import { setSingleHeader } from '../../../../functions/routers'
+import { CalendarDaySwal, InputGray } from '../../../../components/form-components'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../../functions/wizard'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../../functions/routers"
+import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, errorAlert } from '../../../../functions/alert'
 
 class PresupuestoAnswer extends Component {
     state = {
@@ -210,11 +210,11 @@ class PresupuestoAnswer extends Component {
         )
     }
     render() {
-        const { presupuesto } = this.props
+        const { presupuesto, at, proyecto, getPresupuestos } = this.props
         const { modal, form, typeModal } = this.state
         return (
             <>
-                <HistorialPresupuestos presupuesto = { presupuesto } actionsEnable = { false } btnOrden = { true } onClickOrden = { this.onClickOrden }/>
+                <HistorialPresupuestosProyecto presupuesto = { presupuesto } onClickOrden = { this.onClickOrden } at = { at } proyecto = { proyecto } getPresupuestos={getPresupuestos}/>
                 <Modal show = { modal.orden_compra } onHide = { this.handleCloseOrden } centered contentClassName = 'swal2-popup d-flex w-40rem'>
                     <Modal.Header className = {`${typeModal === 'add' && (form.estatus_presupuesto === 1 || form.estatus_presupuesto === 2) ? 'd-none':'mt-5'} border-0 justify-content-center swal2-title text-center font-size-h4`}>
                         {typeModal === 'modify'? 'MODIFICAR ORDEN DE COMPRA': 'EL PRESUPUESTO FUE:'}
