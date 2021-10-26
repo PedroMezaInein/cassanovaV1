@@ -170,7 +170,7 @@ export default class HistorialPresupuestosProyecto extends Component {
         if (pdf.pivot.numero_orden !== null) {
             return (
                 <>
-                    <div className="d-flex mt-5">
+                    <div className="d-flex mt-5 justify-content-between">
                         {this.pdfPresupuesto(pdf)}
                         {this.pdfOrdenCompra(pdf)}
                     </div>
@@ -200,7 +200,7 @@ export default class HistorialPresupuestosProyecto extends Component {
         const { modal, options, pdf_solicitud } = this.state
         return (
             <>
-                <div className="timeline mt-9">
+                <div className="timeline mt-9 w-100">
                     {
                         presupuesto ?
                             presupuesto.pdfs.map((pdf, index) => {
