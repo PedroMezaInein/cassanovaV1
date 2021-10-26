@@ -157,7 +157,7 @@ export default class HistorialPresupuestosProyecto extends Component {
                             <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')} />
                         </span>
                         <div className="ml-2">
-                            <u><a rel="noopener noreferrer" target="_blank" href={pdf.pivot.url} className="font-size-sm text-hover-primary font-weight-bolder text-dark-75">ORDEN DE COMPRA</a></u>
+                            <u><a rel="noopener noreferrer" target="_blank" href={pdf.pivot.url} className="font-size-sm text-hover-primary font-weight-bolder text-dark-75">ORDEN DE COMPRA.PDF</a></u>
                         </div>
                     </div>
                 </div>
@@ -204,6 +204,7 @@ export default class HistorialPresupuestosProyecto extends Component {
                     {
                         presupuesto ?
                             presupuesto.pdfs.map((pdf, index) => {
+                                console.log(pdf, 'pdf')
                                 return (
                                     <div className="timeline-item-dashed" key={index}>
                                         <div className="timeline-line-dashed w-40px"></div>
