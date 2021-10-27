@@ -4,6 +4,7 @@ import { URL_DEV } from '../../../../constants'
 import { setMoneyText } from '../../../../functions/setters'
 import { setSingleHeader } from '../../../../functions/routers'
 import { printResponseErrorAlert, waitAlert, doneAlert, deleteAlert, errorAlert } from '../../../../functions/alert'
+import { apiDelete, catchErrors } from '../../../../functions/api'
 class HistorialSolicitudesFacturaProyectos extends Component {
 
     state = {
@@ -32,15 +33,13 @@ class HistorialSolicitudesFacturaProyectos extends Component {
     deleteSolicitudAxios = async (id) => {
         waitAlert()
         const { at, proyecto } = this.props
-        await axios.delete(`v3/proyectos/proyectos/${proyecto.id}/solicitud-factura/${id}`, { headers: setSingleHeader(at) }).then(
-            (response) => {
-                const { getPresupuestos } = this.props
-                doneAlert(`Solicitud eliminada con éxito`,  () => { getPresupuestos() } )
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+        apiDelete(`v3/proyectos/proyectos/${proyecto.id}/solicitud-factura/${id}`, at).then(
+            (response) => { 
+                const { proyecto, presupuesto } = this.props
+                doneAlert(`Solicitud eliminada con éxito`,  () => { this.getSolicitudes(proyecto, presupuesto) } ) 
+            }, 
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
 
     render() {
