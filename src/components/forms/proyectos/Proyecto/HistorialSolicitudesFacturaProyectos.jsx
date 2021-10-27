@@ -1,16 +1,30 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import Swal from 'sweetalert2'
+import SVG from 'react-inlinesvg'
+import Modal from '../../../singles/Modal'
+import { FormSolicitudFactura } from '../..'
 import { URL_DEV } from '../../../../constants'
-import { setMoneyText } from '../../../../functions/setters'
-import { setSingleHeader } from '../../../../functions/routers'
+import { setMoneyText, setOptions } from '../../../../functions/setters'
+import { setSingleHeader, toAbsoluteUrl } from '../../../../functions/routers'
 import { printResponseErrorAlert, waitAlert, doneAlert, deleteAlert, errorAlert } from '../../../../functions/alert'
 class HistorialSolicitudesFacturaProyectos extends Component {
 
     state = {
-        lead: '',
-        solicitudes: []
+        solicitudes: [],
+        modal: {
+            factura: false
+        },
+        options: {
+            clientes: [],
+            estatusFactura: [],
+            formasPago: [],
+            metodosPago: [],
+            tiposPago: [],
+        },
+        pdf_solicitud: []
     }
-
+    // GET SOLICITUDES
     componentDidMount = () => {
         const { proyecto, presupuesto } = this.props
         this.getSolicitudes(proyecto, presupuesto)
@@ -35,7 +49,7 @@ class HistorialSolicitudesFacturaProyectos extends Component {
         await axios.delete(`v3/proyectos/proyectos/${proyecto.id}/solicitud-factura/${id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { getPresupuestos } = this.props
-                doneAlert(`Solicitud eliminada con éxito`,  () => { getPresupuestos() } )
+                doneAlert(`Solicitud eliminada con éxito`, () => { getPresupuestos() })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -43,20 +57,77 @@ class HistorialSolicitudesFacturaProyectos extends Component {
         })
     }
 
-    render() {
-        const { modal, lead, solicitudes } = this.state
-        return (
-            <div>
+    // MODAL SOLICITUD DE FACTURAS
 
+    async getOptionsAxios() {
+        const { proyecto, at } = this.props
+        waitAlert()
+        await axios.options(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/solicitud-factura`, { headers: setSingleHeader(at) }).then(
+            (response) => {
+                const { options } = this.state
+                const { clientes, formasPago, metodosPago, estatusFactura, tiposPago } = response.data
+                options.clientes = setOptions(clientes, 'empresa', 'id')
+                options.estatusFactura = setOptions(estatusFactura, 'estatus', 'id')
+                options.formasPago = setOptions(formasPago, 'nombre', 'id')
+                options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
+                options.tiposPago = setOptions(tiposPago, 'tipo', 'id')
+                Swal.close()
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+    openModal = (pdf) => {
+        this.getOptionsAxios()
+        const { modal } = this.state
+        modal.factura = true
+        this.setState({ ...this.state, modal, pdf_solicitud: pdf })
+    }
+
+    handleClose = () => {
+        const { modal } = this.state
+        modal.factura = false
+        this.setState({ ...this.state, modal })
+    }
+    refresh = () => {
+        const { getPresupuestos, proyecto, presupuesto } = this.props
+        this.handleClose()
+        getPresupuestos()
+        this.getSolicitudes(proyecto, presupuesto)
+    }
+    render() {
+        const { solicitudes, modal, options, pdf_solicitud } = this.state
+        const { presupuesto_aceptado, proyecto, presupuesto, at } = this.props
+        return (
+            <>
+                <div className="d-flex justify-content-end mb-8">
+                    <span className="d-flex align-items-center bg-light-success rounded p-1 cursor-pointer" onClick={() => { this.openModal(presupuesto_aceptado[0]) }}>
+                        <span className="svg-icon svg-icon-success mr-1">
+                            <span className="svg-icon svg-icon-md">
+                                <SVG src={toAbsoluteUrl('/images/svg/Plus.svg')} />
+                            </span>
+                        </span>
+                        <div className="d-flex font-weight-bolder text-success font-size-sm">
+                            AGREGAR SOLICITUD DE FACTURA
+                        </div>
+                    </span>
+                </div>
                 <div className="table-responsive">
                     <table className="table table-vertical-center table-solicitud-factura">
                         <thead>
-                            <tr className="text-center white-space-nowrap">
+                            <tr className="white-space-nowrap">
                                 <th></th>
-                                <th>Receptor</th>
-                                <th>Detalle</th>
-                                <th>Datos del pago</th>
-                                <th> Cobrado  </th>
+                                <th className="text-align-last-left min-w-xxl-228px">Receptor</th>
+                                <th className="text-align-last-left min-w-lg-236px min-w-xxl-225px">Datos del pago</th>
+                                <th className="min-w-lg-131px min-w-xxl-200px">Detalle</th>
+                                <th>Cobrado</th>
                             </tr>
                         </thead>
                         <tbody className="table-tbody">
@@ -91,10 +162,7 @@ class HistorialSolicitudesFacturaProyectos extends Component {
                                                         {solicitud.razon_social_receptor}
                                                     </div>
                                                 </td>
-                                                <td className='text-center'>
-                                                    {solicitud.detalle}
-                                                </td>
-                                                <td className='text-center'>
+                                                <td>
                                                     <div>
                                                         <span className="font-weight-bolder">Monto: </span>{setMoneyText(solicitud.monto)}
                                                         <br />
@@ -102,6 +170,9 @@ class HistorialSolicitudesFacturaProyectos extends Component {
                                                         <br />
                                                         <span className="font-weight-bolder white-space-nowrap">Estatus de factura: </span>{solicitud.estatus_factura ? solicitud.estatus_factura.estatus : 'Sin definir'}
                                                     </div>
+                                                </td>
+                                                <td className='text-center'>
+                                                    {solicitud.detalle}
                                                 </td>
                                                 <td className='text-center'>
                                                     {solicitud.hasVenta ? 'Cobrado' : 'Sin cobrar'}
@@ -113,7 +184,14 @@ class HistorialSolicitudesFacturaProyectos extends Component {
                         </tbody>
                     </table>
                 </div>
-            </div>
+                <Modal size='xl' show={modal.factura} title='Nueva solicitud de factura' handleClose={this.handleClose} >
+                    {
+                        modal.factura ?
+                            <FormSolicitudFactura options={options} presupuesto={presupuesto} at={at} refresh={this.refresh} pdf_solicitud={pdf_solicitud} proyecto={proyecto} handleClose={this.handleClose} />
+                            : <></>
+                    }
+                </Modal>
+            </>
         )
     }
 }

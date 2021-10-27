@@ -72,7 +72,7 @@ class PresupuestoList extends Component {
                 return (
                     <span>
                         Identificador: 
-                        <a href = { pdfs[0].url } target = '_blank' rel="noopener noreferrer" className = 'ml-2'>
+                        <a href = { pdfs[0].url } target = '_blank' rel="noopener noreferrer" className={`mx-2 ${pdfs[0].pivot.url!==null?'identificador-aceptado':''}`}>
                             {pdfs[0].pivot.identificador}
                         </a>
                     </span>
@@ -82,9 +82,10 @@ class PresupuestoList extends Component {
                     <span>
                         Identificadores: {
                             pdfs.map((pdf, key) => {
+                                
                                 return(
                                     <a key = { key } href = { pdf.url } target = '_blank' rel="noopener noreferrer">
-                                        { key === pdfs.length - 1 ? ' Y ' : ' ' }{pdf.pivot.identificador}{ key === pdfs.length - 1 || key === pdfs.length - 2 ? '' : ',' }  
+                                        { key === pdfs.length - 1 ? ' Y ' : ' ' }<span className={`${pdf.pivot.url!==null?'identificador-aceptado':''}`}>{pdf.pivot.identificador}</span>{ key === pdfs.length - 1 || key === pdfs.length - 2 ? '' : ',' }  
                                     </a>
                                 )
                             })
@@ -219,8 +220,8 @@ class PresupuestoList extends Component {
                                                 </div>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Card.Body className={`card-body px-10 ${presupuesto.id ===  activeAccordion ? 'collapse show' : 'collapse'}`}>
-                                            <div className="d-flex justify-content-center border border-gray-300 border-dashed rounded mt-8 mb-5 px-5 py-4 mx-auto w-fit-content">
+                                        <Card.Body className={`card-body ${presupuesto.id ===  activeAccordion ? 'collapse show' : 'collapse'}`}>
+                                            {/* <div className="d-flex justify-content-center border border-gray-300 border-dashed rounded mt-8 mb-5 px-5 py-4 mx-auto w-fit-content">
                                                 <div className="d-flex align-items-center">
                                                     <div className="symbol symbol-35 mr-3 flex-shrink-0">
                                                         <div className="symbol-label" style={{backgroundColor:presupuesto.estatus.fondo}}>
@@ -243,13 +244,15 @@ class PresupuestoList extends Component {
                                                         <div className="font-size-sm text-muted font-weight-bold mt-1">TOTAL / TOTAL PAGADO</div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <Row className="mx-0">
-                                                <Col md={10} className="mb-5 mx-auto d-flex justify-content-center">
-                                                    <PresupuestoAnswer presupuestos = { presupuestos } presupuesto = { presupuesto } at = { at } 
-                                                        getPresupuestos = {refresh} proyecto={ proyecto } />
-                                                </Col>
-                                            </Row>
+                                            </div> */}
+                                            
+                                            {
+                                                presupuesto.id === activeAccordion ?
+
+                                                    <PresupuestoAnswer presupuestos={presupuestos} presupuesto={presupuesto} at={at}
+                                                        getPresupuestos={refresh} proyecto={proyecto} />
+                                                    : <></>
+                                            }
                                         </Card.Body>
                                     </Card>
                                 )
