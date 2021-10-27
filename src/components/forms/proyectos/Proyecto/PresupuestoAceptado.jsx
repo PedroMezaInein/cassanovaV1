@@ -12,8 +12,6 @@ export default class HistorialPresupuestosProyecto extends Component {
     }
     render() {
         const { at, presupuesto, presupuesto_aceptado, getPresupuestos, proyecto, onClickOrden } = this.props
-        console.log(presupuesto, 'presupuesto')
-        console.log(presupuesto_aceptado, 'presupuesto_aceptado')
         return (
             <>
                 <div className="pt-15 pb-8 px-lg-10">
