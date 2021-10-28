@@ -9,7 +9,6 @@ import { apiDelete, catchErrors } from '../../../../functions/api'
 import { setMoneyText, setOptions } from '../../../../functions/setters'
 import { setSingleHeader, toAbsoluteUrl } from '../../../../functions/routers'
 import { printResponseErrorAlert, waitAlert, doneAlert, deleteAlert, errorAlert } from '../../../../functions/alert'
-import { apiDelete, catchErrors } from '../../../../functions/api'
 class HistorialSolicitudesFacturaProyectos extends Component {
 
     state = {
