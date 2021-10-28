@@ -229,35 +229,9 @@ class PresupuestoList extends Component {
                                                 </div>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Card.Body className={`card-body ${presupuesto.id ===  activeAccordion ? 'collapse show' : 'collapse'}`}>
-                                            {/* <div className="d-flex justify-content-center border border-gray-300 border-dashed rounded mt-8 mb-5 px-5 py-4 mx-auto w-fit-content">
-                                                <div className="d-flex align-items-center">
-                                                    <div className="symbol symbol-35 mr-3 flex-shrink-0">
-                                                        <div className="symbol-label" style={{backgroundColor:presupuesto.estatus.fondo}}>
-                                                            <i className="far fa-clock icon-lg" style={{color:presupuesto.estatus.letra}}></i>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-size-lg text-dark-75 font-weight-bolder">{presupuesto.tiempo_valido} {presupuesto.tiempo_valido === '1'?'día':'días'}</div>
-                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Validez (presupuesto)</div>
-                                                    </div>
-                                                </div>
-                                                <div className="d-none align-items-center ml-20">
-                                                    <div className="symbol symbol-35 symbol-light-success mr-3 flex-shrink-0">
-                                                        <div className="symbol-label">
-                                                            <i className="far fa-credit-card icon-lg text-success"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-size-lg text-dark-75 font-weight-bolder">$937.28 /$0.00</div>
-                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">TOTAL / TOTAL PAGADO</div>
-                                                    </div>
-                                                </div>
-                                            </div> */}
-                                            
+                                        <Card.Body className={`card-body ${presupuesto.id === activeAccordion && presupuesto.pdfs.length > 0 ? 'collapse show' : 'collapse'}`}>
                                             {
                                                 presupuesto.id === activeAccordion ?
-
                                                     <PresupuestoAnswer presupuestos={presupuestos} presupuesto={presupuesto} at={at}
                                                         getPresupuestos={refresh} proyecto={proyecto} />
                                                     : <></>
