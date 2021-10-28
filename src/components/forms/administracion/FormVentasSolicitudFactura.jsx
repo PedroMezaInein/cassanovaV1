@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { FileInput, Button, SelectSearchGray } from '../../form-components'
+import { FileInput, Button, CalendarDay, InputGray, ReactSelectSearchGray } from '../../form-components'
 import j2xParser from 'fast-xml-parser'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert } from '../../../functions/alert'
 import Swal from 'sweetalert2'
 import { apiGet, apiOptions, apiPostForm, apiPutForm, catchErrors } from '../../../functions/api'
 import { setOptions } from '../../../functions/setters'
-import { Form } from 'react-bootstrap'
+import { transformOptions } from '../../../functions/options'
+import { Form, Col } from 'react-bootstrap'
 import S3 from 'react-aws-s3';
 class FormVentasSolicitudFactura extends Component{
 
@@ -32,7 +33,9 @@ class FormVentasSolicitudFactura extends Component{
                 }
             },
             facturaObject: null,
-            factura: null
+            factura: null,
+            fecha: new Date(),
+            descripcion:''
         },
         options: {
             clientes: [],
@@ -299,6 +302,9 @@ class FormVentasSolicitudFactura extends Component{
     }
 
     updateSelect = ( value, name) => {
+        if (value === null) {
+            value = []
+        }
         const { form } = this.state
         form[name] = value
         this.setState({ ...this.state, form })
@@ -319,77 +325,95 @@ class FormVentasSolicitudFactura extends Component{
         })
         this.setState({ ...this.state, form })
     }
-    
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({ ...this.state, form })
+    }
     render(){
         const { form, options } = this.state
+        console.log(form, 'form')
         return(
             <Form 
                 id = 'form-ventas-solicitud-factura'
                 onSubmit = { (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-ventas-solicitud-factura') } }>
-                <div className = 'row mx-0'>
-                    <div className="col-md-6">
-                        <label className="col-form-label font-weight-bold text-dark-60">XML DE LA FACTURA</label>
-                        <br />
-                        <FileInput requirevalidation = { 1 } formeditado = { 0 } onChangeAdjunto = { this.onChangeFactura }
-                            placeholder = 'Factura XML' value = { form.adjuntos.xml.value } name = 'xml' id = 'xml' classinput = 'file-input'
-                            accept = 'text/xml' files = { form.adjuntos.xml.files } false iconclass='flaticon2-clip-symbol text-primary'
-                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
-                            messageinc = 'Incorrecto. Agrega el XML de la factura' deleteAdjunto = { this.clearFiles } />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="col-form-label font-weight-bold text-dark-60">PDF DE LA FACTURA</label>
-                        <br />
-                        <FileInput requirevalidation = { 0 } formeditado = { 0 } onChangeAdjunto = { this.onChangeAdjunto }
-                            placeholder = 'Factura PDF' value = { form.adjuntos.pdf.value } name = 'pdf' id = 'pdf' classinput = 'file-input'
-                            accept = 'application/pdf' files = { form.adjuntos.pdf.files } false iconclass='flaticon2-clip-symbol text-primary'
-                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0' 
-                            deleteAdjunto = { this.clearFiles } />
-                    </div>
+                <div className = 'row mx-0 mt-5'>
+                    <Col md="4" className="text-center align-self-center">
+                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                            <label className="text-center font-weight-bolder">Fecha</label>
+                        </div>
+                        <CalendarDay value={form.fecha} name='fecha' onChange={this.onChange} date={form.fecha} withformgroup={1} requirevalidation={1}/>
+                    </Col>
+                    <Col md="8" className="align-self-center">
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-4">
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA LA CUENTA' defaultvalue = { form.cuenta } iconclass = 'las la-credit-card icon-xl' requirevalidation={1}
+                                options = { transformOptions(options.cuentas) } onChange = { ( value ) => this.updateSelect(value, 'cuenta') } messageinc = 'Selecciona la cuenta.'/>
+                            </div>
+                            <div className="col-md-4">
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA LA SUBÁREA' defaultvalue = { form.subarea } iconclass = 'las la-tools icon-xl' requirevalidation={1}
+                                options = { transformOptions(options.subareas) } onChange = { ( value ) => this.updateSelect(value, 'subarea') } messageinc = 'Selecciona la subarea.'/>
+                            </div>
+                            <div className="col-md-4">
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL TIPO DE PAGO' defaultvalue = { form.pago } iconclass = 'las la-coins icon-xl' requirevalidation={1}
+                                options = { transformOptions(options.pagos) } onChange = { ( value ) => this.updateSelect(value, 'pago') } messageinc = 'Selecciona el tipo de pago.'/>
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-6">
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL TIPO DE IMPUESTO' defaultvalue = { form.impuesto } iconclass = 'las la-file-invoice-dollar icon-xl' requirevalidation={1}
+                                options = { transformOptions(options.impuestos) } onChange = { ( value ) => this.updateSelect(value, 'impuesto') } messageinc = 'Selecciona el tpo de impuestos.'/>
+                            </div>
+                            <div className="col-md-6">
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL ESTATUS DE COMPRA' defaultvalue = { form.estatus } iconclass = 'las la-check-circle icon-xl' requirevalidation={1}
+                                options = { transformOptions(options.estatus) } onChange = { ( value ) => this.updateSelect(value, 'estatus') } messageinc = 'Selecciona el estatus de compra.'/>
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-12">
+                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0}
+                                    withformgroup={0} requirevalidation={0} as='textarea' name='descripcion' customclass="px-2 text-justify"
+                                    placeholder='DESCRIPCIÓN'onChange={this.onChange} value={form.descripcion} rows='2' messageinc="Ingresa una descripción." />
+                            </div>
+                        </div>
+                    </Col>
                     <div className="col-md-12">
-                        <div className="separator separator-dashed mt-1 mb-2" />
+                        <div className="separator separator-dashed my-3" />
                     </div>
-                    <div className="col-md-6">
-                        <SelectSearchGray formeditado = { 0 } requirevalidation = { 1 } options = { options.cuentas } placeholder = 'SELECCIONA LA CUENTA'
-                            name = 'cuenta' value = { form.cuenta } onChange = { ( value ) => this.updateSelect(value, 'cuenta') } withtaglabel = { 1 }
-                            messageinc = 'Incorrecto. Selecciona la cuenta.' withicon = { 1 } withtextlabel = { 1 } />
-                    </div>
-                    <div className="col-md-6">
-                        <SelectSearchGray formeditado = { 0 } requirevalidation = { 1 } options = { options.subareas } placeholder = 'SELECCIONA LA SUBÁREA  '
-                            name = 'subarea' value = { form.subarea } onChange = { ( value ) => this.updateSelect(value, 'subarea') } withtaglabel = { 1 }
-                            messageinc = 'Incorrecto. Selecciona la subarea.' withicon = { 1 } withtextlabel = { 1 } />
-                    </div>
-                    <div className="col-md-12">
-                        <div className="separator separator-dashed mt-1 mb-2" />
-                    </div>
-                    <div className="col-md-6">
-                        <SelectSearchGray formeditado = { 0 } requirevalidation = { 1 } options = { options.pagos } placeholder = 'SELECCIONA EL TIPO DE PAGO'
-                            name = 'pago' value = { form.pago } onChange = { ( value ) => this.updateSelect(value, 'pago') } withtaglabel = { 1 }
-                            messageinc = 'Incorrecto. Selecciona el tipo de pago.' withicon = { 1 } withtextlabel = { 1 } />
-                    </div>
-                    <div className="col-md-6">
-                        <SelectSearchGray formeditado = { 0 } requirevalidation = { 1 } options = { options.impuestos } 
-                            placeholder = 'SELECCIONA EL TIPO DE IMPUESTO' name = 'impuesto' value = { form.impuesto } 
-                            onChange = { ( value ) => this.updateSelect(value, 'impuesto') } withtaglabel = { 1 }
-                            messageinc = 'Incorrecto. Selecciona el tpo de impuestos.' withicon = { 1 } withtextlabel = { 1 } />
-                    </div>
-                    <div className="col-md-12">
-                        <div className="separator separator-dashed mt-1 mb-2" />
-                    </div>
-                    <div className="col-md-6">
-                        <SelectSearchGray formeditado = { 0 } requirevalidation = { 1 } options = { options.estatus } 
-                            placeholder = 'SELECCIONA EL ESTATUS DE COMPRA' name = 'estatus' value = { form.estatus } 
-                            onChange = { ( value ) => this.updateSelect(value, 'estatus') } withtaglabel = { 1 }
-                            messageinc = 'Incorrecto. Selecciona el estatus de compra.' withicon = { 1 } withtextlabel = { 1 } />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="col-form-label font-weight-bold text-dark-60">PAGO</label>
-                        <br />
-                        <FileInput requirevalidation = { 1 } formeditado = { 0 } onChangeAdjunto = { this.onChangeAdjunto }
-                            placeholder = 'PAGO' value = { form.adjuntos.pagos.value } name = 'pagos' id = 'pagos' classinput = 'file-input'
-                            accept = '*/*' files = { form.adjuntos.pagos.files } false iconclass='flaticon2-clip-symbol text-primary'
-                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0' 
-                            multiple deleteAdjunto = { this.clearFiles }/>
-                    </div>
+                    <Col md="12">
+                        <div className="mb-4 row form-group-marginless text-center">
+                            <div className="col-md-4 align-self-center">
+                                <label className="col-form-label font-weight-bold text-dark-60">XML DE LA FACTURA</label>
+                                <br />
+                                <FileInput requirevalidation = { 1 } formeditado = { 0 } onChangeAdjunto = { this.onChangeFactura }
+                                    placeholder = 'Factura XML' value = { form.adjuntos.xml.value } name = 'xml' id = 'xml' classinput = 'file-input'
+                                    accept = 'text/xml' files = { form.adjuntos.xml.files } false iconclass='flaticon2-clip-symbol text-primary'
+                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                    messageinc = 'Agrega el XML de la factura' deleteAdjunto = { this.clearFiles }/>
+                            </div>
+                            <div className="col-md-4 align-self-center">
+                                <label className="col-form-label font-weight-bold text-dark-60">PDF DE LA FACTURA</label>
+                                <br />
+                                <FileInput requirevalidation = { 0 } formeditado = { 0 } onChangeAdjunto = { this.onChangeAdjunto }
+                                    placeholder = 'Factura PDF' value = { form.adjuntos.pdf.value } name = 'pdf' id = 'pdf' classinput = 'file-input'
+                                    accept = 'application/pdf' files = { form.adjuntos.pdf.files } false iconclass='flaticon2-clip-symbol text-primary'
+                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0' 
+                                    deleteAdjunto = { this.clearFiles } />
+                            </div>
+                            <div className="col-md-4 align-self-center">
+                                <label className="col-form-label font-weight-bold text-dark-60">PAGO</label>
+                                <br />
+                                <FileInput requirevalidation = { 1 } formeditado = { 0 } onChangeAdjunto = { this.onChangeAdjunto }
+                                    placeholder = 'PAGO' value = { form.adjuntos.pagos.value } name = 'pagos' id = 'pagos' classinput = 'file-input'
+                                    accept = '*/*' files = { form.adjuntos.pagos.files } false iconclass='flaticon2-clip-symbol text-primary'
+                                    classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0' 
+                                    multiple deleteAdjunto = { this.clearFiles }/>
+                            </div>
+                        </div>
+                    </Col>
                 </div>
                 <div className="d-flex justify-content-end border-top mt-3 pt-3">
                     <div>

@@ -158,7 +158,7 @@ class SolicitudFactura extends Component {
                         : <></> 
                     }
                 </Modal>
-                <Modal size = 'lg' show = { modal.venta } handleClose = { this.handleClose } title = 'Generar venta'>
+                <Modal size = 'xl' show = { modal.venta } handleClose = { this.handleClose } title = 'Generar venta'>
                     {
                         modal.venta ? 
                             <FormVentasSolicitudFactura solicitud = { solicitud } at = { access_token } /> 
