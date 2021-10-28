@@ -66,13 +66,13 @@ class SolicitudFactura extends Component {
 
     printOrigen = (dato) => {
         if(dato.hasTicket){
-            return setTextTableCenter('Fase 3')
+            return <div className="text-center font-size-xs font-weight-bold text-fase3"><img src="/fase3.png" className="img-responsive mb-1"/><div>FASE 3</div></div>
         }
         if(dato.hasLead){
-            return setTextTableCenter('Fase 1')
+            return <div className="text-center font-size-xs font-weight-bold text-fase1"><img src="/fase1.png" className="img-responsive mb-1"/><div>FASE 1</div></div>
         }
         if(dato.hasPresupuesto){
-            return setTextTableCenter('Fase 2')
+            return <div className="text-center font-size-xs font-weight-bold text-fase2"><img src="/fase2.png" className="img-responsive mb-1"/><div>FASE 2</div></div>
         }
         return setTextTableCenter('Sin definir')
     }
