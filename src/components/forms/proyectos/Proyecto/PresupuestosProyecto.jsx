@@ -90,10 +90,15 @@ class PresupuestosProyecto extends Component {
 
     navPresupuesto = (type) => { 
         const { filtering } = this.state
+        let { presupuesto, form } = this.state
         if(this.navPresupuesto === 'historial'){
             this.getPresupuestos(filtering)
-        }   
-        this.setState({ ...this.state, navPresupuesto: type }) 
+        }
+        if(type === 'add'){
+            presupuesto = ''
+            form.presupuesto = { area: "", tiempo_ejecucion: "", partida: "", subpartida: "", conceptos: {} }
+        }
+        this.setState({ ...this.state, navPresupuesto: type, presupuesto, form }) 
     }
 
     sendPresupuestoToClient = async() => {
@@ -474,13 +479,18 @@ class PresupuestosProyecto extends Component {
     patchPresupuesto = async(type, value) => {
         const { at } = this.props
         const { presupuesto } = this.state
+        let { navPresupuesto } = this.state
         waitAlert()
         await axios.patch(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}`, { type: type, value: value }, { headers: setSingleHeader(at) }).then(
             (response) => {
-                if(type === 'estatus')
+                if(type === 'estatus'){
                     doneAlert('Presupuesto actualizado con éxito', () => this.sendCorreoAxios(value))
-                else
+                    navPresupuesto = 'historial'
+                    this.refreshPresupuestos()
+                }else{
                     doneAlert('Presupuesto actualizado con éxito', () => this.getPresupuestoAxios(presupuesto.id))
+                }
+                this.setState({ ...this.state, navPresupuesto })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

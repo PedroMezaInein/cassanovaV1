@@ -21,6 +21,10 @@ export default class HistorialPresupuestosProyecto extends Component {
                         onClickOrden = { onClickOrden }
                     />
                 )
+            case 'Volumetrías':
+            case 'Costos':
+            case 'En revisión':
+            case 'Utilidad':
             case 'En espera':
                 return(
                     <TimelinePresupuestos presupuesto={presupuesto} onClickOrden = { onClickOrden }  changeStatus = { true }/>
