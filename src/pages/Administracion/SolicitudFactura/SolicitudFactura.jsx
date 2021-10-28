@@ -34,8 +34,8 @@ class SolicitudFactura extends Component {
         datos.forEach((dato) => {
             aux.push({
                 actions: this.setActions(dato),
-                emisor: <div>
-                        <span>
+                emisor: <div className="font-size-11px">
+                        <span className="white-space-nowrap">
                             <b>RFC: </b>{ dato.rfc_emisor }
                         </span>
                         <br />
@@ -43,8 +43,8 @@ class SolicitudFactura extends Component {
                             <b>Razón social: </b>{ dato.razon_social_emisor }
                         </span>
                     </div>,
-                receptor: <div>
-                        <span>
+                receptor: <div className="font-size-11px">
+                        <span className="white-space-nowrap">
                             <b>RFC: </b>{ dato.rfc_receptor }
                         </span>
                         <br />
@@ -53,7 +53,7 @@ class SolicitudFactura extends Component {
                         </span>
                     </div>,
                 detalle: setTextTableCenter(dato.detalle),
-                monto: setMoneyText(dato.monto),
+                monto:<div className="font-size-11px text-center">{setMoneyText(dato.monto)}</div>,
                 tipoPago: setTextTableCenter(dato.tipo_pago ? dato.tipo_pago.tipo : 'Sin definir'),
                 formaPago: setTextTableCenter(dato.forma_pago ? dato.forma_pago.nombre : 'Sin definir'),
                 metodoPago: setTextTableCenter(dato.metodo_pago ? dato.metodo_pago.nombre : 'Sin definir'),
@@ -83,15 +83,15 @@ class SolicitudFactura extends Component {
                 {
                     element.hasVenta === false ?
                         <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Convertir</span></Tooltip> } >
-                            <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-success btn-hover-success'
+                            <button className = 'btn btn-icon btn-actions-table btn-sm ml-2 btn-text-success btn-hover-success'
                                 onClick = { (e) => { e.preventDefault(); this.changePageSee(element) } }>
-                                <i className = 'las la-sync' />
+                                <i className = 'las la-sync icon-lg' />
                             </button>
                         </OverlayTrigger>
                     : <></>
                 }
                 <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Eliminar</span></Tooltip> } >
-                    <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
+                    <button className = 'btn btn-icon btn-actions-table btn-sm ml-2 btn-text-danger btn-hover-danger'
                         onClick = { (e) => { 
                             e.preventDefault(); 
                             deleteAlert(
@@ -100,7 +100,7 @@ class SolicitudFactura extends Component {
                                 () => { this.deleteSolicitud(element.id) }
                             )
                         } }>
-                        <i className = 'las la-trash' />
+                        <i className = 'las la-trash icon-lg' />
                     </button>
                 </OverlayTrigger>
             </div>
