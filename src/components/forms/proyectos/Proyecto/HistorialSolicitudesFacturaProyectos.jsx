@@ -5,6 +5,7 @@ import SVG from 'react-inlinesvg'
 import Modal from '../../../singles/Modal'
 import { FormSolicitudFactura } from '../..'
 import { URL_DEV } from '../../../../constants'
+import { apiDelete, catchErrors } from '../../../../functions/api'
 import { setMoneyText, setOptions } from '../../../../functions/setters'
 import { setSingleHeader, toAbsoluteUrl } from '../../../../functions/routers'
 import { printResponseErrorAlert, waitAlert, doneAlert, deleteAlert, errorAlert } from '../../../../functions/alert'
@@ -45,16 +46,13 @@ class HistorialSolicitudesFacturaProyectos extends Component {
 
     deleteSolicitudAxios = async (id) => {
         waitAlert()
-        const { at, proyecto } = this.props
-        await axios.delete(`v3/proyectos/proyectos/${proyecto.id}/solicitud-factura/${id}`, { headers: setSingleHeader(at) }).then(
+        const { at, proyecto, getPresupuestos, presupuesto } = this.props
+        apiDelete(`v3/proyectos/proyectos/${proyecto.id}/solicitud-factura/${id}`, at).then(
             (response) => {
-                const { getPresupuestos } = this.props
-                doneAlert(`Solicitud eliminada con éxito`, () => { getPresupuestos() })
+                doneAlert('Solicitud eliminada con éxito', () => { getPresupuestos() } )
+                this.getSolicitudes(proyecto, presupuesto)
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+        ).catch((error) => { catchErrors(error) })
     }
 
     // MODAL SOLICITUD DE FACTURAS
@@ -120,21 +118,21 @@ class HistorialSolicitudesFacturaProyectos extends Component {
                     </span>
                 </div>
                 <div className="table-responsive">
-                    <table className="table table-vertical-center table-solicitud-factura">
+                    <table className='table table-vertical-center table-layout-fixed'>
                         <thead>
-                            <tr className="white-space-nowrap">
-                                <th></th>
-                                <th className="text-align-last-left min-w-xxl-228px">Receptor</th>
-                                <th className="text-align-last-left min-w-lg-236px min-w-xxl-225px">Datos del pago</th>
-                                <th className="min-w-lg-131px min-w-xxl-200px">Detalle</th>
-                                <th>Cobrado</th>
+                            <tr>
+                                <th className="w-8"></th>
+                                <th className="text-align-last-left">Receptor</th>
+                                <th className="text-align-last-left">Datos del pago</th>
+                                <th>Detalle</th>
+                                <th className="w-12">Cobrado</th>
                             </tr>
                         </thead>
                         <tbody className="table-tbody">
                             {
                                 solicitudes.length === 0 ?
                                     <tr className="font-weight-light">
-                                        <td className='text-center' colSpan='9'>
+                                        <td className='text-center' colSpan='5'>
                                             No hay solicitudes de facturación
                                         </td>
                                     </tr>
