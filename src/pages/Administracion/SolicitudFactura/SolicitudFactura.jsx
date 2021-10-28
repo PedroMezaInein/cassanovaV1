@@ -86,7 +86,7 @@ class SolicitudFactura extends Component {
                     element.hasVenta === false ?
                         <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Convertir</span></Tooltip> } >
                             <button className = 'btn btn-icon btn-actions-table btn-sm ml-2 btn-text-success btn-hover-success'
-                                onClick = { (e) => { e.preventDefault(); this.changePageSee(element) } }>
+                                onClick = { (e) => { e.preventDefault(); this.openModalVenta(element) } }>
                                 <i className = 'las la-sync icon-lg' />
                             </button>
                         </OverlayTrigger>
