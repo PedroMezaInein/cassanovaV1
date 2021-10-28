@@ -178,7 +178,7 @@ class FormVentasSolicitudFactura extends Component{
         return(
             <div className = 'row mx-0'>
                 <div className="col-md-6">
-                    <label className="col-form-label my-1 font-weight-bold text-dark-60">XML DE LA FACTURA</label>
+                    <label className="col-form-label font-weight-bold text-dark-60">XML DE LA FACTURA</label>
                     <br />
                     <FileInput requirevalidation = { 1 } formeditado = { 0 } onChangeAdjunto = { this.onChangeFactura }
                         placeholder = 'Factura XML' value = { form.adjuntos.xml.value } name = 'factura' id = 'xml' classinput = 'file-input'
@@ -186,7 +186,7 @@ class FormVentasSolicitudFactura extends Component{
                         classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0' />
                 </div>
                 <div className="col-md-6">
-                    <label className="col-form-label my-1 font-weight-bold text-dark-60">PDF DE LA FACTURA</label>
+                    <label className="col-form-label font-weight-bold text-dark-60">PDF DE LA FACTURA</label>
                     <br />
                     <FileInput requirevalidation = { 0 } formeditado = { 0 } onChangeAdjunto = { this.onChangeFactura }
                         placeholder = 'Factura PDF' value = { form.adjuntos.pdf.value } name = 'pdf' id = 'pdf' classinput = 'file-input'
@@ -222,7 +222,7 @@ class FormVentasSolicitudFactura extends Component{
                         messageinc = 'Incorrecto. Selecciona el estatus de compra.' withicon = { 1 } withtextlabel = { 1 } />
                 </div>
                 <div className="col-md-6">
-                    <label className="col-form-label my-1 font-weight-bold text-dark-60">PAGO</label>
+                    <label className="col-form-label font-weight-bold text-dark-60">PAGO</label>
                     <br />
                     <FileInput requirevalidation = { 1 } formeditado = { 0 } onChangeAdjunto = { this.onChangeFactura }
                         placeholder = 'PAGO' value = { form.adjuntos.pagos.value } name = 'pagos' id = 'pagos' classinput = 'file-input'
