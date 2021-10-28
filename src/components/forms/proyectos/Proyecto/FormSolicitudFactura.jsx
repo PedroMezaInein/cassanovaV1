@@ -41,11 +41,11 @@ class FormSolicitudFactura extends Component {
     }
     onSubmit = async () => {
         waitAlert()
-        const { at, proyecto, getPresupuestos, presupuesto } = this.props
+        const { at, proyecto, presupuesto, refresh } = this.props
         const { form } = this.state
         await axios.post(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/solicitud-factura/${presupuesto.id}`, form, { headers: setSingleHeader(at) }).then(
             (response) => {
-                doneAlert(`Solicitud generada con éxito`, () => { getPresupuestos() })
+                doneAlert(`Solicitud generada con éxito`, () => { refresh() } )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
