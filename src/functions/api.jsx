@@ -11,6 +11,18 @@ export async function apiOptions(url, at){
     return await axios.options(`${URL_DEV}${url}`, { headers: setSingleHeader(at) })
 }
 
+export async function apiPutForm(url, form, at){
+    return await axios.put(`${URL_DEV}${url}`, form, { headers: setSingleHeader(at) })
+}
+
+export async function apiPostForm(url, form, at){
+    return await axios.post(`${URL_DEV}${url}`, form, { headers: setSingleHeader(at) })
+}
+
+export async function apiGet(url, at){
+    return await axios.get(`${URL_DEV}${url}`, { headers: setSingleHeader(at) })
+}
+
 export function catchErrors(error, flag){
     if(flag === false){
         errorAlert(`Ocurrió un error desconocido, intenta refrescando la página`)

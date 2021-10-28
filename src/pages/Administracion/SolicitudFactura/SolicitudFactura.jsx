@@ -10,12 +10,14 @@ import { apiDelete, catchErrors } from '../../../functions/api'
 import $ from 'jquery'
 import { Modal } from '../../../components/singles'
 import { FiltersSolicitudFactura } from '../../../components/filters'
+import { FormVentasSolicitudFactura } from '../../../components/forms'
 
 class SolicitudFactura extends Component {
 
     state = {
-        modal: { filtros: false },
-        filters: {}
+        modal: { filtros: false, venta: false },
+        filters: {},
+        solicitud: ''
     }
 
     deleteSolicitud = async(id) => {
@@ -111,6 +113,12 @@ class SolicitudFactura extends Component {
         $(`#solicitud-factura`).DataTable().search(JSON.stringify(filter)).draw();
     }
 
+    openModalVenta = (solicitud) => {
+        const { modal } = this.state
+        modal.venta = true
+        this.setState({ ...this.state, modal, solicitud: solicitud })
+    }
+
     openModalFiltros = () => {
         const { modal } = this.state
         modal.filtros = true
@@ -120,6 +128,7 @@ class SolicitudFactura extends Component {
     handleClose = () => {
         const { modal } = this.state
         modal.filtros = false
+        modal.venta = false
         this.setState({ ...this.state, modal })
     }
 
@@ -136,7 +145,7 @@ class SolicitudFactura extends Component {
 
     render(){
         const { authUser: {access_token} } = this.props
-        const { modal, filters } = this.state
+        const { modal, filters, solicitud } = this.state
         return(
             <Layout active = 'administracion' { ...this.props } >
                 <NewTable tableName = 'solicitud-factura' subtitle = 'Listado de solicitudes de facturas' title = 'Solicitudes de facturas' 
@@ -148,6 +157,14 @@ class SolicitudFactura extends Component {
                             <FiltersSolicitudFactura at = { access_token } sendFilters = { this.sendFilters } filters = { filters } /> 
                         : <></> 
                     }
+                </Modal>
+                <Modal size = 'lg' show = { modal.venta } handleClose = { this.handleClose } title = 'Generar venta'>
+                    {
+                        modal.venta ? 
+                            <FormVentasSolicitudFactura solicitud = { solicitud } at = { access_token } /> 
+                        : <></>
+                    }
+                    
                 </Modal>
             </Layout>
         )

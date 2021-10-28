@@ -64,7 +64,8 @@ class FileInput extends Component {
     }
 
     render() {
-        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, classbtn, iconclass, color_label, classinput, requirevalidation, ...props } = this.props
+        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, classbtn, iconclass, 
+            color_label, classinput, requirevalidation, ...props } = this.props
         let newfileValido = files.length > 0 ? true: false;
         return (
             <>
@@ -111,7 +112,11 @@ class FileInput extends Component {
                     {
                         files.map((file, key) => {
                             return (
-                                <div className={this.props.multiple ? "tagify form-control p-1 col-md-6  d-flex justify-content-center align-items-center" : "tagify form-control p-1 col-md-12  d-flex justify-content-center align-items-center"} tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
+                                <div tabIndex="-1" style={{ borderWidth: "0px" }} key={key} 
+                                    className =  { 
+                                        this.props.multiple ? 
+                                            "tagify form-control p-1 col-md-6  d-flex justify-content-center align-items-center" 
+                                        : "tagify form-control p-1 col-md-12  d-flex justify-content-center align-items-center"} >
                                     <div className={`tagify__tag tagify__tag--${color_label ? 'color_label' : 'primary'} tagify--noAnim`} >
                                         <div
                                             title="Borrar archivo"
