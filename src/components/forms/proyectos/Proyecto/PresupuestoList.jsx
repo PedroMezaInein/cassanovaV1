@@ -5,7 +5,7 @@ import { PresupuestoAnswer } from '../../../forms'
 import { dayDMY } from '../../../../functions/setters'
 import { Budget } from '../../../../components/Lottie/'
 import { setSingleHeader } from '../../../../functions/routers'
-import { Card, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
 class PresupuestoList extends Component {
 
