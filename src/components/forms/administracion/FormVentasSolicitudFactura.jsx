@@ -333,7 +333,6 @@ class FormVentasSolicitudFactura extends Component{
     }
     render(){
         const { form, options } = this.state
-        console.log(form, 'form')
         return(
             <Form 
                 id = 'form-ventas-solicitud-factura'
