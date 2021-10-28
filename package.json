@@ -76,6 +76,7 @@
       "eslint-plugin-react": "^7.22.0",
       "espree": "^7.3.0",
       "exif-js": "^2.3.0",
+      "fast-xml-parser": "^3.21.0",
       "fg-loadcss": "2.1.0",
       "file-saver": "^2.0.2",
       "formik": "2.0.6",

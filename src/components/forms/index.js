@@ -142,6 +142,9 @@ import HistorialCotizacionesDiseño from './leads/info/HistorialCotizacionesDise
 import HistorialPresupuestosProyecto from './proyectos/Proyecto/HistorialPresupuestosProyecto'
 import FormSolicitudFactura from './proyectos/Proyecto/FormSolicitudFactura'
 import HistorialSolicitudesFacturaProyectos from './proyectos/Proyecto/HistorialSolicitudesFacturaProyectos'
+
+import FormVentasSolicitudFactura from './administracion/FormVentasSolicitudFactura'
+
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
@@ -253,4 +256,5 @@ export const AddTaskForm = addTaskForm
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
     PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
-    CotizacionesDiseño, HistorialCotizacionesDiseño, HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos}
+    CotizacionesDiseño, HistorialCotizacionesDiseño, HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos,
+    FormVentasSolicitudFactura }
