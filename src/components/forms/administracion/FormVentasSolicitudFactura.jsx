@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { FileInput, Button, CalendarDay, InputGray, ReactSelectSearchGray } from '../../form-components'
 import j2xParser from 'fast-xml-parser'
-import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 import Swal from 'sweetalert2'
 import { apiGet, apiOptions, apiPostForm, apiPutForm, catchErrors } from '../../../functions/api'
 import { setOptions } from '../../../functions/setters'
@@ -129,6 +129,46 @@ class FormVentasSolicitudFactura extends Component{
         ).catch((error) => { catchErrors(error) })
     }
 
+    addPagosS3 = async(venta) => {
+        const { at } = this.props
+        const { form } = this.state
+        apiGet(`v1/constant/admin-proyectos`, at).then(
+            (response) => {
+                const { alma } = response.data
+                let filePath = `ventas/${venta.id}/pagos/`
+                let auxPromises  = form.adjuntos.pagos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                catchErrors(error)
+                                errorAlert(`Ocurrió un error al subir el archivo ${file.name}`)
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addPagosToVenta(values, venta)}).catch(err => console.error(err))        
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    addPagosToVenta = async(archivos, venta) => {
+        const { at, refresh } = this.props
+        apiPostForm(`v3/proyectos/ventas/${venta.id}/s3/pago`, { archivos: archivos }, at).then(
+            (response) => {
+                doneAlert(`Venta generada con éxito`, () => { refresh() })
+            }, (error) => { 
+                error.response.data.message = 'Venta generada con éxito, no fue posible subir los pagos, favor de intentar desde el apartado de ventas.'
+                printResponseErrorAlert(error)
+                refresh()
+            }
+        ).catch((error) => { catchErrors(error) })
+    }
+
     addNewFacturaAxios = async(archivos) => {
         const { at } = this.props
         const { form } = this.state
@@ -139,25 +179,27 @@ class FormVentasSolicitudFactura extends Component{
                 const { factura } = response.data
                 form.factura = factura
                 this.setState({ ...this.state, form })
-                this.addVentaAxios([])
+                this.addVentaAxios()
             }, (error) => {  printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
 
     addVentaAxios = async() => {
-        const { at, solicitud } = this.props
+        const { at, solicitud, refresh } = this.props
         const { form } = this.state
         apiPostForm(`v1/administracion/solicitud-factura/${solicitud.id}/venta`, form, at).then( (response) => {
-                const { factura } = response.data
-                form.factura = factura
-                this.setState({ ...this.state, form })
-                this.addVentaAxios([])
+                const { venta } = response.data
+                const { form } = this.state
+                if(form.adjuntos.pagos.files.length){
+                    this.addPagosS3(venta)
+                }else{ doneAlert(`Venta generada con éxito`, () => { refresh() }) }
             }, (error) => {  printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
 
     onSubmit = async() => {
         const { form } = this.state
+        waitAlert()
         if(form.factura !== '' && form.factura !== null){
             this.addVentaAxios()
         }else{
@@ -167,7 +209,7 @@ class FormVentasSolicitudFactura extends Component{
 
     onChangeFactura = (e) => {
         waitAlert()
-        const { files, value, name } = e.target
+        const { files, name } = e.target
         const { form } = this.state
         form.adjuntos[name].files = []
         form.facturaObject = {}
@@ -405,7 +447,7 @@ class FormVentasSolicitudFactura extends Component{
                             <div className="col-md-4 align-self-center">
                                 <label className="col-form-label font-weight-bold text-dark-60">PAGO</label>
                                 <br />
-                                <FileInput requirevalidation = { 1 } formeditado = { 0 } onChangeAdjunto = { this.onChangeAdjunto }
+                                <FileInput requirevalidation = { 0 } formeditado = { 0 } onChangeAdjunto = { this.onChangeAdjunto }
                                     placeholder = 'PAGO' value = { form.adjuntos.pagos.value } name = 'pagos' id = 'pagos' classinput = 'file-input'
                                     accept = '*/*' files = { form.adjuntos.pagos.files } false iconclass='flaticon2-clip-symbol text-primary'
                                     classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0' 
@@ -416,13 +458,7 @@ class FormVentasSolicitudFactura extends Component{
                 </div>
                 <div className="d-flex justify-content-end border-top mt-3 pt-3">
                     <div>
-                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase"
-                            type = 'submit'
-                            /* onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-ventas-solicitud-factura')
-                                }
-                            } */
-                            
-                            text="ENVIAR" />
+                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type = 'submit' text="ENVIAR" />
                     </div>
                 </div>
             </Form>

@@ -143,6 +143,13 @@ class SolicitudFactura extends Component {
         this.reloadTable(filtro)
     }
 
+    refresh = () => {
+        const { filters, modal } = this.state
+        modal.venta = false
+        this.setState({ ...this.state, modal })
+        this.reloadTable(filters)
+    }
+
     render(){
         const { authUser: {access_token} } = this.props
         const { modal, filters, solicitud } = this.state
@@ -161,7 +168,7 @@ class SolicitudFactura extends Component {
                 <Modal size = 'xl' show = { modal.venta } handleClose = { this.handleClose } title = 'Generar venta'>
                     {
                         modal.venta ? 
-                            <FormVentasSolicitudFactura solicitud = { solicitud } at = { access_token } /> 
+                            <FormVentasSolicitudFactura solicitud = { solicitud } at = { access_token } refresh = { this.refresh } /> 
                         : <></>
                     }
                     
