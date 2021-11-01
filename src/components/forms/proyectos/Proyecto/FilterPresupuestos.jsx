@@ -71,12 +71,13 @@ class FilterPresupuestos extends Component {
     clear = e => {
         e.preventDefault()
         const { form } = this.state
-        const { filtering } = this.props
+        const { filtering, clearFiltrado } = this.props
         form.area = ''
         form.estatus = ''
         form.identificador = ''
         form.fechas = { start: null, end: null }
         filtering({})
+        clearFiltrado()
         this.setState({ ...this.state, form })
     }
     onSubmit = (e) => {
