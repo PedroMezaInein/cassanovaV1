@@ -44,7 +44,10 @@ class PresupuestoList extends Component {
 
     printEmpty = () => {
         return(
-            <Budget/>
+            <>
+                <Budget/>
+                <div className="text-center font-size-h6 font-weight-bold mt-1">SIN PRESUPUESTOS</div>
+            </>
         )
     }
 
