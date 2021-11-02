@@ -78,6 +78,13 @@ class FormVentasSolicitudFactura extends Component{
                 options.pagos = setOptions(tipoPagos, 'tipo', 'id')
                 options.impuestos = setOptions(tipoImpuestos, 'tipo', 'id')
                 options.estatus = setOptions(estatusCompras, 'estatus', 'id')
+                let aux = {}
+                options.impuestos.forEach((impuesto) => {
+                    if(impuesto.name === 'IVA'){
+                        aux = { 'label': impuesto.name, 'name': impuesto.name, 'value': impuesto.value }
+                    }
+                })
+                form.impuesto = aux
                 this.setState({ ...this.state, options, form, response: response.data })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch(( error ) => { catchErrors(error) })
@@ -289,7 +296,7 @@ class FormVentasSolicitudFactura extends Component{
                     errores.push('El RFC del receptor no coincide con la solicitud.')
                 }
                 if(obj.rfc_emisor !== solicitud.rfc_emisor){
-                    errores.push('El RFC del emisir no coincide con la solicitud.')
+                    errores.push('El RFC del emisor no coincide con la solicitud.')
                 }
                 let resta = parseFloat(obj.total) - parseFloat(solicitud.monto)
                 if( resta < -1 || resta > 1 ){
