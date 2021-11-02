@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
+import $ from "jquery"
+import axios from 'axios'
+import Swal from 'sweetalert2'
+import Echo from 'laravel-echo'
 import { connect } from 'react-redux'
-import Layout from '../../../components/layout/layout'
-import axios from 'axios';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from "@fullcalendar/interaction"
-import esLocale from '@fullcalendar/core/locales/es'
-import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
-import { PUSHER_OBJECT, URL_DEV } from '../../../constants'
-import bootstrapPlugin from '@fullcalendar/bootstrap'
-import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Swal from 'sweetalert2'
-/* import Pusher from 'pusher-js'; */
-import Echo from 'laravel-echo';
 import { Modal } from '../../../components/singles'
+import esLocale from '@fullcalendar/core/locales/es'
+import bootstrapPlugin from '@fullcalendar/bootstrap'
+import Layout from '../../../components/layout/layout'
+import interactionPlugin from '@fullcalendar/interaction'
+import { PUSHER_OBJECT, URL_DEV } from '../../../constants'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import FormCalendarioTareas from '../../../components/forms/usuarios/FormCalendarioTareas'
+import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+/* import Pusher from 'pusher-js'; */
 
 class Calendario extends Component {
     state = {
@@ -41,6 +42,7 @@ class Calendario extends Component {
     };
 
     componentDidMount() {
+        $("body").removeClass('bg-white d-flex justify-content-center');
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         permisos.find(function (element, index) {
