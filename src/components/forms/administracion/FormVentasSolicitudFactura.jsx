@@ -3,6 +3,7 @@ import { FileInput, Button, CalendarDay, InputGray, ReactSelectSearchGray } from
 import j2xParser from 'fast-xml-parser'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 import { apiGet, apiOptions, apiPostForm, apiPutForm, catchErrors } from '../../../functions/api'
 import { setOptions } from '../../../functions/setters'
 import { transformOptions } from '../../../functions/options'
@@ -209,11 +210,13 @@ class FormVentasSolicitudFactura extends Component{
 
     onChangeFactura = (e) => {
         waitAlert()
-        const { files, name } = e.target
+        const MySwal = withReactContent(Swal)
+        const { files, name, value } = e.target
         const { form } = this.state
         form.adjuntos[name].files = []
         form.facturaObject = {}
         form.factura = ''
+        form.adjuntos[name].value = value
         files.forEach((file, index) => {
             form.adjuntos[name].files.push({
                 name: file.name,
@@ -303,21 +306,24 @@ class FormVentasSolicitudFactura extends Component{
                         }
                         textError += mistake
                     })
-                    Swal.close()
+                    form.adjuntos[name].files = []
                     form.facturaObject = {}
                     form.factura = ''
-                    form.adjuntos.xml.files = []
-                    form.adjuntos.xml.value = ''
+                    form.adjuntos[name].value = ''
                     this.setState({ ...this.state, form })
-                    errorAlert(textError)
+                    Swal.close()
+                    MySwal.close()
+                    
+                    setTimeout(function(){ 
+                        errorAlert(textError)
+                    }, 100);
                 }else{
                     form.facturaObject = obj
+                    Swal.close()
                     this.setState({ ...this.state, form })
                     this.checkFactura(obj)
-                    Swal.close()
                 }
             }else{ 
-                Swal.close()
                 form.facturaObject = {}
                 form.factura = ''
                 form.adjuntos.xml.files = []
@@ -389,35 +395,40 @@ class FormVentasSolicitudFactura extends Component{
                     <Col md="8" className="align-self-center">
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-4">
-                                <ReactSelectSearchGray placeholder = 'SELECCIONA LA CUENTA' defaultvalue = { form.cuenta } iconclass = 'las la-credit-card icon-xl' requirevalidation={1}
-                                options = { transformOptions(options.cuentas) } onChange = { ( value ) => this.updateSelect(value, 'cuenta') } messageinc = 'Selecciona la cuenta.'/>
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA LA CUENTA' defaultvalue = { form.cuenta } 
+                                    iconclass = 'las la-credit-card icon-xl' requirevalidation={1} options = { transformOptions(options.cuentas) } 
+                                    onChange = { ( value ) => this.updateSelect(value, 'cuenta') } messageinc = 'Selecciona la cuenta.'/>
                             </div>
                             <div className="col-md-4">
-                                <ReactSelectSearchGray placeholder = 'SELECCIONA LA SUBÁREA' defaultvalue = { form.subarea } iconclass = 'las la-tools icon-xl' requirevalidation={1}
-                                options = { transformOptions(options.subareas) } onChange = { ( value ) => this.updateSelect(value, 'subarea') } messageinc = 'Selecciona la subarea.'/>
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA LA SUBÁREA' defaultvalue = { form.subarea } 
+                                    iconclass = 'las la-tools icon-xl' requirevalidation={1} options = { transformOptions(options.subareas) } 
+                                    onChange = { ( value ) => this.updateSelect(value, 'subarea') } messageinc = 'Selecciona la subarea.'/>
                             </div>
                             <div className="col-md-4">
-                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL TIPO DE PAGO' defaultvalue = { form.pago } iconclass = 'las la-coins icon-xl' requirevalidation={1}
-                                options = { transformOptions(options.pagos) } onChange = { ( value ) => this.updateSelect(value, 'pago') } messageinc = 'Selecciona el tipo de pago.'/>
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL TIPO DE PAGO' defaultvalue = { form.pago } 
+                                    iconclass = 'las la-coins icon-xl' requirevalidation={1} options = { transformOptions(options.pagos) } 
+                                    onChange = { ( value ) => this.updateSelect(value, 'pago') } messageinc = 'Selecciona el tipo de pago.'/>
                             </div>
                         </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
-                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL TIPO DE IMPUESTO' defaultvalue = { form.impuesto } iconclass = 'las la-file-invoice-dollar icon-xl' requirevalidation={1}
-                                options = { transformOptions(options.impuestos) } onChange = { ( value ) => this.updateSelect(value, 'impuesto') } messageinc = 'Selecciona el tpo de impuestos.'/>
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL TIPO DE IMPUESTO' defaultvalue = { form.impuesto } 
+                                    iconclass = 'las la-file-invoice-dollar icon-xl' requirevalidation={1} options = { transformOptions(options.impuestos) } 
+                                    onChange = { ( value ) => this.updateSelect(value, 'impuesto') } messageinc = 'Selecciona el tpo de impuestos.'/>
                             </div>
                             <div className="col-md-6">
-                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL ESTATUS DE COMPRA' defaultvalue = { form.estatus } iconclass = 'las la-check-circle icon-xl' requirevalidation={1}
-                                options = { transformOptions(options.estatus) } onChange = { ( value ) => this.updateSelect(value, 'estatus') } messageinc = 'Selecciona el estatus de compra.'/>
+                                <ReactSelectSearchGray placeholder = 'SELECCIONA EL ESTATUS DE COMPRA' defaultvalue = { form.estatus } 
+                                    iconclass = 'las la-check-circle icon-xl' requirevalidation={1} options = { transformOptions(options.estatus) } 
+                                    onChange = { ( value ) => this.updateSelect(value, 'estatus') } messageinc = 'Selecciona el estatus de compra.'/>
                             </div>
                         </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-12">
-                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0}
-                                    withformgroup={0} requirevalidation={0} as='textarea' name='descripcion' customclass="px-2 text-justify"
-                                    placeholder='DESCRIPCIÓN'onChange={this.onChange} value={form.descripcion} rows='2' messageinc="Ingresa una descripción." />
+                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0} withformgroup={0} requirevalidation={0} 
+                                    as='textarea' name='descripcion' customclass="px-2 text-justify" placeholder='DESCRIPCIÓN'onChange={this.onChange} 
+                                    value={form.descripcion} rows='2' messageinc="Ingresa una descripción." />
                             </div>
                         </div>
                     </Col>
@@ -429,18 +440,18 @@ class FormVentasSolicitudFactura extends Component{
                             <div className="col-md-4 align-self-center">
                                 <label className="col-form-label font-weight-bold text-dark-60">XML DE LA FACTURA</label>
                                 <br />
-                                <FileInput requirevalidation = { 1 } formeditado = { 0 } onChangeAdjunto = { this.onChangeFactura }
-                                    placeholder = 'Factura XML' value = { form.adjuntos.xml.value } name = 'xml' id = 'xml' classinput = 'file-input'
-                                    accept = 'text/xml' files = { form.adjuntos.xml.files } false iconclass='flaticon2-clip-symbol text-primary'
+                                <FileInput onChangeAdjunto = { this.onChangeFactura } placeholder = 'Factura XML' value = { form.adjuntos.xml.value }
+                                    name = 'xml' id = 'xml' accept = 'text/xml' files = { form.adjuntos.xml.files } deleteAdjunto = { this.clearFiles }
+                                    messageinc = 'Agrega el XML de la factura' iconclass='flaticon2-clip-symbol text-primary' classinput = 'file-input'
                                     classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
-                                    messageinc = 'Agrega el XML de la factura' deleteAdjunto = { this.clearFiles }/>
+                                    requirevalidation = { 1 } formeditado = { 0 } />
                             </div>
                             <div className="col-md-4 align-self-center">
                                 <label className="col-form-label font-weight-bold text-dark-60">PDF DE LA FACTURA</label>
                                 <br />
                                 <FileInput requirevalidation = { 0 } formeditado = { 0 } onChangeAdjunto = { this.onChangeAdjunto }
                                     placeholder = 'Factura PDF' value = { form.adjuntos.pdf.value } name = 'pdf' id = 'pdf' classinput = 'file-input'
-                                    accept = 'application/pdf' files = { form.adjuntos.pdf.files } false iconclass='flaticon2-clip-symbol text-primary'
+                                    accept = 'application/pdf' files = { form.adjuntos.pdf.files } iconclass='flaticon2-clip-symbol text-primary'
                                     classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0' 
                                     deleteAdjunto = { this.clearFiles } />
                             </div>
@@ -449,7 +460,7 @@ class FormVentasSolicitudFactura extends Component{
                                 <br />
                                 <FileInput requirevalidation = { 0 } formeditado = { 0 } onChangeAdjunto = { this.onChangeAdjunto }
                                     placeholder = 'PAGO' value = { form.adjuntos.pagos.value } name = 'pagos' id = 'pagos' classinput = 'file-input'
-                                    accept = '*/*' files = { form.adjuntos.pagos.files } false iconclass='flaticon2-clip-symbol text-primary'
+                                    accept = '*/*' files = { form.adjuntos.pagos.files } iconclass='flaticon2-clip-symbol text-primary'
                                     classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0' 
                                     multiple deleteAdjunto = { this.clearFiles }/>
                             </div>
