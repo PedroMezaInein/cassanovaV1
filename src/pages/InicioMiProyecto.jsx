@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { URL_DEV, URL_ASSETS } from '../constants'
+import { URL_DEV, URL_ASSETS, LEADS_FRONT } from '../constants'
 import { setOptions, setEmpresaLogo, dayDMY, setFase } from '../functions/setters'
 import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, doneAlert, questionAlertY } from '../functions/alert'
 import { connect } from 'react-redux'
@@ -713,6 +713,8 @@ class InicioMiProyecto extends Component {
     changePage = (permisos) => {
         let flag = false
         let { link_url } = this.state
+        const { access_token } = this.props.authUser
+        
         const calendarioTareas = permisos ? permisos.find(function(element, index) {
             return element.modulo.slug === 'calendario-tareas'
         }) : null;
@@ -725,7 +727,7 @@ class InicioMiProyecto extends Component {
         }) : null;
         if(crm && flag === false){
             flag = true
-            link_url ='/leads/crm'
+            window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
         }
         const tareas = permisos ? permisos.find(function(element, index) {
             return element.modulo.slug === 'tareas'

@@ -7,7 +7,7 @@ import $ from "jquery";
 class NotFound extends Component {
 
     getLink = () => {
-        return '/leads/crm'
+        return '/usuarios/calendario-tareas'
     }
     componentDidMount() {
         $("body").addClass('bg-white d-flex justify-content-center');

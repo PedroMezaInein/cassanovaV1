@@ -29,13 +29,6 @@ const Normas = React.lazy(() => import('./pages/Normas') )
 const Leads = React.lazy(() => import('./pages/Leads/Leads/Leads') )
 const LeadsForm = React.lazy(() => import('./pages/Leads/Leads/LeadsForm') )
 
-const Crm = React.lazy(() => import('./pages/Leads/CRM/Crm') )
-const LeadTelefono = React.lazy(() => import('./pages/Leads/CRM/Add/LeadTelefono') )
-const LeadInfo = React.lazy(() => import('./pages/Leads/CRM/Info/LeadInfo') )
-const LeadContratar = React.lazy(() => import('./pages/Leads/CRM/Contratar') )
-const LeadLlamadaSalida = React.lazy(() => import('./pages/Leads/CRM/Add/LeadLlamadaSalida') )
-const LeadLlamadaCierre = React.lazy(() => import('./pages/Leads/CRM/Cierre/LeadLlamadaCierre') )
-
 const Prospectos = React.lazy(() => import('./pages/Leads/Prospectos/Prospectos') )
 const ProspectosForm = React.lazy(() => import('./pages/Leads/Prospectos/ProspectosForm') )
 
@@ -403,14 +396,6 @@ class App extends Component{
 
                     <Route path = "/leads/leads" exact component ={ Leads } />
                     <Route path = "/leads/leads/:action" exact component ={ LeadsForm } />
-
-                    <Route path = "/leads/crm" exact component = { Crm } />
-                    <Route path = "/leads/crm/add/telefono" exact component = { LeadTelefono } />
-                    <Route path = "/leads/crm/add/llamada-salida" exact component = { LeadLlamadaSalida } />
-                    <Route path = "/leads/crm/cierre/llamada-cierre" exact component = { LeadLlamadaCierre } />
-
-                    <Route path = "/leads/crm/info/info" exact component = { LeadInfo } />
-                    <Route path = "/leads/crm/contratar" exact component = { LeadContratar } />
 
                     <Route path = "/leads/prospectos" exact component = { Prospectos } />
                     <Route path = "/leads/prospectos/:action" exact component = { ProspectosForm } />

@@ -843,36 +843,6 @@ export function setListTable(arreglo, nombre, minwidth) {
         </div>
     )
 }
-
-export function setListTableLinkProyecto(arreglo, nombre) {
-    return (
-        <>
-            {
-                arreglo.map((element,  key ) => { 
-                    return (
-                        <div key={key} className="font-size-11px text-center font-weight-bold white-space-nowrap">
-                            &#8226;&nbsp;
-                            <a href={'/mi-proyecto?id='+element.id} className="text-primary">
-                                { element[nombre] }
-                            </a>
-                            {
-                                element.estatus ?
-                                    <>
-                                        &nbsp;-&nbsp;<span style={{ color: `${element.estatus.letra}` }}>
-                                            {element.estatus.estatus}
-                                        </span>
-                                    </>
-                                :''
-                            }
-                            <br/>
-                        </div>
-                    )
-                })
-            }
-        </>
-    )
-}
-
 export function setArrayTable(arreglo, minwidth) {
     return (
         <div style={{minWidth:minwidth}}>
@@ -916,41 +886,6 @@ export function setArrayTable(arreglo, minwidth) {
         </div>
     )
 }
-
-export function setFacturaTable(data) {
-    if (data.factura) {
-        return (
-            <span className="font-size-11px">
-                {
-                    data.facturas ?
-                        data.facturas.xml
-                        && <a href={data.facturas.xml.url} target="_blank" rel="noopener noreferrer">
-                                Factura.xml
-                            <br />
-                        </a>
-                        : ''
-                }
-                {
-                    data.facturas ?
-                        data.facturas.pdf
-                        && <a href={data.facturas.pdf.url} target="_blank" rel="noopener noreferrer">
-                                Factura.pdf
-                            <br />
-                        </a>
-                        : ''
-                }
-            </span>
-        )
-    }
-    else {
-        return (
-            <span className="font-size-11px">
-                Sin factura
-            </span>
-        )
-    }
-}
-
 export function setAdjuntoTable(adjunto) {
     return (
         <div className="text-center">
@@ -1026,34 +961,6 @@ export function setContactoTable(contacto) {
             }
         </div>
     )
-}
-
-export function setContactoIcon(contacto){
-    if(contacto)
-        if(contacto.tipo_contacto)
-            if(contacto.tipo_contacto.tipo){
-                switch(contacto.tipo_contacto.tipo){
-                    case 'Llamada':
-                        return(<i className={contacto.success ? "fas fa-phone-volume text-success icon-16px" : "fas fa-phone-volume text-danger icon-16px"} />);
-                    case 'Correo':
-                        return(<i className={contacto.success ? "fas fa-envelope text-success icon-16px" : "fas fa-envelope text-danger icon-16px"} />);
-                    case 'VIDEO LLAMADA':
-                        return(<i className={contacto.success ? "fas fa-video text-success icon-16px" : "fas fa-video text-danger icon-16px"} />);
-                    case 'Whatsapp':
-                        return(<i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"} />);
-                    case 'TAWK TO ADS':
-                        return(<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
-                    case 'REUNIÓN PRESENCIAL':
-                        return(<i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"} />);
-                    case 'Visita':
-                        return(<i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"} />);
-                    case 'TAWK TO ORGANICO':
-                        return(<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
-                    default:
-                        return(<i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"} />);
-                }
-            }
-    return ''
 }
 export function getQuincena(){
     return [
