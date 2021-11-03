@@ -4,6 +4,7 @@ import { printDates } from '../../../functions/printers'
 import ComentarioForm from '../../forms/ComentarioForm'
 import TimelineComments from '../../forms/TimelineComments'
 import { setEmpresaLogo, setMoneyText } from '../../../functions/setters'
+import { LEADS_FRONT } from "../../../constants";
 export default class InformacionProyecto extends Component {
 
     hasComentarios = (proyecto) => {
@@ -15,7 +16,7 @@ export default class InformacionProyecto extends Component {
     }
 
     render() {
-        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls } = this.props
+        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at } = this.props
         return (
             <div className="col-md-12 mt-4">
                 {
@@ -65,7 +66,7 @@ export default class InformacionProyecto extends Component {
                                             </a>
                                             {
                                                 proyecto.prospecto&&
-                                                <a className="d-flex align-items-center text-hover-info cursor-pointer" href = {`/leads/crm?id=${proyecto.prospecto.lead.id}`}>
+                                                <a className="d-flex align-items-center text-hover-info cursor-pointer" href ={`${LEADS_FRONT}/leads/crm?tag=${at}&id=${proyecto.prospecto.lead.id}&estatus=${proyecto.prospecto.lead.estatus.estatus}`}>
                                                     <i className="las la-user-alt icon-2x mr-1 text-muted"></i>
                                                     <span className="text-muted font-weight-bolder text-hover-info border-bottom-2px-info-hover">VER LEAD</span>
                                                 </a>

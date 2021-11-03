@@ -36,6 +36,20 @@ class Proyectos extends Component {
         filtrado: {}
     }
 
+    componentDidMount(){
+        let queryString = this.props.history.location.search  
+        if (queryString) {
+            const { history } = this.props
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            let prev = params.get("prev")
+            let proyectoQuery = { id:id }
+            history.push({
+                pathname: '/proyectos/proyectos/edit',
+                state: { proyecto: proyectoQuery, prevPath: prev }
+            });
+        }
+    }
     getProyectosAxios = tab => {
         $(`#proyectos-${tab}`).DataTable().search(JSON.stringify({})).draw();
         this.setState({...this.state, activeTab: tab, filtrado: {}})

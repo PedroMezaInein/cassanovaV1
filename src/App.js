@@ -29,13 +29,6 @@ const Normas = React.lazy(() => import('./pages/Normas') )
 const Leads = React.lazy(() => import('./pages/Leads/Leads/Leads') )
 const LeadsForm = React.lazy(() => import('./pages/Leads/Leads/LeadsForm') )
 
-const Crm = React.lazy(() => import('./pages/Leads/CRM/Crm') )
-const LeadTelefono = React.lazy(() => import('./pages/Leads/CRM/Add/LeadTelefono') )
-const LeadInfo = React.lazy(() => import('./pages/Leads/CRM/Info/LeadInfo') )
-const LeadContratar = React.lazy(() => import('./pages/Leads/CRM/Contratar') )
-const LeadLlamadaSalida = React.lazy(() => import('./pages/Leads/CRM/Add/LeadLlamadaSalida') )
-const LeadLlamadaCierre = React.lazy(() => import('./pages/Leads/CRM/Cierre/LeadLlamadaCierre') )
-
 const Prospectos = React.lazy(() => import('./pages/Leads/Prospectos/Prospectos') )
 const ProspectosForm = React.lazy(() => import('./pages/Leads/Prospectos/ProspectosForm') )
 
@@ -84,14 +77,15 @@ const ContratosForm = React.lazy(() => import('./pages/Administracion/Contratos/
 const Facturacion = React.lazy(() => import('./pages/Administracion/Facturacion') )
 const Flujos = React.lazy(() => import('./pages/Administracion/Flujos') )
 
-const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
-const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
-
 const Documentos = React.lazy(() => import('./pages/Administracion/Documentos/Documentos') )
 const DocumentosForm = React.lazy(() => import('./pages/Administracion/Documentos/DocumentosForm') )
 
+const SolicitudFactura = React.lazy( () => import('./pages/Administracion/SolicitudFactura/SolicitudFactura') )
+
+const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
+const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
+
 const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos') )
-const Proyectos2 = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos2') )
 const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
 const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto') )
@@ -323,7 +317,6 @@ class App extends Component{
                     {/*  ANCHOR Routes for proyectos */}
 
                     <Route path = "/proyectos/proyectos" exact component = { Proyectos } />
-                    <Route path = "/proyectos/proyectos2" exact component = { Proyectos2 } />
                     
                     <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
                     <Route path = "/proyectos/proyectos/single/:id" exact component ={ SingleProyecto } />
@@ -381,6 +374,8 @@ class App extends Component{
 
                     <Route path = "/administracion/documentos" exact component ={ Documentos } />
                     <Route path = "/administracion/documentos/:action" exact component ={ DocumentosForm } />
+
+                    <Route path = "/administracion/solicitud-factura" exact component = { SolicitudFactura } />
                     
                     <Route path = "/administracion/utilidad" exact component ={ Utilidad } />
 
@@ -401,14 +396,6 @@ class App extends Component{
 
                     <Route path = "/leads/leads" exact component ={ Leads } />
                     <Route path = "/leads/leads/:action" exact component ={ LeadsForm } />
-
-                    <Route path = "/leads/crm" exact component = { Crm } />
-                    <Route path = "/leads/crm/add/telefono" exact component = { LeadTelefono } />
-                    <Route path = "/leads/crm/add/llamada-salida" exact component = { LeadLlamadaSalida } />
-                    <Route path = "/leads/crm/cierre/llamada-cierre" exact component = { LeadLlamadaCierre } />
-
-                    <Route path = "/leads/crm/info/info" exact component = { LeadInfo } />
-                    <Route path = "/leads/crm/contratar" exact component = { LeadContratar } />
 
                     <Route path = "/leads/prospectos" exact component = { Prospectos } />
                     <Route path = "/leads/prospectos/:action" exact component = { ProspectosForm } />

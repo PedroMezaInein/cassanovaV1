@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Card, Accordion, Dropdown, Form } from 'react-bootstrap'
 import axios from 'axios'
 import Swal from 'sweetalert2'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
-import Layout from '../../../components/layout/layout'
-import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
-import { URL_DEV } from '../../../constants'
-import { Button } from '../../../components/form-components'
-import { ProyectoCard, ProyectosCard } from '../../../components/cards'
-import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlert, createAlertSA2WithClose } from '../../../functions/alert'
-import { setOptions } from '../../../functions/setters'
+import { connect } from 'react-redux'
 import { Modal } from '../../../components/singles'
+import Layout from '../../../components/layout/layout'
+import { setOptions } from '../../../functions/setters'
+import { URL_DEV, LEADS_FRONT } from '../../../constants'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { Button } from '../../../components/form-components'
+import { Card, Accordion, Dropdown, Form } from 'react-bootstrap'
+import { ProyectoCard, ProyectosCard } from '../../../components/cards'
+import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
+import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlert, createAlertSA2WithClose } from '../../../functions/alert'
 class ProyectosForm extends Component {
     state = {
         prevPath: '',
@@ -695,7 +695,7 @@ class ProyectosForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
                 const { history } = this.props
                 if(prevPath === 'crm')
-                    history.push({ pathname: '/leads/crm' });
+                    window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
                 else
                     history.push({ pathname: '/proyectos/proyectos' });
                 

@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Card, OverlayTrigger, Tooltip, Col, Row } from 'react-bootstrap'
-import { setSingleHeader } from '../../../../functions/routers'
 import axios from 'axios'
 import { URL_DEV } from '../../../../constants'
-import { dayDMY } from '../../../../functions/setters'
-import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
-import { Budget } from '../../../../components/Lottie/'
 import { PresupuestoAnswer } from '../../../forms'
+import { dayDMY } from '../../../../functions/setters'
+import { Budget } from '../../../../components/Lottie/'
+import { setSingleHeader } from '../../../../functions/routers'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { deleteAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../../functions/alert'
 class PresupuestoList extends Component {
 
     state = {
@@ -44,7 +44,10 @@ class PresupuestoList extends Component {
 
     printEmpty = () => {
         return(
-            <Budget/>
+            <>
+                <Budget/>
+                <div className="text-center font-size-h6 font-weight-bold mt-1">SIN PRESUPUESTOS</div>
+            </>
         )
     }
 
@@ -72,7 +75,7 @@ class PresupuestoList extends Component {
                 return (
                     <span>
                         Identificador: 
-                        <a href = { pdfs[0].url } target = '_blank' rel="noopener noreferrer" className = 'ml-2'>
+                        <a href = { pdfs[0].url } target = '_blank' rel="noopener noreferrer" className={`mx-2 ${pdfs[0].pivot.url!==null?'identificador-aceptado':''}`}>
                             {pdfs[0].pivot.identificador}
                         </a>
                     </span>
@@ -82,9 +85,10 @@ class PresupuestoList extends Component {
                     <span>
                         Identificadores: {
                             pdfs.map((pdf, key) => {
+                                
                                 return(
                                     <a key = { key } href = { pdf.url } target = '_blank' rel="noopener noreferrer">
-                                        { key === pdfs.length - 1 ? ' Y ' : ' ' }{pdf.pivot.identificador}{ key === pdfs.length - 1 || key === pdfs.length - 2 ? '' : ',' }  
+                                        { key === pdfs.length - 1 ? ' Y ' : ' ' }<span className={`${pdf.pivot.url!==null?'identificador-aceptado':''}`}>{pdf.pivot.identificador}</span>{ key === pdfs.length - 1 || key === pdfs.length - 2 ? '' : ',' }  
                                     </a>
                                 )
                             })
@@ -109,13 +113,22 @@ class PresupuestoList extends Component {
     getSVG = presupuesto => {
         const { activeAccordion } = this.state
         if(activeAccordion === null){
-            return(
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
-                    <rect x="10.8891" y="17.8033" width="12" height="2" rx="1" transform="rotate(-90 10.8891 17.8033)" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
-                    <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
-                </svg>
-            )
+            if(presupuesto.pdfs.length <= 0){
+                return(
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill='none'></rect>
+                        <rect x="6.0104" y="10.9247" width="12" height="2" rx="1" fill='none'></rect>
+                    </svg>
+                )
+            }else{
+                return(
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                        <rect x="10.8891" y="17.8033" width="12" height="2" rx="1" transform="rotate(-90 10.8891 17.8033)" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                        <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill={`${presupuesto.hasTickets ? "#9E9D24" : "#EF6C00"}`}></rect>
+                    </svg>
+                )
+            }
         }
         if(presupuesto.pdfs.length <= 0){
             return(
@@ -144,7 +157,7 @@ class PresupuestoList extends Component {
     }
     printPresupuestos = () => {
         const { activeAccordion } = this.state
-        const { editPresupuesto, at, presupuestos, refresh } = this.props
+        const { editPresupuesto, at, presupuestos, refresh, proyecto } = this.props
         return(
             <div className="table-responsive">
                 <div className="list min-w-650px col-md-11 mx-auto">
@@ -219,37 +232,13 @@ class PresupuestoList extends Component {
                                                 </div>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Card.Body className={`card-body px-10 ${presupuesto.id ===  activeAccordion ? 'collapse show' : 'collapse'}`}>
-                                            <div className="d-flex justify-content-center border border-gray-300 border-dashed rounded mt-8 mb-5 px-5 py-4 mx-auto w-fit-content">
-                                                <div className="d-flex align-items-center">
-                                                    <div className="symbol symbol-35 mr-3 flex-shrink-0">
-                                                        <div className="symbol-label" style={{backgroundColor:presupuesto.estatus.fondo}}>
-                                                            <i className="far fa-clock icon-lg" style={{color:presupuesto.estatus.letra}}></i>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-size-lg text-dark-75 font-weight-bolder">{presupuesto.tiempo_valido} {presupuesto.tiempo_valido === '1'?'día':'días'}</div>
-                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Validez (presupuesto)</div>
-                                                    </div>
-                                                </div>
-                                                <div className="d-none align-items-center ml-20">
-                                                    <div className="symbol symbol-35 symbol-light-success mr-3 flex-shrink-0">
-                                                        <div className="symbol-label">
-                                                            <i className="far fa-credit-card icon-lg text-success"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-size-lg text-dark-75 font-weight-bolder">$937.28 /$0.00</div>
-                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">TOTAL / TOTAL PAGADO</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <Row className="mx-0">
-                                                <Col md={10} className="mb-5 mx-auto d-flex justify-content-center">
-                                                    <PresupuestoAnswer presupuestos = { presupuestos } presupuesto = { presupuesto } at = { at } 
-                                                        getPresupuestos = {refresh}  />
-                                                </Col>
-                                            </Row>
+                                        <Card.Body className={`card-body ${presupuesto.id === activeAccordion && presupuesto.pdfs.length > 0 ? 'collapse show' : 'collapse'}`}>
+                                            {
+                                                presupuesto.id === activeAccordion ?
+                                                    <PresupuestoAnswer presupuestos={presupuestos} presupuesto={presupuesto} at={at}
+                                                        getPresupuestos={refresh} proyecto={proyecto} />
+                                                    : <></>
+                                            }
                                         </Card.Body>
                                     </Card>
                                 )

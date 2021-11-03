@@ -2,123 +2,25 @@ import React, { Component } from 'react'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
 import { connect } from 'react-redux'
-import { Modal } from '../singles'
-import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { Button, RangeCalendar } from '../form-components'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
-import axios from 'axios'
-import { URL_DEV } from '../../constants'
-import BuscarLead from '../../components/forms/leads/BuscarLead' 
-import Swal from 'sweetalert2'
 class UrlLocation extends Component {
 
     state = {
-        paths: [],
-        url: [],
-        modal: false,
-        modal_buscar:false,
-        form: {
-            fechaInicio: new Date(),
-            fechaFin: new Date(), 
-            name:''
-        },
-        leads: [],
-        checador: []
+        paths: []
     }
 
     componentDidMount() {
         const { history: { location: { pathname } } } = this.props
         let aux = pathname.substr(1, pathname.length - 1)
-        let url_direccion = pathname.substr(1, pathname.length - 1)
         aux = aux.split('/')
         if (!Array.isArray(aux))
             aux = [aux]
         this.setState({
-            paths: aux,
-            url: url_direccion
+            paths: aux
         })
-    }
-
-    changePageAdd = tipo => {
-        const { history } = this.props
-        history.push({ pathname: '/leads/crm/add/' + tipo });
-    }
-
-    onChange = range => {
-        const { startDate, endDate } = range
-        const { form } = this.state
-        form.fechaInicio = startDate
-        form.fechaFin = endDate
-        this.setState({ ...this.state, form })
-    }
-
-    onChangeBuscar = e => {
-        const { name, value } = e.target
-        const { form } = this.state
-        form[name] = value
-        this.setState({ ...this.state, form })
-    }
-
-    openModal = () => { this.setState({...this.state,modal:true}) }
-    handleClose = () => { this.setState({...this.state, modal: false}) }
-
-    openModalBuscar = () => { this.setState({...this.state,modal_buscar:true}) }
-    handleCloseBuscar = () => { 
-        const { form } = this.state
-        form.name = ''
-        this.setState({...this.state, modal_buscar: false, leads: [], form}) 
-    }
-
-    onSubmit = async(e) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        e.preventDefault();
-        waitAlert()
-        await axios.post(`${URL_DEV}v2/exportar/leads`, form, { responseType:'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'leads.xlsx');
-                document.body.appendChild(link);
-                link.click();
-                doneAlert('Leads consultados con éxito')
-            },
-            (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    onSubmitSearch = async(e) => {
-        e.preventDefault()
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        waitAlert()
-        await axios.get(`${URL_DEV}v2/leads/crm/search/${form.name}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { leads }= response.data
-                Swal.close()
-                this.setState({...this.state, leads})
-            },
-            (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
-    changePageDetailsContacto = (lead) => {
-        const { history } = this.props
-        history.push({
-            pathname: '/leads/crm/info/info',
-            state: { lead: lead, tipo: lead.prospecto.estatus_prospecto.estatus }
-        });
     }
 
     render() {
-        const { paths, url, modal, form, modal_buscar, leads } = this.state
+        const { paths } = this.state
         const { authUser: { modulos }, active, user: usuario, printChecador, isCliente, getInnerRef } = this.props
         let icon;
         let modulo_name;
@@ -154,25 +56,6 @@ class UrlLocation extends Component {
 
         return (
             <>
-                <Modal show = { modal } title = 'Descargar leads' handleClose = { this.handleClose } >
-                    <Form onSubmit = { this.onSubmit} >
-                        <div className="text-center">
-                            <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
-                            <RangeCalendar onChange = { this.onChange } start = { form.fechaInicio } end = { form.fechaFin } />
-                        </div>
-                        <div className="card-footer py-3 pr-1">
-                            <div className="row mx-0">
-                                <div className="col-lg-12 text-right pr-0 pb-0">
-                                    <Button icon='' className="btn btn-primary mr-2" onClick={ this.onSubmit } text="ENVIAR" />
-                                </div>
-                            </div>
-                        </div>
-                    </Form>
-                </Modal>
-                <Modal show = { modal_buscar } size ="lg" title = 'Buscar lead' handleClose = { this.handleCloseBuscar } >
-                    <BuscarLead form = { form } onSubmit = { this.onSubmitSearch } onChange = { this.onChangeBuscar } leads = { leads } 
-                        changePageDetails = { this.changePageDetailsContacto } />
-                </Modal>
                 {
                     paths.length > 0 ?
                         <div className="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
@@ -198,34 +81,6 @@ class UrlLocation extends Component {
                                 </div>
                                 <div className="text-align-last-center">
                                     { !isCliente(usuario) && printChecador(getInnerRef) }
-                                    {
-                                        url === "leads/crm" &&
-                                            <>
-                                                <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
-                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">BUSCAR LEAD</span></Tooltip>}>
-                                                        <li className="nav-item mb-2" data-placement="right" onClick = { (e) => { e.preventDefault(); this.openModalBuscar() }}>
-                                                            <span className="btn btn-sm btn-icon btn-bg-light btn-text-success btn-hover-success" >
-                                                                <i className="la la-search icon-xl"></i>
-                                                            </span>
-                                                        </li>
-                                                    </OverlayTrigger>
-                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">DESCARGAR LEADS</span></Tooltip>}>
-                                                        <li className="nav-item mb-2" title="" data-placement="left"  onClick = { (e) => { e.preventDefault(); this.openModal() }} >
-                                                            <span className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary">
-                                                                <i className="la la-file-excel icon-xl"></i>
-                                                            </span>
-                                                        </li>
-                                                    </OverlayTrigger>
-                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">NUEVO LEAD</span></Tooltip>}>
-                                                        <li className="nav-item mb-2" data-placement="left" onClick={() => { this.changePageAdd('telefono') }}>
-                                                            <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info">
-                                                                <i className="la la-user-plus icon-xl"></i>
-                                                            </span>
-                                                        </li>
-                                                    </OverlayTrigger>
-                                                </ul>
-                                            </>
-                                    }
                                 </div>
                             </div>
                         </div>

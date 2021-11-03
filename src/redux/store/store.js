@@ -1,3 +1,7 @@
+import thunk from 'redux-thunk'
+import { createStore, applyMiddleware } from 'redux';
+import reducer from '../reducers'
+
 export const loadState = () => {
     try {
         const serializedData = localStorage.getItem('state')
@@ -18,3 +22,10 @@ export const saveState = (state) => {
 	    return undefined
     }
 }
+
+const store = createStore(reducer, loadState(), applyMiddleware(thunk));
+store.subscribe( function () {
+    saveState(store.getState())
+})
+
+export default store

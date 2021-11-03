@@ -61,7 +61,6 @@ class Layout extends Component {
             })
         }
         /* this.getNotificacionesAxios() */
-        this.getLocation()
     }
 
     logoutUser = () => { this.logoutUserAxios(); }
@@ -220,17 +219,15 @@ class Layout extends Component {
     constructor(props) {
         super(props);
         this.getInnerRef = this.getInnerRef.bind(this);
-        this.getLocation = this.getLocation.bind(this);
     }
     innerRef;
     getInnerRef(ref) { this.innerRef = ref; }
-    getLocation() { this.innerRef && this.innerRef.getLocation(); }
 
     render() {
         const { children, authUser } = this.props
         const { checador, title } = this.state
         let tipo_usuario = this.hasUser() ? authUser.user.tipo ? authUser.user.tipo.tipo : '' : ''
-        const { getInnerRef, getLocation } = this;
+        const { getInnerRef } = this;
 
         return (
             <div>

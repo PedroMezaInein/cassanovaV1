@@ -195,20 +195,14 @@ export function errorAlertRedirectOnDissmis(text, history, ruta) {
     })
 }
 
-export function deleteAlert(title,text,action, text_button) {
+export function deleteAlert(title, text, action, text_button) {
     MySwal.fire({
-        title: title,
-        text:text,
         html: <div>
-            <div className="row mx-0 justify-content-center">
-                <div className="col-md-8">
-                    <CommonLottie animationData = { Trash } />
-                </div>
-            </div>
-            <div className="row row-paddingless form-group-marginless">
-                <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins" style = {{ textTransform: 'none' }} >
-                    {text}
-                </div>
+            <div className="col-md-8 mx-auto"><CommonLottie animationData = { Trash } /></div>
+                
+            <div className="col-md-12 font-weight-light text-center font-size-lg">
+                <div className="font-weight-bolder mb-3">{text}</div>
+                {title}
             </div>
         </div>,
         showConfirmButton: true,
@@ -217,9 +211,11 @@ export function deleteAlert(title,text,action, text_button) {
         cancelButtonText: 'CANCELAR',
         reverseButtons: true,
         customClass: {
+            title:'d-none',
+            htmlContainer:'m-0',
             content: text?'':'d-none',
-            confirmButton: 'btn-light-danger-sweetalert2',
-            cancelButton:'btn-light-gray-sweetalert2'
+            confirmButton:'delete-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert'
         }
     }).then((result) => {
         if (result.value) {
@@ -276,24 +272,6 @@ export function createAlertSA2WithClose(title, text, action, history, ruta) {
     }).then((result) => {
         if(result.dismiss)
             history.push({pathname: ruta})
-        else
-            if (result.value) {
-                action()
-            }
-    })
-}
-
-export function createAlertSA2WithCloseAndHtml(html, action, cancel) {
-    MySwal.fire({
-        html: html,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'ACEPTAR',
-        cancelButtonText: 'CANCELAR',
-        reverseButtons: true,
-    }).then((result) => {
-        if(result.dismiss)
-            cancel()
         else
             if (result.value) {
                 action()
@@ -372,145 +350,6 @@ export function questionAlert(title, text, action) {
     }).then((result) => {
         if (result.value) {
             action()
-        }
-    })
-}
-
-export function confirmarCita(title, form, lead, action, e, name) {
-    let fecha = new Date(form.fecha)
-    let months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-    let days = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18','19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
-    fecha = days[fecha.getDate()]  + "/" + months[fecha.getMonth()] + "/" + fecha.getFullYear()
-    
-    function reunion(){
-        switch (form.lugar) {
-            case 'presencial':
-                switch (form.cita_empresa) {
-                    case 'si_empresa':
-                        return lead?lead.empresa.name:""
-                    case 'no_empresa':
-                        return form.ubicacion
-                    default:
-                        break;
-                }
-            break;
-            case 'remota':
-                return form.url
-            default:
-            break;
-        }
-    }
-    
-    function reunionPR(){
-        switch (form.lugar) {
-            case 'presencial':
-                return 'LA CITA ES PRESENCIAL EN:'
-            case 'remota':
-                return 'URL DE LA CITA REMOTA:'
-            default:
-            break;
-        }
-    }
-    function correos(){
-        var temp = "";
-        var array = form.correos
-        if(array.length ===0){
-            temp='-'
-        }else{
-            for(var i= 0; i < array.length; i++) {
-                if(array.length === 1){
-                    temp += array[i];
-                }else{
-                    temp += '&#8226 ' + array[i] + '<br>';
-                }
-            }
-        }
-        return temp
-    }
-
-    MySwal.fire({
-        title: title,
-        html:  `
-                ${form.agendarCita ? 
-                    `
-                    <div class="px-4 font-size-13px">
-                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3">
-                            <div class="col-md-6 font-weight-bold pr-1">NOMBRE DE LA REUNIÓN:</div>
-                            <div class="col-md-6 font-weight-light pl-1">${form.titulo?form.titulo:'-'}</div>
-                        </div>
-                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
-                            <div class="col-md-6 font-weight-bold pr-1">${reunionPR()}</div>
-                            <div class="col-md-6 font-weight-light pl-1">${reunion()}</div>
-                        </div>
-                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
-                            <div class="col-md-6 font-weight-bold pr-1">FECHAL:</div>
-                            <div class="col-md-6 font-weight-light pl-1">${fecha}</div>
-                        </div>
-                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
-                            <div class="col-md-6 font-weight-bold pr-1">HORA DE INICIO:</div>
-                            <div class="col-md-6 font-weight-light pl-1">${form.hora_inicio}:${form.minuto_inicio}</div>
-                        </div>
-                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
-                            <div class="col-md-6 font-weight-bold pr-1">HORA FINAL:</div>
-                            <div class="col-md-6 font-weight-light pl-1">${form.hora_final}:${form.minuto_final}</div>
-                        </div>
-                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center">
-                            <div class="col-md-6 font-weight-bold pr-1">Correo(s):</div>
-                            <div class="col-md-6 font-weight-light pl-1">${correos()}</div>
-                        </div>
-                    </div>
-                    `
-                    :
-                        (form.agendarLlamada ? 
-                            `
-                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3 font-size-13px">
-                                <div class="col-md-4 font-weight-bold pr-1">FECHAL:</div>
-                                <div class="col-md-3 font-weight-light pl-1 text-center">${fecha}</div>
-                            </div>
-                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 font-size-13px">
-                                <div class="col-md-4 font-weight-bold pr-1">HORA DE INICIO:</div>
-                                <div class="col-md-3 font-weight-light pl-1 text-center">${form.hora_inicio}:${form.minuto_inicio}</div>
-                            </div>
-                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center font-size-13px">
-                                <div class="col-md-4 font-weight-bold pr-1">HORA FINAL:</div>
-                                <div class="col-md-3 font-weight-light pl-1 text-center">${form.hora_final}:${form.minuto_final}</div>
-                            </div>
-                            `
-                        :
-                            `
-                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3 font-size-13px">
-                                <div class="col-md-4 font-weight-bold pr-1">FECHAL:</div>
-                                <div class="col-md-3 font-weight-light pl-1 text-center">${fecha}</div>
-                            </div>
-                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 font-size-13px">
-                                <div class="col-md-4 font-weight-bold pr-1">HORA:</div>
-                                <div class="col-md-3 font-weight-light pl-1 text-center">${form.hora}:${form.minuto}</div>
-                            </div>
-                            `
-                        )
-                }
-            `,
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "ENVIAR",
-        cancelButtonText: "CANCELAR",
-        reverseButtons: true,
-    }).then((result) => {
-        var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid");
-        if (elementsInvalid.length === 0) {
-            if (result.value) {
-                action()
-            }
-        } else {
-            Swal.fire({
-                title: '¡LO SENTIMOS!',
-                text: 'Llena todos los campos requeridos',
-                icon: 'warning',
-                customClass: {
-                    actions: 'd-none'
-                },
-                timer: 2500,
-            })
         }
     })
 }
@@ -636,81 +475,6 @@ export function customInputAlert(html, iconHtml, success, cancel, htmlClass){
                 success()
     })
 }
-
-export function steps(action) {
-    const steps = ['1', '2']
-    const textQuestion = ['¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?']
-    const swalQueueStep = Swal.mixin({
-        confirmButtonText: 'SIGUIENTE',
-        cancelButtonText: 'REGRESAR',
-        progressSteps: steps,
-        input: 'radio',
-        inputOptions: {
-            SI: 'SI',
-            NO: 'NO'
-        },
-        inputAttributes: {
-            required: true
-        },    
-        reverseButtons: true,
-        customClass: {
-            validationMessage:'width-content-validation',
-            title:'mt-4'
-        },
-        inputValidator: (value) => {
-            if (!value) {
-                return 'NECESITAS ELEGIR UNA OPCIÓN'
-            }
-        }
-    })
-    async function backAndForth () {
-        const values = []
-        let currentStep
-        for (currentStep = 0; currentStep < steps.length;) {
-            const result = await swalQueueStep.fire({
-                title: textQuestion[currentStep],
-                inputValue: values[currentStep],
-                showCancelButton: currentStep > 0,
-                currentProgressStep: currentStep
-            })
-            if (result.value) {
-                values[currentStep] = result.value
-                currentStep++
-            } else if (result.dismiss === 'cancel') {
-                currentStep--
-            } else {
-            break
-            }
-        }
-        if (currentStep === steps.length) {
-            Swal.fire({
-                title: '¿ESTÁS SEGURO DE TUS RESPUESTAS?',
-                html: `
-                    <div class="form-group row row-paddingless form-group-marginless mt-4">
-                        <div class="col-md-12 font-weight-light text-center font-size-lg">
-                            ¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?
-                            <div class="font-weight-boldest">${values[0]}</div>
-                        </div>
-                    </div>
-                    <div class="row row-paddingless form-group-marginless">
-                        <div class="col-md-12 font-weight-light text-center font-size-lg">
-                            ¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?
-                            <div class="font-weight-boldest">${values[1]}</div>
-                        </div>
-                    </div>
-                `,
-                confirmButtonText: 'ENVIAR'
-            }).then((result) => {
-                if (result.value) {
-                    action(values)
-                }
-            })
-        }
-        
-    }
-    backAndForth()
-}
-
 export function errorAdjuntos(title, text, html) {
     MySwal.fire({
         title: title,

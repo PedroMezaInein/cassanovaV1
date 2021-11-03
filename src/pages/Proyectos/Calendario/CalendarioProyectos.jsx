@@ -581,7 +581,7 @@ class CalendarioProyectos extends Component {
                     :''
                 } handleClose = { this.handleClose } >
                     <InformacionProyecto proyecto = { proyecto } printDates = { this.printDates } addComentario = { this.addComentarioAxios } form = { form } 
-                        onChange = { this.onChange } handleChange = { this.handleChangeComentario } tipo = { tipo } urls = { true } />
+                        onChange = { this.onChange } handleChange = { this.handleChangeComentario } tipo = { tipo } urls = { true } at = { this.props.authUser.access_token}/>
                 </Modal>
             </Layout>       
         )

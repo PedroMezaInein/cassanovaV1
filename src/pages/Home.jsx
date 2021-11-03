@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import Layout from '../components/layout/layout'
 import { connect } from 'react-redux'
+import { LEADS_FRONT } from '../constants'
 
 class Home extends Component{
     
     componentDidMount(){
         const { user : { permisos } } = this.props.authUser
+        const { access_token } = this.props.authUser.access_token
         const { history } = this.props
-
         let flag = false
 
         const calendarioTareas = permisos ? permisos.find(function(element, index) {
@@ -23,7 +24,7 @@ class Home extends Component{
         }) : null;
         if(crm && flag === false){
             flag = true
-            history.push('/leads/crm')
+            window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
         }
 
         const tareas = permisos ? permisos.find(function(element, index) {

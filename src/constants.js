@@ -23,6 +23,9 @@ export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proye
 
 export const PUSHER_OBJECT = { broadcaster: 'pusher', key: '112ff49dfbf7dccb6934', cluster: 'us2', forceTLS: false }
 
+export const MAIN_FRONT = process.env.NODE_ENV === 'production' ? 'https://inein.com.mx' : 'http://localhost:3000'
+export const LEADS_FRONT = process.env.NODE_ENV === 'production' ? 'https://leads.inein.com.mx' : 'http://localhost:3001'
+
 export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1","#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C"];
 
 //Expresiones Regulares
@@ -793,4 +796,17 @@ export const MANTENIMIENTOS = [
     { Header: 'Costo', accessor: 'costo', customRender: true },
     { Header: 'Presupuesto', accessor: 'presupuesto', customRender: true, searchable: false, orderable: false },
     { Header: 'Fecha', accessor: 'fecha', customRender: true, tipo: 'fecha' }
+]
+
+export const SOLICITUD_FACTURA_COLUMNS = [
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false, orderable: false },
+    { Header: 'Emisor', accessor: 'emisor', customRender: true },
+    { Header: 'Receptor', accessor: 'receptor', customRender: true },
+    { Header: 'Detalle', accessor: 'detalle', customRender: true },
+    { Header: 'Monto', accessor: 'monto', customRender: true },
+    { Header: 'Tipo de pago', accessor: 'tipoPago', customRender: true },
+    { Header: 'Forma de pago', accessor: 'formaPago', customRender: true },
+    { Header: 'Método de pago', accessor: 'metodoPago', customRender: true },
+    { Header: 'Estatus', accessor: 'estatusFactura', customRender: true },
+    { Header: 'Origen', accessor: 'origen', customRender: true , orderable: false },
 ]

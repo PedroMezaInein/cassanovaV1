@@ -74,17 +74,8 @@ import imssForm from './recursoshumanos/ImssForm'
 import prestamosForm from './recursoshumanos/PrestamosForm'
 import abonoPrestamosForm from './recursoshumanos/AbonoPrestamosForm'
 import adjuntosEmpresaForm from './catalogos/AdjuntosEmpresaForm'
-import agendaLlamada from './leads/AgendaLlamada'
-import agendaLlamadaUbicacion from './leads/AgendaLlamadaUbicacion'
-import historialContactoForm from './leads/info/HistorialContactoForm'
-import agendarCitaForm from './leads/info/AgendarCitaForm'
-import presupuestoDiseñoCRMForm from './leads/info/PresupuestoDiseñoCRMForm'
 import presupuestoGenerado from './leads/info/PresupuestoGenerado'
 import presupuestoGeneradoNoCrm from './presupuesto/PresupuestoGeneradoNoCrm'
-import informacionGeneral from './leads/InformacionGeneral'
-import formLlamada from './leads/FormLlamada'
-import formWhatsapp from './leads/FormWhatsapp'
-import mensajePrincipal from './leads/MensajePrincipal'
 import accesosForm from './usuarios/AccesosForm'
 import parrillaContenidoForm from './mercadotecnia/ParrillaContenidoForm'
 import mercadotecniaForm from './reportes/MercadotecniaForm'
@@ -94,10 +85,8 @@ import planTrabajoForm from './mercadotecnia/PlanTrabajoForm'
 import rolesMercadotecniaForm from './catalogos/RolesMercadotecniaForm'
 import pagosForm from './mercadotecnia/PagosForm'
 import agendarReunionGoogle from './leads/AgendarReunionGoogle'
-import formProveedoresRRHH from './leads/FormProveedoresRRHH'
 import facturaExtranjera from './FacturaExtranjera'
 import comentarios from './Comentarios'
-import buscarLead from './leads/BuscarLead'
 import formCalendarioTareas from './usuarios/FormCalendarioTareas'
 import comentarioForm from './ComentarioForm'
 import timelineComments from './TimelineComments'
@@ -137,8 +126,12 @@ import PresupuestosProyecto from './proyectos/Proyecto/PresupuestosProyecto'
 import PresupuestoList from './proyectos/Proyecto/PresupuestoList'
 import FilterPresupuestos from './proyectos/Proyecto/FilterPresupuestos'
 import PresupuestoAnswer from './proyectos/Proyecto/PresupuestoAnswer'
-import CotizacionesDiseño from './leads/info/CotizacionesDiseño'
-import HistorialCotizacionesDiseño from './leads/info/HistorialCotizacionesDiseño'
+import HistorialPresupuestosProyecto from './proyectos/Proyecto/HistorialPresupuestosProyecto'
+import FormSolicitudFactura from './proyectos/Proyecto/FormSolicitudFactura'
+import HistorialSolicitudesFacturaProyectos from './proyectos/Proyecto/HistorialSolicitudesFacturaProyectos'
+import FormVentasSolicitudFactura from './administracion/FormVentasSolicitudFactura'
+import PresupuestoAceptado from './proyectos/Proyecto/PresupuestoAceptado'
+import TimelinePresupuestos from './proyectos/Proyecto/TimelinePresupuestos'
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
@@ -213,17 +206,8 @@ export const ImssForm = imssForm
 export const PrestamosForm = prestamosForm
 export const AbonoPrestamosForm = abonoPrestamosForm
 export const AdjuntosEmpresaForm = adjuntosEmpresaForm
-export const AgendaLlamada = agendaLlamada
-export const AgendaLlamadaUbicacion = agendaLlamadaUbicacion
-export const HistorialContactoForm = historialContactoForm
-export const AgendarCitaForm = agendarCitaForm
-export const PresupuestoDiseñoCRMForm = presupuestoDiseñoCRMForm
 export const PresupuestoGenerado = presupuestoGenerado
 export const PresupuestoGeneradoNoCrm = presupuestoGeneradoNoCrm
-export const InformacionGeneral = informacionGeneral
-export const FormLlamada = formLlamada
-export const FormWhatsap = formWhatsapp
-export const MensajePrincipal = mensajePrincipal
 export const AccesosForm = accesosForm
 export const ParrillaContenidoForm = parrillaContenidoForm
 export const MercadotecniaForm = mercadotecniaForm
@@ -233,10 +217,8 @@ export const PlanTrabajoForm = planTrabajoForm
 export const RolesMercadotecniaForm = rolesMercadotecniaForm
 export const PagosForm = pagosForm
 export const AgendarReunionGoogle = agendarReunionGoogle
-export const FormProveedoresRRHH = formProveedoresRRHH
 export const FacturaExtranjera = facturaExtranjera
 export const Comentarios = comentarios
-export const BuscarLead = buscarLead
 export const FormCalendarioTareas = formCalendarioTareas
 export const ComentarioForm = comentarioForm
 export const TimelineComments = timelineComments
@@ -250,4 +232,5 @@ export const AddTaskForm = addTaskForm
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
     PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
-    CotizacionesDiseño, HistorialCotizacionesDiseño}
+    HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
+    PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura}

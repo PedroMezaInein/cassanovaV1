@@ -2,19 +2,19 @@ import React, { Component } from 'react'
 import { connect } from "react-redux"
 import axios from "axios"
 import Swal from 'sweetalert2'
-import FloatBtnPresupuesto from '../../../FloatButtons/FloatBtnPresupuesto'
-import { URL_DEV } from "../../../../constants"
-import { setSingleHeader } from '../../../../functions/routers'
-import { DropdownButton, Dropdown, Card, Form } from 'react-bootstrap'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAlert2, questionAlertY } from '../../../../functions/alert'
-import { setNaviIcon, setOptions } from '../../../../functions/setters'
-import { PresupuestoList } from "../..";
-import { PresupuestoForm, ActualizarPresupuestoForm, AgregarConcepto, FilterPresupuestos } from "../../../../components/forms"
-import { Modal, ModalSendMail } from '../../../../components/singles'
+import { PresupuestoList } from '../..'
+import { URL_DEV } from '../../../../constants'
 import { Budget } from '../../../../components/Lottie/'
-import PresupuestoTable from '../../../tables/Presupuestos/PresupuestoTable'
+import { setSingleHeader } from '../../../../functions/routers'
 import { CreatableMultiselectGray } from '../../../form-components'
+import { Modal, ModalSendMail } from '../../../../components/singles'
+import { DropdownButton, Dropdown, Card, Form } from 'react-bootstrap'
+import { setNaviIcon, setOptions } from '../../../../functions/setters'
 import { save, deleteForm } from '../../../../redux/reducers/formulario'
+import FloatBtnPresupuesto from '../../../FloatButtons/FloatBtnPresupuesto'
+import PresupuestoTable from '../../../tables/Presupuestos/PresupuestoTable'
+import { PresupuestoForm, ActualizarPresupuestoForm, AgregarConcepto, FilterPresupuestos } from '../../../../components/forms'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAlert2, questionAlertY } from '../../../../functions/alert'
 
 class PresupuestosProyecto extends Component {
 
@@ -59,7 +59,8 @@ class PresupuestosProyecto extends Component {
         aux_presupuestos: { conceptos: false, volumetrias: false, costos: false, revision:false, utilidad: false, espera: false, aceptado: false, rechazado: false },
         modal: { conceptos: false, filter:false, presupuestos: false, email: false },
         presupuestos: [],
-        filtering: {}
+        filtering: {},
+        bandera_filtrado:false
     }
 
     componentDidMount() { 
@@ -90,10 +91,15 @@ class PresupuestosProyecto extends Component {
 
     navPresupuesto = (type) => { 
         const { filtering } = this.state
+        let { presupuesto, form } = this.state
         if(this.navPresupuesto === 'historial'){
             this.getPresupuestos(filtering)
-        }   
-        this.setState({ ...this.state, navPresupuesto: type }) 
+        }
+        if(type === 'add'){
+            presupuesto = ''
+            form.presupuesto = { area: "", tiempo_ejecucion: "", partida: "", subpartida: "", conceptos: {} }
+        }
+        this.setState({ ...this.state, navPresupuesto: type, presupuesto, form }) 
     }
 
     sendPresupuestoToClient = async() => {
@@ -123,7 +129,7 @@ class PresupuestosProyecto extends Component {
 
     getPresupuestos = async(filtering) => {
         const { at, proyecto } = this.props
-        let { navPresupuesto } = this.state
+        let { navPresupuesto, bandera_filtrado } = this.state
         // waitAlert()
         await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/presupuestos`, {filters: filtering}, { headers: setSingleHeader(at) }).then(
             (response) => {
@@ -132,10 +138,13 @@ class PresupuestosProyecto extends Component {
                 const { presupuestoId } = this.props
                 if(!presupuestoId){
                     if(presupuestos.length === 0){
-                        if(filtering !== {})
-                            navPresupuesto = 'historial'
-                        else
-                            navPresupuesto = 'add'
+                        if(filtering !== {}){
+                            if(bandera_filtrado){
+                                navPresupuesto = 'historial'
+                            }else{
+                                navPresupuesto = 'add'
+                            }
+                        }
                     }else{
                         navPresupuesto = 'historial'
                     }
@@ -472,13 +481,18 @@ class PresupuestosProyecto extends Component {
     patchPresupuesto = async(type, value) => {
         const { at } = this.props
         const { presupuesto } = this.state
+        let { navPresupuesto } = this.state
         waitAlert()
         await axios.patch(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}`, { type: type, value: value }, { headers: setSingleHeader(at) }).then(
             (response) => {
-                if(type === 'estatus')
+                if(type === 'estatus'){
                     doneAlert('Presupuesto actualizado con éxito', () => this.sendCorreoAxios(value))
-                else
+                    navPresupuesto = 'historial'
+                    this.refreshPresupuestos()
+                }else{
                     doneAlert('Presupuesto actualizado con éxito', () => this.getPresupuestoAxios(presupuesto.id))
+                }
+                this.setState({ ...this.state, navPresupuesto })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -655,11 +669,14 @@ class PresupuestosProyecto extends Component {
     
     openFormFilter = () => {
         const { modal } = this.state
+        let { bandera_filtrado } = this.state
+        bandera_filtrado = true
         modal.filter = true
         this.setState({
             ...this.state,
             modal,
-            formeditado: 0
+            formeditado: 0,
+            bandera_filtrado
         })
     }
     handleCloseFilter = () => {
@@ -974,8 +991,15 @@ class PresupuestosProyecto extends Component {
         this.getPresupuestos(filtering)
     }
 
+    clearFiltrado = () => {
+        let { bandera_filtrado } = this.state
+        bandera_filtrado = false
+        this.setState({
+            bandera_filtrado
+        })
+    }
     render() {
-        const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key, presupuesto, adjunto, filtering } = this.state
+        const { navPresupuesto, form, options, formeditado, data, presupuestos, modal, key, presupuesto, adjunto, filtering, bandera_filtrado } = this.state
         const { proyecto, at, formulario } = this.props
         return (
             <>
@@ -983,7 +1007,7 @@ class PresupuestosProyecto extends Component {
                     <Card.Header className={`border-0 align-items-center pt-6 pt-md-0 ${navPresupuesto !== 'historial'?'px-0':''}`}>
                         <div className="font-weight-bold font-size-h4 text-dark">{this.cardTitlePresupuesto(navPresupuesto)}</div>
                         {
-                            presupuestos.length > 0 || filtering !== {} ?
+                            presupuestos.length > 0 || bandera_filtrado ?
                                 <div className="toolbar-dropdown">
                                     <DropdownButton menualign="right" title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>}
                                         id={`${navPresupuesto !== 'historial' ? 'dropdown-white' : 'dropdown-proyectos'}`}>
@@ -1001,7 +1025,7 @@ class PresupuestosProyecto extends Component {
                                                 : <></>
                                         }
                                         {
-                                            navPresupuesto === 'historial' ?
+                                            navPresupuesto === 'historial'?
                                                 <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.openFormFilter('filter') }}>
                                                     {setNaviIcon('las la-filter icon-xl', 'FILTRAR HISTORIAL')}
                                                 </Dropdown.Item>
@@ -1039,7 +1063,7 @@ class PresupuestosProyecto extends Component {
                 <Modal size = "lg" title = 'Filtrar historial' show = { modal.filter } handleClose = { this.handleCloseFilter} >
                     {
                         modal.filter ?
-                            <FilterPresupuestos at={at} filtering = { this.filterTable } filters = { filtering } />
+                            <FilterPresupuestos at={at} filtering = { this.filterTable } filters = { filtering } clearFiltrado={this.clearFiltrado} />
                         : <></>
                     }
                     
