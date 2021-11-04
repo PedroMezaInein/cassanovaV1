@@ -49,7 +49,7 @@ class Utilidad extends Component {
             proyectos.data = proyectosResponse
             proyectos.filtrados = filtrados
             proyectos.total = totales
-            proyectos.totalPages = Math.ceil(totales / 5)
+            proyectos.totalPages = Math.ceil(filtrados / 10)
             console.log(proyectos, 'proyectos.data')
             Swal.close()
             this.setState({ ...this.state, proyectos })
