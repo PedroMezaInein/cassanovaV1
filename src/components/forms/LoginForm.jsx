@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios';
-import { URL_DEV, EMAIL} from '../../constants'
+import { URL_DEV, EMAIL, LEADS_FRONT } from '../../constants'
 import { connect } from 'react-redux'
 import { login } from '../../redux/reducers/auth_user'
 import { Form, Tab } from 'react-bootstrap'
@@ -122,17 +122,35 @@ class LoginForm extends React.Component {
 
     async handleSubmit(event) {
         event.preventDefault();
-        const data = this.state.form;
+        const { form } = this.state
         // let error = this.state.error;;
-        await axios.post(`${URL_DEV}user/login`, data).then(
+        await axios.post(`${URL_DEV}user/login`, form).then(
             (response) => {
                 const { history, login } = this.props
-                login({
-                    access_token: response.data.access_token,
-                    user: response.data.user,
-                    modulos: response.data.modulos
+                const { access_token, user, modulos } = response.data
+                login({ access_token: access_token, user: user, modulos: modulos })
+                if(!user.permisos){
+                    history.push('/login')
+                }
+                let perm = null
+                let arreglo = ['calendario-tareas', 'crm', 'tareas', 'mi-proyecto']
+                arreglo.forEach( (elemento) => {
+                    if(!perm){
+                        perm = user.permisos.find((permiso) => {
+                            return permiso.modulo.slug === elemento
+                        })
+                    }
                 })
-                history.push('/');
+                if(perm){
+                    if(perm.modulo.slug === 'crm'){
+                        window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
+                    }
+                    else{
+                        history.push(perm.modulo.url)
+                    }
+                }else{
+                    history.push(user.permisos[0].modulo.url)
+                }
             },
             (error) => {
                 error['password'] = 'Ingresaste un correo o contraseña equivocado. Intenta de nuevo'
@@ -198,86 +216,83 @@ class LoginForm extends React.Component {
     render() {
         const { form, error, tab } = this.state
         return (
-            <>
-                <Tab.Container activeKey = { tab } >
-                    <Tab.Content>
-                        <Tab.Pane eventKey="login">
-                            <Form className = 'form fv-plugins-bootstrap fv-plugins-framework'  noValidate="novalidate" id="form-login"
-                                onSubmit = { (e) => { e.preventDefault(); validateAlert(this.handleSubmit, e, 'form-login') } }>
+            <Tab.Container activeKey = { tab } >
+                <Tab.Content>
+                    <Tab.Pane eventKey="login">
+                        <Form className = 'form fv-plugins-bootstrap fv-plugins-framework'  noValidate="novalidate" id="form-login"
+                            onSubmit = { (e) => { e.preventDefault(); validateAlert(this.handleSubmit, e, 'form-login') } }>
+                            <div className="pb-5 pb-lg-15 text-center">
+                                <h3 className="font-weight-bolder font-size-h2 font-size-h1-lg text-im">INICIAR SESIÓN</h3>
+                            </div>
+                            <InputLEmail name = 'email' value = { form.email } placeholder = 'INGRESA TU CORREO ELECRÓNICO'
+                                onChange = { this.handleChange } error = { error } requirevalidation = { 1 }
+                                letterCase = { false } patterns={EMAIL} />
+                            <InputLPassword name = 'password' value = { form.password } placeholder = 'INGRESA TU CONTRASEÑA'
+                                onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
+                            <div className="form-group d-flex flex-wrap justify-content-end align-items-end pt-2">
+                                <span className="text-muted text-hover-im font-weight-bold a-hover" onClick = { () => { this.changeTab('recuperar') }}>
+                                    ¿Olvidaste tu contraseña?
+                                </span>
+                            </div>
+                            <div className="container-login  px-0">
+                                <span className = "btn-login btn-1" style = { { color: "#7fa1c9", fontWeight: 500 } } 
+                                    onClick = { (e) => { e.preventDefault(); validateAlert(this.handleSubmit, e, 'form-login') } }>
+                                    <svg> <rect x="0" y="0" fill="none" width="100%" height="100%" /> </svg>
+                                    INICIAR SESIÓN
+                                </span>
+                            </div>
+                        </Form>
+                    </Tab.Pane>
+                    <Tab.Pane eventKey = 'recuperar'>
+                        <Form className = 'form fv-plugins-bootstrap fv-plugins-framework' noValidate="novalidate" id="form-forgotP"
+                            onSubmit = { (e) => { e.preventDefault(); } }>
+                            <div className="login-forgot wow fadeIn" data-wow-duration="1.5s">
                                 <div className="pb-5 pb-lg-15 text-center">
-                                    <h3 className="font-weight-bolder font-size-h2 font-size-h1-lg text-im">INICIAR SESIÓN</h3>
+                                    <div className="font-weight-bolder font-size-h2 font-size-h1-lg text-im mb-5">¿Olvidaste tu contraseña?</div>
+                                    <div className="text-muted font-weight-bold">Ingresa tu correo electrónico para restablecer tu contraseña</div>
                                 </div>
-                                <InputLEmail name = 'email' value = { form.email } placeholder = 'INGRESA TU CORREO ELECRÓNICO'
+                                <InputLEmail name = 'emailfp' value = { form.emailfp } placeholder = 'INGRESA TU CORREO ELECRÓNICO'
                                     onChange = { this.handleChange } error = { error } requirevalidation = { 1 }
-                                    letterCase = { false } patterns={EMAIL} />
-                                <InputLPassword name = 'password' value = { form.password } placeholder = 'INGRESA TU CONTRASEÑA'
-                                    onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
-                                <div className="form-group d-flex flex-wrap justify-content-end align-items-end pt-2">
-                                    <span className="text-muted text-hover-im font-weight-bold a-hover" onClick = { () => { this.changeTab('recuperar') }}>
+                                    letterCase = { false } patterns = { EMAIL } />
+                                <div className="form-group d-flex flex-wrap flex-center mt-10">
+                                    <span className = "btn btn-light-im btn-shadow-hover font-weight-bolder px-6 py-3" 
+                                        onClick = { () => { this.sendRequestNewPassword() } } >
+                                        Enviar
+                                    </span>
+                                    <span className="btn btn-light-danger font-weight-bolder px-6 py-3 ml-2" onClick={() => { this.changeTab('login') }}>
+                                        Cancelar
+                                    </span>
+                                </div>
+                            </div>
+                        </Form>
+                    </Tab.Pane>
+                    <Tab.Pane eventKey = 'nueva'>
+                        <Form className = 'form fv-plugins-bootstrap fv-plugins-framework' noValidate="novalidate" id="form-nueva"
+                            onSubmit = { (e) => { e.preventDefault(); } }>
+                            <div className="login-forgot wow fadeIn" data-wow-duration="1.5s">
+                                <div className="pb-5 pb-lg-15 text-center">
+                                    <div className="font-weight-bolder font-size-h2 font-size-h1-lg text-im mb-5">
                                         ¿Olvidaste tu contraseña?
+                                    </div>
+                                    <div className="text-muted font-weight-bold">
+                                        Ingresa tu correo electrónico para restablecer tu contraseña
+                                    </div>
+                                </div>
+                                <InputLPassword name = 'password' value = { form.password } placeholder = 'INGRESA UNA NUEVA CONTRASEÑA'
+                                    onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
+                                <InputLPassword name = 'password2' value = { form.password2 } placeholder = 'REPITE TU CONTRASEÑA'
+                                    onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
+                                <div className="form-group d-flex flex-wrap flex-center mt-10">
+                                    <span className = "btn btn-light-im btn-shadow-hover font-weight-bolder px-6 py-3" 
+                                        onClick = { () => { this.sendNewPassword() } } >
+                                        Enviar
                                     </span>
                                 </div>
-                                <div className="container-login  px-0">
-                                    <span className = "btn-login btn-1" style = { { color: "#7fa1c9", fontWeight: 500 } } 
-                                        onClick = { (e) => { e.preventDefault(); validateAlert(this.handleSubmit, e, 'form-login') } }>
-                                        <svg> <rect x="0" y="0" fill="none" width="100%" height="100%" /> </svg>
-                                        INICIAR SESIÓN
-                                    </span>
-                                </div>
-                            </Form>
-                        </Tab.Pane>
-                        <Tab.Pane eventKey = 'recuperar'>
-                            <Form className = 'form fv-plugins-bootstrap fv-plugins-framework' noValidate="novalidate" id="form-forgotP"
-                                onSubmit = { (e) => { e.preventDefault(); } }>
-                                <div className="login-forgot wow fadeIn" data-wow-duration="1.5s">
-                                    <div className="pb-5 pb-lg-15 text-center">
-                                        <div className="font-weight-bolder font-size-h2 font-size-h1-lg text-im mb-5">¿Olvidaste tu contraseña?</div>
-                                        <div className="text-muted font-weight-bold">Ingresa tu correo electrónico para restablecer tu contraseña</div>
-                                    </div>
-                                    <InputLEmail name = 'emailfp' value = { form.emailfp } placeholder = 'INGRESA TU CORREO ELECRÓNICO'
-                                        onChange = { this.handleChange } error = { error } requirevalidation = { 1 }
-                                        letterCase = { false } patterns = { EMAIL } />
-                                    <div className="form-group d-flex flex-wrap flex-center mt-10">
-                                        <span className = "btn btn-light-im btn-shadow-hover font-weight-bolder px-6 py-3" 
-                                            onClick = { () => { this.sendRequestNewPassword() } } >
-                                            Enviar
-                                        </span>
-                                        <span className="btn btn-light-danger font-weight-bolder px-6 py-3 ml-2" onClick={() => { this.changeTab('login') }}>
-                                            Cancelar
-                                        </span>
-                                    </div>
-                                </div>
-                            </Form>
-                        </Tab.Pane>
-                        <Tab.Pane eventKey = 'nueva'>
-                            <Form className = 'form fv-plugins-bootstrap fv-plugins-framework' noValidate="novalidate" id="form-nueva"
-                                onSubmit = { (e) => { e.preventDefault(); } }>
-                                <div className="login-forgot wow fadeIn" data-wow-duration="1.5s">
-                                    <div className="pb-5 pb-lg-15 text-center">
-                                        <div className="font-weight-bolder font-size-h2 font-size-h1-lg text-im mb-5">
-                                            ¿Olvidaste tu contraseña?
-                                        </div>
-                                        <div className="text-muted font-weight-bold">
-                                            Ingresa tu correo electrónico para restablecer tu contraseña
-                                        </div>
-                                    </div>
-                                    <InputLPassword name = 'password' value = { form.password } placeholder = 'INGRESA UNA NUEVA CONTRASEÑA'
-                                        onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
-                                    <InputLPassword name = 'password2' value = { form.password2 } placeholder = 'REPITE TU CONTRASEÑA'
-                                        onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
-                                    <div className="form-group d-flex flex-wrap flex-center mt-10">
-                                        <span className = "btn btn-light-im btn-shadow-hover font-weight-bolder px-6 py-3" 
-                                            onClick = { () => { this.sendNewPassword() } } >
-                                            Enviar
-                                        </span>
-                                    </div>
-                                </div>
-                            </Form>
-                        </Tab.Pane>
-                    </Tab.Content>
-                </Tab.Container>
-                
-            </>
+                            </div>
+                        </Form>
+                    </Tab.Pane>
+                </Tab.Content>
+            </Tab.Container>
         )
     }
 }
