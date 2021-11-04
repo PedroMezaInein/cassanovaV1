@@ -167,6 +167,17 @@ class Utilidad extends Component {
                                         <th>% UTILIDAD</th>
                                     </tr>
                                 </thead>
+                                {
+                                    proyectos.data.length === 0 ? 
+                                        <tbody>
+                                            <tr>
+                                                <td colSpan = '7' className = 'text-center'>
+                                                    No hay datos que mostrar
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    : <></>
+                                }
                             </table>
                             {
                                 Object.keys(proyectos.data).map((name, key1) => {
