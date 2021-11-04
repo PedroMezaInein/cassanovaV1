@@ -243,7 +243,7 @@ class Utilidad extends Component {
                                                                     <td>
                                                                         <div className="d-inline-flex">
                                                                             {
-                                                                                proyecto.compras.length > 0 ?
+                                                                                proyecto.compras_count > 0 ?
                                                                                     <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER COMPRAS</span></Tooltip>}>
                                                                                         <div className="see-ventas text-hover" 
                                                                                             onClick = { () => { 
@@ -269,7 +269,6 @@ class Utilidad extends Component {
                             }
 
                         </div>
-
 
                         {/* <div className="w-100">
                             <table className="table-utilidad">
