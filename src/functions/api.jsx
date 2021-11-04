@@ -25,28 +25,28 @@ export const apiGet = async(url, at) => {
 }
 
 export const catchErrors = (error, flag) => {
-    // let storing = store.getState();
-    // const { user } = storing.authUser
-    // if(flag === false){
-    //     errorAlert(`Ocurrió un error desconocido, intenta refrescando la página`)
-    // }
-    // console.error(error, 'error')
-    // if(process.env.NODE_ENV === 'production' || true){
-    //     axios.post(`https://hooks.zapier.com/hooks/catch/6874908/bhr9ezu/`,
-    //     encodeForm({
-    //         'error': error,
-    //         'user': user.name,
-    //         'date': new Date(),
-    //         'url': window.location.href
-    //     }), {headers: {'Accept': 'application/json'}}
-    //         ).then(
-    //         (response) => {
-    //             console.log(`RESPONSE: `, response)
-    //         }, (e) => {
-    //             console.log(`Error: `, e)
-    //         }
-    //     )
-    // }
+    let storing = store.getState();
+    const { user } = storing.authUser
+    if(flag === false){
+        errorAlert(`Ocurrió un error desconocido, intenta refrescando la página`)
+    }
+    console.error(error, 'error')
+    if(process.env.NODE_ENV === 'production'){
+        axios.post(`https://hooks.zapier.com/hooks/catch/6874908/bhr9ezu/`,
+            encodeForm({
+                'error': error,
+                'user': user.name,
+                'date': new Date(),
+                'url': window.location.href
+            }), {headers: {'Accept': 'application/json'}}
+        ).then(
+            (response) => {
+                 console.log(`RESPONSE: `, response)
+            }, (e) => {
+                console.log(`Error: `, e)
+            }
+        )
+    }
 }
 
 const encodeForm = (data) => {
