@@ -15,7 +15,7 @@ class VentasList extends Component {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/ventas',
-            state: { id: venta.id }
+            search: `id=${venta.id}`
         });
     }
     render() {
@@ -46,7 +46,10 @@ class VentasList extends Component {
                                             return (
                                                 <tr key={key} className="border-bottom text-center text-dark-75 font-size-lg font-weight-light h-30px">
                                                     <td className="font-weight-bold">
-                                                        <a onClick = { (e) => { e.preventDefault(); this.changePageVenta(venta) } } >{venta.id}</a>  
+                                                        <a className = 'text-hover' 
+                                                            onClick = { (e) => { e.preventDefault(); this.changePageVenta(venta) } } >
+                                                            {venta.id}
+                                                        </a>  
                                                     </td>
                                                     <td>
                                                         {setMoneyText(venta.total)}

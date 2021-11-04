@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { setMoneyText  } from '../../../../functions/setters'
 import Pagination from "react-js-pagination"
+import { MAIN_FRONT } from '../../../../constants'
 class ComprasList extends Component {
     state = {
         activePage: 1,
@@ -15,7 +16,7 @@ class ComprasList extends Component {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/compras',
-            state: { id: venta.id }
+            search: `id=${venta.id}`
         });
     }
     render() {
@@ -46,7 +47,10 @@ class ComprasList extends Component {
                                             return (
                                                 <tr key={key} className="border-bottom text-center text-dark-75 font-size-lg font-weight-light h-30px">
                                                     <td className="font-weight-bold">
-                                                        <a onClick = { (e) => { e.preventDefault(); this.changePageCompra(venta) } } >{venta.id}</a>  
+                                                        <a className = 'text-hover' 
+                                                            onClick = { (e) => { e.preventDefault(); this.changePageCompra(venta) } } >
+                                                            { venta.id }
+                                                        </a>  
                                                     </td>
                                                     <td>
                                                         {setMoneyText(venta.total)}

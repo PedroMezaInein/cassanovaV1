@@ -134,6 +134,7 @@ class Compras extends Component {
             }
         }
     }
+    
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)

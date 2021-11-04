@@ -54,6 +54,27 @@ class Utilidad extends Component {
         }, (error) => { printResponseErrorAlert(error) }).catch((error) => { catchErrors(error) })
     }
 
+    getComprasVentasProyecto = async(proy, tipo) => {
+        const { access_token } = this.props.authUser
+        apiGet( `v2/administracion/utilidad/${proy.id}/${tipo}`, access_token ).then((response) => {
+            const { proyecto } = response.data
+            let { title, ventas, compras, modal } = this.state
+            title = proyecto.simpleName
+            if(tipo === 'ventas'){
+                ventas = proyecto.ventas
+                modal.ventas = true
+                modal.compras = false
+            }
+            if(tipo === 'compras'){
+                compras = proyecto.compras
+                modal.ventas = false
+                modal.compras = true
+            }
+            Swal.close()
+            this.setState({ ...this.state, modal, ventas, compras, title })
+        }, (error) => { printResponseErrorAlert(error) }).catch((error) => { catchErrors(error) })
+    }
+
     handleAccordion = (name) => {
         const { proyectos: { data } } = this.state;
         const { activeKey } = this.state
@@ -87,58 +108,18 @@ class Utilidad extends Component {
             return setPercent(percentage)
         }
     }
-    openModalVentas = (proyecto) => {
+
+    handleClose = () => { 
         const { modal } = this.state
-        let { ventas, title } = this.state
-        ventas = proyecto.ventas
-        title=`${proyecto.simpleName}`
-        modal.ventas = true
-        this.setState({
-            ...this.state,
-            modal,
-            ventas,
-            title
-        })
-    }
-    handleCloseVentas = () => { 
-        const { modal } = this.state
-        let { ventas, title } = this.state
+        let { ventas, title, compras } = this.state
         modal.ventas = false
-        ventas = []
-        title = ''
-        this.setState({
-            ...this.state,
-            modal,
-            ventas,
-            title
-        })
-    }
-    openModalCompras = (proyecto) => {
-        const { modal } = this.state
-        let { compras, title } = this.state
-        compras = proyecto.compras
-        title=`${proyecto.simpleName}`
-        modal.compras = true
-        this.setState({
-            ...this.state,
-            modal,
-            compras,
-            title
-        })
-    }
-    handleCloseCompras = () => { 
-        const { modal } = this.state
-        let { compras, title } = this.state
         modal.compras = false
+        ventas = []
         compras = []
         title = ''
-        this.setState({
-            ...this.state,
-            modal,
-            compras,
-            title
-        })
+        this.setState({ ...this.state, modal, ventas, compras, title })
     }
+    
     openModalFiltros = () => {
         const { modal } = this.state
         modal.filter = true
@@ -158,6 +139,7 @@ class Utilidad extends Component {
         this.setState({ ...this.state, filters: form, modal, proyectos })
         this.getUtilidad( form )
     }
+
     render() {
         const { proyectos, activeKey, modal, title, ventas, compras, filters } = this.state
         return (
@@ -208,7 +190,10 @@ class Utilidad extends Component {
                                                                             {
                                                                                 proyecto.ventas_count > 0 ?
                                                                                     <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER VENTAS</span></Tooltip>}>
-                                                                                        <div className="see-ventas" onClick={() => { this.openModalVentas(proyecto); }}>
+                                                                                        <div className="see-ventas text-hover" 
+                                                                                            onClick = { () => { 
+                                                                                                    this.getComprasVentasProyecto(proyecto, 'ventas'); 
+                                                                                                } } >
                                                                                             {setMoneyText(proyecto.totalVentas)}
                                                                                         </div>
                                                                                     </OverlayTrigger>
@@ -221,7 +206,11 @@ class Utilidad extends Component {
                                                                             {
                                                                                 proyecto.compras.length > 0 ?
                                                                                     <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER COMPRAS</span></Tooltip>}>
-                                                                                        <div className="see-ventas" onClick={() => { this.openModalCompras(proyecto); }}>{setMoneyText(proyecto.totalCompras)}</div>
+                                                                                        <div className="see-ventas text-hover" 
+                                                                                            onClick = { () => { 
+                                                                                                this.getComprasVentasProyecto(proyecto, 'compras'); 
+                                                                                            } } >
+                                                                                            {setMoneyText(proyecto.totalCompras)}</div>
                                                                                     </OverlayTrigger>
                                                                                     : <div>{setMoneyText(proyecto.totalCompras)}</div>
                                                                             }
@@ -409,10 +398,10 @@ class Utilidad extends Component {
                     </Card.Body>
                 </Card>
                 
-                <Modal show = { modal.ventas } title = 'VENTAS' handleClose = { this.handleCloseVentas } bgHeader="border-0 pb-0">
+                <Modal show = { modal.ventas } title = 'VENTAS' handleClose = { this.handleClose } bgHeader="border-0 pb-0">
                     <VentasList ventas={ventas} title={title} history = { this.props.history } />
                 </Modal>
-                <Modal show = { modal.compras } title = 'COMPRAS' handleClose = { this.handleCloseCompras } bgHeader="border-0 pb-0">
+                <Modal show = { modal.compras } title = 'COMPRAS' handleClose = { this.handleClose } bgHeader="border-0 pb-0">
                     <ComprasList compras={compras} title={title} history = { this.props.history } />
                 </Modal>
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filter } handleClose = { this.handleCloseFiltros } customcontent = { true } 
