@@ -11,11 +11,11 @@ class ComprasList extends Component {
         activePage = pageNumber
         this.setState({ ...this.state, activePage })
     }
-    changePageCompra = venta => {
+    changePageCompra = compra => {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/compras',
-            state: { id: venta.id }
+            search: `id=${compra.id}`
         });
     }
     render() {
@@ -39,17 +39,17 @@ class ComprasList extends Component {
                         <tbody>
                             {
                                 compras ?
-                                    compras.map((venta, key) => {
+                                    compras.map((compra, key) => {
                                         let limiteInferior = (activePage - 1) * itemsPerPage
                                         let limiteSuperior = limiteInferior + (itemsPerPage - 1)
                                         if (compras.length < itemsPerPage || (key >= limiteInferior && key <= limiteSuperior))
                                             return (
                                                 <tr key={key} className="border-bottom text-center text-dark-75 font-size-lg font-weight-light h-30px">
                                                     <td className="font-weight-bold">
-                                                        <a onClick = { (e) => { e.preventDefault(); this.changePageCompra(venta) } } >{venta.id}</a>  
+                                                        <a className="text-hover-primary2 cursor-pointer" onClick = { (e) => { e.preventDefault(); this.changePageCompra(compra) } } >{compra.id}</a>  
                                                     </td>
                                                     <td>
-                                                        {setMoneyText(venta.total)}
+                                                        {setMoneyText(compra.total)}
                                                     </td>
                                                 </tr>
                                             )
