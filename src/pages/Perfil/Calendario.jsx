@@ -357,7 +357,7 @@ class Calendario extends Component {
             (response) => {
                 const { data } = this.state
                 const { user } = this.props.authUser
-                const { empleados, vacaciones, empleado, user_vacaciones, feriados, eventos, usuarios } = response.data
+                const { empleados, vacaciones, empleado, user_vacaciones, feriados, eventos, usuarios, disponibles } = response.data
                 data.usuarios = usuarios
                 let aux2 = []
                 let aux = []
@@ -453,12 +453,12 @@ class Calendario extends Component {
                     events: aux,
                     empleado: empleado,
                     vacaciones_totales: user_vacaciones,
-                    disponibles: diasDisponibles.contador,
                     inicio: diasDisponibles.inicio,
                     final: diasDisponibles.final,
                     estatus: this.getVacaciones(empleado, user_vacaciones),
                     disabledDates: arr3,
-                    data
+                    data,
+                    disponibles: disponibles
                 })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
