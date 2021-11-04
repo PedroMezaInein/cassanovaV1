@@ -6,10 +6,11 @@ import { setMoneyText, setPercent } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import $ from "jquery";
 import { Card } from 'react-bootstrap'
-import { apiGet, catchErrors } from '../../functions/api'
+import { apiPutForm, catchErrors } from '../../functions/api'
 import { printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { Modal } from '../../components/singles'
 import FiltersUtilidad from '../../components/filters/administracion/FiltersUtilidad'
+import Swal from 'sweetalert2'
 
 class Utilidad extends Component {
     state = {
@@ -35,19 +36,22 @@ class Utilidad extends Component {
     componentDidMount() {
         this.getUtilidad()
     }
-    getUtilidad = async () => {
+
+    getUtilidad = async ( objeto ) => {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { proyectos } = this.state
-
-        apiGet(`v2/administracion/utilidad?page=${proyectos.numPage}`, access_token).then((response) => {
+        apiPutForm(`v2/administracion/utilidad?page=${proyectos.numPage}`, objeto, access_token).then((response) => {
             const { proyectos: proyectosResponse, filtrados, totales } = response.data
             proyectos.data = proyectosResponse
             proyectos.filtrados = filtrados
             proyectos.total = totales
             proyectos.totalPages = Math.ceil(totales / 5)
+            Swal.close()
             this.setState({ ...this.state, proyectos })
         }, (error) => { printResponseErrorAlert(error) }).catch((error) => { catchErrors(error) })
     }
+
     handleAccordion = (name) => {
         const { proyectos: { data } } = this.state;
         const { activeKey } = this.state
@@ -121,10 +125,11 @@ class Utilidad extends Component {
     }
     sendFilters = async(form) => {
         // waitAlert()
-        const { modal } = this.state
+        const { modal, proyectos } = this.state
+        proyectos.numPage = 0
         modal.filter = false
-        this.setState({ ...this.state, filters: form, modal })
-        // this.getFilters(form)
+        this.setState({ ...this.state, filters: form, modal, proyectos })
+        this.getUtilidad( form )
     }
     render() {
         const { proyectos, activeKey, modal, title, ventas, filters } = this.state
