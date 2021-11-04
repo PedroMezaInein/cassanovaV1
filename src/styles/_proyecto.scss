@@ -334,7 +334,19 @@
 .show>.btn.btn-primary2.dropdown-toggle:after {
     color: #fff
 }
+.btn.btn-hover-primary2:hover:not(.btn-text),
+.btn.btn-hover-primary2:focus:not(.btn-text),
+.btn.btn-hover-primary2.focus:not(.btn-text) {
+    color: #FFFFFF !important;
+    background-color: #009ef7 !important;
+    border-color: #009ef7 !important;
+}
 
+.btn.btn-hover-primary2:hover:not(.btn-text) i,
+.btn.btn-hover-primary2:focus:not(.btn-text) i,
+.btn.btn-hover-primary2.focus:not(.btn-text) i {
+    color: #FFFFFF !important;
+}
 .text-primary2{
     color: #007af0!important;
 }

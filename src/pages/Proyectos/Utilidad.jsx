@@ -5,11 +5,12 @@ import { connect } from 'react-redux'
 import { setMoneyText, setPercent } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import $ from "jquery";
-import { Card } from 'react-bootstrap'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { apiGet, catchErrors } from '../../functions/api'
 import { printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { Modal } from '../../components/singles'
 import FiltersUtilidad from '../../components/filters/administracion/FiltersUtilidad'
+import VentasList from '../../components/forms/administracion/Utilidad/VentasList'
 
 class Utilidad extends Component {
     state = {
@@ -86,7 +87,7 @@ class Utilidad extends Component {
         const { modal } = this.state
         let { ventas, title } = this.state
         ventas = proyecto.ventas
-        title=`VENTAS DE ${proyecto.simpleName}`
+        title=`${proyecto.simpleName}`
         modal.ventas = true
         this.setState({
             ...this.state,
@@ -140,7 +141,149 @@ class Utilidad extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        {
+                        <div className="w-100">
+                            <table className="table-utilidad">
+                                <thead>
+                                    <tr>
+                                        <th>FASE</th>
+                                        <th>PRECIO DE VENTA</th>
+                                        <th>POR COBRAR</th>
+                                        <th>VENTAS</th>
+                                        <th>COMPRAS</th>
+                                        <th>UTILIDAD</th>
+                                        <th>% UTILIDAD</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            {
+                                Object.keys(proyectos.data).map((name, key1) => {
+                                    return (
+                                        <div className="hola">
+                                            <div className="bg-light">
+                                                <div className="font-weight-bolder">{name}</div>
+                                            </div>
+                                            <table className="table-utilidad">
+                                                <tbody>
+                                                    {
+                                                        proyectos.data[name].map((proyecto, key2) => {
+                                                            return (
+                                                                <tr className={`tr${key1}${key2}`} onClick={() => { this.activeTr(`.tr${key1}${key2}`); }} key={key2}>
+                                                                    <td> {proyecto.fase} </td>
+                                                                    <td> {setMoneyText(proyecto.precioVenta)} </td>
+                                                                    <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
+                                                                    <td>
+                                                                        <div className="d-inline-flex">
+                                                                            {
+                                                                                proyecto.compras.length > 0 ?
+                                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER VENTAS</span></Tooltip>}>
+                                                                                        <div className="see-ventas" onClick={() => { this.openModalVentas(proyecto); }}>{setMoneyText(proyecto.totalVentas)}</div>
+                                                                                    </OverlayTrigger>
+                                                                                    : <div>{setMoneyText(proyecto.totalVentas)}</div>
+                                                                            }
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div className="d-inline-flex">
+                                                                            {
+                                                                                proyecto.compras.length > 0 ?
+                                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER COMPRAS</span></Tooltip>}>
+                                                                                        <div className="see-ventas" onClick={() => { this.openModalCompras(proyecto); }}>{setMoneyText(proyecto.totalCompras)}</div>
+                                                                                    </OverlayTrigger>
+                                                                                    : <div>{setMoneyText(proyecto.totalCompras)}</div>
+                                                                            }
+                                                                        </div>
+                                                                    </td>
+                                                                    <td> {setMoneyText(proyecto.totalVentas - proyecto.totalCompras)} </td>
+                                                                    <td> {this.percentageUtilidad(proyecto)}</td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )
+                                })
+                            }
+
+                        </div>
+
+                        {/* {
+                            proyectos ?
+                                proyectos.data ?
+                                    <div className="table-responsive utilidad-list">
+                                        <div className="">
+                                            <table className="table-utilidad">
+                                                <thead>
+                                                    <tr>
+                                                        <th>FASE</th>
+                                                        <th>PRECIO DE VENTA</th>
+                                                        <th>POR COBRAR</th>
+                                                        <th>VENTAS</th>
+                                                        <th>COMPRAS</th>
+                                                        <th>UTILIDAD</th>
+                                                        <th>% UTILIDAD</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        Object.keys(proyectos.data).map((name, key1) => {
+                                                            return (
+                                                                <>
+                                                                <tr className=" h-40px">
+                                                                    <td colspan="7" className="font-weight-bolder">{name}</td>
+                                                                </tr>
+                                                                {
+                                                                    proyectos.data[name].map((proyecto, key2) => {
+                                                                        return (
+                                                                            <tr className={`tr${key1}${key2}`} onClick={() => { this.activeTr(`.tr${key1}${key2}`); }} key={key2}>
+                                                                                <td> {proyecto.fase} </td>
+                                                                                <td> {setMoneyText(proyecto.precioVenta)} </td>
+                                                                                <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
+                                                                                <td>
+                                                                                    <div className="d-inline-flex">
+                                                                                        {
+                                                                                            proyecto.compras.length > 0 ?
+                                                                                                <div className="mr-3 d-flex align-self-center text-hover-info" onClick={() => { this.openModalVentas(proyecto); }}>
+                                                                                                    <i className="las la-eye icon-lg"></i>
+                                                                                                </div>
+                                                                                                : <></>
+                                                                                        }
+                                                                                        <div>{setMoneyText(proyecto.totalVentas)}</div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div className="d-inline-flex">
+                                                                                        {
+                                                                                            proyecto.ventas.length > 0 ?
+                                                                                                <div className="mr-3 d-flex align-self-center text-hover-info">
+                                                                                                    <i className="las la-eye icon-lg"></i>
+                                                                                                </div>
+                                                                                                : <></>
+                                                                                        }
+                                                                                        <div>{setMoneyText(proyecto.totalCompras)} </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td> {setMoneyText(proyecto.totalVentas - proyecto.totalCompras)} </td>
+                                                                                <td> {this.percentageUtilidad(proyecto)}</td>
+                                                                            </tr>
+                                                                        )
+                                                                    })
+                                                                }
+                                                                </>
+                                                            )
+                                                        })
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                : <></>
+                            : <></>
+                        } */}
+
+
+                        {/* {
                             proyectos ?
                             proyectos.data ?
                                 <div className="table-responsive utilidad-list">
@@ -229,28 +372,16 @@ class Utilidad extends Component {
                                 </div>
                                 : <></>
                                 : <></>
-                        }
+                        } */}
                     </Card.Body>
                 </Card>
                 
-                <Modal show = { modal.ventas } title = {title} handleClose = { this.handleCloseVentas } >
-                    <>
-                        {
-                            ventas.map((venta, key) => {
-                                console.log(venta, 'ventaa')
-                                return (
-                                    <div key={key} className="d-flex">
-                                        <div>{venta.id}</div>
-                                        <div>{venta.total}</div>
-                                    </div>
-                                )
-                            })
-                        }
-                    </>
+                <Modal show = { modal.ventas } title = 'VENTAS' handleClose = { this.handleCloseVentas } bgHeader="border-0 pb-0">
+                    <VentasList ventas={ventas} title={title} history = { this.props.history } />
                 </Modal>
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filter } handleClose = { this.handleCloseFiltros } customcontent = { true } 
                     contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-sm modal-dialog modal-dialog-scrollable">
-                        <FiltersUtilidad filters={filters} sendFilters={this.sendFilters}/>
+                        <FiltersUtilidad filters={filters} sendFilters={this.sendFilters} />
                 </Modal>
             </Layout>
         )
