@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { optionsFases } from '../../../functions/options'
-import { InputGray, TagSelectSearchGray, Button } from '../../form-components'
+import { InputGray, TagSelectSearchGray, Button, RadioGroupGray } from '../../form-components'
 
 class FiltersUtilidad extends Component{
 
     state = {
         form: {
             proyecto: '',
-            fases: ''
+            fases: '',
+            estatus:''
         }
     }
 
@@ -76,6 +77,19 @@ class FiltersUtilidad extends Component{
                             onChange={(value) => { this.updateSelect(value, 'fases') }}
                             iconclass="las la-pencil-ruler icon-xl"
                             messageinc="Selecciona la fase."
+                        />
+                    </div>
+                    <div className="col-12 mt-6 mb-2">
+                        <div className="separator separator-dashed" />
+                    </div>
+                    <div className="col-md-12">
+                        <RadioGroupGray 
+                            placeholder = "Estatus de la venta"
+                            name = 'estatus'
+                            onChange = { this.onChange } 
+                            options = { [ { label: 'Cobrado', value: 'cobrado' }, { label: 'Pendiente por cobrar', value: 'pendiente' } ] } 
+                            customdiv = 'mb-0'
+                            value = { form.estatus }
                         />
                     </div>
                 </div>
