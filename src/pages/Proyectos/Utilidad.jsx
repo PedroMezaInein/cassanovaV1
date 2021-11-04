@@ -194,6 +194,84 @@ class Utilidad extends Component {
                     </Card.Header>
                     <Card.Body className="pt-0">
                         <div className="w-100">
+                            <table className="table-utilidad w-80 ml-auto">
+                                <thead>
+                                    <tr>
+                                        <th>FASE</th>
+                                        <th>PRECIO DE VENTA</th>
+                                        <th>POR COBRAR</th>
+                                        <th>VENTAS</th>
+                                        <th>COMPRAS</th>
+                                        <th>UTILIDAD</th>
+                                        <th>% UTILIDAD</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            {
+                                Object.keys(proyectos.data).map((name, key1) => {
+                                    return (
+                                        <div className="hola d-flex border-top" key={key1}>
+                                            <div className="w-20 align-self-center py-2 px-3">
+                                                <div className="font-weight-bold text-justify">{name}</div>
+                                            </div>
+                                            <table className="table-utilidad  w-80">
+                                                <tbody>
+                                                    {
+                                                        proyectos.data[name].map((proyecto, key2) => {
+                                                            return (
+                                                                <tr key={key2} className="h-40px">
+                                                                    <td> {proyecto.fase} </td>
+                                                                    <td> {setMoneyText(proyecto.precioVenta)} </td>
+                                                                    <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
+                                                                    <td>
+                                                                        <div className="d-inline-flex">
+                                                                            { console.log('PROYECTO', proyecto) }
+                                                                            {
+                                                                                proyecto.ventas_count > 0 ?
+                                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER VENTAS</span></Tooltip>}>
+                                                                                        <div className="see-ventas text-hover" 
+                                                                                            onClick = { () => { 
+                                                                                                    this.getComprasVentasProyecto(proyecto, 'ventas'); 
+                                                                                                } } >
+                                                                                            {setMoneyText(proyecto.totalVentas)}
+                                                                                        </div>
+                                                                                    </OverlayTrigger>
+                                                                                    : <div>{setMoneyText(proyecto.totalVentas)}</div>
+                                                                            }
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div className="d-inline-flex">
+                                                                            {
+                                                                                proyecto.compras.length > 0 ?
+                                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER COMPRAS</span></Tooltip>}>
+                                                                                        <div className="see-ventas text-hover" 
+                                                                                            onClick = { () => { 
+                                                                                                this.getComprasVentasProyecto(proyecto, 'compras'); 
+                                                                                            } } >
+                                                                                            {setMoneyText(proyecto.totalCompras)}</div>
+                                                                                    </OverlayTrigger>
+                                                                                    : <div>{setMoneyText(proyecto.totalCompras)}</div>
+                                                                            }
+                                                                        </div>
+                                                                    </td>
+                                                                    <td> {setMoneyText(proyecto.totalVentas - proyecto.totalCompras)} </td>
+                                                                    <td> {this.percentageUtilidad(proyecto)}</td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )
+                                })
+                            }
+
+                        </div>
+
+
+                        {/* <div className="w-100">
                             <table className="table-utilidad">
                                 <thead>
                                     <tr>
@@ -279,7 +357,7 @@ class Utilidad extends Component {
                                 })
                             }
 
-                        </div>
+                        </div> */}
 
                         {/* {
                             proyectos ?
