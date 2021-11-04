@@ -829,6 +829,14 @@ export function setPercentTable(value) {
             renderText={cantidad => <div className="font-size-11px text-center"> {cantidad} %</div>} />
     )
 }
+export function setPercent(value) {
+    let cantidad = 0
+    cantidad = parseFloat(value).toFixed(2)
+    return (
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={false} prefix={''}
+            renderText={cantidad => <>{cantidad} %</>} />
+    )
+}
 
 export function setListTable(arreglo, nombre, minwidth) {
     return (
