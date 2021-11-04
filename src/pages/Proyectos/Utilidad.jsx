@@ -11,6 +11,7 @@ import { printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { Modal } from '../../components/singles'
 import FiltersUtilidad from '../../components/filters/administracion/FiltersUtilidad'
 import VentasList from '../../components/forms/administracion/Utilidad/VentasList'
+import ComprasList from '../../components/forms/administracion/Utilidad/ComprasList'
 import Swal from 'sweetalert2'
 
 class Utilidad extends Component {
@@ -87,7 +88,6 @@ class Utilidad extends Component {
         }
     }
     openModalVentas = (proyecto) => {
-        console.log(proyecto, 'proyecto')
         const { modal } = this.state
         let { ventas, title } = this.state
         ventas = proyecto.ventas
@@ -113,6 +113,32 @@ class Utilidad extends Component {
             title
         })
     }
+    openModalCompras = (proyecto) => {
+        const { modal } = this.state
+        let { compras, title } = this.state
+        compras = proyecto.compras
+        title=`${proyecto.simpleName}`
+        modal.compras = true
+        this.setState({
+            ...this.state,
+            modal,
+            compras,
+            title
+        })
+    }
+    handleCloseCompras = () => { 
+        const { modal } = this.state
+        let { compras, title } = this.state
+        modal.compras = false
+        compras = []
+        title = ''
+        this.setState({
+            ...this.state,
+            modal,
+            compras,
+            title
+        })
+    }
     openModalFiltros = () => {
         const { modal } = this.state
         modal.filter = true
@@ -133,7 +159,7 @@ class Utilidad extends Component {
         this.getUtilidad( form )
     }
     render() {
-        const { proyectos, activeKey, modal, title, ventas, filters } = this.state
+        const { proyectos, activeKey, modal, title, ventas, compras, filters } = this.state
         return (
             <Layout active='administracion'  {...this.props}>
                 <Card className="card-custom gutter-b">
@@ -385,6 +411,9 @@ class Utilidad extends Component {
                 
                 <Modal show = { modal.ventas } title = 'VENTAS' handleClose = { this.handleCloseVentas } bgHeader="border-0 pb-0">
                     <VentasList ventas={ventas} title={title} history = { this.props.history } />
+                </Modal>
+                <Modal show = { modal.compras } title = 'COMPRAS' handleClose = { this.handleCloseCompras } bgHeader="border-0 pb-0">
+                    <ComprasList compras={compras} title={title} history = { this.props.history } />
                 </Modal>
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filter } handleClose = { this.handleCloseFiltros } customcontent = { true } 
                     contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-sm modal-dialog modal-dialog-scrollable">
