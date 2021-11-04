@@ -3234,3 +3234,71 @@ td.descripcion{
 .table-layout-fixed{
     table-layout: fixed;
 }
+
+.table-utilidad{
+    table-layout: fixed;
+    width: 100%;
+    thead{
+        tr{
+            height: 35px;
+            text-align: center;
+        }
+        th{
+            color: #3f4254;
+            font-weight: 600;
+            font-size: 1.08rem;
+            letter-spacing: 0.2px;
+        }
+    }
+    tbody{
+        text-align: center;
+        tr{
+            border-top: 1px solid #ebedf3;
+            height: 30px;
+            &:hover{
+                background-color: #ecf0f3;
+                font-weight: 600;
+            }
+        }
+        td{
+            font-weight: 300;
+            color: #3f4254;
+            font-size: 1rem;
+        }
+    }
+    tr.active td {
+        background-color: #e3e6e7;
+        font-weight: 500;
+        i{
+            color: #3f4254;
+        }
+    }
+}
+.utilidad-list{
+    .accordion{
+        .card{
+            border-top: 1px solid #ECF0F3;
+            border-radius: 0 !important;
+            &.active-border-top{
+                border-top: 1px solid #eee7fc;
+            }
+            .card-header{
+                .active-utilidad{
+                    background: #f8f5ff;
+                    color: #7239ea;
+                    font-weight: 600;
+                }
+                .svg-icon-active svg g [fill]{
+                    fill: #7239ea;
+                }
+                .svg-icon-color svg g [fill]{
+                    fill: #212121;
+                }
+            }
+        }
+        
+    }
+}
+.w-70{
+    width: 70%;
+}
