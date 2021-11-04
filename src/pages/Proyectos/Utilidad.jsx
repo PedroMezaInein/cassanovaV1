@@ -45,10 +45,12 @@ class Utilidad extends Component {
         const { proyectos } = this.state
         apiPutForm(`v2/administracion/utilidad?page=${proyectos.numPage}`, objeto, access_token).then((response) => {
             const { proyectos: proyectosResponse, filtrados, totales } = response.data
+            console.log(response.data, 'response.data')
             proyectos.data = proyectosResponse
             proyectos.filtrados = filtrados
             proyectos.total = totales
             proyectos.totalPages = Math.ceil(totales / 5)
+            console.log(proyectos, 'proyectos.data')
             Swal.close()
             this.setState({ ...this.state, proyectos })
         }, (error) => { printResponseErrorAlert(error) }).catch((error) => { catchErrors(error) })
@@ -158,6 +160,44 @@ class Utilidad extends Component {
         this.setState({ ...this.state, filters: form, modal, proyectos })
         this.getUtilidad( form )
     }
+    isActiveButton(direction) {
+        const { proyectos } = this.state
+        if (proyectos.totalPages > 1) {
+            if (direction === 'prev') {
+                if (proyectos.numPage > 0) {
+                    return true;
+                }
+            } else {
+                if (proyectos.numPage < 10) {
+                    if (proyectos.numPage < proyectos.totalPages - 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    onClickNext = (e) => {
+        e.preventDefault()
+        const { proyectos } = this.state
+        if (proyectos.numPage < proyectos.totalPages - 1) {
+            this.setState({
+                numPage: proyectos.numPage++
+            })
+        }
+        this.getUtilidad()
+    }
+    
+    onClickPrev = (e) => {
+        e.preventDefault()
+        const { proyectos } = this.state
+        if (proyectos.numPage > 0) {
+            this.setState({
+                numPage: proyectos.numPage--
+            })
+            this.getUtilidad()
+        }
+    }
     render() {
         const { proyectos, activeKey, modal, title, ventas, compras, filters } = this.state
         return (
@@ -189,7 +229,7 @@ class Utilidad extends Component {
                             {
                                 Object.keys(proyectos.data).map((name, key1) => {
                                     return (
-                                        <div className="hola">
+                                        <div className="hola" key={key1}>
                                             <div className="bg-light">
                                                 <div className="font-weight-bolder">{name}</div>
                                             </div>
@@ -404,6 +444,40 @@ class Utilidad extends Component {
                                 : <></>
                                 : <></>
                         } */}
+                        <div className="d-flex justify-content-between mt-8 text-body font-weight-bolder font-size-lg">
+                            {/* <div className="d-flex align-items-center">
+                                MOSTRAR
+                                <select className="form-control form-control-sm text-primary2 font-weight-bold mx-2 border-0 bg-light-primary2 text-center p-0 h-25px">
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                PROYECTOS
+                            </div> */}
+                            <div className="d-flex align-items-center">
+                                {
+                                    proyectos.total > 0 ?
+                                    <div className="align-self-center mr-5">Página { parseInt(proyectos.numPage) + 1} de { proyectos.totalPages }</div>
+                                    :<></>
+                                }
+                                {
+                                    this.isActiveButton('prev') ?
+                                        <span className="btn btn-icon btn-xs btn-light-primary2 mr-2" onClick={this.onClickPrev}>
+                                            <i className="ki ki-bold-arrow-back icon-xs"></i>
+                                        </span>
+                                    : ''
+                                }
+                                {
+                                    this.isActiveButton('next') ?
+                                        <span className="btn btn-icon btn-xs btn-light-primary2" onClick={this.onClickNext}>
+                                            <i className="ki ki-bold-arrow-next icon-xs"></i>
+                                        </span>
+                                    : ''
+                                }
+                            </div>
+                        </div>
                     </Card.Body>
                 </Card>
                 

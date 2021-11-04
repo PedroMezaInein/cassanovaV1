@@ -254,16 +254,23 @@
     transition: fill .3s ease;
     fill: #fff
 }
+.btn.btn-light-primary2 i {
+    color: #009ef7
+}
 .btn.btn-primary2 {
     color: #fff;
     border-color: #009ef7;
     background-color: #009ef7
 }
 
-.btn.btn-primary2 i {
+.btn.btn-primary2 i{
     color: #fff
 }
-
+.btn.btn-light-primary2:hover{
+    i{
+        color: #fff;
+    }
+}
 .btn.btn-primary2 .svg-icon svg [fill]:not(.permanent):not(g) {
     transition: fill .3s ease;
     fill: #fff
