@@ -178,10 +178,13 @@ class Utilidad extends Component {
                                                                     <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
                                                                     <td>
                                                                         <div className="d-inline-flex">
+                                                                            { console.log('PROYECTO', proyecto) }
                                                                             {
-                                                                                proyecto.compras.length > 0 ?
+                                                                                proyecto.ventas_count > 0 ?
                                                                                     <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER VENTAS</span></Tooltip>}>
-                                                                                        <div className="see-ventas" onClick={() => { this.openModalVentas(proyecto); }}>{setMoneyText(proyecto.totalVentas)}</div>
+                                                                                        <div className="see-ventas" onClick={() => { this.openModalVentas(proyecto); }}>
+                                                                                            {setMoneyText(proyecto.totalVentas)}
+                                                                                        </div>
                                                                                     </OverlayTrigger>
                                                                                     : <div>{setMoneyText(proyecto.totalVentas)}</div>
                                                                             }
@@ -286,7 +289,6 @@ class Utilidad extends Component {
                                 : <></>
                             : <></>
                         } */}
-
 
                         {/* {
                             proyectos ?
@@ -393,13 +395,7 @@ class Utilidad extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Utilidad);
