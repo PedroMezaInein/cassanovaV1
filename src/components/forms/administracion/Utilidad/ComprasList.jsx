@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { setMoneyText  } from '../../../../functions/setters'
 import Pagination from "react-js-pagination"
-import { MAIN_FRONT } from '../../../../constants'
 class ComprasList extends Component {
     state = {
         activePage: 1,
@@ -47,7 +46,10 @@ class ComprasList extends Component {
                                             return (
                                                 <tr key={key} className="border-bottom text-center text-dark-75 font-size-lg font-weight-light h-30px">
                                                     <td className="font-weight-bold">
-                                                        <a className="text-hover-primary2 cursor-pointer" onClick = { (e) => { e.preventDefault(); this.changePageCompra(compra) } } >{compra.id}</a>  
+                                                        <span className="text-hover-primary2 cursor-pointer" 
+                                                            onClick = { (e) => { e.preventDefault(); this.changePageCompra(compra) } } >
+                                                            {compra.id}
+                                                        </span>  
                                                     </td>
                                                     <td>
                                                         {setMoneyText(compra.total)}
@@ -67,7 +69,7 @@ class ComprasList extends Component {
                             <Pagination
                                 innerClass="pagination mb-0"
                                 itemClass="page-item"
-                                linkClass="page-link"
+                                /* linkClass="page-link" */
                                 firstPageText='Primero'
                                 lastPageText='Último'
                                 activePage={activePage}

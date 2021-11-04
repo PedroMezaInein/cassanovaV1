@@ -4,7 +4,6 @@ import { toAbsoluteUrl } from "../../functions/routers"
 import { connect } from 'react-redux'
 import { setMoneyText, setPercent } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
-import $ from "jquery";
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { apiGet, catchErrors, apiPutForm } from '../../functions/api'
 import { printResponseErrorAlert, waitAlert } from '../../functions/alert'
@@ -77,31 +76,6 @@ class Utilidad extends Component {
         }, (error) => { printResponseErrorAlert(error) }).catch((error) => { catchErrors(error) })
     }
 
-    handleAccordion = (name) => {
-        const { proyectos: { data } } = this.state;
-        const { activeKey } = this.state
-        let aux = activeKey
-        Object.keys(data).forEach((element) => {
-            if (element === name) {
-                aux = name
-            }
-            return false
-        })
-        this.setState({
-            activeKey: aux
-        })
-    }
-    activeTr(key) {
-        var tr = $(`${key} td`).parent();
-        if (tr.hasClass("active")) {
-            tr.removeClass("active");
-        } else {
-            tr.addClass("active");
-        }
-    }
-    totalUtilidad(proyecto){
-        return proyecto.totalVentas - proyecto.totalCompras
-    }
     percentageUtilidad(proyecto){
         let percentage = (proyecto.totalVentas - proyecto.totalCompras)*100/proyecto.totalVentas
         if (isNaN(percentage)) {
@@ -180,7 +154,7 @@ class Utilidad extends Component {
         }
     }
     render() {
-        const { proyectos, activeKey, modal, title, ventas, compras, filters } = this.state
+        const { proyectos, modal, title, ventas, compras, filters } = this.state
         return (
             <Layout active='administracion'  {...this.props}>
                 <Card className="card-custom gutter-b">

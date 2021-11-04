@@ -46,7 +46,10 @@ class VentasList extends Component {
                                             return (
                                                 <tr key={key} className="border-bottom text-center text-dark-75 font-size-lg font-weight-light h-30px">
                                                     <td className="font-weight-bold">
-                                                        <a className="text-hover-primary2 cursor-pointer" onClick = { (e) => { e.preventDefault(); this.changePageVenta(venta) } } >{venta.id}</a>  
+                                                        <span className="text-hover-primary2 cursor-pointer" 
+                                                            onClick = { (e) => { e.preventDefault(); this.changePageVenta(venta) } } >
+                                                                {venta.id}
+                                                        </span>  
                                                     </td>
                                                     <td>
                                                         {setMoneyText(venta.total)}
@@ -66,7 +69,7 @@ class VentasList extends Component {
                             <Pagination
                                 innerClass="pagination mb-0"
                                 itemClass="page-item"
-                                linkClass="page-link"
+                                /* linkClass="page-link" */
                                 firstPageText='Primero'
                                 lastPageText='Último'
                                 activePage={activePage}
