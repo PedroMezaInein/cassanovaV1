@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { setMoneyText  } from '../../../../functions/setters'
 import Pagination from "react-js-pagination"
+import { MAIN_FRONT } from '../../../../constants'
 class ComprasList extends Component {
     state = {
         activePage: 1,

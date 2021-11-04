@@ -56,6 +56,27 @@ class Utilidad extends Component {
         }, (error) => { printResponseErrorAlert(error) }).catch((error) => { catchErrors(error) })
     }
 
+    getComprasVentasProyecto = async(proy, tipo) => {
+        const { access_token } = this.props.authUser
+        apiGet( `v2/administracion/utilidad/${proy.id}/${tipo}`, access_token ).then((response) => {
+            const { proyecto } = response.data
+            let { title, ventas, compras, modal } = this.state
+            title = proyecto.simpleName
+            if(tipo === 'ventas'){
+                ventas = proyecto.ventas
+                modal.ventas = true
+                modal.compras = false
+            }
+            if(tipo === 'compras'){
+                compras = proyecto.compras
+                modal.ventas = false
+                modal.compras = true
+            }
+            Swal.close()
+            this.setState({ ...this.state, modal, ventas, compras, title })
+        }, (error) => { printResponseErrorAlert(error) }).catch((error) => { catchErrors(error) })
+    }
+
     handleAccordion = (name) => {
         const { proyectos: { data } } = this.state;
         const { activeKey } = this.state
@@ -89,58 +110,18 @@ class Utilidad extends Component {
             return setPercent(percentage)
         }
     }
-    openModalVentas = (proyecto) => {
+
+    handleClose = () => { 
         const { modal } = this.state
-        let { ventas, title } = this.state
-        ventas = proyecto.ventas
-        title=`${proyecto.simpleName}`
-        modal.ventas = true
-        this.setState({
-            ...this.state,
-            modal,
-            ventas,
-            title
-        })
-    }
-    handleCloseVentas = () => { 
-        const { modal } = this.state
-        let { ventas, title } = this.state
+        let { ventas, title, compras } = this.state
         modal.ventas = false
-        ventas = []
-        title = ''
-        this.setState({
-            ...this.state,
-            modal,
-            ventas,
-            title
-        })
-    }
-    openModalCompras = (proyecto) => {
-        const { modal } = this.state
-        let { compras, title } = this.state
-        compras = proyecto.compras
-        title=`${proyecto.simpleName}`
-        modal.compras = true
-        this.setState({
-            ...this.state,
-            modal,
-            compras,
-            title
-        })
-    }
-    handleCloseCompras = () => { 
-        const { modal } = this.state
-        let { compras, title } = this.state
         modal.compras = false
+        ventas = []
         compras = []
         title = ''
-        this.setState({
-            ...this.state,
-            modal,
-            compras,
-            title
-        })
+        this.setState({ ...this.state, modal, ventas, compras, title })
     }
+    
     openModalFiltros = () => {
         const { modal } = this.state
         modal.filter = true
@@ -225,6 +206,17 @@ class Utilidad extends Component {
                                         <th>% UTILIDAD</th>
                                     </tr>
                                 </thead>
+                                {
+                                    proyectos.data.length === 0 ? 
+                                        <tbody>
+                                            <tr>
+                                                <td colSpan = '7' className = 'text-center'>
+                                                    No hay datos que mostrar
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    : <></>
+                                }
                             </table>
                             {
                                 Object.keys(proyectos.data).map((name, key1) => {
@@ -244,10 +236,16 @@ class Utilidad extends Component {
                                                                     <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
                                                                     <td>
                                                                         <div className="d-inline-flex">
+                                                                            { console.log('PROYECTO', proyecto) }
                                                                             {
-                                                                                proyecto.compras.length > 0 ?
+                                                                                proyecto.ventas_count > 0 ?
                                                                                     <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER VENTAS</span></Tooltip>}>
-                                                                                        <div className="see-ventas" onClick={() => { this.openModalVentas(proyecto); }}>{setMoneyText(proyecto.totalVentas)}</div>
+                                                                                        <div className="see-ventas text-hover" 
+                                                                                            onClick = { () => { 
+                                                                                                    this.getComprasVentasProyecto(proyecto, 'ventas'); 
+                                                                                                } } >
+                                                                                            {setMoneyText(proyecto.totalVentas)}
+                                                                                        </div>
                                                                                     </OverlayTrigger>
                                                                                     : <div>{setMoneyText(proyecto.totalVentas)}</div>
                                                                             }
@@ -258,7 +256,11 @@ class Utilidad extends Component {
                                                                             {
                                                                                 proyecto.compras.length > 0 ?
                                                                                     <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER COMPRAS</span></Tooltip>}>
-                                                                                        <div className="see-ventas" onClick={() => { this.openModalCompras(proyecto); }}>{setMoneyText(proyecto.totalCompras)}</div>
+                                                                                        <div className="see-ventas text-hover" 
+                                                                                            onClick = { () => { 
+                                                                                                this.getComprasVentasProyecto(proyecto, 'compras'); 
+                                                                                            } } >
+                                                                                            {setMoneyText(proyecto.totalCompras)}</div>
                                                                                     </OverlayTrigger>
                                                                                     : <div>{setMoneyText(proyecto.totalCompras)}</div>
                                                                             }
@@ -353,7 +355,6 @@ class Utilidad extends Component {
                             : <></>
                         } */}
 
-
                         {/* {
                             proyectos ?
                             proyectos.data ?
@@ -445,6 +446,10 @@ class Utilidad extends Component {
                                 : <></>
                         } */}
                         <div className="d-flex justify-content-between mt-8 text-body font-weight-bolder font-size-lg">
+                            <div className="visibility-hidden">
+                                REGISTROS DEL 1 AL 2 DE UN TOTAL DE 2 REGISTROS (FILTRADO DE UN TOTAL DE 160 REGISTROS)
+                            </div>
+
                             {/* <div className="d-flex align-items-center">
                                 MOSTRAR
                                 <select className="form-control form-control-sm text-primary2 font-weight-bold mx-2 border-0 bg-light-primary2 text-center p-0 h-25px">
@@ -481,10 +486,10 @@ class Utilidad extends Component {
                     </Card.Body>
                 </Card>
                 
-                <Modal show = { modal.ventas } title = 'VENTAS' handleClose = { this.handleCloseVentas } bgHeader="border-0 pb-0">
+                <Modal show = { modal.ventas } title = 'VENTAS' handleClose = { this.handleClose } bgHeader="border-0 pb-0">
                     <VentasList ventas={ventas} title={title} history = { this.props.history } />
                 </Modal>
-                <Modal show = { modal.compras } title = 'COMPRAS' handleClose = { this.handleCloseCompras } bgHeader="border-0 pb-0">
+                <Modal show = { modal.compras } title = 'COMPRAS' handleClose = { this.handleClose } bgHeader="border-0 pb-0">
                     <ComprasList compras={compras} title={title} history = { this.props.history } />
                 </Modal>
                 <Modal size = 'lg' title = 'Filtros' show = { modal.filter } handleClose = { this.handleCloseFiltros } customcontent = { true } 
@@ -496,13 +501,7 @@ class Utilidad extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Utilidad);
