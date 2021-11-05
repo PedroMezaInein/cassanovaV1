@@ -219,7 +219,7 @@ class Utilidad extends Component {
                                                                         proyectos.data[name].map((proyecto, key2) => {
                                                                             return (
                                                                                 <tr key={key2} className="tr-utilidad-table">
-                                                                                    <td> <a className="link-utilidad" onClick={(e) => { e.preventDefault(); this.changePageProyecto(proyecto) }}>{proyecto.fase}</a></td>
+                                                                                    <td> <span className="link-utilidad" onClick={(e) => { e.preventDefault(); this.changePageProyecto(proyecto) }}>{proyecto.fase}</span></td>
                                                                                     <td> {setMoneyText(proyecto.precioVenta)} </td>
                                                                                     <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
                                                                                     <td>
