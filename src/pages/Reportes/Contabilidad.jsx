@@ -250,6 +250,15 @@ class Contabilidad extends Component {
                                             }
                                             return false
                                         })
+                                        venta.facturas_pdf.forEach((factura) => {
+                                            url = factura.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = 'ventas/facturas/'+empresa.name+' FE '+factura.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
+                                            empresaFolder.file(name, blobPromise)
+                                        })
                                     }
                                     return false
                                 })
@@ -310,6 +319,15 @@ class Contabilidad extends Component {
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                             return false
+                                        })
+                                        compra.facturas_pdf.forEach((factura) => {
+                                            url = factura.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = 'compras/facturas/'+empresa.name+' FE '+factura.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
+                                            empresaFolder.file(name, blobPromise)
                                         })
                                     }
                                     return false
@@ -372,6 +390,15 @@ class Contabilidad extends Component {
                                             }
                                             return false
                                         })
+                                        egreso.facturas_pdf.forEach((factura) => {
+                                            url = factura.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = 'egresos/facturas/'+empresa.name+' FE '+factura.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                            empresaFolder.file(name, blobPromise)
+                                        })
                                     }
                                     return false
                                 })
@@ -432,6 +459,15 @@ class Contabilidad extends Component {
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                             return false
+                                        })
+                                        ingreso.facturas_pdf.forEach((factura) => {
+                                            url = factura.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = 'ingresos/facturas/'+empresa.name+' FE '+factura.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                            empresaFolder.file(name, blobPromise)
                                         })
                                     }
                                     return false
