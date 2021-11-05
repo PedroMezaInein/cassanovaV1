@@ -26,13 +26,13 @@ class ComprasList extends Component {
                 <div className="font-size-lg mt-2 mb-5 text-center font-weight-normal">{title}</div>
                 <div className="table-responsive d-flex justify-content-center col-md-10 mx-auto">
                     <table className="table-layout-fixed table-vertical-center w-100">
-                        <thead className="bg-light-primary2">
+                        <thead className="utilidad-head-table">
                             <tr className="text-center">
                                 <th>
-                                    <span className="text-primary2 font-size-lg">IDENTIFICADOR</span>
+                                    <span className="font-size-lg">IDENTIFICADOR</span>
                                 </th>
                                 <th>
-                                    <span className="text-primary2 font-size-lg">TOTAL</span>
+                                    <span className="font-size-lg">TOTAL</span>
                                 </th>
                             </tr>
                         </thead>
@@ -46,7 +46,7 @@ class ComprasList extends Component {
                                             return (
                                                 <tr key={key} className="border-bottom text-center text-dark-75 font-size-lg font-weight-light h-30px">
                                                     <td className="font-weight-bold">
-                                                        <span className="text-hover-primary2 cursor-pointer" 
+                                                        <span className="text-utilidad-table" 
                                                             onClick = { (e) => { e.preventDefault(); this.changePageCompra(compra) } } >
                                                             {compra.id}
                                                         </span>  
@@ -79,12 +79,12 @@ class ComprasList extends Component {
                                 onChange={this.onChangePage.bind(this)}
                                 itemClassLast="d-none"
                                 itemClassFirst="d-none"
-                                prevPageText={<i className='ki ki-bold-arrow-back icon-xs text-primary2' />}
-                                nextPageText={<i className='ki ki-bold-arrow-next icon-xs text-primary2' />}
-                                linkClassPrev="btn btn-icon btn-sm btn-light-primary2 mr-2 my-1 pagination"
-                                linkClassNext="btn btn-icon btn-sm btn-light-primary2 mr-2 my-1 pagination"
-                                linkClass="btn btn-icon btn-sm border-0 btn-hover-primary2 mr-2 my-1 pagination"
-                                activeLinkClass="btn btn-icon btn-sm border-0 btn-primary2 btn-hover-primary2 mr-2 my-1 pagination"
+                                prevPageText={<i className='ki ki-bold-arrow-back icon-xs text-table-utilidad' />}
+                                nextPageText={<i className='ki ki-bold-arrow-next icon-xs text-table-utilidad' />}
+                                linkClassPrev="btn btn-icon btn-sm btn-light-utilidad mr-2 my-1 pagination"
+                                linkClassNext="btn btn-icon btn-sm btn-light-utilidad mr-2 my-1 pagination"
+                                linkClass="btn btn-icon btn-sm border-0 btn-hover-utilidad mr-2 my-1 pagination"
+                                activeLinkClass="btn btn-icon btn-sm border-0 btn-utilidad btn-hover-utilidad mr-2 my-1 pagination"
                             />
                         </div>
                         : ''

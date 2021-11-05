@@ -3234,116 +3234,6 @@ td.descripcion{
 .table-layout-fixed{
     table-layout: fixed;
 }
-
-// .table-utilidad{
-//     table-layout: fixed;
-//     width: 100%;
-//     thead{
-//         tr{
-//             height: 35px;
-//             text-align: center;
-//         }
-//         th{
-//             color: #3f4254;
-//             font-weight: 600;
-//             font-size: 1.08rem;
-//             letter-spacing: 0.2px;
-//         }
-//     }
-//     tbody{
-//         text-align: center;
-//         tr{
-//             border-top: 1px solid #ebedf3;
-//             height: 30px;
-//             &:hover{
-//                 background-color: #ecf0f3;
-//                 font-weight: 600;
-//             }
-//         }
-//         td{
-//             font-weight: 300;
-//             color: #3f4254;
-//             font-size: 1rem;
-//         }
-//     }
-//     tr.active td {
-//         background-color: #e3e6e7;
-//         font-weight: 500;
-//         i{
-//             color: #3f4254;
-//         }
-//     }
-// }
-.table-utilidad{
-    table-layout: fixed;
-    // width: 100%;
-    thead{
-        tr{
-            height: 35px;
-            text-align: center;
-        }
-        th{   
-            color: #3f4254;
-            font-weight: 500;
-            font-size: 0.89rem;
-            letter-spacing: 0.2px;
-        }
-    }
-    tbody{
-        text-align: center;
-        tr{
-            // border-top: 1px solid #ebedf3;
-            height: 30px;
-            &:hover{
-                background-color: #ecf0f3;
-                font-weight: 600;
-            }
-        }
-        td{
-            font-weight: 300;
-            color: #3f4254;
-            font-size: 1rem;
-        }
-    }
-    tr.active td {
-        background-color: #e3e6e7;
-        font-weight: 500;
-        i{
-            color: #3f4254;
-        }
-    }
-}
-.utilidad-list{
-    .accordion{
-        .card{
-            border-top: 1px solid #ECF0F3;
-            border-radius: 0 !important;
-            &.active-border-top{
-                border-top: 1px solid #eee7fc;
-            }
-            .card-header{
-                .active-utilidad{
-                    background: #f8f5ff;
-                    color: #7239ea;
-                    font-weight: 600;
-                }
-                .svg-icon-active svg g [fill]{
-                    fill: #7239ea;
-                }
-                .svg-icon-color svg g [fill]{
-                    fill: #212121;
-                }
-            }
-        }
-        
-    }
-}
-.see-ventas:hover{
-    border-bottom: 1px solid #009ef7;
-    color: #009ef7;
-    font-weight: 500;
-    cursor: pointer;
-}
 .w-70{
     width: 70%;
 }
@@ -3352,4 +3242,138 @@ td.descripcion{
 }
 .visibility-hidden{
     visibility: hidden;
+}
+.table-utilidad{
+    table-layout: fixed;
+    thead{
+        tr{
+            text-align: center;
+        }
+    }
+    tbody{
+        text-align: center;
+    }
+}
+.card-title-utilidad{
+    font-weight: 700;
+    color: #202f8a;
+    font-size: 1.5rem;
+    letter-spacing: 0.4px;
+}
+.utilidad-head-table{
+    background: #eceefa;
+    color: #213c95;
+    height: 36px;
+    letter-spacing: 0.2px;
+    border-radius: 3px;
+}
+.utilidad-table-title{
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    text-align: center;
+    font-weight: 400;
+    color: #000;
+    justify-content: center;
+}
+.div-general-utilidad{
+    display: -webkit-inline-box;
+}
+.tr-utilidad-table{
+    height: 40px;
+    color: #626262;
+    font-weight: 300;
+}
+.border-utilidad:first-child{
+    border-top: none!important;
+}
+.border-utilidad:nth-last-child(2n) {
+    border-top: 1.2px solid #eceefa;
+    border-bottom: 1.2px solid #eceefa;
+    background: #f9fafd;
+}
+.div-general-utilidad:hover{
+    // background: #eceefa;
+    box-shadow: 0px 0px 14px 3px rgba(33, 60, 149, 0.3);
+    border: none;
+    .utilidad-table-title{
+        background: #213c95;
+        color: white;
+        font-weight: 500;
+        opacity: 0.95;
+    }
+    .hover-utilidad-table{
+        background: #f6f7fd;
+    }
+    .tr-utilidad-table{
+        font-weight: 500;
+        color: #213c95;
+    }
+    .link-utilidad{
+        border-bottom: 1px solid #213c95;
+        color: #213c95;
+        font-weight: 500;
+        cursor: pointer;
+        &:hover{
+            color:#996c4a;
+            border-bottom: 1px solid #996c4a;
+        }
+    }
+    .tr-utilidad-table{
+        border-top: 1px dashed #d6dbee;
+    }
+    .tr-utilidad-table:first-child{
+        border-top: none!important;
+    }
+}
+.btn.btn-utilidad{
+    color: white;
+    border-color: #213c95;
+    background-color: #213c95;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    .svg-icon svg [fill]:not(.permanent):not(g){
+        fill: white;
+    }
+    i{
+        color: white;
+    }
+}
+.btn.btn-utilidad:hover{
+    background-color: #1d3481;
+}
+
+.btn.btn-light-utilidad{
+    color: #213c95;
+    border-color: #eceefa;
+    background-color: #eceefa;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    .svg-icon svg [fill]:not(.permanent):not(g){
+        fill: #213c95;
+    }
+    i{
+        color: #213c95;
+    }
+}
+.text-table-utilidad{
+    color: #213c95;
+}
+.text-utilidad-table:hover{
+    color: #213c95;
+    text-decoration-line: underline;
+    text-decoration-color: #213c95;
+    cursor: pointer;
+
+}
+.btn.btn-hover-utilidad:hover{
+    color: white;
+    border-color: #213c95;
+    background-color: #213c95;
+    .svg-icon svg [fill]:not(.permanent):not(g){
+        fill: white;
+    }
+    i{
+        color: white;
+    }
 }
