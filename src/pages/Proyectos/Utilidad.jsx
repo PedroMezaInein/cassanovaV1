@@ -241,7 +241,7 @@ class Utilidad extends Component {
                             }
                         </div>
                         <div className="d-flex justify-content-between mt-8 text-body font-weight-bold font-size-sm">
-                            <div>
+                            <div className={keys.length?'':'visibility-hidden'}>
                                 {`${proyectos.filtrados} ${proyectos.filtrados===1?'PROYECTO ENCONTRADO':'PROYECTOS ENCONTRADOS'}`}
                                 {
                                     keys.length? `(FILTRADO DE UN TOTAL DE ${proyectos.total} PROYECTOS)`:''
