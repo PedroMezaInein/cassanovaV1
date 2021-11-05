@@ -22,7 +22,6 @@ class Utilidad extends Component {
             numPage: 0,
             filtrados: 0
         },
-        activeKey:'',
         modal:{
             compras:false,
             ventas:false,
@@ -44,7 +43,6 @@ class Utilidad extends Component {
         const { proyectos } = this.state
         apiPutForm(`v2/administracion/utilidad?page=${proyectos.numPage}`, objeto, access_token).then((response) => {
             const { proyectos: proyectosResponse, filtrados, totales } = response.data
-            console.log(response.data, 'response.data')
             proyectos.data = proyectosResponse
             proyectos.filtrados = filtrados
             proyectos.total = totales
@@ -78,7 +76,7 @@ class Utilidad extends Component {
 
     percentageUtilidad(proyecto){
         let percentage = (proyecto.totalVentas - proyecto.totalCompras)*100/proyecto.totalVentas
-        if (isNaN(percentage)) {
+        if (isNaN(percentage) || percentage == Number.NEGATIVE_INFINITY) {
             return '-';
         }else{
             return setPercent(percentage)
@@ -108,7 +106,6 @@ class Utilidad extends Component {
         this.setState({...this.state, modal})
     }
     sendFilters = async(form) => {
-        // waitAlert()
         const { modal, proyectos } = this.state
         proyectos.numPage = 0
         modal.filter = false
@@ -134,27 +131,29 @@ class Utilidad extends Component {
     }
     onClickNext = (e) => {
         e.preventDefault()
-        const { proyectos } = this.state
+        const { proyectos, filters } = this.state
         if (proyectos.numPage < proyectos.totalPages - 1) {
             this.setState({
                 numPage: proyectos.numPage++
             })
         }
-        this.getUtilidad()
+        this.getUtilidad(filters)
     }
     
     onClickPrev = (e) => {
         e.preventDefault()
-        const { proyectos } = this.state
+        const { proyectos, filters } = this.state
         if (proyectos.numPage > 0) {
             this.setState({
                 numPage: proyectos.numPage--
             })
-            this.getUtilidad()
+            this.getUtilidad(filters)
         }
     }
     render() {
         const { proyectos, modal, title, ventas, compras, filters } = this.state
+        console.log(this.state, 'this.state')
+        let keys = Object.keys(filters)
         return (
             <Layout active='administracion'  {...this.props}>
                 <Card className="card-custom gutter-b">
@@ -199,7 +198,6 @@ class Utilidad extends Component {
                                                                     <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
                                                                     <td>
                                                                         <div className="d-inline-flex">
-                                                                            { console.log('PROYECTO', proyecto) }
                                                                             {
                                                                                 proyecto.ventas_count > 0 ?
                                                                                     <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER VENTAS</span></Tooltip>}>
@@ -241,277 +239,14 @@ class Utilidad extends Component {
                                     )
                                 })
                             }
-
                         </div>
-
-                        {/* <div className="w-100">
-                            <table className="table-utilidad">
-                                <thead>
-                                    <tr>
-                                        <th>FASE</th>
-                                        <th>PRECIO DE VENTA</th>
-                                        <th>POR COBRAR</th>
-                                        <th>VENTAS</th>
-                                        <th>COMPRAS</th>
-                                        <th>UTILIDAD</th>
-                                        <th>% UTILIDAD</th>
-                                    </tr>
-                                </thead>
+                        <div className="d-flex justify-content-between mt-8 text-body font-weight-bold font-size-sm">
+                            <div>
+                                {`${proyectos.filtrados} ${proyectos.filtrados===1?'PROYECTO ENCONTRADO':'PROYECTOS ENCONTRADOS'}`}
                                 {
-                                    proyectos.data.length === 0 ? 
-                                        <tbody>
-                                            <tr>
-                                                <td colSpan = '7' className = 'text-center'>
-                                                    No hay datos que mostrar
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    : <></>
+                                    keys.length? `(FILTRADO DE UN TOTAL DE ${proyectos.total} PROYECTOS)`:''
                                 }
-                            </table>
-                            {
-                                Object.keys(proyectos.data).map((name, key1) => {
-                                    return (
-                                        <div className="hola" key={key1}>
-                                            <div className="bg-light">
-                                                <div className="font-weight-bolder">{name}</div>
-                                            </div>
-                                            <table className="table-utilidad">
-                                                <tbody>
-                                                    {
-                                                        proyectos.data[name].map((proyecto, key2) => {
-                                                            return (
-                                                                <tr className={`tr${key1}${key2}`} onClick={() => { this.activeTr(`.tr${key1}${key2}`); }} key={key2}>
-                                                                    <td> {proyecto.fase} </td>
-                                                                    <td> {setMoneyText(proyecto.precioVenta)} </td>
-                                                                    <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
-                                                                    <td>
-                                                                        <div className="d-inline-flex">
-                                                                            { console.log('PROYECTO', proyecto) }
-                                                                            {
-                                                                                proyecto.ventas_count > 0 ?
-                                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER VENTAS</span></Tooltip>}>
-                                                                                        <div className="see-ventas text-hover" 
-                                                                                            onClick = { () => { 
-                                                                                                    this.getComprasVentasProyecto(proyecto, 'ventas'); 
-                                                                                                } } >
-                                                                                            {setMoneyText(proyecto.totalVentas)}
-                                                                                        </div>
-                                                                                    </OverlayTrigger>
-                                                                                    : <div>{setMoneyText(proyecto.totalVentas)}</div>
-                                                                            }
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div className="d-inline-flex">
-                                                                            {
-                                                                                proyecto.compras.length > 0 ?
-                                                                                    <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>VER COMPRAS</span></Tooltip>}>
-                                                                                        <div className="see-ventas text-hover" 
-                                                                                            onClick = { () => { 
-                                                                                                this.getComprasVentasProyecto(proyecto, 'compras'); 
-                                                                                            } } >
-                                                                                            {setMoneyText(proyecto.totalCompras)}</div>
-                                                                                    </OverlayTrigger>
-                                                                                    : <div>{setMoneyText(proyecto.totalCompras)}</div>
-                                                                            }
-                                                                        </div>
-                                                                    </td>
-                                                                    <td> {setMoneyText(proyecto.totalVentas - proyecto.totalCompras)} </td>
-                                                                    <td> {this.percentageUtilidad(proyecto)}</td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )
-                                })
-                            }
-
-                        </div> */}
-
-                        {/* {
-                            proyectos ?
-                                proyectos.data ?
-                                    <div className="table-responsive utilidad-list">
-                                        <div className="">
-                                            <table className="table-utilidad">
-                                                <thead>
-                                                    <tr>
-                                                        <th>FASE</th>
-                                                        <th>PRECIO DE VENTA</th>
-                                                        <th>POR COBRAR</th>
-                                                        <th>VENTAS</th>
-                                                        <th>COMPRAS</th>
-                                                        <th>UTILIDAD</th>
-                                                        <th>% UTILIDAD</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                        Object.keys(proyectos.data).map((name, key1) => {
-                                                            return (
-                                                                <>
-                                                                <tr className=" h-40px">
-                                                                    <td colspan="7" className="font-weight-bolder">{name}</td>
-                                                                </tr>
-                                                                {
-                                                                    proyectos.data[name].map((proyecto, key2) => {
-                                                                        return (
-                                                                            <tr className={`tr${key1}${key2}`} onClick={() => { this.activeTr(`.tr${key1}${key2}`); }} key={key2}>
-                                                                                <td> {proyecto.fase} </td>
-                                                                                <td> {setMoneyText(proyecto.precioVenta)} </td>
-                                                                                <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
-                                                                                <td>
-                                                                                    <div className="d-inline-flex">
-                                                                                        {
-                                                                                            proyecto.compras.length > 0 ?
-                                                                                                <div className="mr-3 d-flex align-self-center text-hover-info" onClick={() => { this.openModalVentas(proyecto); }}>
-                                                                                                    <i className="las la-eye icon-lg"></i>
-                                                                                                </div>
-                                                                                                : <></>
-                                                                                        }
-                                                                                        <div>{setMoneyText(proyecto.totalVentas)}</div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div className="d-inline-flex">
-                                                                                        {
-                                                                                            proyecto.ventas.length > 0 ?
-                                                                                                <div className="mr-3 d-flex align-self-center text-hover-info">
-                                                                                                    <i className="las la-eye icon-lg"></i>
-                                                                                                </div>
-                                                                                                : <></>
-                                                                                        }
-                                                                                        <div>{setMoneyText(proyecto.totalCompras)} </div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td> {setMoneyText(proyecto.totalVentas - proyecto.totalCompras)} </td>
-                                                                                <td> {this.percentageUtilidad(proyecto)}</td>
-                                                                            </tr>
-                                                                        )
-                                                                    })
-                                                                }
-                                                                </>
-                                                            )
-                                                        })
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                : <></>
-                            : <></>
-                        } */}
-
-                        {/* {
-                            proyectos ?
-                            proyectos.data ?
-                                <div className="table-responsive utilidad-list">
-                                    <div className="">
-                                        <div className="accordion accordion-light accordion-svg-toggle">
-                                            {
-                                                Object.keys(proyectos.data).map((name, key1) => {
-                                                    return (
-                                                        <Card key={key1} className={`${activeKey === name ? 'active-border-top' : ''}`}>
-                                                            <Card.Header>
-                                                                <Card.Title className = { `rounded-0 py-2 px-3 ${ activeKey === name ? 'active-utilidad collapsed' : 'text-dark font-weight-light'}`} onClick={() => { this.handleAccordion(name) }}>
-                                                                    <span className={`svg-icon ${activeKey === name ? 'svg-icon-active' : 'svg-icon-color'}`}>
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
-                                                                    </span>
-                                                                    <div className="card-label ml-3 row mx-0 justify-content-between">
-                                                                        <div>
-                                                                            <div className="font-size-lg">{name}</div>
-                                                                        </div>
-                                                                    </div>
-                                                                </Card.Title>
-                                                            </Card.Header>
-                                                            <Card.Body className={`card-body ${activeKey === name? 'collapse show' : 'collapse'}`}>
-                                                                {
-                                                                    activeKey === name?
-                                                                    <table className="table-utilidad">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>FASE</th>
-                                                                                <th>PRECIO DE VENTA</th>
-                                                                                <th>POR COBRAR</th>
-                                                                                <th>VENTAS</th>
-                                                                                <th>COMPRAS</th>
-                                                                                <th>UTILIDAD</th>
-                                                                                <th>% UTILIDAD</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        {
-                                                                            proyectos.data[name].map((proyecto, key2) => {
-                                                                                return (
-                                                                                    <tr className={`tr${key1}${key2}`} onClick={() => { this.activeTr(`.tr${key1}${key2}`); }} key={key2}>
-                                                                                        <td> {proyecto.fase} </td>
-                                                                                        <td> {setMoneyText(proyecto.precioVenta)} </td>
-                                                                                        <td> {setMoneyText(proyecto.precioVenta - proyecto.totalVentas)} </td>
-                                                                                        <td> 
-                                                                                            <div className="d-inline-flex">
-                                                                                                {
-                                                                                                    proyecto.compras.length > 0 ?
-                                                                                                    <div className="mr-3 d-flex align-self-center text-hover-info" onClick={() => { this.openModalVentas(proyecto); }}>
-                                                                                                        <i className="las la-eye icon-lg"></i>
-                                                                                                    </div>
-                                                                                                    :<></>
-                                                                                                }
-                                                                                                <div>{setMoneyText(proyecto.totalVentas)}</div>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td> 
-                                                                                            <div className="d-inline-flex">
-                                                                                                {
-                                                                                                    proyecto.ventas.length > 0 ?
-                                                                                                    <div className="mr-3 d-flex align-self-center text-hover-info">
-                                                                                                        <i className="las la-eye icon-lg"></i>
-                                                                                                    </div>
-                                                                                                    :<></>
-                                                                                                }
-                                                                                                <div>{setMoneyText(proyecto.totalCompras)} </div>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td> {setMoneyText(proyecto.totalVentas - proyecto.totalCompras)} </td>
-                                                                                        <td> {this.percentageUtilidad(proyecto)}</td>
-                                                                                    </tr>
-                                                                                )
-                                                                            })
-                                                                        }
-                                                                        </tbody>
-                                                                    </table>
-                                                                    :<></>
-                                                                }
-                                                            </Card.Body>
-                                                        </Card>
-                                                    )
-                                                })
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                                : <></>
-                                : <></>
-                        } */}
-                        <div className="d-flex justify-content-between mt-8 text-body font-weight-bolder font-size-lg">
-                            <div className="visibility-hidden">
-                                REGISTROS DEL 1 AL 2 DE UN TOTAL DE 2 REGISTROS (FILTRADO DE UN TOTAL DE 160 REGISTROS)
                             </div>
-
-                            {/* <div className="d-flex align-items-center">
-                                MOSTRAR
-                                <select className="form-control form-control-sm text-primary2 font-weight-bold mx-2 border-0 bg-light-primary2 text-center p-0 h-25px">
-                                    <option value="10">10</option>
-                                    <option value="20">20</option>
-                                    <option value="30">30</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                                PROYECTOS
-                            </div> */}
                             <div className="d-flex align-items-center">
                                 {
                                     proyectos.total > 0 ?
