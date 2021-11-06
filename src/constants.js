@@ -810,3 +810,11 @@ export const SOLICITUD_FACTURA_COLUMNS = [
     { Header: 'Estatus', accessor: 'estatusFactura', customRender: true },
     { Header: 'Origen', accessor: 'origen', customRender: true , orderable: false },
 ]
+export const LICENCIAS = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Duración', accessor: 'duracion', customRender: true },
+    { Header: 'Cantidad', accessor: 'cantidad', customRender: true },
+    { Header: 'Códigos', accessor: 'codigos', customRender: true },
+]

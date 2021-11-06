@@ -19,7 +19,7 @@ import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPho
 import moment from 'moment'
 import $ from "jquery";
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import FormularioContrato from "../../../components/forms/recursoshumanos/FormularioContrato"
+import { FormularioContrato, LicenciasEquiposForm } from "../../../components/forms"
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -32,7 +32,8 @@ class Empleados extends Component {
             delete: false,
             adjuntos: false,
             see: false,
-            contrato: false
+            contrato: false,
+            licencias:false
         },
         title: 'Nuevo colaborador',
         form: {
@@ -516,13 +517,22 @@ class Empleados extends Component {
             }
         )
         if (colaborador.estatus_empleado === 'Activo') {
-            aux.push({
-                text: 'Contrato',
-                btnclass: 'warning',
-                iconclass: 'flaticon2-file-1',
-                action: 'contrato',
-                tooltip: { id: 'adjuntos', text: 'Contrato' }
-            })
+            aux.push(
+                {
+                    text: 'Contrato',
+                    btnclass: 'warning',
+                    iconclass: 'flaticon2-file-1',
+                    action: 'contrato',
+                    tooltip: { id: 'adjuntos', text: 'Contrato' }
+                },
+                {
+                    text: 'Licencias y equipos',
+                    btnclass: 'dark',
+                    iconclass: 'flaticon-imac',
+                    action: 'licencias',
+                    tooltip: { id: 'licencias', text: 'Licencias y equipos', type: 'error' }
+                }
+            )
         }
         return aux
     }
@@ -949,9 +959,28 @@ class Empleados extends Component {
             console.error(error, 'error')
         })
     }
-    
+    // LICENCIAS Y EQUIPOS
+    openModalLicencias = colaborador => {
+        const { modal } = this.state
+        modal.licencias = true
+        this.setState({
+            ...this.state,
+            modal,
+            empleado: colaborador,
+            formeditado:1
+        })
+    }
+    handleCloseLicencias = () => {
+        const { modal } = this.state
+        modal.licencias = false
+        this.setState({
+            ...this.state,
+            modal
+        })
+    }
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato, formeditado } = this.state
+        const { access_token } = this.props.authUser
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -966,7 +995,8 @@ class Empleados extends Component {
                                     'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos },
                                     'see': { function: this.openModalSee },
-                                    'contrato' : { function: this.openModalContrato }
+                                    'contrato' : { function: this.openModalContrato },
+                                    'licencias' : { function: this.openModalLicencias }
                                 }
                             }
                             accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
@@ -1009,6 +1039,13 @@ class Empleados extends Component {
                         generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
                         cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } f
                         ormeditado={formeditado} user = { this.props.authUser.user } deleteContrato = { this.deleteContratoAxios } />
+                </Modal>
+                <Modal size="xl" title="Licencias y equipos" show={modal.licencias} handleClose={this.handleCloseLicencias} >
+                    {
+                        modal.licencias ?
+                            <LicenciasEquiposForm at={access_token}/>
+                            : <></>
+                    }
                 </Modal>
             </Layout>
         )

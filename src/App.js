@@ -81,6 +81,7 @@ const Documentos = React.lazy(() => import('./pages/Administracion/Documentos/Do
 const DocumentosForm = React.lazy(() => import('./pages/Administracion/Documentos/DocumentosForm') )
 
 const SolicitudFactura = React.lazy( () => import('./pages/Administracion/SolicitudFactura/SolicitudFactura') )
+const Licencias = React.lazy( () => import('./pages/Administracion/Licencias/Licencias') )
 
 const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
 const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
@@ -378,6 +379,7 @@ class App extends Component{
                     <Route path = "/administracion/solicitud-factura" exact component = { SolicitudFactura } />
                     
                     <Route path = "/administracion/utilidad" exact component ={ Utilidad } />
+                    <Route path = "/administracion/licencias" exact component ={ Licencias } />
 
                     {/*  ANCHOR Routes for bancos */}
 
