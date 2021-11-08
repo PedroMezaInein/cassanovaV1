@@ -24,7 +24,12 @@ export function optionsEsquemas (){
         { name: 'Esquema 3', value: 'esquema_3', label: 'Esquema 3'}
     ]
 }
-
+export function optionsTipoLicencias (){
+    return [
+        { name: 'antivirus', value: 'antivirus', label: 'Antivirus'},
+        { name: 'software', value: 'software', label: 'Software'}
+    ]
+}
 export function transformOptions (options){
     options = options ? options : []
     options.map((value) => {

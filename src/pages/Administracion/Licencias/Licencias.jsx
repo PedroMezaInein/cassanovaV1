@@ -10,7 +10,7 @@ import { apiDelete, catchErrors } from '../../../functions/api'
 import $ from 'jquery'
 import { Modal } from '../../../components/singles'
 import { FiltersSolicitudFactura } from '../../../components/filters'
-import { FormVentasSolicitudFactura } from '../../../components/forms'
+import { LicenciasForm } from '../../../components/forms'
 
 class Licencias extends Component {
 
@@ -18,10 +18,10 @@ class Licencias extends Component {
         modal: { filtros: false, form: false },
         filters: {},
         title: 'Nueva licencia',
-        solicitud: ''
+        licencia: ''
     }
 
-    deleteSolicitud = async(id) => {
+    deleteLicencia = async(id) => {
         waitAlert()
         const { access_token } = this.props.authUser
         apiDelete(`v1/administracion/solicitud-factura/${id}`, access_token).then(
@@ -61,9 +61,9 @@ class Licencias extends Component {
                         onClick = { (e) => { 
                             e.preventDefault(); 
                             deleteAlert(
-                                `Eliminarás la solicitud de facturación`,
+                                `Eliminarás la licencia`,
                                 `¿Deseas continuar?`,
-                                () => { this.deleteSolicitud(element.id) }
+                                () => { this.deleteLicencia(element.id) }
                             )
                         } }>
                         <i className = 'las la-trash icon-lg' />
@@ -74,19 +74,19 @@ class Licencias extends Component {
     }
 
     reloadTable = (filter) => {
-        $(`#solicitud-factura`).DataTable().search(JSON.stringify(filter)).draw();
+        $(`#licencias`).DataTable().search(JSON.stringify(filter)).draw();
     }
 
     openModal = (element, type) => {
         const { modal } = this.state
         let { title } = this.state
         modal.form = true
-        if(type==='Edit'){
+        if(type==='edit'){
             title= 'Editar licencia'
         }else{
             title= 'Nueva licencia'
         }
-        this.setState({ ...this.state, modal, title})
+        this.setState({ ...this.state, modal, title, licencia:element})
     }
 
     openModalFiltros = () => {
@@ -122,7 +122,7 @@ class Licencias extends Component {
 
     render(){
         const { authUser: {access_token} } = this.props
-        const { modal, filters, solicitud, title } = this.state
+        const { modal, filters, title, licencia } = this.state
         return(
             <Layout active = 'administracion' { ...this.props } >
                 <NewTable tableName = 'licencias' subtitle = 'Listado de solicitudes de licencias' title = 'Licencias' abrirModal = { true }
@@ -138,7 +138,7 @@ class Licencias extends Component {
                 <Modal size = 'xl' show = { modal.form } handleClose = { this.handleClose } title = { title }>
                     {
                         modal.form ? 
-                            <FormVentasSolicitudFactura solicitud = { solicitud } at = { access_token } refresh = { this.refresh } /> 
+                            <LicenciasForm title = { title } at = { access_token } refresh = { this.refresh } licencia={licencia} /> 
                         : <></>
                     }
                     
