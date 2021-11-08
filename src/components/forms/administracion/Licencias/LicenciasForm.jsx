@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, InputNumberGray, InputGray, ReactSelectSearchGray } from '../../../form-components'
 import { printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../../../../functions/alert'
-import { apiGet, apiOptions, apiPostForm, apiPutForm, catchErrors } from '../../../../functions/api'
+import { apiPostForm, apiPutForm, catchErrors } from '../../../../functions/api'
 import { optionsTipoLicencias } from '../../../../functions/options'
 import { Form, Col } from 'react-bootstrap'
 class LicenciasForm extends Component{
@@ -83,15 +83,15 @@ class LicenciasForm extends Component{
         }, (error) => {  printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    updateSelect = ( value, name) => {
-        if (value === null) {
-            value = []
-        }
+    uploadLicenciaAxios = async () => {
+        const { at, refresh, licencia } = this.props
         const { form } = this.state
-        form[name] = value
-        this.setState({ ...this.state, form })
+        apiPutForm(`v1/administracion/licencias/${licencia.id}`, form, at).then(
+            (response) => {
+                doneAlert(`Licencia editada con éxito`, () => { refresh() })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch(( error ) => { catchErrors(error) })
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -111,6 +111,14 @@ class LicenciasForm extends Component{
         form.codigos[index][name] = value
         this.setState({ ...this.state, form })
     }
+    updateSelect = ( value, name) => {
+        if (value === null) {
+            value = []
+        }
+        const { form } = this.state
+        form[name] = value
+        this.setState({ ...this.state, form })
+    }
     isMultiplo(numero){
         const { form } = this.state
         if(( numero % 4 ) == 0 && form.codigos.length !== numero){
@@ -121,7 +129,6 @@ class LicenciasForm extends Component{
     }
     render(){
         const { form, options } = this.state
-        console.log(form)
         return(
             <Form 
                 id = 'form-ventas-solicitud-factura'
@@ -179,9 +186,7 @@ class LicenciasForm extends Component{
                     </Col>
                 </div>
                 <div className="d-flex justify-content-end border-top mt-3 pt-3">
-                    <div>
-                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type = 'submit' text="ENVIAR" />
-                    </div>
+                    <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type = 'submit' text="ENVIAR" />
                 </div>
             </Form>
             
