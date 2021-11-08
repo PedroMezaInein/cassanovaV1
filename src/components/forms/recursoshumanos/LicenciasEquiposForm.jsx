@@ -3,24 +3,31 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { Form, Row, Col } from 'react-bootstrap'
 import { setSingleHeader } from '../../../functions/routers'
-import { optionsFases } from '../../../functions/options'
-import { ReactSelectSearchGray, Button, InputGray } from '../../form-components'
+import { RadioGroupGray, Button, InputGray } from '../../form-components'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, errorAlert } from '../../../functions/alert'
 class LicenciasEquiposForm extends Component {
     state = {
-        modal: {
-            factura: false
-        },
         form: {
-            modelo: '',
-            marca: '',
-            serie: '',
-            tipo: '',
-            descripcion: '',
+            tipo:'',
+            equipos: [
+                {
+                    equipo: '',
+                    modelo: '',
+                    marca: '',
+                    serie: '',
+                    descripcion: ''
+                }
+            ],
         }
     }
     updateSelect = (value, name) => {
         this.onChange({ target: { value: value, name: name } })
+    }
+    onChangeEquipos = (key, e, name) => {
+        const { value } = e.target
+        const { form } = this.state
+        form.equipos[key][name] = value
+        this.setState({ ...this.state, form })
     }
     onChange = e => {
         const { name, value } = e.target
@@ -30,9 +37,9 @@ class LicenciasEquiposForm extends Component {
     }
     onSubmit = async () => {
         waitAlert()
-        const { at, proyecto, presupuesto, refresh } = this.props
+        const { at, refresh } = this.props
         const { form } = this.state
-        await axios.post(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/solicitud-factura/${presupuesto.id}`, form, { headers: setSingleHeader(at) }).then(
+        await axios.post(`${URL_DEV}`, form, { headers: setSingleHeader(at) }).then(
             (response) => {
                 doneAlert(`Solicitud generada con éxito`, () => { refresh() } )
             }, (error) => { printResponseErrorAlert(error) }
@@ -41,103 +48,169 @@ class LicenciasEquiposForm extends Component {
             console.error(error, 'error')
         })
     }
+    addRowEquipo = () => {
+        const { form } = this.state
+        form.equipos.push({
+            equipo: '',
+            modelo: '',
+            marca: '',
+            serie: '',
+            descripcion: ''
+        })
+        this.setState({ ...this.state, form })
+    }
+
+    deleteRowEquipo = (key) => {
+        let aux = []
+        const { form } = this.state
+        form.equipos.forEach((element, index) => {
+            if (index !== key)
+                aux.push(element)
+        })
+        if (aux.length) {
+            form.equipos = aux
+        } else {
+            form.equipos = [{
+                equipo: '',
+                modelo: '',
+                marca: '',
+                serie: '',
+                descripcion: ''
+            }]
+        }
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
         const { form } = this.state
+        console.log(form, 'form')
         return (
-            <Form id="form-solicitud" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-solicitud') }}>
-                <Row className="form-group mx-0 form-group-marginless">
-                    <Col>
-                        <InputGray
-                            requirevalidation={0}
-                            placeholder='TIPO'
-                            value={form.tipo}
-                            withtaglabel={0}
-                            name='tipo'
-                            withtextlabel={0}
-                            withplaceholder={1}
-                            withicon={0}
-                            iconclass='las la-clipboard-list'
-                            onChange={this.onChange}
-                            customclass="px-2"
-                        />
-                    </Col>
-                    <Col>
-                        <InputGray
-                            requirevalidation={0}
-                            placeholder='MODELO'
-                            value={form.modelo}
-                            withtaglabel={0}
-                            name='modelo'
-                            withtextlabel={0}
-                            withplaceholder={1}
-                            withicon={0}
-                            iconclass='las la-clipboard-list'
-                            onChange={this.onChange}
-                            customclass="px-2"
-                        />
-                    </Col>
-                    <Col>
-                        <InputGray
-                            requirevalidation={0}
-                            placeholder='MARCA'
-                            value={form.marca}
-                            withtaglabel={0}
-                            name='marca'
-                            withtextlabel={0}
-                            withplaceholder={1}
-                            withicon={0}
-                            iconclass='las la-clipboard-list'
-                            onChange={this.onChange}
-                            customclass="px-2"
-                        />
-                    </Col>
-                    <Col>
-                        <InputGray
-                            requirevalidation={0}
-                            placeholder='SERIE'
-                            value={form.serie}
-                            withtaglabel={0}
-                            name='serie'
-                            withtextlabel={0}
-                            withplaceholder={1}
-                            withicon={0}
-                            iconclass='las la-clipboard-list'
-                            onChange={this.onChange}
-                            customclass="px-2"
-                        />
-                    </Col>
-                    <Col>
-                        <InputGray
-                            requirevalidation={0}
-                            placeholder='DESCRIPCIÓN'
-                            value={form.descripcion}
-                            withtaglabel={0}
-                            name='descripcion'
-                            withtextlabel={0}
-                            withplaceholder={1}
-                            withicon={0}
-                            iconclass='las la-clipboard-list'
-                            onChange={this.onChange}
-                            customclass="px-2"
-                        />
-                    </Col>
-                </Row>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <Row className="form-group mx-0 form-group-marginless">
-                    
-                        {/* <ReactSelectSearchGray
-                            requirevalidation={1}
-                            placeholder='Cliente'
-                            defaultvalue={form.cliente}
-                            iconclass='las la-user icon-xl'
-                            options={optionsFases()}
-                            onChange={(value) => { this.updateSelect(value, 'cliente') }}
-                            messageinc="Incorrecto. Selecciona el cliente."
-                        /> */}
-                </Row>
+            <Form id="form-licencias-equipos" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-licencias-equipos') }}>
+                <Col className="col-md-12 text-center">
+                    <RadioGroupGray
+                        placeholder="TIPO DE REGISTRO"
+                        name='tipo'
+                        onChange={this.onChange}
+                        options={[{ label: 'Licencia', value: 'licencia' }, { label: 'Equipo', value: 'equipo' }]}
+                        customdiv='mb-0'
+                        value={form.tipo}
+                    />
+                </Col>
+                {
+                    form.tipo==='equipo'?
+                    <div className="mb-8">
+                        <Button icon='' className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" onClick={this.addRowEquipo}
+                            text='AGREGAR EQUIPO' only_icon="flaticon2-plus icon-13px mr-2 px-0 text-success" />
+                        <div className="mt-5">
+                            {
+                                form.equipos.map((equipo, key) => {
+                                    return (
+                                        <Row className="mx-0 form-group-marginless" key={key}>
+                                            <Col md="auto" className="align-self-center pl-2 pr-0">
+                                                <Button icon='' onClick={() => { this.deleteRowEquipo(key) }}
+                                                    className="btn btn-icon btn-xs p-4 btn-bg-white btn-icon-danger btn-hover-danger" only_icon="las la-trash text-danger icon-xl"/>
+                                            </Col>
+                                            <Col>
+                                                <InputGray
+                                                    requirevalidation={1}
+                                                    iconvalid={1}
+                                                    placeholder='EQUIPO'
+                                                    value={form['equipos'][key]['equipo']}
+                                                    withtaglabel={0}
+                                                    name='equipo'
+                                                    withtextlabel={0}
+                                                    withplaceholder={1}
+                                                    withicon={0}
+                                                    iconclass='las la-clipboard-list'
+                                                    onChange={e => this.onChangeEquipos(key, e, 'equipo')}
+                                                    customclass="px-2"
+                                                />
+                                            </Col>
+                                            <Col>
+                                                <InputGray
+                                                    requirevalidation={1}
+                                                    iconvalid={1}
+                                                    placeholder='MODELO'
+                                                    value={form['equipos'][key]['modelo']}
+                                                    withtaglabel={0}
+                                                    name='modelo'
+                                                    withtextlabel={0}
+                                                    withplaceholder={1}
+                                                    withicon={0}
+                                                    iconclass='las la-clipboard-list'
+                                                    onChange={e => this.onChangeEquipos(key, e, 'modelo')}
+                                                    customclass="px-2"
+                                                />
+                                            </Col>
+                                            <Col>
+                                                <InputGray
+                                                    requirevalidation={1}
+                                                    iconvalid={1}
+                                                    placeholder='MARCA'
+                                                    value={form['equipos'][key]['marca']}
+                                                    withtaglabel={0}
+                                                    name='marca'
+                                                    withtextlabel={0}
+                                                    withplaceholder={1}
+                                                    withicon={0}
+                                                    iconclass='las la-clipboard-list'
+                                                    onChange={e => this.onChangeEquipos(key, e, 'marca')}
+                                                    customclass="px-2"
+                                                />
+                                            </Col>
+                                            <Col>
+                                                <InputGray
+                                                    requirevalidation={1}
+                                                    iconvalid={1}
+                                                    placeholder='SERIE'
+                                                    value={form['equipos'][key]['serie']}
+                                                    withtaglabel={0}
+                                                    name='serie'
+                                                    withtextlabel={0}
+                                                    withplaceholder={1}
+                                                    withicon={0}
+                                                    iconclass='las la-clipboard-list'
+                                                    onChange={e => this.onChangeEquipos(key, e, 'serie')}
+                                                    customclass="px-2"
+                                                />
+                                            </Col>
+                                            <Col>
+                                                <InputGray
+                                                    requirevalidation={0}
+                                                    placeholder='DESCRIPCIÓN'
+                                                    value={form['equipos'][key]['descripcion']}
+                                                    withtaglabel={0}
+                                                    name='descripcion'
+                                                    withtextlabel={0}
+                                                    withplaceholder={1}
+                                                    withicon={0}
+                                                    iconclass='las la-clipboard-list'
+                                                    onChange={e => this.onChangeEquipos(key, e, 'descripcion')}
+                                                    customclass="px-2"
+                                                />
+                                            </Col>
+                                            {
+                                                form.equipos.length === 1 || key === form.equipos.length - 1 ? <></>
+                                                : <Col md="12"> <div className="separator separator-solid my-3"></div> </Col>
+                                            }
+                                        </Row>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                    :
+                    form.tipo==='licencia'?
+                    <div>
+                        dd
+                    </div>
+                    :<></>
+                }
                 <div className="card-footer pt-3 pb-0 px-0 text-right">
                     <Button icon='' className="btn btn-primary" text="ENVIAR"
-                        onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-solicitud') }} />
+                        onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-licencias-equipos') }} />
                 </div>
             </Form>
         )
