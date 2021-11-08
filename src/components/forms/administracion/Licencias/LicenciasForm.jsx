@@ -41,7 +41,8 @@ class LicenciasForm extends Component{
                 for(let i = 0; i < codes.length; i++){
                     aux.push( {
                         id: i + 1,
-                        codigo: codes[i].token
+                        codigo: codes[i].token,
+                        flag: codes[i].flag
                     } )
                 }   
             }
@@ -63,13 +64,17 @@ class LicenciasForm extends Component{
     addLicenciaAxios = async() => {
         const { at, refresh } = this.props
         const { form } = this.state
+        let formulario = {}
         var arrayCodigos = form.codigos.map(function (obj) {
             return obj.codigo;
         });
         let tipo = form.tipo.label
-        form.codigos = arrayCodigos
-        form.tipo = tipo
-        apiPostForm(`v1/administracion/licencias`, form, at).then( (response) => {
+        formulario.codigos = arrayCodigos
+        formulario.tipo = tipo
+        formulario.nombre = form.nombre
+        formulario.duracion = form.duracion
+        formulario.cantidad = form.cantidad
+        apiPostForm(`v1/administracion/licencias`, formulario, at).then( (response) => {
             doneAlert(`Licencia generada con éxito`, () => { refresh() })
         }, (error) => {  printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
@@ -78,7 +83,17 @@ class LicenciasForm extends Component{
     uploadLicenciaAxios = async () => {
         const { at, refresh, licencia } = this.props
         const { form } = this.state
-        apiPutForm(`v1/administracion/licencias/${licencia.id}`, form, at).then(
+        var arrayCodigos = form.codigos.map(function (obj) {
+            return obj.codigo;
+        });
+        let tipo = form.tipo.label
+        let formulario = {}
+        formulario.codigos = arrayCodigos
+        formulario.tipo = tipo
+        formulario.nombre = form.nombre
+        formulario.duracion = form.duracion
+        formulario.cantidad = form.cantidad
+        apiPutForm(`v1/administracion/licencias/${licencia.id}`, formulario, at).then(
             (response) => {
                 doneAlert(`Licencia editada con éxito`, () => { refresh() })
             }, (error) => { printResponseErrorAlert(error) }
@@ -95,9 +110,9 @@ class LicenciasForm extends Component{
             let codigos = JSON.parse(licencia.codigos)
             for(let i = 0; i < parseInt(value); i++){
                 if(codigos.length > i ){
-                    aux.push( { id: i+1, codigo: codigos[i].token } );
+                    aux.push( { id: i+1, codigo: codigos[i].token, flag: codigos[i].flag } );
                 }else{
-                    aux.push( { id: i+1, codigo: '' } );
+                    aux.push( { id: i+1, codigo: '', flag: false } );
                 }
             }
             form.codigos = aux
@@ -175,7 +190,8 @@ class LicenciasForm extends Component{
                                                                 placeholder = { `CÓDIGO ${codigo.id}` } onChange = { (e) => 
                                                                     { this.onChangeCodigos(e, index) }
                                                                 } value = { codigo.codigo } messageinc = "Ingresa el código." 
-                                                                iconclass = 'las la-key icon-xl'  letterCase = { false } />
+                                                                iconclass = 'las la-key icon-xl'  letterCase = { false } 
+                                                                disabled = { codigo.flag ? true : false } />
                                                         </div>
                                                         <div className={this.isMultiplo(index+1)? "col-md-12" : "d-none"}>
                                                             <div className="separator separator-dashed my-3" />
