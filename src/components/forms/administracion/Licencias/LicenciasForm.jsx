@@ -191,7 +191,8 @@ class LicenciasForm extends Component{
                                                                     { this.onChangeCodigos(e, index) }
                                                                 } value = { codigo.codigo } messageinc = "Ingresa el código." 
                                                                 iconclass = 'las la-key icon-xl'  letterCase = { false } 
-                                                                disabled = { codigo.flag ? true : false } />
+                                                                disabled = { codigo.flag ? true : false } 
+                                                                inputsolid = { codigo.flag ? 'bg-light-danger' : '' } />
                                                         </div>
                                                         <div className={this.isMultiplo(index+1)? "col-md-12" : "d-none"}>
                                                             <div className="separator separator-dashed my-3" />
