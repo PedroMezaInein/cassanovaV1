@@ -20,41 +20,32 @@ class LicenciasForm extends Component{
             tipos:[]
         }
     }
+
     componentDidMount(){
         const { licencia, title } = this.props
         const { form, options } = this.state
         options.tipos = optionsTipoLicencias()
-        if(title==='Editar licencia'){
-            let auxTipos = []
-            options.tipos.forEach((option) => {
-                if (option.label === "Software"){
-                    auxTipos = {
-                        name: option.name,
-                        value: option.value,
-                        label: option.label
-                    }
-                }
-            })
-            form.tipo = auxTipos
-            form.nombre = "LICENCIA S"
-            form.duracion = "3"
-            form.cantidad = "5"
-            
-            let codigos1 = ['121', '222', '323', '424', '1']
-
-            let lengthCodigos = codigos1.length
-            var aux = [];
-            for(let i = 0; i < parseInt(lengthCodigos); i++){
-                aux.push( { id: i+1 } );
-            }
-            let codigos = []
-            codigos1.map((codigo, index) => {
-                codigos.push({
-                    id: index+1,
-                    codigo: codigo
+        if(title === 'Editar licencia'){
+            if(licencia.tipo){
+                let tipo = options.tipos.find((tipo) => {
+                    return tipo.label === licencia.tipo
                 })
-            })
-            form.codigos=codigos
+                form.tipo = tipo
+            }
+            form.nombre = licencia.nombre
+            form.duracion = licencia.duracion
+            form.cantidad = licencia.cantidad
+            let codes = JSON.parse(licencia.codigos)
+            let aux = []
+            if(codes.length === licencia.cantidad){
+                for(let i = 0; i < codes.length; i++){
+                    aux.push( {
+                        id: i + 1,
+                        codigo: codes[i].token
+                    } )
+                }   
+            }
+            form.codigos = aux
         }
         this.setState({ ...this.state, form })
     }
@@ -68,10 +59,10 @@ class LicenciasForm extends Component{
             this.uploadLicenciaAxios()
         }
     }
+
     addLicenciaAxios = async() => {
         const { at, refresh } = this.props
         const { form } = this.state
-
         var arrayCodigos = form.codigos.map(function (obj) {
             return obj.codigo;
         });
@@ -83,6 +74,7 @@ class LicenciasForm extends Component{
         }, (error) => {  printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+
     uploadLicenciaAxios = async () => {
         const { at, refresh, licencia } = this.props
         const { form } = this.state
@@ -92,25 +84,34 @@ class LicenciasForm extends Component{
             }, (error) => { printResponseErrorAlert(error) }
         ).catch(( error ) => { catchErrors(error) })
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
+        const { licencia } = this.props
         form[name] = value
         if ( name === 'cantidad'){
             var aux = [];
+            let codigos = JSON.parse(licencia.codigos)
             for(let i = 0; i < parseInt(value); i++){
-                aux.push( { id: i+1 } );
+                if(codigos.length > i ){
+                    aux.push( { id: i+1, codigo: codigos[i].token } );
+                }else{
+                    aux.push( { id: i+1, codigo: '' } );
+                }
             }
             form.codigos = aux
         }
         this.setState({ ...this.state, form })
     }
+    
     onChangeCodigos = (e, index) => {
         const { name, value } = e.target
         const { form } = this.state
         form.codigos[index][name] = value
         this.setState({ ...this.state, form })
     }
+
     updateSelect = ( value, name) => {
         if (value === null) {
             value = []
@@ -119,14 +120,16 @@ class LicenciasForm extends Component{
         form[name] = value
         this.setState({ ...this.state, form })
     }
+
     isMultiplo(numero){
         const { form } = this.state
-        if(( numero % 4 ) == 0 && form.codigos.length !== numero){
+        if(( numero % 4 ) === 0 && form.codigos.length !== numero){
             return true
         }else{
             return false
         }
     }
+
     render(){
         const { form, options } = this.state
         return(
@@ -159,7 +162,7 @@ class LicenciasForm extends Component{
                         </div>
                         {
                             form.cantidad ?
-                                <>
+                                <div>
                                     <div className="separator separator-dashed mt-1 mb-2"></div>
                                     <div className="form-group row form-group-marginless">
                                         {
@@ -167,10 +170,12 @@ class LicenciasForm extends Component{
                                                 return (
                                                     <>
                                                         <div className="col-md-3" key={index}>
-                                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1}
-                                                                name='codigo' placeholder={`CÓDIGO ${codigo.id}`} onChange={(e) => { this.onChangeCodigos(e, index) }}
-                                                                value={codigo.codigo} messageinc="Ingresa el código." iconclass='las la-key icon-xl'
-                                                            />
+                                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } 
+                                                                withformgroup = { 0 } requirevalidation = { 1 } name = 'codigo' 
+                                                                placeholder = { `CÓDIGO ${codigo.id}` } onChange = { (e) => 
+                                                                    { this.onChangeCodigos(e, index) }
+                                                                } value = { codigo.codigo } messageinc = "Ingresa el código." 
+                                                                iconclass = 'las la-key icon-xl'  letterCase = { false } />
                                                         </div>
                                                         <div className={this.isMultiplo(index+1)? "col-md-12" : "d-none"}>
                                                             <div className="separator separator-dashed my-3" />
@@ -180,7 +185,7 @@ class LicenciasForm extends Component{
                                             })
                                         }
                                     </div>
-                                </>
+                                </div>
                             :<></>
                         }
                     </Col>

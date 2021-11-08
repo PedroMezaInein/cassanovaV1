@@ -35,13 +35,26 @@ class Licencias extends Component {
     setTable = (datos) => {
         let aux = []
         datos.forEach((dato) => {
+            let codigos = JSON.parse(dato.codigos)
             aux.push({
                 actions: this.setActions(dato),
                 tipo: setTextTableCenter(dato.tipo),
                 nombre:setTextTableCenter(dato.nombre),
                 duracion: setTextTableCenter(dato.duracion),
                 cantidad: setTextTableCenter(dato.cantidad),
-                codigos: setTextTableCenter(dato.codigos)
+                codigos: <div>
+                    <ul>
+                        {
+                            codigos.map((codigo, index) => {
+                                return(
+                                    <li className = { `text-${codigo.flag ? 'danger text-decoration-line-through' : 'primary'}` } key = { index } >
+                                        { codigo.token }
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                </div>
             })
         })
         return aux
@@ -138,7 +151,8 @@ class Licencias extends Component {
                 <Modal size = 'xl' show = { modal.form } handleClose = { this.handleClose } title = { title }>
                     {
                         modal.form ? 
-                            <LicenciasForm title = { title } at = { access_token } refresh = { this.refresh } licencia={licencia} /> 
+                            <LicenciasForm title = { title } at = { access_token } refresh = { this.refresh } licencia={licencia} 
+                                letterCase = { false } /> 
                         : <></>
                     }
                     
