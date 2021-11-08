@@ -106,8 +106,12 @@ class LicenciasForm extends Component{
         const { licencia } = this.props
         form[name] = value
         if ( name === 'cantidad'){
-            var aux = [];
-            let codigos = JSON.parse(licencia.codigos)
+            let aux = []
+            let codigos = []
+            if(licencia)
+                codigos = JSON.parse(licencia.codigos)
+            else
+                codigos = []
             for(let i = 0; i < parseInt(value); i++){
                 if(codigos.length > i ){
                     aux.push( { id: i+1, codigo: codigos[i].token, flag: codigos[i].flag } );
