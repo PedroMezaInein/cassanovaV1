@@ -123,7 +123,7 @@ class LicenciasForm extends Component{
 
     isMultiplo(numero){
         const { form } = this.state
-        if(( numero % 4 ) == 0 && form.codigos.length !== numero){
+        if(( numero % 4 ) === 0 && form.codigos.length !== numero){
             return true
         }else{
             return false

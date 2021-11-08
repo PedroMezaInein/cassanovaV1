@@ -3,8 +3,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { Form, Row, Col } from 'react-bootstrap'
 import { setSingleHeader } from '../../../functions/routers'
-import { optionsFases } from '../../../functions/options'
-import { ReactSelectSearchGray, Button, InputGray } from '../../form-components'
+import { Button, InputGray } from '../../form-components'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, errorAlert } from '../../../functions/alert'
 class LicenciasEquiposForm extends Component {
     state = {
