@@ -20,6 +20,7 @@ class RHLicenciasForm extends Component {
             licencias: []
         },
         activeHistorial: true,
+        licencias: []
     }
 
     componentDidMount = () => {
@@ -48,6 +49,7 @@ class RHLicenciasForm extends Component {
         const { at, empleado } = this.props
         apiGet(`v2/rh/empleados/licencias/${empleado.id}`, at).then(
             (response) => {
+                Swal.close()
                 const { licencias } = response.data
                 this.setState({
                     ...this.state,
@@ -65,6 +67,8 @@ class RHLicenciasForm extends Component {
         })
         if(activeHistorial){
             this.getOptions()
+        }else{
+            this.getLicencias()
         }
     }
     updateSelect = (value, name) => {
@@ -114,7 +118,28 @@ class RHLicenciasForm extends Component {
                                             </tr>
                                         :
                                             licencias.map((licencia, index) => {
-
+                                                return(
+                                                    <tr key = { index } className="font-weight-light border-top">
+                                                        <td className='px-2'>
+                                                            <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
+                                                                onClick = { (e) => { 
+                                                                    e.preventDefault(); 
+                                                                    deleteAlert(
+                                                                        `Eliminarás la licencia`,
+                                                                        `¿Deseas continuar?`,
+                                                                        () => { this.deleteLicencia('licencia.id') }
+                                                                    )
+                                                                } } >
+                                                                <i className='flaticon2-rubbish-bin' />
+                                                            </button>
+                                                        </td>
+                                                        <td className='px-2 text-break'>Nombre</td>
+                                                        <td className='px-2 text-break'>Fecha de activación</td>
+                                                        <td className='px-2 text-break'>Tiempo de vencimiento</td>
+                                                        <td className='px-2 text-break'>Estatus</td>
+                                                        <td className='px-2 text-break'>Token</td>
+                                                    </tr>
+                                                )
                                             })
                                     }
                                     {/* {
