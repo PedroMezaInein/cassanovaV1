@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import SVG from "react-inlinesvg";
-import { URL_DEV } from '../../../constants'
-import { Row, Form, Col, Tab, Nav } from 'react-bootstrap'
-import { toAbsoluteUrl, setSingleHeader } from '../../../functions/routers'
-import { setDateText, setNaviIcon, setOptions, setOptionsWithLabel } from '../../../functions/setters'
-import { optionsFases } from '../../../functions/options'
-import { RadioGroupGray, Button, InputGray, ReactSelectSearchGray } from '../../form-components'
-import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert, questionAlertWithLottie } from '../../../functions/alert'
+import { Row, Form } from 'react-bootstrap'
+import { toAbsoluteUrl } from '../../../functions/routers'
+import { setDateText, setOptionsWithLabel } from '../../../functions/setters'
+import { Button, ReactSelectSearchGray } from '../../form-components'
+import { validateAlert, waitAlert, printResponseErrorAlert, deleteAlert, questionAlertWithLottie } from '../../../functions/alert'
 import { apiGet, apiOptions, apiPostForm, apiDelete, catchErrors, apiPutForm } from '../../../functions/api'
 import Swal from 'sweetalert2';
 import { Software } from '../../../assets/animate';
@@ -38,7 +35,7 @@ class RHLicenciasForm extends Component {
                 options.licencias = setOptionsWithLabel(licencias, 'fullName', 'id')
                 Swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             }, (error) => { printResponseErrorAlert(error) })
