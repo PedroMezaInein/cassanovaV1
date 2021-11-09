@@ -197,8 +197,8 @@ class LicenciasForm extends Component{
                                                                 iconclass = 'las la-key icon-xl'  letterCase = { false } 
                                                                 disabled = { codigo.flag ? true : false } 
                                                                 // inputsolid = { codigo.flag ? 'bg-light-danger' : '' } 
-                                                                customdiv={ `mb-0 ${codigo.flag ?'bg-input-disable-danger' : 'bg-input-disable-success' } ` }
-                                                                customclass={ `${codigo.flag ?'disable-danger' : 'disable-success' } ` }
+                                                                customdiv={ `mb-0 ${codigo.flag && codigo.codigo ?'bg-input-disable-danger' : !codigo.flag && codigo.codigo? 'bg-input-disable-success':'' } ` }
+                                                                customclass={ `${codigo.flag && codigo.codigo?'disable-danger' : !codigo.flag && codigo.codigo ? 'disable-success':'' } ` }
                                                             />
                                                         </div>
                                                         <div className={this.isMultiplo(index+1)? "col-md-12" : "d-none"}>
