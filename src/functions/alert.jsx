@@ -354,18 +354,13 @@ export function questionAlert(title, text, action) {
     })
 }
 
-export function questionAlertWithLottie(title, text, lottie, buttons, actions){
+export function questionAlertWithLottie(title, text, lottie, buttons, actions, btn_color){
     MySwal.fire({
-        title: title,
-        html: <div>
-            <div className="row mx-0 justify-content-center">
-                <div className="col-8">
-                    { lottie ? <CommonLottie animationData = { lottie } /> : <></> }
-                </div>
-                <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins">
-                    {text}
-                </div>
-                
+        html: <div className="font-family-poppins">
+            { lottie ? <div className="col-md-10 mx-auto"><CommonLottie animationData = { lottie } /></div> : <></> }
+            <div className="col-md-12 font-weight-light text-center">
+                <div className="font-weight-bolder font-size-h6 mb-5 mt-1">{title}</div>
+                <div className="font-size-lg">{text}</div>
             </div>
         </div>,
         showCancelButton: buttons.cancel ? true : false,
@@ -377,8 +372,8 @@ export function questionAlertWithLottie(title, text, lottie, buttons, actions){
             icon: 'icono',
             title:'text-uppercase',
             content: text?text:'d-none',
-            confirmButton: 'btn-light-success-sweetalert2',
-            cancelButton:'btn-light-gray-sweetalert2',
+            confirmButton: `btn_custom-alert ${btn_color?btn_color:'bg-success'}`,
+            cancelButton:'btn-cancel-alert',
             htmlContainer:'d-contents'
         }
     }).then((result) => {
@@ -391,6 +386,7 @@ export function questionAlertWithLottie(title, text, lottie, buttons, actions){
         }
     })
 }
+// btn-renovar-lic-confirm
 
 export function questionAlertY(title, text, action, cancel) {
     MySwal.fire({
