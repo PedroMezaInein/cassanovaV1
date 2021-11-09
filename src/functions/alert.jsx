@@ -530,21 +530,25 @@ export function messageAlert(text) {
 }
 
 export const printResponseErrorAlert = (error) => {
-    if(error.message === 'Network Error')
-        errorAlert('Ocurrió un error en el servidor, vuelve a intentar en 5 minutos.')
-    else{
-        switch(error.response.status){
-            case 401:
-                forbiddenAccessAlert()
-                break
-            case 404:
-                notFoundAlert()
-                break
-            default:
-                errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                break
+    Swal.close()
+    setTimeout(function(){ 
+        if(error.message === 'Network Error'){
+            errorAlert('Ocurrió un error en el servidor, vuelve a intentar en 5 minutos.')
+        }else{
+            switch(error.response.status){
+                case 401:
+                    forbiddenAccessAlert()
+                    break
+                case 404:
+                    notFoundAlert()
+                    break
+                default:
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                    break
+            }
         }
-    }
+    }, 50);
+    
 }
 
 export function pendingPaymentAlert(title, text) {
