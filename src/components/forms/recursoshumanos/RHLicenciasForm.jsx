@@ -36,11 +36,11 @@ class RHLicenciasForm extends Component {
         return (
             <>
                 <div className="d-flex justify-content-end">
-                    <button type="button" className="btn btn-sm btn-flex btn-light-primary2" onClick={() => { this.activeBtn() }} >
+                    <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
                         {
                             activeHistorial ?
-                                <><span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Shield-protected.svg')} /></span><div>AGREGAR LICENCIA</div></>
-                                : <><span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} /></span><div>HISTORIAL DE LICENCIAS</div></>
+                                <><span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Shield-protected.svg')} /></span><div className="font-weight-bolder">AGREGAR LICENCIA</div></>
+                                : <><span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} /></span><div className="font-weight-bolder">HISTORIAL DE LICENCIAS</div></>
                         }
                     </button>
                 </div>

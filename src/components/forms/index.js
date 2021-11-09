@@ -137,6 +137,7 @@ import ComprasList from './administracion/Utilidad/ComprasList'
 import LicenciasEquiposForm from './recursoshumanos/LicenciasEquiposForm'
 import LicenciasForm from './administracion/Licencias/LicenciasForm'
 import RHLicenciasForm from './recursoshumanos/RHLicenciasForm'
+import RHEquiposForm from './recursoshumanos/RHEquiposForm'
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
@@ -238,4 +239,4 @@ export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResul
     PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
-    PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm}
+    PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm}
