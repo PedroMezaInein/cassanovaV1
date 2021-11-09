@@ -84,7 +84,10 @@ class LicenciasForm extends Component{
         const { at, refresh, licencia } = this.props
         const { form } = this.state
         var arrayCodigos = form.codigos.map(function (obj) {
-            return obj.codigo;
+            return {
+                code: obj.codigo,
+                flag: obj.flag
+            }
         });
         let tipo = form.tipo.label
         let formulario = {}
