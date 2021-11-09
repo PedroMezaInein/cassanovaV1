@@ -146,7 +146,7 @@ class RHLicenciasForm extends Component {
         const { form, activeHistorial, licencias, options } = this.state
         return (
             <div>
-                <div className="d-flex justify-content-end">
+                <div className="d-flex justify-content-end mb-5">
                     <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
                         {
                             activeHistorial ?
@@ -162,7 +162,7 @@ class RHLicenciasForm extends Component {
                                 <thead>
                                     <tr>
                                         <th className="w-8"></th>
-                                        <th className="text-dark-75 w-15">Nombre</th>
+                                        <th className="text-dark-75 w-15 min-w-150px">Nombre</th>
                                         <th className="text-dark-75 w-10">Duración</th>
                                         <th className="text-dark-75 w-15">Fecha de activación</th>
                                         <th className="text-dark-75 w-15">Fecha de vencimiento</th>
@@ -196,7 +196,6 @@ class RHLicenciasForm extends Component {
                                                                     <i className='flaticon2-rubbish-bin' />
                                                                 </button>
                                                             </OverlayTrigger>
-
                                                             {
                                                                 licencia.pivot.estatus === 'En uso' && licencia.keysAvailables > 0 ?
                                                                     <OverlayTrigger rootClose overlay={<Tooltip>Renovar licencia</Tooltip>}>
@@ -226,7 +225,7 @@ class RHLicenciasForm extends Component {
                                                         <td> {setDateText(licencia.pivot.fecha)} </td>
                                                         <td> {this.printFechaFin(licencia)} </td>
                                                         <td>
-                                                            <div className={`label-status ${licencia.pivot.estatus === 'En uso' ? 'text-success bg-light-success' : 'text-danger'}`}>
+                                                            <div className={`label-status ${licencia.pivot.estatus === 'En uso' ? 'text-success bg-light-success' : 'bg-light-danger text-danger'}`}>
                                                                 {licencia.pivot.estatus}
                                                             </div>
                                                         </td>
@@ -241,7 +240,7 @@ class RHLicenciasForm extends Component {
                             </table>
                         </div>
                         :
-                        <Form id='form-ventas-solicitud-factura' onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-ventas-solicitud-factura') }}>
+                        <Form id='form-licencias' onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-licencias') }}>
                             <Row className="form-group mx-0 form-group-marginless">
                                 <div className="col-md-6">
                                     <ReactSelectSearchGray requirevalidation={1} placeholder='SELECCIONA LA LICENCIA'
@@ -261,9 +260,13 @@ class RHLicenciasForm extends Component {
                                         : <></>
                                 }
                             </Row>
-                            <div className="d-flex justify-content-end border-top mt-3 pt-3">
-                                <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type='submit' text="ENVIAR" />
-                            </div>
+                            {
+                                form.licencia ?
+                                    <div className="d-flex justify-content-end border-top mt-3 pt-3 mx-4">
+                                        <Button only_icon='las la-plus' className="btn btn-info font-weight-bold text-uppercase" type='submit' text="AGREGAR LICENCIA" />
+                                    </div>
+                                    : <></>
+                            }
                         </Form>
                 }
             </div>
