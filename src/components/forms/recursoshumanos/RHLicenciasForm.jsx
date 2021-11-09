@@ -215,7 +215,7 @@ class RHLicenciasForm extends Component {
                                                         <td className = { `px-2 text-break font-weight-bold ${licencia.pivot.estatus === 'En uso' ? 'text-success' : 'text-danger'}` }>
                                                             { licencia.pivot.estatus }
                                                         </td>
-                                                        <td className = { `px-2 text-break font-weight-bold ${licencia.pivot.estatus === 'En uso' ? 'text-success' : 'text-danger'}` }>
+                                                        <td className = { `px-2 text-break font-weight-bold text-transform-none ${licencia.pivot.estatus === 'En uso' ? 'text-success' : 'text-danger'}` }>
                                                             { licencia.pivot.token }
                                                         </td>
                                                     </tr>
