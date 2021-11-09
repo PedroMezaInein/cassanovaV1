@@ -3377,3 +3377,29 @@ td.descripcion{
         color: white;
     }
 }
+.bg-input-disable-danger{
+    .input-group.input-group-solid{
+        background-color: #FFE2E5 !important;
+    }
+    .input-group-prepend{
+        i{
+            color:#F64E60!important;
+        }
+    }
+    .disable-danger, .col-form-label{
+        color: #F64E60!important;
+    }
+}
+.bg-input-disable-success{
+    .input-group.input-group-solid{
+        background-color: #E8F5E9  !important;
+    }
+    .input-group-prepend{
+        i{
+            color:#388E3C!important;
+        }
+    }
+    .disable-success, .col-form-label{
+        color: #388E3C!important;
+    }
+}

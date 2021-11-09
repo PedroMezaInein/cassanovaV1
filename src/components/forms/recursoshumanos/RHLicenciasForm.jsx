@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { Row, Form } from 'react-bootstrap'
 import { toAbsoluteUrl } from '../../../functions/routers'
-import { setDateText, setOptionsWithLabel } from '../../../functions/setters'
-import { Button, ReactSelectSearchGray } from '../../form-components'
+import { setDateText } from '../../../functions/setters'
+import { Button, ReactSelectSearchGray, InputGray } from '../../form-components'
 import { validateAlert, waitAlert, printResponseErrorAlert, deleteAlert, questionAlertWithLottie } from '../../../functions/alert'
 import { apiGet, apiOptions, apiPostForm, apiDelete, catchErrors, apiPutForm } from '../../../functions/api'
 import Swal from 'sweetalert2';
@@ -12,7 +12,8 @@ class RHLicenciasForm extends Component {
     
     state = {
         form: {
-            licencia: ''
+            licencia: '',
+            codigo:''
         },
         options: {
             licencias: []
@@ -32,7 +33,17 @@ class RHLicenciasForm extends Component {
             (response) => {
                 const { licencias } = response.data
                 const { options } = this.state
-                options.licencias = setOptionsWithLabel(licencias, 'fullName', 'id')
+                let aux = []
+                licencias.forEach(elemento => {
+                    aux.push({
+                        name: elemento.fullName,
+                        label: elemento.fullName,
+                        value: elemento.id.toString(),
+                        codigo: elemento.nextKeyAvailable
+                    })
+                    return ''
+                })
+                options.licencias = aux
                 Swal.close()
                 this.setState({
                     ...this.state,
@@ -115,7 +126,12 @@ class RHLicenciasForm extends Component {
 
     onChange = e => {
         const { name, value } = e.target
-        const { form } = this.state
+        const { form, options } = this.state
+        options.licencias.forEach((licencia) => {
+            if (value.value === licencia.value) {
+                form.codigo = licencia.codigo
+            }
+        })
         form[name] = value
         this.setState({ ...this.state, form })
     }
@@ -141,17 +157,17 @@ class RHLicenciasForm extends Component {
                 </div>
                 {
                     activeHistorial ?
-                        <div>
+                        <div className="table-responsive">
                             <table className="table w-100 table-vertical-center table-hover text-center">
                                 <thead>
                                     <tr>
-                                        <th></th>
-                                        <th className="text-dark-75">Nombre</th>
-                                        <th className="text-dark-75">Fecha de activación</th>
-                                        <th className="text-dark-75">Duración</th>
-                                        <th className="text-dark-75">Fecha de vencimiento</th>
-                                        <th className="text-dark-75">Estatus</th>
-                                        <th className="text-dark-75">Token</th>
+                                        <th className="w-8"></th>
+                                        <th className="text-dark-75 w-15">Nombre</th>
+                                        <th className="text-dark-75 w-10">Duración</th>
+                                        <th className="text-dark-75 w-15">Fecha de activación</th>
+                                        <th className="text-dark-75 w-15">Fecha de vencimiento</th>
+                                        <th className="text-dark-75 w-10">Estatus</th>
+                                        <th className="text-dark-75 w-15">Token</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,9 +181,9 @@ class RHLicenciasForm extends Component {
                                         :
                                             licencias.map((licencia, index) => {
                                                 return(
-                                                    <tr key = { index } className="font-weight-light border-top">
-                                                        <td className='px-2'>
-                                                            <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
+                                                    <tr key = { index } className="font-weight-light border-top font-size-md">
+                                                        <td className="d-flex justify-content-space-around">
+                                                            <button className='btn btn-icon btn-actions-table btn-xs btn-text-danger btn-hover-danger'
                                                                 onClick = { (e) => { 
                                                                     e.preventDefault(); 
                                                                     deleteAlert(
@@ -181,7 +197,7 @@ class RHLicenciasForm extends Component {
                                                             
                                                             {
                                                                 licencia.pivot.estatus === 'En uso' && licencia.keysAvailables > 0 ?
-                                                                    <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-info btn-hover-info'
+                                                                    <button className='btn btn-icon btn-actions-table btn-xs btn-text-info btn-hover-info'
                                                                         onClick = { (e) => { 
                                                                             e.preventDefault(); 
                                                                             questionAlertWithLottie(
@@ -200,22 +216,24 @@ class RHLicenciasForm extends Component {
                                                                 : null
                                                             }
                                                         </td>
-                                                        <td className='px-2 text-break'>
+                                                        <td>
                                                             { licencia.tipo } - { licencia.nombre }
                                                         </td>
-                                                        <td className='px-2 text-break'>
-                                                            { setDateText(licencia.pivot.fecha) }
-                                                        </td>
-                                                        <td className='px-2 text-break'>
+                                                        <td>
                                                             { licencia.duracion } meses
                                                         </td>
-                                                        <td className='px-2 text-break'>
+                                                        <td>
+                                                            { setDateText(licencia.pivot.fecha) }
+                                                        </td>
+                                                        <td>
                                                             { this.printFechaFin(licencia) }
                                                         </td>
-                                                        <td className = { `px-2 text-break font-weight-bold ${licencia.pivot.estatus === 'En uso' ? 'text-success' : 'text-danger'}` }>
-                                                            { licencia.pivot.estatus }
+                                                        <td>
+                                                            <div className = { `label-status ${licencia.pivot.estatus === 'En uso' ? 'text-success bg-light-success' : 'text-danger'}`}>
+                                                                { licencia.pivot.estatus }
+                                                            </div>
                                                         </td>
-                                                        <td className = { `px-2 text-break font-weight-bold text-transform-none ${licencia.pivot.estatus === 'En uso' ? 'text-success' : 'text-danger'}` }>
+                                                        <td className = "font-weight-bold">
                                                             { licencia.pivot.token }
                                                         </td>
                                                     </tr>
@@ -234,6 +252,17 @@ class RHLicenciasForm extends Component {
                                         options = { options.licencias } onChange={(value) => { this.updateSelect(value, 'licencia') }}
                                         messageinc="Incorrecto. Selecciona la licencia." />
                                 </div>
+                                {
+                                    form.licencia ?
+                                    <div className="col-md-6">
+                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1}
+                                            withformgroup={1} requirevalidation={0} name='codigo' 
+                                            placeholder={`CÓDIGO`} value={form.codigo} iconclass='las la-key icon-xl text-danger'
+                                            letterCase={false} disabled={true} customdiv='mb-0 bg-input-disable-success' customclass="disable-success"
+                                        />
+                                    </div>
+                                    :<></>
+                                }
                             </Row>
                             <div className="d-flex justify-content-end border-top mt-3 pt-3">
                                 <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type = 'submit' text="ENVIAR" />
