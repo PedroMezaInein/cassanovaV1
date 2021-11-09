@@ -167,7 +167,6 @@ class RHLicenciasForm extends Component {
                                             </tr>
                                         :
                                             licencias.map((licencia, index) => {
-                                                console.log(`Licencia: `, licencia)
                                                 return(
                                                     <tr key = { index } className="font-weight-light border-top">
                                                         <td className='px-2'>
