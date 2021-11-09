@@ -6,4 +6,5 @@ import * as Trash from './trash-clean.json'
 import * as Bye from './bye.json'
 import * as Hi from './hi.json'
 import * as Lock from './lock.json'
-export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock }
+import * as Software from './software.json'
+export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock, Software }
