@@ -8,7 +8,7 @@ import { setNaviIcon, setOptions, setOptionsWithLabel } from '../../../functions
 import { optionsFases } from '../../../functions/options'
 import { RadioGroupGray, Button, InputGray, ReactSelectSearchGray } from '../../form-components'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
-import { apiOptions, catchErrors } from '../../../functions/api'
+import { apiGet, apiOptions, catchErrors } from '../../../functions/api'
 import Swal from 'sweetalert2';
 class RHLicenciasForm extends Component {
     
@@ -23,6 +23,7 @@ class RHLicenciasForm extends Component {
     }
 
     componentDidMount = () => {
+        this.getLicencias()
     }
 
     getOptions = async() => {
@@ -37,6 +38,20 @@ class RHLicenciasForm extends Component {
                 this.setState({
                     ... this.state,
                     options
+                })
+            }, (error) => { printResponseErrorAlert(error) })
+            .catch((error) => { catchErrors(error) })
+    }
+
+    getLicencias = async() => {
+        waitAlert()
+        const { at, empleado } = this.props
+        apiGet(`v2/rh/empleados/licencias/${empleado.id}`, at).then(
+            (response) => {
+                const { licencias } = response.data
+                this.setState({
+                    ...this.state,
+                    licencias: licencias
                 })
             }, (error) => { printResponseErrorAlert(error) })
             .catch((error) => { catchErrors(error) })
@@ -62,7 +77,7 @@ class RHLicenciasForm extends Component {
         this.setState({ ...this.state, form })
     }
     render() {
-        const { form, activeHistorial } = this.state
+        const { form, activeHistorial, licencias } = this.state
         const { options } = this.state
         return (
             <div>
@@ -90,6 +105,18 @@ class RHLicenciasForm extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {
+                                        licencias.length === 0 ?
+                                            <tr className="font-weight-light border-top ">
+                                                <td colSpan = '6' className = 'text-center'>
+                                                    No hay licencias mostradas
+                                                </td>
+                                            </tr>
+                                        :
+                                            licencias.map((licencia, index) => {
+
+                                            })
+                                    }
                                     {/* {
                                         licencias.map((licencia, index) => {
                                             return ( */}

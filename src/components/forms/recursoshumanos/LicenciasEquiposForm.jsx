@@ -86,7 +86,7 @@ class LicenciasEquiposForm extends Component {
     }
     render() {
         const { form } = this.state
-        const { at } = this.props
+        const { at, empleado } = this.props
         return (
             <Tab.Container defaultActiveKey="licencias">
                 <Nav className="nav-pills nav-light-info justify-content-center py-5 nav-bolder border-0 rounded">
@@ -105,7 +105,7 @@ class LicenciasEquiposForm extends Component {
                 </Nav>
                 <Tab.Content>
                     <Tab.Pane eventKey="licencias">
-                        <RHLicenciasForm at = { at } />
+                        <RHLicenciasForm at = { at } empleado = { empleado } />
                     </Tab.Pane>
                     <Tab.Pane eventKey="equipos">
                         <Form id="form-licencias-equipos" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-licencias-equipos') }}>
