@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import SVG from "react-inlinesvg";
-import { URL_DEV } from '../../../constants'
-import { Row, Form, Col, Tab, Nav } from 'react-bootstrap'
-import { toAbsoluteUrl, setSingleHeader } from '../../../functions/routers'
-import { setDateText, setNaviIcon, setOptions, setOptionsWithLabel } from '../../../functions/setters'
-import { optionsFases } from '../../../functions/options'
-import { RadioGroupGray, Button, InputGray, ReactSelectSearchGray } from '../../form-components'
-import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
-import { apiGet, apiOptions, apiPostForm, apiDelete, catchErrors } from '../../../functions/api'
+import { Row, Form } from 'react-bootstrap'
+import { toAbsoluteUrl } from '../../../functions/routers'
+import { setDateText } from '../../../functions/setters'
+import { Button, ReactSelectSearchGray, InputGray } from '../../form-components'
+import { validateAlert, waitAlert, printResponseErrorAlert, deleteAlert, questionAlertWithLottie } from '../../../functions/alert'
+import { apiGet, apiOptions, apiPostForm, apiDelete, catchErrors, apiPutForm } from '../../../functions/api'
 import Swal from 'sweetalert2';
+import { Software } from '../../../assets/animate';
 class RHLicenciasForm extends Component {
     
     state = {
@@ -48,7 +46,7 @@ class RHLicenciasForm extends Component {
                 options.licencias = aux
                 Swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             }, (error) => { printResponseErrorAlert(error) })
@@ -74,6 +72,16 @@ class RHLicenciasForm extends Component {
         waitAlert()
         const { at, empleado } = this.props
         apiDelete(`v2/rh/empleados/licencias/${empleado.id}/licencia/${id}?token=${token}`, at).then(
+            (response) => {
+                this.getLicencias()
+            }, (error) => { printResponseErrorAlert(error) })
+            .catch((error) => { catchErrors(error) })
+    }
+
+    nuevoToken = async(licencia) => {
+        waitAlert()
+        const { at, empleado } = this.props
+        apiPutForm(`v2/rh/empleados/licencias/${empleado.id}/${licencia.id}`, { token: licencia.pivot.token }, at).then(
             (response) => {
                 this.getLicencias()
             }, (error) => { printResponseErrorAlert(error) })
@@ -135,9 +143,7 @@ class RHLicenciasForm extends Component {
     }
 
     render() {
-        const { form, activeHistorial, licencias } = this.state
-        const { options } = this.state
-        console.log(form, 'form')
+        const { form, activeHistorial, licencias, options } = this.state
         return (
             <div>
                 <div className="d-flex justify-content-end">
@@ -155,7 +161,7 @@ class RHLicenciasForm extends Component {
                             <table className="table w-100 table-vertical-center table-hover text-center">
                                 <thead>
                                     <tr>
-                                        <th className="w-5"></th>
+                                        <th className="w-8"></th>
                                         <th className="text-dark-75 w-15">Nombre</th>
                                         <th className="text-dark-75 w-10">Duración</th>
                                         <th className="text-dark-75 w-15">Fecha de activación</th>
@@ -176,7 +182,7 @@ class RHLicenciasForm extends Component {
                                             licencias.map((licencia, index) => {
                                                 return(
                                                     <tr key = { index } className="font-weight-light border-top font-size-md">
-                                                        <td>
+                                                        <td className="d-flex justify-content-space-around">
                                                             <button className='btn btn-icon btn-actions-table btn-xs btn-text-danger btn-hover-danger'
                                                                 onClick = { (e) => { 
                                                                     e.preventDefault(); 
@@ -188,6 +194,27 @@ class RHLicenciasForm extends Component {
                                                                 } } >
                                                                 <i className='flaticon2-rubbish-bin' />
                                                             </button>
+                                                            
+                                                            {
+                                                                licencia.pivot.estatus === 'En uso' && licencia.keysAvailables > 0 ?
+                                                                    <button className='btn btn-icon btn-actions-table btn-xs btn-text-info btn-hover-info'
+                                                                        onClick = { (e) => { 
+                                                                            e.preventDefault(); 
+                                                                            questionAlertWithLottie(
+                                                                                '¿Deseas continuar?',
+                                                                                `Solicitarás un nuevo token de la licencia ${licencia.tipo} - ${licencia.nombre}`,
+                                                                                Software,
+                                                                                { confirm: 'SI', cancel: 'NO' },
+                                                                                {
+                                                                                    cancel: null,
+                                                                                    success: () => this.nuevoToken(licencia)
+                                                                                }
+                                                                            )
+                                                                        } } >
+                                                                        <i className='fas fa-retweet' />
+                                                                    </button>
+                                                                : null
+                                                            }
                                                         </td>
                                                         <td>
                                                             { licencia.tipo } - { licencia.nombre }
