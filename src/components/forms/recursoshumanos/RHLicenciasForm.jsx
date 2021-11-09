@@ -152,7 +152,7 @@ class RHLicenciasForm extends Component {
                                         <th className="text-dark-75">Nombre</th>
                                         <th className="text-dark-75">Fecha de activación</th>
                                         <th className="text-dark-75">Duración</th>
-                                        <th className="text-dark-75">Tiempo de vencimiento</th>
+                                        <th className="text-dark-75">Fecha de vencimiento</th>
                                         <th className="text-dark-75">Estatus</th>
                                         <th className="text-dark-75">Token</th>
                                     </tr>
