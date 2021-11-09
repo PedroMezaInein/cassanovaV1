@@ -1,19 +1,19 @@
 import React, { Component } from 'react'
-import SVG from "react-inlinesvg";
-import { Row, Form } from 'react-bootstrap'
-import { toAbsoluteUrl } from '../../../functions/routers'
+import SVG from "react-inlinesvg"
 import { setDateText } from '../../../functions/setters'
+import { toAbsoluteUrl } from '../../../functions/routers'
+import { Row, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Button, ReactSelectSearchGray, InputGray } from '../../form-components'
-import { validateAlert, waitAlert, printResponseErrorAlert, deleteAlert, questionAlertWithLottie } from '../../../functions/alert'
 import { apiGet, apiOptions, apiPostForm, apiDelete, catchErrors, apiPutForm } from '../../../functions/api'
+import { validateAlert, waitAlert, printResponseErrorAlert, deleteAlert, questionAlertWithLottie } from '../../../functions/alert'
 import Swal from 'sweetalert2';
 import { Software } from '../../../assets/animate';
 class RHLicenciasForm extends Component {
-    
+
     state = {
         form: {
             licencia: '',
-            codigo:''
+            codigo: ''
         },
         options: {
             licencias: []
@@ -26,7 +26,7 @@ class RHLicenciasForm extends Component {
         this.getLicencias()
     }
 
-    getOptions = async() => {
+    getOptions = async () => {
         waitAlert()
         const { at } = this.props
         apiOptions(`v2/rh/empleados/licencias`, at).then(
@@ -53,7 +53,7 @@ class RHLicenciasForm extends Component {
             .catch((error) => { catchErrors(error) })
     }
 
-    getLicencias = async() => {
+    getLicencias = async () => {
         waitAlert()
         const { at, empleado } = this.props
         apiGet(`v2/rh/empleados/licencias/${empleado.id}`, at).then(
@@ -68,7 +68,7 @@ class RHLicenciasForm extends Component {
             .catch((error) => { catchErrors(error) })
     }
 
-    deleteLicencia = async(id, token) => {
+    deleteLicencia = async (id, token) => {
         waitAlert()
         const { at, empleado } = this.props
         apiDelete(`v2/rh/empleados/licencias/${empleado.id}/licencia/${id}?token=${token}`, at).then(
@@ -78,7 +78,7 @@ class RHLicenciasForm extends Component {
             .catch((error) => { catchErrors(error) })
     }
 
-    nuevoToken = async(licencia) => {
+    nuevoToken = async (licencia) => {
         waitAlert()
         const { at, empleado } = this.props
         apiPutForm(`v2/rh/empleados/licencias/${empleado.id}/${licencia.id}`, { token: licencia.pivot.token }, at).then(
@@ -88,7 +88,7 @@ class RHLicenciasForm extends Component {
             .catch((error) => { catchErrors(error) })
     }
 
-    onSubmit = async() => {
+    onSubmit = async () => {
         waitAlert()
         const { form } = this.state
         const { at, empleado } = this.props
@@ -113,9 +113,9 @@ class RHLicenciasForm extends Component {
             activeHistorial: !activeHistorial,
             form
         })
-        if(activeHistorial){
+        if (activeHistorial) {
             this.getOptions()
-        }else{
+        } else {
             this.getLicencias()
         }
     }
@@ -138,7 +138,7 @@ class RHLicenciasForm extends Component {
 
     printFechaFin = (licencia) => {
         let fecha = new Date(licencia.pivot.fecha)
-        let newDate = new Date(fecha.setMonth(fecha.getMonth()+licencia.duracion));
+        let newDate = new Date(fecha.setMonth(fecha.getMonth() + licencia.duracion));
         return setDateText(newDate)
     }
 
@@ -146,7 +146,7 @@ class RHLicenciasForm extends Component {
         const { form, activeHistorial, licencias, options } = this.state
         return (
             <div>
-                <div className="d-flex justify-content-end">
+                <div className="d-flex justify-content-end mb-5">
                     <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
                         {
                             activeHistorial ?
@@ -162,7 +162,7 @@ class RHLicenciasForm extends Component {
                                 <thead>
                                     <tr>
                                         <th className="w-8"></th>
-                                        <th className="text-dark-75 w-15">Nombre</th>
+                                        <th className="text-dark-75 w-15 min-w-150px">Nombre</th>
                                         <th className="text-dark-75 w-10">Duración</th>
                                         <th className="text-dark-75 w-15">Fecha de activación</th>
                                         <th className="text-dark-75 w-15">Fecha de vencimiento</th>
@@ -174,67 +174,63 @@ class RHLicenciasForm extends Component {
                                     {
                                         licencias.length === 0 ?
                                             <tr className="font-weight-light border-top ">
-                                                <td colSpan = '7' className = 'text-center'>
+                                                <td colSpan='7' className='text-center'>
                                                     No hay licencias mostradas
                                                 </td>
                                             </tr>
-                                        :
+                                            :
                                             licencias.map((licencia, index) => {
-                                                return(
-                                                    <tr key = { index } className="font-weight-light border-top font-size-md">
+                                                return (
+                                                    <tr key={index} className="font-weight-light border-top font-size-md">
                                                         <td className="d-flex justify-content-space-around">
-                                                            <button className='btn btn-icon btn-actions-table btn-xs btn-text-danger btn-hover-danger'
-                                                                onClick = { (e) => { 
-                                                                    e.preventDefault(); 
-                                                                    deleteAlert(
-                                                                        `Eliminarás la licencia`,
-                                                                        `¿Deseas continuar?`,
-                                                                        () => { this.deleteLicencia(licencia.id, licencia.pivot.token) }
-                                                                    )
-                                                                } } >
-                                                                <i className='flaticon2-rubbish-bin' />
-                                                            </button>
-                                                            
+                                                            <OverlayTrigger rootClose overlay={<Tooltip>Eliminar licencia</Tooltip>}>
+                                                                <button className='btn btn-icon btn-actions-table btn-xs btn-text-danger btn-hover-danger'
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        deleteAlert(
+                                                                            `Eliminarás la licencia`,
+                                                                            `¿Deseas continuar?`,
+                                                                            () => { this.deleteLicencia(licencia.id, licencia.pivot.token) }
+                                                                        )
+                                                                    }} >
+                                                                    <i className='flaticon2-rubbish-bin' />
+                                                                </button>
+                                                            </OverlayTrigger>
                                                             {
                                                                 licencia.pivot.estatus === 'En uso' && licencia.keysAvailables > 0 ?
-                                                                    <button className='btn btn-icon btn-actions-table btn-xs btn-text-info btn-hover-info'
-                                                                        onClick = { (e) => { 
-                                                                            e.preventDefault(); 
-                                                                            questionAlertWithLottie(
-                                                                                '¿Deseas continuar?',
-                                                                                `Solicitarás un nuevo token de la licencia ${licencia.tipo} - ${licencia.nombre}`,
-                                                                                Software,
-                                                                                { confirm: 'SI', cancel: 'NO' },
-                                                                                {
-                                                                                    cancel: null,
-                                                                                    success: () => this.nuevoToken(licencia)
-                                                                                }
-                                                                            )
-                                                                        } } >
-                                                                        <i className='fas fa-retweet' />
-                                                                    </button>
-                                                                : null
+                                                                    <OverlayTrigger rootClose overlay={<Tooltip>Renovar licencia</Tooltip>}>
+                                                                        <button className='btn btn-icon btn-actions-table btn-xs btn-text-info btn-hover-info'
+                                                                            onClick={(e) => {
+                                                                                e.preventDefault();
+                                                                                questionAlertWithLottie(
+                                                                                    '¿Deseas continuar?',
+                                                                                    `Solicitarás un nuevo token de la licencia ${licencia.tipo} - ${licencia.nombre}`,
+                                                                                    Software,
+                                                                                    { confirm: 'SI', cancel: 'NO' },
+                                                                                    {
+                                                                                        cancel: null,
+                                                                                        success: () => this.nuevoToken(licencia)
+                                                                                    },
+                                                                                    'btn-renovar-lic-confirm'
+                                                                                )
+                                                                            }} >
+                                                                            <i className='fas fa-retweet' />
+                                                                        </button>
+                                                                    </OverlayTrigger>
+                                                                    : null
                                                             }
                                                         </td>
+                                                        <td> {licencia.tipo} - {licencia.nombre} </td>
+                                                        <td> {licencia.duracion} meses </td>
+                                                        <td> {setDateText(licencia.pivot.fecha)} </td>
+                                                        <td> {this.printFechaFin(licencia)} </td>
                                                         <td>
-                                                            { licencia.tipo } - { licencia.nombre }
-                                                        </td>
-                                                        <td>
-                                                            { licencia.duracion } meses
-                                                        </td>
-                                                        <td>
-                                                            { setDateText(licencia.pivot.fecha) }
-                                                        </td>
-                                                        <td>
-                                                            { this.printFechaFin(licencia) }
-                                                        </td>
-                                                        <td>
-                                                            <div className = { `label-status ${licencia.pivot.estatus === 'En uso' ? 'text-success bg-light-success' : 'text-danger'}`}>
-                                                                { licencia.pivot.estatus }
+                                                            <div className={`label-status ${licencia.pivot.estatus === 'En uso' ? 'text-success bg-light-success' : 'bg-light-danger text-danger'}`}>
+                                                                {licencia.pivot.estatus}
                                                             </div>
                                                         </td>
-                                                        <td className = "font-weight-bold">
-                                                            { licencia.pivot.token }
+                                                        <td className="font-weight-bold">
+                                                            {licencia.pivot.token}
                                                         </td>
                                                     </tr>
                                                 )
@@ -243,30 +239,34 @@ class RHLicenciasForm extends Component {
                                 </tbody>
                             </table>
                         </div>
-                    : 
-                        <Form id = 'form-ventas-solicitud-factura' onSubmit = { (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-ventas-solicitud-factura') } }>
+                        :
+                        <Form id='form-licencias' onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-licencias') }}>
                             <Row className="form-group mx-0 form-group-marginless">
                                 <div className="col-md-6">
-                                    <ReactSelectSearchGray requirevalidation = { 1 } placeholder = 'SELECCIONA LA LICENCIA'
-                                        defaultvalue = { form.licencia } iconclass = 'las la-shield-alt icon-xl'
-                                        options = { options.licencias } onChange={(value) => { this.updateSelect(value, 'licencia') }}
+                                    <ReactSelectSearchGray requirevalidation={1} placeholder='SELECCIONA LA LICENCIA'
+                                        defaultvalue={form.licencia} iconclass='las la-shield-alt icon-xl'
+                                        options={options.licencias} onChange={(value) => { this.updateSelect(value, 'licencia') }}
                                         messageinc="Incorrecto. Selecciona la licencia." />
                                 </div>
                                 {
                                     form.licencia ?
-                                    <div className="col-md-6">
-                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1}
-                                            withformgroup={1} requirevalidation={0} name='codigo' 
-                                            placeholder={`CÓDIGO`} value={form.codigo} iconclass='las la-key icon-xl text-danger'
-                                            letterCase={false} disabled={true} customdiv='mb-0 bg-input-disable-success' customclass="disable-success"
-                                        />
-                                    </div>
-                                    :<></>
+                                        <div className="col-md-6">
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1}
+                                                withformgroup={1} requirevalidation={0} name='codigo'
+                                                placeholder={`CÓDIGO`} value={form.codigo} iconclass='las la-key icon-xl text-danger'
+                                                letterCase={false} disabled={true} customdiv='mb-0 bg-input-disable-success' customclass="disable-success"
+                                            />
+                                        </div>
+                                        : <></>
                                 }
                             </Row>
-                            <div className="d-flex justify-content-end border-top mt-3 pt-3">
-                                <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type = 'submit' text="ENVIAR" />
-                            </div>
+                            {
+                                form.licencia ?
+                                    <div className="d-flex justify-content-end border-top mt-3 pt-3 mx-4">
+                                        <Button only_icon='las la-plus' className="btn btn-info font-weight-bold text-uppercase" type='submit' text="AGREGAR LICENCIA" />
+                                    </div>
+                                    : <></>
+                            }
                         </Form>
                 }
             </div>
