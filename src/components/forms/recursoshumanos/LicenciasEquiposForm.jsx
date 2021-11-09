@@ -2,10 +2,25 @@ import React, { Component } from 'react'
 import { Tab, Nav } from 'react-bootstrap'
 import { RHLicenciasForm, RHEquiposForm } from '../../forms'
 class LicenciasEquiposForm extends Component {
+    
+    state = {
+        key: 'licencias'
+    }
+
+    changeTab = (tab) => {
+        this.setState({
+            ...this.state,
+            key: tab
+        })
+    }
+
     render() {
+
         const { at, empleado } = this.props
+        const { key } = this.state
+
         return (
-            <Tab.Container defaultActiveKey="licencias">
+            <Tab.Container activeKey = { key }  onSelect = { ( select ) => { this.changeTab(select) } } >
                 <Nav className="nav-pills nav-light-info justify-content-center py-5 nav-bolder border-0 rounded">
                     <Nav.Item className="nav-item">
                         <Nav.Link className="nav-link px-3" eventKey="licencias">
@@ -22,10 +37,14 @@ class LicenciasEquiposForm extends Component {
                 </Nav>
                 <Tab.Content>
                     <Tab.Pane eventKey="licencias">
-                        <RHLicenciasForm at = { at } empleado = { empleado } />
+                        {
+                            key === 'licencias' ? <RHLicenciasForm at = { at } empleado = { empleado } /> : null
+                        }
                     </Tab.Pane>
                     <Tab.Pane eventKey="equipos">
-                        <RHEquiposForm at = { at } />
+                        {
+                            key === 'equipos' ? <RHEquiposForm at = { at } /> : null
+                        }
                     </Tab.Pane>
                 </Tab.Content>
             </Tab.Container>
