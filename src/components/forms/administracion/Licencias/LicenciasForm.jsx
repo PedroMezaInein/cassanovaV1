@@ -190,13 +190,16 @@ class LicenciasForm extends Component{
                                                     <>
                                                         <div className="col-md-3" key={index}>
                                                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } 
-                                                                withformgroup = { 0 } requirevalidation = { 1 } name = 'codigo' 
+                                                                withformgroup = { 1 } requirevalidation = { 1 } name = 'codigo' 
                                                                 placeholder = { `CÓDIGO ${codigo.id}` } onChange = { (e) => 
                                                                     { this.onChangeCodigos(e, index) }
                                                                 } value = { codigo.codigo } messageinc = "Ingresa el código." 
                                                                 iconclass = 'las la-key icon-xl'  letterCase = { false } 
                                                                 disabled = { codigo.flag ? true : false } 
-                                                                inputsolid = { codigo.flag ? 'bg-light-danger' : '' } />
+                                                                // inputsolid = { codigo.flag ? 'bg-light-danger' : '' } 
+                                                                customdiv={ `mb-0 ${codigo.flag ?'bg-input-disable-danger' : 'bg-input-disable-success' } ` }
+                                                                customclass={ `${codigo.flag ?'disable-danger' : 'disable-success' } ` }
+                                                            />
                                                         </div>
                                                         <div className={this.isMultiplo(index+1)? "col-md-12" : "d-none"}>
                                                             <div className="separator separator-dashed my-3" />
