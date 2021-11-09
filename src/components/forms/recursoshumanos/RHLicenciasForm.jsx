@@ -4,7 +4,7 @@ import SVG from "react-inlinesvg";
 import { URL_DEV } from '../../../constants'
 import { Row, Form, Col, Tab, Nav } from 'react-bootstrap'
 import { toAbsoluteUrl, setSingleHeader } from '../../../functions/routers'
-import { setNaviIcon, setOptions, setOptionsWithLabel } from '../../../functions/setters'
+import { dayDMY, setNaviIcon, setOptions, setOptionsWithLabel } from '../../../functions/setters'
 import { optionsFases } from '../../../functions/options'
 import { RadioGroupGray, Button, InputGray, ReactSelectSearchGray } from '../../form-components'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
@@ -34,6 +34,7 @@ class RHLicenciasForm extends Component {
             (response) => {
                 const { licencias } = response.data
                 const { options } = this.state
+                console.log(licencias, 'licencias')
                 options.licencias = setOptionsWithLabel(licencias, 'fullName', 'id')
                 Swal.close()
                 this.setState({
@@ -72,6 +73,7 @@ class RHLicenciasForm extends Component {
         }
     }
     updateSelect = (value, name) => {
+        console.log(value)
         this.onChange({ target: { value: value, name: name } })
     }
     onChange = e => {
@@ -102,6 +104,7 @@ class RHLicenciasForm extends Component {
                                     <tr>
                                         <th></th>
                                         <th className="text-dark-75">Nombre</th>
+                                        <th className="text-dark-75">Tipo</th>
                                         <th className="text-dark-75">Fecha de activación</th>
                                         <th className="text-dark-75">Tiempo de vencimiento</th>
                                         <th className="text-dark-75">Estatus</th>
@@ -118,56 +121,32 @@ class RHLicenciasForm extends Component {
                                             </tr>
                                         :
                                             licencias.map((licencia, index) => {
+                                                console.log(licencia, 'licencia')
                                                 return(
                                                     <tr key = { index } className="font-weight-light border-top">
-                                                        <td className='px-2'>
+                                                        <td>
                                                             <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
                                                                 onClick = { (e) => { 
                                                                     e.preventDefault(); 
                                                                     deleteAlert(
                                                                         `Eliminarás la licencia`,
                                                                         `¿Deseas continuar?`,
-                                                                        () => { this.deleteLicencia('licencia.id') }
+                                                                        () => { this.deleteLicencia(licencia.id) }
                                                                     )
                                                                 } } >
                                                                 <i className='flaticon2-rubbish-bin' />
                                                             </button>
                                                         </td>
-                                                        <td className='px-2 text-break'>Nombre</td>
-                                                        <td className='px-2 text-break'>Fecha de activación</td>
-                                                        <td className='px-2 text-break'>Tiempo de vencimiento</td>
-                                                        <td className='px-2 text-break'>Estatus</td>
-                                                        <td className='px-2 text-break'>Token</td>
+                                                        <td>{licencia.nombre}</td>
+                                                        <td>{licencia.tipo}</td>
+                                                        <td>{dayDMY(licencia.pivot.fecha)}</td>
+                                                        <td>Tiempo de vencimiento</td>
+                                                        <td><span className="label-status bg-light-success text-success">{licencia.pivot.estatus}</span></td>
+                                                        <td>{licencia.pivot.token}</td>
                                                     </tr>
                                                 )
                                             })
                                     }
-                                    {/* {
-                                        licencias.map((licencia, index) => {
-                                            return ( */}
-                                                <tr /*key={index}*/ className="font-weight-light border-top">
-                                                    <td className='px-2'>
-                                                        <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
-                                                            onClick = { (e) => { 
-                                                                e.preventDefault(); 
-                                                                deleteAlert(
-                                                                    `Eliminarás la licencia`,
-                                                                    `¿Deseas continuar?`,
-                                                                    () => { this.deleteLicencia('licencia.id') }
-                                                                )
-                                                            } } >
-                                                            <i className='flaticon2-rubbish-bin' />
-                                                        </button>
-                                                    </td>
-                                                    <td className='px-2 text-break'>Nombre</td>
-                                                    <td className='px-2 text-break'>Fecha de activación</td>
-                                                    <td className='px-2 text-break'>Tiempo de vencimiento</td>
-                                                    <td className='px-2 text-break'>Estatus</td>
-                                                    <td className='px-2 text-break'>Token</td>
-                                                </tr>
-                                            {/* )
-                                        })
-                                    } */}
                                 </tbody>
                             </table>
                         </div>
