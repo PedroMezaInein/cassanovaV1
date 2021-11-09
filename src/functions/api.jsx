@@ -41,9 +41,9 @@ export const catchErrors = (error, flag) => {
             }), {headers: {'Accept': 'application/json'}}
         ).then(
             (response) => {
-                 console.log(`RESPONSE: `, response)
+                 console.error(`RESPONSE: `, response)
             }, (e) => {
-                console.log(`Error: `, e)
+                console.error(`Error: `, e)
             }
         )
     }
