@@ -548,7 +548,6 @@ export const printResponseErrorAlert = (error) => {
             }
         }
     }, 50);
-    
 }
 
 export function pendingPaymentAlert(title, text) {

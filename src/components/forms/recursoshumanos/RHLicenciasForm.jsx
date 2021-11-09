@@ -4,11 +4,11 @@ import SVG from "react-inlinesvg";
 import { URL_DEV } from '../../../constants'
 import { Row, Form, Col, Tab, Nav } from 'react-bootstrap'
 import { toAbsoluteUrl, setSingleHeader } from '../../../functions/routers'
-import { dayDMY, setNaviIcon, setOptions, setOptionsWithLabel } from '../../../functions/setters'
+import { setDateText, setNaviIcon, setOptions, setOptionsWithLabel } from '../../../functions/setters'
 import { optionsFases } from '../../../functions/options'
 import { RadioGroupGray, Button, InputGray, ReactSelectSearchGray } from '../../form-components'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
-import { apiGet, apiOptions, catchErrors } from '../../../functions/api'
+import { apiGet, apiOptions, apiPostForm, apiDelete, catchErrors } from '../../../functions/api'
 import Swal from 'sweetalert2';
 class RHLicenciasForm extends Component {
     
@@ -34,7 +34,6 @@ class RHLicenciasForm extends Component {
             (response) => {
                 const { licencias } = response.data
                 const { options } = this.state
-                console.log(licencias, 'licencias')
                 options.licencias = setOptionsWithLabel(licencias, 'fullName', 'id')
                 Swal.close()
                 this.setState({
@@ -60,11 +59,40 @@ class RHLicenciasForm extends Component {
             .catch((error) => { catchErrors(error) })
     }
 
+    deleteLicencia = async(id, token) => {
+        waitAlert()
+        const { at, empleado } = this.props
+        apiDelete(`v2/rh/empleados/licencias/${empleado.id}/licencia/${id}?token=${token}`, at).then(
+            (response) => {
+                this.getLicencias()
+            }, (error) => { printResponseErrorAlert(error) })
+            .catch((error) => { catchErrors(error) })
+    }
+
+    onSubmit = async() => {
+        waitAlert()
+        const { form } = this.state
+        const { at, empleado } = this.props
+        apiPostForm(`v2/rh/empleados/licencias/${empleado.id}`, form, at).then(
+            (response) => {
+                Swal.close()
+                const { licencias } = response.data
+                this.setState({
+                    ...this.state,
+                    licencias: licencias,
+                    activeHistorial: true
+                })
+            }, (error) => { printResponseErrorAlert(error) })
+            .catch((error) => { catchErrors(error) })
+    }
+
     activeBtn = () => {
-        let { activeHistorial } = this.state
+        let { activeHistorial, form } = this.state
+        form.licencia = ''
         this.setState({
             ...this.state,
-            activeHistorial: !activeHistorial
+            activeHistorial: !activeHistorial,
+            form
         })
         if(activeHistorial){
             this.getOptions()
@@ -72,16 +100,24 @@ class RHLicenciasForm extends Component {
             this.getLicencias()
         }
     }
+
     updateSelect = (value, name) => {
-        console.log(value)
         this.onChange({ target: { value: value, name: name } })
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
         this.setState({ ...this.state, form })
     }
+
+    printFechaFin = (licencia) => {
+        let fecha = new Date(licencia.pivot.fecha)
+        let newDate = new Date(fecha.setMonth(fecha.getMonth()+licencia.duracion));
+        return setDateText(newDate)
+    }
+
     render() {
         const { form, activeHistorial, licencias } = this.state
         const { options } = this.state
@@ -104,9 +140,9 @@ class RHLicenciasForm extends Component {
                                     <tr>
                                         <th></th>
                                         <th className="text-dark-75">Nombre</th>
-                                        <th className="text-dark-75">Tipo</th>
                                         <th className="text-dark-75">Fecha de activación</th>
-                                        <th className="text-dark-75">Tiempo de vencimiento</th>
+                                        <th className="text-dark-75">Duración</th>
+                                        <th className="text-dark-75">Fecha de vencimiento</th>
                                         <th className="text-dark-75">Estatus</th>
                                         <th className="text-dark-75">Token</th>
                                     </tr>
@@ -115,34 +151,46 @@ class RHLicenciasForm extends Component {
                                     {
                                         licencias.length === 0 ?
                                             <tr className="font-weight-light border-top ">
-                                                <td colSpan = '6' className = 'text-center'>
+                                                <td colSpan = '7' className = 'text-center'>
                                                     No hay licencias mostradas
                                                 </td>
                                             </tr>
                                         :
                                             licencias.map((licencia, index) => {
-                                                console.log(licencia, 'licencia')
+                                                console.log(`Licencia: `, licencia)
                                                 return(
                                                     <tr key = { index } className="font-weight-light border-top">
-                                                        <td>
+                                                        <td className='px-2'>
                                                             <button className='btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
                                                                 onClick = { (e) => { 
                                                                     e.preventDefault(); 
                                                                     deleteAlert(
                                                                         `Eliminarás la licencia`,
                                                                         `¿Deseas continuar?`,
-                                                                        () => { this.deleteLicencia(licencia.id) }
+                                                                        () => { this.deleteLicencia(licencia.id, licencia.pivot.token) }
                                                                     )
                                                                 } } >
                                                                 <i className='flaticon2-rubbish-bin' />
                                                             </button>
                                                         </td>
-                                                        <td>{licencia.nombre}</td>
-                                                        <td>{licencia.tipo}</td>
-                                                        <td>{dayDMY(licencia.pivot.fecha)}</td>
-                                                        <td>Tiempo de vencimiento</td>
-                                                        <td><span className="label-status bg-light-success text-success">{licencia.pivot.estatus}</span></td>
-                                                        <td>{licencia.pivot.token}</td>
+                                                        <td className='px-2 text-break'>
+                                                            { licencia.tipo } - { licencia.nombre }
+                                                        </td>
+                                                        <td className='px-2 text-break'>
+                                                            { setDateText(licencia.pivot.fecha) }
+                                                        </td>
+                                                        <td className='px-2 text-break'>
+                                                            { licencia.duracion } meses
+                                                        </td>
+                                                        <td className='px-2 text-break'>
+                                                            { this.printFechaFin(licencia) }
+                                                        </td>
+                                                        <td className = { `px-2 text-break font-weight-bold ${licencia.pivot.estatus === 'En uso' ? 'text-success' : 'text-danger'}` }>
+                                                            { licencia.pivot.estatus }
+                                                        </td>
+                                                        <td className = { `px-2 text-break font-weight-bold ${licencia.pivot.estatus === 'En uso' ? 'text-success' : 'text-danger'}` }>
+                                                            { licencia.pivot.token }
+                                                        </td>
                                                     </tr>
                                                 )
                                             })
