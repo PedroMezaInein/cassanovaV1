@@ -182,7 +182,7 @@ class RHLicenciasForm extends Component {
                                             licencias.map((licencia, index) => {
                                                 return (
                                                     <tr key={index} className="font-weight-light border-top font-size-md">
-                                                        <td className="d-flex justify-content-space-around">
+                                                        <td className="d-flex justify-content-between px-4">
                                                             <OverlayTrigger rootClose overlay={<Tooltip>Eliminar licencia</Tooltip>}>
                                                                 <button className='btn btn-icon btn-actions-table btn-xs btn-text-danger btn-hover-danger'
                                                                     onClick={(e) => {
@@ -196,29 +196,25 @@ class RHLicenciasForm extends Component {
                                                                     <i className='flaticon2-rubbish-bin' />
                                                                 </button>
                                                             </OverlayTrigger>
-                                                            {
-                                                                licencia.pivot.estatus === 'En uso' && licencia.keysAvailables > 0 ?
-                                                                    <OverlayTrigger rootClose overlay={<Tooltip>Renovar licencia</Tooltip>}>
-                                                                        <button className='btn btn-icon btn-actions-table btn-xs btn-text-info btn-hover-info'
-                                                                            onClick={(e) => {
-                                                                                e.preventDefault();
-                                                                                questionAlertWithLottie(
-                                                                                    '¿Deseas continuar?',
-                                                                                    `Solicitarás un nuevo token de la licencia ${licencia.tipo} - ${licencia.nombre}`,
-                                                                                    Software,
-                                                                                    { confirm: 'SI', cancel: 'NO' },
-                                                                                    {
-                                                                                        cancel: null,
-                                                                                        success: () => this.nuevoToken(licencia)
-                                                                                    },
-                                                                                    'btn-renovar-lic-confirm'
-                                                                                )
-                                                                            }} >
-                                                                            <i className='fas fa-retweet' />
-                                                                        </button>
-                                                                    </OverlayTrigger>
-                                                                    : null
-                                                            }
+                                                            <OverlayTrigger rootClose overlay={<Tooltip>Renovar licencia</Tooltip>}>
+                                                                <button className={`${licencia.pivot.estatus === 'En uso' && licencia.keysAvailables > 0 ? 'btn btn-icon btn-actions-table btn-xs btn-text-info btn-hover-info' : 'visibility-hidden'}`}
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        questionAlertWithLottie(
+                                                                            '¿Deseas continuar?',
+                                                                            `Solicitarás un nuevo token de la licencia ${licencia.tipo} - ${licencia.nombre}`,
+                                                                            Software,
+                                                                            { confirm: 'SI', cancel: 'NO' },
+                                                                            {
+                                                                                cancel: null,
+                                                                                success: () => this.nuevoToken(licencia)
+                                                                            },
+                                                                            'btn-renovar-lic-confirm'
+                                                                        )
+                                                                    }} >
+                                                                    <i className='fas fa-retweet' />
+                                                                </button>
+                                                            </OverlayTrigger>
                                                         </td>
                                                         <td> {licencia.tipo} - {licencia.nombre} </td>
                                                         <td> {licencia.duracion} meses </td>
