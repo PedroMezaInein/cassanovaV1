@@ -52,20 +52,14 @@ class Prestaciones extends Component {
 
     setTable = (datos) => {
         const { options } = this.state
-        // console.log(options, 'options')
         let aux = []
         datos.forEach((dato) => {
-            // let datos = options.proveedores.find((proveedor) => {
-            //     if(proveedor.value === dato.proveedor_id.toString()){
-            //         console.log(proveedor, 'proveedor')
-            //     }
-            // })
             aux.push({
                 actions: this.setActions(dato),
                 nombre:setTextTableCenter(dato.nombre),
                 periodo: setTextTableCenter(`${dato.periodo} ${dato.periodo===1?'MES':'MESES'}`),
                 pago_por_empleado: setMoneyTable(dato.pago_por_empleado),
-                proveedor: setTextTableCenter('www-'),
+                proveedor: setTextTableCenter(dato.proveedor ? dato.proveedor.razon_social : 'SIN DEFINIR'),
                 descripcion: setTextTableCenter(dato.descripcion ? dato.descripcion : '-'),
             })
         })
