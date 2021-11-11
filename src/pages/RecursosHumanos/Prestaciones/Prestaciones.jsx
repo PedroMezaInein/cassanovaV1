@@ -5,7 +5,7 @@ import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
 import { DropdownButton, Dropdown } from 'react-bootstrap'
-import { PrestacionesForm } from '../../../components/forms'
+import { PrestacionesForm, PrestacionesEgresos } from '../../../components/forms'
 import { FiltersPrestaciones } from '../../../components/filters'
 import { URL_DEV, PRESTACIONES_RH_COLUMNS } from '../../../constants'
 import { apiDelete, apiOptions, catchErrors } from '../../../functions/api'
@@ -51,7 +51,6 @@ class Prestaciones extends Component {
     }
 
     setTable = (datos) => {
-        const { options } = this.state
         let aux = []
         datos.forEach((dato) => {
             aux.push({
@@ -161,7 +160,7 @@ class Prestaciones extends Component {
                     
                 </Modal>
                 <Modal size = 'lg' show = { modal.egreso } handleClose = { this.handleClose } title = 'EGRESOS'>
-                    Egreso
+                    <PrestacionesEgresos/>
                 </Modal>
             </Layout>
         )
