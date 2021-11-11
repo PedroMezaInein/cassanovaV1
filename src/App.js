@@ -140,7 +140,7 @@ const OrigenesLeads = React.lazy( () => import('./pages/Catalogos/OrigenesLeads'
 const RedesSociales = React.lazy( () => import('./pages/Catalogos/RedesSociales') )
 const RolesMercadotecnia = React.lazy( () => import('./pages/Catalogos/RolesMercadotecnia') )
 const Servicios = React.lazy( () => import('./pages/Catalogos/Servicios') )
-const Prestaciones = React.lazy( () => import('./pages/Catalogos/Prestaciones') )
+// const Prestaciones = React.lazy( () => import('./pages/Catalogos/Prestaciones') )
 const ConceptosFacturacion = React.lazy( () => import('./pages/Catalogos/ConceptoFacturacion') )
 
 const Contabilidad = React.lazy( () => import('./pages/Reportes/Contabilidad') )
@@ -176,6 +176,7 @@ const Prestamos = React.lazy(() => import('./pages/RecursosHumanos/Prestamos/Pre
 const PrestamosForm = React.lazy(() => import('./pages/RecursosHumanos/Prestamos/PrestamosForm') )
 
 const Vacaciones = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
+const Prestaciones = React.lazy(() => import('./pages/RecursosHumanos/Prestaciones/Prestaciones') )
 
 const TicketTable = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketTable') )
 const AddTicket = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/AddTicket') )
@@ -418,7 +419,7 @@ class App extends Component{
                     <Route path = "/catalogos/bancos" exact component ={ Bancos } />
                     <Route path = "/catalogos/roles-mercadotecnia" exact component ={ RolesMercadotecnia } />
                     <Route path = "/catalogos/servicios" exact component ={ Servicios } />
-                    <Route path = "/catalogos/prestaciones" exact component ={ Prestaciones } />
+                    {/* <Route path = "/catalogos/prestaciones" exact component ={ Prestaciones } /> */}
                     
                     <Route path = "/catalogos/precio-diseno" exact component ={ PrecioDiseño } />
                     <Route path = "/catalogos/precio-diseno/:action" exact component ={ PrecioDiseñoForm } />
@@ -455,6 +456,7 @@ class App extends Component{
                     <Route path = "/rh/nomina-admin/:action" exact component ={ NominaAdminForm } />
                     <Route path = "/rh/nomina-admin/single/:id" exact component ={ NominaAdminSingle } />
                     <Route path = "/rh/checador" exact component ={ Checador } />
+                    <Route path = "/rh/prestaciones" exact component ={ Prestaciones } />
                     
                     {/* <Route path = "/rh/colaboradores" exact component ={ Empleados } /> */}
                     <Route path = "/rh/colaboradores" exact component ={ Empleados } />

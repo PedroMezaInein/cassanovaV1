@@ -40,8 +40,8 @@ class Licencias extends Component {
                 actions: this.setActions(dato),
                 tipo: setTextTableCenter(dato.tipo),
                 nombre:setTextTableCenter(dato.nombre),
-                duracion: setTextTableCenter(dato.duracion),
-                cantidad: setTextTableCenter(dato.cantidad),
+                duracion: setTextTableCenter(`${dato.duracion} ${dato.duracion===1?'MES':'MESES'}`),
+                cantidad: setTextTableCenter(`${dato.cantidad} LICENCIAS`),
                 codigos: <div>
                     <ul>
                         {
