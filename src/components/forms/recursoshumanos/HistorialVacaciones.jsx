@@ -21,9 +21,6 @@ class HistorialVacaciones extends Component {
         apiGet(`v2/rh/empleados/vacaciones/${empleado.id}`, at).then(
             (response) => {
                 const { vacaciones } = response.data
-                vacaciones.sort(function(a, b) {
-                    return a.año - b.año;
-                });
                 this.setState({
                     ...this.state,
                     vacaciones: vacaciones
@@ -53,7 +50,7 @@ class HistorialVacaciones extends Component {
         let fin =  moment(vacaciones.fechas.fin).year()
         if(vacaciones.año === 0){
             return(
-                <div>11 MESES - {inicio} - {fin}</div>
+                <div>AÑO DE INGRESO - {inicio} - {fin}</div>
             )
         }else{
             return(
@@ -61,11 +58,18 @@ class HistorialVacaciones extends Component {
             )
         }
     }
+    printDate = (element) => {
+        if(dayDMY(element.fecha_inicio) === dayDMY(element.fecha_fin)){
+            return dayDMY(element.fecha_inicio)
+        }else{
+            return `${dayDMY(element.fecha_inicio)} - ${dayDMY(element.fecha_fin)}`
+        }
+    }
     render() {
         const { vacaciones } = this.state
         return (
             <div className="table-responsive mt-5">
-                <div className="list min-w-500px col-md-11 mx-auto">
+                <div className="list min-w-500px col-md-12 mx-auto">
                     <div className="accordion accordion-light accordion-svg-toggle">
                         {
                             vacaciones.map((vacaciones, index) => {
@@ -93,7 +97,7 @@ class HistorialVacaciones extends Component {
                                             </Card.Title>
                                         </Card.Header>
                                         <Card.Body className={`card-body px-10 pt-2 pb-6 ${active ? 'collapse show' : 'collapse'}`} style={{backgroundColor:'#f9fafc'}}>
-                                            <div className="row mx-0">
+                                            <div className="row mx-0 justify-content-center">
                                                 {
                                                     vacaciones.vacaciones.length > 0 ?
                                                         vacaciones.vacaciones.map((element, key) => {
@@ -105,7 +109,7 @@ class HistorialVacaciones extends Component {
                                                                         </div>
                                                                         <div className="text-center font-weight-light mt-5">
                                                                             <div className="font-weight-bold">{element.estatus === 'Aceptadas' ? "Aceptadas" : "Rechazadas"}</div>
-                                                                            <span>{dayDMY(element.fecha_inicio)} - {dayDMY(element.fecha_fin)}</span>
+                                                                            <span>{this.printDate(element)}</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
