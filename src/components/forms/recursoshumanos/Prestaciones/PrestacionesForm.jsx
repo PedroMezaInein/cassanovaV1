@@ -19,15 +19,15 @@ class PrestacionesForm extends Component{
         const { prestacion, title, options } = this.props
         const { form } = this.state
         if(title === 'Editar prestación'){
-            if(prestacion.tipo){
-                let tipo = options.proveedores.find((tipo) => {
-                    return tipo.label === prestacion.tipo
+            if(prestacion.proveedor_id){
+                let proveedor = options.proveedores.find((tipo) => {
+                    return tipo.value === prestacion.proveedor_id.toString()
                 })
-                form.proveedor = tipo
+                form.proveedor = proveedor
             }
             form.nombre = prestacion.nombre
             form.periodo = prestacion.periodo
-            form.pago = prestacion.pago
+            form.pago = prestacion.pago_por_empleado
             form.descripcion = prestacion.descripcion
         }
         this.setState({ ...this.state, form })
@@ -101,7 +101,7 @@ class PrestacionesForm extends Component{
                             <div className="col-md-6">
                                 <InputMoneyGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1}
                                     formeditado={0} thousandseparator={true} prefix='$' name="pago" value={form.pago} onChange={this.onChange}
-                                    placeholder="PAGO POR EMPLEADO" iconclass='las la-dollar-sign' messageinc="Ingresa el pago por empleado." />
+                                    placeholder="PAGO POR EMPLEADO" iconclass='las la-coins' messageinc="Ingresa el pago por empleado." />
                             </div>
                             <div className="col-md-6">
                                 <ReactSelectSearchGray placeholder = 'Proveedor' defaultvalue = { form.proveedor } 

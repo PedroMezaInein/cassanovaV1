@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import $ from 'jquery'
+import { connect } from 'react-redux'
 import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
-import { URL_DEV, PRESTACIONES_RH_COLUMNS } from '../../../constants'
 import { NewTable } from '../../../components/NewTables'
 import { DropdownButton, Dropdown } from 'react-bootstrap'
 import { PrestacionesForm } from '../../../components/forms'
 import { FiltersPrestaciones } from '../../../components/filters'
+import { URL_DEV, PRESTACIONES_RH_COLUMNS } from '../../../constants'
 import { apiDelete, apiOptions, catchErrors } from '../../../functions/api'
-import { setTextTableCenter, setOptionsWithLabel, setMoneyTable } from '../../../functions/setters'
 import { deleteAlert, doneAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { setTextTableCenter, setOptionsWithLabel, setMoneyTable, setNaviIcon } from '../../../functions/setters'
 
 class Prestaciones extends Component {
 
@@ -51,14 +51,21 @@ class Prestaciones extends Component {
     }
 
     setTable = (datos) => {
+        const { options } = this.state
+        // console.log(options, 'options')
         let aux = []
         datos.forEach((dato) => {
+            // let datos = options.proveedores.find((proveedor) => {
+            //     if(proveedor.value === dato.proveedor_id.toString()){
+            //         console.log(proveedor, 'proveedor')
+            //     }
+            // })
             aux.push({
                 actions: this.setActions(dato),
                 nombre:setTextTableCenter(dato.nombre),
                 periodo: setTextTableCenter(`${dato.periodo} ${dato.periodo===1?'MES':'MESES'}`),
-                pago_empleado: setMoneyTable(dato.pago_empleado),
-                proveedor: setTextTableCenter(dato.proveedor ? dato.proveedor.razon_social : '-'),
+                pago_por_empleado: setMoneyTable(dato.pago_por_empleado),
+                proveedor: setTextTableCenter('www-'),
                 descripcion: setTextTableCenter(dato.descripcion ? dato.descripcion : '-'),
             })
         })
@@ -71,13 +78,13 @@ class Prestaciones extends Component {
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
                     <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }}>
-                        {this.setNaviIcon('flaticon2-pen', 'editar')}
+                        {setNaviIcon('flaticon2-pen', 'editar')}
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-danger dropdown-danger" onClick = {(e) => { e.preventDefault(); deleteAlert(`Eliminarás la prestación`, `¿Deseas continuar?`, () => { this.deletePrestacion(element.id) }) }} >
-                        {this.setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }} >
-                        {this.setNaviIcon('flaticon2-download-1', 'EGRESOS')}
+                        {setNaviIcon('flaticon2-download-1', 'EGRESOS')}
                     </Dropdown.Item>
                 </DropdownButton>
             </div>

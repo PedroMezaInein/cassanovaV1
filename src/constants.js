@@ -822,7 +822,7 @@ export const PRESTACIONES_RH_COLUMNS = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
-    { Header: 'Pago por empleado', accessor: 'pago_empleado', customRender: true },
+    { Header: 'Pago por empleado', accessor: 'pago_por_empleado', customRender: true },
     { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
 ]
