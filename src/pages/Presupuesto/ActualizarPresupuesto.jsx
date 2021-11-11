@@ -236,7 +236,7 @@ class ActualizarPresupuesto extends Component {
                             id: concepto.id,
                             mensajes: mensajeAux,
                             unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : '',
-                            unidad_id: concepto.concepto.unidad.id.toString(),
+                            unidad_id: concepto.unidad.id.toString(),
                             bg_costo:concepto.costo>0?false:true,
                             bg_cantidad:true,
                             vicio_oculto:concepto.vicio_oculto ? true : false
@@ -268,7 +268,10 @@ class ActualizarPresupuesto extends Component {
                                     () => this.getOnePresupuestoAxios(presupuesto.id))
                             )
                         break;
-                    default: break;
+                    default: 
+                        doneAlert(`Presupuesto actualizado con éxito`,
+                            () => { this.getOnePresupuestoAxios(presupuesto.id) } )
+                    break;
                 }
                 
             }, (error) => { printResponseErrorAlert(error) }
