@@ -185,7 +185,7 @@ class UltimoPresupuesto extends Component {
                                                                 </div>
                                                             </div>
                                                             <div className="font-size-h5 font-weight-bold">
-                                                                {presupuesto.tiempo_ejecucion} días
+                                                                {presupuesto.tiempo_ejecucion} {presupuesto.tiempo_ejecucion === '1'?'día':'días'}
                                                                 <div className="font-weight-normal font-size-lg text-muted">Tpo. de ejecución</div>
                                                             </div>
                                                         </div>

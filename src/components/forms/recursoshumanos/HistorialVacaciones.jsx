@@ -1,0 +1,129 @@
+import React, { Component } from 'react'
+import moment from 'moment'
+import SVG from "react-inlinesvg"
+import { Card } from 'react-bootstrap'
+import { toAbsoluteUrl } from '../../../functions/routers'
+import { dayDMY } from '../../../functions/setters'
+import { apiGet, catchErrors } from '../../../functions/api'
+import { printResponseErrorAlert } from '../../../functions/alert'
+class HistorialVacaciones extends Component {
+
+    state = {
+        vacaciones: [],
+        accordion: []
+    }
+
+    componentDidMount = () => {
+        this.getVacaciones()
+    }
+    getVacaciones = async () => {
+        const { at, empleado } = this.props
+        apiGet(`v2/rh/empleados/vacaciones/${empleado.id}`, at).then(
+            (response) => {
+                const { vacaciones } = response.data
+                vacaciones.sort(function(a, b) {
+                    return a.año - b.año;
+                });
+                this.setState({
+                    ...this.state,
+                    vacaciones: vacaciones
+                })
+            }, (error) => { printResponseErrorAlert(error) })
+            .catch((error) => { catchErrors(error) })
+    }
+    handleAccordion = (element) => {
+        const { vacaciones } = this.state
+        vacaciones.forEach((vacaciones, key) => {
+            if (vacaciones.año === element.año) {
+                if(vacaciones.vacaciones.length>0){
+                    vacaciones.isActive = vacaciones.isActive ? false : true
+                }else{
+                    vacaciones.isActive = false
+                }
+            }else {
+                vacaciones.isActive = false
+            }
+        })
+        this.setState({
+            accordion: vacaciones
+        });
+    }
+    getAño = (vacaciones) => {
+        let inicio =  moment(vacaciones.fechas.inicio).year()
+        let fin =  moment(vacaciones.fechas.fin).year()
+        if(vacaciones.año === 0){
+            return(
+                <div>11 MESES - {inicio} - {fin}</div>
+            )
+        }else{
+            return(
+                <div>{vacaciones.año}º año - {inicio} - {fin}</div>
+            )
+        }
+    }
+    render() {
+        const { vacaciones } = this.state
+        return (
+            <div className="table-responsive mt-5">
+                <div className="list min-w-500px col-md-11 mx-auto">
+                    <div className="accordion accordion-light accordion-svg-toggle">
+                        {
+                            vacaciones.map((vacaciones, index) => {
+                                let active = vacaciones.isActive
+                                return (
+                                    <Card className="w-auto" key={index}>
+                                        <Card.Header >
+                                            <Card.Title className={`rounded-0 ${(active) ? 'text-primary2 collapsed' : 'text-dark'}`} onClick={() => { this.handleAccordion(vacaciones) }}>
+                                                <div className={`${vacaciones.vacaciones.length>0 ? '' : 'visibility-hidden'}`}>
+                                                    <span className={`svg-icon ${active ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
+                                                    </span>
+                                                </div>
+                                                <div className="card-label ml-3 w-100 d-flex font-size-lg">
+                                                    <div className="w-33">
+                                                        {this.getAño(vacaciones)}
+                                                    </div>
+                                                    <div className="w-33 text-right font-weight-light text-dark">
+                                                        Disponibles: <b className={active?'text-success':''}>{vacaciones.disponibles} {vacaciones.disponibles===1?'día':'días'}</b>
+                                                    </div>
+                                                    <div className="w-33 text-right font-weight-light text-dark">
+                                                        Tomados: <b className={active?'text-primary2':''}>{vacaciones.tomados} {vacaciones.tomados===1?'día':'días'}</b>
+                                                    </div>
+                                                </div>
+                                            </Card.Title>
+                                        </Card.Header>
+                                        <Card.Body className={`card-body px-10 pt-2 pb-6 ${active ? 'collapse show' : 'collapse'}`} style={{backgroundColor:'#f9fafc'}}>
+                                            <div className="row mx-0">
+                                                {
+                                                    vacaciones.vacaciones.length > 0 ?
+                                                        vacaciones.vacaciones.map((element, key) => {
+                                                            return (
+                                                                <div className="col-md-4 text-center d-flex align-items-center justify-content-center historial-vacaciones pt-4" key={key}>
+                                                                    <div>
+                                                                        <div>
+                                                                            <img src={element.estatus === 'Aceptadas' ? "/sun-umbrella.png" : "/sun-umbrella-danger.png"} alt="" style={{backgroundColor: element.estatus === 'Aceptadas' ? "#e3efe3" : "#ffeee4"  }} />
+                                                                        </div>
+                                                                        <div className="text-center font-weight-light mt-5">
+                                                                            <div className="font-weight-bold">{element.estatus === 'Aceptadas' ? "Aceptadas" : "Rechazadas"}</div>
+                                                                            <span>{dayDMY(element.fecha_inicio)} - {dayDMY(element.fecha_fin)}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        })
+                                                        : <></>
+                                                }
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+export default HistorialVacaciones

@@ -19,7 +19,7 @@ import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPho
 import moment from 'moment'
 import $ from "jquery";
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import { FormularioContrato, LicenciasEquiposForm } from "../../../components/forms"
+import { FormularioContrato, LicenciasEquiposForm, HistorialVacaciones } from "../../../components/forms"
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -33,7 +33,8 @@ class Empleados extends Component {
             adjuntos: false,
             see: false,
             contrato: false,
-            licencias:false
+            licencias: false,
+            vacaciones: false
         },
         title: 'Nuevo colaborador',
         form: {
@@ -530,7 +531,14 @@ class Empleados extends Component {
                     btnclass: 'dark',
                     iconclass: 'flaticon-imac',
                     action: 'licencias',
-                    tooltip: { id: 'licencias', text: 'Licencias y equipos', type: 'error' }
+                    tooltip: { id: 'licencias', text: 'Licencias y equipos' }
+                },
+                {
+                    text: 'Historial de vacaciones',
+                    btnclass: 'success',
+                    iconclass: 'la-umbrella-beach',
+                    action: 'historial-vacaciones',
+                    tooltip: { id: 'historial-vacaciones', text: 'Historial de vacaciones' }
                 }
             )
         }
@@ -973,8 +981,18 @@ class Empleados extends Component {
     handleCloseLicencias = () => {
         const { modal } = this.state
         modal.licencias = false
+        modal.vacaciones = false
         this.setState({
             ...this.state,
+            modal
+        })
+    }
+    openModalHistorialVacaciones = colaborador => {
+        const { modal } = this.state
+        modal.vacaciones = true
+        this.setState({
+            ...this.state,
+            empleado: colaborador,
             modal
         })
     }
@@ -996,7 +1014,8 @@ class Empleados extends Component {
                                     'adjuntos': { function: this.openModalAdjuntos },
                                     'see': { function: this.openModalSee },
                                     'contrato' : { function: this.openModalContrato },
-                                    'licencias' : { function: this.openModalLicencias }
+                                    'licencias' : { function: this.openModalLicencias },
+                                    'historial-vacaciones' : { function: this.openModalHistorialVacaciones }
                                 }
                             }
                             accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
@@ -1037,8 +1056,8 @@ class Empleados extends Component {
                 <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
                         generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
-                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } f
-                        ormeditado={formeditado} user = { this.props.authUser.user } deleteContrato = { this.deleteContratoAxios } />
+                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } formeditado={formeditado}
+                        user = { this.props.authUser.user } deleteContrato = { this.deleteContratoAxios } />
                 </Modal>
                 <Modal size="xl" title="Licencias y equipos" show={modal.licencias} handleClose={this.handleCloseLicencias} >
                     {
@@ -1046,6 +1065,9 @@ class Empleados extends Component {
                             <LicenciasEquiposForm at={access_token} empleado = { empleado }/>
                         : <></>
                     }
+                </Modal>
+                <Modal size="lg" title="Historial de vacaciones tomadas" show={modal.vacaciones} handleClose={this.handleCloseLicencias} >
+                    <HistorialVacaciones at={access_token} empleado = { empleado }/>
                 </Modal>
             </Layout>
         )
