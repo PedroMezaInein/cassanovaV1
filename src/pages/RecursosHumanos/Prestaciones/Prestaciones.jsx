@@ -15,7 +15,7 @@ import { setTextTableCenter, setOptionsWithLabel, setMoneyTable, setNaviIcon } f
 class Prestaciones extends Component {
 
     state = {
-        modal: { filtros: false, form: false },
+        modal: { filtros: false, form: false, egreso: false },
         filters: {},
         title: 'Nueva prestación',
         prestacion: '',
@@ -83,8 +83,8 @@ class Prestaciones extends Component {
                     <Dropdown.Item className="text-hover-danger dropdown-danger" onClick = {(e) => { e.preventDefault(); deleteAlert(`Eliminarás la prestación`, `¿Deseas continuar?`, () => { this.deletePrestacion(element.id) }) }} >
                         {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }} >
-                        {setNaviIcon('flaticon2-download-1', 'EGRESOS')}
+                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalEgreso(element) }} >
+                        {setNaviIcon('las la-sign-out-alt icon-xl', 'EGRESOS')}
                     </Dropdown.Item>
                 </DropdownButton>
             </div>
@@ -112,11 +112,16 @@ class Prestaciones extends Component {
         modal.filtros = true
         this.setState({ ...this.state, modal })
     }
-
+    openModalEgreso = () => {
+        const { modal } = this.state
+        modal.egreso = true
+        this.setState({ ...this.state, modal })
+    }
     handleClose = () => {
         const { modal } = this.state
         modal.filtros = false
         modal.form = false
+        modal.egreso = false
         this.setState({ ...this.state, modal })
     }
 
@@ -160,6 +165,9 @@ class Prestaciones extends Component {
                         : <></>
                     }
                     
+                </Modal>
+                <Modal size = 'lg' show = { modal.egreso } handleClose = { this.handleClose } title = 'EGRESOS'>
+                    Egreso
                 </Modal>
             </Layout>
         )
