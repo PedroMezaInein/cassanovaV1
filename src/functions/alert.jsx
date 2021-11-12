@@ -354,11 +354,11 @@ export function questionAlert(title, text, action) {
     })
 }
 
-export function questionAlertWithLottie(title, text, lottie, buttons, actions, btn_color){
+export function questionAlertWithLottie(title, text, lottie, buttons, actions, btn_color, margin, margin_actions){
     MySwal.fire({
         html: <div className="font-family-poppins">
             { lottie ? <div className="col-md-10 mx-auto"><CommonLottie animationData = { lottie } /></div> : <></> }
-            <div className="col-md-12 font-weight-light text-center">
+            <div className={`col-md-12 font-weight-light text-center ${margin?margin:''}`}>
                 <div className="font-weight-bolder font-size-h6 mb-5 mt-1">{title}</div>
                 <div className="font-size-lg">{text}</div>
             </div>
@@ -374,7 +374,8 @@ export function questionAlertWithLottie(title, text, lottie, buttons, actions, b
             content: text?text:'d-none',
             confirmButton: `btn_custom-alert ${btn_color?btn_color:'bg-success'}`,
             cancelButton:'btn-cancel-alert',
-            htmlContainer:'d-contents'
+            htmlContainer:'d-contents',
+            actions: margin_actions?margin_actions:''
         }
     }).then((result) => {
         if(actions.cancel){
