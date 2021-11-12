@@ -7,4 +7,5 @@ import * as Bye from './bye.json'
 import * as Hi from './hi.json'
 import * as Lock from './lock.json'
 import * as Software from './software.json'
-export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock, Software }
+import * as OfficeWork from './office-work.json'
+export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock, Software, OfficeWork }
