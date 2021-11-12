@@ -3422,3 +3422,14 @@ td.descripcion{
         width: 4rem;
     }
 }
+.transition-prestaciones {
+    transition: all 1s linear;
+    display: block;
+}
+.border-bottom-dashed{
+    border-bottom: 1px;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-style: dashed;
+}
