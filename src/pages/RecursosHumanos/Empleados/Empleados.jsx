@@ -19,7 +19,7 @@ import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPho
 import moment from 'moment'
 import $ from "jquery";
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
-import { FormularioContrato, LicenciasEquiposForm, HistorialVacaciones } from "../../../components/forms"
+import { FormularioContrato, LicenciasEquiposForm, HistorialVacaciones, PrestacionesRHList } from "../../../components/forms"
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -34,7 +34,8 @@ class Empleados extends Component {
             see: false,
             contrato: false,
             licencias: false,
-            vacaciones: false
+            vacaciones: false,
+            prestaciones: false
         },
         title: 'Nuevo colaborador',
         form: {
@@ -539,6 +540,13 @@ class Empleados extends Component {
                     iconclass: 'la-umbrella-beach',
                     action: 'historial-vacaciones',
                     tooltip: { id: 'historial-vacaciones', text: 'Historial de vacaciones' }
+                },
+                {
+                    text: 'Prestaciones',
+                    btnclass: 'primary',
+                    iconclass: 'la-hand-holding-usd',
+                    action: 'prestaciones',
+                    tooltip: { id: 'prestaciones', text: 'Prestaciones' }
                 }
             )
         }
@@ -982,6 +990,7 @@ class Empleados extends Component {
         const { modal } = this.state
         modal.licencias = false
         modal.vacaciones = false
+        modal.prestaciones = false
         this.setState({
             ...this.state,
             modal
@@ -990,6 +999,15 @@ class Empleados extends Component {
     openModalHistorialVacaciones = colaborador => {
         const { modal } = this.state
         modal.vacaciones = true
+        this.setState({
+            ...this.state,
+            empleado: colaborador,
+            modal
+        })
+    }
+    openModalPrestaciones = colaborador => {
+        const { modal } = this.state
+        modal.prestaciones = true
         this.setState({
             ...this.state,
             empleado: colaborador,
@@ -1015,7 +1033,8 @@ class Empleados extends Component {
                                     'see': { function: this.openModalSee },
                                     'contrato' : { function: this.openModalContrato },
                                     'licencias' : { function: this.openModalLicencias },
-                                    'historial-vacaciones' : { function: this.openModalHistorialVacaciones }
+                                    'historial-vacaciones' : { function: this.openModalHistorialVacaciones },
+                                    'prestaciones' : { function: this.openModalPrestaciones }
                                 }
                             }
                             accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
@@ -1068,6 +1087,9 @@ class Empleados extends Component {
                 </Modal>
                 <Modal size="lg" title="Historial de vacaciones tomadas" show={modal.vacaciones} handleClose={this.handleCloseLicencias} >
                     <HistorialVacaciones at={access_token} empleado = { empleado }/>
+                </Modal>
+                <Modal title="Prestaciones del empleado" show={modal.prestaciones} handleClose={this.handleCloseLicencias} >
+                    <PrestacionesRHList at={access_token} empleado = { empleado }/>
                 </Modal>
             </Layout>
         )
