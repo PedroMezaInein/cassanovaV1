@@ -1085,7 +1085,7 @@ class Empleados extends Component {
                         : <></>
                     }
                 </Modal>
-                <Modal size="lg" title="Historial de vacaciones tomadas" show={modal.vacaciones} handleClose={this.handleCloseLicencias} >
+                <Modal size="lg" title="Historial de solicitud de vacaciones" show={modal.vacaciones} handleClose={this.handleCloseLicencias} >
                     <HistorialVacaciones at={access_token} empleado = { empleado }/>
                 </Modal>
                 <Modal title="Prestaciones del colaborador" show={modal.prestaciones} handleClose={this.handleCloseLicencias} >

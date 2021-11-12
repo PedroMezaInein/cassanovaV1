@@ -65,6 +65,29 @@ class HistorialVacaciones extends Component {
             return `${dayDMY(element.fecha_inicio)} - ${dayDMY(element.fecha_fin)}`
         }
     }
+    setType(element, type) {
+        switch (type) {
+            case 'color':
+                switch (element.estatus) {
+                    case 'Aceptadas':
+                        return "#e3efe3"
+                    case 'En espera':
+                        return "#fff4de"
+                    default:
+                        return "#ffe2e5"
+                }
+            case 'img':
+                switch (element.estatus) {
+                    case 'Aceptadas':
+                        return "/sun-umbrella.png"
+                    case 'En espera':
+                        return "/sun-umbrella-warning.png"
+                    default:
+                        return "/sun-umbrella-danger.png"
+                }
+            default: break;
+        }
+    }
     render() {
         const { vacaciones } = this.state
         return (
@@ -105,10 +128,10 @@ class HistorialVacaciones extends Component {
                                                                 <div className="col-md-4 text-center d-flex align-items-center justify-content-center historial-vacaciones pt-4" key={key}>
                                                                     <div>
                                                                         <div>
-                                                                            <img src={element.estatus === 'Aceptadas' ? "/sun-umbrella.png" : "/sun-umbrella-danger.png"} alt="" style={{backgroundColor: element.estatus === 'Aceptadas' ? "#e3efe3" : "#ffeee4"  }} />
+                                                                            <img src={this.setType(element, 'img')} alt="" style={{backgroundColor: this.setType(element, 'color')  }} />
                                                                         </div>
                                                                         <div className="text-center font-weight-light mt-5">
-                                                                            <div className="font-weight-bold">{element.estatus === 'Aceptadas' ? "Aceptadas" : "Rechazadas"}</div>
+                                                                            <div className="font-weight-bold">{element.estatus}</div>
                                                                             <span>{this.printDate(element)}</span>
                                                                         </div>
                                                                     </div>
