@@ -312,12 +312,23 @@ class EgresosForm extends Component {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
+        const { form, options } = this.state
         switch (action) {
             case 'add':
+                if (state) {
+                    if (state.prestacion) {
+                        const { prestacion } = state
+                        form.proveedor = prestacion.proveedor_id.toString()
+                        form.descripcion = `PAGO DE PRESTACIÓN ${prestacion.nombre}`
+                        form.total = prestacion.total
+                        form.prestacion = prestacion.id
+                    }
+                }
                 this.setState({
                     ...this.state,
                     title: 'Nuevo egreso',
-                    formeditado: 0
+                    formeditado: 0,
+                    form
                 })
                 break;
             case 'edit':
@@ -331,7 +342,6 @@ class EgresosForm extends Component {
                     history.push('/administracion/egresos')
                 break;
             case 'convert':
-                const { form, options } = this.state
                 const { solicitud } = state
                 if(solicitud.proveedor)
                     form.proveedor = solicitud.proveedor.id.toString()
@@ -422,12 +432,28 @@ class EgresosForm extends Component {
     async getEgresosAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
+        const { state } = this.props.location
         await axios.options(`${URL_DEV}v2/administracion/egresos`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { proveedores, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
-                const { options, data } = this.state
+                const { options, data, form } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
+                if(state.prestacion){
+                    let area = areas.find((value) => {
+                        return value.nombre === 'RECURSOS HUMANOS'
+                    })
+                    if(area){
+                        form.area = area.id.toString()
+                        options['subareas'] = setOptions(area.subareas, 'nombre', 'id')
+                        let subarea = area.subareas.find((value) => {
+                            return value.nombre === 'PRESTACIONES'
+                        })
+                        if(subarea){
+                            form.subarea = subarea.id.toString()
+                        }
+                    }
+                }
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
@@ -437,7 +463,8 @@ class EgresosForm extends Component {
                 this.setState({
                     ...this.state,
                     options,
-                    data
+                    data, 
+                    form
                 })
                 Swal.close()
             }, (error) => {
@@ -452,6 +479,7 @@ class EgresosForm extends Component {
     async addEgresoAxios() {
         const { access_token } = this.props.authUser
         const { form, solicitud } = this.state
+        const { state } = this.props.location
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
@@ -486,19 +514,22 @@ class EgresosForm extends Component {
         }
         await axios.post(`${URL_DEV}v2/administracion/egresos`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
+                const { history } = this.props
                 this.setState({
                     ...this.state,
                     modal: false,
                     form: this.clearForm()
                 })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
-                const { history } = this.props
-                history.push({
-                    pathname: '/administracion/egresos'
-                });
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+                let objeto = {}
+                objeto.pathname = '/administracion/egresos'
+                if(state.prestacion){
+                    objeto.pathname = '/rh/prestaciones'
+                    objeto.state = { prestacion: state.prestacion }
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
+                    () => { history.push(objeto) }
+                )
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
