@@ -94,7 +94,7 @@ class DetailsInstalacion extends Component {
                             {
                                 instalacion.instalacion.equipo.observaciones &&
                                 <span className="mb-3 d-block">
-                                    <span className={`font-weight-bold ${this.getactiveClass()}`}>OBSERVACIONES: </span><span className="font-weight-light text-justify ">{instalacion.instalacion.equipo.observaciones}</span>
+                                    <div className="font-weight-light text-justify"><span className={`font-weight-bold ${this.getactiveClass()}`}>OBSERVACIONES: </span>{instalacion.instalacion.equipo.observaciones}</div>
                                 </span>
                             }
                             {

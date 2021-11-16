@@ -201,7 +201,11 @@ export function deleteAlert(title, text, action, text_button) {
             <div className="col-md-8 mx-auto"><CommonLottie animationData = { Trash } /></div>
                 
             <div className="col-md-12 font-weight-light text-center font-size-lg">
-                <div className="font-weight-bolder mb-3">{text}</div>
+                {
+                    text?
+                    <div className="font-weight-bolder mb-3">{text}</div>
+                    :<></>
+                }
                 {title}
             </div>
         </div>,
@@ -213,7 +217,6 @@ export function deleteAlert(title, text, action, text_button) {
         customClass: {
             title:'d-none',
             htmlContainer:'m-0',
-            content: text?'':'d-none',
             confirmButton:'delete-confirm btn_custom-alert',
             cancelButton:'btn-cancel-alert'
         }
