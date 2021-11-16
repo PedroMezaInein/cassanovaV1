@@ -196,7 +196,7 @@ class PrestacionesEgresos extends Component {
                                         <span>
                                             IDENTIFICADOR
                                         </span>
-                                        <span className = 'text-center'>
+                                        <span className = 'text-hover'>
                                             { this.printSortIcon('id') }
                                         </span>
                                     </div>
@@ -206,7 +206,7 @@ class PrestacionesEgresos extends Component {
                                         <span>
                                             MONTO
                                         </span>
-                                        <span className = 'text-center'>
+                                        <span className = 'text-hover'>
                                             { this.printSortIcon('total') }
                                         </span>
                                     </div>
@@ -216,7 +216,7 @@ class PrestacionesEgresos extends Component {
                                         <span>
                                             FECHA
                                         </span>
-                                        <span className = 'text-center'>
+                                        <span className = 'text-hover'>
                                             { this.printSortIcon('created_at') }
                                         </span>
                                     </div>
