@@ -14,7 +14,11 @@ class PrestacionesEgresos extends Component {
         active: 'historial',
         egresos: [],
         activePage: 1,
-        itemsPerPage: 5
+        itemsPerPage: 5,
+        order: {
+            direction: null,
+            column: null
+        }
     }
 
     componentDidMount = () => {
@@ -23,13 +27,31 @@ class PrestacionesEgresos extends Component {
 
     getInfoPrestacion = () => {
         const { prestacion, at } = this.props
+        const { order } = this.state
         waitAlert()
         apiGet(`v1/rh/prestaciones/${prestacion.id}/egresos`, at).then(
             (response) => {
-                const { colaboradores, egresos } = response.data
+                let { colaboradores, egresos } = response.data
                 colaboradores.forEach((colaborador) => {
                     colaborador.costo = prestacion.pago_por_empleado
                 })
+                if(order.direction !== null && order.column !== null){
+                    egresos.sort(function (a, b) {
+                        if (a[order.column] > b[order.column]) {
+                            if(order.direction === 'asc')
+                                return 1;
+                            else 
+                                return -1;
+                        }
+                        if (a[order.column] < b[order.column]) {
+                            if(order.direction === 'asc')
+                                return -1;
+                            else 
+                                return 1;
+                        }
+                        return 0;
+                      });   
+                }
                 Swal.close()
                 this.setState({ 
                     ...this.state, 
@@ -113,8 +135,56 @@ class PrestacionesEgresos extends Component {
         )
     }
 
+    resort = columna => {
+        const { order } = this.state
+        let { egresos } = this.state
+        if(order.column === columna){
+            order.direction = order.direction === 'asc' ? 'desc' : 'asc'
+        }else{
+            order.column = columna
+            order.direction = 'asc'
+        }
+        egresos.sort(function (a, b) {
+            if (a[order.column] > b[order.column]) {
+                if(order.direction === 'asc')
+                    return 1;
+                else 
+                    return -1;
+            }
+            if (a[order.column] < b[order.column]) {
+                if(order.direction === 'asc')
+                    return -1;
+                else 
+                    return 1;
+            }
+            return 0;
+        })
+        this.setState({
+            ...this.state,
+            order,
+            egresos: egresos
+        })
+    }
+
+    printSortIcon = columna => {
+        const { order } = this.state
+        if(order.direction === null && order.column === null){
+            return <i className = 'las la-sort-up' onClick = { () => this.resort(columna) } />
+        }else{
+            if(order.column === columna){
+                if(order.direction === 'asc'){
+                    return <i className = 'fas fa-sort-up'  onClick = { () => this.resort(columna) } />
+                }else{
+                    return <i className = 'fas fa-sort-down'  onClick = { () => this.resort(columna) } />    
+                }
+            }else{
+                return <i className = 'las la-sort-up'  onClick = { () => this.resort(columna) } />
+            }
+        }
+    }
+
     printHistorialEgresos = () => {
-        const { egresos, activePage, itemsPerPage } = this.state
+        const { egresos, activePage, itemsPerPage, order } = this.state
         return(
             <div>
                 <div className="table-responsive-lg mt-4">
@@ -122,13 +192,34 @@ class PrestacionesEgresos extends Component {
                         <thead className="bg-primary-o-30">
                             <tr>
                                 <td>
-                                    IDENTIFICADOR
+                                    <div className = 'd-flex justify-content-around'>
+                                        <span>
+                                            IDENTIFICADOR
+                                        </span>
+                                        <span className = 'text-center'>
+                                            { this.printSortIcon('id') }
+                                        </span>
+                                    </div>
                                 </td>
                                 <td>
-                                    MONTO
+                                    <div className = 'd-flex justify-content-around'>
+                                        <span>
+                                            MONTO
+                                        </span>
+                                        <span className = 'text-center'>
+                                            { this.printSortIcon('total') }
+                                        </span>
+                                    </div>
                                 </td>
                                 <td>
-                                    FECHA
+                                    <div className = 'd-flex justify-content-around'>
+                                        <span>
+                                            FECHA
+                                        </span>
+                                        <span className = 'text-center'>
+                                            { this.printSortIcon('created_at') }
+                                        </span>
+                                    </div>
                                 </td>
                             </tr>
                         </thead>
