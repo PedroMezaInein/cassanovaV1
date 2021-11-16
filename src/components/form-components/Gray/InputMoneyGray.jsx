@@ -60,7 +60,8 @@ class InputMoneyGray extends Component {
         onChange({ target: { value: values.value, name: name } })
     }
     render() {
-        const { placeholder, value, prefix, thousandseparator, iconclass, customstyle, customlabel, customclass, withformgroup, customdiv, withtaglabel, withtextlabel, withicon, classlabel, iconvalid, messageinc } = this.props
+        const { placeholder, value, prefix, thousandseparator, iconclass, customstyle, customlabel, customclass, withformgroup, customdiv, withtaglabel, 
+            withtextlabel, withicon, classlabel, iconvalid, messageinc, disabled } = this.props
         const { inputMoneyValido } = this.state
         return (
             <div className={withformgroup?`form-group ${customdiv}`:''}>
@@ -89,6 +90,7 @@ class InputMoneyGray extends Component {
                         onValueChange={(values) => this.onChange(values)}
                         placeholder={placeholder}
                         style={customstyle}
+                        disabled = { disabled ? true : false }
                     />
                 </div>
                 {

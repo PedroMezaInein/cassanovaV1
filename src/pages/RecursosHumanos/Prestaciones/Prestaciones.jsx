@@ -23,6 +23,7 @@ class Prestaciones extends Component {
             proveedores:[]
         }
     }
+
     componentDidMount(){
         this.getOptions()
     }
@@ -67,7 +68,6 @@ class Prestaciones extends Component {
 
     setActions = (element) => {
         return(
-            
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
                     <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }}>
@@ -105,11 +105,13 @@ class Prestaciones extends Component {
         modal.filtros = true
         this.setState({ ...this.state, modal })
     }
-    openModalEgreso = () => {
+
+    openModalEgreso = async( element ) => {
         const { modal } = this.state
         modal.egreso = true
-        this.setState({ ...this.state, modal })
+        this.setState({ ...this.state, modal, prestacion: element })
     }
+
     handleClose = () => {
         const { modal } = this.state
         modal.filtros = false
@@ -137,7 +139,7 @@ class Prestaciones extends Component {
     }
 
     render(){
-        const { authUser: {access_token} } = this.props
+        const { authUser: {access_token}, history } = this.props
         const { modal, filters, title, prestacion, options } = this.state
         return(
             <Layout active = 'rh' { ...this.props } >
@@ -160,7 +162,11 @@ class Prestaciones extends Component {
                     
                 </Modal>
                 <Modal size = 'lg' show = { modal.egreso } handleClose = { this.handleClose } title = 'EGRESOS'>
-                    <PrestacionesEgresos/>
+                    {
+                        modal.egreso ?
+                            <PrestacionesEgresos at = { access_token } history = { history } prestacion = { prestacion } />
+                        : <></>
+                    }
                 </Modal>
             </Layout>
         )
