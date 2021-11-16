@@ -53,7 +53,7 @@ class AreaForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <TagInputGray tags = { form.subareas } placeholder = "SUBÁREA(S)" iconclass = "far fa-window-restore" 
-                            uppercase = { true } onChange = { this.tagInputChange } /> 
+                            uppercase = { true } onChange = { this.tagInputChange } requirevalidation = { 1 } messageinc="PRESIONA ENTER PARA AGREGAR."/> 
                     </div>
                     {
                         tipo === 'compras' ?
@@ -90,7 +90,7 @@ class AreaForm extends Component {
                         : ''
                     }
                 </div>
-                <div className="mt-3 text-center">
+                <div className="mt-3 text-center border-top pt-3">
                     <Button icon = '' className = "mx-auto" onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-area') } }
                         text="ENVIAR" />
                 </div>
