@@ -826,3 +826,11 @@ export const PRESTACIONES_RH_COLUMNS = [
     { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
 ]
+export const CALENDARIO_PAGOS_ADMIN = [
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
+    { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
+    { Header: 'Nombre del servicio', accessor: 'nombre', customRender: true },
+    { Header: 'Periodo', accessor: 'periodo', customRender: true },
+    { Header: 'Monto', accessor: 'monto', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true, tipo: 'fecha' }
+]

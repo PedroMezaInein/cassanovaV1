@@ -30,6 +30,15 @@ export function optionsTipoLicencias (){
         { name: 'software', value: 'software', label: 'Software'}
     ]
 }
+export function optionsPeriodoPagos (){
+    return [
+        { name: 'semanal', value: 'semanal', label: 'Semanal'},
+        { name: 'quincenal', value: 'quincenal', label: 'Quincenal'},
+        { name: 'mensual', value: 'mensual', label: 'Mensual'},
+        { name: 'semestral', value: 'semestral', label: 'Semestral'},
+        { name: 'anual', value: 'anual', label: 'Anual'},
+    ]
+}
 export function transformOptions (options){
     options = options ? options : []
     options.map((value) => {
