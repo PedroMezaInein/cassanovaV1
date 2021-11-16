@@ -26,6 +26,16 @@ class Prestaciones extends Component {
 
     componentDidMount(){
         this.getOptions()
+        const { state } = this.props.location
+        if(state){
+            if(state.prestacion){
+                if(state.flag){
+                    if(state.flag === 'egreso'){
+                        this.openModalEgreso(state.prestacion)
+                    }
+                }
+            }
+        }
     }
 
     getOptions = async() => {

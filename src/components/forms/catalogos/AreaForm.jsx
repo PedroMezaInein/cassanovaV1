@@ -53,7 +53,7 @@ class AreaForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <TagInputGray tags = { form.subareas } placeholder = "SUBÁREA(S)" iconclass = "far fa-window-restore" 
-                            uppercase = { true } onChange = { this.tagInputChange } requirevalidation = { 1 } messageinc="PRESIONA ENTER PARA AGREGAR."/> 
+                            uppercase = { true } onChange = { this.tagInputChange } requirevalidation = { 0 } messageinc="PRESIONA ENTER PARA AGREGAR."/> 
                     </div>
                     {
                         tipo === 'compras' ?
@@ -70,7 +70,8 @@ class AreaForm extends Component {
                         area ?
                             area.subareas.map((element, key) => {
                                 return (
-                                    <div className="tagify form-control p-2 d-flex justify-content-center align-items-center w-auto" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
+                                    <div className="tagify form-control p-2 d-flex justify-content-center align-items-center w-auto" tabIndex="-1" 
+                                        style={{ borderWidth: "0px" }} key={key}>
                                         <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--success tagify--noAnim"  >
                                             <div title="Borrar archivo" className="tagify__tag__removeBtn" role="button"
                                                 aria-label="remove tag"
