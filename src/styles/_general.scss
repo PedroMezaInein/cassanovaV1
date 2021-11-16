@@ -3440,10 +3440,6 @@ td.descripcion{
     border-right: 0;
     border-style: dashed;
 }
-
-
-
-
 .bg-calendar-1{
     background-image: linear-gradient(to right bottom, #af6480, #b37fa4, #b49ac1, #b7b5d6, #c3cee5);
 }
@@ -3455,4 +3451,16 @@ td.descripcion{
 }
 .bg-calendar-4{
     background-image: linear-gradient(to right bottom, #fd9869, #ffa284, #ffae9e, #ffbbb5, #fec9c9);
+}
+.z-index-1 {
+    z-index: 1 !important
+}
+.mt-n-100px{
+    margin-top: -100px;
+}
+.bg-primary2{
+    background-color: #009ef7 !important
+}
+.h-230px{
+    height: 230px;
 }

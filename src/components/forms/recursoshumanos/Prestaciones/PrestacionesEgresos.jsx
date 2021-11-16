@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import Swal from 'sweetalert2'
-import { printResponseErrorAlert, waitAlert } from '../../../../functions/alert'
+import SVG from 'react-inlinesvg'
+import Pagination from 'react-js-pagination'
+import { toAbsoluteUrl } from '../../../../functions/routers'
 import { apiGet, catchErrors } from '../../../../functions/api'
-import { setMoneyText, setDateText } from '../../../../functions/setters'
 import { Button, InputMoneyGray } from '../../../form-components'
-import Pagination from "react-js-pagination"
-
+import { printResponseErrorAlert, waitAlert } from '../../../../functions/alert'
+import { setMoneyText, setDateText, dayDMY, setMoneyTableSinSmall } from '../../../../functions/setters'
 class PrestacionesEgresos extends Component {
-
     state = {
         colaboradores: [],
         suma: 0,
@@ -83,30 +83,56 @@ class PrestacionesEgresos extends Component {
         const { colaboradores, suma } = this.state
         return(
             <div>
-                <div className="row mx-0 justify-content-center">
-                    {
-                        colaboradores.map((colaborador, id) => {
-                            let flag = id + 1 === colaboradores.length && id % 2 === 0
-                            return(
-                                <div className={`col-md-${flag ? 12 : 6} mt-4 border-dashed border-top-0 border-left-0 border-right-0`} key  = { id } >
-                                    <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } 
-                                        withformgroup = { 1 } requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } 
-                                        prefix = '$' name = { id } value = { colaborador.costo } onChange = { this.onChange } 
-                                        placeholder = { colaborador.nombre } iconclass = "la la-money-bill icon-xl" />
+                <div className="card mt-1 border-0">
+                    <div className="card-body p-0">
+                        <div className="px-9 pt-7 card-rounded h-230px w-100 bg-primary2">
+                            <div className="d-flex flex-stack justify-content-center">
+                                <h3 className="m-0 text-white font-weight-bolder font-size-h3">Colaboradores asignados</h3>
+                            </div>
+                            <div className="d-flex text-center flex-column text-white pt-5">
+                                <span className="font-weight-normal font-size-lg">Total</span>
+                                <span className="font-weight-bolder font-size-h2 pt-1">{setMoneyTableSinSmall(suma)}</span>
+                            </div>
+                        </div>
+                        <div className="bg-white shadow-sm card-rounded mx-9 mb-5 px-9 pt-9 pb-6 position-relative z-index-1 mt-n-100px">
+                            <div className="table-responsive">
+                                <div className="list min-w-500px">
+                                    {
+                                        colaboradores.map((colaborador, id) => {
+                                            return(
+                                                <div className="d-flex align-items-center mb-6" key  = { id } >
+                                                    <div className="symbol symbol-45px w-40px mr-5">
+                                                        <span className="symbol-label bg-light font-size-h4">
+                                                            {colaborador.nombre.charAt(0)}
+                                                        </span>
+                                                    </div>
+                                                    <div className="d-flex align-items-center flex-wrap w-100">
+                                                        <div className="mb-1 pe-3 flex-grow-1">
+                                                            <div className="font-size-lg text-dark-75 font-weight-bolder">{colaborador.nombre}</div>
+                                                            <div className="font-weight-bolder font-size-sm">Activado: <span className="font-weight-light">{dayDMY(colaborador.pivot.fecha_activacion)}</span></div>
+                                                        </div>
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="font-weight-bolder font-size-h6 text-gray-800 pe-1">
+                                                                <InputMoneyGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } 
+                                                                    withformgroup = { 0 } requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } 
+                                                                    prefix = '$' name = { id } value = { colaborador.costo } onChange = { this.onChange } 
+                                                                    placeholder = { colaborador.nombre } iconclass = "la la-money-bill icon-xl" customclass="px-2 text-center w-90px"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
                                 </div>
-                            )
-                        })
-                    }
-                </div>
-                <div className="row mx-0 justify-content-around">
-                    <div className = 'col-md-4'>
-                        <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } placeholder = 'TOTAL'
-                            withformgroup = { 1 } requirevalidation = { 0 } formeditado = { 0 } thousandseparator = { true } prefix = '$'
-                            value = { suma } disabled onChange = { () => {} } customclass = 'bg-light-success text-white'/>
-                    </div>
-                    <div className="col-md-4 d-flex align-items-center">
-                        <Button icon = '' onClick = { this.onSubmit } className = "btn btn-light-primary"  text = 'CONTINUAR'
-                            tooltip={{text:'CONTINUAR'}} />
+                            </div>
+                            <div className="d-flex justify-content-center border-top pt-4">
+                                <button type="button" className="btn btn-sm btn-flex btn-light-primary2" onClick={() => { this.onSubmit() }} >
+                                    <span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} /></span><div>GENERAR EGRESO</div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
