@@ -524,7 +524,7 @@ class EgresosForm extends Component {
                 objeto.pathname = '/administracion/egresos'
                 if(state.prestacion){
                     objeto.pathname = '/rh/prestaciones'
-                    objeto.state = { prestacion: state.prestacion }
+                    objeto.state = { prestacion: state.prestacion, flag: 'egreso' }
                 }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
                     () => { history.push(objeto) }
