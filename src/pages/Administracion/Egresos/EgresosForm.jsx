@@ -188,8 +188,6 @@ class EgresosForm extends Component {
                                 }
                             return false
                         });
-                        console.log(`PROVEEDORES`, data.proveedores)
-                        console.log(`OBJ`, obj)
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
                             form.empresa = auxEmpresa.name

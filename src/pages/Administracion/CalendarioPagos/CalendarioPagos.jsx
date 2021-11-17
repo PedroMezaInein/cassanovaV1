@@ -256,59 +256,6 @@ class CalendarioPagos extends Component {
             }
             
         })
-        /* let aux = []
-        pagos.forEach(element => {
-            let newDate = new Date( moment(element.fecha_inicio) )
-            if(newDate >= fInicio){
-                if( newDate <= fFin){
-                    // El de inicio
-                    aux.push({
-                        title: element.servicio,
-                        start: newDate,
-                        end: newDate,
-                        iconClass: 'la la-toolbox'
-                    })
-                }
-                let conteo = 1, flag = true, mPago =  fInicio.getMonth(), dPago = newDate.getDate(), yPago = fInicio.getFullYear()
-                switch(element.periodo){
-                    case 'semanal':
-                        while(flag){
-                            let newDate2 = new Date(yPago, mPago, dPago + (7 * conteo))
-                            if(newDate2 >= fInicio && newDate2 <= fFin){
-                                console.log(`-----${conteo}-----`)
-                                console.log(newDate)
-                                conteo++
-                                aux.push({
-                                    title: element.servicio,
-                                    start: newDate2,
-                                    end: newDate2,
-                                    iconClass: 'la la-toolbox'
-                                })
-                            }else{
-                                flag = false
-                            }
-                        }
-                        break;
-                    case 'quincenal':
-                        while(flag){
-                            let newDate2 = new Date(yPago, mPago, dPago + (15 * conteo))
-                            if(newDate2 >= fInicio && newDate2 <= fFin){
-                                console.log(conteo, newDate2)
-                                conteo++
-                                aux.push({
-                                    title: element.servicio,
-                                    start: newDate2,
-                                    end: newDate2,
-                                    iconClass: 'la la-toolbox'
-                                })
-                            }else{
-                                flag = false
-                            }
-                        }
-                        break;
-                }
-            }
-        }); */
         this.setState({
             ...this.state,
             events: aux
