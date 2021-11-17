@@ -50,7 +50,7 @@ class PrestacionesEgresos extends Component {
                                 return 1;
                         }
                         return 0;
-                      });   
+                    });   
                 }
                 Swal.close()
                 this.setState({ 
@@ -107,16 +107,16 @@ class PrestacionesEgresos extends Component {
             <div>
                 <div className="card mt-1 border-0">
                     <div className="card-body p-0">
-                        <div className="px-9 pt-7 card-rounded h-230px w-100 bg-primary2">
+                        <div className="px-9 pt-7 card-rounded h-225px w-100 bg-primary2">
                             <div className="d-flex flex-stack justify-content-center">
-                                <h3 className="m-0 text-white font-weight-bolder font-size-h3">Colaboradores asignados</h3>
+                                <h3 className="m-0 text-white font-weight-bolder font-size-h4">Colaboradores asignados</h3>
                             </div>
-                            <div className="d-flex text-center flex-column text-white pt-5">
-                                <span className="font-weight-normal font-size-lg">Total</span>
+                            <div className="d-flex text-center flex-column text-white pt-4">
+                                <span className="font-weight-bolder font-size-lg">Total</span>
                                 <span className="font-weight-bolder font-size-h2 pt-1">{setMoneyTableSinSmall(suma)}</span>
                             </div>
                         </div>
-                        <div className="bg-white shadow-sm card-rounded mx-9 mb-5 px-9 pt-9 pb-6 position-relative z-index-1 mt-n-100px">
+                        <div className="bg-white box-shadow-34 card-rounded mx-9 mb-4 px-9 pt-9 pb-6 position-relative z-index-1 mt-n-100px">
                             <div className="table-responsive">
                                 <div className="list min-w-500px">
                                     {
@@ -321,7 +321,7 @@ class PrestacionesEgresos extends Component {
             <div className="container">
                 {
                     egresos.length ?
-                        <div className={`d-flex justify-content-center ${active === 'historial'?'mt-5':'mt-5 pb-3'}`}>
+                        <div className={`d-flex justify-content-center ${active === 'historial'?'':'pb-3'}`}>
                             <Button icon = '' onClick = { this.changeTab } className = "btn btn-light btn-hover-primary2 font-weight-bolder"  
                                 text = { active === 'historial' ? 'GENERAR EGRESO' :  'VER HISTORIAL' }
                             />
