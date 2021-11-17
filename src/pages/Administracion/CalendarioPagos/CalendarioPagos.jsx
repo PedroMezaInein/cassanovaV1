@@ -72,7 +72,7 @@ class CalendarioPagos extends Component {
 
     deletePagoAxios = async (id) => {
         const { access_token } = this.props.authUser
-        apiDelete(`v1/proyectos/instalacion-equipos/mantenimientos/${id}`, access_token).then(
+        apiDelete(`v1/administracion/pago/${id}`, access_token).then(
             (response) => {
                 const { filters } = this.state
                 doneAlert(`Pago eliminado con éxito.`, () => { this.reloadTable(filters) })
@@ -354,11 +354,11 @@ class CalendarioPagos extends Component {
         pagos.forEach((pago) => {
             aux.push({
                 actions: this.setActionsListPagos(pago),
-                proveedor: setTextTable(pago.instalacion.proyecto.nombre),
-                nombre: setTextTable(pago.instalacion.equipo.equipo),
-                periodo: setTextTable(pago.instalacion.equipo.equipo),
-                monto: setMoneyTable(pago.costo),
-                fecha: setDateTable(pago.fecha)
+                proveedor: setTextTable(pago.proveedor ? pago.proveedor.razon_social : ''),
+                nombre: setTextTable(pago.servicio),
+                periodo: setTextTable(pago.periodo),
+                monto: setMoneyTable(pago.monto),
+                fecha: setDateTable(pago.fecha_inicio)
             })
         })
         return aux
@@ -465,7 +465,7 @@ class CalendarioPagos extends Component {
                     : 
                         <NewTable tableName = 'calendario-pagos' subtitle = 'Listado de pagos' title = 'Pagos' abrirModal = { true } 
                             onClick = { this.openModal } columns = { CALENDARIO_PAGOS_ADMIN } accessToken = { access_token } setter = { this.setListPagos } 
-                            urlRender = {`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos`} filterClick = { this.openModalFiltros } />
+                            urlRender = {`${URL_DEV}v1/administracion/pago/all/calendario`} filterClick = { this.openModalFiltros } />
                 }
                 <Modal size="lg" title={title} show={modal.form} handleClose={this.handleClose} >
                     {

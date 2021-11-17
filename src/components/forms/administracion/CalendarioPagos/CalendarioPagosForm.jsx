@@ -4,6 +4,7 @@ import { printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '..
 import { apiPostForm, apiPutForm, catchErrors } from '../../../../functions/api'
 import { optionsPeriodoPagos } from '../../../../functions/options'
 import { Form, Col } from 'react-bootstrap'
+import moment from 'moment'
 class CalendarioPagos extends Component{
     state = {
         form: {
@@ -19,20 +20,25 @@ class CalendarioPagos extends Component{
     }
 
     componentDidMount(){
-        const { pago, title } = this.props
+        const { pago, title, options } = this.props
         const { form } = this.state
         if(title === 'Editar registro de pago'){
-            // if(pago.proveedor){
-            //     let aux = options.proveedores.find((proveedor) => {
-            //         return proveedor.label === pago.proveedor.razon_social
-            //     })
-            //     form.proveedor = aux
-            // }
-            // form.nombre = pago.nombre
-            // form.periodo = pago.periodo 
-            let date = new Date(pago.fecha);
-            form.fecha = date.setDate(date.getDate() + 1);
-            form.monto = pago.costo
+            let opciones = optionsPeriodoPagos()
+            let periodo = opciones.find((elemento) => {
+                return elemento.value === pago.periodo
+            })
+            if(periodo){
+                form.periodo = periodo
+            }
+            form.nombre = pago.servicio
+            form.fecha = new Date(moment(pago.fecha_inicio));
+            form.monto = pago.monto
+            let proveedor = options.proveedores.find((prov) => {
+                return prov.value === pago.proveedor_id.toString()
+            })
+            if(proveedor){
+                form.proveedor = proveedor
+            }
         }
         this.setState({ ...this.state, form })
     }
@@ -59,7 +65,7 @@ class CalendarioPagos extends Component{
     uploadPagoAxios = async () => {
         const { at, refresh, pago } = this.props
         const { form } = this.state
-        apiPutForm(`v1/administracion/dario-pagos/${pago.id}`, form, at).then(
+        apiPutForm(`v1/administracion/pago/${pago.id}`, form, at).then(
             (response) => {
                 doneAlert(`Pago editado con éxito`, () => { refresh() })
             }, (error) => { printResponseErrorAlert(error) }
