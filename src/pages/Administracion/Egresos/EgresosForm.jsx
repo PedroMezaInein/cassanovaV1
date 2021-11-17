@@ -188,6 +188,8 @@ class EgresosForm extends Component {
                                 }
                             return false
                         });
+                        console.log(`PROVEEDORES`, data.proveedores)
+                        console.log(`OBJ`, obj)
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
                             form.empresa = auxEmpresa.name
@@ -524,9 +526,11 @@ class EgresosForm extends Component {
                 })
                 let objeto = {}
                 objeto.pathname = '/administracion/egresos'
-                if(state.prestacion){
-                    objeto.pathname = '/rh/prestaciones'
-                    objeto.state = { prestacion: state.prestacion, flag: 'egreso' }
+                if(state){
+                    if(state.prestacion){
+                        objeto.pathname = '/rh/prestaciones'
+                        objeto.state = { prestacion: state.prestacion, flag: 'egreso' }
+                    }
                 }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
                     () => { history.push(objeto) }
