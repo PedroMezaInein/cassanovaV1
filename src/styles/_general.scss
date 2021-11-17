@@ -3049,10 +3049,13 @@ table#calendario-proyectos tr:last-child td {
     color: #464e5f !important;
     font-weight: 400 !important;
 }
-.text-hover-ticket:hover{
-    color:#9E9D24;
-    text-decoration: underline;
-    text-decoration-color: #9E9D24;
+.text-hover-ticket{
+    color:#464E5F;
+    &:hover{
+        color:#9E9D24;
+        text-decoration: underline;
+        text-decoration-color: #9E9D24;
+    }
 }
 .text-hover-obra:hover{
     color:#EF6C00;

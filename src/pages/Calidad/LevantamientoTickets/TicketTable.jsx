@@ -57,9 +57,10 @@ class TicketTable extends Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
+            let estatus_ticket = params.get("estatus")
             if (id) {
                 const { history } = this.props
-                history.push({ pathname: '/calidad/tickets/detalles-ticket', state: { calidad: {id: id} } });
+                history.push({ pathname: '/calidad/tickets/detalles-ticket', state: { calidad: {id: id, estatus:{estatus:estatus_ticket?estatus_ticket:'En espera'}} } });
             }
         }
     }

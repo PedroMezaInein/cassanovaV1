@@ -133,15 +133,29 @@ class PresupuestosEnviados extends Component {
     }
 
     label(presupuesto){
-        let tipo = presupuesto.hasTickets ? 'ticket' : 'presupuesto'
-        let identificador = tipo === 'ticket' && (presupuesto.ticketIdentificador !== null || presupuesto.ticketIdentificador !== '')
-        return(
-            <div className='d-flex align-items-center justify-content-center white-space-nowrap'>
-                <i style={{ color: `${tipo === 'ticket' ? "#9E9D24" : "#EF6C00"}` }} className={`las ${tipo === 'ticket' ? 'la-ticket-alt' : 'la-hard-hat'} icon-xl mr-2`}/>
-                {setTextTable(tipo)}
-                { identificador && <span className="font-size-11px">- {presupuesto.ticketIdentificador}</span> }
-            </div>
-        )
+        if(presupuesto.hasTickets){
+            let identificador = presupuesto.hasTickets && (presupuesto.ticketIdentificador !== null || presupuesto.ticketIdentificador !== '')
+                return(
+                    <div>
+                        <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                            <i style={{ color: "#9E9D24" }} className={`las la-ticket-alt icon-xl mr-2`} />
+                            {
+                                identificador?
+                                    <span className="font-size-11px">Ticket - <u><a className="text-hover-ticket cursor-pointer" href={`/calidad/tickets?id=${presupuesto.ticket.id}&estatus=${presupuesto.ticket.estatus_ticket.estatus}`} >{`${presupuesto.ticketIdentificador}`}</a></u></span>
+                                :<span className="font-size-11px">Ticket</span>
+                            }
+                            
+                        </div>
+                    </div>
+                )
+        }else{
+            return(
+                <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                    <i style={{ color: "#EF6C00" }} className={`las la-hard-hat icon-xl mr-2`} />
+                    <span className="font-size-11px">{`obra`}</span>
+                </div>
+            )
+        }
     }
 
     setNaviIcon(icon, text) {
