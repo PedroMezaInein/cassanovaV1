@@ -81,8 +81,8 @@ class CalendarioPagos extends Component {
     }
 
     getPagosAsEvents = (pagos, fInicio, fFin) => {
-        fFin.setDate( fFin.getDate() + 10 )
-        fInicio.setDate( fInicio.getDate() - 10 )
+        fFin.setDate( fFin.getDate() + 14 )
+        fInicio.setDate( fInicio.getDate() - 14 )
         let aux = []
         let fechaAux = null
         pagos.forEach((element) => {
