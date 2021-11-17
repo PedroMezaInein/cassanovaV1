@@ -158,8 +158,8 @@ class TicketDetails extends Component {
         if (state) {
             if (state.calidad) {
                 const { calidad } = state
-                this.setNavTabs(calidad.estatus.estatus)
                 if(calidad.estatus){
+                    this.setNavTabs(calidad.estatus.estatus)
                     if (calidad.estatus.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
                     else { this.getOneTicketAxios(calidad.id) }
                 }else { this.getOneTicketAxios(calidad.id) }
