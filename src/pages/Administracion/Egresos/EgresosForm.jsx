@@ -439,18 +439,20 @@ class EgresosForm extends Component {
                 const { options, data, form } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                if(state.prestacion){
-                    let area = areas.find((value) => {
-                        return value.nombre === 'RECURSOS HUMANOS'
-                    })
-                    if(area){
-                        form.area = area.id.toString()
-                        options['subareas'] = setOptions(area.subareas, 'nombre', 'id')
-                        let subarea = area.subareas.find((value) => {
-                            return value.nombre === 'PRESTACIONES'
+                if(state){
+                    if(state.prestacion){
+                        let area = areas.find((value) => {
+                            return value.nombre === 'RECURSOS HUMANOS'
                         })
-                        if(subarea){
-                            form.subarea = subarea.id.toString()
+                        if(area){
+                            form.area = area.id.toString()
+                            options['subareas'] = setOptions(area.subareas, 'nombre', 'id')
+                            let subarea = area.subareas.find((value) => {
+                                return value.nombre === 'PRESTACIONES'
+                            })
+                            if(subarea){
+                                form.subarea = subarea.id.toString()
+                            }
                         }
                     }
                 }
