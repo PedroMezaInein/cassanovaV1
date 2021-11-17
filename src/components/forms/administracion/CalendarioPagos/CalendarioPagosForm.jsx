@@ -19,7 +19,7 @@ class CalendarioPagos extends Component{
     }
 
     componentDidMount(){
-        const { pago, title, options } = this.props
+        const { pago, title } = this.props
         const { form } = this.state
         if(title === 'Editar registro de pago'){
             // if(pago.proveedor){
@@ -50,7 +50,7 @@ class CalendarioPagos extends Component{
     addPagoAxios = async() => {
         const { at, refresh } = this.props
         const { form } = this.state
-        apiPostForm(`v1/administracion/dario-pagos`, form, at).then( (response) => {
+        apiPostForm(`v1/administracion/pago`, form, at).then( (response) => {
             doneAlert(`Pago registrado con éxito`, () => { refresh() })
         }, (error) => {  printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
