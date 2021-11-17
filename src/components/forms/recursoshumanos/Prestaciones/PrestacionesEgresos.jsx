@@ -195,29 +195,29 @@ class PrestacionesEgresos extends Component {
     printSortIcon = columna => {
         const { order } = this.state
         if(order.direction === null && order.column === null){
-            return <i className = 'las la-sort-up' onClick = { () => this.resort(columna) } />
+            return <i className = 'flaticon2-up text-primary2 icon-sm' onClick = { () => this.resort(columna) } />
         }else{
             if(order.column === columna){
                 if(order.direction === 'asc'){
-                    return <i className = 'fas fa-sort-up'  onClick = { () => this.resort(columna) } />
+                    return <i className = 'flaticon2-up text-primary2 icon-sm'  onClick = { () => this.resort(columna) } />
                 }else{
-                    return <i className = 'fas fa-sort-down'  onClick = { () => this.resort(columna) } />    
+                    return <i className = 'flaticon2-down text-primary2 icon-sm'  onClick = { () => this.resort(columna) } />    
                 }
             }else{
-                return <i className = 'las la-sort-up'  onClick = { () => this.resort(columna) } />
+                return <i className = 'flaticon2-up text-primary2 icon-sm'  onClick = { () => this.resort(columna) } />
             }
         }
     }
 
     printHistorialEgresos = () => {
-        const { egresos, activePage, itemsPerPage, order } = this.state
+        const { egresos, activePage, itemsPerPage } = this.state
         return(
             <div>
                 <div className="table-responsive-lg mt-4">
-                    <table className="table table-vertical-center mx-auto table-borderless tcalendar_p_info" >
-                        <thead className="bg-primary-o-30">
+                    <table className="table table-vertical-center w-80 mx-auto" >
+                        <thead className="bg-light-primary2 text-primary2">
                             <tr>
-                                <td>
+                                <td className="w-30">
                                     <div className = 'd-flex justify-content-around'>
                                         <span>
                                             IDENTIFICADOR
@@ -227,7 +227,7 @@ class PrestacionesEgresos extends Component {
                                         </span>
                                     </div>
                                 </td>
-                                <td>
+                                <td className="w-30">
                                     <div className = 'd-flex justify-content-around'>
                                         <span>
                                             MONTO
@@ -237,7 +237,7 @@ class PrestacionesEgresos extends Component {
                                         </span>
                                     </div>
                                 </td>
-                                <td>
+                                <td className="w-30">
                                     <div className = 'd-flex justify-content-around'>
                                         <span>
                                             FECHA
@@ -249,7 +249,7 @@ class PrestacionesEgresos extends Component {
                                 </td>
                             </tr>
                         </thead>
-                        <tbody className = 'text-center'>
+                        <tbody className = 'text-center font-weight-light'>
                             { 
                                 egresos.length  ?
                                     egresos.map((egreso, key) => {
@@ -259,7 +259,7 @@ class PrestacionesEgresos extends Component {
                                             return(
                                                 <tr key = {egreso.id}>
                                                     <td>
-                                                        <a href = {`/administracion/egresos?id=${egreso.id}`}>
+                                                        <a href = {`/administracion/egresos?id=${egreso.id}`} className="font-weight-bold text-primary2">
                                                             {egreso.id}
                                                         </a>
                                                     </td>
@@ -300,12 +300,12 @@ class PrestacionesEgresos extends Component {
                                 onChange={this.onChangePage.bind(this)}
                                 itemClassLast="d-none"
                                 itemClassFirst="d-none"
-                                prevPageText={<i className='ki ki-bold-arrow-back icon-xs text-table-utilidad' />}
-                                nextPageText={<i className='ki ki-bold-arrow-next icon-xs text-table-utilidad' />}
-                                linkClassPrev="btn btn-icon btn-sm btn-light-utilidad mr-2 my-1 pagination"
-                                linkClassNext="btn btn-icon btn-sm btn-light-utilidad mr-2 my-1 pagination"
-                                linkClass="btn btn-icon btn-sm border-0 btn-hover-utilidad mr-2 my-1 pagination"
-                                activeLinkClass="btn btn-icon btn-sm border-0 btn-utilidad btn-hover-utilidad mr-2 my-1 pagination"
+                                prevPageText={<i className='ki ki-bold-arrow-back icon-xs text-primary2' />}
+                                nextPageText={<i className='ki ki-bold-arrow-next icon-xs text-primary2' />}
+                                linkClassPrev="btn btn-icon btn-sm btn-light-primary2 mr-2 my-1 pagination"
+                                linkClassNext="btn btn-icon btn-sm btn-light-primary2 mr-2 my-1 pagination"
+                                linkClass="btn btn-icon btn-sm border-0 btn-hover-primary2 mr-2 my-1 pagination"
+                                activeLinkClass="btn btn-icon btn-sm border-0 btn-primary2 btn-hover-primary2 mr-2 my-1 pagination"
                             />
                         </div>
                         : ''
@@ -321,10 +321,10 @@ class PrestacionesEgresos extends Component {
             <div className="container">
                 {
                     egresos.length ?
-                        <div className="d-flex justify-content-end mt-4">
-                            <Button icon = '' onClick = { this.changeTab } className = "btn btn-light-info"  
-                                text = { active === 'historial' ? 'GENERAR EGRESO' :  'VER HISTORIAL' } 
-                                tooltip= { { text: active === 'historial' ? 'GENERAR EGRESO' :  'VER HISTORIAL' } } />
+                        <div className={`d-flex justify-content-center ${active === 'historial'?'mt-5':'mt-5 pb-3'}`}>
+                            <Button icon = '' onClick = { this.changeTab } className = "btn btn-light btn-hover-primary2 font-weight-bolder"  
+                                text = { active === 'historial' ? 'GENERAR EGRESO' :  'VER HISTORIAL' }
+                            />
                         </div>
                     : ''
                 }

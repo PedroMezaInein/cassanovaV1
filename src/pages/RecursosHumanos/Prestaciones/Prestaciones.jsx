@@ -171,7 +171,7 @@ class Prestaciones extends Component {
                     }
                     
                 </Modal>
-                <Modal size = 'lg' show = { modal.egreso } handleClose = { this.handleClose } title = 'EGRESOS' bgHeader="border-0">
+                <Modal size = 'lg' show = { modal.egreso } handleClose = { this.handleClose } title = 'EGRESOS'>
                     {
                         modal.egreso ?
                             <PrestacionesEgresos at = { access_token } history = { history } prestacion = { prestacion } />
