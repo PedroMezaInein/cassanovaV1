@@ -3466,3 +3466,35 @@ td.descripcion{
 .bg-primary2{
     background-color: #009ef7 !important
 }
+.table_calendar {
+	border-collapse: collapse;
+	border-spacing: 0;
+    background: #fff;
+	border-radius: 0 0 1em 1em;
+	-webkit-box-shadow: 0 2px 1px rgba(0, 0, 0, .2), 0 3px 1px #fff;
+	box-shadow: 0 2px 1px rgba(0, 0, 0, .2), 0 3px 1px #fff;
+	color: #555;
+	display: inline-block;
+	padding: 1em;
+    tbody td {
+        padding: 0;
+        padding: .5em 1em;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 300;
+        &:hover{
+            background: #cacaca;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 1.333em;
+            cursor: pointer;
+        }
+    }
+    .current-day {
+        background: #e66b6b;
+        color: white;
+        font-weight: 600;
+        border-radius: 1.333em;
+        cursor: pointer;
+    }
+}

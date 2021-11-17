@@ -3,6 +3,8 @@ import { Form, Col } from 'react-bootstrap'
 import { apiPostForm, apiPutForm, catchErrors } from '../../../../functions/api'
 import { printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../../../../functions/alert'
 import { Button, InputNumberGray, InputGray, ReactSelectSearchGray, InputMoneyGray } from '../../../form-components'
+import { Calendar } from 'react-date-range'
+import es from "date-fns/locale/es";
 class PrestacionesForm extends Component{
 
     state = {
@@ -11,8 +13,18 @@ class PrestacionesForm extends Component{
             periodo: '',
             proveedor: '',
             pago: '',
-            descripcion:''
-        }
+            descripcion:'',
+            date: new Date(),
+            inicio_pago:''
+        },
+        array:[
+            ['1','2','3','4','5','6','7'], 
+            ['8','9','10','11','12','13','14'], 
+            ['15','16','17','18','19','20','21'], 
+            ['22','23','24','25','26','27','28'], 
+            ['29','30','31'], 
+        ],
+        activeDay: '',
     }
 
     componentDidMount(){
@@ -76,9 +88,24 @@ class PrestacionesForm extends Component{
         form[name] = value
         this.setState({ ...this.state, form })
     }
-
+    handleActive = active => {
+        const { array, form } = this.state
+        let aux = ''
+        array.forEach((element1, key1) => {
+            array[key1].forEach((element2, key2) => {
+                if (element2 === active) {
+                    aux = active
+                }
+            })
+        })
+        form.inicio_pago = aux
+        this.setState({
+            activeDay: aux,
+            form
+        })
+    }
     render(){
-        const { form } = this.state
+        const { form, array, activeDay } = this.state
         const { options } = this.props
         return(
             <Form id = 'form-prestaciones'
@@ -116,6 +143,51 @@ class PrestacionesForm extends Component{
                                     as="textarea" placeholder="DESCRIPCIÓN" rows="3" value={form.descripcion} name="descripcion" onChange={this.onChange}
                                     customclass="px-2" messageinc="Incorrecto. Ingresa la descripción."
                                 />
+                            </div>
+                        </div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-12 text-center">
+                                <div className="calendar-container">
+                                    <table className="calendar table_calendar">
+                                        <thead>
+                                            <th colspan="7">
+                                                INICIO DE PAGO
+                                            </th>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                array.map((arr, key) => {
+                                                    return (
+                                                        <tr key={key} >
+                                                            {
+                                                                array[key].map((arr2, key1) => {
+                                                                    return (
+                                                                        <td key={key1} className={activeDay === arr2 ? 'current-day' : ''} onClick={() => this.handleActive(arr2)}>
+                                                                            {arr2}
+                                                                        </td>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                        {
+                                            form.inicio_pago === ''?
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="7" className="text-center">
+                                                        <div className="form-text font-weight-light text-danger">
+                                                            SELECCIONA EL INICIO DEL PAGO
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                            :<></>
+                                        }
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </Col>
