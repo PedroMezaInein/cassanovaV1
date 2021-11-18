@@ -43,6 +43,17 @@ class CalendarioPagos extends Component {
             history.push('/')
         this.getOptionsAxios()
         this.getCalendarioPagos()
+        
+        const { state } = this.props.location
+        if(state){
+            if(state.pago){
+                if(state.flag){
+                    if(state.flag === 'egreso'){
+                        this.getPagoInfo(state.pago)
+                    }
+                }
+            }
+        }
     }
 
     getOptionsAxios = async() => {
@@ -281,7 +292,7 @@ class CalendarioPagos extends Component {
     }
 
     renderEventContent = (eventInfo) => {
-        let { extendedProps } = eventInfo.event._def
+        let { pago } = eventInfo.event._def.extendedProps
         return (
             <OverlayTrigger rootClose overlay = {
                 <Tooltip>
@@ -295,7 +306,7 @@ class CalendarioPagos extends Component {
                     </span>
                 </Tooltip>
             }>
-                <div className="text-hover container p-1 tarea bg-calendar-3" onClick={(e) => { e.preventDefault(); this.getPagoInfo(extendedProps) }}>
+                <div className="text-hover container p-1 tarea bg-calendar-3" onClick={(e) => { e.preventDefault(); this.getPagoInfo(pago) }}>
                     <div className="row mx-0 row-paddingless">
                         <div className="col-md-auto mr-1 text-truncate">
                             <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
@@ -437,14 +448,13 @@ class CalendarioPagos extends Component {
         fin = new Date(inicio.getFullYear(), inicio.getMonth() + 1, 0); */
         this.getPagosAsEvents(pagos, inicio, fin)
     }
-    getPagoInfo = (info) => {
-
+    getPagoInfo = (pago) => {
         const { modal } = this.state
         modal.details = true
         this.setState({
             modal,
-            title: `Pago de ${info.pago.servicio}`,
-            pagoInfo: info.pago
+            title:`Pago de ${pago.servicio}`,
+            pagoInfo:pago
         })
     }
 

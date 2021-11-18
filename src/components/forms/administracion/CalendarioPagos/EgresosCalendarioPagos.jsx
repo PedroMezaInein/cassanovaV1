@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import Swal from 'sweetalert2'
-import SVG from 'react-inlinesvg'
 import Pagination from 'react-js-pagination'
-import { toAbsoluteUrl } from '../../../../functions/routers'
 import { apiGet, catchErrors } from '../../../../functions/api'
 import { printResponseErrorAlert, waitAlert } from '../../../../functions/alert'
 import { setMoneyText, setDateText } from '../../../../functions/setters'
 import { Button } from '../../../form-components'
 class EgresosCalendarioPagos extends Component {
     state = {
-        active: 'historial',
         egresos: [],
         activePage: 1,
         itemsPerPage: 5,
@@ -24,7 +21,6 @@ class EgresosCalendarioPagos extends Component {
     getInfoPrestacion = () => {
         const { pago, at } = this.props
         const { order } = this.state
-        console.log(pago, 'pago')
         waitAlert()
         apiGet(`v1/administracion/pago/${pago.id}/egresos`, at).then(
             (response) => {
@@ -49,8 +45,7 @@ class EgresosCalendarioPagos extends Component {
                 Swal.close()
                 this.setState({ 
                     ...this.state,
-                    egresos: egresos,
-                    active: egresos.length ? 'historial' : 'formulario'
+                    egresos: egresos
                 })
             }, (error) => { printResponseErrorAlert(error)  }
         ).catch((error) => { catchErrors(error) })
@@ -120,7 +115,6 @@ class EgresosCalendarioPagos extends Component {
 
     render() {
         const { egresos, activePage, itemsPerPage } = this.state
-        console.log(egresos, 'egresos')
         return (
             <div className="container">
                 <div className='d-flex justify-content-end my-8 w-80 mx-auto'>

@@ -538,7 +538,7 @@ class EgresosForm extends Component {
                         objeto.state = { prestacion: prestacion, flag: 'egreso' }
                     }
                     if(pago){
-                        objeto.pathname = '/administracion/pago'
+                        objeto.pathname = '/administracion/calendario-pagos'
                         objeto.state = { pago: pago, flag: 'egreso' }
                     }
                 }
