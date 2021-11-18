@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 import Layout from "../../../components/layout/layout"
 import { NewTable } from '../../../components/NewTables';
 import { PRESUPUESTO_UTILIDAD_COLUMNS, URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from "../../../constants";
-import { setTextTable, setLabelTable, setTextTableCenter, setDateTable, setOptions, setAdjuntosList } from "../../../functions/setters";
+import { setLabelTable, setTextTableCenter, setDateTable, setOptions, setAdjuntosList } from "../../../functions/setters";
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, pendingPaymentAlert } from "../../../functions/alert";
 import { setSingleHeader } from "../../../functions/routers";
 import axios from 'axios'
