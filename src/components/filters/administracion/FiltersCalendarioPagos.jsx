@@ -7,7 +7,6 @@ class FiltersCalendarioPagos extends Component{
         form: {
             nombre: '',
             proveedor: '',
-            fecha: { start: null, end: null },
         }
     }
 
@@ -49,7 +48,6 @@ class FiltersCalendarioPagos extends Component{
         const { form } = this.state
         form.proveedor = ''
         form.nombre = ''
-        form.fecha = { start: null, end: null }
         this.setState({ ...this.state, form })
         sendFilters({})
     }
@@ -60,20 +58,14 @@ class FiltersCalendarioPagos extends Component{
         return(
             <Form onSubmit = { this.onSubmit } >
                 <div className="form-group row form-group-marginless mt-3">
-                    <div className="col-md-6">
+                    <div className="col-md-12">
                         <ReactSelectSearchGray placeholder = 'Selecciona el proveedor' defaultvalue = { form.proveedor } iconclass = 'las la-user icon-xl'
                             options = { options.proveedores } onChange = { (value) => { this.updateSelect(value, 'proveedor') } } />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-12">
                         <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } requirevalidation = { 0 }
                             withformgroup = { 0 } name = 'nombre' placeholder = 'NOMBRE DEL SERVICIO' value = { form.nombre } onChange = { this.onChange } 
                             withicon = { 1 } iconclass = 'las la-tools icon-xl' />
-                    </div>
-                </div>
-                <div>
-                    <div className="col-md-12 my-6 text-center">
-                        <RangeCalendar start={form.fecha.start} end={form.fecha.end}
-                            onChange={(value) => { this.onChange({ target: { name: 'fecha', value: { start: value.startDate, end: value.endDate } } }) }} />
                     </div>
                 </div>
                 <div className="mx-0 row justify-content-between border-top pt-4">

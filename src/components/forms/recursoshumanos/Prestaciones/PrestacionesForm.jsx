@@ -30,6 +30,7 @@ class PrestacionesForm extends Component{
     componentDidMount(){
         const { prestacion, title, options } = this.props
         const { form } = this.state
+        let aux = null
         if(title === 'Editar prestación'){
             if(prestacion.proveedor_id){
                 let proveedor = options.proveedores.find((tipo) => {
@@ -41,8 +42,10 @@ class PrestacionesForm extends Component{
             form.periodo = prestacion.periodo
             form.pago = prestacion.pago_por_empleado
             form.descripcion = prestacion.descripcion
+            form.fecha_pago = prestacion.dia_pago
+            aux = prestacion.dia_pago.toString()
         }
-        this.setState({ ...this.state, form })
+        this.setState({ ...this.state, form, activeDay: aux })
     }
 
     onSubmit = async() => {
@@ -141,8 +144,7 @@ class PrestacionesForm extends Component{
                                 <InputGray
                                     withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0} withformgroup={0} requirevalidation={0}
                                     as="textarea" placeholder="DESCRIPCIÓN" rows="3" value={form.descripcion} name="descripcion" onChange={this.onChange}
-                                    customclass="px-2" messageinc="Incorrecto. Ingresa la descripción."
-                                />
+                                    customclass="px-2" messageinc="Incorrecto. Ingresa la descripción." />
                             </div>
                         </div>
                         <div className="form-group row form-group-marginless">
@@ -162,7 +164,8 @@ class PrestacionesForm extends Component{
                                                             {
                                                                 array[key].map((arr2, key1) => {
                                                                     return (
-                                                                        <td key={key1} className={activeDay === arr2 ? 'current-day' : ''} onClick={() => this.handleActive(arr2)}>
+                                                                        <td key={key1} className={activeDay === arr2 ? 'current-day' : ''} 
+                                                                            onClick={() => this.handleActive(arr2)}>
                                                                             {arr2}
                                                                         </td>
                                                                     )
@@ -175,16 +178,17 @@ class PrestacionesForm extends Component{
                                         </tbody>
                                         {
                                             form.fecha_pago === ''?
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="7" className="text-center">
-                                                        <div className="form-text font-weight-light text-danger">
-                                                            SELECCIONA EL INICIO DEL PAGO
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tfoot>
-                                            :<></>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="7" className="text-center">
+                                                            <div className="form-text font-weight-light text-danger">
+                                                                SELECCIONA EL INICIO DEL PAGO
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            :
+                                                <></>
                                         }
                                     </table>
                                 </div>
