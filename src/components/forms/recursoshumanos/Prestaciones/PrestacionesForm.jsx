@@ -15,7 +15,7 @@ class PrestacionesForm extends Component{
             pago: '',
             descripcion:'',
             date: new Date(),
-            inicio_pago:''
+            fecha_pago:''
         },
         array:[
             ['1','2','3','4','5','6','7'], 
@@ -98,7 +98,7 @@ class PrestacionesForm extends Component{
                 }
             })
         })
-        form.inicio_pago = aux
+        form.fecha_pago = aux
         this.setState({
             activeDay: aux,
             form
@@ -151,7 +151,7 @@ class PrestacionesForm extends Component{
                                     <table className="calendar table_calendar">
                                         <thead>
                                             <th colspan="7">
-                                                INICIO DE PAGO
+                                                FECHA DE PAGO
                                             </th>
                                         </thead>
                                         <tbody>
@@ -174,7 +174,7 @@ class PrestacionesForm extends Component{
                                             }
                                         </tbody>
                                         {
-                                            form.inicio_pago === ''?
+                                            form.fecha_pago === ''?
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="7" className="text-center">
