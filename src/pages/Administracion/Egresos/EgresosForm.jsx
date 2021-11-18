@@ -326,7 +326,7 @@ class EgresosForm extends Component {
                     if(pago){
                         form.proveedor = pago.proveedor_id.toString()
                         form.descripcion = `PAGO DE SERVICIO ${pago.servicio}`
-                        form.total = pago.total
+                        form.total = pago.monto
                         form.pago = pago.id
                     }
                 }
