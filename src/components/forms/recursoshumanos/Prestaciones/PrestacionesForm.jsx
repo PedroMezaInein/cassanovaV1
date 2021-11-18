@@ -3,8 +3,6 @@ import { Form, Col } from 'react-bootstrap'
 import { apiPostForm, apiPutForm, catchErrors } from '../../../../functions/api'
 import { printResponseErrorAlert, waitAlert, validateAlert, doneAlert } from '../../../../functions/alert'
 import { Button, InputNumberGray, InputGray, ReactSelectSearchGray, InputMoneyGray } from '../../../form-components'
-import { Calendar } from 'react-date-range'
-import es from "date-fns/locale/es";
 class PrestacionesForm extends Component{
 
     state = {
