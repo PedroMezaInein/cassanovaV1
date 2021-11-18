@@ -62,7 +62,24 @@ class CalendarioPagos extends Component {
         apiGet(`v1/administracion/pago`, access_token).then(
             (response) => {
                 const { pagos } = response.data
-                this.setState({ ...this.state, pagos: pagos })
+                const { modal } = this.state
+                let { title } = this.state
+                let queryString = this.props.history.location.search
+                let pago = null
+                if (queryString) {
+                    let params = new URLSearchParams(queryString)
+                    let id = parseInt(params.get("id"))
+                    if (id) {
+                        modal.details = true
+                        pago = pagos.find((element) => {
+                            return element.id === id
+                        })
+                        if(pago){
+                            title = `Pago de ${pago.servicio}`
+                        }
+                    }
+                }
+                this.setState({ ...this.state, pagos: pagos, title, modal, pagoInfo: pago })
                 let date = new Date(), y = date.getFullYear(), m = date.getMonth()
                 let firstDay = new Date(y, m, 1);
                 let lastDay = new Date(y, m + 1, 0);
@@ -421,6 +438,7 @@ class CalendarioPagos extends Component {
         this.getPagosAsEvents(pagos, inicio, fin)
     }
     getPagoInfo = (info) => {
+
         const { modal } = this.state
         modal.details = true
         this.setState({
