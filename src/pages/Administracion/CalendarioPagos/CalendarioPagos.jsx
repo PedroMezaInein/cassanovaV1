@@ -12,7 +12,7 @@ import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
 import interactionPlugin from '@fullcalendar/interaction'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { CalendarioPagosForm } from '../../../components/forms'
+import { CalendarioPagosForm, EgresosCalendarioPagos } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, catchErrors } from '../../../functions/api'
 import FiltersCalendarioPagos  from '../../../components/filters/administracion/FiltersCalendarioPagos'
 import { setMoneyTable, setOptionsWithLabel, setDateTable, setTextTable } from '../../../functions/setters'
@@ -22,12 +22,13 @@ class CalendarioPagos extends Component {
     state = {
         events: null,
         title:'',
-        modal: { form:false, filtros: false },
+        modal: { form:false, filtros: false, details:false },
         filters: {},
         options:{ proveedores:[] },
         pago: [],
         activeKey: 'calendario',
-        pagos: []
+        pagos: [],
+        pagoInfo:[]
     };
 
     componentDidMount() {
@@ -104,7 +105,7 @@ class CalendarioPagos extends Component {
                                     title: element.servicio,
                                     start: fechaAux,
                                     end: fechaAux,
-                                    iconClass: 'la la-toolbox',
+                                    iconClass: 'la la-wallet',
                                     pago: element
                                 })
                             }
@@ -122,7 +123,7 @@ class CalendarioPagos extends Component {
                                             title: element.servicio,
                                             start: fechaAux,
                                             end: fechaAux,
-                                            iconClass: 'la la-toolbox',
+                                            iconClass: 'la la-wallet',
                                             pago: element
                                         })
                                     }
@@ -151,7 +152,7 @@ class CalendarioPagos extends Component {
                                             title: element.servicio,
                                             start: fechaAux,
                                             end: fechaAux,
-                                            iconClass: 'la la-toolbox',
+                                            iconClass: 'la la-wallet',
                                             pago: element
                                         })
                                     }
@@ -181,7 +182,7 @@ class CalendarioPagos extends Component {
                                             title: element.servicio,
                                             start: fechaAux,
                                             end: fechaAux,
-                                            iconClass: 'la la-toolbox',
+                                            iconClass: 'la la-wallet',
                                             pago: element
                                         })
                                     }
@@ -203,7 +204,7 @@ class CalendarioPagos extends Component {
                                     title: element.servicio,
                                     start: fechaAux,
                                     end: fechaAux,
-                                    iconClass: 'la la-toolbox',
+                                    iconClass: 'la la-wallet',
                                     pago: element
                                 })
                             }
@@ -263,6 +264,7 @@ class CalendarioPagos extends Component {
     }
 
     renderEventContent = (eventInfo) => {
+        let { extendedProps } = eventInfo.event._def
         return (
             <OverlayTrigger rootClose overlay = {
                 <Tooltip>
@@ -276,8 +278,7 @@ class CalendarioPagos extends Component {
                     </span>
                 </Tooltip>
             }>
-                <div className="text-hover container p-1 tarea bg-calendar-3"
-                    onClick = { () => {console.log(eventInfo)} }>
+                <div className="text-hover container p-1 tarea bg-calendar-3" onClick={(e) => { e.preventDefault(); this.getPagoInfo(extendedProps) }}>
                     <div className="row mx-0 row-paddingless">
                         <div className="col-md-auto mr-1 text-truncate">
                             <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
@@ -319,9 +320,12 @@ class CalendarioPagos extends Component {
         const { modal } = this.state
         modal.form = false
         modal.filtros = false
+        modal.details = false
         this.setState({
             modal,
-            title: ''
+            title: '',
+            pagoInfo: '',
+            pago:''
         })
     }
 
@@ -416,10 +420,19 @@ class CalendarioPagos extends Component {
         fin = new Date(inicio.getFullYear(), inicio.getMonth() + 1, 0); */
         this.getPagosAsEvents(pagos, inicio, fin)
     }
+    getPagoInfo = (info) => {
+        const { modal } = this.state
+        modal.details = true
+        this.setState({
+            modal,
+            title: `Pago de ${info.pago.servicio}`,
+            pagoInfo: info.pago
+        })
+    }
 
     render() {
-        const { events, title, modal, options, activeKey, filters, pago } = this.state
-        const { access_token } = this.props.authUser
+        const { events, title, modal, options, activeKey, filters, pago, pagoInfo } = this.state
+        const { authUser: {access_token}, history } = this.props
         return (
             <Layout active = 'administracion' {...this.props}>
                 <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
@@ -477,6 +490,13 @@ class CalendarioPagos extends Component {
                 <Modal size = 'lg' title = {title} show = { modal.filtros } handleClose = { this.handleClose } customcontent = { true } 
                     contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
                     <FiltersCalendarioPagos  at = { access_token } sendFilters = { this.sendFilters } filters = { filters } options = { options }/>
+                </Modal>
+                <Modal size="lg" title={<span><i className='las la-wallet icon-lg mr-2 text-primary2'></i>{title}</span>} show={modal.details} handleClose={this.handleClose}>
+                    {
+                        modal.details ?
+                            <EgresosCalendarioPagos at = { access_token } history = { history } pago = { pagoInfo }/>
+                        : <></>
+                    }
                 </Modal>
             </Layout>
         );
