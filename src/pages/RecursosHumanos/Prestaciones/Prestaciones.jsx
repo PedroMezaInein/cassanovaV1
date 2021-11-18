@@ -8,7 +8,7 @@ import { DropdownButton, Dropdown } from 'react-bootstrap'
 import { PrestacionesForm, PrestacionesEgresos } from '../../../components/forms'
 import { FiltersPrestaciones } from '../../../components/filters'
 import { URL_DEV, PRESTACIONES_RH_COLUMNS } from '../../../constants'
-import { apiDelete, apiOptions, catchErrors } from '../../../functions/api'
+import { apiDelete, apiGet, apiOptions, catchErrors } from '../../../functions/api'
 import { deleteAlert, doneAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { setTextTableCenter, setOptionsWithLabel, setMoneyTable, setNaviIcon } from '../../../functions/setters'
 
@@ -36,6 +36,24 @@ class Prestaciones extends Component {
                 }
             }
         }
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                this.getPrestacion(id)
+            }
+        }
+    }
+
+    getPrestacion = async(id) => {
+        const { access_token } = this.props.authUser
+        apiGet(`v1/rh/prestaciones/${id}/egresos`, access_token).then(
+            (response) => {
+                const { prestacion } = response.data
+                this.openModalEgreso(prestacion)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
 
     getOptions = async() => {
