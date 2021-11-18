@@ -316,12 +316,18 @@ class EgresosForm extends Component {
         switch (action) {
             case 'add':
                 if (state) {
-                    if (state.prestacion) {
-                        const { prestacion } = state
+                    const { prestacion, pago } = state
+                    if(prestacion){
                         form.proveedor = prestacion.proveedor_id.toString()
                         form.descripcion = `PAGO DE PRESTACIÓN ${prestacion.nombre}`
                         form.total = prestacion.total
                         form.prestacion = prestacion.id
+                    }
+                    if(pago){
+                        form.proveedor = pago.proveedor_id.toString()
+                        form.descripcion = `PAGO DE SERVICIO ${pago.servicio}`
+                        form.total = pago.total
+                        form.pago = pago.id
                     }
                 }
                 this.setState({
@@ -440,7 +446,8 @@ class EgresosForm extends Component {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 if(state){
-                    if(state.prestacion){
+                    const { prestacion } = state
+                    if(prestacion){
                         let area = areas.find((value) => {
                             return value.nombre === 'RECURSOS HUMANOS'
                         })
@@ -525,9 +532,14 @@ class EgresosForm extends Component {
                 let objeto = {}
                 objeto.pathname = '/administracion/egresos'
                 if(state){
-                    if(state.prestacion){
+                    const { prestacion } = state
+                    if(prestacion){
                         objeto.pathname = '/rh/prestaciones'
-                        objeto.state = { prestacion: state.prestacion, flag: 'egreso' }
+                        objeto.state = { prestacion: prestacion, flag: 'egreso' }
+                    }
+                    if(prestacion){
+                        objeto.pathname = '/administracion/pago'
+                        objeto.state = { pago: pago, flag: 'egreso' }
                     }
                 }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
