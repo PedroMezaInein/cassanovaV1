@@ -532,12 +532,12 @@ class EgresosForm extends Component {
                 let objeto = {}
                 objeto.pathname = '/administracion/egresos'
                 if(state){
-                    const { prestacion } = state
+                    const { prestacion, pago } = state
                     if(prestacion){
                         objeto.pathname = '/rh/prestaciones'
                         objeto.state = { prestacion: prestacion, flag: 'egreso' }
                     }
-                    if(prestacion){
+                    if(pago){
                         objeto.pathname = '/administracion/pago'
                         objeto.state = { pago: pago, flag: 'egreso' }
                     }
