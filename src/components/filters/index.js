@@ -7,8 +7,9 @@ import FiltersPrestaciones from './administracion/FiltersPrestaciones'
 import FiltersCalendarioPagos from './administracion/FiltersCalendarioPagos'
 import ProyectoFilter from './proyectos/ProyectoFilter'
 import ComprasFilters from './proyectos/ComprasFilters'
+import VentasFilters from './proyectos/VentasFilters'
 
 export {
     TickesFilter, PresupuestoFilter, FiltersSolicitudFactura, FiltersUtilidad, FiltersLicencias, FiltersPrestaciones, FiltersCalendarioPagos,
-    ProyectoFilter, ComprasFilters
+    ProyectoFilter, ComprasFilters, VentasFilters
 }
