@@ -3,18 +3,19 @@ import $ from 'jquery'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
-import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
+import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
 import { ComprasCard } from '../../../components/cards'
 import { NewTable } from '../../../components/NewTables'
 import { FacturaTable } from '../../../components/tables'
+import { ComprasFilters } from '../../../components/filters'
 import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
 import Select from '../../../components/form-components/Select'
-import { Modal } from '../../../components/singles'
+import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { Button, FileInput } from '../../../components/form-components'
 import {AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, catchErrors } from '../../../functions/api'
-import { setOptions, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setDateTable, setNaviIcon } from '../../../functions/setters'
+import { setOptions, setOptionsWithLabel, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setDateTable, setNaviIcon } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
 class ComprasNew extends Component {
     state = {
@@ -22,7 +23,8 @@ class ComprasNew extends Component {
             facturas: false,
             see: false,
             facturaExtranjera: false,
-            adjuntos: false
+            adjuntos: false,
+            filters: false
         },
         title: 'Nueva compra',
         form: {
@@ -104,7 +106,8 @@ class ComprasNew extends Component {
         compra: '',
         porcentaje: '',
         facturas: [],
-        adjuntos: []
+        adjuntos: [],
+        filters: {},
     }
 
     componentDidMount() {
@@ -142,16 +145,16 @@ class ComprasNew extends Component {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
                     proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
+                options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
+                options['proveedores'] = setOptionsWithLabel(proveedores, 'razon_social', 'id')
+                options['areas'] = setOptionsWithLabel(areas, 'nombre', 'id')
+                options['proyectos'] = setOptionsWithLabel(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
-                options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
-                options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
+                options['estatusFacturas'] = setOptionsWithLabel(estatusFacturas, 'estatus', 'id')
+                options['formasPago'] = setOptionsWithLabel(formasPago, 'nombre', 'id')
+                options['metodosPago'] = setOptionsWithLabel(metodosPago, 'nombre', 'id')
                 data.proveedores = proveedores
                 data.empresas = empresas
                 this.setState({ ...this.state, options, data })
@@ -553,7 +556,7 @@ class ComprasNew extends Component {
                 const { compra } = response.data
                 form.adjuntos.presupuesto.files = compra.presupuestos
                 form.adjuntos.pago.files = compra.pagos
-                modal.adjuntos = false
+                modal.adjuntos = true
                 Swal.close()
                 this.setState({ ...this.state, form, modal, compra })
             }, (error) => { printResponseErrorAlert(error) }
@@ -591,6 +594,11 @@ class ComprasNew extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+    openModalFiltros = () => {
+        const { modal } = this.state
+        modal.filters = true
+        this.setState({ ...this.state, modal })
+    }
     handleClose = () => {
         const { data, modal } = this.state
         data.adjuntos = []
@@ -598,6 +606,7 @@ class ComprasNew extends Component {
         modal.facturaExtranjera = false
         modal.adjuntos = false
         modal.facturas = false
+        modal.filters = false
         this.setState({
             ...this.state,
             modal,
@@ -834,9 +843,27 @@ class ComprasNew extends Component {
             console.error(error, 'error')
         })
     }
+    setOptions = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
+        this.setState({ ...this.state, options })
+    }
+    sendFilters = filter => {
+        const { modal } = this.state
+        modal.filters = false
+        this.setState({
+            ...this.state,
+            filters: filter,
+            modal
+        })
+        this.reloadTable(filter)
+    }
     
+    reloadTable = (filter) => {
+        $(`#compras`).DataTable().search(JSON.stringify(filter)).draw();
+    }
     render() {
-        const {modal, form, options, facturas, compra } = this.state
+        const {modal, form, options, facturas, compra, filters } = this.state
         const { access_token } = this.props.authUser
         return (
             <Layout active={'proyectos'}  {...this.props}>
@@ -906,6 +933,9 @@ class ComprasNew extends Component {
                 </Modal>
                 <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
                     <FacturaExtranjera form={form}  onChangeAdjunto = { this.handleChange }  deleteFile = { this.openModalDeleteAdjuntos }/>
+                </Modal>
+                <Modal size = 'xl' show = { modal.filters } handleClose = { this.handleClose } title = 'Filtros'>
+                    <ComprasFilters at = { access_token } sendFilters = { this.sendFilters } filters = { filters } options={options} setOptions={this.setOptions}/> 
                 </Modal>
             </Layout>
         )

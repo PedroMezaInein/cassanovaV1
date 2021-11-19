@@ -153,7 +153,8 @@ export function setSelectOptions(arreglo, name) {
         aux.push({
             value: element.id,
             text: element[name],
-            label: element[name]
+            label: element[name],
+            name:element[name],
         })
         return false
     })
