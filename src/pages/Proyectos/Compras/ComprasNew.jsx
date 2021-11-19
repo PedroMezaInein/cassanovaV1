@@ -829,21 +829,21 @@ class ComprasNew extends Component {
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTable
-                    tableName='compras'
-                    subtitle='Listado de compras'
-                    title='Compras'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    accessToken={access_token}
-                    columns={COMPRAS_COLUMNS}
-                    setter={this.setCompras}
-                    url='/proyectos/compras/add'
-                    urlRender={`${URL_DEV}v2/proyectos/compras`}
-                    filterClick={this.openModalFiltros}
-                    exportar_boton={true}
-                    onClickExport={() => this.exportComprasAxios()}
-                    validateFactura={true}
-                    tipo_validacion='compras'
+                    tableName = 'compras'
+                    subtitle = 'Listado de compras'
+                    title = 'Compras'
+                    mostrar_boton = { true }
+                    abrir_modal = { false }
+                    accessToken = { access_token }
+                    columns = { COMPRAS_COLUMNS }
+                    setter = { this.setCompras }
+                    url = '/proyectos/compras/add'
+                    urlRender = {`${URL_DEV}v3/proyectos/compra`} 
+                    filterClick = { this.openModalFiltros }
+                    exportar_boton = { true}
+                    onClickExport = { () => this.exportComprasAxios() }
+                    validateFactura = { true }
+                    tipo_validacion = 'compras'
                 />
                 <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleClose} >
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>

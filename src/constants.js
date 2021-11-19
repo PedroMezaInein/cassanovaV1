@@ -315,16 +315,16 @@ export const PROYECTOS_COLUMNS = [
 ]
 
 export const VENTAS_COLUMNS = [
-    { Header: 'Opciones', accessor: 'actions' },
-    { Header: 'ID', accessor: 'identificador' },
+    { Header: 'Opciones', accessor: 'actions', customRender: true },
+    { Header: 'ID', accessor: 'identificador', customRender: true },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
-    { Header: 'Cliente', accessor: 'cliente' },
+    { Header: 'Cliente', accessor: 'cliente', customRender: true },
     { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
-    { Header: 'Factura', accessor: 'factura' },
+    { Header: 'Factura', accessor: 'factura', customRender: true },
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Sub-A', accessor: 'subarea', customRender: true },
-    { Header: 'Total', accessor: 'total' },
-    { Header: 'Cuenta', accessor: 'cuenta' },
+    { Header: 'Total', accessor: 'total', customRender: true },
+    { Header: 'Cuenta', accessor: 'cuenta', customRender: true },
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
