@@ -645,8 +645,6 @@ class ComprasNew extends Component {
 
     getComprasAxios = async() => { $('#compras').DataTable().ajax.reload(); }
     
-    
-
     deleteCompraAxios = async(id) => {
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'compras/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -850,7 +848,7 @@ class ComprasNew extends Component {
                     columns = { COMPRAS_COLUMNS }
                     setter = { this.setCompras }
                     url = '/proyectos/compras/add'
-                    urlRender = {`${URL_DEV}v2/proyectos/compras`} 
+                    urlRender = {`${URL_DEV}v3/proyectos/compra`} 
                     filterClick = { this.openModalFiltros }
                     exportar_boton = { true}
                     onClickExport = { () => this.exportComprasAxios() }
