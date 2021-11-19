@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { InputGray, ReactSelectSearchGray, Button, RangeCalendar } from '../../form-components'
+import { InputGray, ReactSelectSearchGray, Button } from '../../form-components'
 
 class FiltersCalendarioPagos extends Component{
     state = {
