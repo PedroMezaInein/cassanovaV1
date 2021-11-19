@@ -16,8 +16,10 @@ import { Dropdown, DropdownButton, Form } from 'react-bootstrap'
 import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors } from '../../../functions/api'
 import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, Select } from '../../../components/form-components'
-import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
-import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, setCustomeDescripcionReactDom, setNaviIcon, setOptionsWithLabel } from '../../../functions/setters'
+import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, 
+    customInputAlert } from '../../../functions/alert'
+import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
+    setCustomeDescripcionReactDom, setNaviIcon, setOptionsWithLabel } from '../../../functions/setters'
 class VentasNew extends Component {
     state = {
         modal:{
@@ -382,14 +384,13 @@ class VentasNew extends Component {
                         } else {
                             if(obj.nombre_receptor === ''){
                                 const { history } = this.props
-                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL CLIENTE DESDE LA SECCIÓN DE CLIENTES EN LEADS.', history, '/leads/clientes')
-                            }else {
-                                createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
-                            }
+                                errorAlertRedirectOnDissmis(
+                                    'LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL CLIENTE DESDE LA SECCIÓN DE CLIENTES EN LEADS.', 
+                                    history, 
+                                    '/leads/clientes')
+                            }else { createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj)) }
                         }
-                        if (auxEmpresa && auxCliente) {
-                            Swal.close()
-                        }
+                        if (auxEmpresa && auxCliente) { Swal.close() }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({
@@ -692,7 +693,8 @@ class VentasNew extends Component {
         apiDelete(`ventas/${id}`, access_token).then(
             (response) => {
                 this.setState({ ...this.state, form: this.clearForm() })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.', () => { this.getVentasAxios() } )
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.', 
+                    () => { this.getVentasAxios() } )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
@@ -735,7 +737,8 @@ class VentasNew extends Component {
                 if (venta)
                     if (venta.estatus_compra)
                         form.estatusCompra = venta.estatus_compra.id
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', () => { this.getVentasAxios() })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', 
+                    () => { this.getVentasAxios() })
                 modal.facturas = true
                 this.setState({ ...this.state, form, venta, facturas: venta.facturas })
                 
@@ -861,8 +864,6 @@ class VentasNew extends Component {
         ).catch((error) => { catchErrors(error) })
     }
 
-
-
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
         let busqueda = undefined
@@ -961,7 +962,8 @@ class VentasNew extends Component {
                 }
                 {
                     tipo === 'fecha' ?
-                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } 
+                            date = { form[tipo] } withformgroup={0} />
                     :<></>
                 }
                 {
@@ -1126,7 +1128,8 @@ class VentasNew extends Component {
         const { access_token } = this.props.authUser
         return (
             <Layout active = 'proyectos'  {...this.props}>
-                <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey = 'all' activeKey = { key } onSelect = { (value) => { this.getVentasAxios(value) } } >
+                <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey = 'all' activeKey = { key } 
+                    onSelect = { (value) => { this.getVentasAxios(value) } } >
                     {
                         tabs.map((tab, index) => {
                             return(
@@ -1138,7 +1141,8 @@ class VentasNew extends Component {
                     }
                 </Tabs>
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
-                    <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.onSelect}>
+                    <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" 
+                        activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="facturas" title="FACTURAS">
                             <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                                 <div className="form-group row form-group-marginless mt-4">
@@ -1165,7 +1169,8 @@ class VentasNew extends Component {
                                             accept="text/xml, application/pdf"
                                             files={form['adjuntos']['factura']['files']}
                                             deleteAdjunto={this.clearFiles} multiple
-                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light 
+                                                text-hover-success text-dark-50 mb-0'
                                             iconclass='flaticon2-clip-symbol text-primary'
                                         />
                                     </div>
@@ -1203,7 +1208,8 @@ class VentasNew extends Component {
                     <FacturaExtranjera form={form} onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos }/>
                 </Modal>
                 <Modal size = 'xl' show = { modal.filters } handleClose = { this.handleClose } title = 'Filtros'>
-                    <VentasFilters at = { access_token } sendFilters = { this.sendFilters } filters = { filters } options={options} setOptions={this.setOptionsArray}/> 
+                    <VentasFilters at = { access_token } sendFilters = { this.sendFilters } filters = { filters } options={options} 
+                        setOptions={this.setOptionsArray}/> 
                 </Modal>
             </Layout>
         )
