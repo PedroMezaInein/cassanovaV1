@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { URL_DEV } from '../constants'
-import { setSingleHeader } from './routers'
+import { setSingleHeader, setFormHeader } from './routers'
 import { errorAlert } from './alert'
 import store from '../redux/store/store';
 
@@ -24,9 +24,9 @@ export const apiGet = async(url, at) => {
     return await axios.get(`${URL_DEV}${url}`, { headers: setSingleHeader(at) })
 }
 
-// export function apiPostFormData(url, data, at){
-//     return axios.post(`${URL_DEV}${url}`, data, { headers: setFormHeader(at) })
-// }
+export function apiPostFormData(url, data, at){
+    return axios.post(`${URL_DEV}${url}`, data, { headers: setFormHeader(at) })
+}
 
 export const catchErrors = (error, flag) => {
     let storing = store.getState();
