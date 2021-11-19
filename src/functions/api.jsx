@@ -24,6 +24,10 @@ export const apiGet = async(url, at) => {
     return await axios.get(`${URL_DEV}${url}`, { headers: setSingleHeader(at) })
 }
 
+// export function apiPostFormData(url, data, at){
+//     return axios.post(`${URL_DEV}${url}`, data, { headers: setFormHeader(at) })
+// }
+
 export const catchErrors = (error, flag) => {
     let storing = store.getState();
     const { user } = storing.authUser
@@ -41,7 +45,7 @@ export const catchErrors = (error, flag) => {
             }), {headers: {'Accept': 'application/json'}}
         ).then(
             (response) => {
-                 console.error(`RESPONSE: `, response)
+                console.error(`RESPONSE: `, response)
             }, (e) => {
                 console.error(`Error: `, e)
             }
