@@ -6,7 +6,7 @@ class ComprasFilters extends Component{
 
     state = {
         form: {
-            fecha: { start: null, end: null },
+            fechas: { start: null, end: null },
             proyecto: '',
             proveedor: '',
             area: '',
@@ -113,8 +113,8 @@ class ComprasFilters extends Component{
                     <div className="order-md-2 order-xxl-1 col-md-12 col-xxl-3 text-center align-self-center">
                         <div className="col-md-12 text-center">
                             <label className="col-form-label font-weight-bold text-dark-60">Fecha</label><br />
-                            <RangeCalendar start = { form.fecha.start } end = { form.fecha.end } 
-                            onChange = { ( value ) => { this.onChange( { target: { name: 'fechas', value: { start: value.startDate, end: value.endDate } } }) } }  />
+                            <RangeCalendar start = { form.fechas.start } end = { form.fechas.end } 
+                                onChange = { ( value ) => { this.onChange( { target: { name: 'fechas', value: { start: value.startDate, end: value.endDate } } }) } }  />
                         </div>
                     </div>
                     <div className="order-md-1 order-xxl-2 col-md-12 col-xxl-9 align-self-center">

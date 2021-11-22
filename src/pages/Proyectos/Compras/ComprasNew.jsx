@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import $ from 'jquery'
-import axios from 'axios'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
+import { Update } from '../../../components/Lottie'
 import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
 import { ComprasCard } from '../../../components/cards'
@@ -10,15 +10,16 @@ import { NewTable } from '../../../components/NewTables'
 import { FacturaTable } from '../../../components/tables'
 import { ComprasFilters } from '../../../components/filters'
 import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
+import { printSwalHeader } from '../../../functions/printers'
 import Select from '../../../components/form-components/Select'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
-import { Button, FileInput } from '../../../components/form-components'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostFormResponseBlob, catchErrors } from '../../../functions/api'
-import { setOptions, setOptionsWithLabel, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setDateTable, 
-    setNaviIcon } from '../../../functions/setters'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostFormResponseBlob, catchErrors, apiPutForm } from '../../../functions/api'
 import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, 
-    createAlertSA2WithActionOnClose } from '../../../functions/alert'
+    createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
+import { Button, FileInput, SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import { setOptions, setOptionsWithLabel, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
+    setNaviIcon, setCustomeDescripcionReactDom, setDateTableReactDom } from '../../../functions/setters'
 class ComprasNew extends Component {
     state = {
         modal: {
@@ -381,10 +382,11 @@ class ComprasNew extends Component {
                         } else {
                             if (obj.nombre_emisor === '') {
                                 const { history } = this.props
-                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/leads/proveedores')
-                            } else {
-                                createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
-                            }
+                                errorAlertRedirectOnDissmis(
+                                    'LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', 
+                                    history, 
+                                    '/leads/proveedores')
+                            } else { createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj)) }
                         }
                         if (auxEmpresa && auxProveedor) {
                             Swal.close()
@@ -465,21 +467,24 @@ class ComprasNew extends Component {
                             { name: 'Empresa', text: compra.empresa ? compra.empresa.name : '' },
                             { name: 'Cuenta', text: compra.cuenta ? compra.cuenta.nombre : '' },
                             { name: '# de cuenta', text: compra.cuenta ? compra.cuenta.numero : '' }
-                        ], '153px'
+                        ],'153px'
                     ),
-                    proyecto: setTextTableCenter(compra.proyecto ? compra.proyecto.nombre : ''),
+                    proyecto: setTextTableReactDom(compra.proyecto ? compra.proyecto.nombre : '', this.doubleClick, compra, 'proyecto', 'text-center'),
                     proveedor: setTextTableCenter(compra.proveedor ? compra.proveedor.razon_social : ''),
                     factura: setTextTable(compra.factura ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(compra.monto),
                     comision: setMoneyTable(compra.comision ? compra.comision : 0.0),
-                    impuesto: setTextTableCenter(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir'),
-                    tipoPago: setTextTableCenter(compra.tipo_pago.tipo),
-                    descripcion: setTextTable(compra.descripcion !== null ? compra.descripcion : ''),
-                    area: setTextTableCenter(compra.area ? compra.area.nombre : ''),
-                    subarea: setTextTableCenter(compra.subarea ? compra.subarea.nombre : ''),
-                    estatusCompra: setTextTableCenter(compra.estatus_compra ? compra.estatus_compra.estatus : ''),
+                    impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 
+                        'text-center'),
+                    tipoPago: setTextTableReactDom(compra.tipo_pago.tipo, this.doubleClick, compra, 'tipoPago', 'text-center'),
+                    descripcion: setCustomeDescripcionReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 
+                        'text-justify'),
+                    area: setTextTableReactDom(compra.area ? compra.area.nombre : '', this.doubleClick, compra, 'area', 'text-center'),
+                    subarea: setTextTableReactDom(compra.subarea ? compra.subarea.nombre : '', this.doubleClick, compra, 'subarea', 'text-center'),
+                    estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 
+                        'text-center'),
                     total: setMoneyTable(compra.total),
-                    fecha: setDateTable(compra.created_at),
+                    fecha: setDateTableReactDom(compra.created_at, this.doubleClick, compra, 'fecha', 'text-center'),
                     tipo: this.labelIcon(compra),
                     id: compra.id,
                     objeto: compra
@@ -511,10 +516,13 @@ class ComprasNew extends Component {
         return (
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); history.push({ pathname: '/proyectos/compras/edit', state: { compra: compra }, formeditado: 1 }) }} >
+                    <Dropdown.Item className="text-hover-success dropdown-success" 
+                        onClick={(e) => { e.preventDefault(); history.push({ pathname: '/proyectos/compras/edit', state: { compra: compra }, formeditado: 1 }) }} >
                         {setNaviIcon('flaticon2-pen', 'editar')}
                     </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert(`ELIMINARÁS LA COMPRA CON IDENTIFICADOR: ${compra.id}`, '¿DESEAS CONTINUAR?', () => this.deleteCompraAxios(compra.id)) }}>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                        onClick={(e) => { e.preventDefault(); deleteAlert(`ELIMINARÁS LA COMPRA CON IDENTIFICADOR: ${compra.id}`, 
+                            '¿DESEAS CONTINUAR?', () => this.deleteCompraAxios(compra.id)) }}>
                         {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(compra) }}>
@@ -701,7 +709,8 @@ class ComprasNew extends Component {
                 if (compra)
                     if (compra.estatus_compra)
                         form.estatusCompra = compra.estatus_compra.id
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', () => { this.reloadTable(filters) })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', 
+                    () => { this.reloadTable(filters) })
                 this.setState({ ...this.state, form, modal, compra, facturas: compra.facturas })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
@@ -799,7 +808,205 @@ class ComprasNew extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    setOptions = (name, array) => {
+    doubleClick = (data, tipo) => {
+        const { form, options } = this.state
+        let busqueda = undefined
+        let flag = false
+        switch(tipo){
+            case 'proyecto':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'subarea':
+                options.subareas = []
+                flag = false
+                if(data.area){
+                    busqueda = options.areas.find( (elemento) => { return elemento.value === data.area.id.toString() })
+                    if(busqueda){
+                        options.subareas = setOptions(busqueda.subareas, 'nombre', 'id')
+                        if(data.subarea){
+                            busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() })
+                            if(busqueda){ form.subarea = busqueda.value }
+                        }
+                    }
+                }else{ 
+                    flag = true 
+                    if(data.area){
+                        form.area = data.area.id.toString()
+                        options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                    }
+                    if(data.subarea){
+                        busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() } )
+                        if(busqueda) form.subarea = data.subarea.id.toString()
+                    }
+                }
+                break
+            case 'area':
+                options.subareas = []
+                if(data.area){
+                    form.area = data.area.id.toString()
+                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                }
+                if(data.subarea){
+                    busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() } )
+                    if(busqueda) form.subarea = data.subarea.id.toString()
+                }
+                break
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            case 'tipoImpuesto':
+                if(data.tipo_impuesto)
+                    form[tipo] = data.tipo_impuesto.id
+                break
+            case 'tipoPago':
+                if(data.tipo_pago)
+                    form[tipo] = data.tipo_pago.id
+                break
+            case 'estatusCompra':
+                if(data.estatus_compra)
+                    form[tipo] = data.estatus_compra.id
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form, options})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
+                }
+                {
+                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?
+                        <div className="input-icon my-3">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
+                                </span>
+                            </span>
+                            <Form.Control className = "form-control text-uppercase form-control-solid"
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
+                                defaultValue = { form[tipo] } as = "select">
+                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                {
+                                    this.setOptions(data, tipo).map((tipo, key) => {
+                                        return (
+                                            <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Control>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'fecha' &&
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } 
+                            date = { form[tipo] } withformgroup={0} />
+                }
+                {
+                    tipo === 'proyecto' ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv = "mb-2 mt-7" requirevalidation = { 1 } 
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } placeholder={this.setSwalPlaceholder(tipo)} withicon={1}/>
+                    : <></>
+                }
+                {
+                    tipo === 'subarea'  ?
+                        flag ? 
+                            <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                                one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                                two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
+                        :
+                            <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
+                                onChange = { (value) => { this.onChangeSwal(value, tipo) } } withtaglabel = { 1 } 
+                                name = { tipo } customdiv = "mb-3" withicon={1}/>
+                    : ''
+                }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchCompras(data, tipo, flag) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'proyecto':
+                return 'SELECCIONA EL PROYECTO'
+            case 'tipoImpuesto':
+                return 'SELECCIONA EL IMPUESTO'
+            case 'tipoPago':
+                return 'SELECCIONA EL TIPO DE PAGO'
+            case 'estatusCompra':
+                return 'SELECCIONA EL ESTATUS DE COMPRA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'estatusCompra':
+                return options.estatusCompras
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'tipoImpuesto':
+                return options.tiposImpuestos
+            case 'proyecto':
+                return options.proyectos
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                return []
+            default: return []
+        }
+    }
+    patchCompras = async (data, tipo, flag) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = ''
+        let newType = tipo
+        switch (tipo) {
+            case 'area':
+                value = { area: form.area, subarea: form.subarea }
+                break
+            case 'subarea':
+                if (flag === true) {
+                    value = { area: form.area, subarea: form.subarea }
+                    newType = 'area'
+                } else { value = form[tipo] }
+                break
+            default:
+                value = form[tipo]
+                break
+        }
+        waitAlert()
+        apiPutForm(`v2/proyectos/compras/${newType}/${data.id}`, { value: value }, access_token).then(
+            (response) => {
+                const { filters } = this.state
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    setOptionsArray = (name, array) => {
         const { options } = this.state
         options[name] = setOptionsWithLabel(array, 'nombre', 'id')
         this.setState({ ...this.state, options })
@@ -890,7 +1097,7 @@ class ComprasNew extends Component {
                     <FacturaExtranjera form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
                 </Modal>
                 <Modal size='xl' show={modal.filters} handleClose={this.handleClose} title='Filtros'>
-                    <ComprasFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptions} />
+                    <ComprasFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptionsArray} />
                 </Modal>
             </Layout>
         )
