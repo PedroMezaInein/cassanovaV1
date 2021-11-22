@@ -126,13 +126,12 @@ class ComprasNew extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                const { modal } = this.state
+                const { modal, filters } = this.state
+                filters.identificador = id
                 modal.see = true
-                this.setState({ ...this.state, modal })
+                this.setState({ ...this.state, modal, filters })
+                this.reloadTable(filters)
                 this.getCompraAxios(id)
-                setTimeout(() => {
-                    $('#compras').DataTable().column(1).search(id, false, false).ajax.reload();
-                }, 1000);
             }
         }
     }
@@ -161,6 +160,7 @@ class ComprasNew extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+
     getCompraAxios = async (id) => {
         const { access_token } = this.props.authUser
         apiGet(`v2/proyectos/compras/${id}`, access_token).then(
@@ -170,6 +170,7 @@ class ComprasNew extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+    
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
