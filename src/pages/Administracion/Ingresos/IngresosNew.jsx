@@ -704,29 +704,6 @@ class Ingresos extends Component {
                 )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
-        /* let headers = []
-        let documento = ''
-        INGRESOS_COLUMNS.map((columna, key) => {
-            if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(columna.accessor + '-ingresos')
-                if (documento)
-                    if (documento.value) { headers.push({ name: columna.accessor, value: documento.value }) }
-            }
-            return false
-        })
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiPostForm(`v2/administracion/ingresos/exportart`, { columns: headers }, access_token).then(
-            (response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'ingresos.xlsx');
-                document.body.appendChild(link);
-                link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) }) */
     }
     addAdjuntoIngresoAxios = async (files, item) => {
         waitAlert()
