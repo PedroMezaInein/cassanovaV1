@@ -142,15 +142,15 @@ export const TRASPASOS_COLUMNS = [
 ]
 
 export const INGRESOS_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions' },
-    { Header: 'ID', accessor: 'identificador' },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'ID', accessor: 'identificador', customRender: true },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
-    { Header: 'Cliente', accessor: 'cliente' },
-    { Header: 'Factura', accessor: 'factura' },
+    { Header: 'Cliente', accessor: 'cliente', customRender: true },
+    { Header: 'Factura', accessor: 'factura', customRender: true },
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Sub-A', accessor: 'subarea', customRender: true },
-    { Header: 'Total', accessor: 'total' },
-    { Header: 'Cuenta', accessor: 'cuenta' },
+    { Header: 'Total', accessor: 'total', customRender: true },
+    { Header: 'Cuenta', accessor: 'cuenta', customRender: true },
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
