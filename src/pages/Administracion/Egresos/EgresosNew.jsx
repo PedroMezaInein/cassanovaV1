@@ -994,7 +994,6 @@ class egresos extends Component {
                     exportar_boton={true}
                     onClickExport={() => this.exportEgresos()}
                     validateFactura={true}
-                    elementClass='total'
                     tipo_validacion='compras'
                 />
 
