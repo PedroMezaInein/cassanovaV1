@@ -14,9 +14,11 @@ import Select from '../../../components/form-components/Select'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { Button, FileInput } from '../../../components/form-components'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, catchErrors } from '../../../functions/api'
-import { setOptions, setOptionsWithLabel, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setDateTable, setNaviIcon } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostFormResponseBlob, catchErrors } from '../../../functions/api'
+import { setOptions, setOptionsWithLabel, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setDateTable, 
+    setNaviIcon } from '../../../functions/setters'
+import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, 
+    createAlertSA2WithActionOnClose } from '../../../functions/alert'
 class ComprasNew extends Component {
     state = {
         modal: {
@@ -720,26 +722,12 @@ class ComprasNew extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+
     exportComprasAxios = async () => {
-        let headers = []
-        let documento = ''
-        COMPRAS_COLUMNS.map((columna, key) => {
-            if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(columna.accessor + '-compras')
-                if (documento) {
-                    if (documento.value) {
-                        headers.push({
-                            name: columna.accessor,
-                            value: documento.value
-                        })
-                    }
-                }
-            }
-            return false
-        })
         waitAlert()
+        const { filters } = this.state
         const { access_token } = this.props.authUser
-        apiPostForm(`v2/exportar/proyectos/compras`, { columnas: headers }, access_token).then(
+        apiPostFormResponseBlob(`v3/proyectos/compra/exportar`, { columnas: filters }, access_token).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -747,10 +735,15 @@ class ComprasNew extends Component {
                 link.setAttribute('download', 'compras.xlsx');
                 document.body.appendChild(link);
                 link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Las compras fueron exportados con éxito.'
+                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+
     addAdjuntoCompraAxios = async (files, item) => {
         waitAlert()
         const { access_token } = this.props.authUser

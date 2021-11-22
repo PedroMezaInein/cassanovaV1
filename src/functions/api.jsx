@@ -20,6 +20,10 @@ export const apiPostForm = async(url, form, at) => {
     return await axios.post(`${URL_DEV}${url}`, form, { headers: setSingleHeader(at) })
 }
 
+export const apiPostFormResponseBlob = async(url, form, at) => {
+    return await axios.post(`${URL_DEV}${url}`, form, { responseType: 'blob', headers: setSingleHeader(at) })
+}
+
 export const apiGet = async(url, at) => {
     return await axios.get(`${URL_DEV}${url}`, { headers: setSingleHeader(at) })
 }
