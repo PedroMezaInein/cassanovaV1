@@ -14,7 +14,7 @@ import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
 import { printSwalHeader } from '../../../functions/printers'
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap'
 import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors } from '../../../functions/api'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
 import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, Select } from '../../../components/form-components'
 import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, 
     customInputAlert } from '../../../functions/alert'
@@ -762,19 +762,11 @@ class VentasNew extends Component {
         ).catch((error) => { catchErrors(error) })
     }
     async exportVentasAxios() {
-        let headers = []
-        let documento = ''
-        VENTAS_COLUMNS.map((columna, key) => {
-            if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(`${columna.accessor}-ventas_${key}`)
-                if (documento)
-                    if (documento.value) { headers.push({ name: columna.accessor, value: documento.value }) }
-            }
-            return false
-        })
+
         waitAlert()
+        const { filters } = this.state
         const { access_token } = this.props.authUser
-        apiPostForm(`v2/exportar/proyectos/ventas`, { columns: headers }, access_token).then(
+        apiPostFormResponseBlob(`v3/proyectos/ventas/exportar`, { columnas: filters }, access_token).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -782,9 +774,14 @@ class VentasNew extends Component {
                 link.setAttribute('download', 'ventas.xlsx');
                 document.body.appendChild(link);
                 link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Ventas fueron exportados con éxito.'
+                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
+        
     }
     addAdjuntoVentaAxios = async (files, item) => {
         waitAlert()
@@ -1085,7 +1082,7 @@ class VentasNew extends Component {
                     accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
                     filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
                     // urlRender = { `${URL_DEV}v3/proyectos/venta?tab=${key}` }
-                    urlRender = { `${URL_DEV}v2/proyectos/ventas?tab=${key}` } type = { 'tab' }
+                    urlRender = { `${URL_DEV}v3/proyectos/venta?tab=${key}` } type = { 'tab' }
                 />
             )
         }
