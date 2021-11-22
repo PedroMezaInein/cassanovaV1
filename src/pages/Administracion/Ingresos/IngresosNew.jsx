@@ -15,10 +15,12 @@ import { URL_DEV, INGRESOS_COLUMNS } from '../../../constants'
 import Select from '../../../components/form-components/Select'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { Tab, Tabs, Form, DropdownButton, Dropdown } from 'react-bootstrap'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors } from '../../../functions/api'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
 import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
-import { setNaviIcon, setOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, setTextTableReactDom, setOptionsWithLabel } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
+import { setNaviIcon, setOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, setTextTableReactDom, 
+    setOptionsWithLabel } from '../../../functions/setters'
+import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, 
+    customInputAlert } from '../../../functions/alert'
 
 class Ingresos extends Component {
     state = {
@@ -104,12 +106,11 @@ class Ingresos extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                const { modal } = this.state
+                const { modal, filters } = this.state
+                filters.identificador = id
                 modal.see = true
-                this.setState({
-                    ...this.state,
-                    modal
-                })
+                this.setState({ ...this.state, modal, filters })
+                this.reloadTable(filters)
                 this.getIngresoAxios(id)
             }
         }
@@ -343,7 +344,8 @@ class Ingresos extends Component {
                         } else {
                             if (obj.nombre_receptor === '') {
                                 const { history } = this.props
-                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL CLIENTE DESDE LA SECCIÓN DE CLIENTES EN LEADS.', history, '/leads/clientes')
+                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL CLIENTE DESDE LA SECCIÓN DE CLIENTES EN LEADS.', 
+                                    history, '/leads/clientes')
                             } else {
                                 createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
                             }
@@ -432,12 +434,15 @@ class Ingresos extends Component {
                     cliente: setTextTableCenter(ingreso.cliente ? ingreso.cliente.empresa : ''),
                     factura: setTextTableCenter(ingreso.factura ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(ingreso.monto),
-                    impuesto: setTextTableReactDom(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, ingreso, 'tipoImpuesto', 'text-center'),
+                    impuesto: setTextTableReactDom(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, ingreso, 
+                        'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(ingreso.tipo_pago.tipo, this.doubleClick, ingreso, 'tipoPago', 'text-center'),
-                    descripcion: setTextTableReactDom(ingreso.descripcion !== null ? ingreso.descripcion : '', this.doubleClick, ingreso, 'descripcion', 'text-justify'),
+                    descripcion: setTextTableReactDom(ingreso.descripcion !== null ? ingreso.descripcion : '', this.doubleClick, ingreso, 'descripcion', 
+                        'text-justify'),
                     area: setTextTableReactDom(ingreso.area ? ingreso.area.nombre : '', this.doubleClick, ingreso, 'area', 'text-center'),
                     subarea: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.nombre : '', this.doubleClick, ingreso, 'subarea', 'text-center'),
-                    estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 'estatusCompra', 'text-center'),
+                    estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 
+                        'estatusCompra', 'text-center'),
                     total: setMoneyTable(ingreso.total),
                     /* adjuntos: setArrayTable(_aux), */
                     fecha: setDateTableReactDom(ingreso.created_at, this.doubleClick, ingreso, 'fecha', 'text-center'),
@@ -454,10 +459,12 @@ class Ingresos extends Component {
         return (
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); history.push({ pathname: '/administracion/ingresos/edit', state: { ingreso: ingreso }, formeditado: 1 }) }} >
+                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); 
+                            history.push({ pathname: '/administracion/ingresos/edit', state: { ingreso: ingreso }, formeditado: 1 }) }} >
                         {setNaviIcon('flaticon2-pen', 'editar')}
                     </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL INGRESO CON IDENTIFICADOR: ${ingreso.id}`, () => this.deleteIngresoAxios(ingreso.id)) }}>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); 
+                        deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL INGRESO CON IDENTIFICADOR: ${ingreso.id}`, () => this.deleteIngresoAxios(ingreso.id)) }}>
                         {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(ingreso) }}>
@@ -611,7 +618,8 @@ class Ingresos extends Component {
                     ...this.state,
                     ingreso: ''
                 })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.', () => { this.reloadTable(filters) })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.', 
+                    () => { this.reloadTable(filters) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
@@ -653,7 +661,8 @@ class Ingresos extends Component {
                 if (ingreso)
                     if (ingreso.estatus_compra)
                         form.estatusCompra = ingreso.estatus_compra.id
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', () => { this.reloadTable(filters) })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', 
+                    () => { this.reloadTable(filters) })
                 modal.facturas = true
                 this.setState({ ...this.state, form, modal, ingreso, facturas: ingreso.facturas })
             }, (error) => { printResponseErrorAlert(error) }
@@ -675,8 +684,27 @@ class Ingresos extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    async exportIngresosAxios() {
-        let headers = []
+
+    exportIngresosAxios = async() => {
+        waitAlert()
+        const { filters } = this.state
+        const { access_token } = this.props.authUser
+        apiPostFormResponseBlob(`v3/administracion/ingresos/exportar`, { columnas: filters }, access_token).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'ingresos.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Ingresos exportados con éxito.'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+        /* let headers = []
         let documento = ''
         INGRESOS_COLUMNS.map((columna, key) => {
             if (columna !== 'actions' && columna !== 'adjuntos') {
@@ -688,7 +716,7 @@ class Ingresos extends Component {
         })
         waitAlert()
         const { access_token } = this.props.authUser
-        apiPostForm(`v2/exportar/administracion/ingresos`, { columns: headers }, access_token).then(
+        apiPostForm(`v2/administracion/ingresos/exportart`, { columns: headers }, access_token).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -698,7 +726,7 @@ class Ingresos extends Component {
                 link.click();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
+        ).catch((error) => { catchErrors(error) }) */
     }
     addAdjuntoIngresoAxios = async (files, item) => {
         waitAlert()
@@ -846,8 +874,9 @@ class Ingresos extends Component {
                 }
                 {
                     tipo === 'fecha' ?
-                        <CalendarDaySwal value={form[tipo]} onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo} date={form[tipo]} withformgroup={0} />
-                        : <></>
+                        <CalendarDaySwal value={form[tipo]} onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo} date={form[tipo]} 
+                        withformgroup={0} />
+                    : <></>
                 }
                 {
                     tipo === 'subarea' ?
@@ -932,7 +961,8 @@ class Ingresos extends Component {
         waitAlert()
         apiPutForm(`v2/administracion/ingresos/${newType}/${data.id}`, { value: value }, access_token).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.', () => { this.reloadTable(filters) })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.', 
+                    () => { this.reloadTable(filters) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
@@ -1014,7 +1044,7 @@ class Ingresos extends Component {
                     columns={INGRESOS_COLUMNS}
                     setter={this.setIngresos}
                     url='/administracion/ingresos/add'
-                    urlRender={`${URL_DEV}v2/administracion/ingresos`}
+                    urlRender={`${URL_DEV}v3/administracion/ingreso`}
                     filterClick={this.openModalFiltros}
                     exportar_boton={true}
                     onClickExport={() => this.exportIngresosAxios()}
@@ -1023,7 +1053,8 @@ class Ingresos extends Component {
                     tipo_validacion='ventas'
                 />
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
-                    <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.onSelect}>
+                    <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" 
+                        activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="facturas" title="FACTURAS">
                             <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                                 <div className="form-group row form-group-marginless mt-4">
@@ -1050,7 +1081,8 @@ class Ingresos extends Component {
                                             accept="text/xml, application/pdf"
                                             files={form['adjuntos']['factura']['files']}
                                             deleteAdjunto={this.clearFiles} multiple
-                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success 
+                                                text-dark-50 mb-0'
                                             iconclass='flaticon2-clip-symbol text-primary'
                                         />
                                     </div>

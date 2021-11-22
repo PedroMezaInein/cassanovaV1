@@ -134,13 +134,12 @@ class VentasNew extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                const { modal, key } = this.state
+                const { modal, filters } = this.state
+                filters.identificador = id
                 modal.see = true
-                this.setState({ ...this.state, modal })
+                this.setState({ ...this.state, modal, filters })
+                this.reloadTable(filters)
                 this.getVentaAxios(id)
-                setTimeout(() => {
-                    $(`#ventas_${key}`).DataTable().column(1).search(id, false, false).ajax.reload();
-                }, 1000);
             }
         }
     }
@@ -761,8 +760,8 @@ class VentasNew extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    async exportVentasAxios() {
 
+    exportVentasAxios = async() => {
         waitAlert()
         const { filters } = this.state
         const { access_token } = this.props.authUser
@@ -780,9 +779,9 @@ class VentasNew extends Component {
                     : 'Ventas fueron exportados con éxito.'
                 )
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-        
+        ).catch((error) => { catchErrors(error) })    
     }
+
     addAdjuntoVentaAxios = async (files, item) => {
         waitAlert()
         const { access_token } = this.props.authUser
