@@ -79,7 +79,7 @@ class NewTable extends Component{
     }
 
     initTableData = () => {
-        const { tableName, columns, checkbox } = this.props
+        const { tableName, columns, checkbox, tipo_validacion, elementClass } = this.props
         let componente = this
         let tableHeader = `#${tableName}-card-header-id`
         let cardTable = `#${tableName}-card-id`
@@ -178,6 +178,80 @@ class NewTable extends Component{
                 });
             },
             columns: columnas,
+            createdRow: function (row, data) {
+                // console.log(row, 'row')
+                // console.log(data, 'data')
+                // console.log(elementClass, 'elementClass')
+                if (tipo_validacion) {
+                    const { objeto } = data
+                    let pdfFlag = false
+                    switch (tipo_validacion) {
+                        case 'compras':
+                            if(objeto.facturas_pdf){
+                                if(objeto.facturas_pdf.length){
+                                    pdfFlag = true
+                                }
+                            }
+                            if(pdfFlag){
+                                $(row).addClass('blanco');
+                            }else{
+                                if (objeto.factura) {
+                                    if (objeto.total_facturas - objeto.monto > 1) {
+                                        $(row).addClass('verde');
+                                    } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
+                                        $(row).addClass('blanco');
+                                    } else if (objeto.total_facturas - objeto.monto < -1) {
+                                        $(row).addClass('rojo');
+                                    }
+                                } else {
+                                    $(row).addClass('blanco');
+                                }
+                            }
+                            break;
+                        case 'ventas':
+                            if(objeto.facturas_pdf){
+                                if(objeto.facturas_pdf.length){
+                                    pdfFlag = true
+                                }
+                            }
+                            if(pdfFlag){
+                                $(row).addClass('blanco');
+                            }else{
+                                if (objeto.factura) {
+                                    if (objeto.total_facturas - objeto.monto > 1) {
+                                        $(row).addClass('rojo');
+                                    } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
+                                        $(row).addClass('blanco');
+                                    } else if (objeto.total_facturas - objeto.monto < -1) {
+                                        $(row).addClass('verde');
+                                    }
+                                } else {
+                                    $(row).addClass('blanco');
+                                }
+                            }
+                            break;
+                        default:
+                            break
+                    }
+                }
+                // if (elementClass) {
+                //     let auxiliar = data[elementClass].split('<!-- -->')
+                //     if (auxiliar.length > 1) {
+                //         if (auxiliar[1] === '$0.00')
+                //             $(row).addClass('rojo');
+                //         else {
+                //             let auxiliar2 = auxiliar[1].charAt(0)
+                //             if (auxiliar2 === '-')
+                //                 $(row).addClass('rojo');
+                //         }
+                //     }
+                //     else {
+                //         let auxiliar = data[elementClass].includes('Inactivo')
+                //         if (auxiliar)
+                //             $(row).addClass('gris');
+                //     }
+                // }
+            },
             dom:
                 `<'row'
                 <'col-sm-12'tr>>
