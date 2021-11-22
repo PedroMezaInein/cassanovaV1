@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row } from 'react-bootstrap'
-import { InputGray, InputMoneyGray, ReactSelectSearchGray, Button, RadioGroup, RangeCalendar } from '../../form-components'
+import { InputGray, InputMoneyGray, ReactSelectSearchGray, Button, RangeCalendar } from '../../form-components'
 
 class ComprasFilters extends Component{
 
