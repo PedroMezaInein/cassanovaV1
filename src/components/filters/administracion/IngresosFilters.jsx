@@ -16,6 +16,7 @@ class IngresosFilters extends Component{
             estatusCompra: 0,
             descripcion:'',
             factura: '',
+            identificador: ''
         },
     }
 
@@ -97,6 +98,7 @@ class IngresosFilters extends Component{
         form.estatusCompra = 0
         form.descripcion = ''
         form.factura = ''
+        form.identificador = ''
         this.setState({ ...this.state, form })
     }
 
@@ -115,6 +117,11 @@ class IngresosFilters extends Component{
                     </div>
                     <div className="order-md-1 order-xxl-2 col-md-12 col-xxl-9 align-self-center">
                         <div className="form-group row form-group-marginless">
+                            <div className="col-md-4 col-xxl-3 mb-5">
+                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } requirevalidation = { 0 } 
+                                    withformgroup = { 0 } name = 'identificador' placeholder = 'IDENTIFICADOR' value = { form.identificador } 
+                                    onChange = { this.onChange }  withicon = { 0 } customclass="px-2"/>
+                            </div>
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <ReactSelectSearchGray placeholder = 'Selecciona el cliente' defaultvalue = { form.cliente } iconclass = 'las la-user icon-xl'
                                     options = { options.clientes } onChange = { (value) => { this.updateSelect(value, 'cliente') } } />
