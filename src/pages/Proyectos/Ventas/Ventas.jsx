@@ -15,7 +15,7 @@ import { printSwalHeader } from '../../../functions/printers'
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap'
 import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
-import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, Select } from '../../../components/form-components'
+import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, 
     customInputAlert } from '../../../functions/alert'
 import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 

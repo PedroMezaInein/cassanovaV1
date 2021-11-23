@@ -8,6 +8,7 @@ import { setOptionsWithLabel } from '../../functions/setters'
 import { FileInput, Button, ReactSelectSearchGray } from '../form-components'
 import { apiGet, apiOptions, apiPostForm, apiPutForm, apiDelete, catchErrors } from '../../functions/api'
 import { validateAlert, waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
+import S3 from 'react-aws-s3';
 
 class PermisosForm extends Component {
     state = {
@@ -34,10 +35,12 @@ class PermisosForm extends Component {
         facturas: [],
         url_factura:''
     }
+    
     componentDidMount = () => {
         this.getOptions()
         this.getFacturas()
     }
+    
     getOptions = async() => {
         const { tipo_factura, at } = this.props
         apiOptions(`v2/administracion/facturas/${tipo_factura}`, at).then(
@@ -51,6 +54,7 @@ class PermisosForm extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch(( error ) => { catchErrors(error) })
     }
+
     getFacturas = () => {
         waitAlert()
         const { at } = this.props
@@ -61,6 +65,7 @@ class PermisosForm extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+    
     getUrl = (type, id_factura) => {
         const { id, tipo_factura } = this.props
         let url = ''
@@ -112,6 +117,7 @@ class PermisosForm extends Component {
         }
         return url
     }
+    
     getResponse = (response) => {
         const { options, form } = this.state
         let { facturas } = this.state
@@ -138,6 +144,7 @@ class PermisosForm extends Component {
         }
         this.setState({ ...this.state, form, facturas })
     }
+    
     deleteFactura = id => { waitAlert(); this.deleteFacturaAxios(id) }
     
     deleteFacturaAxios = async (id) => {
@@ -149,6 +156,7 @@ class PermisosForm extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+    
     updateSelect = ( value, name) => {
         if (value === null) {
             value = []
@@ -157,15 +165,15 @@ class PermisosForm extends Component {
         form[name] = value
         this.setState({ ...this.state, form })
     }
+    
     onChangeFactura = (e) => {
         waitAlert()
         const MySwal = withReactContent(Swal)
-        const { files, name, value } = e.target
+        const { files, name } = e.target
         const { form } = this.state
         form.adjuntos[name].files = []
         form.facturaObject = {}
         form.factura = ''
-        form.adjuntos[name].value = value
         files.forEach((file, index) => {
             form.adjuntos[name].files.push({
                 name: file.name,
@@ -257,7 +265,10 @@ class PermisosForm extends Component {
                 }else{
                     form.facturaObject = obj
                     Swal.close()
-                    this.setState({ ...this.state, form })
+                    this.setState({
+                        ...this.state,
+                        form
+                    })
                     this.checkFactura(obj)
                 }
             }else{ 
@@ -271,6 +282,7 @@ class PermisosForm extends Component {
         };
         reader.readAsText(files[0])
     }
+    
     checkFactura = async(obj) => {
         const { at, tipo_factura } = this.props
         apiPutForm(`v2/administracion/facturas/check?${tipo_factura}`, obj, at).then(
@@ -282,6 +294,7 @@ class PermisosForm extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch(( error ) => { catchErrors(error) })
     }
+
     onChangeAdjunto = e => {
         const { name, value, files } = e.target
         const { form } = this.state
@@ -297,6 +310,7 @@ class PermisosForm extends Component {
         })
         this.setState({ ...this.state, form })
     }
+    
     clearFiles = (name, key) => {
         const { form } = this.state
         if(name === 'xml'){
@@ -309,62 +323,148 @@ class PermisosForm extends Component {
         }
         this.setState({ ...this.state, form })
     }
+    
     sendFacturaAxios = async () => {
-        const { at } = this.props
         const { form } = this.state
-        apiPostForm(this.getUrl('sendFactura'), form, at).then(
+        waitAlert()
+        if(form.factura){
+            this.attachFactura()
+        }else{
+            this.uploadFacturaFiles()
+        }
+    }
+
+    uploadFacturaFiles = async() => {
+        const { at, tipo_factura } = this.props
+        const { form } = this.state
+        apiGet(`v1/constant/admin-proyectos`, at).then(
             (response) => {
-                this.getResponse(response.data)
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.')
+                const { alma } = response.data
+                let filePath = `facturas/${tipo_factura}/`
+                let aux = []
+                form.adjuntos.xml.files.forEach((file) => {
+                    aux.push(file)
+                })
+                form.adjuntos.pdf.files.forEach((file) => {
+                    aux.push(file)
+                })
+                let auxPromises  = aux.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                catchErrors(error)
+                                errorAlert(`Ocurrió un error al subir el archivo ${file.name}`)
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addNewFacturaAxios(values)}).catch(err => console.error(err))        
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
+    }
+
+    addNewFacturaAxios = async(files) => {
+        const { form } = this.state
+        const { at } = this.props
+        form.archivos = files
+        apiPostForm(`v2/administracion/facturas`, form, at).then(
+            (response) => {
+                const { factura } = response.data
+                const { form } = this.state
+                form.factura = factura
+                this.setState({ ...this.state, form })
+                this.attachFactura()
+            }, (error) => {  printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    attachFactura = () => {
+        const { at, tipo_factura, id } = this.props
+        const { form } = this.state
+        let objeto = {}
+        objeto.dato = id
+        switch(tipo_factura){
+            case 'compras':
+                objeto.tipo = 'compra'
+                break;
+            case 'ventas':
+                objeto.tipo = 'venta'
+                break;
+            case 'ingresos':
+                objeto.tipo = 'ingreso'
+                break;
+            case 'egresos':
+                objeto.tipo = 'egreso'
+                break;
+            default: break;
+        }
+        objeto.factura = form.factura.id
+        apiPutForm(`v2/administracion/facturas/attach`, objeto, at).then(
+                (response) => {
+                    doneAlert(`Factura asignada con éxito`, 
+                        () => {
+                            alert(`Calling reload`)
+                        })
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch( (error) => { catchErrors(error) } )
     }
     
     render() {
         const { form, options, facturas } = this.state
-        const { venta } = this.props
-        console.log(venta, 'venta')
         return (
-            <>
-            <Form id='form-factura' onSubmit={(e) => { e.preventDefault(); validateAlert(this.sendFacturaAxios, e, 'form-factura') }}>
-                <div className='row mx-0 mt-5'>
-                    <Col md="12">
-                        <div className="mb-4 row form-group-marginless text-center">
-                            <div className="col-md-4 text-left">
-                                <ReactSelectSearchGray placeholder='ESTATUS DE LA COMPRA' defaultvalue={form.estatusCompra}
-                                    iconclass='las la-check-circle icon-xl' requirevalidation={1} options={options.estatusCompra}
-                                    onChange={(value) => this.updateSelect(value, 'estatus')} messageinc='Selecciona el estatus de la compra.' />
+            <div>
+                <Form id='form-factura' onSubmit={(e) => { e.preventDefault(); validateAlert(this.sendFacturaAxios, e, 'form-factura') }}>
+                    <div className='row mx-0 mt-5'>
+                        <Col md="12">
+                            <div className="mb-4 row form-group-marginless text-center">
+                                <div className="col-md-4 text-left">
+                                    <ReactSelectSearchGray placeholder='ESTATUS DE LA COMPRA' defaultvalue={form.estatusCompra}
+                                        iconclass='las la-check-circle icon-xl' requirevalidation={1} options={options.estatusCompra}
+                                        onChange={(value) => this.updateSelect(value, 'estatus')} messageinc='Selecciona el estatus de la compra.' />
+                                </div>
+                                <div className="col-md-8 border rounded border-dashed">
+                                    <div className="row mx-0">
+                                        <div className="col-md-6">
+                                            <label className="col-form-label font-weight-bold text-dark-60">XML DE LA FACTURA</label>
+                                            <br />
+                                            <FileInput onChangeAdjunto={this.onChangeFactura} placeholder='Factura XML' value={form.adjuntos.xml.value}
+                                                name='xml' id='xml' accept='text/xml' files={form.adjuntos.xml.files} deleteAdjunto={this.clearFiles}
+                                                messageinc='Agrega el XML de la factura' iconclass='las la-file-alt icon-xl' classinput='file-input'
+                                                classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
+                                                requirevalidation={1} formeditado={0} />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="col-form-label font-weight-bold text-dark-60">PDF DE LA FACTURA</label>
+                                            <br />
+                                            <FileInput requirevalidation={0} formeditado={0} onChangeAdjunto={this.onChangeAdjunto}
+                                                placeholder='Factura PDF' value={form.adjuntos.pdf.value} name='pdf' id='pdf' classinput='file-input'
+                                                accept='application/pdf' files={form.adjuntos.pdf.files} iconclass='las la-file-pdf icon-xl'
+                                                classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
+                                                deleteAdjunto={this.clearFiles} />
+                                        </div>
+                                    </div>
+                                    <div className="d-flex justify-content-center my-3 pt-3">
+                                        <div>
+                                            <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type='submit' text="ENVIAR" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
                             </div>
-                            <div className="col-md-4">
-                                <label className="col-form-label font-weight-bold text-dark-60">XML DE LA FACTURA</label>
-                                <br />
-                                <FileInput onChangeAdjunto={this.onChangeFactura} placeholder='Factura XML' value={form.adjuntos.xml.value}
-                                    name='xml' id='xml' accept='text/xml' files={form.adjuntos.xml.files} deleteAdjunto={this.clearFiles}
-                                    messageinc='Agrega el XML de la factura' iconclass='las la-file-alt icon-xl' classinput='file-input'
-                                    classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
-                                    requirevalidation={1} formeditado={0} />
-                            </div>
-                            <div className="col-md-4">
-                                <label className="col-form-label font-weight-bold text-dark-60">PDF DE LA FACTURA</label>
-                                <br />
-                                <FileInput requirevalidation={0} formeditado={0} onChangeAdjunto={this.onChangeAdjunto}
-                                    placeholder='Factura PDF' value={form.adjuntos.pdf.value} name='pdf' id='pdf' classinput='file-input'
-                                    accept='application/pdf' files={form.adjuntos.pdf.files} iconclass='las la-file-pdf icon-xl'
-                                    classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
-                                    deleteAdjunto={this.clearFiles} />
-                            </div>
-                        </div>
-                    </Col>
-                </div>
-                <div className="d-flex justify-content-center border-top mt-3 pt-3">
-                    <div>
-                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type='submit' text="ENVIAR" />
+                        </Col>
                     </div>
-                </div>
-            </Form>
-            <div className="separator separator-dashed mb-6 mt-5"></div>
-            <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
-            </>
+                </Form>
+                <div className="separator separator-dashed mb-6 mt-5" />
+                <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
+            </div>
         )
     }
 }
