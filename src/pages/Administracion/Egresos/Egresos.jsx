@@ -1,42 +1,45 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
-import { connect } from 'react-redux'
-import axios from 'axios'
-import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
-import Layout from '../../../components/layout/layout'
-import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, RangeCalendar } from '../../../components/form-components'
-import { Modal, ModalDelete } from '../../../components/singles'
-import { FacturaTable } from '../../../components/tables'
-import { Form } from 'react-bootstrap'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import Select from '../../../components/form-components/Select'
-import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { EgresosCard } from '../../../components/cards'
+import $ from 'jquery'
 import Swal from 'sweetalert2'
-import { printSwalHeader } from '../../../functions/printers'
+import { connect } from 'react-redux'
 import { Update } from '../../../components/Lottie'
-import $ from "jquery";
-import { setSingleHeader } from '../../../functions/routers'
-class egresos extends Component {
+import { EgresosCard } from '../../../components/cards'
+import Layout from '../../../components/layout/layout'
+import { NewTable } from '../../../components/NewTables'
+import { FacturaTable } from '../../../components/tables'
+import { EngresosFilters } from '../../../components/filters'
+import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
+import { printSwalHeader } from '../../../functions/printers'
+import Select from '../../../components/form-components/Select'
+import { Modal } from '../../../components/singles'
+import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
+import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
+import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, 
+    customInputAlert } from '../../../functions/alert'
+import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, 
+    setTextTableReactDom, setNaviIcon } from '../../../functions/setters'
+class Egresos extends Component {
     state = {
+        modal: {
+            see: false,
+            facturas: false,
+            adjuntos: false,
+            facturaExtranjera: false,
+            filters: false,
+            download: false
+        },
         egresos: [],
         egresosAux: [],
         title: 'Nuevo egreso',
         egreso: '',
-        modalDelete: false,
-        modalFacturas: false,
-        modalAdjuntos: false,
-        modalSee: false,
-        modalFacturaExtranjera: false,
-        modalDownload: false,
         facturas: [],
-        porcentaje: 0,
         data: {
             proveedores: [],
             empresas: [],
-            egresos: []
+            egresos: [],
+            adjuntos: []
         },
         form: {
             formaPago: '',
@@ -69,22 +72,15 @@ class egresos extends Component {
                 }
             }
         },
-        formFacturaExtranjera:{
-            adjuntos: {
-                factura: {
-                    value: '',
-                    placeholder: 'Factura extranjera',
-                    files: []
-                },
-            }
-        },
         options: {
             formasPagos: [],
             metodosPagos: [],
             estatusFacturas: [],
             estatusCompras: []
-        }
+        },
+        filters: {}
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -101,13 +97,47 @@ class egresos extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                this.setState({
-                    ...this.state,
-                    modalSee: true
-                })
+                const { modal, filters } = this.state
+                filters.identificador = id
+                modal.see = true
+                this.setState({ ...this.state, modal, filters })
+                this.reloadTable(filters)
                 this.getEgresoAxios(id)
             }
         }
+    }
+
+    getOptionsAxios = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiOptions(`v2/administracion/egresos`, access_token).then(
+            (response) => {
+                const { data, options } = this.state
+                const { proveedores, empresas, estatusCompras, areas, tiposPagos, tiposImpuestos } = response.data
+                data.proveedores = proveedores
+                data.empresas = empresas
+                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
+                options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
+                options['areas'] = setOptionsWithLabel(areas, 'nombre', 'id')
+                options['proveedores'] = setOptionsWithLabel(proveedores, 'razon_social', 'id')
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
+                Swal.close()
+                this.setState({ ...this.state, data, options })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    async getEgresoAxios(id) {
+        const { access_token } = this.props.authUser
+        apiGet(`egresos/single/${id}`, access_token).then(
+            (response) => {
+                const { egreso } = response.data
+                this.setState({
+                    ...this.state,
+                    egreso: egreso
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
     clearForm = () => {
         const { form } = this.state
@@ -162,16 +192,7 @@ class egresos extends Component {
             form
         })
     }
-
-    onChangeRange = range => {
-        const { startDate, endDate } = range
-        const { form } = this.state
-        form.fechaInicio = startDate
-        form.fechaFin = endDate
-        this.setState({ ...this.state, form })
-    }
-    
-    handleChange = (files, item)  => {
+    handleChange = (files, item) => {
         const { form } = this.state
         let aux = form.adjuntos[item].files
         for (let counter = 0; counter < files.length; counter++) {
@@ -186,7 +207,7 @@ class egresos extends Component {
         }
         form.adjuntos[item].value = files
         form.adjuntos[item].files = aux
-        this.setState({...this.state,form})
+        this.setState({ ...this.state, form })
         createAlertSA2WithActionOnClose(
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
@@ -194,31 +215,17 @@ class egresos extends Component {
             () => this.cleanAdjuntos(item)
         )
     }
-
     cleanAdjuntos = (item) => {
         const { form } = this.state
         let aux = []
         form.adjuntos[item].files.map((file) => {
-            if(file.id) aux.push(file)
+            if (file.id) aux.push(file)
             return ''
         })
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
-        this.setState({...this.state,form})
+        this.setState({ ...this.state, form })
     }
-
-    cleanAdjuntosExtranjero = (item) => {
-        const { formFacturaExtranjera } = this.state
-        let aux = []
-        formFacturaExtranjera.adjuntos[item].files.map((file) => {
-            if(file.id) aux.push(file)
-            return ''
-        })
-        formFacturaExtranjera.adjuntos[item].value = ''
-        formFacturaExtranjera.adjuntos[item].files = aux
-        this.setState({...this.state,formFacturaExtranjera})
-    }
-
     onChangeAdjunto = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
@@ -309,7 +316,7 @@ class egresos extends Component {
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
-                            if(element.rfc)
+                            if (element.rfc)
                                 if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase()) {
                                     auxProveedor = element
                                 }
@@ -321,12 +328,12 @@ class egresos extends Component {
                         } else {
                             errorAlert('No existe la empresa')
                         }
-                        if (auxProveedor) { form.proveedor = auxProveedor.id.toString() } 
+                        if (auxProveedor) { form.proveedor = auxProveedor.id.toString() }
                         else {
-                            if(obj.nombre_emisor === ''){
+                            if (obj.nombre_emisor === '') {
                                 const { history } = this.props
                                 errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/leads/proveedores')
-                            }else
+                            } else
                                 createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
@@ -403,26 +410,26 @@ class egresos extends Component {
                 aux.push(
                     {
                         actions: this.setActions(egreso),
-                        identificador: renderToString(setTextTableCenter(egreso.id)),
-                        cuenta: renderToString(setArrayTable(
+                        identificador: setTextTableCenter(egreso.id),
+                        cuenta: setArrayTable(
                             [
                                 { name: 'Empresa', text: egreso.empresa ? egreso.empresa.name : '' },
                                 { name: 'Cuenta', text: egreso.cuenta ? egreso.cuenta.nombre : '' },
                                 { name: 'No. de cuenta', text: egreso.cuenta ? egreso.cuenta.numero : '' }
                             ], '250px'
-                        )),
-                        proveedor: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : '')),
-                        factura: renderToString(setTextTableCenter(egreso.factura ? 'Con factura' : 'Sin factura')),
-                        monto: renderToString(setMoneyTable(egreso.monto)),
-                        comision: renderToString(setMoneyTable(egreso.comision ? egreso.comision : 0.0)),
-                        total: renderToString(setMoneyTable(egreso.total)),
+                        ),
+                        proveedor: setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : ''),
+                        factura: setTextTableCenter(egreso.factura ? 'Con factura' : 'Sin factura'),
+                        monto: setMoneyTable(egreso.monto),
+                        comision: setMoneyTable(egreso.comision ? egreso.comision : 0.0),
+                        total: setMoneyTable(egreso.total),
                         impuesto: setTextTableReactDom(egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, egreso, 'tipoImpuesto', 'text-center'),
                         tipoPago: setTextTableReactDom(egreso.tipo_pago.tipo, this.doubleClick, egreso, 'tipoPago', 'text-center'),
-                        descripcion: setTextTableReactDom(egreso.descripcion !== null ? egreso.descripcion :'', this.doubleClick, egreso, 'descripcion', 'text-justify'),
+                        descripcion: setTextTableReactDom(egreso.descripcion !== null ? egreso.descripcion : '', this.doubleClick, egreso, 'descripcion', 'text-justify'),
                         area: setTextTableReactDom(egreso.area ? egreso.area.nombre : '', this.doubleClick, egreso, 'area', 'text-center'),
                         subarea: setTextTableReactDom(egreso.subarea ? egreso.subarea.nombre : '', this.doubleClick, egreso, 'subarea', 'text-center'),
                         estatusCompra: setTextTableReactDom(egreso.estatus_compra ? egreso.estatus_compra.estatus : '', this.doubleClick, egreso, 'estatusCompra', 'text-center'),
-                        adjuntos: renderToString(setArrayTable(_aux)),
+                        adjuntos: setArrayTable(_aux),
                         fecha: setDateTableReactDom(egreso.created_at, this.doubleClick, egreso, 'fecha', 'text-center'),
                         id: egreso.id,
                         objeto: egreso
@@ -432,433 +439,127 @@ class egresos extends Component {
             })
         return aux
     }
-    doubleClick = (data, tipo) => {
-        const { form, options } = this.state
-        let busqueda = undefined
-        let flag = false
-        switch(tipo){
-            case 'subarea':
-                options.subareas = []
-                flag = false
-                if(data.area){
-                    busqueda = options.areas.find( (elemento) => { return elemento.value === data.area.id.toString() })
-                    if(busqueda){
-                        options.subareas = setOptions(busqueda.subareas, 'nombre', 'id')
-                        if(data.subarea){
-                            busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() })
-                            if(busqueda){ form.subarea = busqueda.value }
-                        }
-                    }
-                }else{ 
-                    flag = true 
-                    if(data.area){
-                        form.area = data.area.id.toString()
-                        options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
-                    }
-                    if(data.subarea){
-                        busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() } )
-                        if(busqueda) form.subarea = data.subarea.id.toString()
-                    }
-                }
-                break
-            case 'area':
-                options.subareas = []
-                if(data.area){
-                    form.area = data.area.id.toString()
-                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
-                }
-                if(data.subarea){
-                    busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() } )
-                    if(busqueda) form.subarea = data.subarea.id.toString()
-                }
-                break
-            case 'fecha':
-                form.fecha = new Date(data.created_at)
-                break
-            case 'tipoImpuesto':
-                if(data.tipo_impuesto)
-                    form[tipo] = data.tipo_impuesto.id
-                break
-            case 'tipoPago':
-                if(data.tipo_pago)
-                    form[tipo] = data.tipo_pago.id
-                break
-            case 'estatusCompra':
-                if(data.estatus_compra)
-                    form[tipo] = data.estatus_compra.id
-                break
-            default:
-                form[tipo] = data[tipo]
-                break
-        }
-        this.setState({form, options})
-        customInputAlert(
-            <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
-                {
-                    tipo === 'descripcion' &&
-                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }/>
-                }
-                {
-                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?
-                        <div className="input-icon my-3">
-                            <span className="input-icon input-icon-right">
-                                <span>
-                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
-                                </span>
-                            </span>
-                            <Form.Control className = "form-control text-uppercase form-control-solid"
-                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
-                                defaultValue = { form[tipo] } as = "select">
-                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
-                                { this.setOptions(data, tipo).map((tipo, key) => { return ( <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option> ) }) }
-                            </Form.Control>
-                        </div>
-                    :<></>
-                }
-                {
-                    tipo === 'fecha' ?
-                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
-                    :<></>
-                }
-                {
-                    tipo === 'subarea'  ?
-                        flag ? 
-                            <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
-                                one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
-                                two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
-                        :
-                            <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
-                                onChange = { (value) => { this.onChangeSwal(value, tipo) } } withtaglabel = { 1 } 
-                                name = { tipo } customdiv = "mb-3" withicon={1}/>
-                    : ''
-                }
-                {
-                    tipo === 'area' &&
-                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
-                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
-                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
-                }
-            </div>,
-            <Update />,
-            () => { this.patchEgresos(data, tipo, flag) },
-            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
-        )
-    }
-    setSwalPlaceholder = (tipo) => {
-        switch(tipo){
-            case 'tipoImpuesto':
-                return 'SELECCIONA EL IMPUESTO'
-            case 'tipoPago':
-                return 'SELECCIONA EL TIPO DE PAGO'
-            case 'estatusCompra':
-                return 'SELECCIONA EL ESTATUS DE COMPRA'
-            default:
-                return ''
-        }
-    }
-    onChangeSwal = (value, tipo) => {
-        const { form } = this.state
-        form[tipo] = value
-        this.setState({...this.state, form})
-    }
-    patchEgresos = async( data,tipo, flag ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = ''
-        let newType = tipo
-        switch(tipo){
-            case 'area':
-                value = { area: form.area, subarea: form.subarea }
-                break
-            case 'subarea':
-                if(flag === true){
-                    value = { area: form.area, subarea: form.subarea }
-                    newType = 'area'
-                }else{
-                    value = form[tipo]
-                }
-                break
-            default:
-                value = form[tipo]
-                break
-        }
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/administracion/egresos/${newType}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getEgresosAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
-    setOptions = (data, tipo) => {
-        const { options } = this.state
-        switch(tipo){
-            case 'estatusCompra':
-                return options.estatusCompras
-            case 'tipoPago':
-                return options.tiposPagos
-            case 'tipoImpuesto':
-                return options.tiposImpuestos
-            default: return []
-        }
-    }
-    setAdjuntosTable = egreso => {
-        let aux = []
-        let adjuntos = egreso.presupuestos.concat(egreso.pagos)
-        adjuntos.map((adjunto) => {
-            aux.push({
-                actions: this.setActionsAdjuntos(adjunto),
-                url: renderToString(
-                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
-                ),
-                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
-                id: 'adjuntos-' + adjunto.id
-            })
-            return false
-        })
-        return aux
-    }
-    setActions = egreso => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' },
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
-            },
-            {
-                text: 'Mostrar&nbsp;información',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-magnifier-tool',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
-            },
-            {
-                text: 'Adjuntos',
-                btnclass: 'info',
-                iconclass: 'flaticon-attachment',
-                action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
-                text: 'Factura&nbsp;extranjera',
-                btnclass: 'warning',
-                iconclass: 'flaticon-interface-10',
-                action: 'facturaExtranjera',
-                tooltip: { id: 'facturaExtranjera', text: 'Factura extranjera'},
-            }
-        )
-        if (egreso.factura) {
-            aux.push({
-                text: 'Facturas',
-                btnclass: 'dark',
-                iconclass: 'flaticon2-paper',
-                action: 'facturas',
-                tooltip: { id: 'taxes', text: 'Facturas' },
-            })
-        }
-        return aux
-    }
-    setActionsAdjuntos = adjunto => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'deleteAdjunto',
-                tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
-            })
-        return aux
-    }
-    changePageAdd = () => {
-        const { history } = this.props
-        history.push({
-            pathname: '/administracion/egresos/add'
-        });
-    }
-    changePageEdit = (egreso) => {
-        const { history } = this.props
-        history.push({
-            pathname: '/administracion/egresos/edit',
-            state: { egreso: egreso }
-        });
-    }
-    openModalDelete = egreso => {
-        this.setState({
-            ...this.state,
-            modalDelete: true,
-            egreso: egreso
-        })
-    }
 
+    setActions = egreso => {
+        const { history } = this.props
+        return (
+            <div className="w-100 d-flex justify-content-center">
+                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); history.push({ pathname: '/administracion/egresos/edit', state: { egreso: egreso } }) }} >
+                        {setNaviIcon('flaticon2-pen', 'editar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL EGRESO CON IDENTIFICADOR: ${egreso.id}`, () => this.deleteEgresoAxios(egreso.id)) }}>
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(egreso) }}>
+                        {setNaviIcon('flaticon2-magnifier-tool', 'Ver egreso')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(egreso) }}>
+                        {setNaviIcon('flaticon-attachment', 'Adjuntos')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openFacturaExtranjera(egreso) }}>
+                        {setNaviIcon('flaticon-interface-10', 'Factura extranjera')}
+                    </Dropdown.Item>
+                    {
+                        egreso.factura ?
+                            <Dropdown.Item className="text-hover-dark dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalFacturas(egreso) }}>
+                                {setNaviIcon('flaticon2-download-1', 'Facturas')}
+                            </Dropdown.Item>
+                            : <></>
+                    }
+                </DropdownButton>
+            </div>
+        )
+    }
+    openModalSee = async (egreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/administracion/egresos/${egreso.id}`, access_token).then(
+            (response) => {
+                const { egreso } = response.data
+                const { modal } = this.state
+                modal.see = true
+                Swal.close()
+                this.setState({ ...this.state, modal, egreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalAdjuntos = async (egreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/administracion/egresos/adjuntos/${egreso.id}`, access_token).then(
+            (response) => {
+                const { egreso } = response.data
+                let { form } = this.state
+                const { modal } = this.state
+                form = this.revertForm(egreso)
+                Swal.close()
+                modal.adjuntos = true
+                this.setState({ ...this.state, form, modal, egreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openFacturaExtranjera = async (egreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/administracion/egresos/adjuntos/${egreso.id}`, access_token).then(
+            (response) => {
+                let { form } = this.state
+                const { egreso } = response.data
+                const { modal } = this.state
+                form = this.revertForm(egreso)
+                modal.facturaExtranjera = true
+                Swal.close()
+                this.setState({ ...this.state, form, modal, egreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalFacturas = async (egreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/administracion/egresos/facturas/${egreso.id}`, access_token).then(
+            (response) => {
+                let { form } = this.state
+                const { egreso } = response.data
+                const { modal } = this.state
+                form = this.clearForm()
+                if (egreso)
+                    if (egreso.estatus_compra)
+                        form.estatusCompra = egreso.estatus_compra.id
+                Swal.close()
+                modal.facturas = true
+                this.setState({ ...this.state, form, modal, egreso, facturas: egreso.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalFiltros = () => {
+        const { modal } = this.state
+        modal.filters = true
+        this.setState({ ...this.state, modal })
+    }
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
-
-    handleCloseDownload = () => {
-        this.setState({ ...this.state, modalDownload: false, form: this.clearForm() })
-    }
-
-    handleCloseFacturaExtranjera = () => {
-        const { modalFacturaExtranjera } = this.state
+    handleClose = () => {
+        const { modal, data } = this.state
+        data.adjuntos = []
+        modal.see = false
+        modal.facturas = false
+        modal.adjuntos = false
+        modal.facturaExtranjera = false
+        modal.download = false
+        modal.filters = false
         this.setState({
             ...this.state,
-            modalFacturaExtranjera: !modalFacturaExtranjera,
-            egreso: ''
-        })
-    }
-
-    handleCloseSee = () => {
-        this.setState({
-            ...this.state,
-            modalSee: false,
-            egreso: ''
-        })
-    }
-    handleCloseFacturas = () => {
-        this.setState({
-            ...this.state,
-            modalFacturas: false,
-            venta: '',
+            data,
+            modal,
+            egreso: '',
             facturas: [],
-            porcentaje: 0,
+            adjuntos: [],
             form: this.clearForm()
         })
     }
-    handleCloseDelete = () => {
-        const { modalDelete } = this.state
-        this.setState({
-            ...this.state,
-            modalDelete: !modalDelete,
-            egreso: ''
-        })
-    }
-    handleCloseAdjuntos = () => {
-        const { data } = this.state
-        data.adjuntos = []
-        this.setState({
-            ...this.state,
-            modalAdjuntos: false,
-            modalFacturaExtranjera: false,
-            form: this.clearForm(),
-            adjuntos: [],
-            data,
-            egreso: ''
-        })
-    }
-    deleteFactura = id => {
-        waitAlert()
-        this.deleteFacturaAxios(id)
-    }
-
-    revertForm = (egreso) => {
-        const { form } = this.state
-        form.adjuntos.pago.value = null
-        form.adjuntos.presupuesto.value = null
-        form.adjuntos.facturas_pdf.value = null
-        form.adjuntos.pago.files = []
-        form.adjuntos.presupuesto.files = []
-        form.adjuntos.facturas_pdf.files = []
-        egreso.pagos.forEach(element => {
-            form.adjuntos.pago.files.push(element);
-        });
-        egreso.presupuestos.forEach(element => {
-            form.adjuntos.presupuesto.files.push(element);
-        });
-        egreso.facturas_pdf.forEach(element => {
-            form.adjuntos.facturas_pdf.files.push(element);
-        });
-        return form
-    }
-
-    openFacturaExtranjera = async(egreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/administracion/egresos/adjuntos/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { egreso } = response.data
-                form = this.revertForm(egreso)
-                Swal.close()
-                this.setState({ ...this.state, form, modalFacturaExtranjera: true, egreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    openModalSee = async(egreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/administracion/egresos/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { egreso } = response.data
-                Swal.close()
-                this.setState({ ...this.state, modalSee: true, egreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    openModalAdjuntos = async(egreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/administracion/egresos/adjuntos/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { egreso } = response.data
-                form = this.revertForm(egreso)
-                Swal.close()
-                this.setState({ ...this.state, form, modalAdjuntos: true, egreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    openModalFacturas = async(egreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/administracion/egresos/facturas/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { egreso } = response.data
-                form = this.clearForm()
-                if(egreso)
-                    if(egreso.estatus_compra)
-                        form.estatusCompra = egreso.estatus_compra.id
-                Swal.close()
-                this.setState({ ...this.state, form, modalFacturas: true, egreso, facturas: egreso.facturas })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
+    deleteFactura = id => { waitAlert(); this.deleteFacturaAxios(id) }
     async addProveedorAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
@@ -869,7 +570,7 @@ class egresos extends Component {
         data.append('nombre', cadena)
         data.append('razonSocial', cadena)
         data.append('rfc', obj.rfc_emisor.toUpperCase())
-        await axios.post(URL_DEV + 'proveedores', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        apiPostFormData(`proveedores`, data, access_token).then(
             (response) => {
                 const { proveedores } = response.data
                 const { options, data, form } = this.state
@@ -887,65 +588,26 @@ class egresos extends Component {
                     data,
                     options
                 })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    async getEgresosAxios() {
-        $('#egresos').DataTable().ajax.reload();
-    }
-    async getOptionsAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.options(`${URL_DEV}v2/administracion/egresos`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { data, options } = this.state
-                const { proveedores, empresas, estatusCompras, areas, tiposPagos, tiposImpuestos } = response.data
-                data.proveedores = proveedores
-                data.empresas = empresas
-                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
-                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
-                Swal.close()
-                this.setState({ ...this.state, data, options })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+        ).catch((error) => { catchErrors(error) })
     }
-    async deleteEgresoAxios() {
+    async deleteEgresoAxios(id) {
         const { access_token } = this.props.authUser
-        const { egreso } = this.state
-        await axios.delete(URL_DEV + 'egresos/' + egreso.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        apiDelete(`egresos/${id}`, access_token).then(
             (response) => {
-                this.getEgresosAxios()
+                const { filters } = this.state
                 this.setState({
                     ...this.state,
-                    modalDelete: false,
                     egreso: '',
                 })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
-
-    sendFacturaAxios = async() => {
+    sendFacturaAxios = async () => {
         const { access_token } = this.props.authUser
-        const { form, egreso } = this.state
+        const { form, egreso, modal } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
@@ -973,74 +635,51 @@ class egresos extends Component {
             return false
         })
         data.append('id', egreso.id)
-        await axios.post(`${URL_DEV}v2/administracion/egresos/${egreso.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        apiPostFormData(`v2/administracion/egresos/${egreso.id}/factura`, data, access_token).then(
             (response) => {
                 let { form } = this.state
                 const { egreso } = response.data
+                const { filters } = this.state
+                modal.facturas = true
                 form = this.clearForm()
-                if(egreso)
-                    if(egreso.estatus_compra)
+                if (egreso)
+                    if (egreso.estatus_compra)
                         form.estatusCompra = egreso.estatus_compra.id
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.')
-                this.setState({ ...this.state, form, modalFacturas: true, egreso, facturas: egreso.facturas })
-                this.getEgresosAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', () => { this.reloadTable(filters) })
+                this.setState({ ...this.state, form, modal, egreso, facturas: egreso.facturas })
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+        ).catch((error) => { catchErrors(error) })
     }
-
-    deleteFacturaAxios = async(id) => {
+    deleteFacturaAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { egreso } = this.state
-        await axios.delete(`${URL_DEV}v2/administracion/egresos/${egreso.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, access_token).then(
             (response) => {
                 let { form } = this.state
                 const { egreso } = response.data
                 form = this.clearForm()
-                if(egreso)
-                    if(egreso.estatus_compra)
+                if (egreso)
+                    if (egreso.estatus_compra)
                         form.estatusCompra = egreso.estatus_compra.id
                 Swal.close()
                 this.setState({ ...this.state, form, egreso, facturas: egreso.facturas })
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+        ).catch((error) => { catchErrors(error) })
     }
 
-    /* -------------------------------------------------------------------------- */
-    /*                        ANCHOR Exportar egresos Axios                       */
-    /* -------------------------------------------------------------------------- */
-
-    exportEgresos = () => {
-        this.setState({ ...this.state, modalDownload: true, form: this.clearForm() })
-    }
-
-    exportEgresosAxios = async () => {
+    onChangeRange = range => {
+        const { startDate, endDate } = range
         const { form } = this.state
-        let headers = []
-        let documento = ''
-        EGRESOS_COLUMNS.map((columna, key) => {
-            if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(columna.accessor)
-                if (documento) {
-                    if (documento.value) {
-                        headers.push({
-                            name: columna.accessor,
-                            value: documento.value
-                        })
-                    }
-                }
-            }
-            return ''
-        })
-        waitAlert();
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({ ...this.state, form })
+    }
+    
+    exportEgresosAxios = async () => {
+        waitAlert()
+        const { filters } = this.state
         const { access_token } = this.props.authUser
-        await axios.post(`${URL_DEV}v2/exportar/administracion/egresos`, { columnas: headers, start: form.fechaInicio, end: form.fechaFin }, 
-            { responseType: 'blob', headers: setSingleHeader(access_token) }).then(
+        apiPostFormResponseBlob(`v3/administracion/egresos/exportar`, { columnas: filters }, access_token).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -1048,16 +687,14 @@ class egresos extends Component {
                 link.setAttribute('download', 'egresos.xlsx');
                 document.body.appendChild(link);
                 link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Ingresos exportados con éxito.'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
-    
     addAdjuntoEgresoAxios = async (files, item) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1070,87 +707,36 @@ class egresos extends Component {
         })
         data.append('tipo', item)
         data.append('id', egreso.id)
-        await axios.post(`${URL_DEV}v2/administracion/egresos/${egreso.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        apiPostFormData(`v2/administracion/egresos/${egreso.id}/adjuntos`, data, access_token).then(
             (response) => {
-                let { form } = this.state
                 const { egreso } = response.data
-                form = this.revertForm(egreso)
-                this.getEgresosAxios()
-                this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => { 
                 let { form } = this.state
-                form = this.revertForm(egreso); 
-                this.setState({...this.state,form})
-                printResponseErrorAlert(error) 
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+                const { filters } = this.state
+                form = this.revertForm(egreso)
+                this.setState({ ...this.state, form })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => {
+                let { form } = this.state
+                form = this.revertForm(egreso);
+                this.setState({ ...this.state, form })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
-
-    deleteAdjuntoAxios = async(id) => {
+    deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { egreso } = this.state
-        await axios.delete(`${URL_DEV}v2/administracion/egresos/${egreso.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        apiDelete(`v2/administracion/egresos/${egreso.id}/adjuntos/${id}`, access_token).then(
             (response) => {
+                const { egreso } = response.data
                 let { form } = this.state
-                const { egreso } = response.data
+                const { filters } = this.state
                 form = this.revertForm(egreso)
-                this.getEgresosAxios()
                 this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
-    async getEgresoAxios(id){
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { egreso } = response.data
-                this.setState({
-                    ...this.state,
-                    egreso: egreso
-                })
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    handleChangeFacturaExtranjera = (files, item)  => {
-        const { formFacturaExtranjera } = this.state
-        let aux = formFacturaExtranjera.adjuntos[item].files
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        formFacturaExtranjera['adjuntos'][item].value = files
-        formFacturaExtranjera['adjuntos'][item].files = aux
-        this.setState({...this.state,formFacturaExtranjera})
-        createAlertSA2WithActionOnClose( 
-            '¿DESEAS AGREGAR EL ARCHIVO?',
-            '',
-            () => this.addAdjuntoEgresoAxios(files, 'facturas_pdf'),
-            () => this.cleanAdjuntosExtranjero(item)
-        )
-    }
-
-    addFacturaExtranjera= async(files, item)=>{
+    addFacturaExtranjera = async (files, item) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const data = new FormData();
@@ -1159,67 +745,256 @@ class egresos extends Component {
             data.append(`files_${item}[]`, file)
             return ''
         })
-        await axios.post(`${URL_DEV}egresos/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        apiPostFormData(`egresos/adjuntos`, data, access_token).then(
             (response) => {
-                this.getEgresosAxios()
+                const { filters } = this.state
                 this.setState({ ...this.state })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    doubleClick = (data, tipo) => {
+        const { form, options } = this.state
+        let busqueda = undefined
+        let flag = false
+        switch (tipo) {
+            case 'subarea':
+                options.subareas = []
+                flag = false
+                if (data.area) {
+                    busqueda = options.areas.find((elemento) => { return elemento.value === data.area.id.toString() })
+                    if (busqueda) {
+                        options.subareas = setOptions(busqueda.subareas, 'nombre', 'id')
+                        if (data.subarea) {
+                            busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
+                            if (busqueda) { form.subarea = busqueda.value }
+                        }
+                    }
+                } else {
+                    flag = true
+                    if (data.area) {
+                        form.area = data.area.id.toString()
+                        options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                    }
+                    if (data.subarea) {
+                        busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
+                        if (busqueda) form.subarea = data.subarea.id.toString()
+                    }
+                }
+                break
+            case 'area':
+                options.subareas = []
+                if (data.area) {
+                    form.area = data.area.id.toString()
+                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                }
+                if (data.subarea) {
+                    busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
+                    if (busqueda) form.subarea = data.subarea.id.toString()
+                }
+                break
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            case 'tipoImpuesto':
+                if (data.tipo_impuesto)
+                    form[tipo] = data.tipo_impuesto.id
+                break
+            case 'tipoPago':
+                if (data.tipo_pago)
+                    form[tipo] = data.tipo_pago.id
+                break
+            case 'estatusCompra':
+                if (data.estatus_compra)
+                    form[tipo] = data.estatus_compra.id
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({ form, options })
+        customInputAlert(
+            <div>
+                <h2 className='swal2-title mb-4 mt-2'> {printSwalHeader(tipo)} </h2>
+                {
+                    tipo === 'descripcion' &&
+                    <InputGray withtaglabel={0} withtextlabel={0} withplaceholder={0} withicon={0}
+                        requirevalidation={0} value={form[tipo]} name={tipo} rows={6} as='textarea'
+                        onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} swal={true} />
+                }
+                {
+                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra') ?
+                        <div className="input-icon my-3">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
+                                </span>
+                            </span>
+                            <Form.Control className="form-control text-uppercase form-control-solid"
+                                onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo}
+                                defaultValue={form[tipo]} as="select">
+                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                {this.setOptions(data, tipo).map((tipo, key) => { return (<option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>) })}
+                            </Form.Control>
+                        </div>
+                        : <></>
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value={form[tipo]} onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo} date={form[tipo]} withformgroup={0} />
+                        : <></>
+                }
+                {
+                    tipo === 'subarea' ?
+                        flag ?
+                            <DoubleSelectSearchGray options={options} form={form} onChange={this.onChangeSwal}
+                                one={{ placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas' }}
+                                two={{ placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas' }} />
+                            :
+                            <SelectSearchGray options={options.subareas} placeholder='Selecciona el subárea' value={form.subarea}
+                                onChange={(value) => { this.onChangeSwal(value, tipo) }} withtaglabel={1}
+                                name={tipo} customdiv="mb-3" withicon={1} />
+                        : ''
+                }
+                {
+                    tipo === 'area' &&
+                    <DoubleSelectSearchGray options={options} form={form} onChange={this.onChangeSwal}
+                        one={{ placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas' }}
+                        two={{ placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas' }} />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchEgresos(data, tipo, flag) },
+            () => { this.setState({ ...this.state, form: this.clearForm() }); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch (tipo) {
+            case 'tipoImpuesto':
+                return 'SELECCIONA EL IMPUESTO'
+            case 'tipoPago':
+                return 'SELECCIONA EL TIPO DE PAGO'
+            case 'estatusCompra':
+                return 'SELECCIONA EL ESTATUS DE COMPRA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({ ...this.state, form })
+    }
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch (tipo) {
+            case 'estatusCompra':
+                return options.estatusCompras
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'tipoImpuesto':
+                return options.tiposImpuestos
+            default: return []
+        }
+    }
+    patchEgresos = async (data, tipo, flag) => {
+        const { access_token } = this.props.authUser
+        const { form, filters } = this.state
+        let value = ''
+        let newType = tipo
+        switch (tipo) {
+            case 'area':
+                value = { area: form.area, subarea: form.subarea }
+                break
+            case 'subarea':
+                if (flag === true) {
+                    value = { area: form.area, subarea: form.subarea }
+                    newType = 'area'
+                } else {
+                    value = form[tipo]
+                }
+                break
+            default:
+                value = form[tipo]
+                break
+        }
+        waitAlert()
+        apiPutForm(`v2/administracion/egresos/${newType}/${data.id}`, { value: value }, access_token).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    setOptionsArray = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
+        this.setState({ ...this.state, options })
+    }
+    sendFilters = filter => {
+        const { modal } = this.state
+        modal.filters = false
+        this.setState({
+            ...this.state,
+            filters: filter,
+            modal
         })
+        this.reloadTable(filter)
+    }
+    reloadTable = (filter) => {
+        let arregloFilterKeys = Object.keys(filter)
+        let aux = {}
+        arregloFilterKeys.forEach((elemento) => {
+            if(elemento === 'area'){
+                aux[elemento] = {
+                    value: filter[elemento]['value'],
+                    name: filter[elemento]['name'],
+                }
+            }else{
+                aux[elemento] = filter[elemento]
+            }
+        })
+        $(`#egresos`).DataTable().search(JSON.stringify(aux)).draw();
+    }
+    revertForm = (egreso) => {
+        const { form } = this.state
+        form.adjuntos.pago.value = null
+        form.adjuntos.presupuesto.value = null
+        form.adjuntos.facturas_pdf.value = null
+        form.adjuntos.pago.files = []
+        form.adjuntos.presupuesto.files = []
+        form.adjuntos.facturas_pdf.files = []
+        egreso.pagos.forEach(element => {
+            form.adjuntos.pago.files.push(element);
+        });
+        egreso.presupuestos.forEach(element => {
+            form.adjuntos.presupuesto.files.push(element);
+        });
+        egreso.facturas_pdf.forEach(element => {
+            form.adjuntos.facturas_pdf.files.push(element);
+        });
+        return form
     }
     render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, facturas, form, options, modalSee, egreso, modalFacturaExtranjera, modalDownload } = this.state
+        const { facturas, form, options, egreso, modal, filters } = this.state
+        const { access_token } = this.props.authUser
         return (
-            <Layout active = 'administracion'  {...this.props}>
-
-                <NewTableServerRender columns = { EGRESOS_COLUMNS } title = 'Egresos' subtitle = 'Listado de egresos' url = '/administracion/egresos/add'
-                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'egresos' exportar_boton = { true }
-                    actions={{
-                        'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete },
-                        'facturas': { function: this.openModalFacturas },
-                        'adjuntos': { function: this.openModalAdjuntos },
-                        'see': { function: this.openModalSee },
-                        'facturaExtranjera': { function: this.openFacturaExtranjera}
-                    }}
-                    onClickExport = { () => this.exportEgresos() } accessToken = { this.props.authUser.access_token } setter = { this.setEgresos }
-                    urlRender = { `${URL_DEV}v2/administracion/egresos`} validateFactura = { true } tipo_validacion = 'compras' cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
-                
-                <Modal show = { modalDownload } title = 'Descargar egresos' handleClose = { this.handleCloseDownload } >
-                    <Form onSubmit = { this.onSubmit} >
-                        <div className="text-center">
-                            <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
-                            <RangeCalendar onChange = { this.onChangeRange } start = { form.fechaInicio } end = { form.fechaFin } />
-                        </div>
-                        <div className="card-footer py-3 pr-1">
-                            <div className="row mx-0">
-                                <div className="col-lg-12 text-right pr-0 pb-0">
-                                    <Button icon='' className="btn btn-primary mr-2" onClick={ this.exportEgresosAxios } text="ENVIAR" />
-                                </div>
-                            </div>
-                        </div>
-                    </Form>
-                </Modal>
-
-                <ModalDelete title = "¿Estás seguro que deseas eliminar el egreso?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() } } />
-
-                <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
-                    {/* <div className="form-group row form-group-marginless pt-4">
-                        <div className="col-md-12">
-                            <ProgressBar 
-                                animated 
-                                label={`${porcentaje}`} 
-                                variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                                now = {porcentaje} />
-                        </div>
-                    </div> */}
+            <Layout active='administracion'  {...this.props}>
+                <NewTable
+                    tableName='egresos'
+                    subtitle='Listado de egresos'
+                    title='Egresos'
+                    mostrar_boton={true}
+                    abrir_modal={false}
+                    accessToken={access_token}
+                    columns={EGRESOS_COLUMNS}
+                    setter={this.setEgresos}
+                    url='/administracion/egresos/add'
+                    urlRender={`${URL_DEV}v3/administracion/egreso`}
+                    filterClick={this.openModalFiltros}
+                    exportar_boton={true}
+                    onClickExport = { () => { this.exportEgresosAxios() } }
+                />
+                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0 pt-4">
                             <div className="col-md-6 px-2">
@@ -1236,7 +1011,7 @@ class egresos extends Component {
                                 />
                             </div>
                             <div className="col-md-6 px-2 text-center align-self-center">
-                            <FileInput
+                                <FileInput
                                     onChangeAdjunto={this.onChangeAdjunto}
                                     placeholder={form['adjuntos']['factura']['placeholder']}
                                     value={form['adjuntos']['factura']['value']}
@@ -1260,15 +1035,18 @@ class egresos extends Component {
                     <div className="separator separator-dashed separator-border-2 mb-6 mt-5"></div>
                     <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
                 </Modal>
-                <Modal size="xl" title={"Adjuntos"} show={modalAdjuntos} handleClose={this.handleCloseAdjuntos}>
-                    <AdjuntosForm form = { form } onChangeAdjunto = { this.handleChange }
-                        clearFiles = { this.clearFiles } deleteFile = { this.openModalDeleteAdjuntos } />
+                <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleClose}>
+                    <AdjuntosForm form={form} onChangeAdjunto={this.handleChange}
+                        clearFiles={this.clearFiles} deleteFile={this.openModalDeleteAdjuntos} />
                 </Modal>
-                <Modal size="lg" title="Egreso" show={modalSee} handleClose={this.handleCloseSee} >
+                <Modal size="lg" title="Egreso" show={modal.see} handleClose={this.handleClose} >
                     <EgresosCard egreso={egreso} />
                 </Modal>
-                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseAdjuntos} >
-                    <FacturaExtranjera form={form} onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos }/>
+                <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
+                    <FacturaExtranjera form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
+                </Modal>
+                <Modal size='xl' show={modal.filters} handleClose={this.handleClose} title='Filtros'>
+                    <EngresosFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptionsArray} />
                 </Modal>
             </Layout>
         )
@@ -1276,6 +1054,6 @@ class egresos extends Component {
 }
 
 const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({ })
+const mapDispatchToProps = dispatch => ({})
 
-export default connect(mapStateToProps, mapDispatchToProps)(egresos);
+export default connect(mapStateToProps, mapDispatchToProps)(Egresos);

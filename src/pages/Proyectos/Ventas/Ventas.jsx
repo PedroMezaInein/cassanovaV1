@@ -1,35 +1,36 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
-import { connect } from 'react-redux'
-import axios from 'axios'
+import $ from 'jquery'
 import Swal from 'sweetalert2'
-import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter, setTextTableReactDom, setCustomeDescripcionReactDom } from '../../../functions/setters'
-import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
-import Layout from '../../../components/layout/layout'
-import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
-import { Modal, ModalDelete } from '../../../components/singles'
-import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { FacturaTable } from '../../../components/tables'
-import { Form } from 'react-bootstrap'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import Select from '../../../components/form-components/Select'
-import { VentasCard } from '../../../components/cards'
-import { Tab, Tabs } from 'react-bootstrap';
-import { printSwalHeader } from '../../../functions/printers'
+import { connect } from 'react-redux'
+import { Tab, Tabs } from 'react-bootstrap'
 import { Update } from '../../../components/Lottie'
-import $ from "jquery";
-import { setSingleHeader } from '../../../functions/routers'
+import { Modal } from '../../../components/singles'
+import { VentasCard } from '../../../components/cards'
+import Layout from '../../../components/layout/layout'
+import { NewTable } from '../../../components/NewTables'
+import { FacturaTable } from '../../../components/tables'
+import { VentasFilters } from '../../../components/filters'
+import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
+import { printSwalHeader } from '../../../functions/printers'
+import { Dropdown, DropdownButton, Form } from 'react-bootstrap'
+import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
+import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, Select } from '../../../components/form-components'
+import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, 
+    customInputAlert } from '../../../functions/alert'
+import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
+    setCustomeDescripcionReactDom, setNaviIcon, setOptionsWithLabel } from '../../../functions/setters'
 class Ventas extends Component {
     state = {
+        modal:{
+            filters: false,
+            facturas: false,
+            adjuntos: false,
+            facturaExtranjera: false,
+            see: false
+        },
         active: 'facturas',
         solicitud: '',
-        modalDelete: false,
-        modalFacturas: false,
-        // modalAskFactura: false,
-        modalAdjuntos: false,
-        modalSee: false,
-        modalFacturaExtranjera: false,
         porcentaje: 0,
         title: 'Nueva venta',
         ventas: [],
@@ -113,8 +114,10 @@ class Ventas extends Component {
                 },
             }
         },
-        key: 'all'
+        key: 'all',
+        filters: {},
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -125,19 +128,58 @@ class Ventas extends Component {
         });
         if (!ventas)
             history.push('/')
-        this.getOptionsAxiosv2()
+        this.getOptionsAxios()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                this.setState({ ...this.state, modalSee: true })
+                const { modal, filters } = this.state
+                filters.identificador = id
+                modal.see = true
+                this.setState({ ...this.state, modal, filters })
+                this.reloadTable(filters)
                 this.getVentaAxios(id)
-                setTimeout(() => {
-                    $('#kt_datatable2_ventas').DataTable().column(1).search(id, false, false).ajax.reload();
-                }, 1000);
             }
         }
+    }
+    getOptionsAxios = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiOptions(`v2/proyectos/ventas`, access_token).then(
+            (response) => {
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras,
+                    clientes, metodosPago, formasPago, estatusFacturas, proyectos } = response.data
+                const { options, data } = this.state
+                options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
+                options['areas'] = setOptionsWithLabel(areas, 'nombre', 'id')
+                options['clientes'] = setOptionsWithLabel(clientes, 'empresa', 'id')
+                options['metodosPago'] = setOptionsWithLabel(metodosPago, 'nombre', 'id')
+                options['formasPago'] = setOptionsWithLabel(formasPago, 'nombre', 'id')
+                options['estatusFacturas'] = setOptionsWithLabel(estatusFacturas, 'estatus', 'id')
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
+                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
+                options['proyectos'] = setOptionsWithLabel(proyectos, 'nombre', 'id')
+                data.clientes = clientes
+                data.empresas = empresas
+                Swal.close()
+                this.setState({
+                    ...this.state,
+                    options,
+                    data
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    getVentaAxios = async (id) => {
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/ventas/${id}`, access_token).then(
+            (response) => {
+                const { venta } = response.data
+                this.setState({ ...this.state, venta: venta })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
     clearForm = () => {
         const { form } = this.state
@@ -196,7 +238,6 @@ class Ventas extends Component {
             form
         })
     }
-
     handleChange = (files, item)  => {
         const { form } = this.state
         let aux = form.adjuntos[item].files
@@ -220,7 +261,6 @@ class Ventas extends Component {
             () => this.cleanAdjuntos(item)
         )
     }
-
     cleanAdjuntos = (item) => {
         const { form } = this.state
         let aux = []
@@ -232,19 +272,6 @@ class Ventas extends Component {
         form.adjuntos[item].files = aux
         this.setState({...this.state,form})
     }
-
-    cleanAdjuntosExtranjero = (item) => {
-        const { formFacturaExtranjera } = this.state
-        let aux = []
-        formFacturaExtranjera.adjuntos[item].files.map((file) => {
-            if(file.id) aux.push(file)
-            return ''
-        })
-        formFacturaExtranjera.adjuntos[item].value = ''
-        formFacturaExtranjera.adjuntos[item].files = aux
-        this.setState({...this.state,formFacturaExtranjera})
-    }
-    
     onChangeAdjunto = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
@@ -356,14 +383,13 @@ class Ventas extends Component {
                         } else {
                             if(obj.nombre_receptor === ''){
                                 const { history } = this.props
-                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL CLIENTE DESDE LA SECCIÓN DE CLIENTES EN LEADS.', history, '/leads/clientes')
-                            }else {
-                                createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
-                            }
+                                errorAlertRedirectOnDissmis(
+                                    'LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL CLIENTE DESDE LA SECCIÓN DE CLIENTES EN LEADS.', 
+                                    history, 
+                                    '/leads/clientes')
+                            }else { createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj)) }
                         }
-                        if (auxEmpresa && auxCliente) {
-                            Swal.close()
-                        }
+                        if (auxEmpresa && auxCliente) { Swal.close() }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({
@@ -433,25 +459,31 @@ class Ventas extends Component {
             aux.push(
                 {
                     actions: this.setActions(venta),
-                    identificador: renderToString(setTextTableCenter(venta.id)),
-                    cuenta: renderToString(setArrayTable(
-                        [
-                            { name: 'Empresa', text: venta.empresa ? venta.empresa.name : '' },
-                            { name: 'Cuenta', text: venta.cuenta ? venta.cuenta.nombre : '' },
-                            { name: '# de cuenta', text: venta.cuenta ? venta.cuenta.numero : '' }
-                        ],'235px'
-                    )),
+                    identificador: setTextTableCenter(venta.id),
+                    cuenta: setArrayTable(
+                            [
+                                { name: 'Empresa', text: venta.empresa ? venta.empresa.name : '' },
+                                { name: 'Cuenta', text: venta.cuenta ? venta.cuenta.nombre : '' },
+                                { name: '# de cuenta', text: venta.cuenta ? venta.cuenta.numero : '' }
+                            ],'235px'
+                        ),
                     proyecto: setTextTableReactDom(venta.proyecto ? venta.proyecto.nombre : '', this.doubleClick, venta, 'proyecto', 'text-center'),
-                    cliente: renderToString(setTextTableCenter(venta.cliente ? venta.cliente.empresa : '')),
-                    factura: renderToString(setTextTableCenter(venta.factura ? 'Con factura' : 'Sin factura')),
-                    monto: renderToString(setMoneyTable(venta.monto)),
-                    impuesto: setTextTableReactDom(venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, venta, 'tipoImpuesto', 'text-center'),
+                    cliente: setTextTableCenter(venta.cliente ? venta.cliente.empresa : ''),
+                    factura: setTextTableCenter(venta.factura ? 'Con factura' : 'Sin factura'),
+                    monto: setMoneyTable(venta.monto),
+                    impuesto: setTextTableReactDom(
+                            venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, venta, 'tipoImpuesto', 'text-center'
+                        ),
                     tipoPago: setTextTableReactDom(venta.tipo_pago.tipo, this.doubleClick, venta, 'tipoPago', 'text-center'),
-                    descripcion: setCustomeDescripcionReactDom(venta.descripcion !== null ? venta.descripcion :'', this.doubleClick, venta, 'descripcion', 'text-justify'),
+                    descripcion: setCustomeDescripcionReactDom(
+                            venta.descripcion !== null ? venta.descripcion :'', this.doubleClick, venta, 'descripcion', 'text-justify'
+                        ),
                     area: setTextTableReactDom(venta.area ? venta.area.nombre : '' , this.doubleClick, venta, 'area', 'text-center'),
                     subarea: setTextTableReactDom(venta.subarea ? venta.subarea.nombre : '', this.doubleClick, venta, 'subarea', 'text-center'),
-                    estatusCompra: setTextTableReactDom(venta.estatus_compra ? venta.estatus_compra.estatus : '', this.doubleClick, venta, 'estatusCompra', 'text-center'),
-                    total: renderToString(setMoneyTable(venta.total)),
+                    estatusCompra: setTextTableReactDom(
+                            venta.estatus_compra ? venta.estatus_compra.estatus : '', this.doubleClick, venta, 'estatusCompra', 'text-center'
+                        ),
+                    total: setMoneyTable(venta.total),
                     fecha: setDateTableReactDom(venta.created_at, this.doubleClick, venta, 'fecha', 'text-center'),
                     tipo: this.labelIcon(venta),
                     id: venta.id,
@@ -478,7 +510,356 @@ class Ventas extends Component {
             </div>
         )
     }
-    
+    setActions = venta => {
+        const { history } = this.props
+        return(
+            <div className="w-100 d-flex justify-content-center">
+                <DropdownButton menualign="right" title = { <i className="fas fa-chevron-circle-down icon-md p-0"/> } id = 'dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-success dropdown-success" 
+                        onClick = { (e) => { 
+                                e.preventDefault(); 
+                                history.push({ pathname: '/proyectos/ventas/edit', state: { venta: venta }, formeditado: 1 }) 
+                            } } >
+                        { setNaviIcon('flaticon2-pen', 'editar') }
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                        onClick = { (e) => { 
+                                e.preventDefault(); 
+                                deleteAlert(`¿Deseas continuar?`, `Eliminarás la venta ${venta.id}`, () => { this.deleteVentaAxios(venta.id) })
+                            } } >
+                        { setNaviIcon('flaticon2-rubbish-bin', 'eliminar') }
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" 
+                        onClick = { (e) => { 
+                                e.preventDefault(); 
+                                this.openModalSee(venta)
+                            } } >
+                        { setNaviIcon('flaticon2-magnifier-tool', 'Mostrar') }
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-info dropdown-info" 
+                        onClick = { (e) => { 
+                                e.preventDefault(); 
+                                this.openModalAdjuntos(venta)
+                            } } >
+                        { setNaviIcon('flaticon-attachment', 'Adjuntos') }
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-warning dropdown-warning" 
+                        onClick = { (e) => { 
+                                e.preventDefault(); 
+                                this.openFacturaExtranjera(venta)
+                            } } >
+                        { setNaviIcon('flaticon2-paper', 'Factura extranjera') }
+                    </Dropdown.Item>
+                    {
+                        venta.factura ?
+                            <Dropdown.Item className="text-hover-dark dropdown-dark" 
+                                onClick = { (e) => { 
+                                        e.preventDefault(); 
+                                        this.openModalFacturas(venta)
+                                    } } >
+                                { setNaviIcon('flaticon2-paper', 'Facturas') }
+                            </Dropdown.Item>
+                        : <></>
+                    }
+                </DropdownButton>
+            </div>
+        )
+    }
+    openModalSee = async (venta) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/ventas/${venta.id}`, access_token).then(
+            (response) => {
+                const { venta } = response.data
+                const { modal } = this.state
+                modal.see = true
+                Swal.close()
+                this.setState({ ...this.state, modal, venta })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalAdjuntos = async (venta) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/ventas/adjuntos/${venta.id}`, access_token).then(
+            (response) => {
+                const { form, modal } = this.state
+                const { venta } = response.data
+                form.adjuntos.presupuesto.files = venta.presupuestos
+                form.adjuntos.pago.files = venta.pagos
+                form.adjuntos.facturas_pdf.files = venta.facturas_pdf
+                modal.adjuntos = true
+                Swal.close()
+                this.setState({ ...this.state, form, venta })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openFacturaExtranjera = async (venta) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/ventas/adjuntos/${venta.id}`, access_token).then(
+            (response) => {
+                const { form, modal } = this.state
+                const { venta } = response.data
+                form.adjuntos.facturas_pdf.files = venta.facturas_pdf
+                modal.facturaExtranjera = true
+                Swal.close()
+                this.setState({ ...this.state, form, modal, venta })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalFacturas = async (venta) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/ventas/facturas/${venta.id}`, access_token).then(
+            (response) => {
+                let { form } = this.state
+                const { modal } = this.state
+                const { venta } = response.data
+                form = this.clearForm()
+                if (venta)
+                    if (venta.estatus_compra)
+                        form.estatusCompra = venta.estatus_compra.id
+                Swal.close()
+                modal.facturas = true
+                this.setState({ ...this.state, form, modal, venta, facturas: venta.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalFiltros = () => {
+        const { modal } = this.state
+        modal.filters = true
+        this.setState({ ...this.state, modal })
+    }
+    openModalDeleteAdjuntos = adjunto => {
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+    }
+    handleClose = () => {
+        const { modal, data } = this.state
+        modal.filters = false
+        modal.facturas = false
+        modal.adjuntos = false
+        modal.facturaExtranjera = false
+        modal.see = false
+        data.adjuntos = []
+        this.setState({
+            ...this.state,
+            modal,
+            data,
+            venta: '',
+            facturas: [],
+            porcentaje: 0,
+            form: this.clearForm(),
+            adjuntos: [],
+        })
+    }
+    deleteFactura = id => { waitAlert(); this.deleteFacturaAxios(id) }
+    async addClienteAxios(obj) {
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
+        cadena = cadena.replace(/,/g, '').toUpperCase()
+        cadena = cadena.replace(/\./g, '').toUpperCase()
+        data.append('empresa', cadena)
+        data.append('nombre', cadena)
+        data.append('rfc', obj.rfc_receptor.toUpperCase())
+        apiPostFormData(`cliente`, data, access_token).then(
+            (response) => {
+                const { clientes } = response.data
+                const { options, data, form } = this.state
+                options.clientes = []
+                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                data.clientes = clientes
+                clientes.map((cliente) => {
+                    if (cliente.empresa === cadena) {
+                        form.cliente = cliente.empresa
+                    }
+                    return false
+                })
+                this.setState({
+                    ...this.state,
+                    form,
+                    data,
+                    options
+                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    async deleteVentaAxios(id) {
+        const { access_token } = this.props.authUser
+        apiDelete(`ventas/${id}`, access_token).then(
+            (response) => {
+                this.setState({ ...this.state, form: this.clearForm() })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.', 
+                    () => { this.getVentasAxios() } )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    sendFacturaAxios = async () => {
+        const { access_token } = this.props.authUser
+        const { form, venta } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'facturaObject':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                case 'estatusCompra':
+                    data.append(element, form[element]);
+                    break;
+                default:
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '' && element === 'factura') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        data.append('id', venta.id)
+        apiPostFormData(`v2/proyectos/ventas/${venta.id}/factura`, data, access_token).then(
+            (response) => {
+                let { form } = this.state
+                const { venta } = response.data
+                const { modal } = this.state
+                form = this.clearForm()
+                if (venta)
+                    if (venta.estatus_compra)
+                        form.estatusCompra = venta.estatus_compra.id
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', 
+                    () => { this.getVentasAxios() })
+                modal.facturas = true
+                this.setState({ ...this.state, form, venta, facturas: venta.facturas })
+                
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    deleteFacturaAxios = async (id) => {
+        const { access_token } = this.props.authUser
+        const { venta } = this.state
+        apiDelete(`v2/proyectos/ventas/${venta.id}/facturas/${id}`, access_token).then(
+            (response) => {
+                let { form } = this.state
+                const { venta } = response.data
+                form = this.clearForm()
+                if (venta)
+                    if (venta.estatus_compra)
+                        form.estatusCompra = venta.estatus_compra.id
+                Swal.close()
+                this.setState({ ...this.state, form, venta, facturas: venta.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    exportVentasAxios = async() => {
+        waitAlert()
+        const { filters } = this.state
+        const { access_token } = this.props.authUser
+        apiPostFormResponseBlob(`v3/proyectos/ventas/exportar`, { columnas: filters }, access_token).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'ventas.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Ventas fueron exportados con éxito.'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })    
+    }
+
+    addAdjuntoVentaAxios = async (files, item) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { venta } = this.state
+        const data = new FormData();
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
+            return ''
+        })
+        data.append('tipo', item)
+        data.append('id', venta.id)
+        apiPostFormData(`v2/proyectos/ventas/${venta.id}/adjuntos`, data, access_token).then(
+            (response) => {
+                const { venta } = response.data
+                const { form } = this.state
+                form.adjuntos.pago.files = venta.pagos
+                form.adjuntos.presupuesto.files = venta.presupuestos
+                form.adjuntos.facturas_pdf.files = venta.facturas_pdf
+                this.getVentasAxios()
+                this.setState({ ...this.state, form })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    deleteAdjuntoAxios = async (id) => {
+        const { access_token } = this.props.authUser
+        const { venta } = this.state
+        apiDelete(`v2/proyectos/ventas/${venta.id}/adjuntos/${id}`, access_token).then(
+            (response) => {
+                const { venta } = response.data
+                const { form } = this.state
+                form.adjuntos.presupuesto.files = venta.presupuestos
+                form.adjuntos.pago.files = venta.pagos
+                form.adjuntos.facturas_pdf.files = venta.facturas_pdf
+                this.setState({ ...this.state, form })
+                this.getVentasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    addFacturaExtranjera= async(files, item)=>{
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
+            return ''
+        })
+        apiPostFormData(`ventas/adjuntos`, data, access_token).then(
+            (response) => {
+                this.getVentasAxios()
+                this.setState({ ...this.state })
+                doneAlert('Archivo adjuntado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    onSubmitAskFactura = e => {
+        e.preventDefault()
+        waitAlert()
+        this.askFacturaAxios()
+    }
+    async askFacturaAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        apiPostForm(`facturas/ask`, form, access_token).then(
+            (response) => {
+                this.getVentasAxios()
+                this.setState({
+                    ...this.state,
+                    form: this.clearForm()
+                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
         let busqueda = undefined
@@ -577,7 +958,8 @@ class Ventas extends Component {
                 }
                 {
                     tipo === 'fecha' ?
-                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } 
+                            date = { form[tipo] } withformgroup={0} />
                     :<></>
                 }
                 {
@@ -631,39 +1013,33 @@ class Ventas extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchVentas = async( data,tipo, flag ) => {
+    patchVentas = async (data, tipo, flag) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = ''
         let newType = tipo
-        switch(tipo){
+        switch (tipo) {
             case 'area':
                 value = { area: form.area, subarea: form.subarea }
                 break
             case 'subarea':
-                if(flag === true){
+                if (flag === true) {
                     value = { area: form.area, subarea: form.subarea }
                     newType = 'area'
-                }else{ value = form[tipo] }
+                } else { value = form[tipo] }
                 break
             default:
                 value = form[tipo]
                 break
         }
         waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/ventas/${newType}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        apiPutForm(`v2/proyectos/ventas/${newType}/${data.id}`, { value: value }, access_token).then(
             (response) => {
                 this.getVentasAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La venta fue editada con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+        ).catch((error) => { catchErrors(error) })
     }
-    
     setOptions = (data, tipo) => {
         const { options } = this.state
         switch(tipo){
@@ -683,541 +1059,11 @@ class Ventas extends Component {
                 return []
             default: return []
         }
+    }    
+    getVentasAxios = tab => {
+        $(`#ventas_${tab}`).DataTable().search(JSON.stringify({})).draw();
+        this.setState({...this.state, key: tab, filters: {}})
     }
-    setAdjuntosTable = venta => {
-        let aux = []
-        venta.adjuntos.map((adjunto) => {
-            aux.push({
-                actions: this.setActionsAdjuntos(adjunto),
-                url: renderToString(
-                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
-                ),
-                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
-                id: 'adjuntos-' + adjunto.id
-            })
-            return false
-        })
-        return aux
-    }
-    setActions = venta => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' }
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            },
-            {
-                text: 'Mostrar&nbsp;información',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-magnifier-tool',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
-            },
-            {
-                text: 'Adjuntos',
-                btnclass: 'info',
-                iconclass: 'flaticon-attachment',
-                action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
-                text: 'Factura&nbsp;extranjera',
-                btnclass: 'warning',
-                iconclass: 'flaticon-interface-10',
-                action: 'facturaExtranjera',
-                tooltip: { id: 'facturaExtranjera', text: 'Factura extranjera'},
-            }
-        )
-        if (venta.factura) {
-            aux.push(
-                {
-                    text: 'Facturas',
-                    btnclass: 'dark',
-                    iconclass: 'flaticon2-paper',
-                    action: 'taxes',
-                    tooltip: { id: 'taxes', text: 'Facturas' }
-                },
-            )
-        }
-        return aux
-    }
-    setActionsAdjuntos = () => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'deleteAdjunto',
-                tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
-            })
-        return aux
-    }
-    changePageEdit = venta => {
-        const { history } = this.props
-        history.push({
-            pathname: '/proyectos/ventas/edit',
-            state: { venta: venta },
-            formeditado: 1
-        });
-    }
-    openModalDelete = (venta) => {
-        this.setState({
-            ...this.state,
-            modalDelete: true,
-            venta: venta
-        })
-    }
-    
-    openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
-    }
-
-    handleCloseFacturaExtranjera = () => {
-        const { modalFacturaExtranjera } = this.state
-        this.setState({
-            ...this.state,
-            modalFacturaExtranjera: !modalFacturaExtranjera,
-            venta: ''
-        })
-    }
-    // openModalAskFactura = venta => {
-    //     const { form } = this.state
-    //     form.empresa = venta.empresa.id.toString()
-    //     form.cliente = venta.cliente.id.toString()
-    //     form.rfc = venta.cliente.rfc
-    //     this.setState({
-    //         ...this.state,
-    //         modalAskFactura: true,
-    //         venta: venta,
-    //         form,
-    //         formeditado:1
-    //     })
-    // }
-    handleCloseDelete = () => {
-        const { modalDelete } = this.state
-        this.setState({
-            ...this.state,
-            modalDelete: !modalDelete,
-            venta: ''
-        })
-    }
-    handleCloseFacturas = () => {
-        this.setState({
-            ...this.state,
-            modalFacturas: false,
-            venta: '',
-            facturas: [],
-            porcentaje: 0,
-            form: this.clearForm()
-        })
-    }
-    handleCloseAdjuntos = () => {
-        const { data } = this.state
-        data.adjuntos = []
-        this.setState({
-            ...this.state,
-            modalAdjuntos: false,
-            modalFacturaExtranjera: false,
-            form: this.clearForm(),
-            adjuntos: [],
-            data,
-            venta: ''
-        })
-    }
-    handleCloseSee = () => {
-        this.setState({
-            ...this.state,
-            modalSee: false,
-            venta: ''
-        })
-    }
-    // handleCloseAskFactura = () => {
-    //     this.setState({
-    //         ...this.state,
-    //         modalAskFactura: false,
-    //         venta: '',
-    //         form: this.clearForm()
-    //     })
-    // }
-    deleteFactura = id => {
-        waitAlert()
-        this.deleteFacturaAxios(id)
-    }
-    
-    openModalFacturas = async(venta) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/ventas/facturas/${venta.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { venta } = response.data
-                form = this.clearForm()
-                if(venta)
-                    if(venta.estatus_compra)
-                        form.estatusCompra = venta.estatus_compra.id
-                Swal.close()
-                this.setState({ ...this.state, form, modalFacturas: true, venta, facturas: venta.facturas })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    openFacturaExtranjera = async(venta) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/ventas/adjuntos/${venta.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { form } = this.state
-                const { venta } = response.data
-                form.adjuntos.facturas_pdf.files = venta.facturas_pdf
-                Swal.close()
-                this.setState({ ...this.state, form, modalFacturaExtranjera: true, venta })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    openModalSee = async(venta) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/ventas/${venta.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { venta } = response.data
-                Swal.close()
-                this.setState({ ...this.state, modalSee: true, venta })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    openModalAdjuntos = async(venta) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/ventas/adjuntos/${venta.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { form } = this.state
-                const { venta } = response.data
-                form.adjuntos.presupuesto.files = venta.presupuestos
-                form.adjuntos.pago.files = venta.pagos
-                form.adjuntos.facturas_pdf.files = venta.facturas_pdf
-                Swal.close()
-                this.setState({ ...this.state, form, modalAdjuntos: true, venta })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    async addClienteAxios(obj) {
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
-        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-        cadena = cadena.replace(/,/g, '').toUpperCase()
-        cadena = cadena.replace(/\./g, '').toUpperCase()
-        data.append('empresa', cadena)
-        data.append('nombre', cadena)
-        data.append('rfc', obj.rfc_receptor.toUpperCase())
-        await axios.post(URL_DEV + 'cliente', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { clientes } = response.data
-                const { options, data, form } = this.state
-                options.clientes = []
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
-                data.clientes = clientes
-                clientes.map((cliente) => {
-                    if (cliente.empresa === cadena) {
-                        form.cliente = cliente.empresa
-                    }
-                    return false
-                })
-                this.setState({
-                    ...this.state,
-                    form,
-                    data,
-                    options
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    async getVentasAxios(tab) {
-        this.setState({ ...this.state, key: tab })
-        $('#kt_datatable2_ventas').DataTable().ajax.reload();
-    }
-    async getOptionsAxiosv2() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.options(`${URL_DEV}v2/proyectos/ventas`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras,
-                    clientes, metodosPago, formasPago, estatusFacturas, proyectos } = response.data
-                const { options, data } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
-                options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
-                options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
-                options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
-                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
-                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
-                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                data.clientes = clientes
-                data.empresas = empresas
-                Swal.close()
-                this.setState({
-                    ...this.state,
-                    options,
-                    data
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    async deleteVentaAxios() {
-        const { access_token } = this.props.authUser
-        const { venta } = this.state
-        await axios.delete(URL_DEV + 'ventas/' + venta.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getVentasAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    modalDelete: false,
-                    venta: ''
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    sendFacturaAxios = async() => {
-        const { access_token } = this.props.authUser
-        const { form, venta } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'facturaObject':
-                    data.append(element, JSON.stringify(form[element]))
-                    break;
-                case 'estatusCompra':
-                    data.append(element, form[element]);
-                    break;
-                default:
-                    break
-            }
-            return false
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '' && element === 'factura') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
-        })
-        data.append('id', venta.id)
-        await axios.post(`${URL_DEV}v2/proyectos/ventas/${venta.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { venta } = response.data
-                form = this.clearForm()
-                if(venta)
-                    if(venta.estatus_compra)
-                        form.estatusCompra = venta.estatus_compra.id
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.')
-                this.setState({ ...this.state, form, modalFacturas: true, venta, facturas: venta.facturas })
-                this.getVentasAxios()
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
-    deleteFacturaAxios = async(id) => {
-        const { access_token } = this.props.authUser
-        const { venta } = this.state
-        await axios.delete(`${URL_DEV}v2/proyectos/ventas/${venta.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { venta } = response.data
-                form = this.clearForm()
-                if(venta)
-                    if(venta.estatus_compra)
-                        form.estatusCompra = venta.estatus_compra.id
-                Swal.close()
-                this.setState({ ...this.state, form, venta, facturas: venta.facturas })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    async exportVentasAxios() {
-        let headers = []
-        let documento = ''
-        VENTAS_COLUMNS.map((columna, key) => {
-            if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(columna.accessor+'-kt_datatable2_ventas')
-                if (documento)
-                    if (documento.value) { headers.push({ name: columna.accessor, value: documento.value }) }
-            }
-            return false
-        })
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.post(`${URL_DEV}v2/exportar/proyectos/ventas`, { columns: headers }, { responseType: 'blob', headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'ventas.xlsx');
-                document.body.appendChild(link);
-                link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    addAdjuntoVentaAxios = async (files, item) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { venta } = this.state
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        data.append('tipo', item)
-        data.append('id', venta.id)
-        await axios.post(`${URL_DEV}v2/proyectos/ventas/${venta.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { venta } = response.data
-                const { form } = this.state
-                form.adjuntos.pago.files = venta.pagos
-                form.adjuntos.presupuesto.files = venta.presupuestos
-                form.adjuntos.facturas_pdf.files = venta.facturas_pdf
-                this.getVentasAxios()
-                this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    deleteAdjuntoAxios = async (id) => {
-        const { access_token } = this.props.authUser
-        const { venta } = this.state
-        await axios.delete(`${URL_DEV}v2/proyectos/ventas/${venta.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { venta } = response.data
-                const { form } = this.state
-                form.adjuntos.presupuesto.files = venta.presupuestos
-                form.adjuntos.pago.files = venta.pagos
-                form.adjuntos.facturas_pdf.files = venta.facturas_pdf
-                this.setState({...this.state, form })
-                this.getVentasAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    onSubmitAskFactura = e => {
-        e.preventDefault()
-        waitAlert()
-        this.askFacturaAxios()
-    }
-    async askFacturaAxios() {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(URL_DEV + 'facturas/ask', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getVentasAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    // modalAskFactura: false
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    getVentaAxios = async (id) => {
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/ventas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { venta } = response.data
-                this.setState({ ...this.state, venta: venta })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
     onSelect = value => {
         const { form } = this.state
         this.setState({
@@ -1226,90 +1072,71 @@ class Ventas extends Component {
             form
         })
     }
-    handleChangeFacturaExtranjera = (files, item)  => {
-        const { formFacturaExtranjera } = this.state
-        let aux = formFacturaExtranjera.adjuntos[item].files
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
+    setTabla = (key, tab) => {
+        if( key === tab ){
+            return(
+                <NewTable
+                    tableName = { `ventas_${key}` } subtitle = 'Listado de ventas' title = {`VENTAS - ${this.setName(tab)}`} mostrar_boton = { true }
+                    abrir_modal = { false } url = '/proyectos/compras/add' columns = { VENTAS_COLUMNS }
+                    accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
+                    filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
+                    urlRender = { `${URL_DEV}v3/proyectos/venta?tab=${key}` } type = { 'tab' }
+                />
             )
         }
-        formFacturaExtranjera['adjuntos'][item].value = files
-        formFacturaExtranjera['adjuntos'][item].files = aux
-        this.setState({...this.state,formFacturaExtranjera})
-        createAlertSA2WithActionOnClose( 
-            '¿DESEAS AGREGAR EL ARCHIVO?',
-            '',
-            () => this.addAdjuntoVentaAxios(files, 'facturas_pdf'),
-            () => this.cleanAdjuntosExtranjero(item)
-        )
     }
-    addFacturaExtranjera= async(files, item)=>{
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        await axios.post(`${URL_DEV}ventas/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getVentasAxios()
-                this.setState({ ...this.state })
-                doneAlert('Archivo adjuntado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    setTabla = (key, tab) => {
-        if( key === tab )
-            return(
-                <NewTableServerRender columns = { VENTAS_COLUMNS } title = 'Ventas' subtitle = {`Listado de ventas ${key === 'all' ? '' : 'de ' + key}`} 
-                    url = '/proyectos/ventas/add' mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'kt_datatable2_ventas' 
-                    exportar_boton = { true } onClickExport = { () => this.exportVentasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
-                    actions={{
-                        'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete },
-                        'taxes': { function: this.openModalFacturas },
-                        // 'bills': { function: this.openModalAskFactura },
-                        'adjuntos': { function: this.openModalAdjuntos },
-                        'see': { function: this.openModalSee },
-                        'facturaExtranjera': { function: this.openFacturaExtranjera},
-                    }}
-                    urlRender = { `${URL_DEV}v2/proyectos/ventas?tab=${key}` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
-            )
-    }
-
     setName = tab => {
         switch(tab){
             case 'all':
                 return 'Fases';
-            case 'Fase 1':
-            case 'Fase 2':
-            case 'Fase 3':
-                return tab;
+            case 'fase1':
+                return 'Fase 1'
+            case 'fase2':
+                return 'Fase 2'
+            case 'fase3':
+                return 'Fase 3'
             default: return '';
         }
     }
-
+    setOptionsArray = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
+        this.setState({ ...this.state, options })
+    }
+    sendFilters = filter => {
+        const { modal } = this.state
+        modal.filters = false
+        this.setState({
+            ...this.state,
+            filters: filter,
+            modal
+        })
+        this.reloadTable(filter)
+    }
+    reloadTable = (filter) => {
+        const { key } = this.state
+        let arregloFilterKeys = Object.keys(filter)
+        let aux = {}
+        arregloFilterKeys.forEach((elemento) => {
+            if(elemento === 'area'){
+                aux[elemento] = {
+                    value: filter[elemento]['value'],
+                    name: filter[elemento]['name'],
+                }
+            }else{
+                aux[elemento] = filter[elemento]
+            }
+        })
+        $(`#ventas_${key}`).DataTable().search(JSON.stringify(aux)).draw();
+    }
     render() {
-        const tabs = ['all', 'Fase 1', 'Fase 2', 'Fase 3']
-        const { modalDelete, modalFacturas, modalAdjuntos, options, form, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera, key } = this.state
+        const tabs = ['all', 'fase1', 'fase2', 'fase3']
+        const { modal, options, form, venta, facturas, data, formeditado, active, key, filters } = this.state
+        const { access_token } = this.props.authUser
         return (
             <Layout active = 'proyectos'  {...this.props}>
-                <Tabs defaultActiveKey = 'all' activeKey = { key } onSelect = { (value) => { this.getVentasAxios(value) } } >
+                <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey = 'all' activeKey = { key } 
+                    onSelect = { (value) => { this.getVentasAxios(value) } } >
                     {
                         tabs.map((tab, index) => {
                             return(
@@ -1320,11 +1147,9 @@ class Ventas extends Component {
                         })
                     }
                 </Tabs>
-                <ModalDelete title = "¿Estás seguro que deseas eliminar la venta?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
-                    onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() } } />
-
-                <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
-                    <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.onSelect}>
+                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
+                    <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" 
+                        activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="facturas" title="FACTURAS">
                             <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                                 <div className="form-group row form-group-marginless mt-4">
@@ -1351,7 +1176,8 @@ class Ventas extends Component {
                                             accept="text/xml, application/pdf"
                                             files={form['adjuntos']['factura']['files']}
                                             deleteAdjunto={this.clearFiles} multiple
-                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
+                                            classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light 
+                                                text-hover-success text-dark-50 mb-0'
                                             iconclass='flaticon2-clip-symbol text-primary'
                                         />
                                     </div>
@@ -1379,14 +1205,18 @@ class Ventas extends Component {
                         </Tab>
                     </Tabs>
                 </Modal>
-                <Modal size = "xl" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
+                <Modal size = "xl" title = "Adjuntos" show = { modal.adjuntos } handleClose = { this.handleClose } >
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos } />
                 </Modal>
-                <Modal size="lg" title="Ventas" show={modalSee} handleClose={this.handleCloseSee} >
+                <Modal size="lg" title="Ventas" show={modal.see} handleClose={this.handleClose} >
                     <VentasCard venta={venta} />
                 </Modal>
-                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseAdjuntos} >
+                <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
                     <FacturaExtranjera form={form} onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos }/>
+                </Modal>
+                <Modal size = 'xl' show = { modal.filters } handleClose = { this.handleClose } title = 'Filtros'>
+                    <VentasFilters at = { access_token } sendFilters = { this.sendFilters } filters = { filters } options={options} 
+                        setOptions={this.setOptionsArray}/> 
                 </Modal>
             </Layout>
         )

@@ -64,10 +64,10 @@ const PresupuestoDiseñoForm = React.lazy(() => import('./pages/Presupuesto/Pres
 const PresupuestosEnviados = React.lazy(() => import('./pages/Presupuesto/PresupuestosEnviados/PresupuestosEnviados') )
 const PresupuestosEnviadosFinish = React.lazy(() => import('./pages/Presupuesto/PresupuestosEnviados/PresupuestosEnviadosFinish') )
 
-const IngresosNew = React.lazy(() => import('./pages/Administracion/Ingresos/IngresosNew') )
+const Ingresos = React.lazy(() => import('./pages/Administracion/Ingresos/Ingresos') )
 const IngresosForm = React.lazy(() => import('./pages/Administracion/Ingresos/IngresosForm') )
 
-const EgresosNew = React.lazy(() => import('./pages/Administracion/Egresos/EgresosNew') )
+const Egresos = React.lazy(() => import('./pages/Administracion/Egresos/Egresos') )
 const EgresosForm = React.lazy(() => import('./pages/Administracion/Egresos/EgresosForm') )
 
 // const Contratos = React.lazy(() => import('./pages/Administracion/Contratos') )
@@ -93,11 +93,10 @@ const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/Proye
 
 const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto') )
 
-const ComprasNew = React.lazy(() => import('./pages/Proyectos/Compras/ComprasNew') )
+const Compras = React.lazy(() => import('./pages/Proyectos/Compras/Compras') )
 const ComprasForm = React.lazy(() => import('./pages/Proyectos/Compras/ComprasForm') )
 
-/* const Ventas = React.lazy(() => import('./pages/Proyectos/Ventas/Ventas') ) */
-const VentasNew = React.lazy(() => import('./pages/Proyectos/Ventas/VentasNew') )
+const Ventas = React.lazy(() => import('./pages/Proyectos/Ventas/Ventas') )
 const VentasForm = React.lazy(() => import('./pages/Proyectos/Ventas/VentasForm') )
 
 // const Ventas = React.lazy(() => import('./pages/Proyectos/Ventas') )
@@ -332,10 +331,10 @@ class App extends Component{
                     <Route path = "/proyectos/remision" exact component ={ Remision } />
                     <Route path = "/proyectos/remision/:action" exact component ={ RemisionForm } />
 
-                    <Route path = "/proyectos/compras" exact component ={ ComprasNew } />
+                    <Route path = "/proyectos/compras" exact component ={ Compras } />
                     <Route path = "/proyectos/compras/:action" exact component ={ ComprasForm } />
 
-                    <Route path = "/proyectos/ventas" exact component ={ VentasNew } />
+                    <Route path = "/proyectos/ventas" exact component ={ Ventas } />
                     <Route path = "/proyectos/ventas/:action" exact component ={ VentasForm } />
 
                     <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
@@ -361,10 +360,10 @@ class App extends Component{
                     
                     {/*  ANCHOR Routes for administracion */}
 
-                    <Route path = "/administracion/egresos" exact component ={ EgresosNew } />
+                    <Route path = "/administracion/egresos" exact component ={ Egresos } />
                     <Route path = "/administracion/egresos/:action" exact component ={ EgresosForm } />
 
-                    <Route path = "/administracion/ingresos" exact component ={ IngresosNew } />
+                    <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
                     <Route path = "/administracion/ingresos/:action" exact component ={ IngresosForm } />
 
                     {/* <Route path = "/administracion/contratos" exact component ={ Contratos } /> */}

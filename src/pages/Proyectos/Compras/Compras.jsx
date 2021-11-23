@@ -1,32 +1,34 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
-import { connect } from 'react-redux'
-import axios from 'axios'
+import $ from 'jquery'
 import Swal from 'sweetalert2'
-import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, setCustomeDescripcionReactDom } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
-import Layout from '../../../components/layout/layout'
-import { Button, FileInput, SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
-import { Modal, ModalDelete } from '../../../components/singles'
-import { FacturaTable } from '../../../components/tables'
-import { ComprasCard } from '../../../components/cards'
-import { Form } from 'react-bootstrap'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import {AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
-import Select from '../../../components/form-components/Select'
+import { connect } from 'react-redux'
 import { Update } from '../../../components/Lottie'
+import { Modal } from '../../../components/singles'
+import Layout from '../../../components/layout/layout'
+import { ComprasCard } from '../../../components/cards'
+import { NewTable } from '../../../components/NewTables'
+import { FacturaTable } from '../../../components/tables'
+import { ComprasFilters } from '../../../components/filters'
+import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
 import { printSwalHeader } from '../../../functions/printers'
-import $ from "jquery";
-import { setSingleHeader } from '../../../functions/routers'
+import Select from '../../../components/form-components/Select'
+import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
+import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostFormResponseBlob, catchErrors, apiPutForm } from '../../../functions/api'
+import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, 
+    createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
+import { Button, FileInput, SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import { setOptions, setOptionsWithLabel, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
+    setNaviIcon, setCustomeDescripcionReactDom, setDateTableReactDom } from '../../../functions/setters'
 class Compras extends Component {
     state = {
-        // modal: false,
-        modalDelete: false,
-        modalFacturas: false,
-        modalAskFactura: false,
-        modalSee: false,
-        modalFacturaExtranjera: false,
+        modal: {
+            facturas: false,
+            see: false,
+            facturaExtranjera: false,
+            adjuntos: false,
+            filters: false
+        },
         title: 'Nueva compra',
         form: {
             factura: 'Sin factura',
@@ -107,7 +109,8 @@ class Compras extends Component {
         compra: '',
         porcentaje: '',
         facturas: [],
-        adjuntos: []
+        adjuntos: [],
+        filters: {},
     }
 
     componentDidMount() {
@@ -126,13 +129,49 @@ class Compras extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                this.setState({ ...this.state, modalSee: true })
+                const { modal, filters } = this.state
+                filters.identificador = id
+                modal.see = true
+                this.setState({ ...this.state, modal, filters })
+                this.reloadTable(filters)
                 this.getCompraAxios(id)
-                setTimeout(() => {
-                    $('#compras').DataTable().column(1).search(id, false, false).ajax.reload();
-                }, 1000);
             }
         }
+    }
+    getOptionsAxios = async () => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        apiOptions(`v2/proyectos/compras`, access_token).then(
+            (response) => {
+                Swal.close()
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
+                    proveedores, formasPago, metodosPago, estatusFacturas } = response.data
+                const { options, data } = this.state
+                options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
+                options['proveedores'] = setOptionsWithLabel(proveedores, 'razon_social', 'id')
+                options['areas'] = setOptionsWithLabel(areas, 'nombre', 'id')
+                options['proyectos'] = setOptionsWithLabel(proyectos, 'nombre', 'id')
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
+                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
+                options['estatusFacturas'] = setOptionsWithLabel(estatusFacturas, 'estatus', 'id')
+                options['formasPago'] = setOptionsWithLabel(formasPago, 'nombre', 'id')
+                options['metodosPago'] = setOptionsWithLabel(metodosPago, 'nombre', 'id')
+                data.proveedores = proveedores
+                data.empresas = empresas
+                this.setState({ ...this.state, options, data })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    getCompraAxios = async (id) => {
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/compras/${id}`, access_token).then(
+            (response) => {
+                const { compra } = response.data
+                this.setState({ ...this.state, compra: compra })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
     
     clearForm = () => {
@@ -195,8 +234,7 @@ class Compras extends Component {
             form
         })
     }
-
-    handleChange = (files, item)  => {
+    handleChange = (files, item) => {
         const { form } = this.state
         let aux = form.adjuntos[item].files
         for (let counter = 0; counter < files.length; counter++) {
@@ -211,7 +249,7 @@ class Compras extends Component {
         }
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
-        this.setState({...this.state,form})
+        this.setState({ ...this.state, form })
         createAlertSA2WithActionOnClose(
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
@@ -219,19 +257,17 @@ class Compras extends Component {
             () => this.cleanAdjuntos(item)
         )
     }
-
     cleanAdjuntos = (item) => {
         const { form } = this.state
         let aux = []
         form.adjuntos[item].files.map((file) => {
-            if(file.id) aux.push(file)
+            if (file.id) aux.push(file)
             return ''
         })
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
-        this.setState({...this.state,form})
+        this.setState({ ...this.state, form })
     }
-    
     onChangeAdjunto = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
@@ -326,7 +362,7 @@ class Compras extends Component {
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
-                            if(element.rfc)
+                            if (element.rfc)
                                 if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase()) {
                                     auxProveedor = element
                                 }
@@ -344,12 +380,13 @@ class Compras extends Component {
                                 options['contratos'] = setOptions(auxProveedor.contratos, 'nombre', 'id')
                             }
                         } else {
-                            if(obj.nombre_emisor === ''){
+                            if (obj.nombre_emisor === '') {
                                 const { history } = this.props
-                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/leads/proveedores')
-                            }else {
-                                createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
-                            }
+                                errorAlertRedirectOnDissmis(
+                                    'LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', 
+                                    history, 
+                                    '/leads/proveedores')
+                            } else { createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj)) }
                         }
                         if (auxEmpresa && auxProveedor) {
                             Swal.close()
@@ -401,7 +438,6 @@ class Compras extends Component {
         })
     }
     setCompras = compras => {
-        
         let aux = []
         let _aux = []
         compras.map((compra) => {
@@ -425,26 +461,29 @@ class Compras extends Component {
             aux.push(
                 {
                     actions: this.setActions(compra),
-                    identificador: renderToString(setTextTableCenter(compra.id)),
-                    cuenta: renderToString(setArrayTable(
+                    identificador: setTextTableCenter(compra.id),
+                    cuenta: setArrayTable(
                         [
                             { name: 'Empresa', text: compra.empresa ? compra.empresa.name : '' },
                             { name: 'Cuenta', text: compra.cuenta ? compra.cuenta.nombre : '' },
                             { name: '# de cuenta', text: compra.cuenta ? compra.cuenta.numero : '' }
                         ],'153px'
-                    )),
+                    ),
                     proyecto: setTextTableReactDom(compra.proyecto ? compra.proyecto.nombre : '', this.doubleClick, compra, 'proyecto', 'text-center'),
-                    proveedor: renderToString(setTextTableCenter(compra.proveedor ? compra.proveedor.razon_social : '')),
-                    factura: renderToString(setTextTable(compra.factura ? 'Con factura' : 'Sin factura')),
-                    monto: renderToString(setMoneyTable(compra.monto)),
-                    comision: renderToString(setMoneyTable(compra.comision ? compra.comision : 0.0)),
-                    impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 'text-center'),
+                    proveedor: setTextTableCenter(compra.proveedor ? compra.proveedor.razon_social : ''),
+                    factura: setTextTable(compra.factura ? 'Con factura' : 'Sin factura'),
+                    monto: setMoneyTable(compra.monto),
+                    comision: setMoneyTable(compra.comision ? compra.comision : 0.0),
+                    impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 
+                        'text-center'),
                     tipoPago: setTextTableReactDom(compra.tipo_pago.tipo, this.doubleClick, compra, 'tipoPago', 'text-center'),
-                    descripcion: setCustomeDescripcionReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 'text-justify'),
+                    descripcion: setCustomeDescripcionReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 
+                        'text-justify'),
                     area: setTextTableReactDom(compra.area ? compra.area.nombre : '', this.doubleClick, compra, 'area', 'text-center'),
                     subarea: setTextTableReactDom(compra.subarea ? compra.subarea.nombre : '', this.doubleClick, compra, 'subarea', 'text-center'),
-                    estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 'text-center'),
-                    total: renderToString(setMoneyTable(compra.total)),
+                    estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 
+                        'text-center'),
+                    total: setMoneyTable(compra.total),
                     fecha: setDateTableReactDom(compra.created_at, this.doubleClick, compra, 'fecha', 'text-center'),
                     tipo: this.labelIcon(compra),
                     id: compra.id,
@@ -455,25 +494,320 @@ class Compras extends Component {
         })
         return aux
     }
-
-    labelIcon(compra){
-        if(compra.hasTicket)
-            return(
-                <a href = {`/calidad/tickets?id=${compra.ticketId}`}>
+    labelIcon(compra) {
+        if (compra.hasTicket)
+            return (
+                <a href={`/calidad/tickets?id=${compra.ticketId}`}>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                         <i style={{ color: "#9E9D24" }} className={`las la-ticket-alt icon-xl mr-2`} />
                         <u><span className="text-hover-ticket font-size-11px font-weight-bolder">{`ticket - ${compra.ticketIdentificador}`}</span></u>
                     </div>
                 </a>
             )
-        return(
+        return (
             <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                 <i style={{ color: "#EF6C00" }} className={`las la-hard-hat icon-xl mr-2`} />
                 <span className="font-size-11px">{`obra`}</span>
             </div>
         )
     }
+    setActions = compra => {
+        const { history } = this.props
+        return (
+            <div className="w-100 d-flex justify-content-center">
+                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-success dropdown-success" 
+                        onClick={(e) => { e.preventDefault(); history.push({ pathname: '/proyectos/compras/edit', state: { compra: compra }, formeditado: 1 }) }} >
+                        {setNaviIcon('flaticon2-pen', 'editar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                        onClick={(e) => { e.preventDefault(); deleteAlert(`ELIMINARÁS LA COMPRA CON IDENTIFICADOR: ${compra.id}`, 
+                            '¿DESEAS CONTINUAR?', () => this.deleteCompraAxios(compra.id)) }}>
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(compra) }}>
+                        {setNaviIcon('flaticon2-magnifier-tool', 'Ver compra')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(compra) }}>
+                        {setNaviIcon('flaticon-attachment', 'Adjuntos')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openFacturaExtranjera(compra) }}>
+                        {setNaviIcon('flaticon-interface-10', 'Factura extranjera')}
+                    </Dropdown.Item>
+                    {
+                        compra.factura ?
+                            <Dropdown.Item className="text-hover-dark dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalFacturas(compra) }}>
+                                {setNaviIcon('flaticon2-download-1', 'Facturas')}
+                            </Dropdown.Item>
+                            : <></>
+                    }
+                </DropdownButton>
+            </div>
+        )
+    }
+    openModalSee = async (compra) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/compras/${compra.id}`, access_token).then(
+            (response) => {
+                const { compra } = response.data
+                const { modal } = this.state
+                modal.see = true
+                Swal.close()
+                this.setState({ ...this.state, modal, compra })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalAdjuntos = async (compra) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/compras/adjuntos/${compra.id}`, access_token).then(
+            (response) => {
+                const { form, modal } = this.state
+                const { compra } = response.data
+                form.adjuntos.presupuesto.files = compra.presupuestos
+                form.adjuntos.pago.files = compra.pagos
+                modal.adjuntos = true
+                Swal.close()
+                this.setState({ ...this.state, form, modal, compra })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openFacturaExtranjera = async (compra) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/compras/adjuntos/${compra.id}`, access_token).then(
+            (response) => {
+                const { form, modal } = this.state
+                const { compra } = response.data
+                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
+                modal.facturaExtranjera = true
+                Swal.close()
+                this.setState({ ...this.state, form, modal, compra })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalFacturas = async (compra) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiGet(`v2/proyectos/compras/facturas/${compra.id}`, access_token).then(
+            (response) => {
+                let { form } = this.state
+                const { compra } = response.data
+                const { modal } = this.state
+                form = this.clearForm()
+                if (compra)
+                    if (compra.estatus_compra)
+                        form.estatusCompra = compra.estatus_compra.id
+                Swal.close()
+                modal.facturas = true
+                this.setState({ ...this.state, form, modal, compra, facturas: compra.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    openModalFiltros = () => {
+        const { modal } = this.state
+        modal.filters = true
+        this.setState({ ...this.state, modal })
+    }
+    handleClose = () => {
+        const { data, modal } = this.state
+        data.adjuntos = []
+        modal.see = false
+        modal.facturaExtranjera = false
+        modal.adjuntos = false
+        modal.facturas = false
+        modal.filters = false
+        this.setState({
+            ...this.state,
+            modal,
+            form: this.clearForm(),
+            facturas: [],
+            adjuntos: [],
+            porcentaje: 0,
+            compra: '',
+            data
+        })
+    }
+    openModalDeleteAdjuntos = adjunto => {
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+    }
+    deleteFactura = id => { waitAlert(); this.deleteFacturaAxios(id) }
+    addProveedorAxios = async (obj) => {
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
+        cadena = cadena.replace(/,/g, '').toUpperCase()
+        cadena = cadena.replace(/\./g, '').toUpperCase()
+        data.append('nombre', cadena)
+        data.append('razonSocial', cadena)
+        data.append('rfc', obj.rfc_emisor.toUpperCase())
+        apiPostFormData(`proveedores`, data, access_token).then(
+            (response) => {
+                const { proveedores } = response.data
+                const { options, data, form } = this.state
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                data.proveedores = proveedores
+                proveedores.map((proveedor) => {
+                    if (proveedor.razon_social === cadena)
+                        form.proveedor = proveedor.id.toString()
+                    return false
+                })
+                this.setState({ ...this.state, form, data, options })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proveedor fue registrado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    deleteCompraAxios = async (id) => {
+        const { access_token } = this.props.authUser
+        apiDelete(`compras/${id}`, access_token).then(
+            (response) => {
+                const { filters } = this.state
+                this.setState({ ...this.state, form: this.clearForm() })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La compra fue eliminada con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    sendFacturaAxios = async () => {
+        const { access_token } = this.props.authUser
+        const { form, compra } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'facturaObject':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                case 'estatusCompra':
+                    data.append(element, form[element]);
+                    break;
+                default: break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '' && element === 'factura') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+                return false
+            }
+            return false
+        })
+        data.append('id', compra.id)
+        apiPostFormData(`v2/proyectos/compras/${compra.id}/factura`, data, access_token).then(
+            (response) => {
+                let { form } = this.state
+                const { compra } = response.data
+                const { modal, filters } = this.state
+                modal.facturas = true
+                form = this.clearForm()
+                if (compra)
+                    if (compra.estatus_compra)
+                        form.estatusCompra = compra.estatus_compra.id
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.', 
+                    () => { this.reloadTable(filters) })
+                this.setState({ ...this.state, form, modal, compra, facturas: compra.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    deleteFacturaAxios = async (id) => {
+        const { access_token } = this.props.authUser
+        const { compra } = this.state
+        apiDelete(`v2/proyectos/compras/${compra.id}/facturas/${id}`, access_token).then(
+            (response) => {
+                let { form } = this.state
+                const { compra } = response.data
+                form = this.clearForm()
+                if (compra)
+                    if (compra.estatus_compra)
+                        form.estatusCompra = compra.estatus_compra.id
+                Swal.close()
+                this.setState({ ...this.state, form, compra, facturas: compra.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
 
+    exportComprasAxios = async () => {
+        waitAlert()
+        const { filters } = this.state
+        const { access_token } = this.props.authUser
+        apiPostFormResponseBlob(`v3/proyectos/compra/exportar`, { columnas: filters }, access_token).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'compras.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Las compras fueron exportados con éxito.'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    addAdjuntoCompraAxios = async (files, item) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { compra } = this.state
+        const data = new FormData();
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
+            return ''
+        })
+        data.append('tipo', item)
+        data.append('id', compra.id)
+        apiPostFormData(`v2/proyectos/compras/${compra.id}/adjuntos`, data, access_token).then(
+            (response) => {
+                const { compra } = response.data
+                const { form, filters } = this.state
+                form.adjuntos.pago.files = compra.pagos
+                form.adjuntos.presupuesto.files = compra.presupuestos
+                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
+                this.setState({ ...this.state, form })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    deleteAdjuntoAxios = async (id) => {
+        const { access_token } = this.props.authUser
+        const { compra } = this.state
+        apiDelete(`v2/proyectos/compras/${compra.id}/adjuntos/${id}`, access_token).then(
+            (response) => {
+                const { compra } = response.data
+                const { form, filters } = this.state
+                form.adjuntos.presupuesto.files = compra.presupuestos
+                form.adjuntos.pago.files = compra.pagos
+                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
+                this.setState({ ...this.state, form })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.', () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+    addFacturaExtranjera = async (files, item) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
+            return ''
+        })
+        apiPostFormData(`compras/adjuntos`, data, access_token).then(
+            (response) => {
+                this.setState({ ...this.state })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
         let busqueda = undefined
@@ -572,7 +906,8 @@ class Compras extends Component {
                 }
                 {
                     tipo === 'fecha' &&
-                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } 
+                            date = { form[tipo] } withformgroup={0} />
                 }
                 {
                     tipo === 'proyecto' ?
@@ -644,498 +979,84 @@ class Compras extends Component {
             default: return []
         }
     }
-    
-    setActions = compra => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' },
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
-            },
-            {
-                text: 'Mostrar&nbsp;información',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-magnifier-tool',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
-            },
-            {
-                text: 'Adjuntos',
-                btnclass: 'info',
-                iconclass: 'flaticon-attachment',
-                action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos'}
-            },
-            {
-                text: 'Factura&nbsp;extranjera',
-                btnclass: 'warning',
-                iconclass: 'flaticon-interface-10',
-                action: 'facturaExtranjera',
-                tooltip: { id: 'facturaExtranjera', text: 'Factura extranjera'},
-            }
-        )
-        if (compra.factura) {
-            aux.push(
-                {
-                    text: 'Facturas',
-                    btnclass: 'dark',
-                    iconclass: 'flaticon2-paper',
-                    action: 'facturas',
-                    tooltip: { id: 'taxes', text: 'Facturas' },
-                }
-            )
-        }
-        return aux
-    }
-    
-    changePageEdit = compra => {
-        const { history } = this.props
-        history.push({
-            pathname: '/proyectos/compras/edit',
-            state: { compra: compra },
-            formeditado: 1
-        });
-    }
-    openModalDelete = (compra) => {
-        this.setState({
-            ...this.state,
-            modalDelete: true,
-            compra: compra
-        })
-    }
-
-    openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
-    }
-
-    handleCloseDelete = () => {
-        const { modalDelete } = this.state
-        this.setState({
-            ...this.state,
-            modalDelete: !modalDelete,
-            compra: ''
-        })
-    }
-    handleCloseFacturas = () => {
-        this.setState({
-            ...this.state,
-            modalFacturas: false,
-            venta: '',
-            facturas: [],
-            porcentaje: 0,
-            form: this.clearForm()
-        })
-    }
-    handleCloseAdjuntos = () => {
-        const { data } = this.state
-        data.adjuntos = []
-        this.setState({
-            ...this.state,
-            modalAdjuntos: false,
-            modalFacturaExtranjera: false,
-            form: this.clearForm(),
-            adjuntos: [],
-            data
-        })
-    }
-
-    handleCloseSee = () => { this.setState({ ...this.state, modalSee: false, compra: '' }) }
-    deleteFactura = id => { waitAlert(); this.deleteFacturaAxios(id) }
-
-    openModalSee = async(compra) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { compra } = response.data
-                Swal.close()
-                this.setState({ ...this.state, modalSee: true, compra })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    openFacturaExtranjera = async(compra) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/adjuntos/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { form } = this.state
-                const { compra } = response.data
-                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
-                Swal.close()
-                this.setState({ ...this.state, form, modalFacturaExtranjera: true, compra })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    openModalAdjuntos = async(compra) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/adjuntos/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { form } = this.state
-                const { compra } = response.data
-                form.adjuntos.presupuesto.files = compra.presupuestos
-                form.adjuntos.pago.files = compra.pagos
-                Swal.close()
-                this.setState({ ...this.state, form, modalAdjuntos: true, compra })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
-    openModalFacturas = async(compra) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/facturas/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { compra } = response.data
-                form = this.clearForm()
-                if(compra)
-                    if(compra.estatus_compra)
-                        form.estatusCompra = compra.estatus_compra.id
-                Swal.close()
-                this.setState({ ...this.state, form, modalFacturas: true, compra, facturas: compra.facturas })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    addProveedorAxios = async (obj) => {
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
-        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-        cadena = cadena.replace(/,/g, '').toUpperCase()
-        cadena = cadena.replace(/\./g, '').toUpperCase()
-        data.append('nombre', cadena)
-        data.append('razonSocial', cadena)
-        data.append('rfc', obj.rfc_emisor.toUpperCase())
-        await axios.post(URL_DEV + 'proveedores', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { proveedores } = response.data
-                const { options, data, form } = this.state
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                data.proveedores = proveedores
-                proveedores.map((proveedor) => {
-                    if (proveedor.razon_social === cadena)
-                        form.proveedor = proveedor.id.toString()
-                    return false
-                })
-                this.setState({ ...this.state, form, data, options })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    getComprasAxios = async() => { $('#compras').DataTable().ajax.reload(); }
-    
-    getOptionsAxios = async() => {
-        const { access_token } = this.props.authUser
-        waitAlert()
-        await axios.options(`${URL_DEV}v2/proyectos/compras`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                Swal.close()
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
-                    proveedores, formasPago, metodosPago, estatusFacturas } = response.data
-                const { options, data } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
-                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
-                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
-                options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
-                options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
-                data.proveedores = proveedores
-                data.empresas = empresas
-                this.setState({ ...this.state, options, data })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    getCompraAxios = async (id) => {
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/proyectos/compras/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { compra } = response.data
-                this.setState({ ...this.state, compra: compra })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    deleteCompraAxios = async() => {
-        const { access_token } = this.props.authUser
-        const { compra } = this.state
-        await axios.delete(URL_DEV + 'compras/' + compra.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getComprasAxios()
-                this.setState({ ...this.state, form: this.clearForm(), modalDelete: false, })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    sendFacturaAxios = async() => {
-        const { access_token } = this.props.authUser
-        const { form, compra } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'facturaObject':
-                    data.append(element, JSON.stringify(form[element]))
-                    break;
-                case 'estatusCompra':
-                    data.append(element, form[element]);
-                    break;
-                default: break
-            }
-            return false
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '' && element === 'factura') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-                return false
-            }
-            return false
-        })
-        data.append('id', compra.id)
-        await axios.post(`${URL_DEV}v2/proyectos/compras/${compra.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { compra } = response.data
-                form = this.clearForm()
-                if(compra)
-                    if(compra.estatus_compra)
-                        form.estatusCompra = compra.estatus_compra.id
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.')
-                this.setState({ ...this.state, form, modalFacturas: true, compra, facturas: compra.facturas })
-                this.getComprasAxios()
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
-    deleteFacturaAxios = async(id) => {
-        const { access_token } = this.props.authUser
-        const { compra } = this.state
-        await axios.delete(`${URL_DEV}v2/proyectos/compras/${compra.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                let { form } = this.state
-                const { compra } = response.data
-                form = this.clearForm()
-                if(compra)
-                    if(compra.estatus_compra)
-                        form.estatusCompra = compra.estatus_compra.id
-                Swal.close()
-                this.setState({ ...this.state, form, compra, facturas: compra.facturas })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    exportComprasAxios = async() =>{
-        let headers = []
-        let documento = ''
-        COMPRAS_COLUMNS.map((columna, key) => {
-            if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(columna.accessor+'-compras')
-                if (documento) {
-                    if (documento.value) {
-                        headers.push({
-                            name: columna.accessor,
-                            value: documento.value
-                        })
-                    }
-                }
-            }
-            return false
-        })
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.post(`${URL_DEV}v2/exportar/proyectos/compras`, { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'compras.xlsx');
-                document.body.appendChild(link);
-                link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    addAdjuntoCompraAxios = async(files, item)=>{
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { compra } = this.state
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        data.append('tipo', item)
-        data.append('id', compra.id)
-        await axios.post(`${URL_DEV}v2/proyectos/compras/${compra.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { compra } = response.data
-                const { form } = this.state
-                form.adjuntos.pago.files = compra.pagos
-                form.adjuntos.presupuesto.files = compra.presupuestos
-                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
-                this.getComprasAxios()
-                this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    deleteAdjuntoAxios = async (id) => {
-        const { access_token } = this.props.authUser
-        const { compra } = this.state
-        await axios.delete(`${URL_DEV}v2/proyectos/compras/${compra.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { compra } = response.data
-                const { form } = this.state
-                form.adjuntos.presupuesto.files = compra.presupuestos
-                form.adjuntos.pago.files = compra.pagos
-                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
-                this.setState({...this.state, form })
-                this.getComprasAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    addFacturaExtranjera= async(files, item)=>{
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        await axios.post(`${URL_DEV}compras/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.setState({ ...this.state })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    
-    patchCompras = async( data,tipo,flag ) => {
+    patchCompras = async (data, tipo, flag) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = ''
         let newType = tipo
-        switch(tipo){
+        switch (tipo) {
             case 'area':
                 value = { area: form.area, subarea: form.subarea }
                 break
             case 'subarea':
-                if(flag === true){
+                if (flag === true) {
                     value = { area: form.area, subarea: form.subarea }
                     newType = 'area'
-                }else{ value = form[tipo] }
+                } else { value = form[tipo] }
                 break
             default:
                 value = form[tipo]
                 break
         }
         waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/compras/${newType}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        apiPutForm(`v2/proyectos/compras/${newType}/${data.id}`, { value: value }, access_token).then(
             (response) => {
-                this.getComprasAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+                const { filters } = this.state
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.', () => { this.reloadTable(filters) })
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+        ).catch((error) => { catchErrors(error) })
     }
-
+    setOptionsArray = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
+        this.setState({ ...this.state, options })
+    }
+    sendFilters = filter => {
+        const { modal } = this.state
+        modal.filters = false
+        this.setState({
+            ...this.state,
+            filters: filter,
+            modal
+        })
+        this.reloadTable(filter)
+    }
+    reloadTable = (filter) => {
+        let arregloFilterKeys = Object.keys(filter)
+        let aux = {}
+        arregloFilterKeys.forEach((elemento) => {
+            if(elemento === 'area'){
+                aux[elemento] = {
+                    value: filter[elemento]['value'],
+                    name: filter[elemento]['name'],
+                }
+            }else{
+                aux[elemento] = filter[elemento]
+            }
+        })
+        $(`#compras`).DataTable().search(JSON.stringify(aux)).draw();
+    }
     render() {
-        const {modalDelete, modalFacturas, modalAdjuntos, form, options, facturas, compra, modalSee, modalFacturaExtranjera } = this.state
+        const { modal, form, options, facturas, compra, filters } = this.state
+        const { access_token } = this.props.authUser
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender columns = { COMPRAS_COLUMNS } title = 'Compras' subtitle = 'Listado de compras' url = '/proyectos/compras/add'
-                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'compras' exportar_boton = { true }
-                    actions={{
-                        'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete },
-                        'facturas': { function: this.openModalFacturas },
-                        'adjuntos': { function: this.openModalAdjuntos },
-                        'see': { function: this.openModalSee },
-                        'facturaExtranjera': { function: this.openFacturaExtranjera}
-                    }}
-                    onClickExport = { () => this.exportComprasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setCompras }
-                    urlRender = { `${URL_DEV}v2/proyectos/compras`} validateFactura = { true } tipo_validacion = 'compras' cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
-                <ModalDelete title = "¿Estás seguro que deseas eliminar la compra?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }} />
-                <Modal size = "xl" title = "Facturas" show = { modalFacturas } handleClose = { this.handleCloseFacturas } >
+                <NewTable
+                    tableName = 'compras'
+                    subtitle = 'Listado de compras'
+                    title = 'Compras'
+                    mostrar_boton = { true }
+                    abrir_modal = { false }
+                    accessToken = { access_token }
+                    columns = { COMPRAS_COLUMNS }
+                    setter = { this.setCompras }
+                    url = '/proyectos/compras/add'
+                    urlRender = {`${URL_DEV}v3/proyectos/compra`} 
+                    filterClick = { this.openModalFiltros }
+                    exportar_boton = { true}
+                    onClickExport = { () => this.exportComprasAxios() }
+                />
+                <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleClose} >
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0 pt-4">
                             <div className="col-md-6 px-2">
@@ -1176,14 +1097,17 @@ class Compras extends Component {
                     <div className="separator separator-dashed separator-border-2 mb-6 mt-5"></div>
                     <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
                 </Modal>
-                <Modal size = "xl" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
-                    <AdjuntosForm form = { form } onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos } />
+                <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >
+                    <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
                 </Modal>
-                <Modal size="lg" title="Compra" show={modalSee} handleClose={this.handleCloseSee} >
+                <Modal size="lg" title="Compra" show={modal.see} handleClose={this.handleClose} >
                     <ComprasCard compra={compra} />
                 </Modal>
-                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseAdjuntos} >
-                    <FacturaExtranjera form={form}  onChangeAdjunto = { this.handleChange }  deleteFile = { this.openModalDeleteAdjuntos }/>
+                <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
+                    <FacturaExtranjera form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
+                </Modal>
+                <Modal size='xl' show={modal.filters} handleClose={this.handleClose} title='Filtros'>
+                    <ComprasFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptionsArray} />
                 </Modal>
             </Layout>
         )
@@ -1191,6 +1115,6 @@ class Compras extends Component {
 }
 
 const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({ })
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Compras);
