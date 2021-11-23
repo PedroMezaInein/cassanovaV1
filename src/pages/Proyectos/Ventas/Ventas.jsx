@@ -16,8 +16,7 @@ import { Dropdown, DropdownButton, Form } from 'react-bootstrap'
 import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
 import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
-import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, 
-    customInputAlert } from '../../../functions/alert'
+import { waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
     setCustomeDescripcionReactDom, setNaviIcon, setOptionsWithLabel } from '../../../functions/setters'
 class Ventas extends Component {
@@ -102,15 +101,6 @@ class Ventas extends Component {
                     placeholder: 'Facturas extranjeras',
                     files: []
                 }
-            }
-        },
-        formFacturaExtranjera:{
-            adjuntos: {
-                factura: {
-                    value: '',
-                    placeholder: 'Factura extranjera',
-                    files: []
-                },
             }
         },
         key: 'all',
@@ -270,170 +260,6 @@ class Ventas extends Component {
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
         this.setState({...this.state,form})
-    }
-    onChangeAdjunto = e => {
-        const { form, data, options } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            if (name === 'factura') {
-                let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
-                if (extension.toUpperCase() === 'XML') {
-                    waitAlert()
-                    const reader = new FileReader()
-                    reader.onload = async (e) => {
-                        let auxiliar = ''
-                        const text = (e.target.result)
-                        var XMLParser = require('react-xml-parser');
-                        var xml = new XMLParser().parseFromString(text);
-                        const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
-                        const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
-                        const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
-                        const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
-                        let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
-                        let obj = {
-                            rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
-                            nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
-                            uso_cfdi: receptor.attributes.UsoCFDI ? receptor.attributes.UsoCFDI : '',
-                            rfc_emisor: emisor.attributes.Rfc ? emisor.attributes.Rfc : '',
-                            nombre_emisor: emisor.attributes.Nombre ? emisor.attributes.Nombre : '',
-                            regimen_fiscal: emisor.attributes.RegimenFiscal ? emisor.attributes.RegimenFiscal : '',
-                            lugar_expedicion: xml.attributes.LugarExpedicion ? xml.attributes.LugarExpedicion : '',
-                            fecha: xml.attributes.Fecha ? new Date(xml.attributes.Fecha) : '',
-                            metodo_pago: xml.attributes.MetodoPago ? xml.attributes.MetodoPago : '',
-                            tipo_de_comprobante: xml.attributes.TipoDeComprobante ? xml.attributes.TipoDeComprobante : '',
-                            total: xml.attributes.Total ? xml.attributes.Total : '',
-                            subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
-                            tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
-                            moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
-                            numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
-                            descripcion: concepto.attributes.Descripcion,
-                            folio: xml.attributes.Folio ? xml.attributes.Folio : '',
-                            serie: xml.attributes.Serie ? xml.attributes.Serie : '',
-                        }
-                        let tipoRelacion = ''
-                        if (relacionados) {
-                            if (relacionados.length) {
-                                relacionados = relacionados[0]
-                                tipoRelacion = relacionados.attributes.TipoRelacion
-                                let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
-                                uuidRelacionado = uuidRelacionado.attributes.UUID
-                                obj.tipo_relacion = tipoRelacion
-                                obj.uuid_relacionado = uuidRelacionado
-                            }
-                        }
-                        if (obj.numero_certificado === '') {
-                            let NoCertificado = text.search('NoCertificado="')
-                            if (NoCertificado)
-                                obj.numero_certificado = text.substring(NoCertificado + 15, NoCertificado + 35)
-                        }
-                        if (obj.subtotal === '') {
-                            let Subtotal = text.search('SubTotal="')
-                            if (Subtotal)
-                                Subtotal = text.substring(Subtotal + 10)
-                            auxiliar = Subtotal.search('"')
-                            Subtotal = Subtotal.substring(0, auxiliar)
-                            obj.subtotal = Subtotal
-                        }
-                        auxiliar = ''
-                        if (obj.total === '') {
-                            let Total = text.search('Total="')
-                            if (Total)
-                                Total = text.substring(Total + 7)
-                            auxiliar = Total.search('"')
-                            Total = Total.substring(0, aux)
-                            obj.total = Total
-                        }
-                        if (obj.fecha === '') {
-                            let Fecha = text.search('Fecha="')
-                            if (Fecha)
-                                Fecha = text.substring(Fecha + 7)
-                                auxiliar = Fecha.search('"')
-                            Fecha = Fecha.substring(0, auxiliar)
-                            obj.fecha = Fecha
-                        }
-                        let auxEmpresa = ''
-                        data.empresas.find(function (element, index) {
-                            if (element.rfc === obj.rfc_emisor) {
-                                auxEmpresa = element
-                            }
-                            return false
-                        });
-                        let auxCliente = ''
-                        data.clientes.find(function (element, index) {
-                            if(element.rfc)
-                                if (element.rfc.toUpperCase() === obj.rfc_receptor.toUpperCase()) {
-                                    auxCliente = element
-                                }
-                            return false
-                        });
-                        if (auxEmpresa) {
-                            options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
-                            form.empresa = auxEmpresa.name
-                        } else {
-                            errorAlert('No existe la empresa')
-                        }
-                        if (auxCliente) {
-                            options['proyectos'] = setOptions(auxCliente.proyectos, 'nombre', 'id')
-                            form.cliente = auxCliente.empresa
-                            if (auxCliente.contratos) {
-                                options['contratos'] = setOptions(auxCliente.contratos, 'nombre', 'id')
-                            }
-                        } else {
-                            if(obj.nombre_receptor === ''){
-                                const { history } = this.props
-                                errorAlertRedirectOnDissmis(
-                                    'LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL CLIENTE DESDE LA SECCIÓN DE CLIENTES EN LEADS.', 
-                                    history, 
-                                    '/leads/clientes')
-                            }else { createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj)) }
-                        }
-                        if (auxEmpresa && auxCliente) { Swal.close() }
-                        form.facturaObject = obj
-                        form.rfc = obj.rfc_receptor
-                        this.setState({
-                            ...this.state,
-                            options,
-                            form
-                        })
-                    }
-                    reader.readAsText(files[counter])
-                }
-            }
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form['adjuntos'][name].value = value
-        form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    clearFiles = (name, key) => {
-        const { form } = this.state
-        let aux = []
-        for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
-            if (counter !== key) {
-                aux.push(form['adjuntos'][name].files[counter])
-            }
-        }
-        if (aux.length < 1) {
-            form['adjuntos'][name].value = ''
-            if (name === 'factura')
-                form['facturaObject'] = ''
-        }
-        form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
     }
     setVentas = ventas => {
         const { data } = this.state
@@ -638,39 +464,6 @@ class Ventas extends Component {
             adjuntos: [],
         })
     }
-    async addClienteAxios(obj) {
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
-        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-        cadena = cadena.replace(/,/g, '').toUpperCase()
-        cadena = cadena.replace(/\./g, '').toUpperCase()
-        data.append('empresa', cadena)
-        data.append('nombre', cadena)
-        data.append('rfc', obj.rfc_receptor.toUpperCase())
-        apiPostFormData(`cliente`, data, access_token).then(
-            (response) => {
-                const { clientes } = response.data
-                const { options, data, form } = this.state
-                options.clientes = []
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
-                data.clientes = clientes
-                clientes.map((cliente) => {
-                    if (cliente.empresa === cadena) {
-                        form.cliente = cliente.empresa
-                    }
-                    return false
-                })
-                this.setState({
-                    ...this.state,
-                    form,
-                    data,
-                    options
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
     async deleteVentaAxios(id) {
         const { access_token } = this.props.authUser
         apiDelete(`ventas/${id}`, access_token).then(
@@ -740,23 +533,6 @@ class Ventas extends Component {
                 this.setState({ ...this.state, form })
                 this.getVentasAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    addFacturaExtranjera= async(files, item)=>{
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        apiPostFormData(`ventas/adjuntos`, data, access_token).then(
-            (response) => {
-                this.getVentasAxios()
-                this.setState({ ...this.state })
-                doneAlert('Archivo adjuntado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
