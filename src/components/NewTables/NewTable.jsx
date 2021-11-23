@@ -79,7 +79,7 @@ class NewTable extends Component{
     }
 
     initTableData = () => {
-        const { tableName, columns, checkbox, tipo_validacion, elementClass } = this.props
+        const { tableName, columns, checkbox } = this.props
         let componente = this
         let tableHeader = `#${tableName}-card-header-id`
         let cardTable = `#${tableName}-card-id`
