@@ -322,8 +322,7 @@ class PermisosForm extends Component {
     
     render() {
         const { form, options, facturas } = this.state
-        const { venta } = this.props
-        console.log(venta, 'venta')
+        console.log(form, 'form')
         return (
             <>
             <Form id='form-factura' onSubmit={(e) => { e.preventDefault(); validateAlert(this.sendFacturaAxios, e, 'form-factura') }}>
@@ -333,7 +332,7 @@ class PermisosForm extends Component {
                             <div className="col-md-4 text-left">
                                 <ReactSelectSearchGray placeholder='ESTATUS DE LA COMPRA' defaultvalue={form.estatusCompra}
                                     iconclass='las la-check-circle icon-xl' requirevalidation={1} options={options.estatusCompra}
-                                    onChange={(value) => this.updateSelect(value, 'estatus')} messageinc='Selecciona el estatus de la compra.' />
+                                    onChange={(value) => this.updateSelect(value, 'estatusCompra')} messageinc='Selecciona el estatus de la compra.' />
                             </div>
                             <div className="col-md-4">
                                 <label className="col-form-label font-weight-bold text-dark-60">XML DE LA FACTURA</label>
