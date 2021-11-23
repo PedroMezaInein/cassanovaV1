@@ -98,20 +98,6 @@ class PermisosForm extends Component {
                         break;
                 }
                 break;
-            case 'sendFactura':
-                switch (tipo_factura) {
-                    case 'compras':
-                    case 'ventas':
-                        url = `v2/proyectos/${tipo_factura}/${id}/factura`
-                        break;
-                    case 'egresos':
-                    case 'ingresos':
-                        url = `v2/administracion/${tipo_factura}/${id}/factura`
-                        break;
-                    default:
-                        break;
-                }
-                break;
             default:
                 break;
         }
