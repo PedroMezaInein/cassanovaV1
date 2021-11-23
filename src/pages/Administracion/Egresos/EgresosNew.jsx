@@ -14,10 +14,12 @@ import Select from '../../../components/form-components/Select'
 import { Modal } from '../../../components/singles'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors } from '../../../functions/api'
-import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, RangeCalendar } from '../../../components/form-components'
-import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
-import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, setTextTableReactDom, setNaviIcon } from '../../../functions/setters'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
+import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, 
+    customInputAlert } from '../../../functions/alert'
+import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, 
+    setTextTableReactDom, setNaviIcon } from '../../../functions/setters'
 class egresos extends Component {
     state = {
         modal: {
@@ -78,6 +80,7 @@ class egresos extends Component {
         },
         filters: {}
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -94,16 +97,16 @@ class egresos extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                const { modal } = this.state
+                const { modal, filters } = this.state
+                filters.identificador = id
                 modal.see = true
-                this.setState({
-                    ...this.state,
-                    modal
-                })
+                this.setState({ ...this.state, modal, filters })
+                this.reloadTable(filters)
                 this.getEgresoAxios(id)
             }
         }
     }
+
     getOptionsAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -663,11 +666,7 @@ class egresos extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    exportEgresos = () => {
-        const { modal } = this.state
-        modal.download = true
-        this.setState({ ...this.state, modal, form: this.clearForm() })
-    }
+
     onChangeRange = range => {
         const { startDate, endDate } = range
         const { form } = this.state
@@ -675,27 +674,12 @@ class egresos extends Component {
         form.fechaFin = endDate
         this.setState({ ...this.state, form })
     }
+    
     exportEgresosAxios = async () => {
-        const { form } = this.state
-        let headers = []
-        let documento = ''
-        EGRESOS_COLUMNS.map((columna, key) => {
-            if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(columna.accessor)
-                if (documento) {
-                    if (documento.value) {
-                        headers.push({
-                            name: columna.accessor,
-                            value: documento.value
-                        })
-                    }
-                }
-            }
-            return ''
-        })
-        waitAlert();
+        waitAlert()
+        const { filters } = this.state
         const { access_token } = this.props.authUser
-        apiPostForm(`v2/exportar/administracion/egresos`, { columnas: headers, start: form.fechaInicio, end: form.fechaFin }, access_token).then(
+        apiPostFormResponseBlob(`v3/administracion/egresos/exportar`, { columnas: filters }, access_token).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -703,7 +687,11 @@ class egresos extends Component {
                 link.setAttribute('download', 'egresos.xlsx');
                 document.body.appendChild(link);
                 link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Los egresos fueron exportados con éxito.')
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Ingresos exportados con éxito.'
+                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
@@ -953,7 +941,7 @@ class egresos extends Component {
         this.reloadTable(filter)
     }
     reloadTable = (filter) => {
-        $(`#engresos`).DataTable().search(JSON.stringify(filter)).draw();
+        $(`#egresos`).DataTable().search(JSON.stringify(filter)).draw();
     }
     revertForm = (egreso) => {
         const { form } = this.state
@@ -989,27 +977,11 @@ class egresos extends Component {
                     columns={EGRESOS_COLUMNS}
                     setter={this.setEgresos}
                     url='/administracion/egresos/add'
-                    urlRender={`${URL_DEV}v2/administracion/egresos`}
+                    urlRender={`${URL_DEV}v3/administracion/egreso`}
                     filterClick={this.openModalFiltros}
                     exportar_boton={true}
-                    onClickExport={() => this.exportEgresos()}
+                    onClickExport = { () => { this.exportEgresosAxios() } }
                 />
-
-                <Modal show={modal.download} title='Descargar egresos' handleClose={this.handleClose} >
-                    <Form onSubmit={this.onSubmit} >
-                        <div className="text-center">
-                            <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
-                            <RangeCalendar onChange={this.onChangeRange} start={form.fechaInicio} end={form.fechaFin} />
-                        </div>
-                        <div className="card-footer py-3 pr-1">
-                            <div className="row mx-0">
-                                <div className="col-lg-12 text-right pr-0 pb-0">
-                                    <Button icon='' className="btn btn-primary mr-2" onClick={this.exportEgresosAxios} text="ENVIAR" />
-                                </div>
-                            </div>
-                        </div>
-                    </Form>
-                </Modal>
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0 pt-4">
