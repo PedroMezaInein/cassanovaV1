@@ -179,78 +179,67 @@ class NewTable extends Component{
             },
             columns: columnas,
             createdRow: function (row, data) {
-                // console.log(row, 'row')
-                // console.log(data, 'data')
-                // console.log(elementClass, 'elementClass')
-                if (tipo_validacion) {
-                    const { objeto } = data
-                    let pdfFlag = false
-                    switch (tipo_validacion) {
-                        case 'compras':
-                            if(objeto.facturas_pdf){
-                                if(objeto.facturas_pdf.length){
-                                    pdfFlag = true
-                                }
+                const { objeto } = data
+                let pdfFlag = false
+                switch (tableName) {
+                    case 'compras':
+                    case 'egresos':
+                        if (objeto.facturas_pdf) {
+                            if (objeto.facturas_pdf.length) {
+                                pdfFlag = true
                             }
-                            if(pdfFlag){
-                                $(row).addClass('blanco');
-                            }else{
-                                if (objeto.factura) {
-                                    if (objeto.total_facturas - objeto.monto > 1) {
-                                        $(row).addClass('verde');
-                                    } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
-                                        $(row).addClass('blanco');
-                                    } else if (objeto.total_facturas - objeto.monto < -1) {
-                                        $(row).addClass('rojo');
-                                    }
+                        }
+                        if (pdfFlag) {
+                            $(row).addClass('blanco');
+                        } else {
+                            if (objeto.factura) {
+                                if (objeto.total_facturas - objeto.monto > 1) {
+                                    $(row).addClass('verde');
+                                } else if (objeto.total_facturas - objeto.monto < -1) {
+                                    $(row).addClass('rojo');
                                 } else {
                                     $(row).addClass('blanco');
                                 }
-                            }
-                            break;
-                        case 'ventas':
-                            if(objeto.facturas_pdf){
-                                if(objeto.facturas_pdf.length){
-                                    pdfFlag = true
-                                }
-                            }
-                            if(pdfFlag){
+                            } else {
                                 $(row).addClass('blanco');
-                            }else{
-                                if (objeto.factura) {
-                                    if (objeto.total_facturas - objeto.monto > 1) {
-                                        $(row).addClass('rojo');
-                                    } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
-                                        $(row).addClass('blanco');
-                                    } else if (objeto.total_facturas - objeto.monto < -1) {
-                                        $(row).addClass('verde');
-                                    }
+                            }
+                        }
+                        break;
+                    case 'ventas_all':
+                    case 'ventas_fase1':
+                    case 'ventas_fase2':
+                    case 'ventas_fase3':
+                    case 'ingresos':
+                        if (objeto.facturas_pdf) {
+                            if (objeto.facturas_pdf.length) {
+                                pdfFlag = true
+                            }
+                        }
+                        if (pdfFlag) {
+                            $(row).addClass('blanco');
+                        } else {
+                            if (objeto.factura) {
+                                if (objeto.total_facturas - objeto.monto > 1) {
+                                    $(row).addClass('rojo');
+                                } else if (objeto.total_facturas - objeto.monto < -1) {
+                                    $(row).addClass('verde');
                                 } else {
                                     $(row).addClass('blanco');
                                 }
+                            } else {
+                                $(row).addClass('blanco');
                             }
-                            break;
-                        default:
-                            break
+                        }
+                        break;
+                    default:
+                        break
+                }
+                if (tableName === 'ingresos') {
+                    if(objeto.total <= 0 ){ /* objeto.total < 1 */
+                        $(row).removeClass('blanco');
+                        $(row).addClass('rojo');
                     }
                 }
-                // if (elementClass) {
-                //     let auxiliar = data[elementClass].split('<!-- -->')
-                //     if (auxiliar.length > 1) {
-                //         if (auxiliar[1] === '$0.00')
-                //             $(row).addClass('rojo');
-                //         else {
-                //             let auxiliar2 = auxiliar[1].charAt(0)
-                //             if (auxiliar2 === '-')
-                //                 $(row).addClass('rojo');
-                //         }
-                //     }
-                //     else {
-                //         let auxiliar = data[elementClass].includes('Inactivo')
-                //         if (auxiliar)
-                //             $(row).addClass('gris');
-                //     }
-                // }
             },
             dom:
                 `<'row'

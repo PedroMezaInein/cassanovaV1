@@ -1048,9 +1048,6 @@ class Ingresos extends Component {
                     filterClick={this.openModalFiltros}
                     exportar_boton={true}
                     onClickExport={() => this.exportIngresosAxios()}
-                    validateFactura={true}
-                    elementClass='total'
-                    tipo_validacion='ventas'
                 />
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
                     <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" 

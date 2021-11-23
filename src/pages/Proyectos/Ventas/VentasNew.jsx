@@ -1080,7 +1080,6 @@ class VentasNew extends Component {
                     abrir_modal = { false } url = '/proyectos/compras/add' columns = { VENTAS_COLUMNS }
                     accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
                     filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
-                    // urlRender = { `${URL_DEV}v3/proyectos/venta?tab=${key}` }
                     urlRender = { `${URL_DEV}v3/proyectos/venta?tab=${key}` } type = { 'tab' }
                 />
             )

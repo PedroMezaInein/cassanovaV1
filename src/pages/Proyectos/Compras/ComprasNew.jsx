@@ -1043,8 +1043,6 @@ class ComprasNew extends Component {
                     filterClick = { this.openModalFiltros }
                     exportar_boton = { true}
                     onClickExport = { () => this.exportComprasAxios() }
-                    validateFactura = { true }
-                    tipo_validacion = 'compras'
                 />
                 <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleClose} >
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>

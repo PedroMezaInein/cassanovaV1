@@ -993,8 +993,6 @@ class egresos extends Component {
                     filterClick={this.openModalFiltros}
                     exportar_boton={true}
                     onClickExport={() => this.exportEgresos()}
-                    validateFactura={true}
-                    tipo_validacion='compras'
                 />
 
                 <Modal show={modal.download} title='Descargar egresos' handleClose={this.handleClose} >
