@@ -959,7 +959,19 @@ class Ingresos extends Component {
         this.reloadTable(filter)
     }
     reloadTable = (filter) => {
-        $(`#ingresos`).DataTable().search(JSON.stringify(filter)).draw();
+        let arregloFilterKeys = Object.keys(filter)
+        let aux = {}
+        arregloFilterKeys.forEach((elemento) => {
+            if(elemento === 'area'){
+                aux[elemento] = {
+                    value: filter[elemento]['value'],
+                    name: filter[elemento]['name'],
+                }
+            }else{
+                aux[elemento] = filter[elemento]
+            }
+        })
+        $(`#ingresos`).DataTable().search(JSON.stringify(aux)).draw();
     }
     onSubmitAskFactura = e => {
         e.preventDefault()

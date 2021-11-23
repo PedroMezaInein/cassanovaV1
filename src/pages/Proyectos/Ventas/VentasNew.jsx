@@ -1115,7 +1115,19 @@ class VentasNew extends Component {
     }
     reloadTable = (filter) => {
         const { key } = this.state
-        $(`#ventas_${key}`).DataTable().search(JSON.stringify(filter)).draw();
+        let arregloFilterKeys = Object.keys(filter)
+        let aux = {}
+        arregloFilterKeys.forEach((elemento) => {
+            if(elemento === 'area'){
+                aux[elemento] = {
+                    value: filter[elemento]['value'],
+                    name: filter[elemento]['name'],
+                }
+            }else{
+                aux[elemento] = filter[elemento]
+            }
+        })
+        $(`#ventas_${key}`).DataTable().search(JSON.stringify(aux)).draw();
     }
     render() {
         const tabs = ['all', 'fase1', 'fase2', 'fase3']

@@ -1022,7 +1022,19 @@ class ComprasNew extends Component {
         this.reloadTable(filter)
     }
     reloadTable = (filter) => {
-        $(`#compras`).DataTable().search(JSON.stringify(filter)).draw();
+        let arregloFilterKeys = Object.keys(filter)
+        let aux = {}
+        arregloFilterKeys.forEach((elemento) => {
+            if(elemento === 'area'){
+                aux[elemento] = {
+                    value: filter[elemento]['value'],
+                    name: filter[elemento]['name'],
+                }
+            }else{
+                aux[elemento] = filter[elemento]
+            }
+        })
+        $(`#compras`).DataTable().search(JSON.stringify(aux)).draw();
     }
     render() {
         const { modal, form, options, facturas, compra, filters } = this.state

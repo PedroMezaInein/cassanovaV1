@@ -941,7 +941,19 @@ class egresos extends Component {
         this.reloadTable(filter)
     }
     reloadTable = (filter) => {
-        $(`#egresos`).DataTable().search(JSON.stringify(filter)).draw();
+        let arregloFilterKeys = Object.keys(filter)
+        let aux = {}
+        arregloFilterKeys.forEach((elemento) => {
+            if(elemento === 'area'){
+                aux[elemento] = {
+                    value: filter[elemento]['value'],
+                    name: filter[elemento]['name'],
+                }
+            }else{
+                aux[elemento] = filter[elemento]
+            }
+        })
+        $(`#egresos`).DataTable().search(JSON.stringify(aux)).draw();
     }
     revertForm = (egreso) => {
         const { form } = this.state
