@@ -1071,7 +1071,7 @@ class Ventas extends Component {
                     <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" 
                         activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="facturas" title="FACTURAS">
-                            <FacturasFormTable at = { access_token } tipo_factura='ventas' id={venta.id} venta={venta}/>
+                            <FacturasFormTable at = { access_token } tipo_factura='ventas' id={venta.id} dato={venta}/>
                         </Tab>
                         <Tab eventKey="solicitar" title="SOLICITAR FACTURA">
                             <FacturaForm
