@@ -8,10 +8,10 @@ import { Modal } from '../../../components/singles'
 import { VentasCard } from '../../../components/cards'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
-import { FacturasFormTable } from '../../../components/tables'
 import { VentasFilters } from '../../../components/filters'
 import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
 import { printSwalHeader } from '../../../functions/printers'
+import { FacturasFormTable } from '../../../components/tables'
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap'
 import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
@@ -847,7 +847,7 @@ class Ventas extends Component {
                     <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" 
                         activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="facturas" title="FACTURAS">
-                            <FacturasFormTable at = { access_token } tipo_factura='ventas' id={venta.id} venta={venta}/>
+                            <FacturasFormTable at = { access_token } tipo_factura='ventas' id={venta.id}/>
                         </Tab>
                         <Tab eventKey="solicitar" title="SOLICITAR FACTURA">
                             <FacturaForm
