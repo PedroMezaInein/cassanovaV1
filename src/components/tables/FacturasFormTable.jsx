@@ -7,7 +7,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { setOptionsWithLabel } from '../../functions/setters'
 import { FileInput, Button, ReactSelectSearchGray } from '../form-components'
 import { apiGet, apiOptions, apiPostForm, apiPutForm, apiDelete, catchErrors } from '../../functions/api'
-import { validateAlert, waitAlert, errorAlert, printResponseErrorAlert, doneAlert, createAlert } from '../../functions/alert'
+import { validateAlert, waitAlert, errorAlert, printResponseErrorAlert, doneAlert, createAlert, questionAlertY } from '../../functions/alert'
 import S3 from 'react-aws-s3';
 
 class PermisosForm extends Component {
@@ -150,11 +150,30 @@ class PermisosForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({ ...this.state, form })
+        questionAlertY(
+            `Cambiarás el estatus de la compra`,
+            `¿Deseas continuar`,
+            () => this.updateStatus()
+        )
+    }
+
+    updateStatus = async () => {
+        /* const { at, id } = this.props
+        const { form } = this.state
+        let value = form.estatusCompra
+        let newType = 'estatusCompra'
+        waitAlert()
+        apiPutForm(`v2/proyectos/ventas/${newType}/${id}`, { value: value }, access_token).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La venta fue editada con éxito.',
+                 () => {
+                    alert(`Calling reload`)
+                 })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) }) */
     }
     
     onChangeFactura = (e) => {
-        console.log('On Change factura')
-        console.log(e)
         waitAlert()
         const MySwal = withReactContent(Swal)
         const { files, name } = e.target
@@ -278,8 +297,26 @@ class PermisosForm extends Component {
                         errores.push( 'El tipo de factura no está definido' )
                         break;
                 }
-                if(cliente === undefined){
-                    if(!cliente){
+                if(errores.length){
+                    let textError = ''    
+                    errores.forEach((mistake, index) => {
+                        if(index){
+                            textError += '\\n'
+                        }
+                        textError += mistake
+                    })
+                    form.adjuntos[name].files = []
+                    form.facturaObject = {}
+                    form.factura = ''
+                    form.adjuntos[name].value = ''
+                    this.setState({ ...this.state, form })
+                    Swal.close()
+                    MySwal.close()
+                    setTimeout(function(){ 
+                        errorAlert(textError)
+                    }, 100);
+                }else{
+                    if(cliente === undefined){
                         createAlert(
                             `No existe el cliente`,
                             `¿Lo deseas crear?`,
@@ -298,58 +335,17 @@ class PermisosForm extends Component {
                                         const { cliente } = response.data
                                         this.getOptions()
                                         doneAlert(`Cliente ${cliente.empresa} generado con éxito`, () => {
-                                            if(errores.length){
-                                                let textError = ''    
-                                                errores.forEach((mistake, index) => {
-                                                    if(index){
-                                                        textError += '\\n'
-                                                    }
-                                                    textError += mistake
-                                                })
-                                                form.adjuntos[name].files = []
-                                                form.facturaObject = {}
-                                                form.factura = ''
-                                                form.adjuntos[name].value = ''
-                                                this.setState({ ...this.state, form })
-                                                Swal.close()
-                                                MySwal.close()
-                                                setTimeout(function(){ 
-                                                    errorAlert(textError)
-                                                }, 100);
-                                            }else{
-                                                form.facturaObject = obj
-                                                Swal.close()
-                                                this.setState({
-                                                    ...this.state,
-                                                    form
-                                                })
-                                                this.checkFactura(obj)
-                                            }
+                                            form.facturaObject = obj
+                                            this.setState({
+                                                ...this.state,
+                                                form
+                                            })
+                                            this.checkFactura(obj)                    
                                         })
                                     }, (error) => { printResponseErrorAlert(error) }
                                 ).catch((error) => { catchErrors(error) })
                             }
                         )
-                    }
-                }else{
-                    if(errores.length){
-                        let textError = ''    
-                        errores.forEach((mistake, index) => {
-                            if(index){
-                                textError += '\\n'
-                            }
-                            textError += mistake
-                        })
-                        form.adjuntos[name].files = []
-                        form.facturaObject = {}
-                        form.factura = ''
-                        form.adjuntos[name].value = ''
-                        this.setState({ ...this.state, form })
-                        Swal.close()
-                        MySwal.close()
-                        setTimeout(function(){ 
-                            errorAlert(textError)
-                        }, 100);
                     }else{
                         form.facturaObject = obj
                         Swal.close()
@@ -359,8 +355,8 @@ class PermisosForm extends Component {
                         })
                         this.checkFactura(obj)
                     }
+                    
                 }
-                
             }else{ 
                 form.facturaObject = {}
                 form.factura = ''
