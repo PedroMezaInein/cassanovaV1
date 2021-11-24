@@ -733,7 +733,7 @@ class Ventas extends Component {
             return(
                 <NewTable
                     tableName = { `ventas_${key}` } subtitle = 'Listado de ventas' title = {`VENTAS - ${this.setName(tab)}`} mostrar_boton = { true }
-                    abrir_modal = { false } url = '/proyectos/compras/add' columns = { VENTAS_COLUMNS }
+                    abrir_modal = { false } url = '/proyectos/ventas/add' columns = { VENTAS_COLUMNS }
                     accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
                     filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
                     urlRender = { `${URL_DEV}v3/proyectos/venta?tab=${key}` } type = { 'tab' }

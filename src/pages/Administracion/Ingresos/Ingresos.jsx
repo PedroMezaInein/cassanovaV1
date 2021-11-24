@@ -5,22 +5,18 @@ import { connect } from 'react-redux'
 import { Update } from '../../../components/Lottie'
 import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
-import { FacturaForm } from '../../../components/forms'
 import { IngresosCard } from '../../../components/cards'
 import { NewTable } from '../../../components/NewTables'
 import { IngresosFilters } from '../../../components/filters'
 import { printSwalHeader } from '../../../functions/printers'
 import { URL_DEV, INGRESOS_COLUMNS } from '../../../constants'
 import { FacturasFormTable } from '../../../components/tables'
+import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { Tab, Tabs, Form, DropdownButton, Dropdown } from 'react-bootstrap'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
 import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
-import { setNaviIcon, setOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, setTextTableReactDom, 
-    setOptionsWithLabel } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, 
-    customInputAlert } from '../../../functions/alert'
-
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
+import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
+import { setNaviIcon, setOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, setTextTableReactDom, setOptionsWithLabel } from '../../../functions/setters'
 class Ingresos extends Component {
     state = {
         modal: {
@@ -30,7 +26,6 @@ class Ingresos extends Component {
             facturaExtranjera: false,
             filters: false
         },
-        // active: 'facturas',
         selectValido: false,
         ingresos: [],
         title: 'Nuevo ingreso',
@@ -191,15 +186,6 @@ class Ingresos extends Component {
         })
         return form;
     }
-    // onChange = e => {
-    //     const { form } = this.state
-    //     const { name, value } = e.target
-    //     form[name] = value
-    //     this.setState({
-    //         ...this.state,
-    //         form
-    //     })
-    // }
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = form.adjuntos[item].files
@@ -279,7 +265,6 @@ class Ingresos extends Component {
                     estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 
                         'estatusCompra', 'text-center'),
                     total: setMoneyTable(ingreso.total),
-                    /* adjuntos: setArrayTable(_aux), */
                     fecha: setDateTableReactDom(ingreso.created_at, this.doubleClick, ingreso, 'fecha', 'text-center'),
                     id: ingreso.id,
                     objeto: ingreso
@@ -697,11 +682,6 @@ class Ingresos extends Component {
         })
         $(`#ingresos`).DataTable().search(JSON.stringify(aux)).draw();
     }
-    // onSubmitAskFactura = e => {
-    //     e.preventDefault()
-    //     waitAlert()
-    //     this.askFacturaAxios()
-    // }
     fillAdjuntos = ingreso => {
         const { form } = this.state
         form.adjuntos.pago.value = null
@@ -721,29 +701,8 @@ class Ingresos extends Component {
         });
         return form
     }
-    // async askFacturaAxios() {
-    //     const { access_token } = this.props.authUser
-    //     const { form } = this.state
-    //     apiPostForm(`facturas/ask`, form, access_token).then(
-    //         (response) => {
-    //             this.setState({
-    //                 ...this.state,
-    //                 form: this.clearForm(),
-    //             })
-    //             doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-    //         }, (error) => { printResponseErrorAlert(error) }
-    //     ).catch((error) => { catchErrors(error) })
-    // }
-    // onSelect = value => {
-    //     const { form } = this.state
-    //     this.setState({
-    //         ...this.state,
-    //         active: value,
-    //         form
-    //     })
-    // }
     render() {
-        const { form, options, modal, ingreso, filters /*, active, data, formeditado*/ } = this.state
+        const { form, options, modal, ingreso, filters } = this.state
         const { access_token } = this.props.authUser
         return (
             <Layout active='administracion'  {...this.props}>
@@ -764,23 +723,6 @@ class Ingresos extends Component {
                 />
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
                     <FacturasFormTable at = { access_token } tipo_factura='ingresos' id={ingreso.id} dato={ingreso}/>
-                    {/* <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" 
-                        activeKey={active} onSelect={this.onSelect}>
-                        <Tab eventKey="facturas" title="FACTURAS">
-                            <FacturasFormTable at = { access_token } tipo_factura='ingresos' id={ingreso.id} dato={ingreso}/>
-                        </Tab>
-                        <Tab eventKey="solicitar" title="SOLICITAR FACTURA">
-                            <FacturaForm
-                                className={"mt-4"}
-                                options={options}
-                                onChange={this.onChange}
-                                form={form}
-                                onSubmit={this.onSubmitAskFactura}
-                                formeditado={formeditado}
-                                data={data}
-                            />
-                        </Tab>
-                    </Tabs> */}
                 </Modal>
                 <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >
                     <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
