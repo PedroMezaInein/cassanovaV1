@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { DATE, RFC } from '../../../constants'
-import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert } from '../../../functions/alert'
-import { apiOptions, catchErrors, apiPutForm } from '../../../functions/api'
-import { setOptions, setSelectOptions } from '../../../functions/setters'
+import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
+import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from '../../../functions/api'
+import { setOptions } from '../../../functions/setters'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { CalendarDay, RadioGroup, InputGray, FileInput, SelectSearchGray, InputMoneyGray, Button, SelectSearchGrayTrue } from '../../form-components'
 import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
+import S3 from 'react-aws-s3';
 
 class ComprasFormNew extends Component {
 
@@ -326,6 +327,202 @@ class ComprasFormNew extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch(( error ) => { catchErrors(error) })
     }
+    
+    addCompra = () => {
+        const { form } = this.state
+        const { at } = this.props
+        apiPostForm('v2/proyectos/compras', form, at).then(
+            (response) => {
+                const { compra } = response.data
+                this.setState({
+                    ...this.state,
+                    compra: compra
+                })
+                doneAlert(
+                    `Compra generada con éxito`,
+                    () => {
+                        // La compra es con factura
+                        if(compra.factura){
+                            // Adjunto un XML
+                            if(Object.keys(form.facturaObject).length > 0 ){
+                                if(form.facturaItem){
+                                    //Tiene una factura guardada
+                                    this.attachFactura()
+                                }else{
+                                    //No hay factura generada
+                                    this.addFacturaS3()
+                                }
+                            }else{
+                                //No adjunto XML
+                                if(form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length){
+                                    //La compra tiene adjuntos
+                                    this.attachFiles()
+                                }else{
+                                    //Compra generada con éxito y cambio de página
+                                    doneAlert(`Compra generada con éxito`, 
+                                        () => {
+                                            const { history } = this.props
+                                            history.push(`/proyectos/compras?id=${compra.id}`)
+                                        }
+                                    )
+                                }
+                            }
+                        }else{
+                            // La compra no es con factura
+                            if(form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length){
+                                //La compra tiene adjuntos
+                                this.attachFiles()
+                            }else{
+                                //Compra generada con éxito y cambio de página
+                                doneAlert(`Compra generada con éxito`, 
+                                    () => {
+                                        const { history } = this.props
+                                        history.push(`/proyectos/compras?id=${compra.id}`)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch( (error) => { catchErrors(error) })
+    }
+
+    addFacturaS3 = async() => {
+        waitAlert()
+        const { at } = this.props
+        const { form } = this.state
+        apiGet(`v1/constant/admin-proyectos`, at).then(
+            (response) => {
+                const { alma } = response.data
+                let filePath = `facturas/compras/`
+                let aux = []
+                form.adjuntos.xml.files.forEach((file) => {
+                    aux.push(file)
+                })
+                form.adjuntos.pdf.files.forEach((file) => {
+                    aux.push(file)
+                })
+                let auxPromises  = aux.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                catchErrors(error)
+                                errorAlert(`Ocurrió un error al subir el archivo ${file.name}`)
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.addNewFacturaAxios(values)}).catch(err => console.error(err))        
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    addNewFacturaAxios = async(files) => {
+        const { form } = this.state
+        const { at } = this.props
+        form.archivos = files
+        apiPostForm(`v2/administracion/facturas`, form, at).then(
+            (response) => {
+                const { factura } = response.data
+                const { form } = this.state
+                form.facturaItem = factura
+                this.setState({ ...this.state, form })
+                this.attachFactura()
+            }, (error) => {  printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    attachFactura = async() => {
+        waitAlert()
+        const { at, history } = this.props
+        const { form, compra } = this.state
+        let objeto = {}
+        objeto.dato = compra.id
+        objeto.tipo = 'compra'
+        objeto.factura = form.facturaItem.id
+        apiPutForm(`v2/administracion/facturas/attach`, objeto, at).then(
+                (response) => {
+                    doneAlert(`Factura asignada con éxito`, () => { 
+                        if(form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length){
+                            this.attachFiles()
+                        }else{
+                            history.push(`/proyectos/compras?id=${compra.id}`)
+                        }
+                    })
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch( (error) => { catchErrors(error) } )
+    }
+
+    attachFiles = async() => {
+        waitAlert()
+        const { form, compra } = this.state
+        const { at } = this.props
+        apiGet(`v1/constant/admin-proyectos`, at).then(
+            (response) => {
+                const { alma } = response.data
+                let filePath = `compras/${compra.id}/`
+                let aux = []
+                form.adjuntos.pago.files.forEach((file) => {
+                    aux.push(
+                        {
+                            name: `${filePath}pagos/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                            file: file,
+                            tipo: 'pago'
+                        }
+                    )
+                })
+                form.adjuntos.pdf.files.forEach((file) => {
+                    aux.push(
+                        {
+                            name: `${filePath}presupuestos/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                            file: file,
+                            tipo: 'presupuesto'
+                        }
+                    )
+                })
+                let auxPromises  = aux.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file.file, file.name)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                catchErrors(error)
+                                errorAlert(`Ocurrió un error al subir el archivo ${file.name}`)
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.attachFilesS3(values)}).catch(err => console.error(err))        
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    attachFilesS3 = async(files) => {
+        const { compra } = this.state
+        const { at } = this.props
+        apiPutForm( `v2/proyectos/compras/${compra.id}/archivos/s3`, { archivos: files }, at ).then(
+            ( response ) => {
+                doneAlert(`Archivos adjuntados con éxito`, 
+                    () => {
+                        const { history } = this.props
+                        history.push(`/proyectos/compras?id=${compra.id}`)
+                    }
+                )
+            }, ( error ) => { printResponseErrorAlert( error ) }
+        ).catch( ( error ) => { catchErrors( error ) } )
+    }
 
     isActiveFactura = () => {
         const { form } = this.state
@@ -339,7 +536,17 @@ class ComprasFormNew extends Component {
     }
 
     onSubmit = () => {
-        console.log(`THIS ON SUBMIT`)
+        const { type } = this.props
+        waitAlert()
+        switch(type){
+            case 'add':
+            case 'convert':
+                this.addCompra()
+            break;
+            case 'edit':
+                this.editCompraAxios()
+            break;
+        }
     }
     
     render() {

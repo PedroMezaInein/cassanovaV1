@@ -53,7 +53,7 @@ class ComprasForm extends Component {
 
     render() {
         const { type, compra } = this.state
-        const { access_token } = this.props.authUser
+        const { history, authUser: { access_token } } = this.props
         return (
             <Layout active = 'proyectos'  {...this.props}>
                 <Card className="card-custom">
@@ -63,7 +63,7 @@ class ComprasForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ComprasFormNew type = { type } at = { access_token } dato = { compra } />
+                        <ComprasFormNew type = { type } at = { access_token } dato = { compra } history = { history }  />
                     </Card.Body>
                 </Card>
             </Layout>
