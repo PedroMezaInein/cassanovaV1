@@ -774,13 +774,22 @@ class Ventas extends Component {
         let arregloFilterKeys = Object.keys(filter)
         let aux = {}
         arregloFilterKeys.forEach((elemento) => {
-            if(elemento === 'area'){
-                aux[elemento] = {
-                    value: filter[elemento]['value'],
-                    name: filter[elemento]['name'],
-                }
-            }else{
-                aux[elemento] = filter[elemento]
+            switch(elemento){
+                case 'area':
+                case 'cliente':
+                case 'cuenta':
+                case 'empresa':
+                case 'estatusCompra':
+                case 'proyecto':
+                case 'subarea':
+                    aux[elemento] = {
+                        value: filter[elemento]['value'],
+                        name: filter[elemento]['name'],
+                    }
+                    break;
+                default:
+                    aux[elemento] = filter[elemento]
+                    break;
             }
         })
         $(`#ventas_${key}`).DataTable().search(JSON.stringify(aux)).draw();
