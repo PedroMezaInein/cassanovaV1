@@ -367,7 +367,6 @@ class Ingresos extends Component {
         const { modal, data } = this.state
         data.adjuntos = []
         modal.see = false
-        modal.facturas = false
         modal.adjuntos = false
         modal.facturaExtranjera = false
         modal.filters = false
@@ -378,6 +377,16 @@ class Ingresos extends Component {
             ingreso: '',
             adjuntos: [],
             form: this.clearForm()
+        })
+    }
+    handleCloseFacturas = () => {
+        const { modal, filters } = this.state
+        modal.facturas = false
+        this.reloadTable(filters)
+        this.setState({
+            ...this.state,
+            modal,
+            venta: '',
         })
     }
     async deleteIngresoAxios() {
@@ -730,7 +739,7 @@ class Ingresos extends Component {
                     exportar_boton={true}
                     onClickExport={() => this.exportIngresosAxios()}
                 />
-                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
+                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleCloseFacturas}>
                     <FacturasFormTable at = { access_token } tipo_factura='ingresos' id={ingreso.id} dato={ingreso}/>
                 </Modal>
                 <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >

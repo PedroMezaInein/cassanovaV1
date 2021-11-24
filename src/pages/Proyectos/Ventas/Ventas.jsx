@@ -438,7 +438,6 @@ class Ventas extends Component {
     handleClose = () => {
         const { modal, data } = this.state
         modal.filters = false
-        modal.facturas = false
         modal.adjuntos = false
         modal.facturaExtranjera = false
         modal.see = false
@@ -450,6 +449,16 @@ class Ventas extends Component {
             venta: '',
             form: this.clearForm(),
             adjuntos: [],
+        })
+    }
+    handleCloseFacturas = () => {
+        const { modal, filters } = this.state
+        modal.facturas = false
+        this.reloadTable(filters)
+        this.setState({
+            ...this.state,
+            modal,
+            venta: '',
         })
     }
     async deleteVentaAxios(id) {
@@ -723,7 +732,7 @@ class Ventas extends Component {
                 return []
             default: return []
         }
-    }    
+    }
     getVentasAxios = tab => {
         $(`#ventas_${tab}`).DataTable().search(JSON.stringify({})).draw();
         this.setState({...this.state, key: tab, filters: {}})
@@ -812,7 +821,7 @@ class Ventas extends Component {
                         })
                     }
                 </Tabs>
-                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
+                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleCloseFacturas}>
                     <FacturasFormTable at = { access_token } tipo_factura='ventas' id={venta.id} dato={venta}/>
                 </Modal>
                 <Modal size = "xl" title = "Adjuntos" show = { modal.adjuntos } handleClose = { this.handleClose } >
