@@ -430,7 +430,6 @@ class Compras extends Component {
         modal.see = false
         modal.facturaExtranjera = false
         modal.adjuntos = false
-        modal.facturas = false
         modal.filters = false
         this.setState({
             ...this.state,
@@ -439,6 +438,16 @@ class Compras extends Component {
             adjuntos: [],
             compra: '',
             data
+        })
+    }
+    handleCloseFacturas = () => {
+        const { modal, filters } = this.state
+        modal.facturas = false
+        this.reloadTable(filters)
+        this.setState({
+            ...this.state,
+            modal,
+            venta: '',
         })
     }
     openModalDeleteAdjuntos = adjunto => {
@@ -763,7 +772,7 @@ class Compras extends Component {
                     exportar_boton = { true}
                     onClickExport = { () => this.exportComprasAxios() }
                 />
-                <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleClose} >
+                <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleCloseFacturas} >
                     <FacturasFormTable at = { access_token } tipo_factura='compras' id={compra.id} dato={compra}/>
                 </Modal>
                 <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >

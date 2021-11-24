@@ -98,6 +98,20 @@ class PermisosForm extends Component {
                         break;
                 }
                 break;
+            case 'updateStatus':
+                switch (tipo_factura) {
+                    case 'compras':
+                    case 'ventas':
+                        url = `v2/proyectos/${tipo_factura}/estatusCompra/${id}`
+                        break;
+                    case 'egresos':
+                    case 'ingresos':
+                        url = `v2/administracion/${tipo_factura}/estatusCompra/${id}`
+                        break;
+                    default:
+                        break;
+                }
+                break;
             default:
                 break;
         }
@@ -146,31 +160,34 @@ class PermisosForm extends Component {
     updateSelect = ( value, name) => {
         if (value === null) {
             value = []
+            Swal.fire({
+                title: '¡LO SENTIMOS!',
+                text: 'No puede dejar el estatus de la compra vacio, seleccione otro estatus si desea cambiarlo.',
+                icon: 'warning',
+                customClass: { actions: 'd-none' },
+                timer: 2500,
+            })
+        }else{
+            const { form } = this.state
+            form[name] = value
+            this.setState({ ...this.state, form })
+            questionAlertY(
+                `Cambiarás el estatus de la compra a: ${value.label}`,
+                `¿Deseas continuar?`,
+                () => this.updateStatus()
+            )
         }
-        const { form } = this.state
-        form[name] = value
-        this.setState({ ...this.state, form })
-        questionAlertY(
-            `Cambiarás el estatus de la compra`,
-            `¿Deseas continuar`,
-            () => this.updateStatus()
-        )
     }
-
     updateStatus = async () => {
-        /* const { at, id } = this.props
+        const { at } = this.props
         const { form } = this.state
-        let value = form.estatusCompra
-        let newType = 'estatusCompra'
+        let value = form.estatusCompra.value
         waitAlert()
-        apiPutForm(`v2/proyectos/ventas/${newType}/${id}`, { value: value }, access_token).then(
+        apiPutForm(this.getUrl('updateStatus'), { value: value }, at).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La venta fue editada con éxito.',
-                    () => {
-                        alert(`Calling reload`)
-                    })
+                doneAlert('El estatus fue editado con éxito.', () => { this.getFacturas() })
             }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) }) */
+        ).catch((error) => { catchErrors(error) })
     }
     
     onChangeFactura = (e) => {
@@ -495,14 +512,10 @@ class PermisosForm extends Component {
         objeto.factura = form.factura.id
         apiPutForm(`v2/administracion/facturas/attach`, objeto, at).then(
                 (response) => {
-                    doneAlert(`Factura asignada con éxito`, 
-                        () => {
-                            alert(`Calling reload`)
-                        })
+                    doneAlert(`Factura asignada con éxito`, () => { this.getFacturas() })
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch( (error) => { catchErrors(error) } )
     }
-    
     render() {
         const { form, options, facturas } = this.state
         return (
