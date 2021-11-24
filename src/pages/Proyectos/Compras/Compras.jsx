@@ -105,7 +105,6 @@ class Compras extends Component {
         solicitud: '',
         compras: [],
         compra: '',
-        porcentaje: '',
         adjuntos: [],
         filters: {},
     }
@@ -438,7 +437,6 @@ class Compras extends Component {
             modal,
             form: this.clearForm(),
             adjuntos: [],
-            porcentaje: 0,
             compra: '',
             data
         })
@@ -766,7 +764,7 @@ class Compras extends Component {
                     onClickExport = { () => this.exportComprasAxios() }
                 />
                 <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleClose} >
-                    <FacturasFormTable at = { access_token } tipo_factura='compras' id={compra.id} />
+                    <FacturasFormTable at = { access_token } tipo_factura='compras' id={compra.id} dato={compra}/>
                 </Modal>
                 <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >
                     <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
