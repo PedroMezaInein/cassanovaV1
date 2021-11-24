@@ -166,9 +166,9 @@ class PermisosForm extends Component {
         apiPutForm(`v2/proyectos/ventas/${newType}/${id}`, { value: value }, access_token).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La venta fue editada con éxito.',
-                 () => {
-                    alert(`Calling reload`)
-                 })
+                    () => {
+                        alert(`Calling reload`)
+                    })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) }) */
     }
