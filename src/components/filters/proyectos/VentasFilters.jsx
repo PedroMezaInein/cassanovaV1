@@ -14,7 +14,7 @@ class VentasFilters extends Component{
             total: '',
             empresa: '',
             cuenta: '',
-            estatusCompra: 0,
+            estatusCompra: '',
             descripcion:'',
             factura: '',
             identificador: ''
@@ -97,7 +97,7 @@ class VentasFilters extends Component{
         form.total = ''
         form.empresa = ''
         form.cuenta = ''
-        form.estatusCompra = 0
+        form.estatusCompra = ''
         form.descripcion = ''
         form.factura = ''
         form.identificador = ''
