@@ -7,7 +7,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { setOptionsWithLabel } from '../../functions/setters'
 import { FileInput, Button, ReactSelectSearchGray } from '../form-components'
 import { apiGet, apiOptions, apiPostForm, apiPutForm, apiDelete, catchErrors } from '../../functions/api'
-import { validateAlert, waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
+import { validateAlert, waitAlert, errorAlert, printResponseErrorAlert, doneAlert, createAlert } from '../../functions/alert'
 import S3 from 'react-aws-s3';
 
 class PermisosForm extends Component {
@@ -27,7 +27,7 @@ class PermisosForm extends Component {
         },
         options: {
             clientes: [],
-            empresa: [],
+            empresas: [],
             proveedores: [],
             estatusCompra: []
         },
@@ -47,9 +47,9 @@ class PermisosForm extends Component {
             (response) => {
                 const { estatusCompras, clientes, empresas, proveedores } = response.data
                 const { options } = this.state
-                options.clientes = setOptionsWithLabel(clientes, 'empresa', 'id')
-                options.empresa = setOptionsWithLabel(empresas, 'name', 'id')
-                options.proveedores = setOptionsWithLabel(proveedores, "razon_social", "id")
+                options.clientes = clientes
+                options.empresas = empresas
+                options.proveedores = proveedores
                 options.estatusCompra = setOptionsWithLabel(estatusCompras, 'estatus', 'id')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch(( error ) => { catchErrors(error) })
@@ -153,10 +153,16 @@ class PermisosForm extends Component {
     }
     
     onChangeFactura = (e) => {
+        console.log('On Change factura')
+        console.log(e)
         waitAlert()
         const MySwal = withReactContent(Swal)
         const { files, name } = e.target
-        const { form } = this.state
+        const { form, options } = this.state
+        const { tipo_factura, dato } = this.props
+        let empresa = null
+        let cliente = null
+        let proveedor = null
         form.adjuntos[name].files = []
         form.facturaObject = {}
         form.factura = ''
@@ -230,33 +236,131 @@ class PermisosForm extends Component {
                         obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']   
                     }
                 }
-                if(errores.length){
-                    let textError = ''    
-                    errores.forEach((mistake, index) => {
-                        if(index){
-                            textError += '\\n'
+                switch(tipo_factura){
+                    case 'compras':
+                    case 'egresos':
+                        if(dato.empresa){
+                            if(dato.empresa.rfc !== obj.rfc_receptor){
+                                errores.push( 'El RFC empresa y el RFC receptor no coincide' )
+                            }
                         }
-                        textError += mistake
-                    })
-                    form.adjuntos[name].files = []
-                    form.facturaObject = {}
-                    form.factura = ''
-                    form.adjuntos[name].value = ''
-                    this.setState({ ...this.state, form })
-                    Swal.close()
-                    MySwal.close()
-                    setTimeout(function(){ 
-                        errorAlert(textError)
-                    }, 100);
-                }else{
-                    form.facturaObject = obj
-                    Swal.close()
-                    this.setState({
-                        ...this.state,
-                        form
-                    })
-                    this.checkFactura(obj)
+                        empresa = options.empresas.find((element) => {
+                            return element.rfc === obj.rfc_receptor
+                        })
+                        proveedor = options.proveedores.find((element) => {
+                            return element.rfc === obj.rfc_emisor
+                        })
+                        if(!empresa){
+                            errores.push( 'No existe una empresa con ese RFC' )
+                        }
+                        if(!proveedor){
+                            errores.push( 'No existe el proveedor, genéralo desde el apartado de Leads/Proveedores' )
+                        }
+                        break;
+                    case 'ventas':
+                    case 'ingresos':
+                        if(dato.empresa){
+                            if(dato.empresa.rfc !== obj.rfc_emisor){
+                                errores.push( 'El RFC empresa y el RFC emisor no coincide' )
+                            }
+                        }
+                        empresa = options.empresas.find((element) => {
+                            return element.rfc === obj.rfc_emisor
+                        })
+                        if(!empresa){
+                            errores.push( 'No existe una empresa con ese RFC' )
+                        }
+                        cliente = options.clientes.find((element) => {
+                            return element.rfc === obj.rfc_receptor
+                        })
+                        break;
+                    default:
+                        errores.push( 'El tipo de factura no está definido' )
+                        break;
                 }
+                if(cliente === undefined){
+                    if(!cliente){
+                        createAlert(
+                            `No existe el cliente`,
+                            `¿Lo deseas crear?`,
+                            () => {
+                                const { at } = this.props
+                                let objeto = {}
+                                let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+                                cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
+                                cadena = cadena.replace(/,/g, '').toUpperCase()
+                                cadena = cadena.replace(/\./g, '').toUpperCase()
+                                objeto.empresa = cadena
+                                objeto.nombre = cadena
+                                objeto.rfc = obj.rfc_receptor.toUpperCase()
+                                apiPostForm( 'cliente', objeto, at ).then(
+                                    (response) => {
+                                        const { cliente } = response.data
+                                        this.getOptions()
+                                        doneAlert(`Cliente ${cliente.empresa} generado con éxito`, () => {
+                                            if(errores.length){
+                                                let textError = ''    
+                                                errores.forEach((mistake, index) => {
+                                                    if(index){
+                                                        textError += '\\n'
+                                                    }
+                                                    textError += mistake
+                                                })
+                                                form.adjuntos[name].files = []
+                                                form.facturaObject = {}
+                                                form.factura = ''
+                                                form.adjuntos[name].value = ''
+                                                this.setState({ ...this.state, form })
+                                                Swal.close()
+                                                MySwal.close()
+                                                setTimeout(function(){ 
+                                                    errorAlert(textError)
+                                                }, 100);
+                                            }else{
+                                                form.facturaObject = obj
+                                                Swal.close()
+                                                this.setState({
+                                                    ...this.state,
+                                                    form
+                                                })
+                                                this.checkFactura(obj)
+                                            }
+                                        })
+                                    }, (error) => { printResponseErrorAlert(error) }
+                                ).catch((error) => { catchErrors(error) })
+                            }
+                        )
+                    }
+                }else{
+                    if(errores.length){
+                        let textError = ''    
+                        errores.forEach((mistake, index) => {
+                            if(index){
+                                textError += '\\n'
+                            }
+                            textError += mistake
+                        })
+                        form.adjuntos[name].files = []
+                        form.facturaObject = {}
+                        form.factura = ''
+                        form.adjuntos[name].value = ''
+                        this.setState({ ...this.state, form })
+                        Swal.close()
+                        MySwal.close()
+                        setTimeout(function(){ 
+                            errorAlert(textError)
+                        }, 100);
+                    }else{
+                        form.facturaObject = obj
+                        Swal.close()
+                        this.setState({
+                            ...this.state,
+                            form
+                        })
+                        this.checkFactura(obj)
+                    }
+                }
+                
             }else{ 
                 form.facturaObject = {}
                 form.factura = ''
