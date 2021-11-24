@@ -13,9 +13,9 @@ import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
 import { printSwalHeader } from '../../../functions/printers'
 import { FacturasFormTable } from '../../../components/tables'
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap'
-import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostForm, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
+import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
 import { waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
     setCustomeDescripcionReactDom, setNaviIcon, setOptionsWithLabel } from '../../../functions/setters'
@@ -28,9 +28,7 @@ class Ventas extends Component {
             facturaExtranjera: false,
             see: false
         },
-        active: 'facturas',
         solicitud: '',
-        porcentaje: 0,
         title: 'Nueva venta',
         ventas: [],
         adjuntos: [],
@@ -217,15 +215,6 @@ class Ventas extends Component {
             return false
         })
         return form;
-    }
-    onChange = e => {
-        const { form } = this.state
-        const { name, value } = e.target
-        form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
     }
     handleChange = (files, item)  => {
         const { form } = this.state
@@ -459,7 +448,6 @@ class Ventas extends Component {
             modal,
             data,
             venta: '',
-            porcentaje: 0,
             form: this.clearForm(),
             adjuntos: [],
         })
@@ -536,26 +524,6 @@ class Ventas extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    onSubmitAskFactura = e => {
-        e.preventDefault()
-        waitAlert()
-        this.askFacturaAxios()
-    }
-    async askFacturaAxios() {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        apiPostForm(`facturas/ask`, form, access_token).then(
-            (response) => {
-                this.getVentasAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm()
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
         let busqueda = undefined
@@ -760,14 +728,6 @@ class Ventas extends Component {
         $(`#ventas_${tab}`).DataTable().search(JSON.stringify({})).draw();
         this.setState({...this.state, key: tab, filters: {}})
     }
-    onSelect = value => {
-        const { form } = this.state
-        this.setState({
-            ...this.state,
-            active: value,
-            form
-        })
-    }
     setTabla = (key, tab) => {
         if( key === tab ){
             return(
@@ -827,7 +787,7 @@ class Ventas extends Component {
     }
     render() {
         const tabs = ['all', 'fase1', 'fase2', 'fase3']
-        const { modal, options, form, venta, data, formeditado, active, key, filters } = this.state
+        const { modal, options, form, venta, key, filters } = this.state
         const { access_token } = this.props.authUser
         return (
             <Layout active = 'proyectos'  {...this.props}>
@@ -844,23 +804,7 @@ class Ventas extends Component {
                     }
                 </Tabs>
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
-                    <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" 
-                        activeKey={active} onSelect={this.onSelect}>
-                        <Tab eventKey="facturas" title="FACTURAS">
-                            <FacturasFormTable at = { access_token } tipo_factura='ventas' id={venta.id} dato={venta}/>
-                        </Tab>
-                        <Tab eventKey="solicitar" title="SOLICITAR FACTURA">
-                            <FacturaForm
-                                className={"mt-4"}
-                                options={options}
-                                onChange={this.onChange}
-                                form={form}
-                                onSubmit={this.onSubmitAskFactura}
-                                formeditado={formeditado}
-                                data={data}
-                            />
-                        </Tab>
-                    </Tabs>
+                    <FacturasFormTable at = { access_token } tipo_factura='ventas' id={venta.id} dato={venta}/>
                 </Modal>
                 <Modal size = "xl" title = "Adjuntos" show = { modal.adjuntos } handleClose = { this.handleClose } >
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos } />
