@@ -372,11 +372,11 @@ class EgresosFormNew extends Component {
     editEgresoAxios = async() => {
         const { dato, at } = this.props
         const { form } = this.state
-        apiPutForm(`v2/administracion/egresos/${dato.id}`, form, at).then(
+        apiPutForm(`v3/administracion/egresos/${dato.id}`, form, at).then(
             (response) => {
-                doneAlert(`Egreso editado con éxito`)
                 const { history } = this.props
-                history.push(`/administracion/egresos?id=${dato.id}`)
+                doneAlert(`Egreso editado con éxito`, 
+                    () => { history.push(`/administracion/egresos?id=${dato.id}`) }     )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
