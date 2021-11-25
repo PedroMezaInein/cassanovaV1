@@ -11,7 +11,7 @@ class EgresosForm extends Component {
         egreso: null,
         solicitud: null
     }
-    
+
     componentDidMount() {
         const {
             authUser: { user: { permisos } },
@@ -28,41 +28,53 @@ class EgresosForm extends Component {
                 })
                 break;
             case 'edit':
-                this.setState({
-                    ...this.state,
-                    type: action
-                })
+                if (state) {
+                    if (state.egreso) {
+                        this.setState({
+                            ...this.state,
+                            egreso: state.egreso,
+                            type: action
+                        })
+                    } else {
+                        history.push('/administracion/egreso')
+                    }
+                } else {
+                    history.push('/administracion/egreso')
+                }
                 break;
             case 'convert':
-                if(state){
-                    if(state.solicitud){
+                if (state) {
+                    if (state.solicitud) {
                         this.setState({
                             ...this.state,
                             solicitud: state.solicitud,
                             type: action
                         })
-                    }else{
-                        history.push( '/administracion/egresos' )
+                    } else {
+                        history.push('/administracion/egresos')
                     }
-                }else{
-                    history.push( '/administracion/egresos' )
+                } else {
+                    history.push('/administracion/egresos')
                 }
                 break;
             default:
                 history.push('/')
                 break;
         }
-        this.setState({
-            ...this.state,
-            type: action
+        const modulo = permisos.find((element) => {
+            return pathname === `${element.modulo.url}/${action}`
         })
-        /* if (!acceso)
-            history.push('/') */
+        if (!modulo){
+            errorAlert(
+                `No tienes acceso a este módulo`,
+                () => { history.push('/') }
+            )
+        }
     }
 
     setTitle = () => {
         const { type } = this.state
-        switch(type){
+        switch (type) {
             case 'add':
                 return 'Nuevo egreso'
             case 'edit':
@@ -76,19 +88,16 @@ class EgresosForm extends Component {
     render() {
         const { type, egreso, solicitud } = this.state
         const { history, location, authUser: { access_token } } = this.props
-
-
-
         return (
-            <Layout active = 'proyectos'  {...this.props}>
+            <Layout active='proyectos'  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
-                            <h3 className="card-label"> { this.setTitle() } </h3>
+                            <h3 className="card-label"> {this.setTitle()} </h3>
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <EgresosFormNew type = { type } at = { access_token } dato = { egreso } solicitud = { solicitud } history = { history } location={location}/>
+                        <EgresosFormNew type={type} at={access_token} dato={egreso} solicitud={solicitud} history={history} location={location} />
                     </Card.Body>
                 </Card>
             </Layout>
@@ -97,6 +106,6 @@ class EgresosForm extends Component {
 }
 
 const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({ })
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(EgresosForm);
