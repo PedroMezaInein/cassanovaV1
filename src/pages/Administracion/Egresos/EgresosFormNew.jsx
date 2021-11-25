@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Layout from '../../../components/layout/layout'
 import { Card } from 'react-bootstrap'
+import { errorAlert } from '../../../functions/alert'
+import Layout from '../../../components/layout/layout'
 import { EgresosFormNew } from '../../../components/forms'
-
 class EgresosForm extends Component {
-
     state = {
         type: 'add',
         egreso: null,
