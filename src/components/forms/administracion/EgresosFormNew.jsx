@@ -702,7 +702,7 @@ class EgresosFormNew extends Component {
                 this.addEgreso()
             break;
             case 'edit':
-                this.addEgreso()
+                this.editEgresoAxios()
             break;
         }
     }

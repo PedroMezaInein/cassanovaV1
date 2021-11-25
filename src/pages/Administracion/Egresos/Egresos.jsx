@@ -295,7 +295,8 @@ class Egresos extends Component {
         return (
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); history.push({ pathname: '/administracion/egresos/edit', state: { egreso: egreso } }) }} >
+                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); 
+                        history.push({ pathname: '/administracion/egresos2/edit', state: { egreso: egreso } }) }} >
                         {setNaviIcon('flaticon2-pen', 'editar')}
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL EGRESO CON IDENTIFICADOR: ${egreso.id}`, () => this.deleteEgresoAxios(egreso.id)) }}>
@@ -492,7 +493,7 @@ class Egresos extends Component {
     attachFilesS3 = async(files, item) => {
         const { egreso } = this.state
         const { access_token } = this.props.authUser
-        apiPutForm( `v2/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, access_token ).then(
+        apiPutForm( `v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, access_token ).then(
             ( response ) => {
                 doneAlert(`Archivos adjuntados con éxito`, 
                     () => { 

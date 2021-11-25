@@ -60,7 +60,7 @@ class EgresosForm extends Component {
                 history.push('/')
                 break;
         }
-        const modulo = permisos.find((element) => {
+        /* const modulo = permisos.find((element) => {
             return pathname === `${element.modulo.url}/${action}`
         })
         if (!modulo){
@@ -68,7 +68,7 @@ class EgresosForm extends Component {
                 `No tienes acceso a este módulo`,
                 () => { history.push('/') }
             )
-        }
+        } */
     }
 
     setTitle = () => {
