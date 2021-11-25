@@ -5,15 +5,16 @@ import { Form } from 'react-bootstrap'
 import j2xParser from 'fast-xml-parser'
 import { RFC } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
+import withReactContent from 'sweetalert2-react-content'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from '../../../functions/api'
-import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert, createAlert } from '../../../functions/alert'
 import { CalendarDay, RadioGroupGray, InputGray, FileInput, SelectSearchGray, InputMoneyGray, Button } from '../../form-components'
 
-class EgresosFormNew extends Component {
+class IngresosFormulario extends Component {
     state = {
         form: {
-            proveedor: '',
+            cliente: '',
             empresa: '',
             area: '',
             subarea: '',
@@ -21,7 +22,6 @@ class EgresosFormNew extends Component {
             cuenta: '',
             rfc: '',
             total: 0,
-            comision: 0,
             factura: 'Sin factura',
             fecha: new Date(),
             adjuntos: {
@@ -45,7 +45,7 @@ class EgresosFormNew extends Component {
         },
         options: {
             empresas: [],
-            proveedores: [],
+            clientes: [],
             areas: [],
             subareas: [],
             cuentas: [],
@@ -53,35 +53,27 @@ class EgresosFormNew extends Component {
             tiposImpuestos: [],
             estatusCompras: [],
         },
-        data: { proveedores: [], empresas: [] },
+        data: { clientes: [], empresas: [] },
         formeditado: 0,
-        egreso: ''
+        ingreso: ''
     }
 
     componentDidMount = () => {
         this.getOptions()
-        const { type, solicitud, dato } = this.props
+        const { type, dato } = this.props
         this.setState({
             ...this.state,
             formeditado: type === 'add' ? 0 : 1
         })
-        if(solicitud){
-            this.getSolicitud()
-        }
         if(dato){
-            this.getEgreso()
+            this.getIngreso()
         }
     }
 
     componentDidUpdate = (nextProps) => {
-        if(this.props.solicitud !== nextProps.solicitud){
-            if(this.props.solicitud){
-                this.getSolicitud()
-            }
-        }
         if(this.props.dato !== nextProps.dato){
             if(this.props.dato){
-                this.getEgreso()
+                this.getIngreso()
             }
         }
     }
@@ -109,8 +101,8 @@ class EgresosFormNew extends Component {
                     options.cuentas = setOptions(item.cuentas, 'nombre', 'id')
                 }
             break;
-            case 'proveedor':
-                data.proveedores.find(function (elemento) {
+            case 'cliente':
+                data.clientes.find(function (elemento) {
                     if (value.toString() === elemento.id.toString()) {
                         if (elemento.rfc !== '') {
                             form.rfc = elemento.rfc
@@ -168,11 +160,12 @@ class EgresosFormNew extends Component {
 
     onChangeFactura = (e) => {
         waitAlert()
+        const MySwal = withReactContent(Swal)
         const { files, name } = e.target
         const { form, options, data } = this.state
         const { dato } = this.props
         let empresa = null
-        let proveedor = null
+        let cliente = null
         form.adjuntos[name].files = []
         form.facturaObject = {}
         form.facturaItem = ''
@@ -249,29 +242,20 @@ class EgresosFormNew extends Component {
                 }
                 if(dato){
                     if(dato.empresa){
-                        if(dato.empresa.rfc !== obj.rfc_receptor){
-                            errores.push( 'El RFC empresa y el RFC receptor no coincide' )
+                        if(dato.empresa.rfc !== obj.rfc_emisor){
+                            errores.push( 'El RFC empresa y el RFC emisor no coincide' )
                         }
                     }
                 }
                 empresa = data.empresas.find((element) => {
-                    return element.rfc === obj.rfc_receptor
-                })
-                proveedor = data.proveedores.find((element) => {
                     return element.rfc === obj.rfc_emisor
                 })
                 if(!empresa){
                     errores.push( 'No existe una empresa con ese RFC' )
-                }else{
-                    form.empresa = empresa.id.toString()
-                    form.cuenta = ''
-                    options.cuentas = setOptions(empresa.cuentas, 'nombre', 'id')
                 }
-                if(!proveedor){
-                    errores.push( 'No existe el proveedor, genéralo desde el apartado de Leads/Proveedores' )
-                }else{
-                    form.proveedor = proveedor.id.toString()
-                }
+                cliente = options.clientes.find((element) => {
+                    return element.rfc === obj.rfc_receptor
+                })
                 if(errores.length){
                     let textError = ''    
                     errores.forEach((mistake, index) => {
@@ -285,14 +269,48 @@ class EgresosFormNew extends Component {
                     form.facturaItem = ''
                     form.adjuntos[name].value = ''
                     this.setState({ ...this.state, form })
+                    Swal.close()
+                    MySwal.close()
                     setTimeout(function(){ 
                         errorAlert(textError)
                     }, 100);
                 }else{
-                    form.facturaObject = obj
-                    Swal.close()
-                    this.setState({ ...this.state, form, options })
-                    this.checkFactura(obj)
+                    if(cliente === undefined){
+                        createAlert(
+                            `No existe el cliente`,
+                            `¿Lo deseas crear?`,
+                            () => {
+                                const { at } = this.props
+                                let objeto = {}
+                                let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+                                cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
+                                cadena = cadena.replace(/,/g, '').toUpperCase()
+                                cadena = cadena.replace(/\./g, '').toUpperCase()
+                                objeto.empresa = cadena
+                                objeto.nombre = cadena
+                                objeto.rfc = obj.rfc_receptor.toUpperCase()
+                                apiPostForm( 'cliente', objeto, at ).then(
+                                    (response) => {
+                                        const { cliente } = response.data
+                                        this.getOptions()
+                                        doneAlert(`Cliente ${cliente.empresa} generado con éxito`, () => {
+                                            form.facturaObject = obj
+                                            this.setState({
+                                                ...this.state,
+                                                form
+                                            })
+                                            this.checkFactura(obj)                    
+                                        })
+                                    }, (error) => { printResponseErrorAlert(error) }
+                                ).catch((error) => { catchErrors(error) })
+                            }
+                        )
+                    } else {
+                        form.facturaObject = obj
+                        Swal.close()
+                        this.setState({ ...this.state, form, options })
+                        this.checkFactura(obj)
+                    }
                 }
             }else{ 
                 form.facturaObject = {}
@@ -321,9 +339,9 @@ class EgresosFormNew extends Component {
 
     getOptions = async() => {
         const { at, state } = this.props
-        apiOptions(`v2/administracion/egresos`, at).then(
+        apiOptions(`v2/administracion/ingresos`, at).then(
             (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proveedores } = response.data
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, clientes } = response.data
                 const { options, data, form } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.areas = setOptions(areas, 'nombre', 'id')
@@ -345,11 +363,11 @@ class EgresosFormNew extends Component {
                         }
                     }
                 }
-                options.proveedores = setOptions(proveedores, 'razon_social', 'id')
+                options.clientes = setOptions(clientes, 'empresa', 'id')
                 options.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
                 options.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
                 options.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
-                data.proveedores = proveedores
+                data.clientes = clientes
                 data.empresas = empresas
                 this.setState({ ...this.state, options, data, form })
             }, (error) => { printResponseErrorAlert(error) }
@@ -358,7 +376,7 @@ class EgresosFormNew extends Component {
 
     checkFactura = async(obj) => {
         const { at } = this.props
-        apiPutForm(`v2/administracion/facturas/check?tipo_factura=egresos`, obj, at).then(
+        apiPutForm(`v2/administracion/facturas/check?tipo_factura=ingresos`, obj, at).then(
             (response) => {
                 const { factura } = response.data
                 const { form } = this.state
@@ -368,33 +386,33 @@ class EgresosFormNew extends Component {
         ).catch(( error ) => { catchErrors(error) })
     }
 
-    editEgresoAxios = async() => {
+    editIngresoAxios = async() => {
         const { dato, at } = this.props
         const { form } = this.state
-        apiPutForm(`v3/administracion/egresos/${dato.id}`, form, at).then(
+        apiPutForm(`v3/administracion/ingresos/${dato.id}`, form, at).then(
             (response) => {
                 const { history } = this.props
-                doneAlert(`Egreso editado con éxito`, 
-                    () => { history.push(`/administracion/egresos?id=${dato.id}`) }     )
+                doneAlert(`Ingreso editado con éxito`, 
+                    () => { history.push(`/administracion/ingresos?id=${dato.id}`) }     )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
 
-    addEgreso = () => {
+    addIngreso = () => {
         const { form } = this.state
         const { at } = this.props
-        apiPostForm('v3/administracion/egresos', form, at).then(
+        apiPostForm('v3/administracion/ingresos', form, at).then(
             (response) => {
-                const { egreso } = response.data
+                const { ingreso } = response.data
                 this.setState({
                     ...this.state,
-                    egreso: egreso
+                    ingreso: ingreso
                 })
                 doneAlert(
-                    `Egreso generado con éxito`,
+                    `Ingreso generado con éxito`,
                     () => {
-                        // El egresos es con factura
-                        if(egreso.factura){
+                        // Los ingresos es con factura
+                        if(ingreso.factura){
                             // Adjunto un XML
                             if(Object.keys(form.facturaObject).length > 0 ){
                                 if(form.facturaItem){
@@ -407,29 +425,29 @@ class EgresosFormNew extends Component {
                             }else{
                                 //No adjunto XML
                                 if(form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length){
-                                    //El egreso tiene adjuntos
+                                    //El ingreso tiene adjuntos
                                     this.attachFiles()
                                 }else{
-                                    //Egreso generado con éxito y cambio de página
-                                    doneAlert(`Egreso generado con éxito`, 
+                                    //Ingreso generado con éxito y cambio de página
+                                    doneAlert(`Ingreso generado con éxito`, 
                                         () => {
                                             const { history } = this.props
-                                            history.push(`/administracion/egresos?id=${egreso.id}`)
+                                            history.push(`/administracion/ingresos?id=${ingreso.id}`)
                                         }
                                     )
                                 }
                             }
                         }else{
-                            // La egreso no es con factura
+                            // La ingreso no es con factura
                             if(form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length){
-                                //La egreso tiene adjuntos
+                                //La ingreso tiene adjuntos
                                 this.attachFiles()
                             }else{
-                                //Egreso generado con éxito y cambio de página
-                                doneAlert(`Egreso generado con éxito`,
+                                //Ingreso generado con éxito y cambio de página
+                                doneAlert(`Ingreso generado con éxito`,
                                     () => {
                                         const { history } = this.props
-                                        history.push(`/administracion/egresos?id=${egreso.id}`)
+                                        history.push(`/administracion/ingresos?id=${ingreso.id}`)
                                     }
                                 )
                             }
@@ -447,7 +465,7 @@ class EgresosFormNew extends Component {
         apiGet(`v1/constant/admin-proyectos`, at).then(
             (response) => {
                 const { alma } = response.data
-                let filePath = `facturas/egresos/`
+                let filePath = `facturas/ingresos/`
                 let aux = []
                 form.adjuntos.xml.files.forEach((file) => {
                     aux.push(file)
@@ -496,10 +514,10 @@ class EgresosFormNew extends Component {
     attachFactura = async() => {
         waitAlert()
         const { at, history } = this.props
-        const { form, egreso } = this.state
+        const { form, ingreso } = this.state
         let objeto = {}
-        objeto.dato = egreso.id
-        objeto.tipo = 'egreso'
+        objeto.dato = ingreso.id
+        objeto.tipo = 'ingreso'
         objeto.factura = form.facturaItem.id
         apiPutForm(`v2/administracion/facturas/attach`, objeto, at).then(
                 (response) => {
@@ -507,7 +525,7 @@ class EgresosFormNew extends Component {
                         if(form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length){
                             this.attachFiles()
                         }else{
-                            history.push(`/administracion/egresos?id=${egreso.id}`)
+                            history.push(`/administracion/ingresos?id=${ingreso.id}`)
                         }
                     })
                 }, (error) => { printResponseErrorAlert(error) }
@@ -516,12 +534,12 @@ class EgresosFormNew extends Component {
 
     attachFiles = async() => {
         waitAlert()
-        const { form, egreso } = this.state
+        const { form, ingreso } = this.state
         const { at } = this.props
         apiGet(`v1/constant/admin-proyectos`, at).then(
             (response) => {
                 const { alma } = response.data
-                let filePath = `egresos/${egreso.id}/`
+                let filePath = `ingresos/${ingreso.id}/`
                 let aux = []
                 form.adjuntos.pago.files.forEach((file) => {
                     aux.push(
@@ -562,67 +580,66 @@ class EgresosFormNew extends Component {
     }
 
     attachFilesS3 = async(files) => {
-        const { egreso } = this.state
+        const { ingreso } = this.state
         const { at } = this.props
-        apiPutForm( `v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, at ).then(
+        apiPutForm( `v3/administracion/ingresos/${ingreso.id}/archivos/s3`, { archivos: files }, at ).then(
             ( response ) => {
                 doneAlert(`Archivos adjuntados con éxito`, 
                     () => {
                         const { history } = this.props
-                        history.push(`/administracion/egresos?id=${egreso.id}`)
+                        history.push(`/administracion/ingresos?id=${ingreso.id}`)
                     }
                 )
             }, ( error ) => { printResponseErrorAlert( error ) }
         ).catch( ( error ) => { catchErrors( error ) } )
     }
-    getEgreso = async() => {
+    getIngreso = async() => {
         waitAlert()
         const { dato, at } = this.props
-        apiGet(`v2/administracion/egresos/${dato.id}`, at).then(
+        apiGet(`v2/administracion/ingresos/${dato.id}`, at).then(
             (response) => {
-                const { egreso } = response.data
+                const { ingreso } = response.data
                 const { form, options } = this.state
-                form.factura = egreso.factura ? 'Con factura' : 'Sin factura'
-                if(egreso.proveedor){
-                    form.proveedor = egreso.proveedor.id.toString()
-                    form.rfc = egreso.proveedor.rfc
+                form.factura = ingreso.factura ? 'Con factura' : 'Sin factura'
+                if(ingreso.cliente){
+                    form.cliente = ingreso.cliente.id.toString()
+                    form.rfc = ingreso.cliente.rfc
                 }
-                if (egreso.empresa) {
-                    form.empresa = egreso.empresa.id.toString()
-                    if(egreso.empresa.cuentas){
-                        options.cuentas = setOptions(egreso.empresa.cuentas, 'nombre', 'id')
-                        if (egreso.cuenta){
-                            form.cuenta = egreso.cuenta.id.toString()
+                if (ingreso.empresa) {
+                    form.empresa = ingreso.empresa.id.toString()
+                    if(ingreso.empresa.cuentas){
+                        options.cuentas = setOptions(ingreso.empresa.cuentas, 'nombre', 'id')
+                        if (ingreso.cuenta){
+                            form.cuenta = ingreso.cuenta.id.toString()
                         }
                     }
                 }
                 
-                if(egreso.area){
-                    form.area = egreso.area.id.toString()
-                    if(egreso.area.subareas){
-                        options.subareas = setOptions(egreso.area.subareas, 'nombre', 'id')
+                if(ingreso.area){
+                    form.area = ingreso.area.id.toString()
+                    if(ingreso.area.subareas){
+                        options.subareas = setOptions(ingreso.area.subareas, 'nombre', 'id')
                     }
-                    if (egreso.subarea) {
-                        form.subarea = egreso.subarea.id.toString()
+                    if (ingreso.subarea) {
+                        form.subarea = ingreso.subarea.id.toString()
                     }    
                 }
 
-                if(egreso.tipo_pago){
-                    form.tipoPago = egreso.tipo_pago ? egreso.tipo_pago.id.toString() : ''
+                if(ingreso.tipo_pago){
+                    form.tipoPago = ingreso.tipo_pago ? ingreso.tipo_pago.id.toString() : ''
                 }
 
-                if(egreso.tipo_impuesto){
-                    form.tipoImpuesto = egreso.tipo_impuesto ? egreso.tipo_impuesto.id.toString() : ''
+                if(ingreso.tipo_impuesto){
+                    form.tipoImpuesto = ingreso.tipo_impuesto ? ingreso.tipo_impuesto.id.toString() : ''
                 }
 
-                if(egreso.estatus_compra){
-                    form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id.toString() : ''
+                if(ingreso.estatus_compra){
+                    form.estatusCompra = ingreso.estatus_compra ? ingreso.estatus_compra.id.toString() : ''
                 }
 
-                form.total = egreso.monto
-                form.fecha = new Date( egreso.created_at )
-                form.descripcion = egreso.descripcion
-                form.comision = egreso.comision
+                form.total = ingreso.monto
+                form.fecha = new Date( ingreso.created_at )
+                form.descripcion = ingreso.descripcion
 
                 Swal.close()
 
@@ -633,52 +650,6 @@ class EgresosFormNew extends Component {
                 })
             }, ( error ) => { printResponseErrorAlert(error) }
         ).catch( (error ) => { catchErrors(error) })
-    }
-    getSolicitud = async () => {
-        const { solicitud } = this.props
-        const { options, form } = this.state
-
-        if (solicitud.proveedor) {
-            form.proveedor = solicitud.proveedor.id.toString()
-            form.rfc = solicitud.proveedor.rfc
-        }
-        if (solicitud.empresa) {
-            if (solicitud.empresa.cuentas) {
-                options.cuentas = setOptions(solicitud.empresa.cuentas, 'nombre', 'id')
-                form.empresa = solicitud.empresa.id.toString()
-            }
-        }
-        if (solicitud.subarea) {
-            if (solicitud.subarea.area) {
-                if (solicitud.subarea.area.subareas) {
-                    options.subareas = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
-                    form.area = solicitud.subarea.area.id.toString()
-                    form.subarea = solicitud.subarea.id.toString()
-                }
-            }
-        }
-        if (solicitud.tipo_pago) {
-            form.tipoPago = solicitud.tipo_pago.id.toString()
-        }
-        form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
-        let item = null;
-        if (solicitud.factura) {
-            item = options.tiposImpuestos.find((elemento) => {
-                return elemento.name === 'IVA'
-            })
-            if (item) {
-                form.tipoImpuesto = item.value
-            }
-        }
-        if (solicitud.monto) {
-            form.total = solicitud.monto
-        }
-        if (solicitud.descripcion) {
-            form.descripcion = solicitud.descripcion
-        }
-        form.fecha = new Date(solicitud.fecha)
-        Swal.close()
-        this.setState({ ...this.state, form, options })
     }
 
     isActiveFactura = () => {
@@ -697,11 +668,10 @@ class EgresosFormNew extends Component {
         waitAlert()
         switch (type) {
             case 'add':
-            case 'convert':
-                this.addEgreso()
+                this.addIngreso()
             break;
             case 'edit':
-                this.editEgresoAxios()
+                this.editIngresoAxios()
                 break;
             default: break;
         }
@@ -784,9 +754,9 @@ class EgresosFormNew extends Component {
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
                             <div className="col-md-6">
-                                <SelectSearchGray options = { options.proveedores } placeholder = 'Selecciona el proveedor' value = { form.proveedor } 
-                                    onChange = { (value) => { this.updateSelect(value, 'proveedor') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                    withicon = { 1 } iconclass = "far fa-user" messageinc = "Selecciona el proveedor" formeditado = { formeditado }/>
+                                <SelectSearchGray options = { options.clientes } placeholder = 'Selecciona el cliente' value = { form.cliente } 
+                                    onChange = { (value) => { this.updateSelect(value, 'cliente') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                    withicon = { 1 } iconclass = "far fa-user" messageinc = "Selecciona el cliente" formeditado = { formeditado }/>
                             </div>
                             <div className="col-md-6">
                                 <SelectSearchGray options = { options.empresas } placeholder = 'Selecciona la empresa' value = { form.empresa } 
@@ -810,7 +780,7 @@ class EgresosFormNew extends Component {
                         <div className="form-group form-group-marginless row mx-0">
                             <div className = 'col-md-4 text-center'>
                                 <div className="d-flex justify-content-center h-10px">
-                                    <label className="col-form-label font-weight-bold text-dark-60">Fecha del egreso</label>
+                                    <label className="col-form-label font-weight-bold text-dark-60">Fecha del ingreso</label>
                                 </div>
                                 <CalendarDay date = { form.fecha } onChange = { this.onChange } name = 'fecha' requirevalidation = { 1 } />
                             </div>
@@ -858,11 +828,21 @@ class EgresosFormNew extends Component {
                     <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                         <h5 className="mb-4 font-weight-bold text-dark px-4">Selecciona el tipo de pago, impuesto y estatus</h5>
                         <div className="form-group row form-group-marginless">
-                            <div className="col-md-4">
+                            <div className="col-md-6">
                                 <SelectSearchGray options = { options.cuentas } placeholder = 'Selecciona la cuenta' value = { form.cuenta } 
                                     onChange = { (value) => { this.updateSelect(value, 'cuenta') } } withtaglabel = { 1 } withtextlabel = { 1 } 
                                     withicon = { 1 } iconclass = "far fa-credit-card" messageinc = "Selecciona la cuenta" 
                                     formeditado = { formeditado } requirevalidation = { 1 }/>
+                            </div>
+                            <div className="col-md-6">
+                                <SelectSearchGray options = { options.estatusCompras } placeholder = 'Selecciona el estatus de la compra' 
+                                    value = { form.estatusCompra } onChange = { (value) => { this.updateSelect(value, 'estatusCompra') } } 
+                                    withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "flaticon2-time" 
+                                    messageinc = "Selecciona el estatus de la compra"  formeditado = { formeditado } 
+                                    requirevalidation = { 1 }/>
+                            </div>
+                            <div className="col-md-12">
+                                <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
                             <div className="col-md-4">
                                 <SelectSearchGray options = { options.tiposPagos } placeholder = 'Selecciona el tipo de pago' 
@@ -878,27 +858,11 @@ class EgresosFormNew extends Component {
                                     messageinc = "Selecciona el tipo de impuesto"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
                             </div>
-                            <div className="col-md-12">
-                                <div className="separator separator-dashed mt-1 mb-2" />
-                            </div>
-                            <div className="col-md-4">
-                                <SelectSearchGray options = { options.estatusCompras } placeholder = 'Selecciona el estatus de la compra' 
-                                    value = { form.estatusCompra } onChange = { (value) => { this.updateSelect(value, 'estatusCompra') } } 
-                                    withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "flaticon2-time" 
-                                    messageinc = "Selecciona el estatus de la compra"  formeditado = { formeditado } 
-                                    requirevalidation = { 1 }/>
-                            </div>
                             <div className="col-md-4">
                                 <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 0 } 
                                     requirevalidation = { 1 } formeditado = { formeditado } thousandseparator = { true } prefix = '$' 
                                     name = "total" value = { form.total } onChange = { this.onChange } placeholder = "MONTO" 
-                                    iconclass = 'fas fa-money-check-alt' messageinc = "ingresa el monto del egreso" />
-                            </div>
-                            <div className="col-md-4">
-                                <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 0 } 
-                                    requirevalidation = { 0 } formeditado = { formeditado } thousandseparator = { true } prefix = '$' 
-                                    name = "comision" value = { form.comision } onChange = { this.onChange } placeholder = "COMISIÓN" 
-                                    iconclass = 'fas fa-money-check-alt' />
+                                    iconclass = 'fas fa-money-check-alt' messageinc = "ingresa el monto del ingreso" />
                             </div>
                             {
                                 this.isActiveFactura() ?
@@ -949,4 +913,4 @@ class EgresosFormNew extends Component {
     }
 }
 
-export default EgresosFormNew
+export default IngresosFormulario
