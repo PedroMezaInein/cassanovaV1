@@ -185,7 +185,7 @@ class PermisosForm extends Component {
         waitAlert()
         apiPutForm(this.getUrl('updateStatus'), { value: value }, at).then(
             (response) => {
-                doneAlert('El estatus fue editado con éxito.', () => { this.getFacturas() })
+                doneAlert('El estatus fue editado con éxito.', () => { this.reloadTables() })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
@@ -512,9 +512,14 @@ class PermisosForm extends Component {
         objeto.factura = form.factura.id
         apiPutForm(`v2/administracion/facturas/attach`, objeto, at).then(
                 (response) => {
-                    doneAlert(`Factura asignada con éxito`, () => { this.getFacturas() })
+                    doneAlert(`Factura asignada con éxito`, () => { this.reloadTables() })
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch( (error) => { catchErrors(error) } )
+    }
+    reloadTables(){
+        const { reloadTable } = this.props
+        this.getFacturas()
+        reloadTable()
     }
     render() {
         const { form, options, facturas } = this.state

@@ -433,6 +433,7 @@ class Compras extends Component {
         modal.facturaExtranjera = false
         modal.adjuntos = false
         modal.filters = false
+        modal.facturas = false
         this.setState({
             ...this.state,
             modal,
@@ -442,15 +443,9 @@ class Compras extends Component {
             data
         })
     }
-    handleCloseFacturas = () => {
-        const { modal, filters } = this.state
-        modal.facturas = false
+    reloadTableFacturas = () => {
+        const { filters } = this.state
         this.reloadTable(filters)
-        this.setState({
-            ...this.state,
-            modal,
-            venta: '',
-        })
     }
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
@@ -833,8 +828,8 @@ class Compras extends Component {
                     filterClick = { this.openModalFiltros }
                     exportar_boton = { true}
                     onClickExport = { () => this.exportComprasAxios() } />
-                <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleCloseFacturas} >
-                    <FacturasFormTable at = { access_token } tipo_factura='compras' id={compra.id} dato={compra}/>
+                <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleClose} >
+                    <FacturasFormTable at = { access_token } tipo_factura='compras' id={compra.id} dato={compra} reloadTable = {this.reloadTableFacturas}/>
                 </Modal>
                 <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >
                     <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
