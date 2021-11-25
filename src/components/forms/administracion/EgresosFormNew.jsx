@@ -40,7 +40,6 @@ class EgresosFormNew extends Component {
             },
             tipoPago: 0,
             facturaObject: null,
-            factura: null,
             tipoImpuesto: 0,
             estatusCompra: 0,
         },
@@ -696,14 +695,15 @@ class EgresosFormNew extends Component {
     onSubmit = () => {
         const { type } = this.props
         waitAlert()
-        switch(type){
+        switch (type) {
             case 'add':
             case 'convert':
                 this.addCompra()
-            break;
+                break;
             case 'edit':
                 this.addEgreso()
-            break;
+                break;
+            default: break;
         }
     }
     
