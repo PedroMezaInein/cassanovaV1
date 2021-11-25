@@ -96,7 +96,6 @@ const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/Sing
 
 const Compras = React.lazy(() => import('./pages/Proyectos/Compras/Compras') )
 const ComprasForm = React.lazy(() => import('./pages/Proyectos/Compras/ComprasForm') )
-const ComprasFormNew = React.lazy(() => import('./pages/Proyectos/Compras/ComprasFormNew') )
 
 const Ventas = React.lazy(() => import('./pages/Proyectos/Ventas/Ventas') )
 const VentasForm = React.lazy(() => import('./pages/Proyectos/Ventas/VentasForm') )
@@ -335,7 +334,6 @@ class App extends Component{
 
                     <Route path = "/proyectos/compras" exact component ={ Compras } />
                     <Route path = "/proyectos/compras/:action" exact component ={ ComprasForm } />
-                    <Route path = "/proyectos/compras2/:action" exact component ={ ComprasFormNew } />
 
                     <Route path = "/proyectos/ventas" exact component ={ Ventas } />
                     <Route path = "/proyectos/ventas/:action" exact component ={ VentasForm } />
