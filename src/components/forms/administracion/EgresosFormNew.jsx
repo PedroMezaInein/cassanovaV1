@@ -384,7 +384,7 @@ class EgresosFormNew extends Component {
     addEgreso = () => {
         const { form } = this.state
         const { at } = this.props
-        apiPostForm('v2/administracion/egresos', form, at).then(
+        apiPostForm('v3/administracion/egresos', form, at).then(
             (response) => {
                 const { egreso } = response.data
                 this.setState({
@@ -565,7 +565,7 @@ class EgresosFormNew extends Component {
     attachFilesS3 = async(files) => {
         const { egreso } = this.state
         const { at } = this.props
-        apiPutForm( `v2/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, at ).then(
+        apiPutForm( `v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, at ).then(
             ( response ) => {
                 doneAlert(`Archivos adjuntados con éxito`, 
                     () => {
@@ -699,7 +699,7 @@ class EgresosFormNew extends Component {
         switch(type){
             case 'add':
             case 'convert':
-                this.addCompra()
+                this.addEgreso()
             break;
             case 'edit':
                 this.addEgreso()
