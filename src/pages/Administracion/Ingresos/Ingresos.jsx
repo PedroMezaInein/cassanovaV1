@@ -16,7 +16,7 @@ import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
-import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
+import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert } from '../../../functions/alert'
 import { setNaviIcon, setOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, setTextTableReactDom, setOptionsWithLabel } from '../../../functions/setters'
 class Ingresos extends Component {
     state = {
