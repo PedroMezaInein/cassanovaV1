@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import $ from 'jquery'
+import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
 import { Update } from '../../../components/Lottie'
@@ -205,7 +206,7 @@ class Ingresos extends Component {
         createAlertSA2WithActionOnClose(
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
-            () => this.addAdjuntoIngresoAxios(files, item),
+            () => this.attachFiles(files, item),
             () => this.cleanAdjuntos(item)
         )
     }
@@ -423,27 +424,79 @@ class Ingresos extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    addAdjuntoIngresoAxios = async (files, item) => {
+    attachFiles = async(files, item) => {
         waitAlert()
+        const { ingreso } = this.state
         const { access_token } = this.props.authUser
-        const { ingreso, filters } = this.state
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        data.append('tipo', item)
-        data.append('id', ingreso.id)
-        apiPostFormData(`v2/administracion/ingresos/${ingreso.id}/adjuntos`, data, access_token).then(
+        apiGet(`v1/constant/admin-proyectos`, access_token).then(
             (response) => {
-                const { ingreso } = response.data
-                let { form } = this.state
-                form = this.fillAdjuntos(ingreso)
-                this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
+                const { alma } = response.data
+                let filePath = `ingresos/${ingreso.id}/`
+                let aux = ''
+                switch(item){
+                    case 'presupuesto':
+                    case 'pago':
+                        aux = files.map( ( file ) => {
+                            return {
+                                name: `${filePath}${item}s/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                                file: file,
+                                tipo: item
+                            }
+                        })
+                        break;
+                    case 'facturas_pdf':
+                        aux = files.map( ( file ) => {
+                            return {
+                                name: `${filePath}facturas-extranjeras/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                                file: file,
+                                tipo: 'factura-extranjera'
+                            }
+                        })
+                        break;
+                    default: break;
+                }
+                let auxPromises  = aux.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, file.name)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                catchErrors(error)
+                                errorAlert(`Ocurrió un error al subir el archivo ${file.name}`)
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.attachFilesS3(values, item)}).catch(err => console.error(err)) 
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
+    }
+
+    attachFilesS3 = async(files, item) => {
+        const { ingreso } = this.state
+        const { access_token } = this.props.authUser
+        apiPutForm( `v3/administracion/ingresos/${ingreso.id}/archivos/s3`, { archivos: files }, access_token ).then(
+            ( response ) => {
+                doneAlert(`Archivos adjuntados con éxito`, 
+                    () => { 
+                        switch(item){
+                            case 'presupuesto':
+                            case 'pago':
+                                this.openModalAdjuntos(ingreso)         
+                                break;
+                            case 'facturas_pdf':
+                                this.openFacturaExtranjera(ingreso) 
+                                break;
+                            default: break;
+                        }
+                        
+                    }
+                )
+            }, ( error ) => { printResponseErrorAlert( error ) }
+        ).catch( ( error ) => { catchErrors( error ) } )
     }
     deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser
