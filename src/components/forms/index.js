@@ -10,6 +10,7 @@ import cuentaForm from './bancos/CuentaForm'
 import traspasoForm from './bancos/TraspasoForm'
 import estadosCuentaForm from './bancos/EstadosCuentaForm'
 import ingresosForm from './administracion/IngresosForm'
+import IngresosFormulario from './administracion/IngresosFormulario'
 import egresosForm from './administracion/EgresosForm'
 import proveedorForm from './administracion/ProveedorForm'
 import contratoForm from './administracion/ContratoForm'
@@ -248,5 +249,5 @@ export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResul
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
     PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
-    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew
+    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario
 }

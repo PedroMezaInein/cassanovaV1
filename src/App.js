@@ -66,6 +66,7 @@ const PresupuestosEnviadosFinish = React.lazy(() => import('./pages/Presupuesto/
 
 const Ingresos = React.lazy(() => import('./pages/Administracion/Ingresos/Ingresos') )
 const IngresosForm = React.lazy(() => import('./pages/Administracion/Ingresos/IngresosForm') )
+const IngresosFormNew = React.lazy(() => import ('./pages/Administracion/Ingresos/IngresosFormNew'))
 
 const Egresos = React.lazy(() => import('./pages/Administracion/Egresos/Egresos') )
 const EgresosForm = React.lazy(() => import('./pages/Administracion/Egresos/EgresosForm') )
@@ -367,6 +368,7 @@ class App extends Component{
 
                     <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
                     <Route path = "/administracion/ingresos/:action" exact component ={ IngresosForm } />
+                    <Route path = "/administracion/ingresos2/:action" exact component = { IngresosFormNew } />
 
                     {/* <Route path = "/administracion/contratos" exact component ={ Contratos } /> */}
                     <Route path = "/administracion/contratos" exact component ={ Contratos } />
