@@ -8,7 +8,8 @@ class ComprasForm extends Component {
 
     state = {
         type: 'add',
-        compra: null
+        compra: null,
+        solicitud: null
     }
     
     componentDidMount() {
@@ -21,19 +22,36 @@ class ComprasForm extends Component {
 
         switch (action) {
             case 'add':
+                this.setState({
+                    ...this.state,
+                    type: action
+                })
                 break;
             case 'edit':
+                this.setState({
+                    ...this.state,
+                    type: action
+                })
                 break;
-            case 'convert': 
+            case 'convert':
+                if(state){
+                    if(state.solicitud){
+                        this.setState({
+                            ...this.state,
+                            solicitud: state.solicitud,
+                            type: action
+                        })
+                    }else{
+                        history.push( '/proyectos/solicitud-compra' )
+                    }
+                }else{
+                    history.push( '/proyectos/solicitud-compra' )
+                }
                 break;
             default:
                 history.push('/')
                 break;
         }
-        this.setState({
-            ...this.state,
-            type: action
-        })
         /* if (!acceso)
             history.push('/') */
     }
@@ -52,7 +70,7 @@ class ComprasForm extends Component {
     }
 
     render() {
-        const { type, compra } = this.state
+        const { type, compra, solicitud } = this.state
         const { history, authUser: { access_token } } = this.props
         return (
             <Layout active = 'proyectos'  {...this.props}>
@@ -63,7 +81,7 @@ class ComprasForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ComprasFormNew type = { type } at = { access_token } dato = { compra } history = { history }  />
+                        <ComprasFormNew type = { type } at = { access_token } dato = { compra } solicitud = { solicitud } history = { history }  />
                     </Card.Body>
                 </Card>
             </Layout>

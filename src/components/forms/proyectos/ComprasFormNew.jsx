@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { DATE, RFC } from '../../../constants'
+import { RFC } from '../../../constants'
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from '../../../functions/api'
 import { setOptions } from '../../../functions/setters'
@@ -51,12 +51,23 @@ class ComprasFormNew extends Component {
     }
 
     componentDidMount = () => {
-        const { type, at } = this.props
+        this.getOptions()
+        const { type, solicitud } = this.props
         this.setState({
             ...this.state,
             formeditado: type === 'add' ? 0 : 1
         })
-        this.getOptions()
+        if(solicitud){
+            this.getSolicitud()
+        }
+    }
+
+    componentDidUpdate = (nextProps) => {
+        if(this.props.solicitud !== nextProps.solicitud){
+            if(this.props.solicitud){
+                this.getSolicitud()
+            }
+        }
     }
 
     updateSelect = (value, name) => {
@@ -524,6 +535,65 @@ class ComprasFormNew extends Component {
         ).catch( ( error ) => { catchErrors( error ) } )
     }
 
+    getSolicitud = async() => {
+        waitAlert()
+        const { solicitud, at } = this.props
+        apiGet(`solicitud-compra/single/${solicitud.id}`, at).then(
+            ( response ) => {
+                const { solicitud: solicitudResponse } = response.data
+                const { options, form } = this.state
+                form.solicitud = solicitudResponse.id
+                form.factura = solicitudResponse.factura ? 'Con factura' : 'Sin factura'
+                form.fecha = new Date(solicitudResponse.created_at)
+                let item = null;
+                if (solicitudResponse.factura) {
+                    item = options.tiposImpuestos.find((elemento) => {
+                        return elemento.name === 'IVA'
+                    })
+                    if(item){
+                        form.tipoImpuesto = item.value
+                    }
+                }
+                if (solicitud.proveedor) {
+                    form.proveedor = solicitud.proveedor.id.toString()
+                    form.rfc = solicitud.proveedor.rfc
+                    if (solicitud.proveedor.contratos) {
+                        options.contratos = setOptions(solicitud.proveedor.contratos, 'nombre', 'id')
+                    }
+                }
+                if (solicitud.proyecto) {
+                    form.proyecto = solicitud.proyecto.id.toString()
+                }
+                if (solicitud.empresa) {
+                    if (solicitud.empresa.cuentas) {
+                        options.cuentas = setOptions(solicitud.empresa.cuentas, 'nombre', 'id')
+                        form.empresa = solicitud.empresa.id.toString()
+                    }
+                }
+                if (solicitud.subarea) {
+                    if (solicitud.subarea.area) {
+                        if (solicitud.subarea.area.subareas) {
+                            options.subareas = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
+                            form.area = solicitud.subarea.area.id.toString()
+                            form.subarea = solicitud.subarea.id.toString()
+                        }
+                    }
+                }
+                if (solicitud.tipo_pago) {
+                    form.tipoPago = solicitud.tipo_pago.id
+                }
+                if (solicitud.monto) {
+                    form.total = solicitud.monto
+                }
+                if (solicitud.descripcion) {
+                    form.descripcion = solicitud.descripcion
+                }
+                Swal.close()
+                this.setState({ ...this.state, form, options })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => catchErrors(error))
+    }
+
     isActiveFactura = () => {
         const { form } = this.state
         const { type } = this.props
@@ -546,12 +616,12 @@ class ComprasFormNew extends Component {
             case 'edit':
                 this.editCompraAxios()
             break;
+            default: break;
         }
     }
     
     render() {
         const { formeditado, form, options } = this.state
-        const { type } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
