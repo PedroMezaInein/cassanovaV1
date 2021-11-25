@@ -52,7 +52,7 @@ class ComprasFormNew extends Component {
 
     componentDidMount = () => {
         this.getOptions()
-        const { type, solicitud } = this.props
+        const { type, solicitud, dato } = this.props
         this.setState({
             ...this.state,
             formeditado: type === 'add' ? 0 : 1
@@ -60,12 +60,20 @@ class ComprasFormNew extends Component {
         if(solicitud){
             this.getSolicitud()
         }
+        if(dato){
+            this.getCompra()
+        }
     }
 
     componentDidUpdate = (nextProps) => {
         if(this.props.solicitud !== nextProps.solicitud){
             if(this.props.solicitud){
                 this.getSolicitud()
+            }
+        }
+        if(this.props.dato !== nextProps.dato){
+            if(this.props.dato){
+                this.getCompra()
             }
         }
     }
@@ -254,7 +262,6 @@ class ComprasFormNew extends Component {
                     form.proveedor = proveedor.id.toString()
                     form.contrato = ''
                     options.contratos = setOptions(proveedor.contratos, 'nombre', 'id')
-                    console.log(options.contratos, 'CONTRATOS')
                 }
                 if(errores.length){
                     let textError = ''    
@@ -337,6 +344,17 @@ class ComprasFormNew extends Component {
                 this.setState({ ...this.state, form })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch(( error ) => { catchErrors(error) })
+    }
+
+    editCompraAxios = async() => {
+        const { dato, at } = this.props
+        const { form } = this.state
+        apiPutForm(`v2/proyectos/compras/${dato.id}`, form, at).then(
+            (response) => {
+                const { history } = this.props
+                history.push(`/proyectos/compras?id=${dato.id}`)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
     
     addCompra = () => {
@@ -535,6 +553,75 @@ class ComprasFormNew extends Component {
         ).catch( ( error ) => { catchErrors( error ) } )
     }
 
+    getCompra = async() => {
+        waitAlert()
+        const { dato, at } = this.props
+        apiGet(`v2/proyectos/compras/${dato.id}`, at).then(
+            (response) => {
+                const { compra } = response.data
+                const { form, options } = this.state
+                form.factura = compra.factura ? 'Con factura' : 'Sin factura'
+                if(compra.proveedor){
+                    form.proveedor = compra.proveedor.id.toString()
+                    form.rfc = compra.proveedor.rfc
+                    if(compra.proveedor.contratos){
+                        options.contratos = setOptions(compra.proveedor.contratos, 'nombre', 'id')
+                    }
+                    if (compra.contrato) {
+                        form.contrato = compra.contrato.id.toString()
+                    }
+                }
+                if(compra.proyecto){
+                    form.proyecto = compra.proyecto.id.toString()
+                }
+                if (compra.empresa) {
+                    form.empresa = compra.empresa.id.toString()
+                    if(compra.empresa.cuentas){
+                        options.cuentas = setOptions(compra.empresa.cuentas, 'nombre', 'id')
+                        if (compra.cuenta){
+                            form.cuenta = compra.cuenta.id.toString()
+                        }
+                    }
+                }
+                
+                if(compra.area){
+                    form.area = compra.area.id.toString()
+                    if(compra.area.subareas){
+                        options.subareas = setOptions(compra.area.subareas, 'nombre', 'id')
+                    }
+                    if (compra.subarea) {
+                        form.subarea = compra.subarea.id.toString()
+                    }    
+                }
+
+                if(compra.tipo_pago){
+                    form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id.toString() : ''
+                }
+
+                if(compra.tipo_impuesto){
+                    form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id.toString() : ''
+                }
+
+                if(compra.estatus_compra){
+                    form.estatusCompra = compra.estatus_compra ? compra.estatus_compra.id.toString() : ''
+                }
+
+                form.total = compra.monto
+                form.fecha = new Date( compra.created_at )
+                form.descripcion = compra.descripcion
+                form.comision = compra.comision
+
+                Swal.close()
+
+                this.setState({
+                    ...this.state,
+                    form,
+                    options
+                })
+            }, ( error ) => { printResponseErrorAlert(error) }
+        ).catch( (error ) => { catchErrors(error) })
+    }
+
     getSolicitud = async() => {
         waitAlert()
         const { solicitud, at } = this.props
@@ -580,7 +667,7 @@ class ComprasFormNew extends Component {
                     }
                 }
                 if (solicitud.tipo_pago) {
-                    form.tipoPago = solicitud.tipo_pago.id
+                    form.tipoPago = solicitud.tipo_pago.id.toString()
                 }
                 if (solicitud.monto) {
                     form.total = solicitud.monto

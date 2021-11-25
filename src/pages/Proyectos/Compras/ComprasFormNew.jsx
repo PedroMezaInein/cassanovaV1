@@ -28,10 +28,19 @@ class ComprasForm extends Component {
                 })
                 break;
             case 'edit':
-                this.setState({
-                    ...this.state,
-                    type: action
-                })
+                if(state){
+                    if(state.compra){
+                        this.setState({
+                            ...this.state,
+                            compra: state.compra,
+                            type: action
+                        })
+                    }else{
+                        history.push( '/proyectos/compra' )
+                    }
+                }else{
+                    history.push( '/proyectos/compra' )
+                }
                 break;
             case 'convert':
                 if(state){
@@ -81,7 +90,9 @@ class ComprasForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ComprasFormNew type = { type } at = { access_token } dato = { compra } solicitud = { solicitud } history = { history }  />
+                        <ComprasFormNew type = { type } at = { access_token } 
+                            dato = { compra } solicitud = { solicitud } 
+                            history = { history }  />
                     </Card.Body>
                 </Card>
             </Layout>
