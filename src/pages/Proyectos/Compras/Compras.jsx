@@ -487,31 +487,6 @@ class Compras extends Component {
         ).catch((error) => { catchErrors(error) })
     }
 
-    addAdjuntoCompraAxios = async (files, item) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { compra } = this.state
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        data.append('tipo', item)
-        data.append('id', compra.id)
-        apiPostFormData(`v2/proyectos/compras/${compra.id}/adjuntos`, data, access_token).then(
-            (response) => {
-                const { compra } = response.data
-                const { form, filters } = this.state
-                form.adjuntos.pago.files = compra.pagos
-                form.adjuntos.presupuesto.files = compra.presupuestos
-                form.adjuntos.facturas_pdf.files = compra.facturas_pdf
-                this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-
     attachFiles = async(files, item) => {
         waitAlert()
         const { form, compra } = this.state
@@ -520,13 +495,29 @@ class Compras extends Component {
             (response) => {
                 const { alma } = response.data
                 let filePath = `compras/${compra.id}/`
-                let aux = files.map( ( file ) => {
-                    return {
-                        name: `${filePath}${item}s/${Math.floor(Date.now() / 1000)}-${file.name}`,
-                        file: file,
-                        tipo: item
-                    }
-                })
+                let aux = ''
+                switch(item){
+                    case 'presupuesto':
+                    case 'pago':
+                        aux = files.map( ( file ) => {
+                            return {
+                                name: `${filePath}${item}s/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                                file: file,
+                                tipo: item
+                            }
+                        })
+                        break;
+                    case 'facturas_pdf':
+                        aux = files.map( ( file ) => {
+                            return {
+                                name: `${filePath}facturas-extranjeras/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                                file: file,
+                                tipo: 'factura-extranjera'
+                            }
+                        })
+                        break;
+                    default: break;
+                }
                 let auxPromises  = aux.map((file) => {
                     return new Promise((resolve, reject) => {
                         new S3(alma).uploadFile(file.file, file.name)
@@ -542,18 +533,30 @@ class Compras extends Component {
                             })
                     })
                 })
-                Promise.all(auxPromises).then(values => { this.attachFilesS3(values)}).catch(err => console.error(err)) 
+                Promise.all(auxPromises).then(values => { this.attachFilesS3(values, item)}).catch(err => console.error(err)) 
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
 
-    attachFilesS3 = async(files) => {
+    attachFilesS3 = async(files, item) => {
         const { compra } = this.state
         const { access_token } = this.props.authUser
         apiPutForm( `v2/proyectos/compras/${compra.id}/archivos/s3`, { archivos: files }, access_token ).then(
             ( response ) => {
                 doneAlert(`Archivos adjuntados con éxito`, 
-                    () => { this.openModalAdjuntos(compra) }
+                    () => { 
+                        switch(item){
+                            case 'presupuesto':
+                            case 'pago':
+                                this.openModalAdjuntos(compra)         
+                                break;
+                            case 'facturas_pdf':
+                                this.openFacturaExtranjera(compra) 
+                                break;
+                            default: break;
+                        }
+                        
+                    }
                 )
             }, ( error ) => { printResponseErrorAlert( error ) }
         ).catch( ( error ) => { catchErrors( error ) } )
