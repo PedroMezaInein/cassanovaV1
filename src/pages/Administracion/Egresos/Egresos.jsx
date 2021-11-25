@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import $ from 'jquery'
+import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
 import { Modal } from '../../../components/singles'
@@ -13,11 +14,11 @@ import { printSwalHeader } from '../../../functions/printers'
 import { FacturasFormTable } from '../../../components/tables'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
+import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
 import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
+import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert } from '../../../functions/alert'
 import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, 
     setTextTableReactDom, setNaviIcon } from '../../../functions/setters'
-import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
 class Egresos extends Component {
     state = {
         modal: {
@@ -199,7 +200,7 @@ class Egresos extends Component {
         createAlertSA2WithActionOnClose(
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
-            () => this.addAdjuntoEgresoAxios(files, item),
+            () => this.attachFiles(files, item),
             () => this.cleanAdjuntos(item)
         )
     }
@@ -437,32 +438,79 @@ class Egresos extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    addAdjuntoEgresoAxios = async (files, item) => {
+    attachFiles = async(files, item) => {
         waitAlert()
-        const { access_token } = this.props.authUser
         const { egreso } = this.state
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        data.append('tipo', item)
-        data.append('id', egreso.id)
-        apiPostFormData(`v2/administracion/egresos/${egreso.id}/adjuntos`, data, access_token).then(
+        const { access_token } = this.props.authUser
+        apiGet(`v1/constant/admin-proyectos`, access_token).then(
             (response) => {
-                const { egreso } = response.data
-                let { form } = this.state
-                const { filters } = this.state
-                form = this.revertForm(egreso)
-                this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
-            }, (error) => {
-                let { form } = this.state
-                form = this.revertForm(egreso);
-                this.setState({ ...this.state, form })
+                const { alma } = response.data
+                let filePath = `egresos/${egreso.id}/`
+                let aux = ''
+                switch(item){
+                    case 'presupuesto':
+                    case 'pago':
+                        aux = files.map( ( file ) => {
+                            return {
+                                name: `${filePath}${item}s/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                                file: file,
+                                tipo: item
+                            }
+                        })
+                        break;
+                    case 'facturas_pdf':
+                        aux = files.map( ( file ) => {
+                            return {
+                                name: `${filePath}facturas-extranjeras/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                                file: file,
+                                tipo: 'factura-extranjera'
+                            }
+                        })
+                        break;
+                    default: break;
+                }
+                let auxPromises  = aux.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, file.name)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                catchErrors(error)
+                                errorAlert(`Ocurrió un error al subir el archivo ${file.name}`)
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.attachFilesS3(values, item)}).catch(err => console.error(err)) 
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
+    }
+
+    attachFilesS3 = async(files, item) => {
+        const { egreso } = this.state
+        const { access_token } = this.props.authUser
+        apiPutForm( `v2/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, access_token ).then(
+            ( response ) => {
+                doneAlert(`Archivos adjuntados con éxito`, 
+                    () => { 
+                        switch(item){
+                            case 'presupuesto':
+                            case 'pago':
+                                this.openModalAdjuntos(egreso)         
+                                break;
+                            case 'facturas_pdf':
+                                this.openFacturaExtranjera(egreso) 
+                                break;
+                            default: break;
+                        }
+                        
+                    }
+                )
+            }, ( error ) => { printResponseErrorAlert( error ) }
+        ).catch( ( error ) => { catchErrors( error ) } )
     }
     deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser

@@ -1,0 +1,102 @@
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Layout from '../../../components/layout/layout'
+import { Card } from 'react-bootstrap'
+import { EgresosFormNew } from '../../../components/forms'
+
+class EgresosForm extends Component {
+
+    state = {
+        type: 'add',
+        egreso: null,
+        solicitud: null
+    }
+    
+    componentDidMount() {
+        const {
+            authUser: { user: { permisos } },
+            history: { location: { pathname, state } },
+            match: { params: { action } },
+            history
+        } = this.props
+
+        switch (action) {
+            case 'add':
+                this.setState({
+                    ...this.state,
+                    type: action
+                })
+                break;
+            case 'edit':
+                this.setState({
+                    ...this.state,
+                    type: action
+                })
+                break;
+            case 'convert':
+                if(state){
+                    if(state.solicitud){
+                        this.setState({
+                            ...this.state,
+                            solicitud: state.solicitud,
+                            type: action
+                        })
+                    }else{
+                        history.push( '/administracion/egresos' )
+                    }
+                }else{
+                    history.push( '/administracion/egresos' )
+                }
+                break;
+            default:
+                history.push('/')
+                break;
+        }
+        this.setState({
+            ...this.state,
+            type: action
+        })
+        /* if (!acceso)
+            history.push('/') */
+    }
+
+    setTitle = () => {
+        const { type } = this.state
+        switch(type){
+            case 'add':
+                return 'Nuevo egreso'
+            case 'edit':
+                return 'Editar egreso'
+            case 'convert':
+                return 'Convertir solicitud de egreso'
+            default: break;
+        }
+    }
+
+    render() {
+        const { type, egreso, solicitud } = this.state
+        const { history, location, authUser: { access_token } } = this.props
+
+
+
+        return (
+            <Layout active = 'proyectos'  {...this.props}>
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label"> { this.setTitle() } </h3>
+                        </div>
+                    </Card.Header>
+                    <Card.Body className="pt-0">
+                        <EgresosFormNew type = { type } at = { access_token } dato = { egreso } solicitud = { solicitud } history = { history } location={location}/>
+                    </Card.Body>
+                </Card>
+            </Layout>
+        )
+    }
+}
+
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
+
+export default connect(mapStateToProps, mapDispatchToProps)(EgresosForm);
