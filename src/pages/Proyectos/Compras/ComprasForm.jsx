@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import { Card } from 'react-bootstrap'
-import { ComprasFormNew } from '../../../components/forms'
+import { ComprasFormulario } from '../../../components/forms'
 import { errorAlert } from '../../../functions/alert'
 
 class ComprasForm extends Component {
@@ -98,7 +98,7 @@ class ComprasForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ComprasFormNew type = { type } at = { access_token } 
+                        <ComprasFormulario type = { type } at = { access_token } 
                             dato = { compra } solicitud = { solicitud } 
                             history = { history }  />
                     </Card.Body>

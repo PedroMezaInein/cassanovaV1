@@ -25,9 +25,8 @@ import prestacionForm from './catalogos/PrestacionForm'
 import proyectosForm from './proyectos/ProyectosForm'
 import avanceForm from './proyectos/AvanceForm'
 import ventasForm from './proyectos/VentasForm'
-import comprasForm from './proyectos/ComprasForm'
 
-import ComprasFormNew from './proyectos/ComprasFormNew'
+import ComprasFormulario from './proyectos/ComprasFormulario'
 
 import facturaForm from './administracion/FacturaForm'
 import solicitudCompraForm from './proyectos/SolicitudCompraForm'
@@ -174,7 +173,6 @@ export const PrestacionForm = prestacionForm
 export const ProyectosForm = proyectosForm
 export const AvanceForm = avanceForm
 export const VentasForm = ventasForm
-export const ComprasForm = comprasForm
 export const FacturaForm = facturaForm
 export const SolicitudCompraForm = solicitudCompraForm
 export const SolicitudVentaForm = solicitudVentaForm
@@ -249,5 +247,5 @@ export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResul
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
     PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
-    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormNew
+    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario
 }

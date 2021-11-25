@@ -10,7 +10,7 @@ import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
 
-class ComprasFormNew extends Component {
+class ComprasFormulario extends Component {
 
     state = {
         form: {
@@ -958,4 +958,4 @@ class ComprasFormNew extends Component {
     }
 }
 
-export default ComprasFormNew
+export default ComprasFormulario
