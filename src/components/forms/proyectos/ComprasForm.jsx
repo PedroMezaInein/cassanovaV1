@@ -4,6 +4,8 @@ import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
+
+// TO delete
 class ComprasForm extends Component {
     
     updateProyecto = value => {
