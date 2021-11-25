@@ -14,10 +14,12 @@ import { FacturasFormTable } from '../../../components/tables'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostFormResponseBlob, catchErrors, apiPutForm } from '../../../functions/api'
-import { waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
+import { waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, customInputAlert,
+    errorAlert } from '../../../functions/alert'
 import { SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { setOptions, setOptionsWithLabel, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
     setNaviIcon, setCustomeDescripcionReactDom, setDateTableReactDom } from '../../../functions/setters'
+import S3 from 'react-aws-s3';
 class Compras extends Component {
     state = {
         modal: {
@@ -249,7 +251,7 @@ class Compras extends Component {
         createAlertSA2WithActionOnClose(
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
-            () => this.addAdjuntoCompraAxios(files, item),
+            () => this.attachFiles(files, item),
             () => this.cleanAdjuntos(item)
         )
     }
@@ -509,6 +511,54 @@ class Compras extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+
+    attachFiles = async(files, item) => {
+        waitAlert()
+        const { form, compra } = this.state
+        const { access_token } = this.props.authUser
+        apiGet(`v1/constant/admin-proyectos`, access_token).then(
+            (response) => {
+                const { alma } = response.data
+                let filePath = `compras/${compra.id}/`
+                let aux = files.map( ( file ) => {
+                    return {
+                        name: `${filePath}${item}s/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                        file: file,
+                        tipo: item
+                    }
+                })
+                let auxPromises  = aux.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, file.name)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                catchErrors(error)
+                                errorAlert(`Ocurrió un error al subir el archivo ${file.name}`)
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { this.attachFilesS3(values)}).catch(err => console.error(err)) 
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    attachFilesS3 = async(files) => {
+        const { compra } = this.state
+        const { access_token } = this.props.authUser
+        apiPutForm( `v2/proyectos/compras/${compra.id}/archivos/s3`, { archivos: files }, access_token ).then(
+            ( response ) => {
+                doneAlert(`Archivos adjuntados con éxito`, 
+                    () => { this.openModalAdjuntos(compra) }
+                )
+            }, ( error ) => { printResponseErrorAlert( error ) }
+        ).catch( ( error ) => { catchErrors( error ) } )
+    }
+
     deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { compra } = this.state
@@ -779,8 +829,7 @@ class Compras extends Component {
                     urlRender = {`${URL_DEV}v3/proyectos/compra`} 
                     filterClick = { this.openModalFiltros }
                     exportar_boton = { true}
-                    onClickExport = { () => this.exportComprasAxios() }
-                />
+                    onClickExport = { () => this.exportComprasAxios() } />
                 <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleCloseFacturas} >
                     <FacturasFormTable at = { access_token } tipo_factura='compras' id={compra.id} dato={compra}/>
                 </Modal>
