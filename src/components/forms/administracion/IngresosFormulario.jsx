@@ -252,8 +252,13 @@ class IngresosFormulario extends Component {
                 })
                 if(!empresa){
                     errores.push( 'No existe una empresa con ese RFC' )
+                }else{
+                    form.empresa = empresa.id.toString()
+                    if(empresa.cuentas){
+                        options.cuentas = setOptions(empresa.cuentas, 'nombre', 'id')
+                    }
                 }
-                cliente = options.clientes.find((element) => {
+                cliente = data.clientes.find((element) => {
                     return element.rfc === obj.rfc_receptor
                 })
                 if(errores.length){
@@ -306,6 +311,7 @@ class IngresosFormulario extends Component {
                             }
                         )
                     } else {
+                        form.cliente = cliente.id.toString()
                         form.facturaObject = obj
                         Swal.close()
                         this.setState({ ...this.state, form, options })
