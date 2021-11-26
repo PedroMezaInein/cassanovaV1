@@ -25,7 +25,6 @@ class VentasFormulario extends Component {
             rfc: '',
             contrato: '',
             total: 0,
-            comision: 0,
             factura: 'Sin factura',
             fecha: new Date(),
             adjuntos: {
@@ -352,7 +351,7 @@ class VentasFormulario extends Component {
         const { at } = this.props
         apiOptions(`v2/proyectos/ventas`, at).then(
             (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, clientes, formasPago, 
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, clientes, formasPago, 
                     metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
@@ -397,7 +396,7 @@ class VentasFormulario extends Component {
     addVenta = () => {
         const { form } = this.state
         const { at } = this.props
-        apiPostForm('v2/proyectos/ventas', form, at).then(
+        apiPostForm('v3/proyectos/ventas', form, at).then(
             (response) => {
                 const { venta } = response.data
                 this.setState({
@@ -405,7 +404,7 @@ class VentasFormulario extends Component {
                     venta: venta
                 })
                 doneAlert(
-                    `Compra generada con éxito`,
+                    `Venta generada con éxito`,
                     () => {
                         // La venta es con factura
                         if(venta.factura){
@@ -424,8 +423,8 @@ class VentasFormulario extends Component {
                                     //La venta tiene adjuntos
                                     this.attachFiles()
                                 }else{
-                                    //Compra generada con éxito y cambio de página
-                                    doneAlert(`Compra generada con éxito`, 
+                                    //Venta generada con éxito y cambio de página
+                                    doneAlert(`Venta generada con éxito`, 
                                         () => {
                                             const { history } = this.props
                                             history.push(`/proyectos/ventas?id=${venta.id}`)
@@ -439,8 +438,8 @@ class VentasFormulario extends Component {
                                 //La venta tiene adjuntos
                                 this.attachFiles()
                             }else{
-                                //Compra generada con éxito y cambio de página
-                                doneAlert(`Compra generada con éxito`, 
+                                //Venta generada con éxito y cambio de página
+                                doneAlert(`Venta generada con éxito`, 
                                     () => {
                                         const { history } = this.props
                                         history.push(`/proyectos/ventas?id=${venta.id}`)
@@ -646,8 +645,6 @@ class VentasFormulario extends Component {
                 form.total = venta.monto
                 form.fecha = new Date( venta.created_at )
                 form.descripcion = venta.descripcion
-                form.comision = venta.comision
-
                 Swal.close()
 
                 this.setState({
@@ -929,19 +926,13 @@ class VentasFormulario extends Component {
                                     value = { form.tipoPago } onChange = { (value) => { this.updateSelect(value, 'tipoPago') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "fas fa-coins" 
                                     messageinc = "Incorrecto. Selecciona el tipo de pago"  formeditado = { formeditado } 
-                                    requirevalidation = { 1 }/>
+                                        requirevalidation = { 1 }/>
                             </div>
                             <div className="col-md-3">
                                 <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 0 } 
                                     requirevalidation = { 1 } formeditado = { formeditado } thousandseparator = { true } prefix = '$' 
                                     name = "total" value = { form.total } onChange = { this.onChange } placeholder = "MONTO" 
                                     iconclass = 'fas fa-money-check-alt' messageinc = "Incorrecto. ingresa el monto de la venta" />
-                            </div>
-                            <div className="col-md-3">
-                                <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 0 } 
-                                    requirevalidation = { 0 } formeditado = { formeditado } thousandseparator = { true } prefix = '$' 
-                                    name = "comision" value = { form.comision } onChange = { this.onChange } placeholder = "COMISIÓN" 
-                                    iconclass = 'fas fa-money-check-alt' />
                             </div>
                             <div className="col-md-3">
                                 <SelectSearchGrayTrue options = { options.contratos } placeholder = 'Selecciona el contrato' 
