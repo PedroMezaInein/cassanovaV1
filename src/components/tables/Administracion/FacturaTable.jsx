@@ -96,20 +96,22 @@ export default class FacturaTable extends Component {
             <>
                 {
                     data.length ?
-                        <TableForModals
-                            columns={FACTURAS_COLUMNS_2}
-                            data={data}
-                            hideSelector={true}
-                            mostrar_acciones={true}
-                            actions={{
-                                'delete': { function: this.openModalDeleteFactura }
-                            }}
-                            elements={dataArray.facturas}
-
-                            idTable='kt_datatable_estado' />
-                        : ''
+                        <>
+                            <div className="separator separator-dashed mb-6 mt-5" />
+                            <TableForModals
+                                columns={FACTURAS_COLUMNS_2}
+                                data={data}
+                                hideSelector={true}
+                                mostrar_acciones={true}
+                                actions={{
+                                    'delete': { function: this.openModalDeleteFactura }
+                                }}
+                                elements={dataArray.facturas}
+                                idTable='kt_datatable_estado'
+                                />
+                            </>
+                        :<></>
                 }
-
             </>
         )
     }
