@@ -1,6 +1,23 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 class ReactSelectSearchGray extends Component {
+
+    validateValue = () => {
+        const { defaultvalue, messageinc } = this.props
+        if(Array.isArray(defaultvalue)){
+            if(defaultvalue.length > 0){
+                return(
+                    <span className = "form-text text-danger is-invalid"> {messageinc} </span>
+                )    
+            }
+        }else{
+            return(
+                <span className = "form-text text-danger is-invalid"> {messageinc} </span>
+            )
+        }
+        return ''                            
+    }
+    
     render() {
         const { options, placeholder, onChange, defaultvalue, name, requirevalidation, messageinc, iconclass, customdiv} = this.props
         const customStyles = {
@@ -90,7 +107,9 @@ class ReactSelectSearchGray extends Component {
                     />
                 </div>
                 {
-                    requirevalidation?( defaultvalue.length !== 0 ?'':<span className={"form-text text-danger is-invalid"}> {messageinc} </span>):<></>
+                    requirevalidation ?
+                        this.validateValue()
+                    :   ''
                 }
             </div>
         )
