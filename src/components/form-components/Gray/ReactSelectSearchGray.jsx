@@ -19,7 +19,7 @@ class ReactSelectSearchGray extends Component {
     }
     
     render() {
-        const { options, placeholder, onChange, defaultvalue, name, requirevalidation, messageinc, iconclass, customdiv} = this.props
+        const { options, placeholder, onChange, defaultvalue, name, requirevalidation, iconclass, customdiv} = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'
