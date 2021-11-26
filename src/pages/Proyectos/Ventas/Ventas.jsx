@@ -836,6 +836,7 @@ class Ventas extends Component {
                 case 'estatusCompra':
                 case 'proyecto':
                 case 'subarea':
+                case 'factura':
                     aux[elemento] = {
                         value: filter[elemento]['value'],
                         name: filter[elemento]['name'],
