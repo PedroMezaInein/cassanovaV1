@@ -509,7 +509,7 @@ class ComprasFormulario extends Component {
                         }
                     )
                 })
-                form.adjuntos.pdf.files.forEach((file) => {
+                form.adjuntos.presupuesto.files.forEach((file) => {
                     aux.push(
                         {
                             name: `${filePath}presupuestos/${Math.floor(Date.now() / 1000)}-${file.name}`,
