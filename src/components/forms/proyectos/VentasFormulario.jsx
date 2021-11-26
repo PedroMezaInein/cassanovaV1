@@ -921,20 +921,20 @@ class VentasFormulario extends Component {
                             <div className="col-md-12">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
-                            <div className="col-md-3">
+                            <div className="col-md-4">
                                 <SelectSearchGray options = { options.tiposPagos } placeholder = 'Selecciona el tipo de pago' 
                                     value = { form.tipoPago } onChange = { (value) => { this.updateSelect(value, 'tipoPago') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "fas fa-coins" 
                                     messageinc = "Incorrecto. Selecciona el tipo de pago"  formeditado = { formeditado } 
                                         requirevalidation = { 1 }/>
                             </div>
-                            <div className="col-md-3">
+                            <div className="col-md-4">
                                 <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 0 } 
                                     requirevalidation = { 1 } formeditado = { formeditado } thousandseparator = { true } prefix = '$' 
                                     name = "total" value = { form.total } onChange = { this.onChange } placeholder = "MONTO" 
                                     iconclass = 'fas fa-money-check-alt' messageinc = "Incorrecto. ingresa el monto de la venta" />
                             </div>
-                            <div className="col-md-3">
+                            <div className="col-md-4">
                                 <SelectSearchGrayTrue options = { options.contratos } placeholder = 'Selecciona el contrato' 
                                     value = { form.contrato } onChange = { (value) => { this.updateSelect(value, 'contrato') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "fas fa-file-signature" 
