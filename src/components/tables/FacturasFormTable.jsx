@@ -567,7 +567,6 @@ class PermisosForm extends Component {
                         </Col>
                     </div>
                 </Form>
-                <div className="separator separator-dashed mb-6 mt-5" />
                 <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
             </div>
         )
