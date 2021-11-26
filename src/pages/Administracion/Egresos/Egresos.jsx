@@ -386,6 +386,7 @@ class Egresos extends Component {
         modal.facturaExtranjera = false
         modal.download = false
         modal.filters = false
+        modal.facturas = false
         this.setState({
             ...this.state,
             data,
@@ -396,15 +397,9 @@ class Egresos extends Component {
             form: this.clearForm()
         })
     }
-    handleCloseFacturas = () => {
-        const { modal, filters } = this.state
-        modal.facturas = false
+    reloadTableFacturas = () => {
+        const { filters } = this.state
         this.reloadTable(filters)
-        this.setState({
-            ...this.state,
-            modal,
-            venta: '',
-        })
     }
     async deleteEgresoAxios(id) {
         const { access_token } = this.props.authUser
@@ -726,6 +721,7 @@ class Egresos extends Component {
                 case 'estatusCompra':
                 case 'proyecto':
                 case 'subarea':
+                case 'factura':
                     aux[elemento] = {
                         value: filter[elemento]['value'],
                         name: filter[elemento]['name'],
@@ -777,8 +773,8 @@ class Egresos extends Component {
                     exportar_boton={true}
                     onClickExport = { () => { this.exportEgresosAxios() } }
                 />
-                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleCloseFacturas} >
-                    <FacturasFormTable at = { access_token } tipo_factura='egresos' id={egreso.id} dato={egreso}/>
+                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose} >
+                    <FacturasFormTable at = { access_token } tipo_factura='egresos' id={egreso.id} dato={egreso} reloadTable = {this.reloadTableFacturas}/>
                 </Modal>
                 <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleClose}>
                     <AdjuntosForm form={form} onChangeAdjunto={this.handleChange}
