@@ -4,18 +4,21 @@ class ReactSelectSearch extends Component {
 
     validateValue = () => {
         const { defaultvalue, messageinc } = this.props
-        if(Array.isArray(defaultvalue)){
-            if(defaultvalue.length > 0){
-                return(
-                    <span className = "form-text text-danger is-invalid"> {messageinc} </span>
-                )    
-            }
-        }else{
-            return(
-                <span className = "form-text text-danger is-invalid"> {messageinc} </span>
+        if (typeof defaultvalue === 'string') {
+            return (
+                <span className="form-text text-danger is-invalid"> {messageinc} </span>
             )
+        } else {
+            if (Object.keys(defaultvalue).length) {
+                return (
+                    <span className="form-text text-danger is-invalid d-none"> {messageinc} </span>
+                )
+            } else {
+                return (
+                    <span className="form-text text-danger is-invalid"> {messageinc} </span>
+                )
+            }
         }
-        return ''                            
     }
 
     render() {
