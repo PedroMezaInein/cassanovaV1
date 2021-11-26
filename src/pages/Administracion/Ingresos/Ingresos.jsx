@@ -371,6 +371,7 @@ class Ingresos extends Component {
         modal.adjuntos = false
         modal.facturaExtranjera = false
         modal.filters = false
+        modal.facturas = false
         this.setState({
             ...this.state,
             data,
@@ -380,15 +381,9 @@ class Ingresos extends Component {
             form: this.clearForm()
         })
     }
-    handleCloseFacturas = () => {
-        const { modal, filters } = this.state
-        modal.facturas = false
+    reloadTableFacturas = () => {
+        const { filters } = this.state
         this.reloadTable(filters)
-        this.setState({
-            ...this.state,
-            modal,
-            venta: '',
-        })
     }
     async deleteIngresoAxios() {
         const { access_token } = this.props.authUser
@@ -792,8 +787,8 @@ class Ingresos extends Component {
                     exportar_boton={true}
                     onClickExport={() => this.exportIngresosAxios()}
                 />
-                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleCloseFacturas}>
-                    <FacturasFormTable at = { access_token } tipo_factura='ingresos' id={ingreso.id} dato={ingreso}/>
+                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
+                    <FacturasFormTable at = { access_token } tipo_factura='ingresos' id={ingreso.id} dato={ingreso} reloadTable = {this.reloadTableFacturas}/>
                 </Modal>
                 <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >
                     <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
