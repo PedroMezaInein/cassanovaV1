@@ -1,8 +1,25 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 class ReactSelectSearch extends Component {
+
+    validateValue = () => {
+        const { defaultvalue, messageinc } = this.props
+        if(Array.isArray(defaultvalue)){
+            if(defaultvalue.length > 0){
+                return(
+                    <span className = "form-text text-danger is-invalid"> {messageinc} </span>
+                )    
+            }
+        }else{
+            return(
+                <span className = "form-text text-danger is-invalid"> {messageinc} </span>
+            )
+        }
+        return ''                            
+    }
+
     render() {
-        const { options, placeholder, onChange, defaultvalue, requirevalidation, messageinc, iconclass} = this.props
+        const { options, placeholder, onChange, defaultvalue, requirevalidation, iconclass} = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'
@@ -89,7 +106,9 @@ class ReactSelectSearch extends Component {
                     />
                 </div>
                 {
-                    requirevalidation?(defaultvalue.length>0?'':<span className={"form-text text-danger is-invalid"}> {messageinc} </span>):''
+                    requirevalidation ?
+                        this.validateValue()
+                    :   ''
                 }
             </div>
         )
