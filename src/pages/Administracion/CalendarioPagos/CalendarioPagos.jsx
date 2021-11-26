@@ -58,11 +58,11 @@ class CalendarioPagos extends Component {
 
     getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
-        apiOptions(`v1/proyectos/instalacion-equipos`, access_token).then(
+        apiOptions(`v1/administracion/pago`, access_token).then(
             (response) => {
-                const { proyectos } = response.data
+                const { proveedores } = response.data
                 const { options } = this.state
-                options.proveedores = setOptionsWithLabel(proyectos, 'nombre', 'id')
+                options.proveedores = setOptionsWithLabel(proveedores, 'nombre', 'id')
                 this.setState({...this.state, options})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
