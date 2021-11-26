@@ -109,11 +109,32 @@ class CalendarioPagos extends Component {
         ).catch((error) => { catchErrors(error) })
     }
 
+    getColors = (elemento, fecha) => {
+        let time = new Date(fecha)
+        time.setHours(0,0,0,0)
+        time = time.getTime()
+
+        let item = null
+        if(elemento){
+            item = elemento.egresosDate.find((date) => {
+                let elementDate = new Date(date)
+                elementDate.setHours(0,0,0,0)
+                elementDate = elementDate.getTime()
+                return elementDate === time
+            })
+            if(item){
+                return '#FF0000'
+            }
+        }
+        return '#2756C3'
+    }
+
     getPagosAsEvents = (pagos, fInicio, fFin) => {
         fFin.setDate( fFin.getDate() + 14 )
         fInicio.setDate( fInicio.getDate() - 14 )
         let aux = []
         let fechaAux = null
+        let colores = {}
         pagos.forEach((element) => {
             let fechaInicioPago = new Date( moment( element.fecha_inicio ) )
             let conteo = 0;
@@ -129,12 +150,15 @@ class CalendarioPagos extends Component {
                                 fecha.getDate()
                             )
                             if(fecha >= fInicio && fecha <= fFin){
+                                colores = this.getColors(element, fecha)
                                 aux.push({
                                     title: element.servicio,
                                     start: fechaAux,
                                     end: fechaAux,
                                     iconClass: 'la la-wallet',
-                                    pago: element
+                                    pago: element,
+                                    backgroundColor: colores,
+                                    borderColor: colores,
                                 })
                             }
                             break;
@@ -147,12 +171,15 @@ class CalendarioPagos extends Component {
                                             fecha.getMonth(),
                                             fecha.getDate()
                                         )    
+                                        colores = this.getColors(element, fecha)
                                         aux.push({
                                             title: element.servicio,
                                             start: fechaAux,
                                             end: fechaAux,
                                             iconClass: 'la la-wallet',
-                                            pago: element
+                                            pago: element,
+                                            backgroundColor: colores,
+                                            borderColor: colores,
                                         })
                                     }
                                     if(fecha.getDate() === 1){
@@ -176,12 +203,15 @@ class CalendarioPagos extends Component {
                                             fecha.getMonth(),
                                             fecha.getDate()
                                         )    
+                                        colores = this.getColors(element, fecha)
                                         aux.push({
                                             title: element.servicio,
                                             start: fechaAux,
                                             end: fechaAux,
                                             iconClass: 'la la-wallet',
-                                            pago: element
+                                            pago: element,
+                                            backgroundColor: colores,
+                                            borderColor: colores,
                                         })
                                     }
                                     if(fecha.getDate() === 15){
@@ -206,12 +236,15 @@ class CalendarioPagos extends Component {
                                         fecha.getDate()
                                     )
                                     if(fecha >= fInicio && fecha <= fFin){
+                                        colores = this.getColors(element, fecha)
                                         aux.push({
                                             title: element.servicio,
                                             start: fechaAux,
                                             end: fechaAux,
                                             iconClass: 'la la-wallet',
-                                            pago: element
+                                            pago: element,
+                                            backgroundColor: colores,
+                                            borderColor: colores,
                                         })
                                     }
                                     break;       
@@ -228,12 +261,15 @@ class CalendarioPagos extends Component {
                                     fecha.getMonth(),
                                     fecha.getDate()
                                 )
+                                colores = this.getColors(element, fecha)
                                 aux.push({
                                     title: element.servicio,
                                     start: fechaAux,
                                     end: fechaAux,
                                     iconClass: 'la la-wallet',
-                                    pago: element
+                                    pago: element,
+                                    backgroundColor: colores,
+                                    borderColor: colores,
                                 })
                             }
                             break;
@@ -248,12 +284,15 @@ class CalendarioPagos extends Component {
                                     fecha.getMonth(),
                                     fecha.getDate()
                                 )
+                                colores = this.getColors(element, fecha)
                                 aux.push({
                                     title: element.servicio,
                                     start: fechaAux,
                                     end: fechaAux,
                                     iconClass: 'la la-toolbox',
-                                    pago: element
+                                    pago: element,
+                                    backgroundColor: colores,
+                                    borderColor: colores,
                                 })
                             }
                             break;
@@ -268,12 +307,15 @@ class CalendarioPagos extends Component {
                                     fecha.getMonth(),
                                     fecha.getDate()
                                 )
+                                colores = this.getColors(element, fecha)
                                 aux.push({
                                     title: element.servicio,
                                     start: fechaAux,
                                     end: fechaAux,
                                     iconClass: 'la la-toolbox',
-                                    pago: element
+                                    pago: element,
+                                    backgroundColor: colores,
+                                    borderColor: colores,
                                 })
                             }
                             break;
@@ -281,6 +323,7 @@ class CalendarioPagos extends Component {
                             fecha.setYear( fecha.getFullYear() + 2 )
                             break;
                     }
+                    console.log(colores, 'COLORES')
                 }
             }
             
@@ -292,6 +335,7 @@ class CalendarioPagos extends Component {
     }
 
     renderEventContent = (eventInfo) => {
+        console.log(eventInfo, 'EVENT INDO')
         let { pago } = eventInfo.event._def.extendedProps
         return (
             <OverlayTrigger rootClose overlay = {
@@ -306,7 +350,8 @@ class CalendarioPagos extends Component {
                     </span>
                 </Tooltip>
             }>
-                <div className="text-hover container p-1 tarea bg-calendar-3" onClick={(e) => { e.preventDefault(); this.getPagoInfo(pago) }}>
+                <div className="text-hover container p-1 tarea" onClick={(e) => { e.preventDefault(); this.getPagoInfo(pago) }}
+                    style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}}>
                     <div className="row mx-0 row-paddingless">
                         <div className="col-md-auto mr-1 text-truncate">
                             <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
