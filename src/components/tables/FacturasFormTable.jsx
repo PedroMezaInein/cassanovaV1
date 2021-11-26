@@ -277,7 +277,7 @@ class PermisosForm extends Component {
                     case 'egresos':
                         if(dato.empresa){
                             if(dato.empresa.rfc !== obj.rfc_receptor){
-                                errores.push( 'El RFC empresa y el RFC receptor no coincide' )
+                                //errores.push( 'El RFC empresa y el RFC receptor no coincide' )
                             }
                         }
                         empresa = options.empresas.find((element) => {
