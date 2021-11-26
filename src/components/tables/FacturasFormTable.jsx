@@ -531,7 +531,7 @@ class PermisosForm extends Component {
                             <div className="mb-4 row form-group-marginless text-center">
                                 <div className="col-md-4 text-left">
                                     <ReactSelectSearchGray placeholder='ESTATUS DE LA COMPRA' defaultvalue={form.estatusCompra}
-                                        iconclass='las la-check-circle icon-xl' requirevalidation={1} 
+                                        iconclass='las la-check-circle icon-xl' requirevalidation={0} 
                                         options={ Array.isArray(options.estatusCompra) ? options.estatusCompra : [] } 
                                         onChange={(value) => this.updateSelect(value, 'estatusCompra')} messageinc='Selecciona el estatus de la compra.' />
                                 </div>
