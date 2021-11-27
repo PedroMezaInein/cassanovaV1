@@ -388,7 +388,7 @@ class App extends Component{
                     <Route path = "/administracion/solicitud-factura" exact component = { SolicitudFactura } />
                     
                     <Route path = "/administracion/utilidad" exact component ={ Utilidad } />
-                    <Route path = "/administracion/licencias" exact component ={ Licencias } />
+                    <Route path = "/administracion/licencias-equipos" exact component ={ Licencias } />
 
                     <Route path = "/administracion/calendario-pagos" exact component = { CalendarioPagos } />
 
