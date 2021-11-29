@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import moment from 'moment'
 import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
 import { Form } from 'react-bootstrap'
@@ -60,7 +61,7 @@ class EgresosFormNew extends Component {
 
     componentDidMount = () => {
         this.getOptions()
-        const { type, solicitud, dato } = this.props
+        const { type, solicitud, dato, prestacion, pago } = this.props
         this.setState({
             ...this.state,
             formeditado: type === 'add' ? 0 : 1
@@ -70,6 +71,12 @@ class EgresosFormNew extends Component {
         }
         if(dato){
             this.getEgreso()
+        }
+        if(prestacion){
+            this.getPrestacion()
+        }
+        if(pago){
+            this.getPago()
         }
     }
 
@@ -82,6 +89,16 @@ class EgresosFormNew extends Component {
         if(this.props.dato !== nextProps.dato){
             if(this.props.dato){
                 this.getEgreso()
+            }
+        }
+        if(this.props.prestacion !== nextProps.prestacion){
+            if(this.props.prestacion){
+                this.getPrestacion()
+            }
+        }
+        if(this.props.pago !== nextProps.pago){
+            if(this.props.pago){
+                this.getPago()
             }
         }
     }
@@ -680,7 +697,60 @@ class EgresosFormNew extends Component {
         Swal.close()
         this.setState({ ...this.state, form, options })
     }
+    getPago = async () => {
+        waitAlert()
+        const { pago } = this.props
+        const { options, form } = this.state
+        form.pago = pago.id
+        if (pago.proveedor) {
+            form.proveedor = pago.proveedor.id.toString()
+            form.rfc = pago.proveedor.rfc
+        }
+        form.descripcion = `PAGO DE SERVICIO ${pago.servicio}`
+        if (pago.monto) {
+            form.total = pago.monto
+        }
+        form.fecha = new Date(moment(pago.fecha_inicio))
+        if(pago.area){
+            form.area = pago.area.id.toString()
+            if(pago.area.subareas){
+                options.subareas = setOptions(pago.area.subareas, 'nombre', 'id')
+            }
+            if (pago.subarea) {
+                form.subarea = pago.subarea.id.toString()
+            }    
+        }
+        Swal.close()
+        this.setState({ ...this.state, form, options })
+    }
+    
+    getPrestacion = async () => {
+        waitAlert()
+        const { prestacion } = this.props
+        const { options, form } = this.state
 
+        form.prestacion = prestacion.id
+        if (prestacion.proveedor) {
+            form.proveedor = prestacion.proveedor.id.toString()
+            form.rfc = prestacion.proveedor.rfc
+        }
+        form.descripcion = `PAGO DE PRESTACIÓN ${prestacion.nombre}`
+        if (prestacion.total) {
+            form.total = prestacion.total
+        }
+        if(prestacion.area){
+            form.area = prestacion.area.id.toString()
+            if(prestacion.area.subareas){
+                options.subareas = setOptions(prestacion.area.subareas, 'nombre', 'id')
+            }
+            if (prestacion.subarea) {
+                form.subarea = prestacion.subarea.id.toString()
+            }    
+        }
+        Swal.close()
+        this.setState({ ...this.state, form, options })
+    }
+    
     isActiveFactura = () => {
         const { form } = this.state
         const { type } = this.props

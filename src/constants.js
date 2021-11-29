@@ -841,5 +841,7 @@ export const CALENDARIO_PAGOS_ADMIN = [
     { Header: 'Nombre del servicio', accessor: 'nombre', customRender: true },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
     { Header: 'Monto', accessor: 'monto', customRender: true },
-    { Header: 'Fecha', accessor: 'fecha', customRender: true, tipo: 'fecha' }
+    { Header: 'Fecha', accessor: 'fecha', customRender: true, tipo: 'fecha' },
+    { Header: 'Área', accessor: 'area', customRender: true },
+    { Header: 'Subárea', accessor: 'subarea', customRender: true },
 ]
