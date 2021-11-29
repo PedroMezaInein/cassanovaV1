@@ -88,6 +88,7 @@ class Prestaciones extends Component {
                 periodo: setTextTableCenter(`${dato.periodo} ${dato.periodo===1?'MES':'MESES'}`),
                 pago_por_empleado: setMoneyTable(dato.pago_por_empleado),
                 proveedor: setTextTableCenter(dato.proveedor ? dato.proveedor.razon_social : 'SIN DEFINIR'),
+                total:setTextTableCenter(dato.contadorColaboradores),
                 descripcion: setTextTableCenter(dato.descripcion ? dato.descripcion : '-'),
             })
         })
