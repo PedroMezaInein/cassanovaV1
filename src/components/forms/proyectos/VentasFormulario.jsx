@@ -385,7 +385,7 @@ class VentasFormulario extends Component {
     editVentaAxios = async() => {
         const { dato, at } = this.props
         const { form } = this.state
-        apiPutForm(`v2/proyectos/ventas/${dato.id}`, form, at).then(
+        apiPutForm(`v3/proyectos/ventas/${dato.id}`, form, at).then(
             (response) => {
                 const { history } = this.props
                 history.push(`/proyectos/ventas?id=${dato.id}`)
@@ -605,6 +605,9 @@ class VentasFormulario extends Component {
                     }
                     if (venta.contrato) {
                         form.contrato = venta.contrato.id.toString()
+                    }
+                    if(venta.cliente.proyectos){
+                        options.proyectos = setOptions(venta.cliente.proyectos, 'nombre', 'id')
                     }
                 }
                 if(venta.proyecto){
