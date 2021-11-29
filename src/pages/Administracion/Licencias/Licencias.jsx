@@ -44,7 +44,7 @@ class Licencias extends Component {
                 nombre:setTextTableCenter(dato.nombre),
                 duracion: setTextTableCenter(`${dato.duracion} ${dato.duracion===1?'MES':'MESES'}`),
                 cantidad: setTextTableCenter(`${dato.cantidad} LICENCIAS`),
-                codigos: <div>
+                codigos: <div className="w-max-content mx-auto">
                     <ul>
                         {
                             codigos.map((codigo, index) => {
@@ -162,12 +162,12 @@ class Licencias extends Component {
         let aux = []
         equipos.forEach((equipo) => {
             aux.push({
-                colaborador: setTextTableCenter('-'),
+                colaborador: setTextTableCenter(equipo.colaborador?equipo.colaborador.nombre:'Sin colaborador'),
                 equipo:setTextTableCenter(equipo.equipo),
                 modelo: setTextTableCenter(equipo.modelo),
                 marca: setTextTableCenter(equipo.marca),
                 serie: setTextTableCenter(equipo.serie),
-                descripcion: setTextTableCenter(equipo.descripcion),
+                descripcion: setTextTableCenter(equipo.descripcion?equipo.descripcion:'Sin descripción'),
             })
         })
         return aux
