@@ -818,6 +818,14 @@ export const LICENCIAS = [
     { Header: 'Cantidad', accessor: 'cantidad', customRender: true },
     { Header: 'Códigos', accessor: 'codigos', customRender: true },
 ]
+export const EQUIPOS_ADMINISTRACION = [
+    { Header: 'Colaborador', accessor: 'colaborador', customRender: true },
+    { Header: 'Equipo', accessor: 'equipo', customRender: true },
+    { Header: 'Modelo', accessor: 'modelo', customRender: true },
+    { Header: 'Marca', accessor: 'marca', customRender: true },
+    { Header: 'Serie', accessor: 'serie', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
+]
 export const PRESTACIONES_RH_COLUMNS = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },

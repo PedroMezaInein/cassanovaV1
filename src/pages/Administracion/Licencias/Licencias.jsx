@@ -1,24 +1,26 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import $ from 'jquery'
+import { connect } from 'react-redux'
 import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
-import { URL_DEV, LICENCIAS } from '../../../constants'
 import { NewTable } from '../../../components/NewTables'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { LicenciasForm } from '../../../components/forms'
-import { FiltersLicencias } from '../../../components/filters'
-import { apiDelete, catchErrors } from '../../../functions/api'
 import { setTextTableCenter } from '../../../functions/setters'
+import { OverlayTrigger, Tooltip, Tabs, Tab } from 'react-bootstrap'
+import { FiltersLicencias, FiltersEquipos } from '../../../components/filters'
+import { URL_DEV, LICENCIAS, EQUIPOS_ADMINISTRACION } from '../../../constants'
+import { apiDelete, apiPostFormResponseBlob, catchErrors } from '../../../functions/api'
 import { deleteAlert, doneAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 
 class Licencias extends Component {
 
     state = {
         modal: { filtros: false, form: false },
-        filters: {},
+        filtersLicencia: {},
+        filtersEquipos: {},
         title: 'Nueva licencia',
-        licencia: ''
+        licencia: '',
+        key:'licencias'
     }
 
     deleteLicencia = async(id) => {
@@ -26,13 +28,13 @@ class Licencias extends Component {
         const { access_token } = this.props.authUser
         apiDelete(`v1/administracion/licencias/${id}`, access_token).then(
             (response) => {
-                const { filters } = this.state
-                doneAlert(`Licencia eliminada con éxito`, () => { this.reloadTable(filters) })
+                const { filtersLicencia } = this.state
+                doneAlert(`Licencia eliminada con éxito`, () => { this.reloadTableLicencias(filtersLicencia) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
 
-    setTable = (datos) => {
+    setTableLicencias = (datos) => {
         let aux = []
         datos.forEach((dato) => {
             let codigos = JSON.parse(dato.codigos)
@@ -85,11 +87,6 @@ class Licencias extends Component {
             </div>
         )
     }
-
-    reloadTable = (filter) => {
-        $(`#licencias`).DataTable().search(JSON.stringify(filter)).draw();
-    }
-
     openModal = (element, type) => {
         const { modal } = this.state
         let { title } = this.state
@@ -115,37 +112,146 @@ class Licencias extends Component {
         this.setState({ ...this.state, modal })
     }
 
-    sendFilters = filtro => {
+    sendFiltersLicencia = filtro => {
         const { modal } = this.state
         modal.filtros = false
         this.setState({
             ...this.state,
-            filters: filtro,
+            filtersLicencia: filtro,
             modal
         })
-        this.reloadTable(filtro)
+        this.reloadTableLicencias(filtro)
     }
 
     refresh = () => {
-        const { filters, modal } = this.state
+        const { filtersLicencia, modal } = this.state
         modal.form = false
         this.setState({ ...this.state, modal })
-        this.reloadTable(filters)
+        this.reloadTableLicencias(filtersLicencia)
+    }
+    
+
+    exportLicenciasAxios = async () => {
+        waitAlert()
+        const { filtersLicencia } = this.state
+        const { access_token } = this.props.authUser
+        apiPostFormResponseBlob(`v1/administracion/licencias/exportar`, { columnas: filtersLicencia }, access_token).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'licencias.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Licencias exportadas con éxito.'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    reloadTableLicencias = (filter) => {
+        $(`#licencias`).DataTable().search(JSON.stringify(filter)).draw();
+    }
+
+    // EQUIPOS
+
+    setTableEquipos = (equipos) => {
+        let aux = []
+        equipos.forEach((equipo) => {
+            aux.push({
+                colaborador: setTextTableCenter('-'),
+                equipo:setTextTableCenter(equipo.equipo),
+                modelo: setTextTableCenter(equipo.modelo),
+                marca: setTextTableCenter(equipo.marca),
+                serie: setTextTableCenter(equipo.serie),
+                descripcion: setTextTableCenter(equipo.descripcion),
+            })
+        })
+        return aux
+    }
+    
+    exportEquiposAxios = async () => {
+        waitAlert()
+        const { filtersEquipos } = this.state
+        const { access_token } = this.props.authUser
+        apiPostFormResponseBlob(`v1/administracion/equipos/exportar`, { columnas: filtersEquipos }, access_token).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'equipos.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Equipos exportados con éxito.'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    sendFiltersEquipos = filtro => {
+        const { modal } = this.state
+        modal.filtros = false
+        this.setState({
+            ...this.state,
+            filtersEquipos: filtro,
+            modal
+        })
+        this.reloadTableEquipos(filtro)
+    }
+
+    reloadTableEquipos = (filter) => {
+        $(`#equipos`).DataTable().search(JSON.stringify(filter)).draw();
+    }
+
+    // ControlledTab
+    
+    controlledTab = value => {
+        const { filtersLicencia, filtersEquipos } = this.state
+        if (value === 'licencias') {
+            this.reloadTableLicencias(filtersLicencia)
+        }
+        if (value === 'equipos') {
+            this.reloadTableEquipos(filtersEquipos)
+        }
+        this.setState({
+            ...this.state,
+            key: value
+        })
     }
 
     render(){
         const { authUser: {access_token} } = this.props
-        const { modal, filters, title, licencia } = this.state
+        const { modal, filtersLicencia, filtersEquipos, title, licencia, key } = this.state
         return(
             <Layout active = 'administracion' { ...this.props } >
-                <NewTable tableName = 'licencias' subtitle = 'Listado de licencias' title = 'Licencias' abrirModal = { true }
-                    accessToken = { access_token } columns = { LICENCIAS } setter = { this.setTable } onClick = { this.openModal }
-                    urlRender = {`${URL_DEV}v1/administracion/licencias`}  filterClick = { this.openModalFiltros }/>
+                <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey="licencias" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
+                    <Tab eventKey="licencias" title="Licencias">
+                        <NewTable tableName = 'licencias' subtitle = 'Listado de licencias' title = 'Licencias' abrirModal = { true }
+                            accessToken = { access_token } columns = { LICENCIAS } setter = { this.setTableLicencias } onClick = { this.openModal }
+                            urlRender = {`${URL_DEV}v1/administracion/licencias`}  filterClick = { this.openModalFiltros } type='tab'
+                            exportar_boton={true} onClickExport={() => this.exportLicenciasAxios()}
+                        />
+                    </Tab>
+                    <Tab eventKey="equipos" title="Equipos">
+                        <NewTable tableName = 'equipos' subtitle = 'Listado de equipos' title = 'Equipos' hideNew = { true }
+                            accessToken = { access_token } columns = { EQUIPOS_ADMINISTRACION } setter = { this.setTableEquipos } 
+                            urlRender = {`${URL_DEV}v1/administracion/equipos`}  filterClick = { this.openModalFiltros } type='tab'
+                            exportar_boton={true} onClickExport={() => this.exportEquiposAxios()} 
+                        />
+                    </Tab>
+                </Tabs>
+
                 <Modal size = 'lg' show = { modal.filtros } handleClose = { this.handleClose } title = 'Filtros'>
                     {   
-                        modal.filtros ? 
-                            <FiltersLicencias at = { access_token } sendFilters = { this.sendFilters } filters = { filters } /> 
-                        : <></> 
+                        key === 'licencias' ? 
+                            <FiltersLicencias at = { access_token } sendFilters = { this.sendFiltersLicencia } filters = { filtersLicencia } /> 
+                        : <FiltersEquipos at = { access_token } sendFilters = { this.sendFiltersEquipos } filters = { filtersEquipos } /> 
                     }
                 </Modal>
                 <Modal size = 'xl' show = { modal.form } handleClose = { this.handleClose } title = { title }>
