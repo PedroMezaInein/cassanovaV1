@@ -93,6 +93,7 @@ class Compras extends Component {
             metodosPago: [],
             estatusFacturas: [],
             contratos: [],
+            allCuentas: []
         },
         data: {
             clientes: [],
@@ -143,7 +144,7 @@ class Compras extends Component {
             (response) => {
                 Swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
-                    proveedores, formasPago, metodosPago, estatusFacturas } = response.data
+                    proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
                 options['proveedores'] = setOptionsWithLabel(proveedores, 'razon_social', 'id')
@@ -155,6 +156,7 @@ class Compras extends Component {
                 options['estatusFacturas'] = setOptionsWithLabel(estatusFacturas, 'estatus', 'id')
                 options['formasPago'] = setOptionsWithLabel(formasPago, 'nombre', 'id')
                 options['metodosPago'] = setOptionsWithLabel(metodosPago, 'nombre', 'id')
+                options.allCuentas = setOptionsWithLabel(cuentas, 'nombre', 'id')
                 data.proveedores = proveedores
                 data.empresas = empresas
                 this.setState({ ...this.state, options, data })

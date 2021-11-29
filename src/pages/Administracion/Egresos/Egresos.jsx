@@ -74,7 +74,8 @@ class Egresos extends Component {
             formasPagos: [],
             metodosPagos: [],
             estatusFacturas: [],
-            estatusCompras: []
+            estatusCompras: [],
+            allCuentas: []
         },
         filters: {}
     }
@@ -111,7 +112,7 @@ class Egresos extends Component {
         apiOptions(`v2/administracion/egresos`, access_token).then(
             (response) => {
                 const { data, options } = this.state
-                const { proveedores, empresas, estatusCompras, areas, tiposPagos, tiposImpuestos } = response.data
+                const { proveedores, empresas, estatusCompras, areas, tiposPagos, tiposImpuestos, cuentas } = response.data
                 data.proveedores = proveedores
                 data.empresas = empresas
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
@@ -120,6 +121,7 @@ class Egresos extends Component {
                 options['proveedores'] = setOptionsWithLabel(proveedores, 'razon_social', 'id')
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
+                options.allCuentas = setOptionsWithLabel(cuentas, 'nombre', 'id')
                 Swal.close()
                 this.setState({ ...this.state, data, options })
             }, (error) => { printResponseErrorAlert(error) }

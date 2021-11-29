@@ -32,6 +32,7 @@ class ComprasFilters extends Component{
             this.setState({ ...this.state, form })
         }
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -87,6 +88,7 @@ class ComprasFilters extends Component{
         this.clearForm()
         sendFilters({})
     }
+
     clearForm = () => {
         const { form } = this.state
         form.fecha = { start: null, end: null }
@@ -136,14 +138,10 @@ class ComprasFilters extends Component{
                                 <ReactSelectSearchGray placeholder = 'Selecciona la empresa' defaultvalue = { form.empresa } iconclass = 'las la-building icon-xl'
                                     options = { options.empresas } onChange = { (value) => { this.updateSelect(value, 'empresa') } } />
                             </div>
-                            {
-                                form.empresa ?
-                                    <div className="col-md-4 col-xxl-3 mb-5">
-                                        <ReactSelectSearchGray placeholder = 'Selecciona la cuenta' defaultvalue = { form.cuenta } iconclass = 'las la-credit-card icon-xl'
-                                            options = { options.cuentas } onChange = { (value) => { this.updateSelect(value, 'cuenta') } } />   
-                                    </div>
-                                :<></>
-                            }
+                            <div className="col-md-4 col-xxl-3 mb-5">
+                                <ReactSelectSearchGray placeholder = 'Selecciona la cuenta' defaultvalue = { form.cuenta } iconclass = 'las la-credit-card icon-xl'
+                                    options = { options.allCuentas } onChange = { (value) => { this.updateSelect(value, 'cuenta') } } />   
+                            </div>
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <ReactSelectSearchGray placeholder = 'Selecciona el área' defaultvalue = { form.area } iconclass = 'las la-window-minimize icon-xl'
                                     options = { options.areas } onChange = { (value) => { this.updateSelect(value, 'area') } } />
