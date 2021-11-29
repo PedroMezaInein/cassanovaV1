@@ -11,7 +11,7 @@ class ReactSelectSearchGray extends Component {
         } else {
             if (Object.keys(defaultvalue).length) {
                 return (
-                    <span className="form-text text-danger is-invalid d-none"> {messageinc} </span>
+                    <span className="form-text text-danger d-none"> {messageinc} </span>
                 )
             } else {
                 return (
