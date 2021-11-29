@@ -832,6 +832,7 @@ export const PRESTACIONES_RH_COLUMNS = [
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
     { Header: 'Pago por empleado', accessor: 'pago_por_empleado', customRender: true },
     { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
+    { Header: 'Colaboradores asignados', accessor: 'total', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
 ]
 export const CALENDARIO_PAGOS_ADMIN = [
