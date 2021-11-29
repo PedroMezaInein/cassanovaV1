@@ -84,7 +84,7 @@ class NominaObraForm extends Component {
                         <h3 className="card-label">{title}</h3>
                     </Card.Title>
                     <div className="card-toolbar">
-                        <a href='https://admin-proyectos.s3.us-east-2.amazonaws.com/rrhh/plantilla-nomina-obra.xlsx' target='_blank' rel="noreferrer"
+                        <a href='https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/rrhh/plantilla-nomina-obra.xlsx' target='_blank' rel="noreferrer"
                             className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info font-weight-bolder text-info align-self-center" >
                             <i className="far fa-file-excel text-info px-0"></i><span className="pl-2 ocultar-checador">DESCARGAR PLANTILLA</span>
                         </a>
