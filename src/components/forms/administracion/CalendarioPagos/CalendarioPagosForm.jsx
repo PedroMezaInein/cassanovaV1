@@ -13,6 +13,8 @@ class CalendarioPagos extends Component{
             periodo: '',
             monto: '',
             fecha: new Date(),
+            area:'',
+            subarea:''
         },
         options:{
             tipos:[]
@@ -20,7 +22,7 @@ class CalendarioPagos extends Component{
     }
 
     componentDidMount(){
-        const { pago, title, options } = this.props
+        const { pago, title, options, setOptions } = this.props
         const { form } = this.state
         if(title === 'Editar registro de pago'){
             let opciones = optionsPeriodoPagos()
@@ -38,6 +40,33 @@ class CalendarioPagos extends Component{
             })
             if(proveedor){
                 form.proveedor = proveedor
+            }
+            if (pago.area !== null) {
+                let area = options.areas.find((area) => {
+                    return area.value === pago.area_id.toString()
+                })
+                if (area) {
+                    form.area = area
+                }
+                if (Object.keys(form.area).length) {
+                    options.areas.find(function (element) {
+                        if (pago.area_id.toString() === element.value.toString()) {
+                            setOptions('subareas', element.subareas)
+                            return true
+                        }
+                        return false
+                    })
+                    let subarea = options.subareas.find((subarea) => {
+                        return subarea.value === pago.subarea_id.toString()
+                    })
+                    if (subarea) {
+                        form.subarea = subarea
+                    }
+                } else {
+                    form.area = []
+                    form.subarea = []
+                    setOptions('subareas', [])
+                }
             }
         }
         this.setState({ ...this.state, form })
@@ -85,6 +114,22 @@ class CalendarioPagos extends Component{
         }
         const { form } = this.state
         form[name] = value
+        const { setOptions, options: { areas} } = this.props
+        if(name === 'area'){
+            areas.find(function (element, index) {
+                if(Object.keys(form.area).length){
+                    if (value.value.toString() === element.value.toString()) {
+                        setOptions('subareas', element.subareas)
+                        return true
+                    }
+                    return false
+                }else{
+                    form[name] = []
+                    form.subarea = []
+                    setOptions('subareas', [])
+                }
+            })
+        }
         this.setState({ ...this.state, form })
     }
 
@@ -120,6 +165,19 @@ class CalendarioPagos extends Component{
                                 <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 0 } 
                                     requirevalidation = { 1 } formeditado = { 0 } thousandseparator = { true } prefix = '$' name = "monto" 
                                     value = { form.monto } onChange = { this.onChange } placeholder = "MONTO" iconclass = 'las la-coins icon-xl'  messageinc = 'Ingresa el monto del pago.' />
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-6">
+                                <ReactSelectSearchGray placeholder = 'Área' defaultvalue = { form.area } 
+                                    iconclass = 'las la-window-maximize icon-xl' requirevalidation={1} options = { options.areas } 
+                                    onChange = { ( value ) => this.updateSelect(value, 'area') } messageinc = 'Selecciona el área.'/>
+                            </div>
+                            <div className="col-md-6">
+                                <ReactSelectSearchGray placeholder = 'Subárea' defaultvalue = { form.subarea } 
+                                    iconclass = 'las la-window-restore icon-xl' requirevalidation={1} options = { options.subareas } 
+                                    onChange = { ( value ) => this.updateSelect(value, 'subarea') } messageinc = 'Selecciona el subárea.'/>
                             </div>
                         </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>

@@ -15,7 +15,7 @@ import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { CalendarioPagosForm, EgresosCalendarioPagos } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, catchErrors } from '../../../functions/api'
 import FiltersCalendarioPagos  from '../../../components/filters/administracion/FiltersCalendarioPagos'
-import { setMoneyTable, setOptionsWithLabel, setDateTable, setTextTable } from '../../../functions/setters'
+import { setMoneyTable, setOptionsWithLabel, setDateTable, setTextTableCenter } from '../../../functions/setters'
 import { printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import moment from 'moment'
 class CalendarioPagos extends Component {
@@ -24,7 +24,7 @@ class CalendarioPagos extends Component {
         title:'',
         modal: { form:false, filtros: false, details:false },
         filters: {},
-        options:{ proveedores:[] },
+        options:{ proveedores:[], areas:[], subareas:[] },
         pago: [],
         activeKey: 'calendario',
         pagos: [],
@@ -60,9 +60,10 @@ class CalendarioPagos extends Component {
         const { access_token } = this.props.authUser
         apiOptions(`v1/administracion/pago`, access_token).then(
             (response) => {
-                const { proveedores } = response.data
+                const { proveedores, areas } = response.data
                 const { options } = this.state
                 options.proveedores = setOptionsWithLabel(proveedores, 'nombre', 'id')
+                options.areas = setOptionsWithLabel(areas, 'nombre', 'id')
                 this.setState({...this.state, options})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
@@ -323,7 +324,6 @@ class CalendarioPagos extends Component {
                             fecha.setYear( fecha.getFullYear() + 2 )
                             break;
                     }
-                    console.log(colores, 'COLORES')
                 }
             }
             
@@ -335,7 +335,6 @@ class CalendarioPagos extends Component {
     }
 
     renderEventContent = (eventInfo) => {
-        console.log(eventInfo, 'EVENT INDO')
         let { pago } = eventInfo.event._def.extendedProps
         return (
             <OverlayTrigger rootClose overlay = {
@@ -431,11 +430,13 @@ class CalendarioPagos extends Component {
         pagos.forEach((pago) => {
             aux.push({
                 actions: this.setActionsListPagos(pago),
-                proveedor: setTextTable(pago.proveedor ? pago.proveedor.razon_social : ''),
-                nombre: setTextTable(pago.servicio),
-                periodo: setTextTable(pago.periodo),
+                proveedor: setTextTableCenter(pago.proveedor ? pago.proveedor.razon_social : '-'),
+                nombre: setTextTableCenter(pago.servicio),
+                periodo: setTextTableCenter(pago.periodo),
                 monto: setMoneyTable(pago.monto),
-                fecha: setDateTable(pago.fecha_inicio)
+                fecha: setDateTable(pago.fecha_inicio),
+                area: setTextTableCenter(pago.area ? pago.area.nombre : '-'),
+                subarea: setTextTableCenter(pago.subarea ? pago.subarea.nombre : '-'),
             })
         })
         return aux
@@ -502,7 +503,11 @@ class CalendarioPagos extends Component {
             pagoInfo:pago
         })
     }
-
+    setOptionsArray = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
+        this.setState({ ...this.state, options })
+    }
     render() {
         const { events, title, modal, options, activeKey, filters, pago, pagoInfo } = this.state
         const { authUser: {access_token}, history } = this.props
@@ -556,7 +561,7 @@ class CalendarioPagos extends Component {
                 <Modal size="lg" title={title} show={modal.form} handleClose={this.handleClose} >
                     {
                         modal.form ? 
-                            <CalendarioPagosForm title = { title } at = { access_token } refresh = { this.refresh } pago={pago} options = { options }/> 
+                            <CalendarioPagosForm title = { title } at = { access_token } refresh = { this.refresh } pago={pago} options = { options } setOptions = {this.setOptionsArray}/> 
                         : <></>
                     }
                 </Modal>
