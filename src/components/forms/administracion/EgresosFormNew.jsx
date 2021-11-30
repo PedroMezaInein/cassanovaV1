@@ -136,6 +136,18 @@ class EgresosFormNew extends Component {
                     return false
                 })
             break;
+            case 'tipoPago':
+                if(form.facturaObject){
+                    let tipoPago = options.tiposPagos.find( (elemento) => {
+                        return elemento.value.toString() === value.toString()
+                    })
+                    if(tipoPago){
+                        if(tipoPago.name === 'TOTAL'){
+                            form.total = form.facturaObject.total
+                        }
+                    }
+                }
+                break;
             default: break;
         }
         this.setState({ ...this.state, form, options })
@@ -399,10 +411,12 @@ class EgresosFormNew extends Component {
 
     addEgreso = () => {
         const { form } = this.state
+        console.log(form, 'form')
         const { at, prestacion, pago, history } = this.props
         apiPostForm('v3/administracion/egresos', form, at).then(
             (response) => {
                 const { egreso } = response.data
+                console.log(egreso, 'egreso add')
                 this.setState({
                     ...this.state,
                     egreso: egreso
@@ -715,7 +729,7 @@ class EgresosFormNew extends Component {
         if (pago.monto) {
             form.total = pago.monto
         }
-        form.fecha = new Date(moment(pago.fecha_inicio))
+        form.fecha = new Date(moment(pago.fecha_calendar).startOf('day'))
         if(pago.area){
             form.area = pago.area.id.toString()
             if(pago.area.subareas){
@@ -725,6 +739,7 @@ class EgresosFormNew extends Component {
                 form.subarea = pago.subarea.id.toString()
             }    
         }
+        console.log(form.fecha)
         Swal.close()
         this.setState({ ...this.state, form, options })
     }
@@ -784,6 +799,7 @@ class EgresosFormNew extends Component {
     
     render() {
         const { formeditado, form, options } = this.state
+        console.log(form, 'form')
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">

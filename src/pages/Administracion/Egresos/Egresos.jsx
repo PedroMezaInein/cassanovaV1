@@ -488,7 +488,7 @@ class Egresos extends Component {
     }
 
     attachFilesS3 = async(files, item) => {
-        const { egreso } = this.state
+        const { egreso, filters } = this.state
         const { access_token } = this.props.authUser
         apiPutForm( `v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, access_token ).then(
             ( response ) => {
@@ -501,6 +501,7 @@ class Egresos extends Component {
                                 break;
                             case 'facturas_pdf':
                                 this.openFacturaExtranjera(egreso) 
+                                this.reloadTable(filters)
                                 break;
                             default: break;
                         }
