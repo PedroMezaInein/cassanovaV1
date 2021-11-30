@@ -149,196 +149,198 @@ class CalendarioPagos extends Component {
         let fechaAux = null
         let colores = {}
         pagos.forEach((element) => {
+            console.log(element, 'element')
             let fechaInicioPago = new Date( moment( element.fecha_inicio ) )
             let conteo = 0;
-            if(fechaInicioPago <= fFin){
-                let fecha = fechaInicioPago
-                while(fecha <= fFin){
-                    switch(element.periodo){
-                        case 'semanal':
-                            fecha.setDate( fecha.getDate() + 7 )
-                            fechaAux = new Date(
-                                fecha.getFullYear(),
-                                fecha.getMonth(),
-                                fecha.getDate()
-                            )
-                            if(fecha >= fInicio && fecha <= fFin){
-                                colores = this.getColors(element, fecha)
-                                aux.push({
-                                    title: element.servicio,
-                                    start: fechaAux,
-                                    end: fechaAux,
-                                    iconClass: 'la la-wallet',
-                                    pago: element,
-                                    backgroundColor: colores,
-                                    borderColor: colores,
-                                })
-                            }
-                            break;
-                        case 'quincenal':
-                            switch(element.dia){
-                                case 1:
-                                    if(fecha >= fInicio && fecha <= fFin){
+            // if(element.active !== 0){
+                if(fechaInicioPago <= fFin){
+                    let fecha = fechaInicioPago
+                    while(fecha <= fFin){
+                        switch(element.periodo){
+                            case 'semanal':
+                                fecha.setDate( fecha.getDate() + 7 )
+                                fechaAux = new Date(
+                                    fecha.getFullYear(),
+                                    fecha.getMonth(),
+                                    fecha.getDate()
+                                )
+                                if(fecha >= fInicio && fecha <= fFin){
+                                    colores = this.getColors(element, fecha)
+                                    aux.push({
+                                        title: element.servicio,
+                                        start: fechaAux,
+                                        end: fechaAux,
+                                        iconClass: 'la la-wallet',
+                                        pago: element,
+                                        backgroundColor: colores,
+                                        borderColor: colores,
+                                    })
+                                }
+                                break;
+                            case 'quincenal':
+                                switch(element.dia){
+                                    case 1:
+                                        if(fecha >= fInicio && fecha <= fFin){
+                                            fechaAux = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth(),
+                                                fecha.getDate()
+                                            )
+                                            colores = this.getColors(element, fecha)
+                                            aux.push({
+                                                title: element.servicio,
+                                                start: fechaAux,
+                                                end: fechaAux,
+                                                iconClass: 'la la-wallet',
+                                                pago: element,
+                                                backgroundColor: colores,
+                                                borderColor: colores,
+                                            })
+                                        }
+                                        if(fecha.getDate() === 1){
+                                            fecha = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth(),
+                                                16
+                                            )
+                                        }else{
+                                            fecha = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth() + 1,
+                                                1
+                                            )
+                                        }
+                                        break;
+                                    case 15:
+                                        if(fecha >= fInicio && fecha <= fFin){
+                                            fechaAux = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth(),
+                                                fecha.getDate()
+                                            )
+                                            colores = this.getColors(element, fecha)
+                                            aux.push({
+                                                title: element.servicio,
+                                                start: fechaAux,
+                                                end: fechaAux,
+                                                iconClass: 'la la-wallet',
+                                                pago: element,
+                                                backgroundColor: colores,
+                                                borderColor: colores,
+                                            })
+                                        }
+                                        if(fecha.getDate() === 15){
+                                            fecha = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth() + 1,
+                                                0
+                                            )
+                                        }else{
+                                            fecha = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth() + 1,
+                                                15
+                                            )
+                                        }
+                                        break;
+                                    default:
+                                        fecha.setDate( fecha.getDate() + 15 )
                                         fechaAux = new Date(
                                             fecha.getFullYear(),
                                             fecha.getMonth(),
                                             fecha.getDate()
-                                        )    
-                                        colores = this.getColors(element, fecha)
-                                        aux.push({
-                                            title: element.servicio,
-                                            start: fechaAux,
-                                            end: fechaAux,
-                                            iconClass: 'la la-wallet',
-                                            pago: element,
-                                            backgroundColor: colores,
-                                            borderColor: colores,
-                                        })
-                                    }
-                                    if(fecha.getDate() === 1){
-                                        fecha = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth(),
-                                            16
                                         )
-                                    }else{
-                                        fecha = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth() + 1,
-                                            1
-                                        )
-                                    }
-                                    break;
-                                case 15:
-                                    if(fecha >= fInicio && fecha <= fFin){
-                                        fechaAux = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth(),
-                                            fecha.getDate()
-                                        )    
-                                        colores = this.getColors(element, fecha)
-                                        aux.push({
-                                            title: element.servicio,
-                                            start: fechaAux,
-                                            end: fechaAux,
-                                            iconClass: 'la la-wallet',
-                                            pago: element,
-                                            backgroundColor: colores,
-                                            borderColor: colores,
-                                        })
-                                    }
-                                    if(fecha.getDate() === 15){
-                                        fecha = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth() + 1,
-                                            0
-                                        )
-                                    }else{
-                                        fecha = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth() + 1,
-                                            15
-                                        )
-                                    }
-                                    break;
-                                default:
-                                    fecha.setDate( fecha.getDate() + 15 )
+                                        if(fecha >= fInicio && fecha <= fFin){
+                                            colores = this.getColors(element, fecha)
+                                            aux.push({
+                                                title: element.servicio,
+                                                start: fechaAux,
+                                                end: fechaAux,
+                                                iconClass: 'la la-wallet',
+                                                pago: element,
+                                                backgroundColor: colores,
+                                                borderColor: colores,
+                                            })
+                                        }
+                                        break;
+                                }
+                                break;
+                            case 'mensual':
+                                if(conteo === 0)
+                                    fecha.setMonth( fecha.getMonth() + (conteo++) )
+                                else
+                                    fecha.setMonth( fecha.getMonth() + 1 )
+                                if(fecha >= fInicio && fecha <= fFin){
                                     fechaAux = new Date(
                                         fecha.getFullYear(),
                                         fecha.getMonth(),
                                         fecha.getDate()
                                     )
-                                    if(fecha >= fInicio && fecha <= fFin){
-                                        colores = this.getColors(element, fecha)
-                                        aux.push({
-                                            title: element.servicio,
-                                            start: fechaAux,
-                                            end: fechaAux,
-                                            iconClass: 'la la-wallet',
-                                            pago: element,
-                                            backgroundColor: colores,
-                                            borderColor: colores,
-                                        })
-                                    }
-                                    break;       
-                            }
-                            break;
-                        case 'mensual':
-                            if(conteo === 0)
-                                fecha.setMonth( fecha.getMonth() + (conteo++) )
-                            else
-                                fecha.setMonth( fecha.getMonth() + 1 )
-                            if(fecha >= fInicio && fecha <= fFin){
-                                fechaAux = new Date(
-                                    fecha.getFullYear(),
-                                    fecha.getMonth(),
-                                    fecha.getDate()
-                                )
-                                colores = this.getColors(element, fecha)
-                                aux.push({
-                                    title: element.servicio,
-                                    start: fechaAux,
-                                    end: fechaAux,
-                                    iconClass: 'la la-wallet',
-                                    pago: element,
-                                    backgroundColor: colores,
-                                    borderColor: colores,
-                                })
-                            }
-                            break;
-                        case 'semestral':
-                            if(conteo === 0)
-                                fecha.setMonth( fecha.getMonth() + (conteo++ * 6) )
-                            else
-                                fecha.setMonth( fecha.getMonth() + 6 )
-                            if(fecha >= fInicio && fecha <= fFin){
-                                fechaAux = new Date(
-                                    fecha.getFullYear(),
-                                    fecha.getMonth(),
-                                    fecha.getDate()
-                                )
-                                colores = this.getColors(element, fecha)
-                                aux.push({
-                                    title: element.servicio,
-                                    start: fechaAux,
-                                    end: fechaAux,
-                                    iconClass: 'la la-toolbox',
-                                    pago: element,
-                                    backgroundColor: colores,
-                                    borderColor: colores,
-                                })
-                            }
-                            break;
-                        case 'anual':
-                            if(conteo === 0)
-                                fecha.setYear( fecha.getFullYear() + (conteo++) )
-                            else
-                                fecha.setYear( fecha.getFullYear() + 1 )
-                            if(fecha >= fInicio && fecha <= fFin){
-                                fechaAux = new Date(
-                                    fecha.getFullYear(),
-                                    fecha.getMonth(),
-                                    fecha.getDate()
-                                )
-                                colores = this.getColors(element, fecha)
-                                aux.push({
-                                    title: element.servicio,
-                                    start: fechaAux,
-                                    end: fechaAux,
-                                    iconClass: 'la la-toolbox',
-                                    pago: element,
-                                    backgroundColor: colores,
-                                    borderColor: colores,
-                                })
-                            }
-                            break;
-                        default:
-                            fecha.setYear( fecha.getFullYear() + 2 )
-                            break;
+                                    colores = this.getColors(element, fecha)
+                                    aux.push({
+                                        title: element.servicio,
+                                        start: fechaAux,
+                                        end: fechaAux,
+                                        iconClass: 'la la-wallet',
+                                        pago: element,
+                                        backgroundColor: colores,
+                                        borderColor: colores,
+                                    })
+                                }
+                                break;
+                            case 'semestral':
+                                if(conteo === 0)
+                                    fecha.setMonth( fecha.getMonth() + (conteo++ * 6) )
+                                else
+                                    fecha.setMonth( fecha.getMonth() + 6 )
+                                if(fecha >= fInicio && fecha <= fFin){
+                                    fechaAux = new Date(
+                                        fecha.getFullYear(),
+                                        fecha.getMonth(),
+                                        fecha.getDate()
+                                    )
+                                    colores = this.getColors(element, fecha)
+                                    aux.push({
+                                        title: element.servicio,
+                                        start: fechaAux,
+                                        end: fechaAux,
+                                        iconClass: 'la la-toolbox',
+                                        pago: element,
+                                        backgroundColor: colores,
+                                        borderColor: colores,
+                                    })
+                                }
+                                break;
+                            case 'anual':
+                                if(conteo === 0)
+                                    fecha.setYear( fecha.getFullYear() + (conteo++) )
+                                else
+                                    fecha.setYear( fecha.getFullYear() + 1 )
+                                if(fecha >= fInicio && fecha <= fFin){
+                                    fechaAux = new Date(
+                                        fecha.getFullYear(),
+                                        fecha.getMonth(),
+                                        fecha.getDate()
+                                    )
+                                    colores = this.getColors(element, fecha)
+                                    aux.push({
+                                        title: element.servicio,
+                                        start: fechaAux,
+                                        end: fechaAux,
+                                        iconClass: 'la la-toolbox',
+                                        pago: element,
+                                        backgroundColor: colores,
+                                        borderColor: colores,
+                                    })
+                                }
+                                break;
+                            default:
+                                fecha.setYear( fecha.getFullYear() + 2 )
+                                break;
+                        }
                     }
                 }
-            }
-            
+            // }
         })
         this.setState({
             ...this.state,
