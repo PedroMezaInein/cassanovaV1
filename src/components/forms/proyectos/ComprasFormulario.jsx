@@ -110,6 +110,18 @@ class ComprasFormulario extends Component {
                     options.contratos = setOptions(item.contratos, 'nombre', 'id')
                 }
             break;
+            case 'tipoPago':
+                if(form.facturaObject){
+                    let tipoPago = options.tiposPagos.find( (elemento) => {
+                        return elemento.value.toString() === value.toString()
+                    })
+                    if(tipoPago){
+                        if(tipoPago.name === 'TOTAL'){
+                            form.total = form.facturaObject.total
+                        }
+                    }
+                }
+                break;
             default: break;
         }
         this.setState({ ...this.state, form, options })
