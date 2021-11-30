@@ -399,10 +399,12 @@ class EgresosFormNew extends Component {
 
     addEgreso = () => {
         const { form } = this.state
+        console.log(form, 'form')
         const { at, prestacion, pago, history } = this.props
         apiPostForm('v3/administracion/egresos', form, at).then(
             (response) => {
                 const { egreso } = response.data
+                console.log(egreso, 'egreso add')
                 this.setState({
                     ...this.state,
                     egreso: egreso
@@ -784,6 +786,7 @@ class EgresosFormNew extends Component {
     
     render() {
         const { formeditado, form, options } = this.state
+        console.log(form, 'form')
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
