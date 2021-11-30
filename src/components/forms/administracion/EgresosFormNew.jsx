@@ -715,7 +715,7 @@ class EgresosFormNew extends Component {
         if (pago.monto) {
             form.total = pago.monto
         }
-        form.fecha = new Date(moment(pago.fecha_inicio))
+        form.fecha = new Date(moment(pago.fecha_calendar).add(1, 'days'))
         if(pago.area){
             form.area = pago.area.id.toString()
             if(pago.area.subareas){
