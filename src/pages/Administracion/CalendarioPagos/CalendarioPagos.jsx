@@ -149,7 +149,6 @@ class CalendarioPagos extends Component {
         let fechaAux = null
         let colores = {}
         pagos.forEach((element) => {
-            console.log(element, 'element')
             let fechaInicioPago = new Date( moment( element.fecha_inicio ) )
             let conteo = 0;
             // if(element.active !== 0){
