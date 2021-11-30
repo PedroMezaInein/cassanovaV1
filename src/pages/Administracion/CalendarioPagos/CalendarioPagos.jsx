@@ -352,7 +352,8 @@ class CalendarioPagos extends Component {
                     </span>
                 </Tooltip>
             }>
-                <div className={`text-hover container p-1 tarea ${eventInfo.backgroundColor} border-0`}onClick={(e) => { e.preventDefault(); this.getPagoInfo(eventInfo, 'render') }}>
+                <div className={`text-hover container p-1 tarea ${eventInfo.backgroundColor} border-0`}
+                    onClick = { (e) => { e.preventDefault(); this.getPagoInfo(eventInfo, 'render') } } >
                     <div className="row mx-0 row-paddingless">
                         <div className="col-md-auto mr-1 text-truncate">
                             <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
@@ -523,8 +524,8 @@ class CalendarioPagos extends Component {
         if(type === 'render'){
             let { pago } = eventInfo.event._def.extendedProps
             let fecha  = eventInfo.event._instance.range.start
-            Object.assign(pago, { fecha_calendar:fecha });
-
+            fecha = new Date(moment(fecha).add(1, 'days'))
+            Object.assign(pago, { fecha_calendar: fecha });
             title = `Pago de ${pago.servicio}`
             pagoInfo = pago
         }else if(type === 'state'){

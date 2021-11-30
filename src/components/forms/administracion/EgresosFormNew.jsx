@@ -717,7 +717,7 @@ class EgresosFormNew extends Component {
         if (pago.monto) {
             form.total = pago.monto
         }
-        form.fecha = new Date(moment(pago.fecha_calendar).add(1, 'days'))
+        form.fecha = new Date(moment(pago.fecha_calendar).startOf('day'))
         if(pago.area){
             form.area = pago.area.id.toString()
             if(pago.area.subareas){
@@ -727,6 +727,7 @@ class EgresosFormNew extends Component {
                 form.subarea = pago.subarea.id.toString()
             }    
         }
+        console.log(form.fecha)
         Swal.close()
         this.setState({ ...this.state, form, options })
     }
