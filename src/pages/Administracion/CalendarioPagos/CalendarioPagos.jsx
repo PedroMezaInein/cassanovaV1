@@ -5,18 +5,19 @@ import { URL_DEV } from '../../../constants'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { Modal } from '../../../components/singles'
-import { CALENDARIO_PAGOS_ADMIN } from '../../../constants'
 import esLocale from '@fullcalendar/core/locales/es'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
 import interactionPlugin from '@fullcalendar/interaction'
+import { CALENDARIO_PAGOS_ADMIN } from '../../../constants'
+import { PaymentFailedError } from '../../../assets/animate'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { CalendarioPagosForm, EgresosCalendarioPagos } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, catchErrors } from '../../../functions/api'
+import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors } from '../../../functions/api'
 import FiltersCalendarioPagos  from '../../../components/filters/administracion/FiltersCalendarioPagos'
-import { setMoneyTable, setOptionsWithLabel, setDateTable, setTextTable } from '../../../functions/setters'
-import { printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
+import { setMoneyTable, setOptionsWithLabel, setDateTable, setTextTableCenter } from '../../../functions/setters'
+import { printResponseErrorAlert, doneAlert, deleteAlert, questionAlertWithLottie } from '../../../functions/alert'
 import moment from 'moment'
 class CalendarioPagos extends Component {
     state = {
@@ -24,7 +25,7 @@ class CalendarioPagos extends Component {
         title:'',
         modal: { form:false, filtros: false, details:false },
         filters: {},
-        options:{ proveedores:[] },
+        options:{ proveedores:[], areas:[], subareas:[] },
         pago: [],
         activeKey: 'calendario',
         pagos: [],
@@ -60,9 +61,10 @@ class CalendarioPagos extends Component {
         const { access_token } = this.props.authUser
         apiOptions(`v1/administracion/pago`, access_token).then(
             (response) => {
-                const { proveedores } = response.data
+                const { proveedores, areas } = response.data
                 const { options } = this.state
                 options.proveedores = setOptionsWithLabel(proveedores, 'nombre', 'id')
+                options.areas = setOptionsWithLabel(areas, 'nombre', 'id')
                 this.setState({...this.state, options})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
@@ -109,6 +111,17 @@ class CalendarioPagos extends Component {
         ).catch((error) => { catchErrors(error) })
     }
 
+    deactivatePaymentAxios = async (id) => {
+        let active = 0
+        const { access_token } = this.props.authUser
+        apiPutForm(`v1/administracion/pago/activar/${id}`, { active: active }, access_token).then(
+            (response) => {
+                const { filters } = this.state
+                doneAlert(`Pago desactivado con éxito.`, () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
     getColors = (elemento, fecha) => {
         let time = new Date(fecha)
         time.setHours(0,0,0,0)
@@ -136,197 +149,198 @@ class CalendarioPagos extends Component {
         let fechaAux = null
         let colores = {}
         pagos.forEach((element) => {
+            console.log(element, 'element')
             let fechaInicioPago = new Date( moment( element.fecha_inicio ) )
             let conteo = 0;
-            if(fechaInicioPago <= fFin){
-                let fecha = fechaInicioPago
-                while(fecha <= fFin){
-                    switch(element.periodo){
-                        case 'semanal':
-                            fecha.setDate( fecha.getDate() + 7 )
-                            fechaAux = new Date(
-                                fecha.getFullYear(),
-                                fecha.getMonth(),
-                                fecha.getDate()
-                            )
-                            if(fecha >= fInicio && fecha <= fFin){
-                                colores = this.getColors(element, fecha)
-                                aux.push({
-                                    title: element.servicio,
-                                    start: fechaAux,
-                                    end: fechaAux,
-                                    iconClass: 'la la-wallet',
-                                    pago: element,
-                                    backgroundColor: colores,
-                                    borderColor: colores,
-                                })
-                            }
-                            break;
-                        case 'quincenal':
-                            switch(element.dia){
-                                case 1:
-                                    if(fecha >= fInicio && fecha <= fFin){
+            // if(element.active !== 0){
+                if(fechaInicioPago <= fFin){
+                    let fecha = fechaInicioPago
+                    while(fecha <= fFin){
+                        switch(element.periodo){
+                            case 'semanal':
+                                fecha.setDate( fecha.getDate() + 7 )
+                                fechaAux = new Date(
+                                    fecha.getFullYear(),
+                                    fecha.getMonth(),
+                                    fecha.getDate()
+                                )
+                                if(fecha >= fInicio && fecha <= fFin){
+                                    colores = this.getColors(element, fecha)
+                                    aux.push({
+                                        title: element.servicio,
+                                        start: fechaAux,
+                                        end: fechaAux,
+                                        iconClass: 'la la-wallet',
+                                        pago: element,
+                                        backgroundColor: colores,
+                                        borderColor: colores,
+                                    })
+                                }
+                                break;
+                            case 'quincenal':
+                                switch(element.dia){
+                                    case 1:
+                                        if(fecha >= fInicio && fecha <= fFin){
+                                            fechaAux = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth(),
+                                                fecha.getDate()
+                                            )
+                                            colores = this.getColors(element, fecha)
+                                            aux.push({
+                                                title: element.servicio,
+                                                start: fechaAux,
+                                                end: fechaAux,
+                                                iconClass: 'la la-wallet',
+                                                pago: element,
+                                                backgroundColor: colores,
+                                                borderColor: colores,
+                                            })
+                                        }
+                                        if(fecha.getDate() === 1){
+                                            fecha = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth(),
+                                                16
+                                            )
+                                        }else{
+                                            fecha = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth() + 1,
+                                                1
+                                            )
+                                        }
+                                        break;
+                                    case 15:
+                                        if(fecha >= fInicio && fecha <= fFin){
+                                            fechaAux = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth(),
+                                                fecha.getDate()
+                                            )
+                                            colores = this.getColors(element, fecha)
+                                            aux.push({
+                                                title: element.servicio,
+                                                start: fechaAux,
+                                                end: fechaAux,
+                                                iconClass: 'la la-wallet',
+                                                pago: element,
+                                                backgroundColor: colores,
+                                                borderColor: colores,
+                                            })
+                                        }
+                                        if(fecha.getDate() === 15){
+                                            fecha = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth() + 1,
+                                                0
+                                            )
+                                        }else{
+                                            fecha = new Date(
+                                                fecha.getFullYear(),
+                                                fecha.getMonth() + 1,
+                                                15
+                                            )
+                                        }
+                                        break;
+                                    default:
+                                        fecha.setDate( fecha.getDate() + 15 )
                                         fechaAux = new Date(
                                             fecha.getFullYear(),
                                             fecha.getMonth(),
                                             fecha.getDate()
-                                        )    
-                                        colores = this.getColors(element, fecha)
-                                        aux.push({
-                                            title: element.servicio,
-                                            start: fechaAux,
-                                            end: fechaAux,
-                                            iconClass: 'la la-wallet',
-                                            pago: element,
-                                            backgroundColor: colores,
-                                            borderColor: colores,
-                                        })
-                                    }
-                                    if(fecha.getDate() === 1){
-                                        fecha = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth(),
-                                            16
                                         )
-                                    }else{
-                                        fecha = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth() + 1,
-                                            1
-                                        )
-                                    }
-                                    break;
-                                case 15:
-                                    if(fecha >= fInicio && fecha <= fFin){
-                                        fechaAux = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth(),
-                                            fecha.getDate()
-                                        )    
-                                        colores = this.getColors(element, fecha)
-                                        aux.push({
-                                            title: element.servicio,
-                                            start: fechaAux,
-                                            end: fechaAux,
-                                            iconClass: 'la la-wallet',
-                                            pago: element,
-                                            backgroundColor: colores,
-                                            borderColor: colores,
-                                        })
-                                    }
-                                    if(fecha.getDate() === 15){
-                                        fecha = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth() + 1,
-                                            0
-                                        )
-                                    }else{
-                                        fecha = new Date(
-                                            fecha.getFullYear(),
-                                            fecha.getMonth() + 1,
-                                            15
-                                        )
-                                    }
-                                    break;
-                                default:
-                                    fecha.setDate( fecha.getDate() + 15 )
+                                        if(fecha >= fInicio && fecha <= fFin){
+                                            colores = this.getColors(element, fecha)
+                                            aux.push({
+                                                title: element.servicio,
+                                                start: fechaAux,
+                                                end: fechaAux,
+                                                iconClass: 'la la-wallet',
+                                                pago: element,
+                                                backgroundColor: colores,
+                                                borderColor: colores,
+                                            })
+                                        }
+                                        break;
+                                }
+                                break;
+                            case 'mensual':
+                                if(conteo === 0)
+                                    fecha.setMonth( fecha.getMonth() + (conteo++) )
+                                else
+                                    fecha.setMonth( fecha.getMonth() + 1 )
+                                if(fecha >= fInicio && fecha <= fFin){
                                     fechaAux = new Date(
                                         fecha.getFullYear(),
                                         fecha.getMonth(),
                                         fecha.getDate()
                                     )
-                                    if(fecha >= fInicio && fecha <= fFin){
-                                        colores = this.getColors(element, fecha)
-                                        aux.push({
-                                            title: element.servicio,
-                                            start: fechaAux,
-                                            end: fechaAux,
-                                            iconClass: 'la la-wallet',
-                                            pago: element,
-                                            backgroundColor: colores,
-                                            borderColor: colores,
-                                        })
-                                    }
-                                    break;       
-                            }
-                            break;
-                        case 'mensual':
-                            if(conteo === 0)
-                                fecha.setMonth( fecha.getMonth() + (conteo++) )
-                            else
-                                fecha.setMonth( fecha.getMonth() + 1 )
-                            if(fecha >= fInicio && fecha <= fFin){
-                                fechaAux = new Date(
-                                    fecha.getFullYear(),
-                                    fecha.getMonth(),
-                                    fecha.getDate()
-                                )
-                                colores = this.getColors(element, fecha)
-                                aux.push({
-                                    title: element.servicio,
-                                    start: fechaAux,
-                                    end: fechaAux,
-                                    iconClass: 'la la-wallet',
-                                    pago: element,
-                                    backgroundColor: colores,
-                                    borderColor: colores,
-                                })
-                            }
-                            break;
-                        case 'semestral':
-                            if(conteo === 0)
-                                fecha.setMonth( fecha.getMonth() + (conteo++ * 6) )
-                            else
-                                fecha.setMonth( fecha.getMonth() + 6 )
-                            if(fecha >= fInicio && fecha <= fFin){
-                                fechaAux = new Date(
-                                    fecha.getFullYear(),
-                                    fecha.getMonth(),
-                                    fecha.getDate()
-                                )
-                                colores = this.getColors(element, fecha)
-                                aux.push({
-                                    title: element.servicio,
-                                    start: fechaAux,
-                                    end: fechaAux,
-                                    iconClass: 'la la-toolbox',
-                                    pago: element,
-                                    backgroundColor: colores,
-                                    borderColor: colores,
-                                })
-                            }
-                            break;
-                        case 'anual':
-                            if(conteo === 0)
-                                fecha.setYear( fecha.getFullYear() + (conteo++) )
-                            else
-                                fecha.setYear( fecha.getFullYear() + 1 )
-                            if(fecha >= fInicio && fecha <= fFin){
-                                fechaAux = new Date(
-                                    fecha.getFullYear(),
-                                    fecha.getMonth(),
-                                    fecha.getDate()
-                                )
-                                colores = this.getColors(element, fecha)
-                                aux.push({
-                                    title: element.servicio,
-                                    start: fechaAux,
-                                    end: fechaAux,
-                                    iconClass: 'la la-toolbox',
-                                    pago: element,
-                                    backgroundColor: colores,
-                                    borderColor: colores,
-                                })
-                            }
-                            break;
-                        default:
-                            fecha.setYear( fecha.getFullYear() + 2 )
-                            break;
+                                    colores = this.getColors(element, fecha)
+                                    aux.push({
+                                        title: element.servicio,
+                                        start: fechaAux,
+                                        end: fechaAux,
+                                        iconClass: 'la la-wallet',
+                                        pago: element,
+                                        backgroundColor: colores,
+                                        borderColor: colores,
+                                    })
+                                }
+                                break;
+                            case 'semestral':
+                                if(conteo === 0)
+                                    fecha.setMonth( fecha.getMonth() + (conteo++ * 6) )
+                                else
+                                    fecha.setMonth( fecha.getMonth() + 6 )
+                                if(fecha >= fInicio && fecha <= fFin){
+                                    fechaAux = new Date(
+                                        fecha.getFullYear(),
+                                        fecha.getMonth(),
+                                        fecha.getDate()
+                                    )
+                                    colores = this.getColors(element, fecha)
+                                    aux.push({
+                                        title: element.servicio,
+                                        start: fechaAux,
+                                        end: fechaAux,
+                                        iconClass: 'la la-toolbox',
+                                        pago: element,
+                                        backgroundColor: colores,
+                                        borderColor: colores,
+                                    })
+                                }
+                                break;
+                            case 'anual':
+                                if(conteo === 0)
+                                    fecha.setYear( fecha.getFullYear() + (conteo++) )
+                                else
+                                    fecha.setYear( fecha.getFullYear() + 1 )
+                                if(fecha >= fInicio && fecha <= fFin){
+                                    fechaAux = new Date(
+                                        fecha.getFullYear(),
+                                        fecha.getMonth(),
+                                        fecha.getDate()
+                                    )
+                                    colores = this.getColors(element, fecha)
+                                    aux.push({
+                                        title: element.servicio,
+                                        start: fechaAux,
+                                        end: fechaAux,
+                                        iconClass: 'la la-toolbox',
+                                        pago: element,
+                                        backgroundColor: colores,
+                                        borderColor: colores,
+                                    })
+                                }
+                                break;
+                            default:
+                                fecha.setYear( fecha.getFullYear() + 2 )
+                                break;
+                        }
                     }
-                    console.log(colores, 'COLORES')
                 }
-            }
-            
+            // }
         })
         this.setState({
             ...this.state,
@@ -335,7 +349,6 @@ class CalendarioPagos extends Component {
     }
 
     renderEventContent = (eventInfo) => {
-        console.log(eventInfo, 'EVENT INDO')
         let { pago } = eventInfo.event._def.extendedProps
         return (
             <OverlayTrigger rootClose overlay = {
@@ -415,7 +428,19 @@ class CalendarioPagos extends Component {
     openModalDeletePago = pago => {
         deleteAlert('¿DESEAS ELIMINAR EL PAGO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.deletePagoAxios(pago.id), 'Eliminar pago')
     }
-
+    openModalDesactivarPago = pago => {
+        questionAlertWithLottie(
+            `Desactivarás el pago: ${pago.servicio}`,
+            '¿Deseas continuar?',
+            PaymentFailedError,
+            { confirm: 'DESACTIVAR', cancel: 'CANCELAR' },
+            {
+                cancel: null,
+                success: () => this.deactivatePaymentAxios(pago.id)
+            },
+            'btn-pending-payment-confirm'
+        )
+    }
     changeActive = value => { 
         this.setState({...this.state, activeKey: value}) 
         if(value === 'tabla'){
@@ -431,11 +456,13 @@ class CalendarioPagos extends Component {
         pagos.forEach((pago) => {
             aux.push({
                 actions: this.setActionsListPagos(pago),
-                proveedor: setTextTable(pago.proveedor ? pago.proveedor.razon_social : ''),
-                nombre: setTextTable(pago.servicio),
-                periodo: setTextTable(pago.periodo),
+                proveedor: setTextTableCenter(pago.proveedor ? pago.proveedor.razon_social : '-'),
+                nombre: setTextTableCenter(pago.servicio),
+                periodo: setTextTableCenter(pago.periodo),
                 monto: setMoneyTable(pago.monto),
-                fecha: setDateTable(pago.fecha_inicio)
+                fecha: setDateTable(pago.fecha_inicio),
+                area: setTextTableCenter(pago.area ? pago.area.nombre : '-'),
+                subarea: setTextTableCenter(pago.subarea ? pago.subarea.nombre : '-'),
             })
         })
         return aux
@@ -447,15 +474,25 @@ class CalendarioPagos extends Component {
                 <OverlayTrigger rootClose overlay={<Tooltip><span className="font-weight-bold">Editar</span></Tooltip>} >
                     <button className='btn btn-icon btn-actions-table btn-sm ml-2 btn-text-success btn-hover-success'
                         onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }}>
-                        <i className='las la-pen icon-lg' />
+                        <i className='las la-pen' />
                     </button>
                 </OverlayTrigger>
                 <OverlayTrigger rootClose overlay = { <Tooltip>Eliminar</Tooltip> }  >
-                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
+                    <button className = {`btn btn-icon btn-actions-table btn-sm ml-2 btn-text-danger btn-hover-danger`} 
                         onClick = { (e) => { e.preventDefault(); this.openModalDeletePago(element) } }>
-                        <i className = 'flaticon2-rubbish-bin' />
+                        <i className = 'las la-trash' />
                     </button>
                 </OverlayTrigger>
+                {
+                    element.active?
+                    <OverlayTrigger rootClose overlay = { <Tooltip>Desactivar pago</Tooltip> }  >
+                        <button className = {`btn btn-icon btn-actions-table btn-sm ml-2 btn-text-info btn-hover-info`} 
+                            onClick = { (e) => { e.preventDefault(); this.openModalDesactivarPago(element) } }>
+                            <i className = 'las la-ban' />
+                        </button>
+                    </OverlayTrigger>
+                    :<></>
+                }
             </div>
         )
     }
@@ -502,7 +539,11 @@ class CalendarioPagos extends Component {
             pagoInfo:pago
         })
     }
-
+    setOptionsArray = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
+        this.setState({ ...this.state, options })
+    }
     render() {
         const { events, title, modal, options, activeKey, filters, pago, pagoInfo } = this.state
         const { authUser: {access_token}, history } = this.props
@@ -556,7 +597,7 @@ class CalendarioPagos extends Component {
                 <Modal size="lg" title={title} show={modal.form} handleClose={this.handleClose} >
                     {
                         modal.form ? 
-                            <CalendarioPagosForm title = { title } at = { access_token } refresh = { this.refresh } pago={pago} options = { options }/> 
+                            <CalendarioPagosForm title = { title } at = { access_token } refresh = { this.refresh } pago={pago} options = { options } setOptions = {this.setOptionsArray}/> 
                         : <></>
                     }
                 </Modal>

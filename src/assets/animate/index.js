@@ -8,4 +8,5 @@ import * as Hi from './hi.json'
 import * as Lock from './lock.json'
 import * as Software from './software.json'
 import * as OfficeWork from './office-work.json'
-export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock, Software, OfficeWork }
+import * as PaymentFailedError from './payment-failed-error.json'
+export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock, Software, OfficeWork, PaymentFailedError }

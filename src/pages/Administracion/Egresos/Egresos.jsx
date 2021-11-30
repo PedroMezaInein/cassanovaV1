@@ -298,7 +298,7 @@ class Egresos extends Component {
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
                     <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); 
-                        history.push({ pathname: '/administracion/egresos2/edit', state: { egreso: egreso } }) }} >
+                        history.push({ pathname: '/administracion/egresos/edit', state: { egreso: egreso } }) }} >
                         {setNaviIcon('flaticon2-pen', 'editar')}
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL EGRESO CON IDENTIFICADOR: ${egreso.id}`, () => this.deleteEgresoAxios(egreso.id)) }}>

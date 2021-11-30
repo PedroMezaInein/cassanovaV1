@@ -150,9 +150,11 @@ class PrestacionesForm extends Component{
                                 <div className="calendar-container">
                                     <table className="calendar table_calendar">
                                         <thead>
-                                            <th colspan="7">
-                                                FECHA DE PAGO
-                                            </th>
+                                            <tr>
+                                                <th colSpan="7">
+                                                    FECHA DE PAGO
+                                                </th>
+                                            </tr>
                                         </thead>
                                         <tbody>
                                             {
@@ -178,7 +180,7 @@ class PrestacionesForm extends Component{
                                             form.fecha_pago === ''?
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="7" className="text-center">
+                                                        <td colSpan="7" className="text-center">
                                                             <div className="form-text font-weight-light text-danger">
                                                                 SELECCIONA EL INICIO DEL PAGO
                                                             </div>
