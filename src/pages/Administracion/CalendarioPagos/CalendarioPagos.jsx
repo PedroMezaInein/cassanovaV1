@@ -5,18 +5,19 @@ import { URL_DEV } from '../../../constants'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { Modal } from '../../../components/singles'
-import { CALENDARIO_PAGOS_ADMIN } from '../../../constants'
 import esLocale from '@fullcalendar/core/locales/es'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
 import interactionPlugin from '@fullcalendar/interaction'
+import { CALENDARIO_PAGOS_ADMIN } from '../../../constants'
+import { PaymentFailedError } from '../../../assets/animate'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { CalendarioPagosForm, EgresosCalendarioPagos } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, catchErrors } from '../../../functions/api'
+import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors } from '../../../functions/api'
 import FiltersCalendarioPagos  from '../../../components/filters/administracion/FiltersCalendarioPagos'
 import { setMoneyTable, setOptionsWithLabel, setDateTable, setTextTableCenter } from '../../../functions/setters'
-import { printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, doneAlert, deleteAlert, questionAlertWithLottie } from '../../../functions/alert'
 import moment from 'moment'
 class CalendarioPagos extends Component {
     state = {
@@ -106,6 +107,17 @@ class CalendarioPagos extends Component {
             (response) => {
                 const { filters } = this.state
                 doneAlert(`Pago eliminado con éxito.`, () => { this.reloadTable(filters) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    deactivatePaymentAxios = async (id) => {
+        let active = 0
+        const { access_token } = this.props.authUser
+        apiPutForm(`v1/administracion/pago/activar/${id}`, { active: active }, access_token).then(
+            (response) => {
+                const { filters } = this.state
+                doneAlert(`Pago desactivado con éxito.`, () => { this.reloadTable(filters) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
@@ -414,7 +426,19 @@ class CalendarioPagos extends Component {
     openModalDeletePago = pago => {
         deleteAlert('¿DESEAS ELIMINAR EL PAGO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.deletePagoAxios(pago.id), 'Eliminar pago')
     }
-
+    openModalDesactivarPago = pago => {
+        questionAlertWithLottie(
+            `Desactivarás el pago: ${pago.servicio}`,
+            '¿Deseas continuar?',
+            PaymentFailedError,
+            { confirm: 'DESACTIVAR', cancel: 'CANCELAR' },
+            {
+                cancel: null,
+                success: () => this.deactivatePaymentAxios(pago.id)
+            },
+            'btn-pending-payment-confirm'
+        )
+    }
     changeActive = value => { 
         this.setState({...this.state, activeKey: value}) 
         if(value === 'tabla'){
@@ -448,15 +472,25 @@ class CalendarioPagos extends Component {
                 <OverlayTrigger rootClose overlay={<Tooltip><span className="font-weight-bold">Editar</span></Tooltip>} >
                     <button className='btn btn-icon btn-actions-table btn-sm ml-2 btn-text-success btn-hover-success'
                         onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }}>
-                        <i className='las la-pen icon-lg' />
+                        <i className='las la-pen' />
                     </button>
                 </OverlayTrigger>
                 <OverlayTrigger rootClose overlay = { <Tooltip>Eliminar</Tooltip> }  >
-                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
+                    <button className = {`btn btn-icon btn-actions-table btn-sm ml-2 btn-text-danger btn-hover-danger`} 
                         onClick = { (e) => { e.preventDefault(); this.openModalDeletePago(element) } }>
-                        <i className = 'flaticon2-rubbish-bin' />
+                        <i className = 'las la-trash' />
                     </button>
                 </OverlayTrigger>
+                {
+                    element.active?
+                    <OverlayTrigger rootClose overlay = { <Tooltip>Desactivar pago</Tooltip> }  >
+                        <button className = {`btn btn-icon btn-actions-table btn-sm ml-2 btn-text-info btn-hover-info`} 
+                            onClick = { (e) => { e.preventDefault(); this.openModalDesactivarPago(element) } }>
+                            <i className = 'las la-ban' />
+                        </button>
+                    </OverlayTrigger>
+                    :<></>
+                }
             </div>
         )
     }
