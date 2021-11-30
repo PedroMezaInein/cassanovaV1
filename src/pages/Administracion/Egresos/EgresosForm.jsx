@@ -106,7 +106,7 @@ class EgresosForm extends Component {
         const { type, egreso, solicitud, prestacion, pago } = this.state
         const { history, location, authUser: { access_token } } = this.props
         return (
-            <Layout active='proyectos'  {...this.props}>
+            <Layout active='administracion'  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
