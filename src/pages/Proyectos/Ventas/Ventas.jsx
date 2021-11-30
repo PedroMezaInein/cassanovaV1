@@ -540,7 +540,7 @@ class Ventas extends Component {
     }
 
     attachFilesS3 = async(files, item) => {
-        const { venta } = this.state
+        const { venta, filters } = this.state
         const { access_token } = this.props.authUser
         apiPutForm( `v2/proyectos/ventas/${venta.id}/archivos/s3`, { archivos: files }, access_token ).then(
             ( response ) => {
@@ -553,6 +553,7 @@ class Ventas extends Component {
                                 break;
                             case 'facturas_pdf':
                                 this.openFacturaExtranjera(venta) 
+                                this.reloadTable(filters)
                                 break;
                             default: break;
                         }

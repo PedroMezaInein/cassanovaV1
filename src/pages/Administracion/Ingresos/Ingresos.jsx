@@ -471,7 +471,7 @@ class Ingresos extends Component {
     }
 
     attachFilesS3 = async(files, item) => {
-        const { ingreso } = this.state
+        const { ingreso, filters } = this.state
         const { access_token } = this.props.authUser
         apiPutForm( `v3/administracion/ingresos/${ingreso.id}/archivos/s3`, { archivos: files }, access_token ).then(
             ( response ) => {
@@ -483,7 +483,8 @@ class Ingresos extends Component {
                                 this.openModalAdjuntos(ingreso)         
                                 break;
                             case 'facturas_pdf':
-                                this.openFacturaExtranjera(ingreso) 
+                                this.openFacturaExtranjera(ingreso)
+                                this.reloadTable(filters)
                                 break;
                             default: break;
                         }
