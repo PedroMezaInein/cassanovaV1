@@ -411,19 +411,16 @@ class EgresosFormNew extends Component {
 
     addEgreso = () => {
         const { form } = this.state
-        console.log(form, 'form')
-        const { at, prestacion, pago, history } = this.props
+        const { at, prestacion, pago } = this.props
         apiPostForm('v3/administracion/egresos', form, at).then(
             (response) => {
                 const { egreso } = response.data
-                console.log(egreso, 'egreso add')
                 this.setState({
                     ...this.state,
                     egreso: egreso
                 })
                 
                 let objeto = {}
-                objeto.pathname = `/administracion/egresos?id=${egreso.id}`
                 const { state } = this.props.location
                 if(state){
                     if(prestacion){
@@ -434,6 +431,9 @@ class EgresosFormNew extends Component {
                         objeto.pathname = '/administracion/calendario-pagos'
                         objeto.state = { pago: pago, flag: 'egreso' }
                     }
+                }else{
+                    objeto.pathname = `/administracion/egresos`
+                    objeto.search = `id=${egreso.id}`
                 }
                 doneAlert(
                     `Egreso generado con éxito`,
@@ -456,7 +456,11 @@ class EgresosFormNew extends Component {
                                     this.attachFiles()
                                 }else{
                                     //Egreso generado con éxito y cambio de página
-                                    doneAlert(`Egreso generado con éxito`, () => { history.push(objeto) }
+                                    doneAlert(`Egreso generado con éxito`,
+                                        () => { 
+                                            const { history } = this.props 
+                                            history.push(objeto) 
+                                        }
                                     )
                                 }
                             }
@@ -467,7 +471,12 @@ class EgresosFormNew extends Component {
                                 this.attachFiles()
                             }else{
                                 //Egreso generado con éxito y cambio de página
-                                doneAlert(`Egreso generado con éxito`, () => { history.push(objeto) })
+                                doneAlert(`Egreso generado con éxito`,
+                                    () => {
+                                        const { history } = this.props 
+                                        history.push(objeto)
+                                    }
+                                )
                             }
                         }
                     }
@@ -739,7 +748,6 @@ class EgresosFormNew extends Component {
                 form.subarea = pago.subarea.id.toString()
             }    
         }
-        console.log(form.fecha)
         Swal.close()
         this.setState({ ...this.state, form, options })
     }
@@ -799,7 +807,6 @@ class EgresosFormNew extends Component {
     
     render() {
         const { formeditado, form, options } = this.state
-        console.log(form, 'form')
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
