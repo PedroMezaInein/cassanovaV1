@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import { Form, Row, Col } from 'react-bootstrap'
-import { validateAlert, questionAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
-import { InputGray, Button, CalendarDay, InputMoneyGray, SelectSearchGrayTrue } from '../../form-components'
+import SVG from 'react-inlinesvg'
 import ItemSlider from '../../singles/ItemSlider'
-import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
-import { dayDMY, setMoneyText } from '../../../functions/setters'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
+import { toAbsoluteUrl } from '../../../functions/routers'
 import { apiPutForm, catchErrors } from '../../../functions/api'
+import { dayDMY, setMoneyText } from '../../../functions/setters'
+import { Form, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap'
+import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
+import { InputGray, Button, CalendarDay, InputMoneyGray, SelectSearchGrayTrue } from '../../form-components'
+import { validateAlert, questionAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 
 class ProcesoTicketForm extends Component {
 
@@ -128,7 +128,7 @@ class ProcesoTicketForm extends Component {
                                 <div className="col-md-12">
                                     <Form onSubmit = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') } }
                                         {...props} >
-                                        <div id="for2-wizard-1-content" className="px-2" data-wizard-type="step-content" data-wizard-state="current">
+                                        <div id="for2-wizard-1-content" className="col-md-12" data-wizard-type="step-content" data-wizard-state="current">
                                             <Row className="mx-0">
                                                 <Col md="6" className="align-self-center px-0 d-flex justify-content-center">
                                                     <div>
@@ -144,7 +144,7 @@ class ProcesoTicketForm extends Component {
                                                         </div>
                                                     </div>
                                                 </Col>
-                                                <Col md="6" className="align-self-center">
+                                                <Col md="6" className="align-self-center px-0">
                                                     <div className="row mx-0 form-group-marginless">
                                                         <div className="col-md-12">
                                                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
@@ -198,7 +198,7 @@ class ProcesoTicketForm extends Component {
                                                     </Row>        
                                                 : <div></div>
                                             }
-                                            <div className="d-flex justify-content-between border-top mt-3 pt-3 card-footer pb-0">
+                                            <div className="d-flex justify-content-between border-top mt-3 pt-3 card-footer pb-0 px-4">
                                                 <div className="mr-2"></div>
                                                 <div>
                                                     <button type="button" className="btn btn-primary font-weight-bold text-uppercase" 
@@ -233,6 +233,14 @@ class ProcesoTicketForm extends Component {
                                                         <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard1_for2_wizard() }} data-wizard-type="action-prev">Anterior</button>
                                                     </div>
                                                     <div className="col-lg-6 text-right">
+                                                        <DropdownButton title="Opciones" menualign="right" className="dropdown-crm">
+                                                            <Dropdown.Item eventKey='rh-proveedores' className='rh-proveedores'>
+                                                                <span className="navi-icon">
+                                                                    <i className='fas fa-users pr-3 text'></i>
+                                                                </span>
+                                                                <span className="navi-text align-self-center">RH/PROVEEDORES</span>
+                                                            </Dropdown.Item>
+                                                        </DropdownButton>
                                                         {
                                                             estatus !== 'Terminado' ?
                                                                 <div className="">

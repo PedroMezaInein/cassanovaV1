@@ -3498,3 +3498,74 @@ td.descripcion{
 .h-10px{
     height: 10px;
 }
+
+
+.dropdown-crm{
+    .btn.btn-primary.dropdown-toggle {
+        background-color: transparent;
+        border-color: transparent;
+        // height: 30px;
+        // width: 30px;
+        // justify-content: center;
+        // display: flex;
+        // align-items: center;
+        color: #464E5F;
+        justify-content: end;
+        &::after{
+            margin-left: 0;
+            font-weight: 900;
+            color: #B5B5C3!important;
+        }
+        &:active {
+            background-color: #F3F6F9!important;
+            border-color: transparent!important;
+            &::after{
+                color: #464E5F!important;
+            }
+        }
+        &:hover {
+            background-color: #F3F6F9;
+            border-color: transparent;
+            &::after{
+                color: #464E5F;
+            }
+        }
+    }
+    &.show.dropdown{
+        .dropdown-menu{
+            padding: 0;
+            .rh-proveedores, .cancelados, .rp{
+                font-weight: 500;
+                color: #7f7f7f;
+                
+            }
+            .rh-proveedores{
+                &:hover, &.dropdown-item.active{
+                    background-color: #fbeff7;
+                    color:#e44e93;
+                    i {
+                        color: #e44e93;
+                    }
+                }
+            }
+            .cancelados{
+                &:hover, &.dropdown-item.active{
+                    background-color: #fee9ec;
+                    color:#F64E60;
+                    i {
+                        color: #F64E60;
+                    }
+                }
+            }
+            .rp{
+                &:hover, &.dropdown-item.active{
+                    background-color: #fff2d9;
+                    color:#D08905;
+                    i {
+                        color: #D08905;
+                    }
+                }
+            }
+        }
+    }
+}
