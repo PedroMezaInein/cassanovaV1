@@ -150,8 +150,12 @@ class CalendarioPagos extends Component {
         let colores = {}
         pagos.forEach((element) => {
             let fechaInicioPago = new Date( moment( element.fecha_inicio ) )
+            // let fechaDesactivada = new Date( moment( element.fecha_termino ) )
             let conteo = 0;
-            if (fechaInicioPago <= fFin && element.active !== 0) {
+            // console.log(fechaDesactivada, 'fechaDesactivada')
+            if (fechaInicioPago <= fFin) {
+                // console.log(fechaInicioPago, 'fechaInicioPago')
+                // console.log(fFin, 'fFin')
                 let fecha = fechaInicioPago
                 while (fecha <= fFin) {
                     switch (element.periodo) {

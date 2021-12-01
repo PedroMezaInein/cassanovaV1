@@ -693,7 +693,7 @@ class TicketView extends Component {
                                                         <ProcesoTicketForm form={formulario.ticket} options={options} onChange={onChangeTicketProceso}
                                                             formeditado={1} handleChange={handleChangeTicketProceso} onSubmit={onSubmitTicketProceso}
                                                             generateEmail={generateEmailTicketProceso} estatus={data.estatus_ticket.estatus}
-                                                            deleteFile={deleteFile} ticket={data}
+                                                            deleteFile={deleteFile} ticket={data} at = { at }
                                                         />
                                                     </Card.Body>
                                                 </Card>
