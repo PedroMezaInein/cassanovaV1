@@ -745,18 +745,9 @@ class Facturacion extends Component {
                                 auxEmpresa = element
                             return false
                         });
-                        let auxCliente = ''
-                        data.clientes.find(function (element, index) {
-                            let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-                            cadena = cadena.replace(/,/g, '').toUpperCase()
-                            cadena = cadena.replace(/\./g, '').toUpperCase()
-                            if (element.empresa === obj.nombre_receptor ||
-                                element.empresa === cadena) {
-                                auxCliente = element
-                            }
-                            return false
-                        });
+                        let auxCliente = data.clientes.find((element) => {
+                            return element.rfc === obj.rfc_receptor
+                        })
                         if (auxEmpresa) {
                         } else {
                             errorAlert('No existe la empresa')
