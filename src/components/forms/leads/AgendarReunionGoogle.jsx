@@ -19,14 +19,14 @@ class AgendarReunionGoogle extends Component {
                                 <label className="col-form-label font-weight-bolder">Hora de inicio</label>
                                 <div className="form-group row d-flex justify-content-center">
                                     <SelectHorario onChange = { onChange } minuto = {{ value: form.minuto, name: 'minuto'}}
-                                        hora = {{ value: form.hora, name: 'hora'}} />
+                                        hora = {{ value: form.hora, name: 'hora'}} width='w-auto'/>
                                 </div>
                             </div>
                             <div className="col-md-6">
                                 <label className="col-form-label font-weight-bolder">Hora final</label>
                                 <div className="form-group row d-flex justify-content-center">
                                     <SelectHorario onChange = { onChange } minuto = {{ value: form.minuto_final, name: 'minuto_final'}}
-                                        hora = {{ value: form.hora_final, name: 'hora_final'}} />
+                                        hora = {{ value: form.hora_final, name: 'hora_final'}} width='w-auto'/>
                                 </div>
                             </div>
                         </div>
