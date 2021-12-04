@@ -367,6 +367,15 @@
     transition: fill .3s ease
 }
 
+.svg-icon.svg-icon-success2 svg [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease;
+    fill: #50cd89
+}
+
+.svg-icon.svg-icon-success2 svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill .3s ease
+}
+
 .btn-check:active+.btn.btn-active-light-primary2,
 .btn-check:checked+.btn.btn-active-light-primary2,
 .btn.btn-active-light-primary2.active,

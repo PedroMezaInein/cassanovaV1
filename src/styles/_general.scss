@@ -1273,6 +1273,9 @@ div#znav-container {
     letter-spacing: 0.4px !important;
 }
 
+.letter-spacing-0-3 {
+    letter-spacing: 0.3px !important;
+}
 // .z{
 //     opacity: 1;
 //     transform: matrix(1, 0, 0, 1, 0, 0);
@@ -3502,70 +3505,108 @@ td.descripcion{
 
 .dropdown-crm{
     .btn.btn-primary.dropdown-toggle {
-        background-color: transparent;
-        border-color: transparent;
-        // height: 30px;
-        // width: 30px;
-        // justify-content: center;
-        // display: flex;
-        // align-items: center;
-        color: #464E5F;
+        background-color: #2171c1;
+        border-color: #2171c1;
+        color: white;
         justify-content: end;
+        font-weight: 600;
+        letter-spacing: 0.2px;
         &::after{
             margin-left: 0;
             font-weight: 900;
-            color: #B5B5C3!important;
+            color: white!important;
         }
         &:active {
-            background-color: #F3F6F9!important;
+            background-color: #156ac1!important;
             border-color: transparent!important;
             &::after{
-                color: #464E5F!important;
+                color: white!important;
             }
         }
         &:hover {
-            background-color: #F3F6F9;
+            background-color: #156ac1;
             border-color: transparent;
             &::after{
-                color: #464E5F;
+                color: white;
             }
         }
     }
     &.show.dropdown{
         .dropdown-menu{
             padding: 0;
-            .rh-proveedores, .cancelados, .rp{
+            .generar-evento, .actualizar-evento, .guardar, .generar-pdf{
                 font-weight: 500;
                 color: #7f7f7f;
                 
             }
-            .rh-proveedores{
+            .generar-evento{
                 &:hover, &.dropdown-item.active{
-                    background-color: #fbeff7;
-                    color:#e44e93;
+                    background-color: #EEE5FF;
+                    color:#8950FC;
                     i {
-                        color: #e44e93;
+                        color: #8950FC;
                     }
                 }
             }
-            .cancelados{
+            .actualizar-evento{
                 &:hover, &.dropdown-item.active{
-                    background-color: #fee9ec;
-                    color:#F64E60;
+                    background-color: #FFF4DE;
+                    color:#FFA800;
                     i {
-                        color: #F64E60;
+                        color: #FFA800;
                     }
                 }
             }
-            .rp{
+            .guardar{
                 &:hover, &.dropdown-item.active{
-                    background-color: #fff2d9;
-                    color:#D08905;
+                    background-color: #E8F5E9;
+                    color:#388E3C;
                     i {
-                        color: #D08905;
+                        color: #388E3C;
+                    }
+                }
+            }
+            .generar-pdf{
+                &:hover, &.dropdown-item.active{
+                    background-color: #E1F0FF;
+                    color:#2171c1;
+                    i {
+                        color: #2171c1;
                     }
                 }
             }
         }
     }
+}
+
+.border-top-4px-info{
+    border-top-color: #8950fc !important;
+    border-top-width: 4px !important;
+    border-top-style: solid;
+}
+
+.icons-cuadro .icon-div {
+    line-height: 1.3;
+    position: relative;
+    z-index: 0;
+}
+
+.icons-cuadro .icon-div:after {
+    position: absolute;
+    top: -5px;
+    left: 14px;
+    content: '';
+    width: 45px;
+    height: 45px;
+    background: #f1e9ff;
+    z-index: -1;
+    -webkit-border-radius: 15%;
+    -moz-border-radius: 15%;
+    -ms-border-radius: 15%;
+    border-radius: 15%;
+}
+
+.icons-cuadro .icon-div i {
+    font-size: 45px;
+    color: #8950FC;
 }

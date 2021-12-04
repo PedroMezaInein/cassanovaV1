@@ -1,0 +1,61 @@
+.tooltip-info{
+    .tooltip-inner{
+        background: #EEE5FF;
+        color: #8950fc;
+        padding: 0.5rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+    .tooltip-arrow{
+        background: #EEE5FF;
+    }
+    .arrow::before{
+        border-right-color:#EEE5FF;
+    }
+}
+
+.tooltip-warning{
+    .tooltip-inner{
+        background: #FFF4DE;
+        color: #FFA800;
+        padding: 0.5rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+    .tooltip-arrow{
+        background: #FFF4DE;
+    }
+    .arrow::before{
+        border-right-color:#FFF4DE;
+    }
+}
+.tooltip-danger{
+    .tooltip-inner{
+        background: #FFE2E5;
+        color: #F64E60;
+        padding: 0.5rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+    .tooltip-arrow{
+        background: #FFE2E5;
+    }
+    .arrow::before{
+        border-right-color:#FFE2E5;
+    }
+}
+.tooltip-success2{
+    .tooltip-inner{
+        background: #e8fff3;
+        color: #50cd89;
+        padding: 0.5rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+    .tooltip-arrow{
+        background: #e8fff3;
+    }
+    .arrow::before{
+        border-right-color:#e8fff3;
+    }
+}
