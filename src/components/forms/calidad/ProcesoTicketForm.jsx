@@ -2,25 +2,12 @@ import React, { Component } from 'react'
 import SVG from 'react-inlinesvg'
 import ItemSlider from '../../singles/ItemSlider'
 import { toAbsoluteUrl } from '../../../functions/routers'
-import { apiPutForm, catchErrors } from '../../../functions/api'
 import { dayDMY, setMoneyText } from '../../../functions/setters'
-import { Form, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap'
+import { Form, Row, Col } from 'react-bootstrap'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
-import { InputGray, Button, CalendarDay, InputMoneyGray, SelectSearchGrayTrue } from '../../form-components'
-import { validateAlert, questionAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
-
+import { InputGray, CalendarDay, InputMoneyGray, SelectSearchGrayTrue, Button } from '../../form-components'
+import { validateAlert, questionAlert } from '../../../functions/alert'
 class ProcesoTicketForm extends Component {
-
-    handleChangeDate = (date) => {
-        const { onChange } = this.props
-        onChange({ target: { name: 'fechaProgramada', value: date } })
-    }
-
-    updateEmpleado = value => {
-        const { onChange } = this.props
-        onChange({ target: { name: 'empleado', value: value } })
-    }
-
     isMantenimiento = () => {
         const { ticket } = this.props
         if(ticket.subarea){
@@ -39,68 +26,8 @@ class ProcesoTicketForm extends Component {
         const { onChange } = this.props
         onChange({ target: { name: type, value: value } })
     }
-
-    generateEvent = async() => {
-        const { ticket, at } = this.props
-        console.log(`-----------------`)
-        console.log(ticket)
-        console.log(at)
-        waitAlert()
-        apiPutForm(`v3/calidad/tickets/${ticket.id}/evento`, {}, at).then(
-            (response) => {
-                console.log(response.data)
-                doneAlert(
-                    `Generando evento`
-                )
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-
-    updateEvent = async() => {
-        const { ticket, at } = this.props
-        console.log(`-----------------`)
-        console.log(ticket)
-        console.log(at)
-        waitAlert()
-        apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, {}, at).then(
-            (response) => {
-                console.log(response.data)
-                doneAlert(
-                    `Generando evento`
-                )
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-
-    printGoogleEvent = () => {
-        const { ticket } = this.props
-        if(ticket){
-            if(ticket.fecha_programada){
-                console.log(ticket, 'TICKET')
-                if(ticket.event){
-                    return(
-                        <Button 
-                            only_icon = 'fab fa-google'
-                            className = "btn btn-light-warning font-weight-bold text-uppercase mr-2" 
-                            text = { ` Actualizar evento` }
-                            onClick = { this.updateEvent } />
-                    )
-                }else{
-                    return(
-                        <Button 
-                            only_icon = 'fab fa-google'
-                            className = "btn btn-light-warning font-weight-bold text-uppercase mr-2" 
-                            text = { ` Generar evento` }
-                            onClick = { this.generateEvent } />
-                    )
-                }
-            }
-        }
-        return <></>
-    }
-
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, at, ...props } = this.props
         return (
             <div>
                 {
@@ -201,7 +128,7 @@ class ProcesoTicketForm extends Component {
                                             <div className="d-flex justify-content-between border-top mt-3 pt-3 card-footer pb-0 px-4">
                                                 <div className="mr-2"></div>
                                                 <div>
-                                                    <button type="button" className="btn btn-primary font-weight-bold text-uppercase" 
+                                                    <button type="button" className="btn btn-light-primary font-weight-bolder letter-spacing-0-3" 
                                                         onClick={() => { openWizard2_for2_wizard() }} data-wizard-type="action-next">
                                                         Siguiente
                                                     </button>
@@ -230,21 +157,12 @@ class ProcesoTicketForm extends Component {
                                             <div className="border-top mt-3 pt-3">
                                                 <div className="row">
                                                     <div className="col-lg-6 text-left">
-                                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard1_for2_wizard() }} data-wizard-type="action-prev">Anterior</button>
+                                                        <button type="button" className="btn btn-light-primary font-weight-bolder letter-spacing-0-3" onClick={() => { openWizard1_for2_wizard() }} data-wizard-type="action-prev">Anterior</button>
                                                     </div>
                                                     <div className="col-lg-6 text-right">
-                                                        <DropdownButton title="Opciones" menualign="right" className="dropdown-crm">
-                                                            <Dropdown.Item eventKey='rh-proveedores' className='rh-proveedores'>
-                                                                <span className="navi-icon">
-                                                                    <i className='fas fa-users pr-3 text'></i>
-                                                                </span>
-                                                                <span className="navi-text align-self-center">RH/PROVEEDORES</span>
-                                                            </Dropdown.Item>
-                                                        </DropdownButton>
                                                         {
                                                             estatus !== 'Terminado' ?
                                                                 <div className="">
-                                                                    { this.printGoogleEvent() }
                                                                     <Button icon='' className="btn btn-light-primary font-weight-bold text-uppercase mr-2" text="GUARDAR"
                                                                         onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') }} />
                                                                     <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="GENERAR PDF"

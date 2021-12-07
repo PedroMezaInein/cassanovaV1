@@ -7,7 +7,7 @@ class SelectHorasLaborales extends Component {
         const { value, onChange, name } = this.props
 
         return(
-            <Form.Control as = "select" className = "px-1 py-0" style = { { height: "27px" } } 
+            <Form.Control as = "select" className = "px-1 py-0 text-center" style = { { height: "27px" } } 
                 value = { value } onChange = { onChange } name = { name } >
                 <option disabled value = { 0 }> HH </option>
                 <option value = "08" > 08 </option>

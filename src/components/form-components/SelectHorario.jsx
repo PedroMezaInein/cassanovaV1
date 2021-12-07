@@ -4,10 +4,10 @@ import { SelectHorasLaborales, SelectAllHours, SelectMinutos } from '.'
 class SelectHorario extends Component {
     render(){
 
-        const { hora, minuto, onChange, quarter, allhours} = this.props
+        const { hora, minuto, onChange, quarter, allhours, width} = this.props
 
         return(
-            <div className="input-daterange input-group" style={{ width: "auto" }}>
+            <div className={`input-daterange input-group ${width}`}>
                 {
                     allhours?
                         <SelectAllHours value = { hora.value } onChange = { onChange } name = { hora.name } />

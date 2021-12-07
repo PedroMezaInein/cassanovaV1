@@ -41,6 +41,7 @@ class VentasFormulario extends Component {
                     files: [], value: ''
                 }
             },
+            facturaObject: {}
         },
         options: {
             empresas: [], clientes: [], areas: [], subareas: [], proyectos: [], tiposPagos: [], tiposImpuestos: [], estatusCompras: [], 

@@ -201,7 +201,7 @@ class ParrillaContenidoForm extends Component {
                                                 <label className="col-form-label text-center font-weight-bolder">Hora de publicación</label>
                                                 <div className="form-group row d-flex justify-content-center">
                                                     <SelectHorario onChange={onChange} hora={{ value: form.hora, name: 'hora' }}
-                                                        minuto={{ value: form.minuto, name: 'minuto' }} quarter={true} />
+                                                        minuto={{ value: form.minuto, name: 'minuto' }} quarter={true} width='w-auto'/>
                                                 </div>
                                             </div>
                                         </div>

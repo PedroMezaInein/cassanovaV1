@@ -13,6 +13,7 @@ import Scrollbar from 'perfect-scrollbar-react'
 import { SolicitudFacturacionTabla } from '../../../tables'
 import FloatBtnPresupuesto from '../../../../components/FloatButtons/FloatBtnPresupuesto'
 import 'perfect-scrollbar-react/dist/style.min.css'
+import  AddEvent  from '../AddEvent'
 class TicketView extends Component {
 
     state = { checked: true }
@@ -370,7 +371,6 @@ class TicketView extends Component {
         }
         return false
     }
-
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, 
@@ -682,7 +682,30 @@ class TicketView extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
-                                            <Col md={`${data.reporte_url === null ? 12 : 7 }`}>
+                                            <Col md={`${data.fecha_programada === null ? 12 : 8}`}>
+                                                <Card className="card-custom gutter-b mb-8">
+                                                    <Card.Header className="border-0 pt-8 pt-md-0">
+                                                        <Card.Title className="mb-0">
+                                                            <div className="font-weight-bold font-size-h5">{this.showTabTicketProceso()}</div>
+                                                        </Card.Title>
+                                                    </Card.Header>
+                                                    <Card.Body className={`pt-3 ${data.estatus_ticket.estatus === 'Terminado' ? 'd-flex align-items-center justify-content-center' : ''}`}>
+                                                        <ProcesoTicketForm form={formulario.ticket} options={options} onChange={onChangeTicketProceso}
+                                                            formeditado={1} handleChange={handleChangeTicketProceso} onSubmit={onSubmitTicketProceso}
+                                                            generateEmail={generateEmailTicketProceso} estatus={data.estatus_ticket.estatus}
+                                                            deleteFile={deleteFile} ticket={data} at={at}
+                                                        />
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
+                                            {
+                                                data.fecha_programada !== null?
+                                                <Col md="4">
+                                                    <AddEvent at={at} ticket={data}/>
+                                                </Col>
+                                                :<></>
+                                            }
+                                            {/* <Col md={`${data.reporte_url === null ? 12 : 7 }`}>
                                                 <Card className="card-custom gutter-b mb-8">
                                                     <Card.Header className="border-0 pt-8 pt-md-0">
                                                         <Card.Title className="mb-0">
@@ -729,7 +752,7 @@ class TicketView extends Component {
                                                         </Card.Body>
                                                     </Card>
                                                 </Col>
-                                            }
+                                            } */}
                                         </Row>
                                     </Tab.Pane>
                                 </Tab.Content>

@@ -28,6 +28,7 @@ import avanceForm from './proyectos/AvanceForm'
 import ventasForm from './proyectos/VentasForm'
 import VentasFormulario from './proyectos/VentasFormulario'
 import ComprasFormulario from './proyectos/ComprasFormulario'
+import AddEvent from './calidad/AddEvent'
 
 import facturaForm from './administracion/FacturaForm'
 import solicitudCompraForm from './proyectos/SolicitudCompraForm'
@@ -249,5 +250,5 @@ export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResul
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
     PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
-    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario
+    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario, AddEvent
 }
