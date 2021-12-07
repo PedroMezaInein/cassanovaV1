@@ -373,7 +373,6 @@ class ComprasFormulario extends Component {
     addCompra = () => {
         const { form } = this.state
         const { at } = this.props
-        console.log(form, 'form')
         apiPostForm('v2/proyectos/compras', form, at).then(
             (response) => {
                 const { compra } = response.data

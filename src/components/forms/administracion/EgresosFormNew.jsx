@@ -422,9 +422,7 @@ class EgresosFormNew extends Component {
                 
                 let objeto = {}
                 const { state } = this.props.location
-                console.log(this.props, 'this.props egresosformnew')
                 if(state){
-                    console.log('entre state')
                     if(prestacion){
                         objeto.pathname = '/rh/prestaciones'
                         objeto.state = { prestacion: prestacion, flag: 'egreso' }
@@ -434,7 +432,6 @@ class EgresosFormNew extends Component {
                         objeto.state = { pago: pago, flag: 'egreso' }
                     }
                 }else{
-                    console.log('entre aqui')
                     objeto.pathname = `/administracion/egresos`
                     objeto.search = `id=${egreso.id}`
                 }

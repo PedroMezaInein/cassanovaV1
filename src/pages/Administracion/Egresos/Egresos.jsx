@@ -91,13 +91,11 @@ class Egresos extends Component {
         if (!egresos)
             history.push('/')
         this.getOptionsAxios()
-        console.log(this.props, 'this.props')
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                console.log(id, 'id')
                 const { modal, filters } = this.state
                 filters.identificador = id
                 modal.see = true
