@@ -148,7 +148,8 @@ class TicketDetails extends Component {
         },
         defaultNavTabs:'',
         adjuntos: [],
-        adjunto: null
+        adjunto: null,
+        activeDate: false
     }
     
     componentDidMount() {
@@ -1260,10 +1261,26 @@ class TicketDetails extends Component {
     /* ---------------------- FORMULARIO TICKET EN PROCESO ---------------------- */
     onChangeTicketProceso = e => {
         const { name, value } = e.target
-        const { formularios } = this.state
+        const { formularios, ticket } = this.state
+        let { activeDate } = this.state
+        if(name === 'fechaProgramada'){
+            if(ticket.event){
+                activeDate = true
+            }
+        }
         formularios.ticket[name] = value
-        this.setState({ ...this.state, formularios })
+        this.setState({ ...this.state, formularios, activeDate })
     }
+    // updateEvent = async(value) => {
+    //     const { access_token } = this.props
+    //     const { form, ticket } = this.state
+    //     waitAlert()
+    //     apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, value, access_token).then(
+    //         (response) => {
+    //             doneAlert( `Evento editado con éxito`, () => this.getOneTicketAxios(ticket.id))
+    //         }, (error) => { printResponseErrorAlert(error) }
+    //     ).catch((error) => { catchErrors(error) })
+    // }
     onSubmitTicketProceso = e => {
         e.preventDefault();
         const { adjuntos } = this.state.formularios.ticket
@@ -1779,7 +1796,7 @@ class TicketDetails extends Component {
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
                     addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitudFactura = { this.deleteSolicitudAxios } 
                     addVenta = { this.addVentaAxios } getSolicitudes = { this.getSolicitudesAxios } defaultNavTabs={defaultNavTabs}
-                    historialPresupuestos={this.openModalPdfs} openModalOrdenCompra={this.openModalOrdenCompra}
+                    historialPresupuestos={this.openModalPdfs} openModalOrdenCompra={this.openModalOrdenCompra} refresh={this.getOneTicketAxios}
                 />
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>

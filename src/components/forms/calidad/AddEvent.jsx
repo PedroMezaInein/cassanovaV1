@@ -4,8 +4,8 @@ import Swal from 'sweetalert2'
 import SVG from 'react-inlinesvg'
 import { dayDMY } from '../../../functions/setters'
 import { toAbsoluteUrl } from '../../../functions/routers'
-import { apiPutForm, catchErrors } from '../../../functions/api'
 import { Form, Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { apiPutForm, apiGet, catchErrors } from '../../../functions/api'
 import { SelectHorario, TagInputGray, Button } from '../../form-components'
 import { validateAlert, questionAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 
@@ -20,7 +20,6 @@ class AddEvent extends Component {
         },
         edit:false
     }
-
     tagInputChange = (nuevosCorreos) => {
         const { form } = this.state 
         let emailValid = true
@@ -56,44 +55,36 @@ class AddEvent extends Component {
     }
     
     generateEvent = async() => {
-        const { ticket, at } = this.props
+        const { ticket, at, refresh } = this.props
         const { form } = this.state
         waitAlert()
         apiPutForm(`v3/calidad/tickets/${ticket.id}/evento`, form, at).then(
             (response) => {
-                console.log(response.data)
-                doneAlert(`Generando evento`)
+                doneAlert( `Evento generado con éxito`, () => refresh(ticket.id))
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
 
     updateEvent = async() => {
-        const { ticket, at } = this.props
-        console.log(`-----------------`)
-        console.log(ticket)
-        console.log(at)
+        const { ticket, at, refresh } = this.props
+        const { form } = this.state
         waitAlert()
-        apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, {}, at).then(
+        apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, form, at).then(
             (response) => {
-                console.log(response.data)
-                doneAlert(
-                    `Editando evento`
-                )
+                doneAlert( `Evento editado con éxito`, () => refresh(ticket.id))
+                form.correos=[]
+                this.setState({ ...this.state, form, edit:false })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
     onSubmit = () => {
-        // const { type } = this.props
-        // waitAlert()
-        // switch (type) {
-        //     case 'add':
-                this.generateEvent()
-        //     break;
-        //     case 'edit':
-        //         this.updateEvent()
-        //         break;
-        //     default: break;
-        // }
+        const { edit } = this.state
+        waitAlert()
+        if(!edit){
+            this.generateEvent()
+        }else{
+            this.updateEvent()
+        }
     }
     printHour(start, end){
         let hora_inicio= moment(start).format("LT")
@@ -222,9 +213,87 @@ class AddEvent extends Component {
                                 </>
                             )
                         }else{
-                            <>
-                                soy editar
-                            </>
+                            return(
+                                <>
+                                    <Form id="form-editar-horarios">
+                                        <div className="row mx-0">
+                                            <div className="col-md-12 col-xxl-6 text-center">
+                                                <label className="col-form-label font-weight-bolder text-dark-60">Hora de inicio</label>
+                                                <div className="mb-3 row d-flex justify-content-center">
+                                                    <SelectHorario onChange={this.onChange} minuto={{ value: form.minuto_inicio, name: 'minuto_inicio' }}
+                                                        hora={{ value: form.hora_inicio, name: 'hora_inicio' }} allhours={true} width='w-60' />
+                                                </div>
+                                                {
+                                                    form.hora_inicio !== 0 && form.minuto_inicio !== 0 ?
+                                                        <></>
+                                                        : <span className="form-text text-danger is-invalid">Hora de incio</span>
+                                                }
+                                            </div>
+                                            <div className="col-md-12 d-block d-xxl-none my-5">
+                                                <div className="separator separator-dashed"></div>
+                                            </div>
+                                            <div className="col-md-12 col-xxl-6 text-center">
+                                                <label className="col-form-label font-weight-bolder text-dark-60">Hora final</label>
+                                                <div className="mb-3 row d-flex justify-content-center">
+                                                    <SelectHorario onChange={this.onChange} minuto={{ value: form.minuto_final, name: 'minuto_final' }}
+                                                        hora={{ value: form.hora_final, name: 'hora_final' }} allhours={true} width='w-60' />
+                                                </div>
+                                                {
+                                                    form.hora_final !== 0 && form.minuto_final !== 0 ?
+                                                        <></>
+                                                        : <span className="form-text text-danger is-invalid">Hora de termino</span>
+                                                }
+                                            </div>
+                                            <div className="col-md-12 my-5">
+                                                <div className="separator separator-dashed"></div>
+                                            </div>
+                                            <div className="w-80 mt-5 mx-auto card card-custom bg-diagonal shadow-sm gutter-b">
+                                                <div className="card-body p-2">
+                                                    <div className="p-4">
+                                                        <div className="d-flex flex-column text-center">
+                                                            <div className="font-size-h6 font-weight-bolder text-primary mb-3">Correos de los asistentes</div>
+                                                                {
+                                                                    ticket.event.googleEvent?
+                                                                    ticket.event.googleEvent.attendees.map((email, key) => {
+                                                                            return (
+                                                                                <div className="text-dark-50 font-weight-light text-lowercase" key={key}>{email.email}</div>
+                                                                            )
+                                                                        })
+                                                                    :""
+                                                                }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 d-block d-xxl-none my-5">
+                                                <div className="separator separator-dashed"></div>
+                                            </div>
+                                            <div className="col-md-12">
+                                                <TagInputGray
+                                                    tags={form.correos}
+                                                    onChange={this.tagInputChange}
+                                                    placeholder="CORREOS DE LOS ASISTENTES"
+                                                    iconclass="fas fa-envelope"
+                                                    uppercase={false}
+                                                    requirevalidation={0}
+                                                    messageinc="PRESIONA ENTER PARA AGREGAR EL CORREO."
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="card-footer mt-8 px-0 pb-0 pt-4 text-center">
+                                            <Button icon='' className="btn btn-light-info btn-sm font-weight-bolder letter-spacing-0-3"
+                                                onClick={
+                                                    (e) => {
+                                                        e.preventDefault();
+                                                        validateAlert(this.onSubmit, e, 'form-editar-horarios')
+                                                    }
+                                                }
+                                                text="Editar horario de trabajo"
+                                            />
+                                        </div>
+                                    </Form>
+                                </>
+                            )
                         }
                     }
                 } else {
@@ -265,7 +334,7 @@ class AddEvent extends Component {
                                     <TagInputGray
                                         tags={form.correos}
                                         onChange={this.tagInputChange}
-                                        placeholder="CORREOS DE LOS CLIENTES"
+                                        placeholder="CORREOS DE LOS ASISTENTES"
                                         iconclass="fas fa-envelope"
                                         uppercase={false}
                                         requirevalidation={1}
@@ -309,10 +378,26 @@ class AddEvent extends Component {
         }
     }
     editTime = (action) => {
+        const { form } = this.state
+        const { start, end } = this.props.ticket.event.googleEvent
+        if(action){
+            let fechaInicio = new Date(moment(start.dateTime))
+            let fechaFin = new Date(moment(end.dateTime))
+            form.hora_inicio = this.setTimer(fechaInicio.getHours());
+            form.minuto_final = this.setTimer(fechaFin.getMinutes());
+            form.hora_final = this.setTimer(fechaFin.getHours());
+            form.minuto_inicio = this.setTimer(fechaInicio.getMinutes());
+        }
         this.setState({
             ...this.state,
-            edit:action
+            edit:action,
+            form
         })
+    }
+    setTimer = (time) => {
+        if(time < 10)
+            return '0'.time
+        return time
     }
     render() {
         const { ticket } = this.props
@@ -320,8 +405,8 @@ class AddEvent extends Component {
         return (
             <>
                 <Card className="card-custom gutter-b mb-8">
-                    <Card.Header className="pt-8 pt-md-0 border-top-4px-info border-bottom-0">
-                        <Card.Title className="mb-0">
+                    <Card.Header className="pt-8 pt-md-0 border-top-4px-info border-bottom-0 row mx-0">
+                        <Card.Title className="mb-0 col px-0">
                             <div className="font-weight-bold font-size-h5">{this.showTitleEvent()}</div>
                         </Card.Title>
                         {
