@@ -39,7 +39,7 @@ class IngresosFormulario extends Component {
                 }
             },
             tipoPago: 0,
-            facturaObject: null,
+            facturaObject: {},
             tipoImpuesto: 0,
             estatusCompra: 0,
         },
