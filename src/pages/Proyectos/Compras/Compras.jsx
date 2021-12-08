@@ -13,7 +13,7 @@ import { printSwalHeader } from '../../../functions/printers'
 import { FacturasFormTable } from '../../../components/tables'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPostFormResponseBlob, catchErrors, apiPutForm } from '../../../functions/api'
+import { apiOptions, apiGet, apiDelete, apiPostFormResponseBlob, catchErrors, apiPutForm } from '../../../functions/api'
 import { waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, customInputAlert,
     errorAlert } from '../../../functions/alert'
 import { SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
@@ -486,7 +486,7 @@ class Compras extends Component {
 
     attachFiles = async(files, item) => {
         waitAlert()
-        const { form, compra } = this.state
+        const { compra } = this.state
         const { access_token } = this.props.authUser
         apiGet(`v1/constant/admin-proyectos`, access_token).then(
             (response) => {
