@@ -807,6 +807,7 @@ class EgresosFormNew extends Component {
     
     render() {
         const { formeditado, form, options } = this.state
+        const { type } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -999,7 +1000,7 @@ class EgresosFormNew extends Component {
                                     iconclass = 'fas fa-money-check-alt' />
                             </div>
                             {
-                                this.isActiveFactura() ?
+                                type !== 'edit' ?
                                     <div className="col-md-12">
                                         <div className="row mx-0">
                                             <div className="col-md-12">
