@@ -418,7 +418,7 @@ class Calendario extends Component {
                     return false
                 })
                 var now = moment();
-                var dias = moment().add(21, 'days');
+                var dias = moment().add(2, 'w');
 
                 const start = moment(now, 'YYYY-MM-DD');
                 const end = moment(dias, 'YYYY-MM-DD');
