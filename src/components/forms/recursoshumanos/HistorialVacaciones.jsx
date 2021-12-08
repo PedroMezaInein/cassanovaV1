@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import moment from 'moment'
 import SVG from "react-inlinesvg"
 import { Card } from 'react-bootstrap'
 import { toAbsoluteUrl } from '../../../functions/routers'
@@ -45,19 +44,6 @@ class HistorialVacaciones extends Component {
             accordion: vacaciones
         });
     }
-    getAño = (vacaciones) => {
-        let inicio =  moment(vacaciones.fechas.inicio).year()
-        let fin =  moment(vacaciones.fechas.fin).year()
-        if(vacaciones.año === 0){
-            return(
-                <div>AÑO DE INGRESO - {inicio} - {fin}</div>
-            )
-        }else{
-            return(
-                <div>{vacaciones.año}º año - {inicio} - {fin}</div>
-            )
-        }
-    }
     printDate = (element) => {
         if(dayDMY(element.fecha_inicio) === dayDMY(element.fecha_fin)){
             return dayDMY(element.fecha_inicio)
@@ -92,7 +78,7 @@ class HistorialVacaciones extends Component {
         const { vacaciones } = this.state
         return (
             <div className="table-responsive mt-5">
-                <div className="list min-w-500px col-md-12 mx-auto">
+                <div className="list min-w-700px col-md-12 mx-auto">
                     <div className="accordion accordion-light accordion-svg-toggle">
                         {
                             vacaciones.map((vacaciones, index) => {
@@ -106,14 +92,17 @@ class HistorialVacaciones extends Component {
                                                         <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
                                                     </span>
                                                 </div>
-                                                <div className="card-label ml-3 w-100 d-flex font-size-lg">
-                                                    <div className="w-33">
-                                                        {this.getAño(vacaciones)}
+                                                <div className="card-label ml-3 w-100 d-flex font-size-lg justify-content-between">
+                                                    <div className="w-10">
+                                                        {vacaciones.año}º año
                                                     </div>
-                                                    <div className="w-33 text-right font-weight-light text-dark">
+                                                    <div className="w-auto text-right font-weight-light text-dark">
+                                                        Periodo: <b className={active?'text-primary2':''}>{dayDMY(vacaciones.fechas.inicio)} - {dayDMY(vacaciones.fechas.fin)}</b>
+                                                    </div>
+                                                    <div className="w-20 text-right font-weight-light text-dark">
                                                         Disponibles: <b className={active?'text-success':''}>{vacaciones.disponibles} {vacaciones.disponibles===1?'día':'días'}</b>
                                                     </div>
-                                                    <div className="w-33 text-right font-weight-light text-dark">
+                                                    <div className="w-20 text-right font-weight-light text-dark">
                                                         Tomados: <b className={active?'text-primary2':''}>{vacaciones.tomados} {vacaciones.tomados===1?'día':'días'}</b>
                                                     </div>
                                                 </div>
