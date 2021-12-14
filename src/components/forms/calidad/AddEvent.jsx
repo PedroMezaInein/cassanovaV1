@@ -250,13 +250,21 @@ class AddEvent extends Component {
                                             <div className="w-80 mt-5 mx-auto card card-custom bg-diagonal shadow-sm gutter-b">
                                                 <div className="card-body p-2">
                                                     <div className="p-4">
+                                                        <div className="d-flex flex-column justify-content-center flex-row-fluid pr-11 mb-5">
+                                                            <div className="d-flex font-size-lg font-weight-bold align-items-center mb-3">
+                                                                <div className="bullet bg-primary me-3"></div>
+                                                                <div className="text-gray-400">Active</div>
+                                                            </div>
+                                                        </div>
                                                         <div className="d-flex flex-column text-center">
                                                             <div className="font-size-h6 font-weight-bolder text-primary mb-3">Correos de los asistentes</div>
                                                                 {
                                                                     ticket.event.googleEvent?
                                                                     ticket.event.googleEvent.attendees.map((email, key) => {
                                                                             return (
-                                                                                <div className="text-dark-50 font-weight-light text-lowercase" key={key}>{email.email}</div>
+                                                                                <div className="text-dark-50 font-weight-light text-lowercase" key={key}>
+                                                                                    {email.email}
+                                                                                </div>
                                                                             )
                                                                         })
                                                                     :""
@@ -288,7 +296,7 @@ class AddEvent extends Component {
                                                         validateAlert(this.onSubmit, e, 'form-editar-horarios')
                                                     }
                                                 }
-                                                text="Editar horario de trabajo"
+                                                text="Editar horarios"
                                             />
                                         </div>
                                     </Form>

@@ -580,3 +580,10 @@ export function pendingPaymentAlert(title, text) {
         }
     })
 }
+
+export function htmlLottieTimer(html) {
+    MySwal.fire({
+        html: html,
+        timer: 8000
+    });
+}

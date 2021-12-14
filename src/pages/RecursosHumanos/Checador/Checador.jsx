@@ -124,7 +124,7 @@ class Checador extends Component {
                 link.setAttribute('download', `${quincena}Q-${mes_number}-${año}.xlsx`);
                 document.body.appendChild(link);
                 link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Proyectos exportados con éxito.')
+                doneAlert(`Horarios de ${quincena}Q de ${mes} del ${año} fue exportado con éxito`)
             }, (error) => { printResponseErrorAlert(error) }    
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -380,7 +380,7 @@ class Checador extends Component {
                                 <SelectSearchGray
                                     name='año' options={getAños()}
                                     customdiv='mb-0'
-                                    value = { año }
+                                    value = { año.toString() }
                                     onChange={this.updateAño}
                                     iconclass="fas fa-calendar-day"
                                     withicon={1}
