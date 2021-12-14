@@ -380,7 +380,8 @@ class TicketView extends Component {
             deleteSolicitud, onChangeTicketProceso, onSubmitTicketProceso, 
             handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
             controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
-            addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs, historialPresupuestos, openModalOrdenCompra
+            addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs, historialPresupuestos, openModalOrdenCompra,
+            refresh
         } = this.props
 
         const { checked } = this.state
@@ -701,7 +702,7 @@ class TicketView extends Component {
                                             {
                                                 data.fecha_programada !== null?
                                                 <Col md="4">
-                                                    <AddEvent at={at} ticket={data}/>
+                                                    <AddEvent at={at} ticket={data} refresh={refresh}/>
                                                 </Col>
                                                 :<></>
                                             }

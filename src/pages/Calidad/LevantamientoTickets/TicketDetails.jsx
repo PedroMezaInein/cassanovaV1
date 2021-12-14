@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { renderToString } from "react-dom/server";
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
-import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert } from '../../../functions/alert'
+import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter, dayDMY } from '../../../functions/setters'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert, htmlLottieTimer } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { TicketView, HistorialPresupuestos } from '../../../components/forms'
 import { Form } from 'react-bootstrap'
@@ -18,6 +18,8 @@ import { CreatableMultiselectGray } from '../../../components/form-components'
 import { Modal } from "react-bootstrap"
 import { Modal as CustomModal } from '../../../components/singles'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
+import { Calendar } from '../../../assets/animate'
+import { CommonLottie } from '../../../components/Lottie/'
 class TicketDetails extends Component {
 
     state = {
@@ -148,7 +150,8 @@ class TicketDetails extends Component {
         },
         defaultNavTabs:'',
         adjuntos: [],
-        adjunto: null
+        adjunto: null,
+        activeDate: false
     }
     
     componentDidMount() {
@@ -1260,9 +1263,10 @@ class TicketDetails extends Component {
     /* ---------------------- FORMULARIO TICKET EN PROCESO ---------------------- */
     onChangeTicketProceso = e => {
         const { name, value } = e.target
-        const { formularios } = this.state
+        const { formularios, ticket } = this.state
+        let { activeDate } = this.state
         formularios.ticket[name] = value
-        this.setState({ ...this.state, formularios })
+        this.setState({ ...this.state, formularios, activeDate })
     }
     onSubmitTicketProceso = e => {
         e.preventDefault();
@@ -1317,25 +1321,69 @@ class TicketDetails extends Component {
 
     generarReporteFotografico = () => {
         const { ticket, formularios } = this.state
-        questionAlertY('¿DESEAS GENERAR EL REPORTE?',
-            'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DE LAS PETICIONES Y LOS TRABAJOS REALIZADOS',
-            () => this.generarReporteFotograficoAxios(),
-            () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
-        )
+
+        const fechaAnterior = new Date( moment(ticket.fecha_programada) )
+        const fechaNueva = new Date( moment(formularios.ticket.fechaProgramada) )
+
+        
+        var dayBefore = moment(fechaAnterior).format('YYYY-MM-DD');
+        var dayAfter = moment(fechaNueva).format('YYYY-MM-DD');
+
+        
+
+        if(dayBefore !== dayAfter){
+            console.log('soy diferente')
+            if(ticket.event !== null){
+                htmlLottieTimer(
+                    <div>
+                        <div className="col-md-12 mx-auto"><CommonLottie animationData = { Calendar } /></div>
+                        <div className='col-md-11 font-weight-light text-center mx-auto'>
+                            <div className="font-weight-bolder font-size-h5 mb-5 mt-1">¡La fecha de trabajos fue editada!</div>
+                            <div className="font-size-lg">El día de trabajos: <span className="text-danger font-weight-bold">{dayDMY(fechaAnterior)}</span> fue cambiado por: <span className="text-success font-weight-bold">{dayDMY(fechaNueva)}</span></div>
+                        </div>
+                    </div>
+                )
+            }
+        }else{
+            console.log('soy igual')
+        }
+        // questionAlertY('¿DESEAS GENERAR EL REPORTE?',
+        //     'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DE LAS PETICIONES Y LOS TRABAJOS REALIZADOS',
+        //     () => this.generarReporteFotograficoAxios(),
+        //     () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
+        // )
+    }
+    
+    updateEvent = async() => {
+        const { ticket, formularios } = this.state
+            
+        console.log(formularios.ticket, 'formularios')
+        console.log(ticket, 'ticket')
+    //     const { access_token } = this.props
+    //     const { form, ticket } = this.state
+    //     waitAlert()
+    //     apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, value, access_token).then(
+    //         (response) => {
+    //             doneAlert( `Evento editado con éxito`, () => this.getOneTicketAxios(ticket.id))
+    //         }, (error) => { printResponseErrorAlert(error) }
+    //     ).catch((error) => { catchErrors(error) })
     }
     
     saveProcesoTicketAxios = async(flag) =>{
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket, formularios } = this.state
+        console.log(flag, 'flag')
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
                 if(flag === true){
                     this.generarReporteFotograficoAxios()
                 }else{
-                    doneAlert('Datos guardados con éxito.', () => this.generarReporteFotografico())
-                    this.getOneTicketAxios(ticket.id)
+                    console.log('entreee')
+                    this.generarReporteFotografico()
+                    // doneAlert('Datos guardados con éxito.', () => )
+                    // this.getOneTicketAxios(ticket.id)
                 }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1779,7 +1827,7 @@ class TicketDetails extends Component {
                     changeTypeSolicitudes = { this.changeTypeSolicitudes }  formularioGuardado={formulario} save={this.save} recover={this.recover}
                     addSolicitudFacturaAxios = { this.addSolicitudFacturaAxios } deleteSolicitudFactura = { this.deleteSolicitudAxios } 
                     addVenta = { this.addVentaAxios } getSolicitudes = { this.getSolicitudesAxios } defaultNavTabs={defaultNavTabs}
-                    historialPresupuestos={this.openModalPdfs} openModalOrdenCompra={this.openModalOrdenCompra}
+                    historialPresupuestos={this.openModalPdfs} openModalOrdenCompra={this.openModalOrdenCompra} refresh={this.getOneTicketAxios}
                 />
                 <Modal show = { modal.reporte } onHide = { this.handleCloseModalReporte } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Header className = 'border-0 justify-content-center swal2-title text-center font-size-h4'>¿DESEAS ENVIAR EL REPORTE?</Modal.Header>
