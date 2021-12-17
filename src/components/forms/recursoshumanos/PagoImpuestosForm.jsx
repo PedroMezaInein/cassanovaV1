@@ -104,7 +104,6 @@ class PagoImpuestosForm extends Component {
     }
     render() {
         const { options, addRowPagoImpuestoAdmin, deleteRowPagoImpuestoAdmin, onChangePagoImpuestosAdmin, form, onSubmit, formeditado, title, action, clearFilesPagoImpuestoAdmin, onChangeAdjunto } = this.props
-        console.log(form, 'form')
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
