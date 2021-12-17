@@ -12,9 +12,9 @@ import { renderToString } from 'react-dom/server'
 import { Calendar } from '../../../assets/animate'
 import Layout from '../../../components/layout/layout'
 import { CommonLottie } from '../../../components/Lottie/'
+import { apiPutForm, catchErrors } from '../../../functions/api'
 import { Modal as CustomModal } from '../../../components/singles'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import { apiPutForm, apiDelete, catchErrors } from '../../../functions/api'
 import { setSingleHeader, setFormHeader } from '../../../functions/routers'
 import { TicketView, HistorialPresupuestos } from '../../../components/forms'
 import { CreatableMultiselectGray } from '../../../components/form-components'
@@ -1264,7 +1264,7 @@ class TicketDetails extends Component {
     /* ---------------------- FORMULARIO TICKET EN PROCESO ---------------------- */
     onChangeTicketProceso = e => {
         const { name, value } = e.target
-        const { formularios, ticket } = this.state
+        const { formularios } = this.state
         let { activeDate } = this.state
         formularios.ticket[name] = value
         this.setState({ ...this.state, formularios, activeDate })
@@ -1353,29 +1353,29 @@ class TicketDetails extends Component {
         return time
     }
     updateEvent = async ( data ) => {
-        const { formularios, ticket } = this.state
+        const { ticket } = this.state
         const { access_token } = this.props
-        console.log(formularios.ticket, 'formularios 1')
-        console.log(data, 'data 1')
-        console.log(ticket, 'ticket 1')
         
-        let event = ticket.event.googleEvent
         let arrayCorreos = []
         ticket.event.googleEvent.attendees.forEach((element)=>{
             arrayCorreos.push(element.email)
         })
+
+        const { start, end } = ticket.event.googleEvent
+        let fechaInicio = new Date(moment(start.dateTime))
+        let fechaFin = new Date(moment(end.dateTime))
+
         let form = {
-            hora_inicio: this.setTimer(moment(event.start.dateTime).hours()),
-            minuto_inicio: this.setTimer(moment(event.start.dateTime).minute()),
-            hora_final: this.setTimer(moment(event.end.dateTime).hours()),
-            minuto_final: this.setTimer(moment(event.end.dateTime).minute()),
+            hora_inicio : this.setTimer(fechaInicio.getHours()),
+            minuto_final : this.setTimer(fechaFin.getMinutes()),
+            hora_final : this.setTimer(fechaFin.getHours()),
+            minuto_inicio : this.setTimer(fechaInicio.getMinutes()),
             correos: arrayCorreos,
             motivo_cancelacion_event:''
         }
         waitAlert()
         apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, form, access_token).then(
             (response) => {
-                console.log('entre api')
                 doneAlert( `Evento editado con éxito`, () => this.getOneTicketAxios(ticket.id))
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
@@ -1392,7 +1392,6 @@ class TicketDetails extends Component {
                     this.generarReporteFotograficoAxios()
                 }else{
                     this.saveForm(ticket)
-                    // doneAlert('Datos guardados con éxito.', () => )
                 }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

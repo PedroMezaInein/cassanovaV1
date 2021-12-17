@@ -128,6 +128,7 @@ class CalendarioPagos extends Component{
                     form.subarea = []
                     setOptions('subareas', [])
                 }
+                return false
             })
         }
         this.setState({ ...this.state, form })

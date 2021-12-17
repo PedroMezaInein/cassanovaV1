@@ -4,10 +4,10 @@ import Swal from 'sweetalert2'
 import SVG from 'react-inlinesvg'
 import { dayDMY } from '../../../functions/setters'
 import { toAbsoluteUrl } from '../../../functions/routers'
-import { apiPutForm, apiDelete, catchErrors } from '../../../functions/api'
+import { apiPutForm, catchErrors } from '../../../functions/api'
 import { Form, Card, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap'
 import { SelectHorario, TagInputGray, Button, InputGray } from '../../form-components'
-import { validateAlert, deleteAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { validateAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 
 class AddEvent extends Component {
     state = {
@@ -86,7 +86,7 @@ class AddEvent extends Component {
         const { ticket, at, refresh } = this.props
         const { form } = this.state
         waitAlert()
-        apiPutForm(`v3/calidad/tickets/${ticket.id}/delete-evento`, form.motivo_cancelacion_event, at).then(
+        apiPutForm(`v3/calidad/tickets/${ticket.id}/delete-evento/${ticket}`, form, at).then(
             (response) => {
                 doneAlert( `Evento eliminado con éxito`, () => refresh(ticket.id))
                 form.motivo_cancelacion_event = ''
@@ -124,6 +124,7 @@ class AddEvent extends Component {
                         )
                     default: break;
                 }
+                break;
             case 'declined':
                 switch (type) {
                     case 'tooltip':
@@ -138,6 +139,7 @@ class AddEvent extends Component {
                         )
                     default: break;
                 }
+                break;
             case 'tentative':
                 switch (type) {
                     case 'tooltip':
@@ -152,6 +154,7 @@ class AddEvent extends Component {
                         )
                     default: break;
                 }
+                break;
             case 'accepted':
                 switch (type) {
                     case 'tooltip':
@@ -166,6 +169,7 @@ class AddEvent extends Component {
                         )
                     default: break;
                 }
+                break;
             default: break;
         }
     }
