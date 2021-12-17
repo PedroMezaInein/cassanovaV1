@@ -1,25 +1,26 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { renderToString } from "react-dom/server";
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
-import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter, dayDMY } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert, htmlLottieTimer } from '../../../functions/alert'
-import Layout from '../../../components/layout/layout'
-import { TicketView, HistorialPresupuestos } from '../../../components/forms'
-import { Form } from 'react-bootstrap'
-import { setSingleHeader, setFormHeader } from '../../../functions/routers'
-import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import moment from 'moment'
 import 'moment/locale/es'
+import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
-import S3 from 'react-aws-s3';
-import { CreatableMultiselectGray } from '../../../components/form-components'
+import { connect } from 'react-redux'
+import { Form } from 'react-bootstrap'
 import { Modal } from "react-bootstrap"
+import { URL_DEV } from '../../../constants'
+import { renderToString } from 'react-dom/server'
+import { Calendar } from '../../../assets/animate'
+import Layout from '../../../components/layout/layout'
+import { CommonLottie } from '../../../components/Lottie/'
 import { Modal as CustomModal } from '../../../components/singles'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import { Calendar } from '../../../assets/animate'
-import { CommonLottie } from '../../../components/Lottie/'
+import { apiPutForm, apiDelete, catchErrors } from '../../../functions/api'
+import { setSingleHeader, setFormHeader } from '../../../functions/routers'
+import { TicketView, HistorialPresupuestos } from '../../../components/forms'
+import { CreatableMultiselectGray } from '../../../components/form-components'
+import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
+import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter, dayDMY } from '../../../functions/setters'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert, htmlLottieTimer } from '../../../functions/alert'
 class TicketDetails extends Component {
 
     state = {
@@ -1319,71 +1320,79 @@ class TicketDetails extends Component {
         }
     }
 
-    generarReporteFotografico = () => {
+    saveForm = (data) => {
         const { ticket, formularios } = this.state
 
-        const fechaAnterior = new Date( moment(ticket.fecha_programada) )
-        const fechaNueva = new Date( moment(formularios.ticket.fechaProgramada) )
+        const fechaAnterior = new Date(moment(ticket.fecha_programada))
+        const fechaNueva = new Date(moment(formularios.ticket.fechaProgramada))
 
-        
+
         var dayBefore = moment(fechaAnterior).format('YYYY-MM-DD');
         var dayAfter = moment(fechaNueva).format('YYYY-MM-DD');
 
         
-
-        if(dayBefore !== dayAfter){
-            console.log('soy diferente')
-            if(ticket.event !== null){
+        if (dayBefore !== dayAfter) {
+            if (ticket.event !== null) {
                 htmlLottieTimer(
                     <div>
-                        <div className="col-md-12 mx-auto"><CommonLottie animationData = { Calendar } /></div>
+                        <div className="col-md-12 mx-auto"><CommonLottie animationData={Calendar} /></div>
                         <div className='col-md-11 font-weight-light text-center mx-auto'>
                             <div className="font-weight-bolder font-size-h5 mb-5 mt-1">¡La fecha de trabajos fue editada!</div>
-                            <div className="font-size-lg">El día de trabajos: <span className="text-danger font-weight-bold">{dayDMY(fechaAnterior)}</span> fue cambiado por: <span className="text-success font-weight-bold">{dayDMY(fechaNueva)}</span></div>
+                            <div className="font-size-lg">El día de trabajo: <span className="text-primary font-weight-bold">{dayDMY(fechaAnterior)}</span> fue cambiado por: <span className="text-success font-weight-bold">{dayDMY(fechaNueva)}</span></div>
                         </div>
                     </div>
                 )
+                this.updateEvent(data)
             }
-        }else{
-            console.log('soy igual')
         }
-        // questionAlertY('¿DESEAS GENERAR EL REPORTE?',
-        //     'GENERARÁS UN PDF CON LAS FOTOGRAFÍAS DE LAS PETICIONES Y LOS TRABAJOS REALIZADOS',
-        //     () => this.generarReporteFotograficoAxios(),
-        //     () => { formularios.ticket = this.setForm(ticket); this.setState({ ...this.state, formularios }); Swal.close(); },
-        // )
+        this.getOneTicketAxios(data.id)
     }
-    
-    updateEvent = async() => {
-        const { ticket, formularios } = this.state
-            
-        console.log(formularios.ticket, 'formularios')
-        console.log(ticket, 'ticket')
-    //     const { access_token } = this.props
-    //     const { form, ticket } = this.state
-    //     waitAlert()
-    //     apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, value, access_token).then(
-    //         (response) => {
-    //             doneAlert( `Evento editado con éxito`, () => this.getOneTicketAxios(ticket.id))
-    //         }, (error) => { printResponseErrorAlert(error) }
-    //     ).catch((error) => { catchErrors(error) })
+    setTimer = (time) => {
+        if(time < 10)
+            return '0'.time
+        return time
+    }
+    updateEvent = async ( data ) => {
+        const { formularios, ticket } = this.state
+        const { access_token } = this.props
+        console.log(formularios.ticket, 'formularios 1')
+        console.log(data, 'data 1')
+        console.log(ticket, 'ticket 1')
+        
+        let event = ticket.event.googleEvent
+        let arrayCorreos = []
+        ticket.event.googleEvent.attendees.forEach((element)=>{
+            arrayCorreos.push(element.email)
+        })
+        let form = {
+            hora_inicio: this.setTimer(moment(event.start.dateTime).hours()),
+            minuto_inicio: this.setTimer(moment(event.start.dateTime).minute()),
+            hora_final: this.setTimer(moment(event.end.dateTime).hours()),
+            minuto_final: this.setTimer(moment(event.end.dateTime).minute()),
+            correos: arrayCorreos,
+            motivo_cancelacion_event:''
+        }
+        waitAlert()
+        apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, form, access_token).then(
+            (response) => {
+                console.log('entre api')
+                doneAlert( `Evento editado con éxito`, () => this.getOneTicketAxios(ticket.id))
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
     
     saveProcesoTicketAxios = async(flag) =>{
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket, formularios } = this.state
-        console.log(flag, 'flag')
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
                 if(flag === true){
                     this.generarReporteFotograficoAxios()
                 }else{
-                    console.log('entreee')
-                    this.generarReporteFotografico()
+                    this.saveForm(ticket)
                     // doneAlert('Datos guardados con éxito.', () => )
-                    // this.getOneTicketAxios(ticket.id)
                 }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

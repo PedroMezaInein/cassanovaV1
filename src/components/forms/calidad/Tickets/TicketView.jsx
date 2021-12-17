@@ -371,6 +371,19 @@ class TicketView extends Component {
         }
         return false
     }
+    colCardTicketProceso = () => {
+        const { data } = this.props
+        let col = 0
+        if(data.fecha_programada === null){
+            col = 12
+        }else{
+            if(data.reporte_url !== null){
+                col = 7
+            }
+            col = 8
+        }
+        return col
+    }
     render() {
         /* ------------------------------- DATOS PROPS ------------------------------ */
         const { data, options, formulario, presupuesto, datos, title, modal, formeditado, solicitudes, aux_estatus, aux_presupuestos, key, 
@@ -683,7 +696,7 @@ class TicketView extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="ticket-proceso">
                                         <Row>
-                                            <Col md={`${data.fecha_programada === null ? 12 : 8}`}>
+                                            <Col md={this.colCardTicketProceso()}>
                                                 <Card className="card-custom gutter-b mb-8">
                                                     <Card.Header className="border-0 pt-8 pt-md-0">
                                                         <Card.Title className="mb-0">
@@ -700,28 +713,12 @@ class TicketView extends Component {
                                                 </Card>
                                             </Col>
                                             {
-                                                data.fecha_programada !== null?
+                                                data.fecha_programada !== null && data.reporte_url === null ?
                                                 <Col md="4">
                                                     <AddEvent at={at} ticket={data} refresh={refresh}/>
                                                 </Col>
                                                 :<></>
                                             }
-                                            {/* <Col md={`${data.reporte_url === null ? 12 : 7 }`}>
-                                                <Card className="card-custom gutter-b mb-8">
-                                                    <Card.Header className="border-0 pt-8 pt-md-0">
-                                                        <Card.Title className="mb-0">
-                                                            <div className="font-weight-bold font-size-h5">{this.showTabTicketProceso()}</div>
-                                                        </Card.Title>
-                                                    </Card.Header>
-                                                    <Card.Body className={`pt-3 ${data.estatus_ticket.estatus === 'Terminado' ? 'd-flex align-items-center justify-content-center' : '' }`}>
-                                                        <ProcesoTicketForm form={formulario.ticket} options={options} onChange={onChangeTicketProceso}
-                                                            formeditado={1} handleChange={handleChangeTicketProceso} onSubmit={onSubmitTicketProceso}
-                                                            generateEmail={generateEmailTicketProceso} estatus={data.estatus_ticket.estatus}
-                                                            deleteFile={deleteFile} ticket={data} at = { at }
-                                                        />
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
                                             {
                                                 data.reporte_url !== null &&
                                                 <Col md="5">
@@ -753,7 +750,7 @@ class TicketView extends Component {
                                                         </Card.Body>
                                                     </Card>
                                                 </Col>
-                                            } */}
+                                            }
                                         </Row>
                                     </Tab.Pane>
                                 </Tab.Content>
