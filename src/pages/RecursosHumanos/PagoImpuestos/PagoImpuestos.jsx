@@ -1,51 +1,28 @@
 import React, { Component } from 'react' 
 import $ from 'jquery'
-import axios from 'axios'
-import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
 import { renderToString } from 'react-dom/server'
+import { Modal} from '../../../components/singles'
 import Layout from '../../../components/layout/layout' 
 import { AdjuntosForm} from '../../../components/forms'
 import { NewTable } from '../../../components/NewTables'
-import { setSingleHeader } from '../../../functions/routers'
-import { Modal, ModalDelete} from '../../../components/singles' 
-import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
+import { DropdownButton, Dropdown } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { NOMINA_ADMIN_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, PAGO_IMPUESTOS_COLUMNS} from '../../../constants'
-import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert} from '../../../functions/alert'
-import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
-import { setOptions, setDateTable, setMoneyTable, setTextTableCenter, setAdjuntosList, setTextTable, setNaviIcon } from '../../../functions/setters'
-
+import { apiDelete, catchErrors, apiPostFormData } from '../../../functions/api'
+import { URL_DEV, ADJUNTOS_COLUMNS, PAGO_IMPUESTOS_COLUMNS} from '../../../constants'
+import { waitAlert, printResponseErrorAlert, deleteAlert, doneAlert} from '../../../functions/alert'
+import { setDateTable, setMoneyTable, setTextTableCenter, setAdjuntosList, setTextTable, setNaviIcon } from '../../../functions/setters'
 class PagoImpuestos extends Component {
     state = {
         filters: {},
         impuesto: '',
-
-
-
-        
-        formeditado:0,
         modal:{
-            form: false,
-            delete: false,
             adjuntos: false,
         },
         data:{
             adjuntos: []
         },
-        title: 'Nueva nómina administrativa',
         form:{
-            periodo : '',
-            empresas: '',
-            fechaInicio: new Date(),
-            fechaFin: new Date(),
-            nominasAdmin:[{
-                usuario: '',
-                nominImss: '',
-                restanteNomina: '',
-                extras: ''
-            }],
             adjuntos:{
                 adjunto:{
                     value: '',
@@ -53,11 +30,23 @@ class PagoImpuestos extends Component {
                     files: []
                 }
             }
-        },
-        options: {
-            usuarios: [],
-            empresas:[]
         }
+    }
+
+    componentDidMount() { 
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { history } = this.props
+        const impuesto = permisos.find(function (element, index) {
+            const { modulo: { url } } = element
+            return pathname === url
+        });
+        if (!impuesto)
+            history.push('/')
+    }
+
+    reloadTable = (filter) => {
+        $(`#impuestos`).DataTable().search(JSON.stringify(filter)).draw();
     }
 
     setImpuestos = impuestos => {
@@ -81,7 +70,6 @@ class PagoImpuestos extends Component {
         return aux
     }
 
-
     setActionsImpuestos = impuesto => {
         const { history } = this.props
         return (
@@ -98,10 +86,6 @@ class PagoImpuestos extends Component {
                         history.push({ pathname: `/rh/pago-impuestos/single/${impuesto.id}`, state: { impuesto: impuesto } }) }}>
                         {setNaviIcon('flaticon2-magnifier-tool', 'Mostrar')}
                     </Dropdown.Item>
-
-
-
-                    
                     <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(impuesto) }}>
                         {setNaviIcon('flaticon-attachment', 'Adjuntos')}
                     </Dropdown.Item>
@@ -109,7 +93,6 @@ class PagoImpuestos extends Component {
             </div>
         )
     }
-
 
     async deletePagoImpuesto(id) {
         const { access_token } = this.props.authUser
@@ -123,112 +106,18 @@ class PagoImpuestos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminado con éxito.', () => { this.reloadTable(filters) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
-    } 
-
-    reloadTable = (filter) => {
-        $(`#impuestos`).DataTable().search(JSON.stringify(filter)).draw();
     }
 
-    async deleteNominaAdminAxios(){
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { nomina} = this.state
-        await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { modal } = this.state
-                this.getNominasAxios()
-                modal.delete = false
-                this.setState({ ...this.state, modal, nomina: '', form: this.clearForm() })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-
-
-
-
-
-
-
-
-
-    componentDidMount() { 
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { history } = this.props
-        const nominaadmin = permisos.find(function (element, index) {
-            const { modulo: { url } } = element
-            return pathname === url
-        });
-        if (!nominaadmin)
-            history.push('/')
-            this.getOptionsAxios()
-    }
-    async getOptionsAxios(){
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/nomina-administrativa/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                Swal.close()
-                const { usuarios, empresas } = response.data
-                const { options, data } = this.state
-                data.usuarios = usuarios
-                options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                this.setState({
-                    ...this.state,
-                    options,
-                    data
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    changeSinglePage = (nomina) => {
-        const { history } = this.props
-        history.push({
-            pathname: '/rh/nomina-admin/single/'+nomina.id,
-            state: { nomina: nomina }
-        });
-    }
-
-    changeEditPage = nomina => {
-        const { history } = this.props
-        history.push({
-            pathname: '/rh/nomina-admin/edit',
-            state: { nomina: nomina }
-        });
-    }
-
-    openModalDelete = nomina => {
-        const { modal } = this.state
-        modal.delete = true
-        this.setState({
-            ...this.state,
-            modal,
-            nomina: nomina
-        })
-    }
-
-    openModalAdjuntos = nomina => {
+    openModalAdjuntos = impuesto => {
         const { modal, data } = this.state
         modal.adjuntos = true
-        data.adjuntos = nomina.adjuntos
+        data.adjuntos = impuesto.adjuntos
         this.setState({
             ...this.state,
             modal,
-            nomina: nomina,
+            impuesto: impuesto,
             data,
-            form: this.clearForm(),
+            form: this.clearFormAdjuntos(),
             adjuntos: this.setAdjuntosTable(data.adjuntos)
         })
     }
@@ -265,42 +154,10 @@ class PagoImpuestos extends Component {
             })
         return aux
     }
-
-    setOptions = (name, array) => {
-        const { options } = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ...this.state,
-            options
-        })
-    }
-
-    
-
-    async deleteNominaAdminAxios(){
-        waitAlert()
+    async addAdjuntoAxios() {
         const { access_token } = this.props.authUser
-        const { nomina} = this.state
-        await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { modal } = this.state
-                this.getNominasAxios()
-                modal.delete = false
-                this.setState({ ...this.state, modal, nomina: '', form: this.clearForm() })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    async addAdjuntoNominaAdminAxios() {
-
-        const { access_token } = this.props.authUser
-        const { form, nomina } = this.state
+        const { form, impuesto } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form.adjuntos)
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
@@ -312,73 +169,44 @@ class PagoImpuestos extends Component {
             }
             return false
         })
-
-        data.append('id', nomina.id)
-
-        await axios.post(URL_DEV + 'rh/nomina-administrativa/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        data.append('id', impuesto.id)
+        apiPostFormData(`rh/nomina-administrativa/adjuntos`, data, access_token).then(
             (response) => {
-
                 const { nomina } = response.data
-                const { data } = this.state
+                const { data, filters } = this.state
                 data.adjuntos = nomina.adjuntos
-                this.getNominasAxios()
-
+                this.reloadTable(filters)
                 this.setState({
                     ...this.state,
-                    form: this.clearForm(),
-                    nomina: nomina,
+                    form: this.clearFormAdjuntos(),
+                    impuesto: nomina,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
                     data
                 })
-
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-                
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Adjunto agregado con éxito.')                
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
 
     async deleteAdjuntoAxios(id) {
         const { access_token } = this.props.authUser
-        const { nomina } = this.state
-        await axios.delete(URL_DEV + 'rh/nomina-administrativa/' + nomina.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { impuesto } = this.state
+        apiDelete(`v2/rh/nomina-administrativa/${impuesto.id}/adjuntos/${id}`, access_token).then(
             (response) => {
                 const { nomina } = response.data
-                const { data } = this.state
+                const { data, filters } = this.state
                 data.adjuntos = nomina.adjuntos
-                this.getNominasAxios()
+                this.reloadTable(filters)
                 this.setState({
                     ...this.state,
-                    form: this.clearForm(),
-                    nomina: nomina,
+                    form: this.clearFormAdjuntos(),
+                    impuesto: nomina,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
                     data
                 })
                 doneAlert('Adjunto eliminado con éxito')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-
-    handleCloseModalDelete = () => {
-        const { modal } = this.state
-        modal.delete = false
-        this.setState({
-            ...this.state,
-            form: this.clearForm(),
-            modal, 
-            nomina: ''
-        })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
 
     handleCloseAdjuntos = () => {
@@ -386,27 +214,17 @@ class PagoImpuestos extends Component {
         modal.adjuntos = false
         this.setState({
             ...this.state,
-            form: this.clearForm(),
+            form: this.clearFormAdjuntos(),
             modal, 
-            nomina: ''
+            impuesto: ''
         })
     }
 
-    clearForm = () => {
+    clearFormAdjuntos = () => {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map( (element) => {
             switch(element){
-                case 'fechaInicio':
-                case 'fechaFin':
-                    form[element] = new Date()
-                    break; 
-                case 'nominasAdmin':
-                    form[element] = [{
-                        usuarios: '',
-                        empresa:''
-                    }]
-                    break;
                 case 'adjuntos': 
                     form[element] = {
                         adjunto:{
@@ -443,72 +261,6 @@ class PagoImpuestos extends Component {
         })
     }
 
-    setNominaAdmin = nominas => {
-        let aux = []
-        nominas.map( (nomina) => {
-            aux.push(
-                {
-                    actions: this.setActions(nomina),
-                    periodo: renderToString(setTextTableCenter(nomina.periodo)),
-                    fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
-                    fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
-                    totalNominaIMSS: renderToString(setMoneyTable(nomina.totalNominaImss)),
-                    restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
-                    extras: renderToString(setMoneyTable(nomina.totalExtras)),
-                    granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
-                    id: nomina.id
-                }
-            )
-            return false
-        })
-        return aux
-    }
-
-    setActions = () => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' }
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',                  
-                action: 'delete',
-                tooltip: {id:'delete', text:'Eliminar', type:'error'},
-            },
-            {
-                text: 'Mostrar&nbsp;información',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-magnifier-tool',
-                action: 'show',
-                tooltip: { id: 'show', text: 'Mostrar'}
-            },
-            {
-                text: 'Adjuntos',
-                btnclass: 'info',
-                iconclass: 'flaticon-attachment',
-                action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos'}
-            }
-        )
-        return aux
-    }
-
-    onChange = e => {
-        const { name, value } = e.target
-        const { form } = this.state
-        form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -531,13 +283,8 @@ class PagoImpuestos extends Component {
         })
     }
 
-    async getNominasAxios(){
-        $('#kt_datatable2_nomina_admin').DataTable().ajax.reload();
-    }
-    
     render() {
         const { modal, form, adjuntos, data } = this.state
-
         return (
             <Layout active={'rh'} {...this.props}>
                 <NewTable 
@@ -553,37 +300,9 @@ class PagoImpuestos extends Component {
                     exportar_boton={true}
                     onClickExport={() => this.exportEquiposAxios()}
                 />
-
-
-
-
-
-                <NewTableServerRender   
-                    columns = { NOMINA_ADMIN_COLUMNS }
-                    title = 'Nómina Administrativa' subtitle = 'Listado de Nómina Administrativa'
-                    mostrar_boton={true}
-                    abrir_modal={false} 
-                    url = '/rh/pago-impuestos/add'
-                    mostrar_acciones={true} 
-                    actions={{
-                        'edit': { function: this.changeEditPage },
-                        'delete': {function: this.openModalDelete},
-                        'adjuntos': { function: this.openModalAdjuntos },
-                        'show': { function: this.changeSinglePage}
-                    }}
-                    accessToken = { this.props.authUser.access_token }
-                    setter = { this.setNominaAdmin }
-                    urlRender = {URL_DEV + 'rh/nomina-administrativa'}
-                    idTable = 'kt_datatable2_nomina_admin'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
-                <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaAdminAxios() }} />
-
-                <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
+                <Modal size="lg" title='Adjuntos' show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoNominaAdminAxios() }} 
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoAxios() }} 
                         adjuntos = {['adjunto']}/>
                     <div className="separator separator-dashed separator-border-2 mb-6 mt-5"></div>
                     <TableForModals
