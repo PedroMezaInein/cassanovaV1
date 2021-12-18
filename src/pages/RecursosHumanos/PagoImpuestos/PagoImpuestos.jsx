@@ -296,9 +296,9 @@ class PagoImpuestos extends Component {
                     setter={this.setImpuestos}
                     urlRender={`${URL_DEV}rh/nomina-administrativa`}
                     filterClick={this.openModalFiltros}
-                    type='tab'
                     exportar_boton={true}
                     onClickExport={() => this.exportEquiposAxios()}
+                    url = '/rh/pago-impuesto'
                 />
                 <Modal size="lg" title='Adjuntos' show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
