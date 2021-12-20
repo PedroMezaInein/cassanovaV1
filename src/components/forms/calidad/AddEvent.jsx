@@ -61,6 +61,7 @@ class AddEvent extends Component {
     generateEvent = async() => {
         const { ticket, at, refresh } = this.props
         const { form } = this.state
+        console.log(form, 'form add')
         waitAlert()
         apiPutForm(`v3/calidad/tickets/${ticket.id}/evento`, form, at).then(
             (response) => {
@@ -174,7 +175,9 @@ class AddEvent extends Component {
         }
     }
     printAttendees = (event) => {
-        if (event.attendees.length) {
+     if (event){
+       if (event.attendees){
+        if (event.attendees.length > 0) {
             return (
                 <div>
                     <div className="p-3 text-center"><span className="bg-light rounded px-2 py-1 font-weight-bolder">Correo de los asistentes</span></div>
@@ -202,7 +205,9 @@ class AddEvent extends Component {
             return (
                 <>Sin correos de clientes</>
             )
-        }
+         }
+        }                    
+      }
     }
     printAttendeesEmail = (ticket) => {
         return (
@@ -216,7 +221,9 @@ class AddEvent extends Component {
                             <div className="d-flex flex-column text-center">
                                 <div className="font-size-h6 font-weight-bolder text-info mb-3">Correos de los asistentes</div>
                                 {
-                                    ticket.event.googleEvent ?
+                                    ticket.event.googleEvent ?     
+                                    ticket.event.googleEvent.attendees ?                               
+                                    ticket.event.googleEvent.attendees.length > 0 ? 
                                         ticket.event.googleEvent.attendees.map((email, key) => {
                                             return (
                                                 <div className="text-dark-50 font-weight-light text-lowercase" key={key}>
@@ -224,6 +231,8 @@ class AddEvent extends Component {
                                                 </div>
                                             )
                                         })
+                                        : ""
+                                        : ""
                                         : ""
                                 }
                             </div>
@@ -270,6 +279,22 @@ class AddEvent extends Component {
         )
     }
     printInpustEmail(form) {
+        const { edit } = this.state
+        if (edit){
+            return (
+                <div className="col-md-12">
+                    <TagInputGray
+                        tags={form.correos}
+                        onChange={this.tagInputChange}
+                        placeholder="CORREOS DE LOS ASISTENTES"
+                        iconclass="fas fa-envelope"
+                        uppercase={false}
+                        requirevalidation={0}
+                        messageinc="PRESIONA ENTER PARA AGREGAR EL CORREO."
+                    />
+                </div>
+            )
+        }else{
         return (
             <div className="col-md-12">
                 <TagInputGray
@@ -278,11 +303,12 @@ class AddEvent extends Component {
                     placeholder="CORREOS DE LOS ASISTENTES"
                     iconclass="fas fa-envelope"
                     uppercase={false}
-                    requirevalidation={0}
+                    requirevalidation={1}
                     messageinc="PRESIONA ENTER PARA AGREGAR EL CORREO."
                 />
             </div>
         )
+        }
     }
     
     printSchedule = () => {
