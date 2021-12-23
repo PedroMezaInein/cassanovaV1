@@ -386,10 +386,10 @@ class Ingresos extends Component {
         const { filters } = this.state
         this.reloadTable(filters)
     }
-    async deleteIngresoAxios() {
+    async deleteIngresoAxios(id) {
         const { access_token } = this.props.authUser
         const { ingreso, filters } = this.state
-        apiDelete(`ingresos/${ingreso.id}`, access_token).then(
+        apiDelete(`ingresos/${id}`, access_token).then(
             (response) => {
                 this.setState({
                     ...this.state,
