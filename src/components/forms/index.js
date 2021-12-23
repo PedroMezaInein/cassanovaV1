@@ -149,6 +149,7 @@ import PrestacionesRHList from './recursoshumanos/PrestacionesRHList'
 import CalendarioPagosForm from './administracion/CalendarioPagos/CalendarioPagosForm'
 import EgresosCalendarioPagos from './administracion/CalendarioPagos/EgresosCalendarioPagos'
 import EgresosFormNew from './administracion/EgresosFormNew'
+import PagoImpuestosForm from './recursoshumanos/PagoImpuestosForm'
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
@@ -250,5 +251,5 @@ export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResul
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
     PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
-    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario, AddEvent
+    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario, AddEvent, PagoImpuestosForm
 }

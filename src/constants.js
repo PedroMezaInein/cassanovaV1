@@ -845,3 +845,25 @@ export const CALENDARIO_PAGOS_ADMIN = [
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Subárea', accessor: 'subarea', customRender: true },
 ]
+
+export const PAGO_IMPUESTOS_COLUMNS = [
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true, tipo: 'fecha' },
+    { Header: 'Imss', accessor: 'imss', customRender: true },
+    { Header: 'Rcv', accessor: 'rcv', customRender: true },
+    { Header: 'Infonavit', accessor: 'infonavit', customRender: true },
+    { Header: 'Isn', accessor: 'isn', customRender: true },
+    { Header: 'Total', accessor: 'total', customRender: true }
+]
+
+
+export const PAGO_IMPUESTOS_SINGLE_COLUMNS = [
+    { Header: 'ID del empleado', accessor: 'idEmpleado' },
+    { Header: 'Empleado', accessor: 'empleado' },
+    { Header: 'Imss', accessor: 'imss', total: 'totalImss' },
+    { Header: 'Rcv', accessor: 'rcv', total: 'totalRcv' },
+    { Header: 'Infonavit', accessor: 'infonavit', total: 'totalInfonavit' },
+    { Header: 'Isn', accessor: 'isn', total: 'totalIsn' },
+    { Header: 'Total', accessor: 'total', total: 'total' }
+]
