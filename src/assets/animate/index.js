@@ -9,4 +9,5 @@ import * as Lock from './lock.json'
 import * as Software from './software.json'
 import * as OfficeWork from './office-work.json'
 import * as PaymentFailedError from './payment-failed-error.json'
-export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock, Software, OfficeWork, PaymentFailedError }
+import * as Calendar from './calendar.json'
+export { UploadingFile, Meetings, NoData, QuestionBoy, Trash, Bye, Hi, Lock, Software, OfficeWork, PaymentFailedError, Calendar }

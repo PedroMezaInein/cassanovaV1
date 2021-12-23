@@ -70,7 +70,11 @@ class EmpleadosForm extends Component {
             telefono_movil: '',
             telefono_particular: '',
             salario_imss: '',
-            salario_bruto:''
+            salario_bruto:'',
+            imss: 0.0,
+            rcv: 0.0,
+            infonavit: 0.0,
+            isn: 0.0
         },
         options: {
             empresas: [],
@@ -141,6 +145,10 @@ class EmpleadosForm extends Component {
                                 label: elemento.nombre
                             })
                         })
+                        form.imss = empleado.imss
+                        form.rcv = empleado.rcv
+                        form.infonavit = empleado.infonavit
+                        form.isn = empleado.isn
                         this.setState({
                             ...this.state,
                             form,
@@ -303,6 +311,10 @@ class EmpleadosForm extends Component {
                 case 'salario_hr':
                 case 'salario_hr_extra':
                 case 'vacaciones_tomadas':
+                case 'imss':
+                case 'rcv':
+                case 'infonavit':
+                case 'isn':
                     form[element] = 0
                     break;
                 case 'tipo_empleado':

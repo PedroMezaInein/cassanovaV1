@@ -136,6 +136,7 @@ class Ingresos extends Component {
         ).catch((error) => { catchErrors(error) })
     }
     getIngresoAxios = async (id) => {
+        
         const { access_token } = this.props.authUser
         apiGet(`ingresos/single/${id}`, access_token).then(
             (response) => {

@@ -732,7 +732,88 @@ class EmpleadosForm extends Component {
                                                 />
                                             </div>
                                     }
-                                </div>           
+                                </div> 
+                                <div className="form-group row mx-0 form-group-marginless border-rh-info ribbon ribbon-top mt-10">
+                                    <div className="ribbon-target bg-light-primary text-primary font-weight-bolder ribbon-rh shadow-none">
+                                        PRESTACIONES DE LEY
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
+                                            withicon={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChange={onChange}
+                                            name="imss"
+                                            type="text"
+                                            value={form.imss}
+                                            placeholder="IMSS"
+                                            iconclass="fas fa-money-check-alt"
+                                            messageinc="Incorrecto. Ingresa el dato de imss."
+                                            thousandseparator={true}
+                                            prefix={'$'}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
+                                            withicon={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChange={onChange}
+                                            name="rcv"
+                                            type="text"
+                                            value={form.rcv}
+                                            placeholder="RCV"
+                                            iconclass="fas fa-money-check-alt"
+                                            messageinc="Incorrecto. Ingresa el dato de RCV."
+                                            thousandseparator={true}
+                                            prefix={'$'}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
+                                            withicon={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChange={onChange}
+                                            name="infonavit"
+                                            type="text"
+                                            value={form.infonavit}
+                                            placeholder="INFONAVIT"
+                                            iconclass="fas fa-money-check-alt"
+                                            messageinc="Incorrecto. Ingresa el dato de infonavit."
+                                            thousandseparator={true}
+                                            prefix={'$'}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
+                                            withicon={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChange={onChange}
+                                            name="isn"
+                                            type="text"
+                                            value={form.isn}
+                                            placeholder="ISN"
+                                            iconclass="fas fa-money-check-alt"
+                                            messageinc="Incorrecto. Ingresa el dato de isn."
+                                            thousandseparator={true}
+                                            prefix={'$'}
+                                        />
+                                    </div>
+                                </div>          
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2_4TABS() }} data-wizard-type="action-prev">Anterior</button>
