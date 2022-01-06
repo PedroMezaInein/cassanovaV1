@@ -857,13 +857,12 @@ export const PAGO_IMPUESTOS_COLUMNS = [
     { Header: 'Total', accessor: 'total', customRender: true }
 ]
 
-
 export const PAGO_IMPUESTOS_SINGLE_COLUMNS = [
     { Header: 'ID del empleado', accessor: 'idEmpleado' },
     { Header: 'Empleado', accessor: 'empleado' },
     { Header: 'Imss', accessor: 'imss', total: 'totalImss' },
-    { Header: 'Rcv', accessor: 'rcv', total: 'totalRcv' },
-    { Header: 'Infonavit', accessor: 'infonavit', total: 'totalInfonavit' },
+    { Header: 'Rcv', accessor: 'rcv', total: 'totalRsv' },
+    { Header: 'Infonavit', accessor: 'infonavit', total: 'totalInfonavit'},
     { Header: 'Isn', accessor: 'isn', total: 'totalIsn' },
-    { Header: 'Total', accessor: 'total', total: 'total' }
+    { Header: 'Total', accessor: 'total', total: 'granTotal' }
 ]

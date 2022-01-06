@@ -45,15 +45,16 @@ class PagoImpuestoSingle extends Component {
     getOnePagoImpuestosAxios = async(id) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/rh/nomina-administrativa/${id}`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
+        await axios.get(`${URL_DEV}v2/rh/pago-impuestos/${id}`, { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { nomina } = response.data
+                const { impuesto } = response.data
                 const { data } = this.state
-                data.impuestosData = nomina
+                console.log(response.data)
+                data.impuestosData = impuesto
                 this.setState({
-                    impuesto: nomina,
-                    impuestosData: this.setPagoImpuestos(nomina.nominas_administrativas),
-                    totales: this.setTotales(nomina),
+                    impuesto: impuesto,
+                    impuestosData: this.setPagoImpuestos(impuesto),
+                    totales: this.setTotales(impuesto),
                     data
                 })
                 Swal.close()

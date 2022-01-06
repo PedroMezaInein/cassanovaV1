@@ -397,7 +397,7 @@ class Avances extends Component {
             (response) => {
                 const { avance } = response.data
                 var win = window.open(avance.pdf, '_blank');
-                win.focus();
+               
                 doneAlert(`Avance generado con éxito`, ()=> {refresh(proyecto.id)})
                 this.setState({
                     ...this.state,

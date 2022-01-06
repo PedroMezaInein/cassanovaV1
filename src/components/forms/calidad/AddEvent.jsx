@@ -2,12 +2,15 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import SVG from 'react-inlinesvg'
+import { connect } from 'react-redux'
+
 import { dayDMY } from '../../../functions/setters'
 import { toAbsoluteUrl } from '../../../functions/routers'
-import { apiPutForm, catchErrors } from '../../../functions/api'
+import { apiPutForm, apiPostFormData,catchErrors } from '../../../functions/api'
 import { Form, Card, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap'
 import { SelectHorario, TagInputGray, Button, InputGray } from '../../form-components'
 import { validateAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import Pagination from "react-js-pagination"
 
 class AddEvent extends Component {
     state = {
@@ -21,8 +24,13 @@ class AddEvent extends Component {
         },
         edit:false,
         modal:{
-            cancelEvent: false
-        }
+            cancelEvent: false,
+            historialEvent : false
+        },
+        activePage: 1,
+        itemsPerPage: 5,
+        modalAbonos: false,
+
     }
     tagInputChange = (nuevosCorreos) => {
         const { form } = this.state 
@@ -57,11 +65,20 @@ class AddEvent extends Component {
         form[name] = value
         this.setState({ ...this.state, form })
     }
-    
+  
+    onChangePage(pageNumber) {
+        let { activePage } = this.state
+        activePage = pageNumber
+        this.setState({
+            ...this.state,
+            activePage
+        })
+    }
     generateEvent = async() => {
         const { ticket, at, refresh } = this.props
         const { form } = this.state
         console.log(form, 'form add')
+
         waitAlert()
         apiPutForm(`v3/calidad/tickets/${ticket.id}/evento`, form, at).then(
             (response) => {
@@ -74,6 +91,8 @@ class AddEvent extends Component {
         const { ticket, at, refresh } = this.props
         const { form } = this.state
         console.log(form, 'form update')
+        console.log(ticket)
+
         waitAlert()
         apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, form, at).then(
             (response) => {
@@ -84,17 +103,43 @@ class AddEvent extends Component {
         ).catch((error) => { catchErrors(error) })
     }
     onSubmitCancelEvent = async() => {
-        const { ticket, at, refresh } = this.props
-        const { form } = this.state
+        const { ticket, refresh } = this.props
+        const { form ,modal} = this.state
+        const { access_token } = this.props.authUser
+        modal.cancelEvent = false
+
+        const data = new FormData();
+        data.append('descripcion', form.motivo_cancelacion_event)
+        data.append('event_id', ticket.event_id)
+
+        console.log(ticket)
         waitAlert()
-        apiPutForm(`v3/calidad/tickets/${ticket.id}/delete-evento/${ticket}`, form, at).then(
+        apiPostFormData(`v2/calidad/tickets/eliminarEvent/${ticket.id}`,data ,access_token).then(
             (response) => {
                 doneAlert( `Evento eliminado con éxito`, () => refresh(ticket.id))
                 form.motivo_cancelacion_event = ''
-                this.setState({ ...this.state, form})
+
+                this.setState({ ...this.state, form, })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+
+    openModalAbonos = ticket => {
+        this.setState({
+            ...this.state,
+            modalAbonos: true,
+            ticket: ticket
+        })
+    }
+
+    handleCloseAbonos = () => {
+        this.setState({
+            ...this.state,
+            modalAbonos: false,
+            active: 'listado'
+        })
+    }
+
     onSubmit = () => {
         const { edit } = this.state
         waitAlert()
@@ -310,6 +355,28 @@ class AddEvent extends Component {
         )
         }
     }
+    printHistory(form){
+        const { ticket } = this.props
+        console.log(ticket.historico_tickets)
+        
+        return(
+            <>
+              <table className="table table-bordered">  
+            <tr>  
+                <th>Descripción</th>  
+                <th>Fecha de cancelación</th>  
+            </tr>  
+    
+            {ticket.historico_tickets.map((student, index) => (  
+              <tr data-index={index}>  
+                <td>{student.descripcion}</td>  
+                <td>{student.fecha_eliminacion}</td>  
+              </tr>  
+                   ))}      
+              </table>  
+            </>
+        )
+    }
     
     printSchedule = () => {
         const { form, edit } = this.state
@@ -361,6 +428,9 @@ class AddEvent extends Component {
                                             <Button text='Cancelar evento' type='submit' className="btn btn-sm btn-light-danger font-weight-bold" icon='' onClick={() => { this.openModalCancelEvent() }}/>
 
                                             <Button text='Modificar evento' type='submit' className="btn btn-sm btn-light-info font-weight-bold" icon='' onClick={ () => { this.editTime(true) } } />
+
+                                            <Button text='Historial de Cancelaciones' type='submit' className="btn btn-sm btn-light-info font-weight-bold" icon='' onClick={ () => { this.openModalAbonos(true) } } />
+
                                         </div>
                                     </>
                                 )
@@ -412,6 +482,19 @@ class AddEvent extends Component {
                         </Form>
                     )
                 }
+            }
+            if(ticket.historico_tickets){
+                return (
+                    <Form id="form-historial">
+                        <div className="row mx-0">
+                           {this.printHistory(form)}
+
+                        </div>
+                        <div className="card-footer mt-8 px-0 pb-0 pt-4 text-center">
+                           
+                        </div>
+                    </Form>
+                )
             }
         }
         return <></>
@@ -465,9 +548,19 @@ class AddEvent extends Component {
         modal.cancelEvent = false
         this.setState({...this.state, modal })
     }
+    openModalHistorialEvent = () => {
+        const { modal } = this.state
+        modal.historialEvent = true
+        this.setState({ ...this.state, modal })
+    }
+    handleCloseModalHistorialEvent = () => {
+        const { modal } = this.state
+        modal.historialEvent = false
+        this.setState({...this.state, modal })
+    }
     render() {
         const { ticket } = this.props
-        const { edit, modal, form } = this.state
+        const { edit, modal, form , modalAbonos,  activePage, itemsPerPage} = this.state
         return (
             <>
                 <Card className="card-custom gutter-b mb-8">
@@ -491,9 +584,140 @@ class AddEvent extends Component {
                         { this.printSchedule()}
                     </Card.Body>
                 </Card>
-                <Modal show = { modal.cancelEvent } onHide = { this.handleCloseModalOrden } centered contentClassName = 'swal2-popup d-flex' >
+                {/* <Card className="card-custom gutter-b mb-8">
+                    <Card.Header className="pt-8 pt-md-0 border-top-4px-info border-bottom-0 row mx-0">
+                        <Card.Title className="mb-0 col px-0">
+                            <div className="font-weight-bold font-size-h5">Historial de eventos cancelados</div>
+                        </Card.Title>
+                      
+                    </Card.Header>
+                    <Card.Body className="d-flex align-items-center justify-content-center">
+                        { this.printHistory()}
+                    </Card.Body>
+                </Card> */}
+
+                <Modal size='lg' title='' show={modalAbonos} centered handleClose={this.handleCloseAbonos}>
+                    <Modal.Body className = "p-0 mt-12">
+                        <div className="mb-12 text-center font-size-h6 font-weight-bold">Historial de eventos cancelados <span className="font-weight-bolder"></span></div>
+                            <div className='row mx-0 justify-content-center px-2'>
+                                <div className="col-md-12 mx-auto">
+                                    <Card.Body className="d-flex align-items-center justify-content-center">
+                                    
+                        <div className="table-responsive d-flex justify-content-center">
+                                <table className="table table-head-custom table-borderless table-vertical-center w-100 my-3">
+                                    <thead className="bg-primary-o-20">
+                                        <tr>
+                                            <th className="text-center">
+                                                <span className="text-dark-75 font-size-lg">Motivo cancelación</span>
+                                            </th>
+                                            <th className="text-right">
+                                                <span className="text-dark-75 font-size-lg">Fecha cancelación</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            ticket ?
+                                            ticket.historico_tickets.length === 0 ?
+                                                    <tr className="border-bottom" >
+                                                        <td colSpan="3" className="text-center">
+                                                            <span className="text-center text-dark-75 d-block font-size-lg">
+                                                                Aún no hay cancelaciones registradas.
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    : <></>
+                                                : <></>
+                                        }
+                                        {
+                                            ticket ?
+                                            ticket.historico_tickets.map((abono, key) => {
+                                                    let limiteInferior = (activePage - 1) * itemsPerPage
+                                                    let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+                                                    if (ticket.historico_tickets.length < itemsPerPage || (key >= limiteInferior && key <= limiteSuperior))
+                                                        return (
+                                                            <tr key={key} className="border-bottom" >
+                                                                
+                                                                <td>{abono.descripcion}</td>  
+                                                                 <td className="text-center">{abono.fecha_eliminacion}</td>
+                                                            </tr>
+                                                        )
+                                                    return false
+                                                })
+                                                :  <></>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            </Card.Body>
+                            {
+                                ticket ?
+                                ticket.historico_tickets ?
+                                ticket.historico_tickets.length > itemsPerPage ?
+                                            <div className="d-flex justify-content-center my-2">
+                                                <Pagination
+                                                    itemClass="page-item"
+                                                    linkClass="page-link"
+                                                    firstPageText='Primero'
+                                                    lastPageText='Último'
+                                                    activePage={activePage}
+                                                    itemsCountPerPage={itemsPerPage}
+                                                    totalItemsCount={ticket.historico_tickets.length}
+                                                    pageRangeDisplayed={2}
+                                                    onChange={this.onChangePage.bind(this)}
+                                                    itemClassLast="d-none"
+                                                    itemClassFirst="d-none"
+                                                    nextPageText={'>'}
+                                                    prevPageText={'<'}
+                                                />
+                                            </div>
+                                            : ''
+                                        : ''
+                                    : ''
+                            }
+                                </div>
+                            </div>
+                    </Modal.Body>
+                    <Modal.Footer className="mb-2 mt-5 p-0 border-0 justify-content-center">
+                        <button type="button" className="btn btn-sm btn-light-danger font-weight-bold" onClick = { this.handleCloseAbonos }>CERRAR</button>
+                    </Modal.Footer>
+                    </Modal>
+                    
+                <Modal  size="lg" show = { modal.cancelEvent } onHide = { this.handleCloseModalOrden } centered contentClassName = 'd-flex' >
+                    <Modal.Body className = "p-0 mt-12">
+                        <div className="mb-12 text-center font-size-h6 font-weight-bold">¿Deseas cancelar el evento del día <span className="font-weight-bolder"><u>{dayDMY(ticket.fecha_programada)}</u></span>?</div>
+                            <div className='row mx-0 justify-content-center px-2'>
+                                <div className="col-md-12 mx-auto">
+                                    <Card.Body className="d-flex align-items-center justify-content-center">
+                                    <Form id="form-cancel-event" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.onSubmitCancelEvent, e, 'form-cancel-event') } }>
+                                        <div className='row mx-0 justify-content-center px-2'>
+                                            <div className="col-md-12 mx-auto">
+                                                <div className="form-group row form-group-marginless mb-1">
+                                                    <div className="col-md-12 text-justify">
+                                                        <InputGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0} iconclass='las la-hashtag icon-xl'
+                                                            requirevalidation={1} value={form.motivo_cancelacion_event} name='motivo_cancelacion_event' customclass="px-30"
+                                                            onChange={this.onChange} swal={true} placeholder='MOTIVO DE CANCELACIÓN' rows="5" as="textarea"
+                                                            messageinc="Ingresa el motivo de cancelación."
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Form>
+                                    </Card.Body>
+                                </div>
+                            </div>
+                    </Modal.Body>
+                    <Modal.Footer className="mb-2 mt-5 p-0 border-0 justify-content-center">
+                        <button type="button" className="swal2-cancel btn-cancel-alert swal2-styled" onClick = { this.handleCloseModalOrden }>CANCELAR</button>
+                        <button type="button" className="swal2-confirm delete-confirm btn_custom-alert swal2-styled" onClick = { (e) => { e.preventDefault(); validateAlert(this.onSubmitCancelEvent, e, 'form-cancel-event') } } >SI, CANCELAR</button>
+                    
+                    </Modal.Footer>
+                </Modal>
+
+                {/* <Modal show = { modal.cancelEvent } onHide = { this.handleCloseModalOrden } centered contentClassName = 'swal2-popup d-flex' >
                     <Modal.Body className = "p-0 mt-5">
-                        <div className="mb-7 text-center font-size-h6 font-weight-bold">¿Deseas cancelar el evento del día <span className="font-weight-bolder"><u>17 DIC 2021</u></span>?</div>
+                        <div className="mb-7 text-center font-size-h6 font-weight-bold">¿Deseas cancelar el evento del día <span className="font-weight-bolder"><u>{dayDMY(ticket.fecha_programada)}</u></span>?</div>
                         <Form id="form-cancel-event" onSubmit = { (e) => { e.preventDefault(); validateAlert(this.onSubmitCancelEvent, e, 'form-cancel-event') } }>
                             <div className='row mx-0 justify-content-center px-2'>
                                 <div className="col-md-12 mx-auto">
@@ -514,10 +738,29 @@ class AddEvent extends Component {
                         <button type="button" className="swal2-cancel btn-cancel-alert swal2-styled" onClick = { this.handleCloseModalOrden }>CANCELAR</button>
                         <button type="button" className="swal2-confirm delete-confirm btn_custom-alert swal2-styled" onClick = { (e) => { e.preventDefault(); validateAlert(this.onSubmitCancelEvent, e, 'form-cancel-event') } } >SI, CANCELAR</button>
                     </Modal.Footer>
+                </Modal> */}
+
+                <Modal  size="lg"  show = { modal.historialEvent } onHide = { this.handleCloseModalHistorialEvent } centered contentClassName = 'd-flex' >
+                    <Modal.Body className = "p-0 mt-12">
+                        <div className="mb-12 text-center font-size-h6 font-weight-bold">Historial de eventos cancelados <span className="font-weight-bolder"></span></div>
+                            <div className='row mx-0 justify-content-center px-2'>
+                                <div className="col-md-12 mx-auto">
+                                    <Card.Body className="d-flex align-items-center justify-content-center">
+                                        { this.printHistory()}
+                                    </Card.Body>
+                                </div>
+                            </div>
+                    </Modal.Body>
+                    <Modal.Footer className="mb-2 mt-5 p-0 border-0 justify-content-center">
+                        <button type="button" className="btn btn-sm btn-light-danger font-weight-bold" onClick = { this.handleCloseModalHistorialEvent }>CERRAR</button>
+                    </Modal.Footer>
                 </Modal>
             </>
         )
     }
 }
 
-export default AddEvent
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddEvent);

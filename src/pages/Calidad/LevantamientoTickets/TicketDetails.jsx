@@ -130,6 +130,7 @@ class TicketDetails extends Component {
         solicitudes: [],
         activeKeyNav:'adjuntos',
         aux_estatus: {
+            autorizado: false,
             espera: false,
             revision: false,
             rechazado: false,
@@ -740,6 +741,7 @@ class TicketDetails extends Component {
         arreglo.forEach((element) => {
             aux.push( {  name: element.estatus,  value: element.id.toString(), letra: element.letra, fondo: element.fondo } )
         });
+        console.log(aux)
         return aux
     }
 
@@ -1099,6 +1101,9 @@ class TicketDetails extends Component {
             case 'En espera':
                 questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN ESPERA EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
                 break;
+                case 'Presupuesto no autorizado':
+                questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN PRESUPUESTO NO AUTORIZADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+                break;
             default: break;
         }
     }
@@ -1326,11 +1331,9 @@ class TicketDetails extends Component {
         const fechaAnterior = new Date(moment(ticket.fecha_programada))
         const fechaNueva = new Date(moment(formularios.ticket.fechaProgramada))
 
-
         var dayBefore = moment(fechaAnterior).format('YYYY-MM-DD');
         var dayAfter = moment(fechaNueva).format('YYYY-MM-DD');
 
-        
         if (dayBefore !== dayAfter) {
             if (ticket.event !== null) {
                 htmlLottieTimer(
@@ -1654,28 +1657,31 @@ class TicketDetails extends Component {
             if (data.estatus_ticket)
                 switch (data.estatus_ticket.estatus) {
                     case 'En espera':
-                        auxiliar = { espera: true, revision: false, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false};
+                        auxiliar = { autorizado: true, espera: true, revision: false, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false};
                         break;
                     case 'En revisión':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false };
+                        auxiliar = { autorizado: true, espera: true, revision: true, rechazado: false, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Rechazado':
-                        auxiliar = { espera: true, revision: true, rechazado: true, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false };
+                        auxiliar = { autorizado: true, espera: true, revision: true, rechazado: true, aceptado: false, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Aceptado':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: false, proceso: false, pendiente:false, terminado: false };
+                        auxiliar = { autorizado: true, espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: false, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'Aprobación pendiente':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: false, pendiente:false, terminado: false };
+                        auxiliar = { autorizado: true, espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: false, pendiente:false, terminado: false };
                         break;
                     case 'En proceso':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:false, terminado: false };
+                        auxiliar = { autorizado: true, espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:false, terminado: false };
                         break;
                     case 'Pendiente de pago':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: false };
+                        auxiliar = { autorizado: true, espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: false };
                         break;
                     case 'Terminado':
-                        auxiliar = { espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: true };
+                        auxiliar = { autorizado: true, espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: true };
+                        break;
+                    case 'Presupuesto no autorizado':
+                        auxiliar = { autorizado: true, espera: true, revision: true, rechazado: false, aceptado: true, aprobacion: true, proceso: true, pendiente:true, terminado: true };
                         break;
                     default:
                         break;
