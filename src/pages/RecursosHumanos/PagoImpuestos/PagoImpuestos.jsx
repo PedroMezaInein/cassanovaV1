@@ -57,11 +57,11 @@ class PagoImpuestos extends Component {
                     actions: this.setActionsImpuestos(impuesto),
                     tipo: setTextTableCenter('tipo'),
                     fecha: setDateTable(impuesto.fecha_inicio),
-                    imss: setMoneyTable(impuesto.totalNominaImss),
-                    rcv: setMoneyTable(impuesto.totalNominaImss),
-                    infonavit: setMoneyTable(impuesto.totalRestanteNomina),
-                    isn: setMoneyTable(impuesto.totalExtras),
-                    total: setMoneyTable(impuesto.totalNominaImss + impuesto.totalRestanteNomina + impuesto.totalExtras),
+                    imss: setMoneyTable(impuesto.totalImss),
+                    rcv: setMoneyTable(impuesto.totalRsv),
+                    infonavit: setMoneyTable(impuesto.totalInfonavit),
+                    isn: setMoneyTable(impuesto.totalIsn),
+                    total: setMoneyTable(impuesto.totalImss + impuesto.totalRsv + impuesto.totalInfonavit + impuesto.totalIsn),
                     id: impuesto.id
                 }
             )
@@ -96,7 +96,7 @@ class PagoImpuestos extends Component {
 
     async deletePagoImpuesto(id) {
         const { access_token } = this.props.authUser
-        apiDelete(`v2/rh/nomina-administrativa/${id}`, access_token).then(
+        apiDelete(`v2/rh/pago-impuestos/${id}`, access_token).then(
             (response) => {
                 const { filters } = this.state
                 this.setState({
@@ -294,7 +294,7 @@ class PagoImpuestos extends Component {
                     accessToken={this.props.authUser.access_token}
                     columns={PAGO_IMPUESTOS_COLUMNS}
                     setter={this.setImpuestos}
-                    urlRender={`${URL_DEV}rh/nomina-administrativa`}
+                    urlRender={`${URL_DEV}v2/rh/pago-impuestos`}
                     filterClick={this.openModalFiltros}
                     type='tab'
                     exportar_boton={true}
