@@ -112,6 +112,7 @@ import NotaBitacoraForm from './proyectos/NotaBitacoraForm'
 import PestamosDevoluciones from './proyectos/PestamosDevoluciones'
 import FormCalendarioIEquipos from './proyectos/FormCalendarioIEquipos'
 import DetailsInstalacion from './proyectos/DetailsInstalacion'
+import DetailsTickets from './calidad/Detailticket'
 import TableTickets from './MiProyecto/TableTickets'
 import HistorialHM from './proyectos/HistorialHM'
 import FormNuevoTicket from './calidad/Tickets/FormNuevoTicket'
@@ -247,7 +248,7 @@ export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
-    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
+    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion,DetailsTickets, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
     PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,

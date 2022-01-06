@@ -462,7 +462,8 @@ class TicketView extends Component {
                                                                         {
                                                                             options.estatus ?
                                                                                 options.estatus.map((estatus, key) => {
-                                                                                    if ( estatus.name === 'Rechazado' || estatus.name === 'En revisión' || estatus.name === 'En espera')
+                                                                                    console.log(estatus)
+                                                                                    if ( estatus.name === 'Rechazado' || estatus.name === 'En revisión' || estatus.name === 'En espera' || estatus.name === 'Presupuesto no autorizado')
                                                                                         return (
                                                                                             <div key = { key } >
                                                                                                 <Dropdown.Item className="p-0" key={key} onClick={() => { changeEstatus(estatus.name) }} >

@@ -171,7 +171,6 @@ const ContratosRhForm = React.lazy(() => import('./pages/RecursosHumanos/Contrat
 const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados/Empleados') )
 const EmpleadosForm = React.lazy(() => import('./pages/RecursosHumanos/Empleados/EmpleadosForm') )
 
-
 const PagoImpuestos = React.lazy(() => import('./pages/RecursosHumanos/PagoImpuestos/PagoImpuestos') )
 const PagoImpuestosForm = React.lazy(() => import('./pages/RecursosHumanos/PagoImpuestos/PagoImpuestosForm') )
 const PagoImpuestoSingle =  React.lazy(() => import('./pages/RecursosHumanos/PagoImpuestos/PagoImpuestoSingle') )
@@ -190,6 +189,8 @@ const AddTicket = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/
 const TicketDetails = React.lazy(() => import('./pages/Calidad/LevantamientoTickets/TicketDetails') )
 
 const CartasGarantia = React.lazy(() => import('./pages/Calidad/CartasGarantia/CartasGarantia') )
+
+const CalendarioTicket = React.lazy(() => import('./pages/Calidad/CalendarioTicket/CalendarioTicket') )
 
 const MaterialEmpresa = React.lazy(() => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
 const MaterialCliente = React.lazy(() => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
@@ -494,6 +495,8 @@ class App extends Component{
                     {/* <Route path = "/calidad/tickets/detalles-ticket2" exact component = { TicketDetails2 } /> */}
 
                     <Route path = "/calidad/cartas-garantia" exact component = { CartasGarantia } />
+
+                    <Route path = "/calidad/calendario-ticket" exact component = { CalendarioTicket} />
 
                     {/* ANCHOR Routes for mercadotécnia */}
                     

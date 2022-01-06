@@ -388,7 +388,7 @@ class Ingresos extends Component {
     }
     async deleteIngresoAxios(id) {
         const { access_token } = this.props.authUser
-        const { ingreso, filters } = this.state
+        const { filters } = this.state
         apiDelete(`ingresos/${id}`, access_token).then(
             (response) => {
                 this.setState({
