@@ -55,6 +55,7 @@ class FormularioContrato extends Component {
 
     canSendContrado = () => {
         const { form, empleado } = this.props
+        console.log(form)
         if(empleado.tipo_empleado === 'Administrativo'){
             switch(form.periodo){
                 case 'determinado':
@@ -66,11 +67,11 @@ class FormularioContrato extends Component {
                     return true
                 default: break;
             }
-        }
-        if(empleado.tipo_empleado === 'Obra'){
+        }else{
             if(form.dias !== '')
-                return true                   
+                return true   
         }
+        
         return false
     }
 
