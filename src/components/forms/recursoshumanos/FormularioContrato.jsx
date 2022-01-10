@@ -67,6 +67,10 @@ class FormularioContrato extends Component {
                 default: break;
             }
         }
+        if(empleado.tipo_empleado === 'Obra'){
+            if(form.dias !== '')
+                return true                   
+        }
         return false
     }
 
