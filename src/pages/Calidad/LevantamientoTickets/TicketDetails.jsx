@@ -21,6 +21,7 @@ import { CreatableMultiselectGray } from '../../../components/form-components'
 import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter, dayDMY } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert, htmlLottieTimer } from '../../../functions/alert'
+import { checkPropTypes } from 'prop-types'
 class TicketDetails extends Component {
 
     state = {
@@ -512,6 +513,21 @@ class TicketDetails extends Component {
                         }
                     }
                 }
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    updatePresupuestoA = async(  ) => {
+        const { access_token } = this.props.authUser
+        const { formularios, presupuesto } = this.state
+        await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { nombre } = this.state.ticket.subarea
+                 this.patchPresupuesto('estatus', 'Costos')
+
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1445,7 +1461,7 @@ class TicketDetails extends Component {
                 this.getSolicitudesAxios(type);
                 break;
             case 'enviar_compras':
-                questionAlertY(`¿Deseas enviar a compras?`, 'Enviarás a compras tus volumetrías para la estimación de costos', () => this.patchPresupuesto('estatus', 'Costos'))
+                questionAlertY(`¿Deseas enviar a compras?`, 'Enviarás a compras tus volumetrías para la estimación de costos',()=> this.updatePresupuestoA() , () => this.patchPresupuesto('estatus', 'Costos'))
                 break;
             case 'enviar_finanzas':
                 questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
