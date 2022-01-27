@@ -519,7 +519,7 @@ class TicketDetails extends Component {
             console.error(error, 'error')
         })
     }
-
+    
     updatePresupuestoA = async(  ) => {
         const { access_token } = this.props.authUser
         const { formularios, presupuesto } = this.state
@@ -757,7 +757,6 @@ class TicketDetails extends Component {
         arreglo.forEach((element) => {
             aux.push( {  name: element.estatus,  value: element.id.toString(), letra: element.letra, fondo: element.fondo } )
         });
-        console.log(aux)
         return aux
     }
 
