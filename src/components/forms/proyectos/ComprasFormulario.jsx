@@ -404,7 +404,6 @@ class ComprasFormulario extends Component {
                                     doneAlert(`Compra generada con éxito`, 
                                         () => {
                                             const { history } = this.props
-                                            // history.push(`/proyectos/compras?id=${compra.id}`)
                                             history.push(`/proyectos/compras`)
                                         }
                                     )
@@ -420,7 +419,6 @@ class ComprasFormulario extends Component {
                                 doneAlert(`Compra generada con éxito`, 
                                     () => {
                                         const { history } = this.props
-                                        // history.push(`/proyectos/compras?id=${compra.id}`)
                                         history.push(`/proyectos/compras`)
                                     }
                                 )
@@ -973,6 +971,5 @@ class ComprasFormulario extends Component {
         )
     }
 }
-
 
 export default ComprasFormulario
