@@ -523,6 +523,7 @@ class TicketDetails extends Component {
     updatePresupuestoA = async(  ) => {
         const { access_token } = this.props.authUser
         const { formularios, presupuesto } = this.state
+
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { nombre } = this.state.ticket.subarea
@@ -533,6 +534,7 @@ class TicketDetails extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
+
     }
 
     patchPresupuesto = async(type, value) => {
@@ -1460,7 +1462,9 @@ class TicketDetails extends Component {
                 this.getSolicitudesAxios(type);
                 break;
             case 'enviar_compras':
-                questionAlertY(`¿Deseas enviar a compras?`, 'Enviarás a compras tus volumetrías para la estimación de costos',()=> this.updatePresupuestoA() , () => this.patchPresupuesto('estatus', 'Costos'))
+                questionAlertY(`¿Deseas enviar a compras?`, 'Enviarás a compras tus volumetrías para la estimación de costos',
+                ()=> this.updatePresupuestoA() , 
+                () => this.patchPresupuesto('estatus', 'Costos'))
                 break;
             case 'enviar_finanzas':
                 questionAlertY(`¿Deseas enviar a finanzas?`, 'Enviarás a finanzas el presupuesto preeliminar para el cálculo de utilidad', 
