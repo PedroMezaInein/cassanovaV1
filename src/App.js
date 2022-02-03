@@ -208,6 +208,10 @@ const PagosForm = React.lazy(() => import('./pages/Mercadotecnia/Pagos/PagosForm
 const NotificacionesCorreos = React.lazy(() => import('./pages/Plataforma/NotificacionesCorreos') )
 
 const Etiquetas = React.lazy( () => import('./pages/Catalogos/Etiquetas') )
+
+const Modulo = React.lazy(() => import('./pages/RecursosHumanos/Modulos/Modulos') )
+const RepseForm = React.lazy(() => import('./pages/RecursosHumanos/Modulos/RepseForm') )
+
 class App extends Component{
 
     async componentDidMount(){
@@ -486,6 +490,9 @@ class App extends Component{
                     
                     <Route path = "/rh/contratos-rrhh" exact component ={ ContratosRh } />
                     <Route path = "/rh/contratos-rrhh/:action" exact component ={ ContratosRhForm } />
+
+                    <Route path = "/rh/modulo" exact component ={ Modulo } />
+                    <Route path = "/rh/modulo/:action" exact component ={ RepseForm } />
 
                     {/* ANCHOR Routes for calidad */}
 

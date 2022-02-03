@@ -8,7 +8,7 @@ import imageCompression from 'browser-image-compression';
 import { questionAlert, waitAlert } from '../../../../functions/alert'
 import { dayDMY, setOptions } from '../../../../functions/setters'
 import { Modal } from '../../../../components/singles'
-import { ProcesoTicketForm } from '../../../../components/forms'
+import { ProcesoTicketForm ,EditTicketForm} from '../../../../components/forms'
 import Scrollbar from 'perfect-scrollbar-react'
 import { SolicitudFacturacionTabla } from '../../../tables'
 import FloatBtnPresupuesto from '../../../../components/FloatButtons/FloatBtnPresupuesto'
@@ -581,6 +581,14 @@ class TicketView extends Component {
                                                         <span className="nav-text font-weight-bolder">FOTOS</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
+                                                <Nav.Item onClick={(e) => { e.preventDefault(); controlledNav("fechas") }}>
+                                                    <Nav.Link eventKey="adjuntos">
+                                                        <span className="nav-icon">
+                                                             <i className="las la-ticket-alt icon-lg mr-2"></i>
+                                                        </span>
+                                                        <span className="nav-text font-weight-bolder">Editar fechas</span>
+                                                    </Nav.Link>
+                                                </Nav.Item>
                                                 {
                                                     data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revisión' ?
                                                         <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); controlledNav("presupuesto") } } >
@@ -640,6 +648,26 @@ class TicketView extends Component {
                                                     <Card.Body className="p-9 pt-3">
                                                         <ItemSlider items={data.fotos} item = 'fotos' handleChange = { this.onChange } accept = 'image/*' 
                                                             deleteFile = { deleteFile } />
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
+                                        </Row>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="fechas">
+                                        <Row className="mx-0">
+                                            <Col lg="12" className="px-0">
+                                                <Card className="card-custom gutter-b card-stretch">
+                                                    <Card.Header className="border-0 pt-8 pt-md-0">
+                                                        <Card.Title className="m-0">
+                                                            <div className="font-weight-bold font-size-h5">Editar ticket</div>
+                                                        </Card.Title>
+                                                    </Card.Header>
+                                                    <Card.Body className={`pt-3  d-flex align-items-center justify-content-center`}>
+                                                        <EditTicketForm form={formulario.ticket} options={options} onChange={onChangeTicketProceso}
+                                                            formeditado={1} handleChange={handleChangeTicketProceso} onSubmit={onSubmitTicketProceso}
+                                                            generateEmail={generateEmailTicketProceso} estatus={data.estatus_ticket.estatus}
+                                                            deleteFile={deleteFile} ticket={data} at={at}
+                                                        />
                                                     </Card.Body>
                                                 </Card>
                                             </Col>

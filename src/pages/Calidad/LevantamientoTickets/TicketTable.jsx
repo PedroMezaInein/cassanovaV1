@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../../constants'
-import { setTextTable, setLabelTable, setTextTableCenter, setMoneyTable, setDateTable, setOptions } from '../../../functions/setters'
+import { setTextTable, setOptions ,setArrayTableReactDom } from '../../../functions/setters'
 import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, /* waitAlert, */ pendingPaymentAlert } from '../../../functions/alert'
 import { setSingleHeader } from '../../../functions/routers'
 import axios from 'axios'
@@ -13,6 +13,8 @@ import { NewTable } from '../../../components/NewTables';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
 import { TickesFilter } from '../../../components/filters'
+import moment from 'moment'
+
 class TicketTable extends Component {
     
     state = {
@@ -86,6 +88,7 @@ class TicketTable extends Component {
     openModalDeleteTicket = calidad => {
         deleteAlert('¡BORRARÁS EL TICKET!', '¿DESEAS ELIMINARLO?', () => { this.deleteTicketAxios(calidad) })
     }
+    doubleClick = (data, tipo) => {}
     
     setCalidad = calidad => {
         let aux = []
@@ -93,17 +96,46 @@ class TicketTable extends Component {
             aux.push(
                 {
                     actions: this.setActionsMantenimientos(calidad),
-                    identificador: renderToString(setTextTableCenter(calidad.identificador)),
-                    estatus: renderToString(setLabelTable(calidad.estatus)),
-                    proyectos: renderToString(setTextTable(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
-                    solicito: renderToString(setTextTableCenter(calidad.solicito)),
-                    tipo_trabajo: renderToString(setTextTableCenter(calidad.tipo ? calidad.tipo.nombre : '')),
-                    fecha: renderToString(setDateTable(calidad.created_at)),
-                    fecha_termino:  renderToString(setDateTable(calidad.fecha_programada)),
-                    costo_presupuesto:  renderToString( calidad.presupuesto_preeliminar ? setMoneyTable(calidad.presupuesto_preeliminar.totalPresupuesto) : setTextTableCenter('-')),
-                    monto_pagado:  renderToString(setMoneyTable(calidad.totalVentas)),
+                    identificador:setArrayTableReactDom(
+                        [
+                            { 'name': 'Clave', 'text': calidad.no_clave ? calidad.no_clave : 'Sin clave'},
+                            { 'name': 'No. TICKET', 'text': calidad.identificador ? calidad.identificador : 'Sin Identificador' },
+                        ],'50px', this.doubleClick, calidad, 'identificador' ,'text-center'
+                    ),
+                    proyectos: setArrayTableReactDom(
+                        [
+                            { 'name': 'Proyecto', 'text': calidad.proyecto ? calidad.proyecto.nombre : ''},
+                            { 'name': 'Solicita', 'text': calidad.solicito },
+                            { 'name': 'Tipo trabajo', 'text': calidad.tipo ? calidad.tipo.nombre : '' },
+
+                        ],'250px', this.doubleClick, calidad, 'fechas' ,'text-center'
+                    ),
+
+                    fechas:setArrayTableReactDom(
+                        [
+                            { 'name': 'Solicitada', 'text': calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' },
+                            { 'name': 'PPTO enviado', 'text': calidad.fecha_ppto ?  moment(calidad.fecha_ppto).format("DD/MM/YYYY"): 'PENDIENTE' },
+                            { 'name': 'Autorizada', 'text': calidad.fecha_autorizada ? moment(calidad.fecha_autorizada).format("DD/MM/YYYY"): 'PENDIENTE' },
+                            { 'name': 'Inicio de trabajo', 'text': calidad.fecha_programada ? moment(calidad.fecha_programada).format("DD/MM/YYYY") : 'PENDIENTE'},
+                            { 'name': 'Termino de trabajo', 'text': calidad.fecha_termino ? moment(calidad.fecha_termino).format("DD/MM/YYYY"): 'PENDIENTE' },
+
+                        ],'200px', this.doubleClick, calidad, 'fechas' ,'text-center'
+                    ),
+                    costo_presupuesto: setArrayTableReactDom(
+                        [
+                            { 'name': 'Precio', 'text': calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE'},
+                            { 'name': 'Monto pagado', 'text': calidad.totalVentas ? calidad.totalVentas  : 'PENDIENTE'},
+                        ],'100px', this.doubleClick, calidad, 'costo_presupuesto' ,'text-center'
+                    ),
+                    estatus: setArrayTableReactDom(
+                        [
+                            { 'name': 'tickets', 'text': calidad.estatus ? calidad.estatus.estatus : 'PENDIENTE' },
+                            { 'name': 'Factura', 'text': calidad.factura_estatus ?calidad.factura_estatus : 'PENDIENTE'},
+                            { 'name': 'No. orden', 'text': calidad.numero_orden ? calidad.numero_orden  : 'PENDIENTE'},
+
+                        ],'150px', this.doubleClick, calidad, 'estatus' ,'text-center'
+                    ),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
-                    motivo: renderToString(setTextTable(calidad.motivo_cancelacion)),
                     id: calidad.id
                 }
             )
