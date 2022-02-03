@@ -269,7 +269,7 @@ class NominaAdminForm extends Component {
         if(nominaAdmin.id){
             waitAlert()
             const { access_token } = this.props.authUser
-            const { nomina } = this.statez
+            const { nomina } = this.state
             await axios.delete(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}/${nominaAdmin.id}`, { headers: setSingleHeader(access_token) }).then(
                 (response) => {
                     Swal.close()
