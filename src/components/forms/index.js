@@ -49,6 +49,8 @@ import solicitarVacacionesForm from './perfil/SolicitarVacacionesForm'
 import estatusForm from './perfil/EstatusForm'
 import nominaObraForm from './recursoshumanos/NominaObraForm'
 import adjuntosForm from './AdjuntosForm'
+import adjuntosRepse from './AdjuntosRepse'
+
 import nominaAdminForm from './recursoshumanos/NominaAdminForm'
 import empleadosForm from './recursoshumanos/EmpleadosForm'
 import agregarConcepto from './presupuesto/AgregarConcepto'
@@ -60,9 +62,11 @@ import diseñoForm from './catalogos/DiseñoForm'
 import obraForm from './catalogos/ObraForm'
 import ticketView from './calidad/Tickets/TicketView'
 import mantenimientoCorrectivo from './calidad/Tickets/MantenimientoCorrectivo'
+
 //import ticketView2 from './calidad/Tickets/TicketView2' 
 import SolicitudTabla from './calidad/Tickets/SolicitudTabla'
 import procesoTicketForm from './calidad/ProcesoTicketForm'
+import editTicketForm from './calidad/EditTicketForm'
 import CartasCalidadForm from './calidad/CartasCalidadForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
 import flujosReportesVentas from './reportes/FlujosReportesVentas'
@@ -151,6 +155,9 @@ import CalendarioPagosForm from './administracion/CalendarioPagos/CalendarioPago
 import EgresosCalendarioPagos from './administracion/CalendarioPagos/EgresosCalendarioPagos'
 import EgresosFormNew from './administracion/EgresosFormNew'
 import PagoImpuestosForm from './recursoshumanos/PagoImpuestosForm'
+import repseForm from './recursoshumanos/RepseForm'
+import RepseFormulario from './recursoshumanos/RepseFormulario'
+
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
@@ -196,6 +203,8 @@ export const SolicitarVacacionesForm = solicitarVacacionesForm
 export const EstatusForm = estatusForm
 export const NominaObraForm = nominaObraForm
 export const AdjuntosForm = adjuntosForm
+export const AdjuntosRForm = adjuntosRepse
+
 export const NominaAdminForm = nominaAdminForm
 export const EmpleadosForm = empleadosForm
 export const AgregarConcepto = agregarConcepto
@@ -207,9 +216,12 @@ export const DiseñoForm = diseñoForm
 export const ObraForm = obraForm
 export const TicketView = ticketView
 export const MantenimientoCorrectivo = mantenimientoCorrectivo
+
 //export const TicketView2 = ticketView2
 export const AgregarVacacionesForm = agregarVacacionesForm
 export const ProcesoTicketForm = procesoTicketForm
+export const EditTicketForm = editTicketForm
+
 export const FlujosReportesVentas = flujosReportesVentas
 export const FlujosReportes = flujosReportes
 export const TablaReportes = tablaReportes
@@ -247,10 +259,12 @@ export const Task = task
 export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
+export const RepseForm = repseForm
+
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
     PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion,DetailsTickets, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
     PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
-    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario, AddEvent, PagoImpuestosForm
+    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario, AddEvent, PagoImpuestosForm,RepseFormulario
 }

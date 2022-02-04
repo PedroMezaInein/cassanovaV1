@@ -121,7 +121,6 @@ class CalendarioTicket extends Component {
     getInstalacion = (instalacion) => {
         const { modal } = this.state
         modal.details = true
-        console.log(instalacion)
         this.setState({
             modal,
             title: `${instalacion.instalacion.identificador} `,
@@ -195,7 +194,6 @@ class CalendarioTicket extends Component {
             (response) => {
                 const { instalaciones } = response.data
                 let aux = []
-                console.log(instalaciones)
 
                 instalaciones.forEach((instalacion) => {
                     aux.push( { 

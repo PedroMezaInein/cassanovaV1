@@ -738,20 +738,18 @@ export const CARTAS_GARANTIAS_TICKETS = [
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Subárea', accessor: 'subarea', customRender: true }
 ]
+
 export const PROYECTOS_TICKETS = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
-    { Header: 'ID', accessor: 'identificador' },
-    { Header: 'Estatus', accessor: 'estatus' },
-    { Header: 'F. solicitud', accessor: 'fecha' },
-    { Header: 'F. termino', accessor: 'fecha_termino' },
-    { Header: 'Proyecto', accessor: 'proyectos' },
-    { Header: 'Solicitó', accessor: 'solicito' },
-    { Header: 'Tipo de trabajo', accessor: 'tipo_trabajo' },
-    { Header: 'Costo del presupuesto', accessor: 'costo_presupuesto' },
-    { Header: 'Monto pagado', accessor: 'monto_pagado' },
+    { Header: 'Identificador', accessor: 'identificador', customRender: true },
+    { Header: 'Proyecto', accessor: 'proyectos', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion' },
-    { Header: 'Motivo de cancelación', accessor: 'motivo' }
+    { Header: 'Fechas', accessor: 'fechas', customRender: true },
+    { Header: 'PRECIO CON IVA', accessor: 'costo_presupuesto', customRender: true  },
+    { Header: 'Estatus', accessor: 'estatus' , customRender: true}
+
 ]
+
 export const ADJUNTOS_EMPRESA_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Empresa', accessor: 'empresa' },
@@ -865,4 +863,71 @@ export const PAGO_IMPUESTOS_SINGLE_COLUMNS = [
     { Header: 'Infonavit', accessor: 'infonavit', total: 'totalInfonavit'},
     { Header: 'Isn', accessor: 'isn', total: 'totalIsn' },
     { Header: 'Total', accessor: 'total', total: 'granTotal' }
+]
+
+export const REPSE = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Numero Repse', accessor: 'repse', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true }
+]
+
+export const PATRONAL = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Registro Patronal', accessor: 'patronal', customRender: true },
+    { Header: 'Folio', accessor: 'folio', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+
+]
+
+export const SIROC = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
+    { Header: 'Repse', accessor: 'repse', customRender: true },
+    { Header: 'No, de Registro Patronal', accessor: 'patronal', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Numero de Registro de Obra', accessor: 'obra', customRender: true },
+    { Header: 'Folio', accessor: 'folio', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+
+]
+
+export const COLABORADOR = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Periodo', accessor: 'periodo', customRender: true },
+    { Header: 'Repse', accessor: 'repse', customRender: true },
+    { Header: 'Siroc', accessor: 'sirco', customRender: true },
+    { Header: 'Semana', accessor: 'semana', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+
+]
+
+export const RECIBOS = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Periodo', accessor: 'periodo', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+
+]
+
+export const SIPARE = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Periodo', accessor: 'periodo', customRender: true },
+    { Header: 'Linea de Captura', accessor: 'captura', customRender: true },
+    { Header: 'Monto', accessor: 'monto', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+
+]
+
+export const CLAVES = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Plataforma', accessor: 'plataforma', customRender: true },
+    { Header: 'Liga', accessor: 'liga', customRender: true },
+    { Header: 'Usuario', accessor: 'usuario', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+
 ]

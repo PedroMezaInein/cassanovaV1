@@ -21,7 +21,6 @@ import { CreatableMultiselectGray } from '../../../components/form-components'
 import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter, dayDMY } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert, htmlLottieTimer } from '../../../functions/alert'
-import { checkPropTypes } from 'prop-types'
 class TicketDetails extends Component {
 
     state = {
@@ -61,6 +60,7 @@ class TicketDetails extends Component {
             presupuesto: { tiempo_ejecucion: "", conceptos: {} },
             ticket: {
                 fechaProgramada: new Date(),
+                fechaAutorizada: new Date(),
                 empleado: '',
                 recibe: '',
                 descripcion_solucion:'',
@@ -241,7 +241,9 @@ class TicketDetails extends Component {
                 formularios.ticket = this.setForm(ticket)
                 this.setState({ticket: ticket, formularios, options, data })
                 this.showStatusTickets(ticket)
-                if(ticket.presupuesto_preeliminar){ this.getPresupuestoAxios(ticket.presupuesto_id) }
+
+                if(ticket.presupuesto_preeliminar){ this.getPresupuestoAxios(ticket.presupuesto_id) }else{ doneAlert('Ticket actualizado con éxito')
+            }
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -526,7 +528,7 @@ class TicketDetails extends Component {
 
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { nombre } = this.state.ticket.subarea
+                // const { nombre } = this.state.ticket.subarea
                  this.patchPresupuesto('estatus', 'Costos')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -731,8 +733,14 @@ class TicketDetails extends Component {
         let aux = []
         if(ticket.fecha_programada)
             formularios.ticket.fechaProgramada = new Date( moment(ticket.fecha_programada) )
-        else 
+           else
             formularios.ticket.fechaProgramada = new Date()
+
+        if(ticket.fecha_autorizada)
+            formularios.ticket.fechaAutorizada = new Date( moment(ticket.fecha_autorizada) )
+            else
+            formularios.ticket.fechaAutorizada = new Date()
+
         formularios.ticket.empleado = ticket.tecnico_asiste === null || ticket.tecnico_asiste === 'null' ? '' : ticket.tecnico_asiste
         formularios.ticket.descripcion_solucion = ticket.descripcion_solucion === null || ticket.descripcion_solucion === 'null' ? '' : ticket.descripcion_solucion
         formularios.ticket.recibe = ticket.recibe === null || ticket.recibe === 'null' ? '' : ticket.recibe
@@ -745,6 +753,7 @@ class TicketDetails extends Component {
             aux.push({ name: element.name, url: element.url, file: '', id: element.id })
         })
         formularios.ticket.adjuntos.reporte_problema_solucionado.files = aux
+          
         if(ticket.subarea)
             formularios.ticket.tipo_trabajo = ticket.subarea.id.toString()
         else
@@ -1343,28 +1352,34 @@ class TicketDetails extends Component {
     saveForm = (data) => {
         const { ticket, formularios } = this.state
 
-        const fechaAnterior = new Date(moment(ticket.fecha_programada))
-        const fechaNueva = new Date(moment(formularios.ticket.fechaProgramada))
+        if(formularios.ticket.fecha_programada){
+            const fechaAnterior = new Date(moment(ticket.fecha_programada))
+            const fechaNueva = new Date(moment(formularios.ticket.fechaProgramada))
 
-        var dayBefore = moment(fechaAnterior).format('YYYY-MM-DD');
-        var dayAfter = moment(fechaNueva).format('YYYY-MM-DD');
+            var dayBefore = moment(fechaAnterior).format('YYYY-MM-DD');
+            var dayAfter = moment(fechaNueva).format('YYYY-MM-DD');
 
-        if (dayBefore !== dayAfter) {
-            if (ticket.event !== null) {
-                htmlLottieTimer(
-                    <div>
-                        <div className="col-md-12 mx-auto"><CommonLottie animationData={Calendar} /></div>
-                        <div className='col-md-11 font-weight-light text-center mx-auto'>
-                            <div className="font-weight-bolder font-size-h5 mb-5 mt-1">¡La fecha de trabajos fue editada!</div>
-                            <div className="font-size-lg">El día de trabajo: <span className="text-primary font-weight-bold">{dayDMY(fechaAnterior)}</span> fue cambiado por: <span className="text-success font-weight-bold">{dayDMY(fechaNueva)}</span></div>
+            if (dayBefore !== dayAfter) {
+                if (ticket.event !== null) {
+                    htmlLottieTimer(
+                        <div>
+                            <div className="col-md-12 mx-auto"><CommonLottie animationData={Calendar} /></div>
+                            <div className='col-md-11 font-weight-light text-center mx-auto'>
+                                <div className="font-weight-bolder font-size-h5 mb-5 mt-1">¡La fecha de trabajos fue editada!</div>
+                                <div className="font-size-lg">El día de trabajo: <span className="text-primary font-weight-bold">{dayDMY(fechaAnterior)}</span> fue cambiado por: <span className="text-success font-weight-bold">{dayDMY(fechaNueva)}</span></div>
+                            </div>
                         </div>
-                    </div>
-                )
-                this.updateEvent(data)
+                    )
+                    this.updateEvent(data)
+                }
             }
-        }
-        this.getOneTicketAxios(data.id)
+            this.getOneTicketAxios(data.id)
+
+        }else{
+            this.getOneTicketAxios(data.id)
+        }       
     }
+
     setTimer = (time) => {
         if(time < 10)
             return '0'.time
@@ -1403,6 +1418,7 @@ class TicketDetails extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket, formularios } = this.state
+
         await axios.put(`${URL_DEV}v3/calidad/tickets/${ticket.id}/proceso`, formularios.ticket, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
@@ -1793,6 +1809,7 @@ class TicketDetails extends Component {
             case 'En revisión':
             case 'Rechazado':
                 defaultNavTabs = 'adjuntos'
+                defaultNavTabs = 'fechas'
                 break;
             case 'Aceptado':
             case 'Aprobación pendiente':
