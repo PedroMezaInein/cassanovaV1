@@ -198,7 +198,7 @@ class CalendarioInstalacion extends Component {
                 const { instalaciones } = response.data
                 let aux = []
                 instalaciones.forEach((instalacion) => {
-                    console.log(instalacion)
+
                     aux.push( { 
                         title: instalacion.equipo.equipo,
                         start: instalacion.fecha,

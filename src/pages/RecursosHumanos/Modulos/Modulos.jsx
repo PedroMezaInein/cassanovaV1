@@ -743,7 +743,7 @@ class Modulo extends Component {
         const { access_token } = this.props.authUser
         apiDelete(`repse/${id}`, access_token).then(
             (response) => {
-                console.log(response)
+
                 this.setState({ ...this.state, form: this.clearForm() })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El Repse fue eliminado con éxito.', 
                     () => { this.getRepse() } )
@@ -755,7 +755,7 @@ class Modulo extends Component {
         waitAlert()
         const { key} = this.state
         const { access_token } = this.props.authUser
-        console.log(key)
+
         apiPostFormResponseBlob(`repse/modulo/exportar`, { columnas: key }, access_token).then(
             (response) => {
 

@@ -77,7 +77,6 @@ class AddEvent extends Component {
     generateEvent = async() => {
         const { ticket, at, refresh } = this.props
         const { form } = this.state
-        console.log(form, 'form add')
 
         waitAlert()
         apiPutForm(`v3/calidad/tickets/${ticket.id}/evento`, form, at).then(
@@ -90,8 +89,6 @@ class AddEvent extends Component {
     updateEvent = async() => {
         const { ticket, at, refresh } = this.props
         const { form } = this.state
-        console.log(form, 'form update')
-        console.log(ticket)
 
         waitAlert()
         apiPutForm(`v3/calidad/tickets/${ticket.id}/update-evento`, form, at).then(
@@ -112,7 +109,6 @@ class AddEvent extends Component {
         data.append('descripcion', form.motivo_cancelacion_event)
         data.append('event_id', ticket.event_id)
 
-        console.log(ticket)
         waitAlert()
         apiPostFormData(`v2/calidad/tickets/eliminarEvent/${ticket.id}`,data ,access_token).then(
             (response) => {
@@ -357,7 +353,6 @@ class AddEvent extends Component {
     }
     printHistory(form){
         const { ticket } = this.props
-        console.log(ticket.historico_tickets)
         
         return(
             <>
