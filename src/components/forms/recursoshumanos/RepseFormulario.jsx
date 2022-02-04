@@ -129,6 +129,7 @@ class RepseFormulario extends Component{
             }
         }
     }
+
     /** funcion para enviar los datos al formulario */
     getVenta = async() => {
         waitAlert()
@@ -300,8 +301,7 @@ class RepseFormulario extends Component{
             case 'edit_Siroc':
             case 'edit_Accesos claves':
             case 'edit_Isn':
-                case 'edit_colaborador':
-
+            case 'edit_colaborador':
                 this.editVentaAxios()
             break;
             default: break;
@@ -315,8 +315,6 @@ class RepseFormulario extends Component{
         const data = new FormData();
         let aux = Object.keys(form)
         const { type } = this.props
-
-        console.log(form)
 
         if(type === 'repse'){
             aux.forEach((element) => {
@@ -339,13 +337,10 @@ class RepseFormulario extends Component{
                 }
             })
             let fecha = form.fecha;
-            let result = fecha.toISOString();
-    
+            let result = fecha.toISOString();    
             data.append('fecha_alta', result)
-            // console.log(form.fecha)
             axios.post(`${URL_DEV}repse`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    // console.log(response)
                     const { history } = this.props
                     doneAlert(response.data.message !== undefined ? response.data.message : 'Repse fue agregado con éxito.')
                     history.push({ pathname: '/rh/modulo' });
@@ -353,9 +348,9 @@ class RepseFormulario extends Component{
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.error(error, 'error')
-            })
-    
+            })    
         }
+
         if(type === 'patronal'){
             aux.forEach((element) => {
                 switch (element) {               
@@ -380,10 +375,8 @@ class RepseFormulario extends Component{
             let result = fecha.toISOString();
     
             data.append('fecha_alta', result)
-            // console.log(form.fecha)
             axios.post(`${URL_DEV}patronal`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    // console.log(response)
                     const { history } = this.props
                     doneAlert(response.data.message !== undefined ? response.data.message : 'Registro patronal fue agregado con éxito.')
                     history.push({ pathname: '/rh/modulo' });
@@ -418,10 +411,8 @@ class RepseFormulario extends Component{
             let result = fecha.toISOString();
     
             data.append('fecha_alta', result)
-            // console.log(form.fecha)
             axios.post(`${URL_DEV}siroc`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    // console.log(response)
                     const { history } = this.props
                     doneAlert(response.data.message !== undefined ? response.data.message : 'Siroc fue agregado con éxito.')
                     history.push({ pathname: '/rh/modulo' });
@@ -456,14 +447,12 @@ class RepseFormulario extends Component{
             let fechas = form.fechas.start;
             let result = fechas.toISOString();    
             data.append('fechaInicio', result)
-
             let fecha = form.fechas.end;;
             let resul = fecha.toISOString();    
             data.append('fechaFin', resul)
             
             axios.post(`${URL_DEV}recibos_nomina`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    // console.log(response)
                     const { history } = this.props
                     doneAlert(response.data.message !== undefined ? response.data.message : 'Nomina fue agregado con éxito.')
                     history.push({ pathname: '/rh/modulo' });
@@ -505,7 +494,6 @@ class RepseFormulario extends Component{
 
             axios.post(`${URL_DEV}sipare`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    // console.log(response)
                     const { history } = this.props
                     doneAlert(response.data.message !== undefined ? response.data.message : 'Sipare fue agregado con éxito.')
                     history.push({ pathname: '/rh/modulo' });
@@ -536,10 +524,8 @@ class RepseFormulario extends Component{
                     data.append('adjuntos[]', element)
                 }
             })
-            // console.log(form.fecha)
             axios.post(`${URL_DEV}accesos_claves`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    // console.log(response)
                     const { history } = this.props
                     doneAlert(response.data.message !== undefined ? response.data.message : 'Acceso y claves fue agregado con éxito.')
                     history.push({ pathname: '/rh/modulo' });
@@ -582,7 +568,6 @@ class RepseFormulario extends Component{
 
             axios.post(`${URL_DEV}isn`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
-                    // console.log(response)
                     const { history } = this.props
                     doneAlert(response.data.message !== undefined ? response.data.message : 'ISN fue agregado con éxito.')
                     history.push({ pathname: '/rh/modulo' });
@@ -604,7 +589,6 @@ class RepseFormulario extends Component{
             form.fechaInicio = form.fechas.start
             form.fechaFin = form.fechas.end
         }
-        // console.log(type)
         apiPutForm(`repse/edit/${dato.id}`, form, at).then(
             (response) => {
                 const { history } = this.props
@@ -658,6 +642,7 @@ class RepseFormulario extends Component{
                     <Col md="12" className="align-self-center">                                            
                             {
                                 type === 'repse' ||  type ==='edit_Repse'?
+
                                 <div className="form-group row form-group-marginless">       
                                     <div className="col-md-4  text-center align-self-center">
                                         <div className="col-md-12">
@@ -685,6 +670,7 @@ class RepseFormulario extends Component{
                                         </div>
 
                                 {  type !=='edit_Repse' ?
+
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-6 text-center">
                                             <FileInput requirevalidation = { 0 } formeditado = { formeditado } onChangeAdjunto = { this.onChangeAdjunto }
@@ -704,6 +690,7 @@ class RepseFormulario extends Component{
                                                        
                             {
                                 type === 'patronal' || type === 'edit_Registro Patronal' ?
+                                
                                 <div className="form-group row form-group-marginless">       
                                     <div className="col-md-4 text-center align-self-center">
                                         <div className="col-md-12">
@@ -734,7 +721,8 @@ class RepseFormulario extends Component{
                                             </div>                                   
                                         
                                         </div>
-                                {type !== 'edit_Registro Patronal' ?
+                                {   type !== 'edit_Registro Patronal' ?
+
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-6 text-center">
                                             <FileInput requirevalidation = { 0 } formeditado = { formeditado } onChangeAdjunto = { this.onChangeAdjunto }
@@ -754,6 +742,7 @@ class RepseFormulario extends Component{
 
                             {
                                 type === 'siroc'  || type === 'edit_Siroc' ?
+
                                 <div className="form-group row form-group-marginless">       
                                     <div className="col-md-4 text-center align-self-center">
                                         <div className="col-md-12">
@@ -797,7 +786,8 @@ class RepseFormulario extends Component{
                                             </div>                                
                                         
                                         </div>
-                                { type !== 'edit_Siroc' ?
+                                {   type !== 'edit_Siroc' ?
+
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-6 text-center">
                                             <FileInput requirevalidation = { 0 } formeditado = { formeditado } onChangeAdjunto = { this.onChangeAdjunto }
@@ -874,13 +864,6 @@ class RepseFormulario extends Component{
                                                                 <InputGray withtaglabel={0} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} 
                                                                     name='nominaAdmin.usuario' iconclass="far fa-file-alt icon-lg text-dark-50" placeholder='Nombre del empleado'onChange={this.onChange} 
                                                                     value={nominaAdmin.nombre}  />
-                                                                
-                                                            {/* <InputGray placeholder = 'Selecciona el empleado' value={nominaAdmin.nombre}
-                                                                onChange = { (value) => { this.updateSelect(value, key) } } withtaglabel = { 0 } withtextlabel = { 0 } 
-                                                                withicon = { 1 } iconclass = "fas fa-user" 
-                                                                customstyle={{ minWidth: "100px" }} customdiv="mb-0"   customclass="form-control-sm text-center" 
-                                                                formeditado = { formeditado }/> */}
-
                                                             </td>
                                                             <td>
                                                             <InputGray placeholder = 'Selecciona el empleado' value={nominaAdmin.puesto}
@@ -906,6 +889,7 @@ class RepseFormulario extends Component{
 
                             {
                                 type === 'Nomina' || type ===  'edit_Recibos nomina' ?
+
                                 <div className="form-group row form-group-marginless">       
                                     <div className="col-md-3 offset-md-3 text-center align-self-center">
                                             <div className="col-md-6 text-center">
@@ -924,7 +908,8 @@ class RepseFormulario extends Component{
                                                 </div>
                                                            
                                         </div>
-                                { type !==  'edit_Recibos nomina' ?
+                                {   type !==  'edit_Recibos nomina' ?
+
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-6 text-center">
                                             <FileInput requirevalidation = { 0 } formeditado = { formeditado } onChangeAdjunto = { this.onChangeAdjunto }
@@ -944,6 +929,7 @@ class RepseFormulario extends Component{
 
                             {
                                 type === 'Sipare'  || type ===  'edit_Sipare' ?
+
                                 <div className="form-group row form-group-marginless">       
                                     <div className="col-md-3 offset-md-1 text-center align-self-center">
                                           <div className="col-md-6 text-center">
@@ -976,7 +962,8 @@ class RepseFormulario extends Component{
                                                     value={form.captura} messageinc="Ingresa la linea de captura." />
                                             </div>  
                                         </div>
-                                    { type !==  'edit_Sipare' ?
+                                    {   type !==  'edit_Sipare' ?
+
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-6 text-center">
                                             <FileInput requirevalidation = { 0 } formeditado = { formeditado } onChangeAdjunto = { this.onChangeAdjunto }
@@ -997,6 +984,7 @@ class RepseFormulario extends Component{
 
                             {
                                 type === 'claves'  || type ===  'edit_Accesos claves' ?
+
                                 <div className="form-group row form-group-marginless">   
                                                                            
                                      <div className="col-md-10 offset-md-1">
@@ -1024,7 +1012,8 @@ class RepseFormulario extends Component{
                                                 </div>
 
                                         </div>
-                                    { type !==  'edit_Accesos claves' ?
+                                    {   type !==  'edit_Accesos claves' ?
+
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-10 offset-md-1 text-center">
                                             <FileInput requirevalidation = { 0 } formeditado = { formeditado } onChangeAdjunto = { this.onChangeAdjunto }
@@ -1044,6 +1033,7 @@ class RepseFormulario extends Component{
 
                             {
                                 type === 'isn'  || type === 'edit_Isn' ?
+
                                 <div className="form-group row form-group-marginless">       
                                     <div className="col-md-3 offset-md-1 text-center align-self-center">
                                         <div className="col-md-6 text-center">
@@ -1074,7 +1064,8 @@ class RepseFormulario extends Component{
                                                     value={form.captura} messageinc="Ingresa la linea de captura." />
                                             </div>  
                                         </div>
-                                    { type !== 'edit_Isn' ?
+                                    {   type !== 'edit_Isn' ?
+                                    
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-6 text-center">
                                             <FileInput requirevalidation = { 0 } formeditado = { formeditado } onChangeAdjunto = { this.onChangeAdjunto }

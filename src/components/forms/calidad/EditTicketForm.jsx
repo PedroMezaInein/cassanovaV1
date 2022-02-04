@@ -28,8 +28,8 @@ class ProcesoTicketForm extends Component {
                 {
                     <div className="row justify-content-center">    
                         <div className="col-md-12">
-                        <Form id= 'fechas' onSubmit = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'fechas') } }
-                                        {...props} >
+                            
+                        <Form id= 'fechas' onSubmit = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'fechas') } }{...props} >
                             <Row className="mx-0">
                                 <Col md="6" className="align-self-center px-0 d-flex justify-content-center">
                                     <div>
@@ -44,8 +44,7 @@ class ProcesoTicketForm extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                </Col>
-                                
+                                </Col>                                
                             </Row>
                             <div className="border-top mt-3 pt-3">
                                 <div className="row">

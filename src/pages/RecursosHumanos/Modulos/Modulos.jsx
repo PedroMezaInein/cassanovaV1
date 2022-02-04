@@ -223,6 +223,7 @@ class Modulo extends Component {
 
         return aux        
     }
+
     setTablePatronal = (datos) => {
         const { data } = this.state
         let aux = []
@@ -279,6 +280,7 @@ class Modulo extends Component {
     setTableColaborador = (datos) => {
        
     }
+
     setTableNomina = (datos) => {
         const { data } = this.state
 
@@ -298,9 +300,7 @@ class Modulo extends Component {
                         ],'50px', this.doubleClick, nomina, 'periodo' ,'text-center'
                     ),
                     estatus: nomina.estatus ? setEstatusTableReactDom(nomina, this.changeEstatus ) : '',
-
                     id: nomina.id,
-
                 }
             )
 
@@ -359,7 +359,6 @@ class Modulo extends Component {
                             { 'name': 'CONTRASEÑA', 'text': accesos.password ? accesos.password : '-', type: 'password' }
                         ],'186px', this.doubleClick, accesos, 'usuario_contraseña'
                     ),
-
                     id: accesos.id,
                 }
             )
@@ -1019,7 +1018,6 @@ class Modulo extends Component {
         </>
               
         )
-
     }
 }
 

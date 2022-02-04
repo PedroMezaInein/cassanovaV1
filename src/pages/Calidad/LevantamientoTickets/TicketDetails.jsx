@@ -528,7 +528,7 @@ class TicketDetails extends Component {
 
         await axios.put(`${URL_DEV}presupuestos/${presupuesto.id}`, formularios.preeliminar, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { nombre } = this.state.ticket.subarea
+                // const { nombre } = this.state.ticket.subarea
                  this.patchPresupuesto('estatus', 'Costos')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

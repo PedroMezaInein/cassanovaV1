@@ -8,7 +8,6 @@ import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, /* waitAle
 import { setSingleHeader } from '../../../functions/routers'
 import axios from 'axios'
 import $ from "jquery";
-/* import Swal from 'sweetalert2' */
 import { NewTable } from '../../../components/NewTables';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
@@ -88,7 +87,10 @@ class TicketTable extends Component {
     openModalDeleteTicket = calidad => {
         deleteAlert('¡BORRARÁS EL TICKET!', '¿DESEAS ELIMINARLO?', () => { this.deleteTicketAxios(calidad) })
     }
-    doubleClick = (data, tipo) => {}
+    
+    doubleClick = (data, tipo) => {
+
+    }
     
     setCalidad = calidad => {
         let aux = []

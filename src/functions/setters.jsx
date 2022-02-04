@@ -685,6 +685,7 @@ export function setEstatusBancoTableReactDom (data, changeEstatus) {
 }
 
 export function setEstatusTableReactDom (data, changeEstatus) {
+    
     let estatus =   data.estatus !== undefined ? data.estatus : 0
     let text = {}
     

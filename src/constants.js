@@ -738,6 +738,7 @@ export const CARTAS_GARANTIAS_TICKETS = [
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Subárea', accessor: 'subarea', customRender: true }
 ]
+
 export const PROYECTOS_TICKETS = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Identificador', accessor: 'identificador', customRender: true },
@@ -748,6 +749,7 @@ export const PROYECTOS_TICKETS = [
     { Header: 'Estatus', accessor: 'estatus' , customRender: true}
 
 ]
+
 export const ADJUNTOS_EMPRESA_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Empresa', accessor: 'empresa' },
@@ -862,6 +864,7 @@ export const PAGO_IMPUESTOS_SINGLE_COLUMNS = [
     { Header: 'Isn', accessor: 'isn', total: 'totalIsn' },
     { Header: 'Total', accessor: 'total', total: 'granTotal' }
 ]
+
 
 export const REPSE = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },

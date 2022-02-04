@@ -18,7 +18,6 @@ class AdjuntosForm extends Component{
     }
 
     render(){
-
         const { form, onChangeAdjunto, clearFiles, adjuntos, deleteFile, ...props } = this.props
         const { onSubmit } = this.props
         
@@ -27,8 +26,7 @@ class AdjuntosForm extends Component{
                 <Form {... props} >
                     <div className="row mx-0">
                         {
-                            adjuntos === undefined 
-                                ?
+                            adjuntos === undefined  ?
 
                                  form.type === 'isn' ?
                                     <>
@@ -101,6 +99,7 @@ class AdjuntosForm extends Component{
                                         </div>
 
                                 :
+
                                 adjuntos.map( (adjunto, key) => {
                                     return(
                                         <div className="col-md-12 px-2 mt-5 text-center" key = { key } >

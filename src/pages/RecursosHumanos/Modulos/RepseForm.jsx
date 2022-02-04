@@ -116,7 +116,7 @@ class RepseForm extends Component {
 
     setTitle = () => {
         const { type } = this.state
-        // console.log(type)
+
         switch(type){
             case 'repse':
                 return 'Nuevo registro de Repse'

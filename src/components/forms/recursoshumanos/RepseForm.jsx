@@ -49,6 +49,7 @@ class RepseForm extends Component {
             return false
         })
     }
+
     updateProyecto = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'proyecto' } })
@@ -68,6 +69,7 @@ class RepseForm extends Component {
             return false
         })
     }
+
     updateCuenta = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'cuenta' } })
@@ -213,6 +215,7 @@ class RepseForm extends Component {
                                             : ''
                                     }
                                 </div>
+
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
@@ -288,6 +291,7 @@ class RepseForm extends Component {
                                     </div>
                                 </div>
                             </div>
+                            
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
                                 <div className="form-group row form-group-marginless">

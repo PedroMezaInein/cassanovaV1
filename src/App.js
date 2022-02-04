@@ -143,6 +143,7 @@ const RedesSociales = React.lazy( () => import('./pages/Catalogos/RedesSociales'
 const RolesMercadotecnia = React.lazy( () => import('./pages/Catalogos/RolesMercadotecnia') )
 const Servicios = React.lazy( () => import('./pages/Catalogos/Servicios') )
 // const Prestaciones = React.lazy( () => import('./pages/Catalogos/Prestaciones') )
+
 const ConceptosFacturacion = React.lazy( () => import('./pages/Catalogos/ConceptoFacturacion') )
 
 const Contabilidad = React.lazy( () => import('./pages/Reportes/Contabilidad') )

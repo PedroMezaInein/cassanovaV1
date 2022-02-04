@@ -23,6 +23,7 @@ class RepseFilters extends Component{
             this.setState({ ...this.state, form })
         }
     }
+    
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -78,6 +79,7 @@ class RepseFilters extends Component{
         this.clearForm()
         sendFilters({})
     }
+
     clearForm = () => {
         const { form } = this.state
         form.fecha = { start: null, end: null }
@@ -113,8 +115,7 @@ class RepseFilters extends Component{
                             <div className="col-md-12 col-xxl-12 mb-5">
                                 <ReactSelectSearchGray placeholder = 'Selecciona la empresa' defaultvalue = { form.empresa } iconclass = 'las la-building icon-xl'
                                     options = { options.empresas } onChange = { (value) => { this.updateSelect(value, 'empresa') } } />
-                            </div>
-                            
+                            </div>                            
                         </div>
                     </div>
                     

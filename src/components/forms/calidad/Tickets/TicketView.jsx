@@ -581,6 +581,7 @@ class TicketView extends Component {
                                                         <span className="nav-text font-weight-bolder">FOTOS</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
+
                                                 <Nav.Item onClick={(e) => { e.preventDefault(); controlledNav("fechas") }}>
                                                     <Nav.Link eventKey="adjuntos">
                                                         <span className="nav-icon">
@@ -589,6 +590,7 @@ class TicketView extends Component {
                                                         <span className="nav-text font-weight-bolder">Editar fechas</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
+                                                
                                                 {
                                                     data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revisión' ?
                                                         <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); controlledNav("presupuesto") } } >
