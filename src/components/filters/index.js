@@ -11,8 +11,9 @@ import FiltersEquipos from './administracion/FiltersEquipos'
 import ProyectoFilter from './proyectos/ProyectoFilter'
 import ComprasFilters from './proyectos/ComprasFilters'
 import VentasFilters from './proyectos/VentasFilters'
+import RepseFilters from './proyectos/RepseFilters'
 
 export {
     TickesFilter, PresupuestoFilter, FiltersSolicitudFactura, FiltersUtilidad, FiltersLicencias, FiltersPrestaciones, FiltersCalendarioPagos, EngresosFilters, IngresosFilters,
-    FiltersEquipos, ProyectoFilter, ComprasFilters, VentasFilters
+    FiltersEquipos, ProyectoFilter, ComprasFilters, VentasFilters, RepseFilters
 }

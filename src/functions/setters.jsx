@@ -684,6 +684,59 @@ export function setEstatusBancoTableReactDom (data, changeEstatus) {
     )
 }
 
+export function setEstatusTableReactDom (data, changeEstatus) {
+    
+    let estatus =   data.estatus !== undefined ? data.estatus : 0
+    let text = {}
+    
+    if ( estatus == '1' ) {
+        text.letra = '#388E3C'
+        text.fondo = '#E8F5E9'
+        text.estatus = 'Activo'
+    } else {
+        text.letra = '#F64E60'
+        text.fondo = '#FFE2E5'
+        text.estatus = 'Inactivo'
+    }
+
+    return (
+        data ?
+            (data)?
+                <Dropdown className="text-center">
+                    <Dropdown.Toggle
+                        style={
+                            {
+                                backgroundColor: text.fondo, color: text.letra, border: 'transparent', padding: '0.3rem 0.6rem',
+                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '.65rem',
+                                fontWeight: 600
+                            }}>
+                        {text.estatus.toUpperCase()}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className="p-0" >
+                        <Dropdown.Header>
+                            <span className="font-size-11px">Elige una opción</span>
+                        </Dropdown.Header>
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Activo', '1') }} >
+                            <span className="navi-link w-100">
+                                <span className="navi-text">
+                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100 font-size-12px">ACTIVO</span>
+                                </span>
+                            </span>
+                        </Dropdown.Item>
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Inactivo', '2') }} >
+                            <span className="navi-link w-100">
+                                <span className="navi-text">
+                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-size-12px">INACTIVO</span>
+                                </span>
+                            </span>
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            : ''
+        : ''
+    )
+}
+
 export function setColor(text) {
     return (
         <div className="dot mx-auto" style={{backgroundColor: `${text}`}} ></div>

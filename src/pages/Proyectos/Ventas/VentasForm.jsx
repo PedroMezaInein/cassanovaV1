@@ -20,7 +20,6 @@ class VentasForm extends Component {
             match: { params: { action } },
             history
         } = this.props
-
         switch (action) {
             case 'add':
                 this.setState({
