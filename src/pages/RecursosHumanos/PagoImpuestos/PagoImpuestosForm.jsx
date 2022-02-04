@@ -100,7 +100,7 @@ class PagoImpuestosForm extends Component {
         const { access_token } = this.props.authUser
         apiOptions('v2/rh/pago-impuestos?tipo=administrativo', access_token).then(
             (response) => {
-                console.log(response)
+
                 Swal.close()
                 const { usuarios, empresas, cuentas } = response.data
                 const { options, data, form, formeditado } = this.state
@@ -133,7 +133,7 @@ class PagoImpuestosForm extends Component {
                 Swal.close()
                 const { impuesto } = response.data
                 const { form, options } = this.state
-                console.log(response.data)
+
                 form.empresa = impuesto.empresa ? impuesto.empresa.id.toString() : ''
                 form.fechaInicio = new Date(moment(impuesto.fecha_inicio))
                 form.fechaFin = impuesto.fecha_fin ? new Date(moment(impuesto.fecha_fin)) : ''
@@ -214,14 +214,13 @@ class PagoImpuestosForm extends Component {
         const { access_token } = this.props.authUser
         const { form, impuesto } = this.state
 
-        console.log(impuesto.id)
         apiPutForm(`v2/rh/pago-impuestos/${impuesto.id}`, form, access_token).then(
             (response) => {
                 const { nom } = response.data
                 const { options } = this.state
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Prestación modificada con éxito.')
                 let aux = []
-                console.log(response.data)
+
                 nom.nominas_administrativas.forEach((element, key) => {
                     aux.push(
                         {

@@ -49,7 +49,7 @@ class PagoImpuestoSingle extends Component {
             (response) => {
                 const { impuesto } = response.data
                 const { data } = this.state
-                console.log(response.data)
+
                 data.impuestosData = impuesto
                 this.setState({
                     impuesto: impuesto,

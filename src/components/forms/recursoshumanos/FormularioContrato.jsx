@@ -55,7 +55,7 @@ class FormularioContrato extends Component {
 
     canSendContrado = () => {
         const { form, empleado } = this.props
-        console.log(form)
+
         if(empleado.tipo_empleado === 'Administrativo'){
             switch(form.periodo){
                 case 'determinado':

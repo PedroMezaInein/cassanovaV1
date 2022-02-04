@@ -865,7 +865,6 @@ export const PAGO_IMPUESTOS_SINGLE_COLUMNS = [
     { Header: 'Total', accessor: 'total', total: 'granTotal' }
 ]
 
-
 export const REPSE = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Empresa', accessor: 'empresa', customRender: true },

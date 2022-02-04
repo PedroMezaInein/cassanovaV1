@@ -689,7 +689,7 @@ export function setEstatusTableReactDom (data, changeEstatus) {
     let estatus =   data.estatus !== undefined ? data.estatus : 0
     let text = {}
     
-    if ( estatus == '1' ) {
+    if ( estatus === 1 ) {
         text.letra = '#388E3C'
         text.fondo = '#E8F5E9'
         text.estatus = 'Activo'
