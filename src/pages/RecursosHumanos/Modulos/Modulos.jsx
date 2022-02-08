@@ -118,11 +118,8 @@ class Modulo extends Component {
     async getEmpleadosAxios() {
         $('#repse').DataTable().ajax.reload();
         $('#repse').DataTable().ajax.reload();
-
         $('#repse').DataTable().ajax.reload();
-
         $('#isn').DataTable().ajax.reload();
-
     }
 
     controlledTab = value => {
