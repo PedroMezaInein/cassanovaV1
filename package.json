@@ -200,8 +200,8 @@
    },
    "scripts": {
       "serve": "cp-cli build _site/react/preview/react/react-new/demo1 && serve",
-      "start": "react-scripts --max_old_space_size=6096 start -o ",
-      "build": "react-scripts --max_old_space_size=9192  build",
+      "start": "react-scripts --max_old_space_size=9096 start -o ",
+      "build": "react-scripts --max_old_space_size=10192  build",
       "test": "react-scripts test",
       "eject": "react-scripts eject",
       "lint": "eslint src",
