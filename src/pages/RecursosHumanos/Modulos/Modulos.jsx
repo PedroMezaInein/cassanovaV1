@@ -927,7 +927,6 @@ class Modulo extends Component {
                             filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
                             urlRender = { `${URL_DEV}repse?tab=Repse` } type='tab'
                         />
-                       
                     </Tab>
                     
                     <Tab eventKey="Patronal" title="REGISTRO PATRONAL">
@@ -948,7 +947,6 @@ class Modulo extends Component {
                             filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
                             urlRender = { `${URL_DEV}siroc?tab=Siroc` } type='tab'
                         />
-                        
                     </Tab>
 
                     <Tab eventKey="Colaborador" title="COLABORADORES EN OBRA">
@@ -958,7 +956,6 @@ class Modulo extends Component {
                                 filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
                                 urlRender = { `${URL_DEV}siroc?tab=Colaborador` } type='tab'
                             />
-                        
                     </Tab>
 
                     <Tab eventKey="Nomina" title="RECIBOS DE NOMINA">
@@ -968,7 +965,6 @@ class Modulo extends Component {
                                 filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
                                 urlRender = { `${URL_DEV}recibos_nomina?tab=Nomina` } type='tab'
                             />
-                        
                     </Tab>
 
                     <Tab eventKey="Sipare" title="SIPARE">
@@ -982,24 +978,21 @@ class Modulo extends Component {
 
                     <Tab eventKey="claves" title="ACCESOS Y CLAVES">
                         <NewTable tableName = 'claves' subtitle = 'Listado de accesos y claves' title = {titulo7}  mostrar_boton = { true }
-                                    abrir_modal = { false } url = '/rh/modulo/claves' columns = { CLAVES }
-                                    accessToken = { this.props.authUser.access_token } setter = { this.setTableAccesos }
-                                    filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
-                                    urlRender = { `${URL_DEV}accesos_claves?tab=claves` } type='tab'
-                                />  
-                        
+                            abrir_modal = { false } url = '/rh/modulo/claves' columns = { CLAVES }
+                            accessToken = { this.props.authUser.access_token } setter = { this.setTableAccesos }
+                            filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
+                            urlRender = { `${URL_DEV}accesos_claves?tab=claves` } type='tab'
+                        />  
                     </Tab>
 
                     <Tab eventKey="isn" title="ISN">
                        <NewTable tableName = 'claves' subtitle = 'Inpuesto sobre nomina' title = {titulo8}  mostrar_boton = { true }
-                                    abrir_modal = { false } url = '/rh/modulo/isn' columns = { SIPARE }
-                                    accessToken = { this.props.authUser.access_token } setter = { this.setTableIsn }
-                                    filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
-                                    urlRender = { `${URL_DEV}isn?tab=isn` } type='tab'
-                                />  
-                        
+                            abrir_modal = { false } url = '/rh/modulo/isn' columns = { SIPARE }
+                            accessToken = { this.props.authUser.access_token } setter = { this.setTableIsn }
+                            filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
+                            urlRender = { `${URL_DEV}isn?tab=isn` } type='tab'
+                        /> 
                     </Tab>
-
               </Tabs>
 
                 <Modal size = 'lg' show = { modal.filters } handleClose = { this.handleClose } title = 'Filtros'>
