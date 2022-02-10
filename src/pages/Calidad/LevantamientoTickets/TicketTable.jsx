@@ -104,7 +104,6 @@ class TicketTable extends Component {
                             { 'name': 'No. TICKET', 'text': calidad.identificador ? calidad.identificador : 'Sin Identificador' },
                         ],'50px', this.doubleClick, calidad, 'identificador' ,'text-center'
                     ),
-
                     proyectos: setArrayTableReactDom(
                         [
                             { 'name': 'Proyecto', 'text': calidad.proyecto ? calidad.proyecto.nombre : ''},
@@ -124,14 +123,12 @@ class TicketTable extends Component {
 
                         ],'200px', this.doubleClick, calidad, 'fechas' ,'text-center'
                     ),
-
                     costo_presupuesto: setArrayTableReactDom(
                         [
                             { 'name': 'Precio', 'text': calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE'},
                             { 'name': 'Monto pagado', 'text': calidad.totalVentas ? calidad.totalVentas  : 'PENDIENTE'},
                         ],'100px', this.doubleClick, calidad, 'costo_presupuesto' ,'text-center'
                     ),
-
                     estatus: setArrayTableReactDom(
                         [
                             { 'name': 'tickets', 'text': calidad.estatus ? calidad.estatus.estatus : 'PENDIENTE' },
@@ -140,7 +137,6 @@ class TicketTable extends Component {
 
                         ],'150px', this.doubleClick, calidad, 'estatus' ,'text-center'
                     ),
-                    
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
                     id: calidad.id
                 }
