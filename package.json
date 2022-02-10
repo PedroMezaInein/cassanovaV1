@@ -204,7 +204,10 @@
       "build": "react-scripts --max_old_space_size=8192  build",
       "test": "react-scripts test",
       "eject": "react-scripts eject",
+      "predeploy": "npm run build",
+      "deploy": "gh-pages -d build",
       "lint": "eslint src",
+      "dev": "NODE_OPTIONS=--max_old_space_size=4096 next dev",
       "format": "prettier --write \"src/**/*.{js,css,scss,html}\""
    },
    "eslintConfig": {
