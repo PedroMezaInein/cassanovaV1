@@ -37,7 +37,7 @@ const Clientes = React.lazy(() => import('./pages/Leads/Clientes/Clientes') )
 const ClientesForm = React.lazy(() => import('./pages/Leads/Clientes/ClientesForm') )
 
 // const MiProyecto = React.lazy(() => import('./pages/MiProyecto') )
-const InicioMiProyecto = React.lazy(() => import('./pages/InicioMiProyecto') )
+// const InicioMiProyecto = React.lazy(() => import('./pages/InicioMiProyecto') )
 
 const Cuentas = React.lazy(() => import('./pages/Bancos/Cuenta/Cuenta') )
 const CuentasForm = React.lazy(() => import('./pages/Bancos/Cuenta/CuentaForm') )
@@ -293,7 +293,7 @@ class App extends Component{
                      {/* ANCHOR Routes for mi proyecto */}
 
                     {/* <Route path = "/mi-proyecto" exact component = { MiProyecto } /> */}
-                    <Route path = "/mi-proyecto" exact component = { InicioMiProyecto } />
+                    {/* <Route path = "/mi-proyecto" exact component = { InicioMiProyecto } /> */}
 
                     {/* ANCHOR Routes for usuarios */}
 
