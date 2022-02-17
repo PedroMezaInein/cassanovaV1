@@ -477,7 +477,7 @@ class App extends Component{
                     <Route path = "/rh/colaboradores" exact component ={ Empleados } />
                     <Route path = "/rh/colaboradores/:action" exact component ={ EmpleadosForm } />
 
-                    <Route path = "/rh/pago-impuestos" exact component ={ PagoImpuestos } />
+                    {/* <Route path = "/rh/pago-impuestos" exact component ={ PagoImpuestos } /> */}
                     <Route path = "/rh/pago-impuestos/:action" exact component ={ PagoImpuestosForm } />
                     <Route path = "/rh/pago-impuestos/single/:id" exact component ={ PagoImpuestoSingle } />
                     
