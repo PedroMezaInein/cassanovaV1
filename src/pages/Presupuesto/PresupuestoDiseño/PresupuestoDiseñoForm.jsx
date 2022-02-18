@@ -857,6 +857,7 @@ class PresupuestoDiseñoForm extends Component {
         let m2Aux = parseInt(m2)
         let acumulado = 0
         let total = 0
+        let raiz = 0
 
         if (data.empresa)
             precio_inicial = data.empresa.precio_inicial_diseño
@@ -909,7 +910,11 @@ class PresupuestoDiseñoForm extends Component {
                 return ''
             })
 
-            return total = total * (1 + incremento)
+            // return total = total * (1 + incremento)
+            raiz= Math.sqrt(precio_inicial * m2 ) * precio_inicial;
+            total = raiz.toFixed(3) *  (1 + incremento)
+
+            return total 
         }
 
         if (limiteSup < m2Aux) {
