@@ -775,14 +775,10 @@ class PresupuestoDiseñoForm extends Component {
             default:
                 break;
         }
-        // defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
-        // activeKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
         this.setState({
             ...this.state,
             form,
             options,
-            // defaultKey,
-            // activeKey,
             data
         })
     }
@@ -857,6 +853,7 @@ class PresupuestoDiseñoForm extends Component {
         let m2Aux = parseInt(m2)
         let acumulado = 0
         let total = 0
+        let raiz = 0
 
         if (data.empresa)
             precio_inicial = data.empresa.precio_inicial_diseño
@@ -908,8 +905,10 @@ class PresupuestoDiseñoForm extends Component {
                 }
                 return ''
             })
+            raiz= Math.sqrt(precio_inicial * m2 ) * precio_inicial;
+            total = raiz.toFixed(3) *  (1 + incremento)
 
-            return total = total * (1 + incremento)
+            return total 
         }
 
         if (limiteSup < m2Aux) {
@@ -946,14 +945,6 @@ class PresupuestoDiseñoForm extends Component {
         else
             this.addPresupuestoDiseñoAxios(true)
     }
-    // handleChangeCheckbox = (array) => {
-    //     const { form } = this.state
-    //     form[form.tipo_partida] = array
-    //     this.setState({
-    //         ...this.state,
-    //         form: form
-    //     })
-    // }
 
     handleChangeCheckbox = (array, type) => {
         const { form} = this.state
