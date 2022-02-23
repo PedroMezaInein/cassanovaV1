@@ -460,7 +460,7 @@ class UltimoPresupuesto extends Component {
                                                                             </OverlayTrigger>
                                                                             :<></>
                                                                         }
-                                                                         <OverlayTrigger rootClose overlay={<Tooltip>{form.conceptos[key].activo_costo?<span>NO MODIFICAR <br/> MONTOS </span>:<span>AGREGAR COMO<br/>NO MODIFICAR MONTOS</span>}</Tooltip>}>
+                                                                         <OverlayTrigger rootClose overlay={<Tooltip>{form.conceptos[key].activo_costo?<span>PRECIO <br/> CON UTILIDAD </span>:<span>AGREGAR PRECIO<br/> CON UTILIDAD</span>}</Tooltip>}>
                                                                                 <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-defaul ml-2">
                                                                                     <input name = 'activo_costo' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
                                                                                         checked = { form.conceptos[key].activo_costo } value = { form.conceptos[key].activo_costo } />
