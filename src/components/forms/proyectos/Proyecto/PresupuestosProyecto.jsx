@@ -41,7 +41,9 @@ class PresupuestosProyecto extends Component {
                     unidad_id:'',
                     bg_cantidad:true,
                     bg_desperdicio:true,
-                    vicio_oculto:false
+                    vicio_oculto:false,
+                    activo_costo:false
+
                 }],
                 conceptosNuevos: []
             },
@@ -111,7 +113,7 @@ class PresupuestosProyecto extends Component {
             correos_presupuesto: []
         }
         form.correos.forEach((correo) => { aux.correos_presupuesto.push(correo.label) })
-        await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/correo`, aux, { headers: setSingleHeader(at) }).then(
+        await axios.post(`${URL_DEV}v2/presupuesto/pressupuestos/${presupuesto.id}/correo`, aux, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { modal } = this.state
                 modal.email = false
@@ -356,7 +358,8 @@ class PresupuestosProyecto extends Component {
                         unidad_id: concepto.unidad ? concepto.unidad.id.toString() : '',
                         bg_cantidad:true,
                         bg_desperdicio:true,
-                        vicio_oculto:concepto.vicio_oculto ? true : false
+                        vicio_oculto:concepto.vicio_oculto ? true : false,
+                        activo_costo:concepto.activo_costo ? true : false
                     })
                 })
                 form.preeliminar.conceptos = aux

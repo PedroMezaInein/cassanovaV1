@@ -96,7 +96,8 @@ class TicketDetails extends Component {
                     unidad_id:'',
                     bg_cantidad:true,
                     bg_desperdicio:true,
-                    vicio_oculto:false
+                    vicio_oculto:false,
+                    activo_costo:false
                 }],
                 conceptosNuevos: []
             },
@@ -441,7 +442,8 @@ class TicketDetails extends Component {
                         unidad_id: concepto.unidad ? concepto.unidad.id.toString() : '',
                         bg_cantidad:true,
                         bg_desperdicio:true,
-                        vicio_oculto:concepto.vicio_oculto ? true : false
+                        vicio_oculto:concepto.vicio_oculto ? true : false,
+                        activo_costo:concepto.activo_costo ? true : false
                     })
                 })
                 formularios.preeliminar.conceptos = aux
@@ -1849,9 +1851,9 @@ class TicketDetails extends Component {
     }
 
     render() {
-        const { ticket, options, formularios, presupuesto, data, modal, formeditado, key, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, 
+        const { ticket, options, formularios, presupuesto, data, modal, formeditado, title, solicitudes, activeKeyNav, aux_estatus, aux_presupuestos, 
             defaultNavTabs, adjunto } = this.state
-        const { formulario } = this.props
+        const { formulario,key } = this.props
         const { access_token } = this.props.authUser
         return (
             <Layout active = 'calidad'  {...this.props}>

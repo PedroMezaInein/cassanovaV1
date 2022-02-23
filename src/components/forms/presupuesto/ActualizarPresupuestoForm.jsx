@@ -143,6 +143,9 @@ class ActualizarPresupuestoForm extends Component {
         if(!form.conceptos[key].active){ 
             css= 'concepto-inactive bg-danger-o-30'
         }
+        if(form.conceptos[key].activo_costo){ 
+            css= 'concepto-inactive bg-info-o-30'
+        }
         return css
     }
     inputColor(key){
@@ -153,6 +156,9 @@ class ActualizarPresupuestoForm extends Component {
         }
         if(!form.conceptos[key].active){ 
             css= 'disable-presupuesto'
+        }
+        if(form.conceptos[key].activo_costo){ 
+            css= 'vicio_oculto-presupuesto'
         }
         return css
     }
@@ -477,6 +483,14 @@ class ActualizarPresupuestoForm extends Component {
                                                                             </OverlayTrigger>
                                                                             :<></>
                                                                         }
+                                                                         <OverlayTrigger rootClose overlay={<Tooltip>{form.conceptos[key].activo_costo?<span>PRECIO <br/> CON UTILIDAD </span>:<span>AGREGAR PRECIO<br/> CON UTILIDAD</span>}</Tooltip>}>
+                                                                                <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-defaul ml-2">
+                                                                                    <input name = 'activo_costo' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
+                                                                                        checked = { form.conceptos[key].activo_costo } value = { form.conceptos[key].activo_costo } />
+                                                                                    <span className="symbol-label"></span>
+                                                                                </label>
+                                                                            </OverlayTrigger>
+                                                                    
                                                                     </div>
                                                                 </td>
                                                                 <td className="clave text-center">

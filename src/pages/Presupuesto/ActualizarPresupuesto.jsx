@@ -45,7 +45,8 @@ class ActualizarPresupuesto extends Component {
                 unidad_id:'',
                 bg_costo:true,
                 bg_cantidad:true,
-                vicio_oculto:false
+                vicio_oculto:false,
+                activo_costo:false
             }],
             conceptosNuevos: [],
             correos: []
@@ -239,11 +240,13 @@ class ActualizarPresupuesto extends Component {
                             unidad_id: concepto.unidad.id.toString(),
                             bg_costo:concepto.costo>0?false:true,
                             bg_cantidad:true,
-                            vicio_oculto:concepto.vicio_oculto ? true : false
+                            vicio_oculto:concepto.vicio_oculto ? true : false,
+                            activo_costo:concepto.activo_costo ? true : false
                         })
                     }
                 })
                 form.conceptos = aux
+                
                 this.showStatusPresupuestos(presupuesto)
                 this.setState({ ...this.state, presupuesto: presupuesto, form, formeditado: 1, bg_costo, options })
             }, (error) => { printResponseErrorAlert(error) }

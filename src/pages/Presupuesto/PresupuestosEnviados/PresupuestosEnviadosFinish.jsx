@@ -41,7 +41,8 @@ class PresupuestosEnviadosFinish extends Component {
                 margen: '',
                 precio_unitario: '',
                 bg_margen:true,
-                vicio_oculto:false
+                vicio_oculto:false,
+                activo_costo:false
             }],
             fecha_creacion: new Date(),
             fecha_aceptacion: '',
@@ -104,7 +105,6 @@ class PresupuestosEnviadosFinish extends Component {
                 const { form, options } = this.state
                 const { presupuesto } = response.data
                 let aux = []
-                let mensajeAux = {}
                 if(presupuesto.proyecto){
                     if(presupuesto.proyecto.contactos){
                         if(presupuesto.proyecto.contactos.length){
@@ -119,14 +119,14 @@ class PresupuestosEnviadosFinish extends Component {
                         }
                     }
                 }
-                presupuesto.conceptos.map((concepto) => {
+                presupuesto.conceptos.forEach((concepto) => {
+                    let mensajeAux = {}
                     if (concepto.mensaje) {
-                        mensajeAux.active = true
-                        mensajeAux.mensaje = concepto.mensaje
+                        mensajeAux = { active: true, mensaje: concepto.mensaje }
                     } else {
-                        mensajeAux.active = false
-                        mensajeAux.mensaje = ''
+                        mensajeAux = { active: false, mensaje: '' }
                     }
+
                     let precio_unitario = concepto.precio_unitario
                     if (concepto.margen === 0) {
                         precio_unitario = (concepto.costo / (1 - (concepto.margen / 100))).toFixed(2)
@@ -138,6 +138,7 @@ class PresupuestosEnviadosFinish extends Component {
                     if(concepto.vicio_oculto){
                         importe = (0).toFixed(2)
                     }
+
                     aux.push({
                         descripcion: concepto.descripcion,
                         costo: concepto.costo,
@@ -148,7 +149,10 @@ class PresupuestosEnviadosFinish extends Component {
                         active: concepto.active ? true : false,
                         bg_margen:concepto.margen > 0 ? false : true,
                         id: concepto.id,
-                        vicio_oculto:concepto.vicio_oculto ? true : false
+                        vicio_oculto:concepto.vicio_oculto ? true : false,
+                        activo_costo:concepto.activo_costo ? true : false,
+                        mensajes: mensajeAux
+
                     })
                     return false
                 })
