@@ -158,7 +158,7 @@ class ActualizarPresupuestoForm extends Component {
             css= 'disable-presupuesto'
         }
         if(form.conceptos[key].activo_costo){ 
-            css= 'vicio_oculto-presupuesto'
+            css= 'disable-presupuesto'
         }
         return css
     }
