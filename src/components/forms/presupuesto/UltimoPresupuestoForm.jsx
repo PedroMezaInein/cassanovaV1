@@ -21,6 +21,16 @@ class UltimoPresupuesto extends Component {
         return aux.toFixed(2)
     }
 
+    onChangeMensaje = ( e, key ) => {
+        const { value } = e.target
+        const { onChange } = this.props
+        let aux = {
+            active: true,
+            mensaje: value
+        }
+        onChange(key, {target:{value: aux}}, 'mensajes')
+    }
+
     onChangeDesperdicio = e =>{
         const { value } = e.target
         const { form, onChange } = this.props
@@ -127,6 +137,9 @@ class UltimoPresupuesto extends Component {
         }
         if(!form.conceptos[key].active){ 
             css= 'concepto-inactive bg-danger-o-30'
+        }
+        if(form.conceptos[key].activo_costo){ 
+            css= 'concepto-inactive bg-info-o-30'
         }
         return css
     }
@@ -374,6 +387,7 @@ class UltimoPresupuesto extends Component {
                                         </thead>
                                         <tbody>
                                             {
+                                                                                              
                                                 presupuesto.conceptos.map((concepto, key) => {
                                                     return (
                                                         <>
@@ -446,6 +460,13 @@ class UltimoPresupuesto extends Component {
                                                                             </OverlayTrigger>
                                                                             :<></>
                                                                         }
+                                                                         <OverlayTrigger rootClose overlay={<Tooltip>{form.conceptos[key].activo_costo?<span>NO MODIFICAR <br/> MONTOS </span>:<span>AGREGAR COMO<br/>NO MODIFICAR MONTOS</span>}</Tooltip>}>
+                                                                                <label data-inbox = "group-select" className="checkbox checkbox-single checkbox-defaul ml-2">
+                                                                                    <input name = 'activo_costo' type = "checkbox" onChange = { (e) => { checkButton(key, e) } }
+                                                                                        checked = { form.conceptos[key].activo_costo } value = { form.conceptos[key].activo_costo } />
+                                                                                    <span className="symbol-label"></span>
+                                                                                </label>
+                                                                            </OverlayTrigger>
                                                                     </div>
                                                                 </td>
                                                                 <td className="clave text-center">
@@ -521,7 +542,20 @@ class UltimoPresupuesto extends Component {
                                                                     </div>
                                                                 </td>
                                                             </tr>
+                                                                    {
+                                                                form.conceptos[key].mensajes.active ?
+                                                                    <tr>
+                                                                        <td className="px-3 mx-2" colSpan = { 9 }>
+                                                                            <InputSinText requirevalidation = { 1 } formeditado = { formeditado } name = "mensaje" placeholder="AGREGA UN COMENTARIO"
+                                                                                rows = "1" as = "textarea" className="form-control form-control-lg form-control-solid font-size-12px"
+                                                                                value = { form.conceptos[key].mensajes.mensaje } onChange = { (e) => { this.onChangeMensaje(e, key) } }
+                                                                                />
+                                                                        </td>
+                                                                    </tr>
+                                                                :<></>
+                                                            }
                                                         </>
+                                                        
                                                     )
                                                 })
                                             }
