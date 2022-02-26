@@ -133,7 +133,7 @@ class TicketTable extends Component {
                         [
                             { 'name': 'tickets', 'text': calidad.estatus ? calidad.estatus.estatus : 'PENDIENTE' },
                             { 'name': 'Factura', 'text': calidad.factura_estatus ?calidad.factura_estatus : 'PENDIENTE'},
-                            { 'name': 'No. orden', 'text': calidad.numero_orden ? calidad.numero_orden  : 'PENDIENTE'},
+                            { 'name': 'Orden de compra', 'text': calidad.numero_orden ? calidad.numero_orden  : 'PENDIENTE'},
 
                         ],'150px', this.doubleClick, calidad, 'estatus' ,'text-center'
                     ),

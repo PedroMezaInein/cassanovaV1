@@ -3,9 +3,12 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { TRASPASOS_COLUMNS, URL_DEV } from '../../../constants'
+import { TRASPASOS_COLUMNS, URL_DEV,ADJ_TRASPASO_COLUMNS } from '../../../constants'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import { setArrayTable, setDateTableReactDom, setMoneyTable, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
+import TableForModals from '../../../components/tables/TableForModals'
+import withReactContent from 'sweetalert2-react-content'
+
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { ModalDelete, Modal } from '../../../components/singles'
@@ -23,8 +26,19 @@ class Traspasos extends Component {
             cantidad: 0,
             fecha: new Date(),
             comentario: '',
-            adjuntos: { adjuntos: { files: [], value: '' } }
+            adjuntos: {
+                adjunto: {
+                    value: '',
+                    placeholder: 'Ingresa los adjuntos',
+                    files: []
+                }
+            }
         },
+        data: {
+            djuntos: []
+        },
+       
+        adjuntos: [],
         traspaso: ''
     }
     
@@ -222,10 +236,102 @@ class Traspasos extends Component {
     }
 
     adjuntoTranspaso = (traspaso) => {
-        var win = window.open(traspaso.adjunto.url, '_blank');
-        win.focus();
+        const { modal, data } = this.state
+        modal.adjuntos = true
+        data.adjuntos = traspaso.adjunto
+        this.setState({
+            ...this.state,
+            modal,
+            data,
+            adjuntos: this.setAdjuntos(traspaso.adjunto),
+            traspaso: traspaso
+        })
+        // var win = window.open(traspaso.adjunto.url, '_blank');
+        // win.focus();
+    }
+    setAdjuntos = adjuntos => {
+        let aux = []
+        adjuntos.map((documento) => {
+            aux.push({
+                actions: this.setActionsAdjuntos(documento),
+                adjunto: renderToString(setArrayTable([{ text: documento.name, url: documento.url }])),
+                id: documento.id
+            })
+        })
+        return aux
     }
 
+    setActionsAdjuntos = documento => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'deleteAdjunto',
+                tooltip: { id: 'deleteAdjunto', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
+    }
+
+    handleCloseModalAdjuntos = () => {
+        const { modal } = this.state
+        modal.adjuntos = false
+        this.setState({
+            ...this.state,
+            form: this.clearForm(),
+            modal,
+            tipo: 'Cliente',
+            adjuntos: [],
+            contrato: ''
+        })
+    }
+
+    openModalDeleteAdjunto = (adjunto) => {
+        const MySwal = withReactContent(Swal)
+
+        MySwal.fire({
+            title: '¿DESEAS ELIMINAR EL ARCHIVO?',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: 'ACEPTAR',
+            cancelButtonText: 'CANCELAR',
+            reverseButtons: true,
+            customClass: {
+                content: 'd-none',
+                confirmButton: 'btn-light-danger-sweetalert2',
+                cancelButton:'btn-light-gray-sweetalert2'
+            }
+        }).then((result) => {
+            if (result.value) {
+                this.deleteAdjuntoContratoAxios(adjunto.id)
+            }
+        })
+    }
+
+    async deleteAdjuntoContratoAxios(adjunto) {
+        const { access_token } = this.props.authUser
+        const {  traspaso } = this.state
+        await axios.delete(URL_DEV + 'traspasos/' + traspaso.id + '/adjuntos/' + adjunto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El archivo fue eliminado con éxito.')
+                this.setState({
+                    ...this.state,
+                    traspaso: '',
+                    modal,
+                    adjuntos: this.setAdjuntos(response.data.data.adjunto)
+                })
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+    
     async getTraspasosAxios() { $('#kt_datatable_transpasos').DataTable().ajax.reload(); }
 
     async getTraspaso(id) {
@@ -278,7 +384,7 @@ class Traspasos extends Component {
     }
 
     render() {
-        const { modal, traspaso } = this.state
+        const { modal, traspaso, adjuntos,data } = this.state
         return (
             <Layout active='bancos' {...this.props}>
                 <NewTableServerRender columns = { TRASPASOS_COLUMNS } title = 'Traspasos' subtitle = 'Listado de traspasos' mostrar_boton = { true }
@@ -297,6 +403,20 @@ class Traspasos extends Component {
                     onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteTraspasoAxios() } } />
                 <Modal size="lg" title="Traspaso" show={modal.see} handleClose={this.handleCloseSee} >
                     <TraspasoCard traspaso={traspaso} />
+                </Modal>
+                <Modal size="xl" title='Adjuntos del traspaso' show={modal.adjuntos} handleClose={this.handleCloseModalAdjuntos}>
+                    
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                    <TableForModals
+                        columns={ADJ_TRASPASO_COLUMNS}
+                        data={adjuntos}
+                        mostrar_acciones={true}
+                        actions={{
+                            'deleteAdjunto': { function: this.openModalDeleteAdjunto }
+                        }}
+                        elements={data.adjuntos}
+                        idTable='kt_datatable_estado'
+                    />
                 </Modal>
             </Layout>
         );

@@ -27,7 +27,8 @@ class TraspasosForm extends Component {
         },
         options: {
             cuentas: []
-        }
+        },
+        
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -59,7 +60,15 @@ class TraspasosForm extends Component {
                         form.comentario = traspaso.comentario
                         let aux = []
                         if (traspaso.adjunto)
-                            aux.push(traspaso.adjunto)
+
+                            traspaso.adjunto.map((adjunto) => {
+                                aux.push({
+                                    name: adjunto.name,
+                                    url: adjunto.url
+                                })
+                                return false
+                            })
+
                         form.adjuntos.adjuntos.files = aux
                         if (traspaso) {
                             if (traspaso.origen)
