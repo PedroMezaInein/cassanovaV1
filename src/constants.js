@@ -931,3 +931,7 @@ export const CLAVES = [
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
 
 ]
+export const ADJ_TRASPASO_COLUMNS = [
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'ARCHIVOS', accessor: 'adjunto' }
+]
