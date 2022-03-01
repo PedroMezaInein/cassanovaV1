@@ -28,6 +28,12 @@ class PresupuestoFilter extends Component {
                         />
                     </div>
                     <div className="col-md-6">
+                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
+                            withformgroup={0} name='tickets' placeholder='TICKETS' value={filters.tickets}
+                            onChange={onChangeFilter} iconclass='las la-folder icon-xl'
+                        />
+                    </div>
+                    <div className="col-md-6">
                         <ReactSelectSearchGray placeholder='Selecciona la empresa' defaultvalue={filters.empresa} iconclass='las la-building icon-xl'
                             options={this.transformarOptions(options.empresas)} onChange={(value) => { this.updateSelect(value, 'empresa') }}
                         />

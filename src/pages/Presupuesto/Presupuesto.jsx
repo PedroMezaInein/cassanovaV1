@@ -12,7 +12,7 @@ import TableForModals from '../../components/tables/TableForModals'
 import $ from "jquery";
 import { NewTable } from '../../components/NewTables';
 import { PresupuestoFilter } from '../../components/filters';
-import { setSingleHeader } from '../../functions/routers'
+import { setSingleHeader } from '../../functions/routers';
 
 const DatatableName = 'presupuestos'
 class Presupuesto extends Component {
@@ -53,6 +53,7 @@ class Presupuesto extends Component {
             fecha: { start: null, end: null },
             empresa: '',
             area: '',
+            tickets:'',
             tiempo_ejecucion: ''
         },
     }
@@ -300,6 +301,7 @@ class Presupuesto extends Component {
         filters.fecha = { start: null, end: null }
         filters.tiempo_ejecucion = ''
         filters.estatus = ''
+        filters.tickets = ''
         modal.filters = false
         this.setState({...this.state, modal, filters})
         this.reloadTable()
