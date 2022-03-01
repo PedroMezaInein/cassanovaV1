@@ -117,13 +117,13 @@ import PestamosDevoluciones from './proyectos/PestamosDevoluciones'
 import FormCalendarioIEquipos from './proyectos/FormCalendarioIEquipos'
 import DetailsInstalacion from './proyectos/DetailsInstalacion'
 import DetailsTickets from './calidad/Detailticket'
-import TableTickets from './MiProyecto/TableTickets'
+// import TableTickets from './MiProyecto/TableTickets'
 import HistorialHM from './proyectos/HistorialHM'
 import FormNuevoTicket from './calidad/Tickets/FormNuevoTicket'
 import HistorialPresupuestos from './calidad/Tickets/HistorialPresupuestos'
-import FormFilterTickets from './MiProyecto/FormFilterTickets'
-import TablePresupuestos from './MiProyecto/TablePresupuestos'
-import TableMantenimiento from './MiProyecto/TableMantenimiento'
+// import FormFilterTickets from './MiProyecto/FormFilterTickets'
+// import TablePresupuestos from './MiProyecto/TablePresupuestos'
+// import TableMantenimiento from './MiProyecto/TableMantenimiento'
 import EditProyectoForm from './proyectos/Proyecto/EditProyectoForm'
 import InfoProyecto from './proyectos/Proyecto/InfoProyecto'
 import ClienteCPModal from './proyectos/Proyecto/ClienteCPModal'
@@ -262,7 +262,7 @@ export const AddTaskForm = addTaskForm
 export const RepseForm = repseForm
 
 export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
-    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion,DetailsTickets, TableTickets, HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos, FormFilterTickets, TablePresupuestos, TableMantenimiento,
+    PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion,DetailsTickets,  HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos,
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
     PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
