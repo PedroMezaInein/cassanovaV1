@@ -12,6 +12,8 @@ import { NewTable } from '../../../components/NewTables';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
 import { TickesFilter } from '../../../components/filters'
+import {  DropdownButton, Dropdown } from 'react-bootstrap'
+import { setNaviIcon } from '../../../functions/setters'
 import moment from 'moment'
 
 class TicketTable extends Component {
@@ -149,18 +151,15 @@ class TicketTable extends Component {
     setActionsMantenimientos = (calidad) => {
         return(
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Ver ticket</span></Tooltip> } >
-                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-primary btn-hover-primary`} 
-                        onClick = { (e) => { e.preventDefault(); this.changePageSee(calidad) } }>
-                        <i className = 'fas flaticon2-magnifier-tool' />
-                    </button>
-                </OverlayTrigger>
-                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Eliminar</span></Tooltip> } >
-                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
-                        onClick = { (e) => { e.preventDefault(); this.openModalDeleteTicket(calidad) } }>
-                        <i className = 'flaticon2-rubbish-bin' />
-                    </button>
-                </OverlayTrigger>
+                  <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                  <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.changePageSee(calidad) }}>
+                        {setNaviIcon('flaticon2-magnifier-tool', 'Ver ticket')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                        onClick={ (e) => { e.preventDefault(); this.openModalDeleteTicket(calidad) }}>
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                  </DropdownButton>
             </div>
         )
     }
