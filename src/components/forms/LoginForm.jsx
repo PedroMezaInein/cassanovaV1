@@ -7,6 +7,7 @@ import { Form, Tab } from 'react-bootstrap'
 import { validateAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
 import { InputLEmail, InputLPassword } from '../../components/form-components'
 import WOW from 'wowjs';
+import Swal from 'sweetalert2';
 class LoginForm extends React.Component {
 
     state = {
@@ -122,9 +123,9 @@ class LoginForm extends React.Component {
 
     async handleSubmit(event) {
         event.preventDefault();
-        const { form } = this.state
-        // let error = this.state.error;;
-        await axios.post(`${URL_DEV}user/login`, form).then(
+        const { form, error } = this.state
+         
+        await axios.post(`${URL_DEV}user/login`, form, error).then(
             (response) => {
                 const { history, login } = this.props
                 const { access_token, user, modulos } = response.data
@@ -148,38 +149,24 @@ class LoginForm extends React.Component {
                     else{
                         history.push(perm.modulo.url)
                     }
+                } else  if(perm){
+                    if(perm.modulo.slug === 'mi-proyecto'){
+                        window.location.href = `home.inein.com/mi-proyecto?tag=${access_token}`
+                    }
+                    else{
+                        history.push(perm.modulo.url)
+                    }
                 }else{
                     history.push(user.permisos[0].modulo.url)
                 }
             },
-            (error) => {
-                error['password'] = 'Ingresaste un correo o contraseña equivocado. Intenta de nuevo'
-                this.setState({
-                    error: error
-                });
-                if (error.response.status === 401) {
-                } else {
-                    errorAlert('Ocurrió un error desconocido, intenta de nuevo.')
-                    // swal({
-                    //     title: '¡Ups 😕!',
-                    //     text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                    //     icon: 'error',
-                    // })
-                }
+            (e,error) => {
+            error['password'] = ''
             }
-        ).catch((error) => {
-            error['password'] = 'Ingresaste un correo o contraseña equivocado catch. Intenta de nuevo'
-            this.setState({
-                error: error
-            });
-            errorAlert('Ocurrió un error desconocido, intenta de nuevo.')
-            // swal({
-            //     title: '¡Ups 😕!',
-            //     text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-            //     icon: 'error',
-            // })
-        })
-    }
+        ).catch(( error) => {
+            errorAlert('Ingresaste un correo o contraseña equivocado. Intenta de nuevo')
+        }) 
+   }
 
     handleChange(event) {
         let { error, form } = this.state

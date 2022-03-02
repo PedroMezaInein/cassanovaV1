@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl} from "../../functions/routers"
-import { LEADS_FRONT } from "../../constants";
+import { LEADS_FRONT, MI_PROYECTO_FRONT } from "../../constants";
 
 class AsideMenuList extends Component{
 
@@ -21,7 +21,7 @@ class AsideMenuList extends Component{
                     x[cont].classList.remove('d-block')
                 }       
             }
-        }
+        } 
     }
 
     closeAside = () => {
@@ -37,6 +37,9 @@ class AsideMenuList extends Component{
         switch(name){
             case 'CRM':
                 return `${LEADS_FRONT}${url}?tag=${access_token}`
+            case 'Mi Proyecto':
+                 return  `${MI_PROYECTO_FRONT}${url}?tag=${access_token}`
+               
             default:
                 return url;
         }

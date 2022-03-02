@@ -24,7 +24,10 @@ class Home extends Component{
         if(perm){
             if(perm.modulo.slug === 'crm'){
                 window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
-            }
+             } 
+            //else  if(perm === 'mi-proyecto'){
+            //     window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
+            // }
             else{
                 history.push(perm.modulo.url)
             }

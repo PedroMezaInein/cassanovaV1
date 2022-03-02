@@ -395,8 +395,8 @@ class Avances extends Component {
         data.avances = form.avances
         await axios.post(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/avances`, data, { headers: setSingleHeader(at) }).then(
             (response) => {
-                const { avance } = response.data
-                var win = window.open(avance.pdf, '_blank');
+                // const { avance } = response.data
+                // var win = window.open(avance.pdf, '_blank');
                
                 doneAlert(`Avance generado con éxito`, ()=> {refresh(proyecto.id)})
                 this.setState({
