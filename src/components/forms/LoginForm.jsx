@@ -7,7 +7,7 @@ import { Form, Tab } from 'react-bootstrap'
 import { validateAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
 import { InputLEmail, InputLPassword } from '../../components/form-components'
 import WOW from 'wowjs';
-import Swal from 'sweetalert2';
+
 class LoginForm extends React.Component {
 
     state = {
