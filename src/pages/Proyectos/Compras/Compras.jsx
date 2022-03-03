@@ -371,7 +371,7 @@ class Compras extends Component {
                                 {setNaviIcon('flaticon2-download-1', 'Facturas')}
                             </Dropdown.Item>
                             : <></>
-                    }
+                    } 
                 </DropdownButton>
             </div>
         )
