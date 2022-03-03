@@ -57,3 +57,7 @@ body {
     stroke-dashoffset: -124;
   }
 }
+/* body::-webkit-scrollbar-track-piece{
+  background-color: magenta!important;
+
+} */
