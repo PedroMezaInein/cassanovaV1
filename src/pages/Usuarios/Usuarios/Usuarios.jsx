@@ -491,7 +491,7 @@ class Usuarios extends Component {
                     btnclass: 'success',
                     iconclass: 'flaticon2-pen',
                     action: 'edit',
-                    tooltip: {id:'edit', text:'dropdown-button-newtable'},
+                    tooltip: {id:'edit', text:'Editar'},
                 },
                 {
                     text: 'Eliminar',
