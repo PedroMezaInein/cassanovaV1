@@ -1,18 +1,13 @@
-.card-container{
-    
-}
-.card{
-    &__form{
+.card {
+    &__form {
         background-color: $dark-blue;
     }
 }
 
-
-
-.modal-dialog{
-    &.modal-xl{
-        @include up-screen($md){
-            max-width: 85vw!important;
+.modal-dialog {
+    &.modal-xl {
+        @include up-screen($md) {
+            max-width: 85vw !important;
         }
     }
 }

@@ -239,164 +239,92 @@
 }
 
 
-
-
-
-
-
-
-
-
-/* @media (max-width:1200px) {
-    .max-h-img{
-        max-height: 60px!important;
-    }
-    .login-form{
-        width: 60%;
-    }
-}
-@media (max-width:800px) {
-    .max-h-img{
-        max-height: 50px!important;
-    }
-    .login-form{
-        width: 60%;
-    }
-}
-@media (max-width:700px) {
-    .max-h-img{
-        max-height: 45px!important;
-    }
-    .login-form{
-        width: 70%;
-    }
-}
-@media (max-width:544px) {
-    .max-h-img{
-        max-height: 35px!important;
-    }
-    .login-form{
-        width: 75%;
-    }
-}
-@media (max-width:460px) {
-    .max-h-img{
-        max-height: 36px!important;
-    }
-    .login-form{
-        width: 85%;
-    }
-}
-@media (max-width:420px) {
-    .max-h-img{
-        max-height: 27px!important;
-    }
-    .login-form{
-        width: 85%;
-    }
-}
-
-@media (max-width:338px) {
-    .max-h-img{
-        max-height: 21px!important;
-    }
-    .login-form{
-        width: 100%;
-    }
-}
-@media (max-width:282px) {
-    .max-h-img{
-        max-height: 20px!important;
-    }
-    .login-form{
-        width: 100%;
-    }
-}
-@media (max-width:270px) {
-    .max-h-img{
-        max-height: 18px!important;
-    }
-    .login-form{
-        width: 100%;
-    }
-} */
-
 @media screen and (max-width: ($xxxl)) {
-    .max-h-img{
-        max-height: 250px!important;
+    .max-h-img {
+        max-height: 250px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 50%;
     }
 }
+
 @media screen and (max-width: ($xxl)) {
-    .max-h-img{
-        max-height: 70px!important;
+    .max-h-img {
+        max-height: 70px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 55%;
     }
 }
 
 @media screen and (max-width: ($xl)) {
-    .max-h-img{
-        max-height: 50px!important;
+    .max-h-img {
+        max-height: 50px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 67%;
     }
 }
 
 @media screen and (max-width: ($lg)) {
-    .max-h-img{
-        max-height: 32px!important;
+    .max-h-img {
+        max-height: 32px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 80%;
     }
 }
 
 @media screen and (max-width: ($md)) {
-    .max-h-img{
-        max-height: 50px!important;
+    .max-h-img {
+        max-height: 50px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 80%;
     }
 }
 
 @media screen and (max-width: ($sm)) {
-    .max-h-img{
-        max-height: 45px!important;
+    .max-h-img {
+        max-height: 45px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 80%;
     }
 }
 
 @media screen and (max-width: ($xs)) {
-    .max-h-img{
-        max-height: 30px!important;
+    .max-h-img {
+        max-height: 30px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 80%;
     }
 }
 
 @media screen and (max-width: ($xxs)) {
-    .max-h-img{
-        max-height: 29px!important;
+    .max-h-img {
+        max-height: 29px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 100%;
     }
 }
 
 @include down-screen($xxxs) {
-    .max-h-img{
-        max-height: 18px!important;
+    .max-h-img {
+        max-height: 18px !important;
     }
-    .login-form{
+
+    .login-form {
         width: 100%;
     }
 }

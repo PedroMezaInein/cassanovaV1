@@ -149,9 +149,10 @@
 }
 
 .btn {
-    &.disabled{
+    &.disabled {
         cursor: not-allowed;
     }
+
     &.btn-bg-blue {
         background-color: $blue-plataforma;
         border-color: $blue-plataforma;
@@ -801,14 +802,16 @@
     color: #5F6A6A !important;
 }
 
-.button-up{
+.button-up {
     z-index: 1;
     right: 8px;
     top: 5px;
-    &:hover{
+
+    &:hover {
         cursor: pointer;
     }
-    i{
+
+    i {
         font-size: 20px;
     }
 }
@@ -816,73 +819,132 @@
 .btn.btn-light-pinterest {
     color: #e60023;
     background-color: #FFEBEE;
-    border-color: transparent; }
-    .btn.btn-light-pinterest i {
-        color: #e60023; }
-    .btn.btn-light-pinterest .svg-icon svg g [fill] {
-        -webkit-transition: fill 0.3s ease;
-        transition: fill 0.3s ease;
-        fill: #e60023; }
-    .btn.btn-light-pinterest .svg-icon svg:hover g [fill] {
-        -webkit-transition: fill 0.3s ease;
-        transition: fill 0.3s ease; }
-    .btn.btn-light-pinterest.dropdown-toggle:after {
-        color: #e60023; }
-    .btn.btn-light-pinterest:hover:not(.btn-text), .btn.btn-light-pinterest:focus:not(.btn-text), .btn.btn-light-pinterest.focus:not(.btn-text) {
-        color: #ffffff;
-        background-color: #e60023;
-        border-color: transparent; }
-        .btn.btn-light-pinterest:hover:not(.btn-text) i, .btn.btn-light-pinterest:focus:not(.btn-text) i, .btn.btn-light-pinterest.focus:not(.btn-text) i {
-        color: #ffffff; }
-        .btn.btn-light-pinterest:hover:not(.btn-text) .svg-icon svg g [fill], .btn.btn-light-pinterest:focus:not(.btn-text) .svg-icon svg g [fill], .btn.btn-light-pinterest.focus:not(.btn-text) .svg-icon svg g [fill] {
-        -webkit-transition: fill 0.3s ease;
-        transition: fill 0.3s ease;
-        fill: #ffffff; }
-        .btn.btn-light-pinterest:hover:not(.btn-text) .svg-icon svg:hover g [fill], .btn.btn-light-pinterest:focus:not(.btn-text) .svg-icon svg:hover g [fill], .btn.btn-light-pinterest.focus:not(.btn-text) .svg-icon svg:hover g [fill] {
-        -webkit-transition: fill 0.3s ease;
-        transition: fill 0.3s ease; }
-        .btn.btn-light-pinterest:hover:not(.btn-text).dropdown-toggle:after, .btn.btn-light-pinterest:focus:not(.btn-text).dropdown-toggle:after, .btn.btn-light-pinterest.focus:not(.btn-text).dropdown-toggle:after {
-        color: #ffffff; }
-    .btn.btn-light-pinterest.disabled, .btn.btn-light-pinterest:disabled {
-        color: #e60023;
-        background-color: #FFEBEE;
-        border-color: transparent; }
-        .btn.btn-light-pinterest.disabled i, .btn.btn-light-pinterest:disabled i {
-        color: #e60023; }
-        .btn.btn-light-pinterest.disabled .svg-icon svg g [fill], .btn.btn-light-pinterest:disabled .svg-icon svg g [fill] {
-        -webkit-transition: fill 0.3s ease;
-        transition: fill 0.3s ease;
-        fill: #e60023; }
-        .btn.btn-light-pinterest.disabled .svg-icon svg:hover g [fill], .btn.btn-light-pinterest:disabled .svg-icon svg:hover g [fill] {
-        -webkit-transition: fill 0.3s ease;
-        transition: fill 0.3s ease; }
-        .btn.btn-light-pinterest.disabled.dropdown-toggle:after, .btn.btn-light-pinterest:disabled.dropdown-toggle:after {
-        color: #e60023; }
-    .btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text), .btn.btn-light-pinterest:not(:disabled):not(.disabled).active,
-    .show > .btn.btn-light-pinterest.dropdown-toggle,
-    .show .btn.btn-light-pinterest.btn-dropdown {
-        color: #ffffff;
-        background-color: #e60023;
-        border-color: transparent; }
-        .btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text) i, .btn.btn-light-pinterest:not(:disabled):not(.disabled).active i,
-        .show > .btn.btn-light-pinterest.dropdown-toggle i,
-        .show .btn.btn-light-pinterest.btn-dropdown i {
-        color: #ffffff; }
-        .btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg g [fill], .btn.btn-light-pinterest:not(:disabled):not(.disabled).active .svg-icon svg g [fill],
-        .show > .btn.btn-light-pinterest.dropdown-toggle .svg-icon svg g [fill],
-        .show .btn.btn-light-pinterest.btn-dropdown .svg-icon svg g [fill] {
-        -webkit-transition: fill 0.3s ease;
-        transition: fill 0.3s ease;
-        fill: #ffffff; }
-        .btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg:hover g [fill], .btn.btn-light-pinterest:not(:disabled):not(.disabled).active .svg-icon svg:hover g [fill],
-        .show > .btn.btn-light-pinterest.dropdown-toggle .svg-icon svg:hover g [fill],
-        .show .btn.btn-light-pinterest.btn-dropdown .svg-icon svg:hover g [fill] {
-        -webkit-transition: fill 0.3s ease;
-        transition: fill 0.3s ease; }
-        .btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text).dropdown-toggle:after, .btn.btn-light-pinterest:not(:disabled):not(.disabled).active.dropdown-toggle:after,
-        .show > .btn.btn-light-pinterest.dropdown-toggle.dropdown-toggle:after,
-        .show .btn.btn-light-pinterest.btn-dropdown.dropdown-toggle:after {
-        color: #ffffff; }
+    border-color: transparent;
+}
+
+.btn.btn-light-pinterest i {
+    color: #e60023;
+}
+
+.btn.btn-light-pinterest .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #e60023;
+}
+
+.btn.btn-light-pinterest .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-light-pinterest.dropdown-toggle:after {
+    color: #e60023;
+}
+
+.btn.btn-light-pinterest:hover:not(.btn-text),
+.btn.btn-light-pinterest:focus:not(.btn-text),
+.btn.btn-light-pinterest.focus:not(.btn-text) {
+    color: #ffffff;
+    background-color: #e60023;
+    border-color: transparent;
+}
+
+.btn.btn-light-pinterest:hover:not(.btn-text) i,
+.btn.btn-light-pinterest:focus:not(.btn-text) i,
+.btn.btn-light-pinterest.focus:not(.btn-text) i {
+    color: #ffffff;
+}
+
+.btn.btn-light-pinterest:hover:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-light-pinterest:focus:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-light-pinterest.focus:not(.btn-text) .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+
+.btn.btn-light-pinterest:hover:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-light-pinterest:focus:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-light-pinterest.focus:not(.btn-text) .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-light-pinterest:hover:not(.btn-text).dropdown-toggle:after,
+.btn.btn-light-pinterest:focus:not(.btn-text).dropdown-toggle:after,
+.btn.btn-light-pinterest.focus:not(.btn-text).dropdown-toggle:after {
+    color: #ffffff;
+}
+
+.btn.btn-light-pinterest.disabled,
+.btn.btn-light-pinterest:disabled {
+    color: #e60023;
+    background-color: #FFEBEE;
+    border-color: transparent;
+}
+
+.btn.btn-light-pinterest.disabled i,
+.btn.btn-light-pinterest:disabled i {
+    color: #e60023;
+}
+
+.btn.btn-light-pinterest.disabled .svg-icon svg g [fill],
+.btn.btn-light-pinterest:disabled .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #e60023;
+}
+
+.btn.btn-light-pinterest.disabled .svg-icon svg:hover g [fill],
+.btn.btn-light-pinterest:disabled .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-light-pinterest.disabled.dropdown-toggle:after,
+.btn.btn-light-pinterest:disabled.dropdown-toggle:after {
+    color: #e60023;
+}
+
+.btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text),
+.btn.btn-light-pinterest:not(:disabled):not(.disabled).active,
+.show>.btn.btn-light-pinterest.dropdown-toggle,
+.show .btn.btn-light-pinterest.btn-dropdown {
+    color: #ffffff;
+    background-color: #e60023;
+    border-color: transparent;
+}
+
+.btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text) i,
+.btn.btn-light-pinterest:not(:disabled):not(.disabled).active i,
+.show>.btn.btn-light-pinterest.dropdown-toggle i,
+.show .btn.btn-light-pinterest.btn-dropdown i {
+    color: #ffffff;
+}
+
+.btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-light-pinterest:not(:disabled):not(.disabled).active .svg-icon svg g [fill],
+.show>.btn.btn-light-pinterest.dropdown-toggle .svg-icon svg g [fill],
+.show .btn.btn-light-pinterest.btn-dropdown .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+
+.btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-light-pinterest:not(:disabled):not(.disabled).active .svg-icon svg:hover g [fill],
+.show>.btn.btn-light-pinterest.dropdown-toggle .svg-icon svg:hover g [fill],
+.show .btn.btn-light-pinterest.btn-dropdown .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-light-pinterest:not(:disabled):not(.disabled):active:not(.btn-text).dropdown-toggle:after,
+.btn.btn-light-pinterest:not(:disabled):not(.disabled).active.dropdown-toggle:after,
+.show>.btn.btn-light-pinterest.dropdown-toggle.dropdown-toggle:after,
+.show .btn.btn-light-pinterest.btn-dropdown.dropdown-toggle:after {
+    color: #ffffff;
+}
 
 
 // btn.btn-light-inein 
@@ -1087,9 +1149,9 @@
     color: #D8005A !important;
 }
 
-.btn-30px{
-    height: 30px!important;
-    width: 30px!important;
+.btn-30px {
+    height: 30px !important;
+    width: 30px !important;
 }
 
 // btn.btn-light-im 
@@ -1293,6 +1355,7 @@
 .show .btn.btn-hover-text-im.btn-dropdown.dropdown-toggle:after {
     color: #7096c1 !important;
 }
+
 .btn.btn-light-im.btn-shadow-hover:hover:not(.btn-text),
 .btn.btn-light-im.btn-shadow-hover:focus:not(.btn-text),
 .btn.btn-light-im.btn-shadow-hover.focus:not(.btn-text) {
@@ -1310,12 +1373,14 @@
 // BOTÓN DE LOGIN
 //colors
 $white: #fff;
+
 .container-login {
     align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
+
 .btn-login {
     cursor: pointer;
     font-size: 16px;
@@ -1323,11 +1388,13 @@ $white: #fff;
     max-width: 160px;
     position: relative;
     width: 100%;
+
     &:hover {
         text-decoration: none;
-        font-weight: 400!important;
+        font-weight: 400 !important;
     }
 }
+
 .btn-1 {
     svg {
         height: 45px;
@@ -1336,6 +1403,7 @@ $white: #fff;
         top: 0;
         width: 100%;
     }
+
     rect {
         fill: none;
         stroke: #7fa1c9;
@@ -1344,9 +1412,11 @@ $white: #fff;
         transition: all 0.35s linear;
     }
 }
+
 .btn-1:hover {
-    font-weight: 900!important;
+    font-weight: 900 !important;
     letter-spacing: 1px;
+
     rect {
         stroke-width: 5;
         stroke-dasharray: 15, 310;
@@ -1355,9 +1425,9 @@ $white: #fff;
     }
 }
 
-.btn-xxs{
-    height: 20px!important;
-    width: 20px!important;
+.btn-xxs {
+    height: 20px !important;
+    width: 20px !important;
 }
 
 
@@ -1605,6 +1675,7 @@ $white: #fff;
 .btn.btn-icon-primary:disabled.dropdown-toggle:after {
     color: #2171c1
 }
+
 //BTN HOVER ICON
 .btn.btn-hover-icon-success.focus:not(.btn-text) i,
 .btn.btn-hover-icon-success:focus:not(.btn-text) i,
@@ -1731,6 +1802,7 @@ $white: #fff;
 .btn.btn-light-blog i {
     color: #e8762a;
 }
+
 .btn.btn-light-blog:hover:not(.btn-text),
 .btn.btn-light-blog:focus:not(.btn-text),
 .btn.btn-light-blog.focus:not(.btn-text) {
@@ -1738,13 +1810,14 @@ $white: #fff;
     background-color: #e8762a;
     border-color: transparent;
 }
+
 .btn.btn-light-blog:hover:not(.btn-text) i,
 .btn.btn-light-blog:focus:not(.btn-text) i,
 .btn.btn-light-blog.focus:not(.btn-text) i {
     color: #ffffff;
 }
 
-.btn-historial-presupuestos{
+.btn-historial-presupuestos {
     width: fit-content;
     font-size: 1rem;
     margin-top: 0.5rem;
@@ -1753,18 +1826,21 @@ $white: #fff;
     background: #f3f6f9;
     padding: 5px 5px;
     border-radius: 3px;
-    color: #464E5F!important;
+    color: #464E5F !important;
     cursor: pointer;
+
     u {
         text-decoration-line: underline;
         text-decoration-style: solid;
         text-decoration-color: #8950fc;
     }
-    :hover{
-        color: #8950fc!important;
+
+    :hover {
+        color: #8950fc !important;
         font-weight: 500;
     }
 }
+
 .btn.btn-flex {
     display: inline-flex;
     align-items: flex-end;

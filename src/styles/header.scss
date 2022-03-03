@@ -540,6 +540,7 @@
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
         -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
         border-radius: 4px;
         padding: 20px 0
     }
@@ -949,7 +950,6 @@
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: ""
     }
 
@@ -1045,7 +1045,6 @@
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: ""
     }
 
@@ -1180,7 +1179,6 @@
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: ""
     }
 
@@ -2002,7 +2000,8 @@
 
     .header-menu-mobile .menu-nav .menu-item>.menu-heading .menu-arrow:before,
     .header-menu-mobile .menu-nav .menu-item>.menu-link .menu-arrow:before {
-        -webkit-transform: translate3d(0, 0, 0)
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0)
     }
 
     .header-menu-mobile .menu-nav .menu-item.menu-item-open>.menu-heading>.menu-arrow:before,
@@ -2163,7 +2162,6 @@
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: ""
     }
 
@@ -2272,7 +2270,6 @@
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: ""
     }
 

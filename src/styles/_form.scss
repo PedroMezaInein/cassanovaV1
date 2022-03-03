@@ -21,6 +21,7 @@
 .radio-group {
     .form-check {
         padding: 0.5rem 0 0.5rem 2rem;
+
         .form-check-label {
             color: $dark-blue;
             font-size: 1rem;
@@ -47,27 +48,31 @@
     width: auto;
     position: relative;
     box-sizing: border-box;
-    input{
-        //border-width: 0 0 2px 0!important;
-        //border-radius: 0;
+
+    input {
+
         background-color: transparent;
-        //border-color: $dark-blue;
-        //color: $blue;
+
         &::placeholder {
-            color: $blue!important;
+            color: $blue !important;
         }
+
         margin-bottom: 1rem;
         width: 100%;
         padding: 0.4rem;
     }
-    select{
+
+    select {
         display: none;
     }
-    &__select{
-        height: auto!important;
-        &:not(.select-search__select--display){
+
+    &__select {
+        height: auto !important;
+
+        &:not(.select-search__select--display) {
             display: none;
         }
+
         background: #fff;
         box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.15);
         position: absolute;
@@ -77,27 +82,32 @@
         left: 0;
         border-radius: 3px;
         overflow: auto;
-        max-height: 250px!important;
+        max-height: 250px !important;
     }
-    &__options{
+
+    &__options {
         margin-bottom: 0px;
-        margin-block-start: 0px!important;
+        margin-block-start: 0px !important;
         padding-inline-start: 0px;
         list-style: none;
     }
-    &__option{
+
+    &__option {
         display: block;
         padding: 0.40rem 0.30rem;
         transition: all 0.5s;
-        color: $dark-blue!important;
-        &:hover{
-            background-color: #fafafa!important;
+        color: $dark-blue !important;
+
+        &:hover {
+            background-color: #fafafa !important;
         }
-        &--selected{
+
+        &--selected {
             background-color: $white-dark-blue;
         }
     }
-    &__row{
+
+    &__row {
         &:not(:first-child) {
             border-top: 1px solid #eee;
         }
@@ -114,23 +124,24 @@
     opacity: 0.5;
 }
 
-.no-label{
-    label{
+.no-label {
+    label {
         display: none;
     }
 }
 
-.button-hover{
-/*     width: 0.7rem; */
+.button-hover {
+
     transition: all 0.5s;
-    &:hover{
+
+    &:hover {
         cursor: pointer;
-        /* width: 1rem; */
+
     }
 }
 
-.custom-select{
-    margin-bottom: 0px!important;
+.custom-select {
+    margin-bottom: 0px !important;
     margin-right: 8px;
     margin-left: 8px;
 }

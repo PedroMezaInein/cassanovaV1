@@ -19,32 +19,6 @@
     background-color: #EFF2F7 !important;
 }
 
-// Recuadros de rangos
-// .rdrDateDisplay {
-//     color: transparent !important;
-// }
-
-// .rdrSelected,
-// .rdrInRange,
-// .rdrStartEdge,
-// .rdrEndEdge {
-//     background-color: #E1F0FF !important;
-// }
-
-// .rdrDay:not(.rdrDayPassive) .rdrInRange~.rdrDayNumber span,
-// .rdrDay:not(.rdrDayPassive) .rdrStartEdge~.rdrDayNumber span,
-// .rdrDay:not(.rdrDayPassive) .rdrEndEdge~.rdrDayNumber span,
-// .rdrDay:not(.rdrDayPassive) .rdrSelected~.rdrDayNumber span {
-//     color: #2171c1 !important;
-// }
-
-// // Linea today
-// .rdrDayToday:not(.rdrDayPassive) .rdrInRange~.rdrDayNumber span:after,
-// .rdrDayToday:not(.rdrDayPassive) .rdrStartEdge~.rdrDayNumber span:after,
-// .rdrDayToday:not(.rdrDayPassive) .rdrEndEdge~.rdrDayNumber span:after,
-// .rdrDayToday:not(.rdrDayPassive) .rdrSelected~.rdrDayNumber span:after {
-//     background: #2171c1 !important;
-// }
 
 .rdrDateRangePickerWrapper {
     @include down-screen($md) {
@@ -64,13 +38,16 @@
     border-top-left-radius: 0.42rem;
     border-top-right-radius: 0.42rem;
 }
+
 .rdrCalendarWrapper {
     @include down-screen($md) {
         font-size: 10.5px !important;
     }
+
     @include screen($lg) {
         font-size: 12px !important;
     }
+
     @include screen($xxl) {
         font-size: 13px !important;
     }
@@ -99,7 +76,8 @@
             width: 300px;
         }
     }
-    #estado-resultados{
+
+    #estado-resultados {
         .rdrCalendarWrapper {
             &.rdrDateRangeWrapper {
                 width: 283px;
@@ -186,56 +164,59 @@ span.rdrDayStartPreview,
     background: #e1f0ff !important;
 }
 
-.rdrDayDisabled{
-    background-color: #FFF4DE!important;
-    // border-radius: 0.75em!important;
-    span{
-        color: #FFA800!important;
+.rdrDayDisabled {
+    background-color: #FFF4DE !important;
+
+    span {
+        color: #FFA800 !important;
     }
 }
 
-.input-calendar{
-    .rdrDayDisabled{
-        background-color: #D0D0D0!important;
-        // border-radius: 0!important;
-        span{
-            color: white!important;
+.input-calendar {
+    .rdrDayDisabled {
+        background-color: #D0D0D0 !important;
+
+        span {
+            color: white !important;
         }
-    }   
+    }
 }
-.rdrMonthAndYearWrapper{
+
+.rdrMonthAndYearWrapper {
     height: 50px;
-    padding-top: 0!important;
+    padding-top: 0 !important;
 }
-// .rdrMonthsVertical {
-//     padding-top: 20px;
-// }
-/* .rdrDateDisplayWrapper{
-    display: none;
-} */
-div#info.rdrMonths.rdrMonthsVertical{
+
+div#info.rdrMonths.rdrMonthsVertical {
     font-size: 11px;
 }
+
 @media screen and (max-width: 1280px) {
-    .col-md-4{
-        .rdrCalendarWrapper{
+    .col-md-4 {
+        .rdrCalendarWrapper {
             @include down-screen($xs) {
                 font-size: 10px !important;
             }
+
             font-size: 10.7px !important;
         }
-        .rdrMonths.rdrMonthsHorizontal, span.rdrMonthAndYearPickers{
+
+        .rdrMonths.rdrMonthsHorizontal,
+        span.rdrMonthAndYearPickers {
             font-size: 12px;
+
             @include down-screen($xs) {
                 font-size: 10px !important;
             }
         }
-        .rdrMonth{
+
+        .rdrMonth {
             @include down-screen($xs) {
-                padding: 0px!important;
+                padding: 0px !important;
             }
         }
-        .rdrMonths.rdrMonthsVertical{
+
+        .rdrMonths.rdrMonthsVertical {
             @include down-screen($xs) {
                 font-size: 9.7px;
             }
@@ -243,23 +224,30 @@ div#info.rdrMonths.rdrMonthsVertical{
     }
 }
 
-.col-md-6{
-    .calendar-tickets{
-        @media screen and (min-width: 768px){
-            .rdrCalendarWrapper, .rdrMonth{
+.col-md-6 {
+    .calendar-tickets {
+        @media screen and (min-width: 768px) {
+
+            .rdrCalendarWrapper,
+            .rdrMonth {
                 width: -webkit-fill-available;
             }
         }
-        @media screen and  (min-width: 992px){
-            .rdrCalendarWrapper, .rdrMonth{
+
+        @media screen and (min-width: 992px) {
+
+            .rdrCalendarWrapper,
+            .rdrMonth {
                 width: auto;
             }
         }
     }
 }
-.rdrCalendarWrapper.rdrDateRangeWrapper{
+
+.rdrCalendarWrapper.rdrDateRangeWrapper {
     margin-top: 0px;
 }
-.rdrMonth{
+
+.rdrMonth {
     padding: 0 0.833em 0 0.833em;
 }
