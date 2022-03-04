@@ -5,7 +5,6 @@ import { Tab, Tabs } from 'react-bootstrap';
 import { NewTable } from '../../../components/NewTables';
 import { Update } from '../../../components/Lottie';
 import { URL_DEV, PROYECTOS_COLUMNS, TEL } from '../../../constants'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setArrayTableReactDom, setDateTableReactDom, setDireccion, setLabelTableReactDom, setListTable, setTagLabelProyectoReactDom, setTextTableCenter, 
         setTextTableReactDom, setOptions } from '../../../functions/setters';
 import { renderToString } from 'react-dom/server';
@@ -18,6 +17,8 @@ import Swal from 'sweetalert2'
 import { InputGray, InputPhoneGray, RangeCalendarSwal, SelectSearchGray } from '../../../components/form-components';
 import { Modal } from '../../../components/singles';
 import { ProyectoFilter } from '../../../components/filters';
+import { DropdownButton, Dropdown } from 'react-bootstrap'
+import {  setNaviIcon } from '../../../functions/setters'
 
 class Proyectos extends Component {
 
@@ -119,15 +120,14 @@ class Proyectos extends Component {
 
     setActions = (element) => {
         return(
+            
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Ver proyecto</span></Tooltip> } >
-                    <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-primary btn-hover-primary'
-                        onClick = { (e) => { e.preventDefault(); this.changePageSee(element) } }>
-                        <i className = 'far fa-eye' />
-                    </button>
-                </OverlayTrigger>
-                <OverlayTrigger rootClose overlay = { <Tooltip>Eliminar</Tooltip> }  >
-                    <button className = 'btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger'
+                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" 
+                        onClick={(e) => { e.preventDefault(); this.changePageSee(element) }} >
+                        {setNaviIcon('far fa-eye', 'Ver proyecto')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
                         onClick = { (e) => {
                             e.preventDefault(); 
                             deleteAlert(
@@ -136,9 +136,9 @@ class Proyectos extends Component {
                                 () => { this.deleteProyectoAxios(element.id) }
                             )
                         } }>
-                        <i className = 'flaticon2-rubbish-bin' />
-                    </button>
-                </OverlayTrigger>
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                </DropdownButton>
             </div>
         )
     }

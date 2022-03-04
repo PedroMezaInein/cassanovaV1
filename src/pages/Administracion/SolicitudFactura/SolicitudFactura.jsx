@@ -3,14 +3,15 @@ import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
 import { URL_DEV, SOLICITUD_FACTURA_COLUMNS } from '../../../constants'
-import { setMoneyText, setTextTableCenter } from '../../../functions/setters'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { setMoneyText, setTextTableCenter,setNaviIcon } from '../../../functions/setters'
 import { deleteAlert, doneAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { apiDelete, catchErrors } from '../../../functions/api'
 import $ from 'jquery'
 import { Modal } from '../../../components/singles'
 import { FiltersSolicitudFactura } from '../../../components/filters'
 import { FormVentasSolicitudFactura } from '../../../components/forms'
+import { DropdownButton, Dropdown } from 'react-bootstrap'
+
 
 class SolicitudFactura extends Component {
 
@@ -81,30 +82,28 @@ class SolicitudFactura extends Component {
 
     setActions = (element) => {
         return(
-            <div className="w-100 d-flex justify-content-center">
-                {
-                    element.hasVenta === false ?
-                        <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Convertir</span></Tooltip> } >
-                            <button className = 'btn btn-icon btn-actions-table btn-sm ml-2 btn-text-success btn-hover-success'
-                                onClick = { (e) => { e.preventDefault(); this.openModalVenta(element) } }>
-                                <i className = 'las la-sync icon-lg' />
-                            </button>
-                        </OverlayTrigger>
-                    : <></>
+            <div className="w-100 d-flex justify-content-center">  
+            <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+               {
+                    element.hasVenta === false ?                
+                
+                    <Dropdown.Item className="text-hover-success dropdown-success" 
+                 onClick = { (e) => { e.preventDefault(); this.openModalVenta(element) } } >
+                        {setNaviIcon('las la-sync icon-lg', 'convertir')}
+                    </Dropdown.Item> : <></>
                 }
-                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Eliminar</span></Tooltip> } >
-                    <button className = 'btn btn-icon btn-actions-table btn-sm ml-2 btn-text-danger btn-hover-danger'
-                        onClick = { (e) => { 
-                            e.preventDefault(); 
-                            deleteAlert(
-                                `Eliminarás la solicitud de facturación`,
-                                `¿Deseas continuar?`,
-                                () => { this.deleteSolicitud(element.id) }
-                            )
-                        } }>
-                        <i className = 'las la-trash icon-lg' />
-                    </button>
-                </OverlayTrigger>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                      onClick = { (e) => { 
+                        e.preventDefault(); 
+                        deleteAlert(
+                            `Eliminarás la solicitud de facturación`,
+                            `¿Deseas continuar?`,
+                            () => { this.deleteSolicitud(element.id) }
+                        )
+                    } }>
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                </DropdownButton>
             </div>
         )
     }
