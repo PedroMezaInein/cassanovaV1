@@ -8,7 +8,7 @@ import imageCompression from 'browser-image-compression';
 import { questionAlert, waitAlert } from '../../../../functions/alert'
 import { dayDMY, setOptions } from '../../../../functions/setters'
 import { Modal } from '../../../../components/singles'
-import { ProcesoTicketForm ,EditTicketForm} from '../../../../components/forms'
+import { ProcesoTicketForm ,EditTicketForm, SolicitudServicio } from '../../../../components/forms'
 import Scrollbar from 'perfect-scrollbar-react'
 import { SolicitudFacturacionTabla } from '../../../tables'
 import FloatBtnPresupuesto from '../../../../components/FloatButtons/FloatBtnPresupuesto'
@@ -391,7 +391,7 @@ class TicketView extends Component {
         /* ----------------------------- FUNCIONES PROPS ---------------------------- */
         const { openModalWithInput, changeEstatus, onClick, setOptions, onSubmit, deleteFile, openModalConceptos, openModalSolicitud, handleCloseSolicitud, 
             deleteSolicitud, onChangeTicketProceso, onSubmitTicketProceso, 
-            handleChangeTicketProceso, generateEmailTicketProceso, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
+            handleChangeTicketProceso, generateEmailTicketProceso,generateSolicitud, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
             controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
             addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs, historialPresupuestos, openModalOrdenCompra,
             refresh
@@ -629,10 +629,19 @@ class TicketView extends Component {
                                                                     <span className="nav-text font-weight-bolder white-space-nowrap">{this.showTabTicketProceso()}</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
+                                                            <Nav.Item onClick={(e) => { e.preventDefault(); controlledNav("servicio") }}>
+                                                                <Nav.Link eventKey="servicio">
+                                                                    <span className="nav-icon">
+                                                                        <i className="las la-tools icon-lg mr-2"></i>
+                                                                    </span>
+                                                                    <span className="nav-text font-weight-bolder">SOLICITUD DE SERVICIO</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
                                                             </>
                                                         :<></>
                                                     :<></>
                                                 }
+                                               
                                             </Nav>
                                         </div>
                                     </Card.Body>
@@ -675,6 +684,34 @@ class TicketView extends Component {
                                             </Col>
                                         </Row>
                                     </Tab.Pane>
+                                    {
+                                                    presupuesto?
+                                                        presupuesto.estatus.estatus === "Aceptado" ?
+                                                        <>
+                                        <Tab.Pane eventKey="servicio">
+                                            <Row className="mx-0">
+                                                <Col lg="6" className="px-0">
+                                                    <Card className="card-custom gutter-b card-stretch">
+                                                        <Card.Header className="border-0 pt-8 pt-md-0">
+                                                            <Card.Title className="m-0">
+                                                                {/* <div className="font-weight-bold font-size-h5">Solicitud de mantenimiento</div> */}
+                                                            </Card.Title>
+                                                        </Card.Header>
+                                                        <Card.Body className={`pt-3  d-flex align-items-center justify-content-center`}>
+                                                            <SolicitudServicio form={formulario.ticket} options={options} onChange={onChangeTicketProceso}
+                                                                formeditado={1} handleChange={handleChangeTicketProceso} onSubmit={onSubmitTicketProceso}
+                                                                generateSolicitud={generateSolicitud} estatus={data.estatus_ticket.estatus}
+                                                                deleteFile={deleteFile} ticket={data} at={at}
+                                                            />
+                                                        </Card.Body>
+                                                    </Card>
+                                                </Col>
+                                            </Row>
+                                        </Tab.Pane>
+                                        </>
+                                                :<></>
+                                            :<></>
+                                        }
                                     <Tab.Pane eventKey="presupuesto">
                                         {
                                             presupuesto === '' ?

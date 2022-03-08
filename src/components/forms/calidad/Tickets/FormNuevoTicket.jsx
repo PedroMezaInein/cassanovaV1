@@ -39,9 +39,17 @@ export default class FormNuevoTicket extends Component {
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-12">
                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
+                                requirevalidation = { 1 } as = "textarea" placeholder = "DETALLE DEL TRABAJO SOLICITADO " rows = "2" 
+                                value = { form.solicitado } name = "solicitado" onChange = { onChange } 
+                                messageinc="Incorrecto. Ingresa una descripción." />
+                        </div>
+                    </div>
+                    <div className="form-group row form-group-marginless">
+                        <div className="col-md-12">
+                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
                                 requirevalidation = { 1 } as = "textarea" placeholder = "DESCRIPCIÓN DEL PROBLEMA" rows = "2" 
                                 value = { form.descripcion } name = "descripcion" onChange = { onChange } 
-                                messageinc="Incorrecto. Ingresa una descripción." />
+                                messageinc="Incorrecto. IDETALLE DEL TRABAJO SOLICITADO ." />
                         </div>
                     </div>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
