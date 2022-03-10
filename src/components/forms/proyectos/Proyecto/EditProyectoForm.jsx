@@ -5,7 +5,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl, setSingleHeader } from "../../../../functions/routers"
 import { InfoProyecto } from "../..";
 import { TagSelectSearchGray, InputGray, InputMoneyGray, TagInputGray, InputPhoneGray, InputNumberGray, ReactSelectSearchGray, RangeCalendar, Button, FixedMultiOptionsGray } from '../../../form-components'
-import { openWizard1, openWizard2, openWizard3 } from '../../../../functions/wizard'
+import { openWizard1, openWizard2 /*, openWizard3 */ } from '../../../../functions/wizard'
 import { validateAlert, waitAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../../../functions/alert'
 import { TEL, URL_DEV } from '../../../../constants'
 import { optionsFases } from "../../../../functions/options"
@@ -44,6 +44,8 @@ class EditProyectoForm extends Component {
             colonia: '',
             calle: '',
             ubicacion_cliente: '',
+            ciudad: '',
+            sucursal: '',
             cp_ubicacion:[]
         },
         formContratar: {
@@ -72,6 +74,9 @@ class EditProyectoForm extends Component {
         const { form, formContratar } = this.state
         let { cliente_seleccionado, clientes_add } = this.state
         form.nombre = proyecto.nombre
+        form.sucursal = proyecto.sucursal
+        form.ciudad = proyecto.ciudad
+
         if (proyecto.empresa){
             form.empresa = {name: proyecto.empresa.name, value: proyecto.empresa.id.toString(), label: proyecto.empresa.name}
             options.empresas.forEach(empresa => {
@@ -96,7 +101,6 @@ class EditProyectoForm extends Component {
         form.contacto = proyecto.contacto
         form.numeroContacto = proyecto.numero_contacto
         let auxClientes = []
-        
         let aux_clientesPrincipal = []
         if (proyecto.clientes) {
             proyecto.clientes.forEach(cliente => {
@@ -125,7 +129,7 @@ class EditProyectoForm extends Component {
                     }
                 });
             });
-            form.clientes = aux_clientesPrincipal
+            form.clientes = auxClientes
         }
         let auxEmail = []
         if (proyecto.contactos) {
@@ -164,7 +168,6 @@ class EditProyectoForm extends Component {
         formContratar.fases = auxFasesContratar
         formContratar.nombre = this.getNameWithoutFases( proyecto.nombre )
 
-        
         clientes_add = aux_clientesPrincipal
         this.optionsFixed()
         this.setState({ ...this.state, form, formContratar, cliente_seleccionado, clientes_add })
@@ -514,7 +517,7 @@ class EditProyectoForm extends Component {
         })
     }
     render() {
-        const { showModal, form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
+        const { /*showModal,*/ form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
         const { proyecto, options } = this.props
         return (
             <>
@@ -596,7 +599,7 @@ class EditProyectoForm extends Component {
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            <div id="wizard-3" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={(e) => { e.preventDefault(e); openWizard3(); if (showModal) { this.openModalCP(); } }}>
+                                                            {/* <div id="wizard-3" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={(e) => { e.preventDefault(e); openWizard3(); if (showModal) { this.openModalCP(); } }}>
                                                                 <div className="wizard-wrapper">
                                                                     <div className="wizard-icon">
                                                                         <i className="wizard-check fas fa-check"></i>
@@ -607,7 +610,7 @@ class EditProyectoForm extends Component {
                                                                         <div className="wizard-desc">Ubicación del proyecto</div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -630,26 +633,8 @@ class EditProyectoForm extends Component {
                                                                 />
                                                             </div>
                                                             <div className="align-self-center col-sm-12 col-lg-12 col-xxl-8 order-1 order-xxl-2">
-                                                                <div className="form-group row form-group-marginless">
-                                                                    <div className="col-md-4">
-                                                                        <InputGray
-                                                                            letterCase={true}
-                                                                            withtaglabel={1}
-                                                                            withtextlabel={1}
-                                                                            withplaceholder={1}
-                                                                            withicon={1}
-                                                                            requirevalidation={1}
-                                                                            withformgroup={0}
-                                                                            formeditado={formeditado}
-                                                                            name="nombre"
-                                                                            value={form.nombre}
-                                                                            onChange={this.onChange}
-                                                                            type="text"
-                                                                            placeholder="NOMBRE DEL PROYECTO"
-                                                                            iconclass="far fa-folder-open"
-                                                                            messageinc="Ingresa el nombre del proyecto."
-                                                                        />
-                                                                    </div>
+                                                            <div className="form-group row form-group-marginless">
+                                                                    
                                                                     <div className="col-md-4">
                                                                         <ReactSelectSearchGray
                                                                             placeholder='Selecciona la empresa'
@@ -672,6 +657,72 @@ class EditProyectoForm extends Component {
                                                                             messageinc="Selecciona el tipo de proyecto."
                                                                         />
                                                                     </div>
+                                                                </div>
+                                                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                                <div className="form-group row form-group-marginless">
+                                                                    <div className="col-md-4">
+                                                                        <InputGray
+                                                                            letterCase={true}
+                                                                            withtaglabel={1}
+                                                                            withtextlabel={1}
+                                                                            withplaceholder={1}
+                                                                            withicon={1}
+                                                                            requirevalidation={1}
+                                                                            withformgroup={0}
+                                                                            formeditado={formeditado}
+                                                                            name="nombre"
+                                                                            value={form.nombre}
+                                                                            onChange={this.onChange}
+                                                                            type="text"
+                                                                            placeholder="SUCURSAL"
+                                                                            iconclass="far fa-folder-open"
+                                                                            messageinc="Ingresa la sucursal del proyecto."
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-md-4">
+                                                                        <InputGray
+                                                                                letterCase={true}
+                                                                                withtaglabel={1}
+                                                                                withtextlabel={1}
+                                                                                withplaceholder={1}
+                                                                                withicon={1}
+                                                                                requirevalidation={1}
+                                                                                withformgroup={0}
+                                                                                formeditado={formeditado}
+                                                                                name="ciudad"
+                                                                                value={form.ciudad}
+                                                                                onChange={this.onChange}
+                                                                                type="text"
+                                                                                placeholder="CIUDAD"
+                                                                                iconclass="far fa-folder-open"
+                                                                                messageinc="Ingresa la ciudad del proyecto."
+                                                                            />
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                                <div className="form-group row form-group-marginless">
+                                                                    <div className="col-md-8">
+                                                                        <InputGray
+                                                                            letterCase={false}
+                                                                            withtaglabel={1}
+                                                                            withtextlabel={1}
+                                                                            withplaceholder={1}
+                                                                            withicon={0}
+                                                                            requirevalidation={0}
+                                                                            withformgroup={0}
+                                                                            formeditado={formeditado}
+                                                                            rows="3"
+                                                                            as="textarea"
+                                                                            placeholder="UBICACIÓN"
+                                                                            name="sucursal"
+                                                                            onChange={this.onChange}
+                                                                            value={form.sucursal}
+                                                                            customclass="px-2"
+                                                                            messageinc="Ingresa la dirección completa."
+                                                                        />
+                                                                    </div>
+                                                                    
                                                                 </div>
                                                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                                                 <div className="form-group row form-group-marginless">
@@ -828,14 +879,19 @@ class EditProyectoForm extends Component {
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
                                                                 </span>Anterior
                                                             </button>
-                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard3(); if (showModal) { this.openModalCP(); } }}>Siguiente
+                                                            {/* <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={() => { openWizard3(); if (showModal) { this.openModalCP(); } }}>Siguiente
                                                                 <span className="svg-icon svg-icon-md ml-2 mr-0">
                                                                     <SVG src={toAbsoluteUrl('/images/svg/Right-2.svg')} />
+                                                                </span>
+                                                            </button> */}
+                                                             <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'wizard-2-content') }} >Editar
+                                                                <span className="svg-icon svg-icon-md ml-2 mr-0">
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/Sending.svg')} />
                                                                 </span>
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div id="wizard-3-content" data-wizard-type="step-content">
+                                                    {/* <div id="wizard-3-content" data-wizard-type="step-content">
                                                         <div className="form-group row form-group-marginless">
                                                             <div className="col-md-4">
                                                                 <InputNumberGray
@@ -944,7 +1000,7 @@ class EditProyectoForm extends Component {
                                                                 </span>
                                                             </button>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                 </Form>
                                             </div>
                                         </div>
