@@ -175,13 +175,7 @@ class ProyectosForm extends Component {
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
-                        {/* <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard3(); if(showModal){ openModalCP(); } }}>
-                            <div className="wizard-label">
-                                <h3 className="wizard-title">
-                                    <span>3.</span> Ubicación</h3>
-                                <div className="wizard-bar"></div>
-                            </div>
-                        </div> */}
+                       
                     </div>
                 </div>
                 <div className="row justify-content-center">
@@ -390,68 +384,7 @@ class ProyectosForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            {/* <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
-                                            formeditado = { formeditado } value = { form.cp }
-                                            name = "cp" type = "text" placeholder = "CÓDIGO POSTAL" iconclass = "far fa-envelope"
-                                            maxLength = "5" messageinc = "Ingresa el código postal." onChange = { onChange }
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
-                                            formeditado = { formeditado } value = { form.estado }
-                                            name = "estado" type = "text" placeholder = "ESTADO" iconclass = "fas fa-map-marked-alt" onChange = { onChange }
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
-                                            formeditado = { formeditado } value = { form.municipio }
-                                            name = "municipio" type = "text" placeholder = "MUNICIPIO/DELEGACIÓN" iconclass = "fas fa-map-marker-alt" onChange = { onChange }
-                                        />
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2" ></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4" >
-                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
-                                            formeditado = { formeditado } value = { form.colonia }
-                                            name = "colonia" type = "text" placeholder = "COLONIA" iconclass = "fas fa-map-pin" onChange = { onChange }
-                                        />
-                                    </div>
-                                    <div className="col-md-8" >
-                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0}
-                                            formeditado = { formeditado } value = { form.calle }
-                                            name = "calle" type = "text" placeholder = "CALLE Y NÚMERO" iconclass = "fas fa-map-signs" onChange = { onChange }
-                                        />
-                                    </div>
-                                </div>
-                                {/* {
-                                    title !== 'Editar proyecto' && 
-                                    <>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless justify-content-center mt-3">
-                                            <div className="col-md-6 text-center">
-                                                <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.image.placeholder}</label>
-                                                <ItemSlider items = { form.adjuntos.image.files } item = 'image'  handleChange = { handleChange }
-                                                    multiple = { false } />
-                                            </div>
-                                        </div>
-                                    </>
-                                } */}
-                                {/* <div className="d-flex justify-content-between border-top mt-3 pt-3">
-                                    <div className="mr-2">
-                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
-                                    </div>
-                                    <div>
-                                        <Button icon='' className = "btn btn-primary font-weight-bold text-uppercase"
-                                            onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'wizard-2-content') } }
-                                            text="ENVIAR" />
-                                    </div>
-                                </div>
-                            </div> */} 
+                            
                         </Form>
                     </div>
                 </div>

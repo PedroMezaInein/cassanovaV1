@@ -599,18 +599,7 @@ class EditProyectoForm extends Component {
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            {/* <div id="wizard-3" className="wizard-step flex-grow-1 flex-basis-0" data-wizard-type="step" onClick={(e) => { e.preventDefault(e); openWizard3(); if (showModal) { this.openModalCP(); } }}>
-                                                                <div className="wizard-wrapper">
-                                                                    <div className="wizard-icon">
-                                                                        <i className="wizard-check fas fa-check"></i>
-                                                                        <span className="wizard-number">3</span>
-                                                                    </div>
-                                                                    <div className="wizard-label">
-                                                                        <h3 className="wizard-title">Ubicación</h3>
-                                                                        <div className="wizard-desc">Ubicación del proyecto</div>
-                                                                    </div>
-                                                                </div>
-                                                            </div> */}
+                                                          
                                                         </div>
                                                     </div>
                                                 </div>
@@ -891,116 +880,7 @@ class EditProyectoForm extends Component {
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    {/* <div id="wizard-3-content" data-wizard-type="step-content">
-                                                        <div className="form-group row form-group-marginless">
-                                                            <div className="col-md-4">
-                                                                <InputNumberGray
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    withplaceholder={1}
-                                                                    withicon={1}
-                                                                    requirevalidation={0}
-                                                                    formeditado={formeditado}
-                                                                    name="cp"
-                                                                    onChange={this.onChange}
-                                                                    value={form.cp}
-                                                                    type="text"
-                                                                    placeholder="CÓDIGO POSTAL"
-                                                                    iconclass={"far fa-envelope"}
-                                                                    maxLength="5"
-                                                                    messageinc="Ingresa el código postal."
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <InputGray
-                                                                    letterCase={true}
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    withplaceholder={1}
-                                                                    withicon={1}
-                                                                    requirevalidation={0}
-                                                                    withformgroup={0}
-                                                                    formeditado={formeditado}
-                                                                    value={form.estado}
-                                                                    onChange={this.onChange}
-                                                                    name="estado"
-                                                                    type="text"
-                                                                    placeholder="ESTADO"
-                                                                    iconclass={"fas fa-map-marked-alt"}
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <InputGray
-                                                                    letterCase={false}
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    withplaceholder={1}
-                                                                    withicon={0}
-                                                                    requirevalidation={0}
-                                                                    withformgroup={0}
-                                                                    formeditado={formeditado}
-                                                                    value={form.municipio}
-                                                                    onChange={this.onChange}
-                                                                    name="municipio"
-                                                                    type="text"
-                                                                    placeholder="MUNICIPIO/DELEGACIÓN"
-                                                                    iconclass={"fas fa-map-marker-alt"}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                                        <div className="form-group row form-group-marginless">
-                                                            <div className="col-md-4">
-                                                                <InputGray
-                                                                    letterCase={true}
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    withplaceholder={1}
-                                                                    withicon={1}
-                                                                    requirevalidation={0}
-                                                                    withformgroup={0}
-                                                                    formeditado={formeditado}
-                                                                    value={form.colonia}
-                                                                    onChange={this.onChange}
-                                                                    name="colonia"
-                                                                    type="text"
-                                                                    placeholder="COLONIA"
-                                                                    iconclass={"fas fa-map-pin"}
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-8">
-                                                                <InputGray
-                                                                    letterCase={true}
-                                                                    withtaglabel={1}
-                                                                    withtextlabel={1}
-                                                                    withplaceholder={1}
-                                                                    withicon={1}
-                                                                    requirevalidation={0}
-                                                                    withformgroup={0}
-                                                                    formeditado={formeditado}
-                                                                    name="calle"
-                                                                    value={form.calle}
-                                                                    onChange={this.onChange}
-                                                                    type="text"
-                                                                    placeholder="CALLE Y NÚMERO"
-                                                                    iconclass={"fas fa-map-signs"}
-                                                                    messageinc="Ingresa la calle y número."
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="d-flex justify-content-between border-top pt-3">
-                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-light-primary2 font-weight-bold" onClick={() => { openWizard2() }}>
-                                                                <span className="svg-icon svg-icon-md mr-2">
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/Left-2.svg')} />
-                                                                </span>Anterior
-                                                            </button>
-                                                            <button type="button" className="btn btn-sm d-flex place-items-center btn-primary2 font-weight-bold" onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'wizard-3-content') }} >Editar
-                                                                <span className="svg-icon svg-icon-md ml-2 mr-0">
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/Sending.svg')} />
-                                                                </span>
-                                                            </button>
-                                                        </div>
-                                                    </div> */}
+                                                   
                                                 </Form>
                                             </div>
                                         </div>
