@@ -411,7 +411,7 @@ class TicketView extends Component {
                                             <div className="mr-4 align-self-center d-none d-sm-none d-md-none d-lg-block">
                                                 <div className="symbol symbol-50 symbol-lg-120 symbol-light-info">
                                                     <span className="font-size-h6 symbol-label font-weight-boldest ">
-                                                        {data.identificador}
+                                                        {data.identificador}    
                                                     </span>
                                                 </div>
                                             </div>

@@ -130,9 +130,8 @@ class EgresosFormNew extends Component {
         const { at } = this.props
         apiGet('proveedores/options', at).then((response) => {
             Swal.close()
-            const { areas, bancos, tipos_cuentas } = response.data
+            const {  bancos, tipos_cuentas } = response.data
             const { options } = this.state
-            // options['areas'] = setOptions(areas, 'nombre', 'id')
             options['bancos'] = setSelectOptions(bancos, 'nombre')
             options['tipos'] = setSelectOptions(tipos_cuentas, 'tipo')
             this.setState({
