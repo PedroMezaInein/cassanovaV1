@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
-import { CalendarDay,  Button } from '../../form-components'
-import { validateAlert } from '../../../functions/alert'
-class EditTicketForm extends Component {
+import { Button } from '../../form-components'
+import { validateAlert,questionAlert } from '../../../functions/alert'
+import ItemSlider from '../../singles/ItemSlider'
+
+class SolicitudServicio extends Component {
     isMantenimiento = () => {
         const { ticket } = this.props
         if(ticket.subarea){
@@ -22,26 +24,37 @@ class EditTicketForm extends Component {
         onChange({ target: { name: type, value: value } })
     }
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, at, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateSolicitud, estatus, ticket, at, ...props } = this.props
         return (
             <div>
                 {
-                    <div className="row justify-content-center">    
+                    <div className="row justify-content-center">  
+                     <div className="text-center mb-5">
+                            <span className={`font-size-h4 font-weight-bolder text-gray-700 letter-spacing-4px `}>
+                               SOLICITUD DE SERVICIO
+                            </span>
+                        </div>
+                        <div  className="col-md-12 ustify-content-left" >
+                        <Button icon='' className="btn btn-light-success font-weight-bold text-uppercase" text="Descargar solicitud"
+                           onClick = { (e) => { questionAlert('¿DESEAS DESCARGAR ARICHIVO?', 'DESCARGAR ARACHIVO DE SERVICIO PARA FIRMA', () => generateSolicitud(true)) } } />
+                        </div>  
                         <div className="col-md-12">
-                            
                         <Form id= 'fechas' onSubmit = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'fechas') } }{...props} >
                             <Row className="mx-0">
-                                <Col md="6" className="align-self-center px-0 d-flex justify-content-center">
+                                <Col md="12" className="align-self-center px-0 d-flex justify-content-center">
+                                    
                                     <div>
-                                        <div className="col-md-12 text-center px-0" style={{ height: '1px' }}>
-                                            <label className="text-center font-weight-bold text-dark-60">Fecha Autorizada</label>
-                                        </div>
-                                        <div className="col-md-12 text-center px-0">
-                                            <div className="calendar-tickets">
-                                                <CalendarDay value = { form.fechaAutorizada } date = { form.fechaAutorizada }
-                                                    onChange = { onChange } name = 'fechaAutorizada' withformgroup = { 0 }
-                                                    requirevalidation = { 0 } />
+                                      
+                                        <div className="form-group row form-group-marginless mx-0">
+                                            <div className="col-md-12 align-self-center">
+                                                <div>
+                                                    <div className="text-center mt-4 font-weight-bold text-dark-60 mb-4">
+                                                        {form.adjuntos.solicitud_servicio.placeholder}
+                                                    </div>
+                                                    <ItemSlider items={form.adjuntos.solicitud_servicio.files} multiple = { true } item='solicitud_servicio' handleChange={handleChange} deleteFile={deleteFile} />
+                                                </div>
                                             </div>
+                                            
                                         </div>
                                     </div>
                                 </Col>                                
@@ -59,6 +72,7 @@ class EditTicketForm extends Component {
                                                         validateAlert(onSubmit, e, 'fechas')
                                                     }
                                                 } />
+                                                
                                         </div>
                                     </div>
                                 </div>
@@ -73,4 +87,4 @@ class EditTicketForm extends Component {
     }
 }
 
-export default EditTicketForm
+export default SolicitudServicio

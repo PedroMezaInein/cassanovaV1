@@ -18,6 +18,7 @@ class AddTicket extends Component {
             solicito: '',
             tipo_trabajo: '',
             descripcion: '',
+            solicitado: '',
             adjuntos: {
                 fotos: {
                     value: '',
