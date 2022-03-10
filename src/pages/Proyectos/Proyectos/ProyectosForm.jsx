@@ -62,6 +62,8 @@ class ProyectosForm extends Component {
             clientes: [],
             cliente_principal: '',
             tipoProyecto:'',
+            ciudad: '',
+            sucursal: '',
             m2:'',
             costo: 0.0,
             adjuntos: {

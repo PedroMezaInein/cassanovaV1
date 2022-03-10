@@ -20952,10 +20952,8 @@ a.text-hover-dark-75,
 .text-stroke {
   -webkit-text-stroke-width: 0.35rem;
   -moz-text-stroke-width: 0.35rem;
-  text-stroke-width: 0.35rem;
   -webkit-text-stroke-color: #ffffff;
-  -moz-text-stroke-color: #ffffff;
-  text-stroke-color: #ffffff; }
+  -moz-text-stroke-color: #ffffff; }
 
 .cursor-pointer {
   cursor: pointer; }
@@ -23893,7 +23891,6 @@ button {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: ""; }
 
 .dropdown-toggle.nav-link:before, .dropdown-toggle.btn:before {
@@ -23908,7 +23905,6 @@ button {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   display: none; }
 
@@ -23937,7 +23933,6 @@ button {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: ""; }
 
 .btn-group.dropright > .btn.dropdown-toggle:after {
@@ -23951,7 +23946,6 @@ button {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: ""; }
 
 .btn-group.dropleft > .btn {
@@ -23991,10 +23985,7 @@ code {
     .dropdown-menu > .dropdown-item > i:before {
       line-height: 0;
       vertical-align: middle; }
-  .dropdown-menu .dropdown-menu:not(.daterangepicker) {
-    /*rtl:raw:
-        left: auto !important;
-        */ }
+
   .dropdown-menu.dropdown-menu-anim-up {
     -webkit-animation: animation-dropdown-menu-fade-in .3s ease 1, animation-dropdown-menu-move-up .3s ease-out 1;
     animation: animation-dropdown-menu-fade-in .3s ease 1, animation-dropdown-menu-move-up .3s ease-out 1; }
@@ -24580,32 +24571,6 @@ code {
   -webkit-box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15); }
 
-.tooltip.bs-tooltip-left .arrow, .tooltip.bs-tooltip-auto[x-placement^="left"] .arrow,
-.tooltip.bs-tooltip-auto[x-placement^="left"] .arrow {
-  /*rtl:raw:
-        left: auto;
-        right: 0;
-        */ }
-  .tooltip.bs-tooltip-left .arrow:before, .tooltip.bs-tooltip-auto[x-placement^="left"] .arrow:before,
-  .tooltip.bs-tooltip-auto[x-placement^="left"] .arrow:before {
-    /*rtl:raw:
-        border-width: 0.4rem 0 0.4rem 0.4rem;
-        border-left-color: #fff;
-        */ }
-
-.tooltip.bs-tooltip-right .arrow, .tooltip.bs-tooltip-auto[x-placement^="right"] .arrow,
-.tooltip.bs-tooltip-auto[x-placement^="right"] .arrow {
-  /*rtl:raw:
-        right: auto;
-        left: 0;
-        */ }
-  .tooltip.bs-tooltip-right .arrow:before, .tooltip.bs-tooltip-auto[x-placement^="right"] .arrow:before,
-  .tooltip.bs-tooltip-auto[x-placement^="right"] .arrow:before {
-    /*rtl:raw:
-        border-width: 0.4rem 0.4rem 0.4rem 0;
-        border-right-color: #fff;
-        */ }
-
 .tooltip.tooltop-auto-width .tooltip-inner {
   white-space: nowrap;
   max-width: none; }
@@ -24763,7 +24728,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
     font-size: 0.75rem;
     color: #3699FF; }
@@ -24783,7 +24747,6 @@ code {
       text-transform: none;
       -moz-osx-font-smoothing: grayscale;
       -webkit-font-smoothing: antialiased;
-      font-smoothing: antialiased;
       content: ""; }
 
 .accordion.accordion-toggle-arrow .card .card-header .card-title {
@@ -24801,7 +24764,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
     color: #3699FF;
     font-size: 0.7rem;
@@ -26549,7 +26511,6 @@ code {
     position: absolute;
     opacity: 0; }
   .switch input:empty ~ span {
-    display: inline-block;
     position: relative;
     float: left;
     width: 1px;
@@ -26594,7 +26555,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
     line-height: 0; }
 
@@ -33868,7 +33828,6 @@ code {
           text-transform: none;
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
-          font-smoothing: antialiased;
           content: "";
           font-size: 0.6rem; }
         .navi .navi-item .navi-link .navi-arrow.navi-arrow-down {
@@ -34945,7 +34904,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
     font-size: 0.7rem; }
   .datetimepicker thead th.prev > span:before {
@@ -34959,7 +34917,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
     font-size: 0.7rem; }
   .datetimepicker tbody tr > td span {
@@ -35101,7 +35058,6 @@ code {
       text-transform: none;
       -moz-osx-font-smoothing: grayscale;
       -webkit-font-smoothing: antialiased;
-      font-smoothing: antialiased;
       content: ""; }
     .alert[data-notify] .close:hover:before {
       opacity: 1;
@@ -35160,7 +35116,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: ""; }
   .bootstrap-select > .dropdown-toggle:before {
     width: auto; }
@@ -35222,7 +35177,6 @@ code {
       text-transform: none;
       -moz-osx-font-smoothing: grayscale;
       -webkit-font-smoothing: antialiased;
-      font-smoothing: antialiased;
       content: ""; }
     .bootstrap-select .dropdown-menu.inner > li.selected > a .check-mark:after {
       display: none; }
@@ -35765,7 +35719,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: ""; }
   .dataTables_wrapper table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before {
     color: #3699FF;
@@ -35780,7 +35733,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
     display: none !important;
   }
@@ -36216,7 +36168,6 @@ code {
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: ""; }
       .fc-unthemed .fc-toolbar .fc-button .fc-icon.fc-icon-right-single-arrow {
         font-family: Ki;
@@ -36229,7 +36180,6 @@ code {
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: ""; }
 
 .fc-unthemed .fc-axis > span {
@@ -36825,8 +36775,7 @@ code {
   .fc-unthemed .fc-toolbar .fc-button.fc-button-disabled {
     opacity: 0.7; }
 
-.gmaps {
-  /* important!  bootstrap sets max-width on img to 100% which conflicts with google map canvas*/ }
+
   .gmaps img {
     max-width: none; }
   .gmaps.gmaps-static > div {
@@ -37585,7 +37534,6 @@ code {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
     font-size: 0.6rem;
     color: #80808F; }
@@ -37630,7 +37578,6 @@ code {
       text-transform: none;
       -moz-osx-font-smoothing: grayscale;
       -webkit-font-smoothing: antialiased;
-      font-smoothing: antialiased;
       content: "";
       font-size: 0.6rem;
       color: #80808F; }
@@ -37672,7 +37619,6 @@ code {
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: "";
         font-size: 0.6rem;
         color: #80808F; }
@@ -37975,7 +37921,6 @@ body.swal2-height-auto {
         text-transform: none;
         -moz-osx-font-smoothing: grayscale;
         -webkit-font-smoothing: antialiased;
-        font-smoothing: antialiased;
         content: "";
         font-size: 0.6rem;
         color: #B5B5C3; }
@@ -38231,7 +38176,6 @@ body.swal2-height-auto {
       text-transform: none;
       -moz-osx-font-smoothing: grayscale;
       -webkit-font-smoothing: antialiased;
-      font-smoothing: antialiased;
       content: "";
       font-size: 0.9rem; }
   .toast .toast-title {
@@ -38631,7 +38575,6 @@ body.swal2-height-auto {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: ""; }
   .example .example-toggle.example-toggled {
     background-color: #F3F6F9;
@@ -38657,7 +38600,6 @@ body.swal2-height-auto {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: ""; }
 
 .example .example-copy.example-copied {
@@ -38878,7 +38820,8 @@ a:focus {
 canvas {
   -moz-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none; }
+  -ms-user-select: none;
+  user-select: none; }
 
 body {
   background: #EEF0F8; }
@@ -38985,7 +38928,7 @@ body {
         .header-menu .menu-nav > .menu-item .menu-link .menu-icon {
           display: -webkit-box;
           display: -ms-flexbox;
-          display: flex;
+          display: flex; 
           -webkit-box-align: center;
           -ms-flex-align: center;
           align-items: center; }
@@ -39016,6 +38959,7 @@ body {
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
         -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
         border-radius: 4px;
         padding: 20px 0px ; }
         .header-menu .menu-nav > .menu-item .menu-submenu .menu-scroll {
@@ -39315,7 +39259,6 @@ body {
           text-transform: none;
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
-          font-smoothing: antialiased;
           content: ""; }
           [direction="rtl"] .header-menu .menu-nav > .menu-item > .menu-link .menu-arrow:before {
             content: "" !important; }
@@ -39379,7 +39322,6 @@ body {
               text-transform: none;
               -moz-osx-font-smoothing: grayscale;
               -webkit-font-smoothing: antialiased;
-              font-smoothing: antialiased;
               content: ""; }
               [direction="rtl"] .header-menu .menu-nav > .menu-item .menu-submenu > .menu-subnav > .menu-item > .menu-link .menu-arrow:before {
                 content: "" !important; }
@@ -39468,7 +39410,6 @@ body {
                   text-transform: none;
                   -moz-osx-font-smoothing: grayscale;
                   -webkit-font-smoothing: antialiased;
-                  font-smoothing: antialiased;
                   content: ""; }
                   [direction="rtl"] .header-menu .menu-nav > .menu-item .menu-submenu > .menu-subnav .menu-content .menu-inner > .menu-item > .menu-link .menu-arrow:before {
                     content: "" !important; }
@@ -39736,7 +39677,8 @@ body {
           line-height: 0; }
           .header-menu-mobile .menu-nav .menu-item > .menu-heading .menu-arrow:before,
           .header-menu-mobile .menu-nav .menu-item > .menu-link .menu-arrow:before {
-            -webkit-transform: translate3d(0, 0, 0); }
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0); }
       .header-menu-mobile .menu-nav .menu-item.menu-item-open > .menu-heading > .menu-arrow:before,
       .header-menu-mobile .menu-nav .menu-item.menu-item-open > .menu-link > .menu-arrow:before {
         -webkit-transform: rotateZ(90deg)/*rtl:ignore*/;
@@ -39853,7 +39795,6 @@ body {
             text-transform: none;
             -moz-osx-font-smoothing: grayscale;
             -webkit-font-smoothing: antialiased;
-            font-smoothing: antialiased;
             content: ""; }
             [direction="rtl"] .header-menu-mobile .menu-nav > .menu-item > .menu-heading .menu-arrow:before, [direction="rtl"]
             .header-menu-mobile .menu-nav > .menu-item > .menu-link .menu-arrow:before {
@@ -39930,7 +39871,6 @@ body {
               text-transform: none;
               -moz-osx-font-smoothing: grayscale;
               -webkit-font-smoothing: antialiased;
-              font-smoothing: antialiased;
               content: ""; }
               [direction="rtl"] .header-menu-mobile .menu-nav > .menu-item .menu-submenu .menu-item > .menu-heading .menu-arrow:before, [direction="rtl"]
               .header-menu-mobile .menu-nav > .menu-item .menu-submenu .menu-item > .menu-link .menu-arrow:before {
@@ -40385,7 +40325,8 @@ body {
         line-height: 0; }
         .aside-menu .menu-nav .menu-item > .menu-heading .menu-arrow:before,
         .aside-menu .menu-nav .menu-item > .menu-link .menu-arrow:before {
-          -webkit-transform: translate3d(0, 0, 0); }
+          -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0); }
     .aside-menu .menu-nav .menu-item.menu-item-open > .menu-heading > .menu-arrow:before,
     .aside-menu .menu-nav .menu-item.menu-item-open > .menu-link > .menu-arrow:before {
       -webkit-transform: rotateZ(90deg)/*rtl:ignore*/;
@@ -40503,7 +40444,6 @@ body {
           text-transform: none;
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
-          font-smoothing: antialiased;
           content: ""; }
           [direction="rtl"] .aside-menu .menu-nav > .menu-item > .menu-heading .menu-arrow:before, [direction="rtl"]
           .aside-menu .menu-nav > .menu-item > .menu-link .menu-arrow:before {
@@ -40582,7 +40522,6 @@ body {
             text-transform: none;
             -moz-osx-font-smoothing: grayscale;
             -webkit-font-smoothing: antialiased;
-            font-smoothing: antialiased;
             content: ""; }
             [direction="rtl"] .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item > .menu-heading .menu-arrow:before, [direction="rtl"]
             .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item > .menu-link .menu-arrow:before {
@@ -40660,13 +40599,15 @@ body {
   .aside-menu.aside-menu-dropdown .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]) > .menu-link > .menu-arrow:before {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
-    -webkit-transform-style: preserve-3d; }
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d; }
   .aside-minimize .aside-menu .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]) > .menu-submenu,
   .aside-menu.aside-menu-dropdown .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]) > .menu-submenu {
     display: none !important;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
-    -webkit-transform-style: preserve-3d; }
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d; }
   .aside-minimize .aside-menu .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover,
   .aside-menu.aside-menu-dropdown .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover {
     position: relative; }
@@ -40721,7 +40662,8 @@ body {
             .aside-menu.aside-menu-dropdown .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover > .menu-submenu .menu-subnav > .menu-item .menu-link .menu-text {
               -webkit-transform: translateZ(0);
               transform: translateZ(0);
-              -webkit-transform-style: preserve-3d; }
+              -webkit-transform-style: preserve-3d;
+              transform-style: preserve-3d; }
             .aside-minimize .aside-menu .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover > .menu-submenu .menu-subnav > .menu-item .menu-link .menu-icon,
             .aside-menu.aside-menu-dropdown .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover > .menu-submenu .menu-subnav > .menu-item .menu-link .menu-icon {
               display: -webkit-box;
@@ -40841,7 +40783,6 @@ body {
                 text-transform: none;
                 -moz-osx-font-smoothing: grayscale;
                 -webkit-font-smoothing: antialiased;
-                font-smoothing: antialiased;
                 content: ""; }
                 [direction="rtl"] .aside-minimize .aside-menu .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover > .menu-submenu .menu-subnav > .menu-item > .menu-heading .menu-arrow:before, [direction="rtl"]
                 .aside-minimize .aside-menu .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover > .menu-submenu .menu-subnav > .menu-item > .menu-link .menu-arrow:before, [direction="rtl"]

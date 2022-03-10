@@ -5,13 +5,13 @@ import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
 import { LicenciasForm } from '../../../components/forms'
-import { setTextTableCenter } from '../../../functions/setters'
-import { OverlayTrigger, Tooltip, Tabs, Tab } from 'react-bootstrap'
+import { setTextTableCenter,setNaviIcon } from '../../../functions/setters'
+import {  Tabs, Tab } from 'react-bootstrap'
 import { FiltersLicencias, FiltersEquipos } from '../../../components/filters'
 import { URL_DEV, LICENCIAS, EQUIPOS_ADMINISTRACION } from '../../../constants'
 import { apiDelete, apiPostFormResponseBlob, catchErrors } from '../../../functions/api'
 import { deleteAlert, doneAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-
+import { DropdownButton, Dropdown } from 'react-bootstrap'
 class Licencias extends Component {
 
     state = {
@@ -63,27 +63,26 @@ class Licencias extends Component {
     }
 
     setActions = (element) => {
+
         return(
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger rootClose overlay={<Tooltip><span className="font-weight-bold">Editar</span></Tooltip>} >
-                    <button className='btn btn-icon btn-actions-table btn-sm ml-2 btn-text-success btn-hover-success'
-                        onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }}>
-                        <i className='las la-pen icon-lg' />
-                    </button>
-                </OverlayTrigger>
-                <OverlayTrigger rootClose overlay = { <Tooltip><span className="font-weight-bold">Eliminar</span></Tooltip> } >
-                    <button className = 'btn btn-icon btn-actions-table btn-sm ml-2 btn-text-danger btn-hover-danger'
-                        onClick = { (e) => { 
-                            e.preventDefault(); 
-                            deleteAlert(
-                                `Eliminarás la licencia`,
-                                `¿Deseas continuar?`,
-                                () => { this.deleteLicencia(element.id) }
-                            )
-                        } }>
-                        <i className = 'las la-trash icon-lg' />
-                    </button>
-                </OverlayTrigger>
+                            <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-success dropdown-success" 
+                 onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }}  >
+                        {setNaviIcon('las la-pen icon-lg', 'editar')}
+                    </Dropdown.Item> 
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                      onClick = { (e) => { 
+                        e.preventDefault(); 
+                        deleteAlert(
+                            `Eliminarás la licencia`,
+                            `¿Deseas continuar?`,
+                            () => { this.deleteLicencia(element.id) }
+                        )
+                    } }>
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                </DropdownButton>
             </div>
         )
     }

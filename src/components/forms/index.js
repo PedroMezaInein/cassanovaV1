@@ -67,6 +67,8 @@ import mantenimientoCorrectivo from './calidad/Tickets/MantenimientoCorrectivo'
 import SolicitudTabla from './calidad/Tickets/SolicitudTabla'
 import procesoTicketForm from './calidad/ProcesoTicketForm'
 import editTicketForm from './calidad/EditTicketForm'
+import solicitudServicio from './calidad/SolicitudServicio'
+
 import CartasCalidadForm from './calidad/CartasCalidadForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
 import flujosReportesVentas from './reportes/FlujosReportesVentas'
@@ -221,6 +223,7 @@ export const MantenimientoCorrectivo = mantenimientoCorrectivo
 export const AgregarVacacionesForm = agregarVacacionesForm
 export const ProcesoTicketForm = procesoTicketForm
 export const EditTicketForm = editTicketForm
+export const SolicitudServicio = solicitudServicio
 
 export const FlujosReportesVentas = flujosReportesVentas
 export const FlujosReportes = flujosReportes

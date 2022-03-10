@@ -433,7 +433,6 @@ class Modulo extends Component {
                     form.adjuntos.claves.files = modulo.adjuntos
                     form.type = 'Accesos claves'
                 }
-
                 modal.adjuntos = true
                 Swal.close()
                 this.setState({ ...this.state, form, modulo, type })

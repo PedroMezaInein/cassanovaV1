@@ -9,9 +9,6 @@ div#react-tag-input {
     padding-top: 6px!important;
     padding-bottom: 6px!important;
 
-    // height: calc(1.5em + 1.3rem + 2px)!important;
-
-
 .react-tag-input__input {
     background: transparent;
     color: #464E5F!important;
@@ -25,7 +22,7 @@ div#react-tag-input {
 .react-tag-input__input::-moz-placeholder,
 .react-tag-input__input::-webkit-input-placeholder {
     color: #babac5 !important;
-    /* Input placeholder */
+
 }
 
 .react-tag-input__tag__content {
@@ -40,7 +37,7 @@ div#react-tag-input {
     border-color: transparent;
     padding-left: 0.2rem;
     font-weight: 500;
-    // height: 2rem;
+
 }
 
 .react-tag-input__tag__remove:hover {
