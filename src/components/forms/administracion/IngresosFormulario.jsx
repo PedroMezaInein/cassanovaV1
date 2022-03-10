@@ -262,8 +262,72 @@ class IngresosFormulario extends Component {
                 empresa = data.empresas.find((element) => {
                     return element.rfc === obj.rfc_emisor
                 })
-                if(!empresa){
-                    errores.push( 'No existe una empresa con ese RFC' )
+                // if(!empresa){
+                //     errores.push( 'No existe una empresa con ese RFC' )
+                // }
+                if(!empresa){  
+                    console.log('no hay empresa')  
+                    // errores.push( console.log.error )
+                        // `No existe el cliente`,
+                        // `¿Lo deseas crear?`,
+                        // () => {
+                        //     const { at } = this.props
+                        //     let objeto = {}
+                        //     let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+                        //     cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
+                        //     cadena = cadena.replace(/,/g, '').toUpperCase()
+                        //     cadena = cadena.replace(/\./g, '').toUpperCase()
+                        //     objeto.empresa = cadena
+                        //     objeto.nombre = cadena
+                        //     objeto.rfc = obj.rfc_receptor.toUpperCase()
+                        //     apiPostForm( 'cliente', objeto, at ).then(
+                        //         (response) => {
+                        //             const { cliente } = response.data
+                        //             this.getOptions()
+                        //             doneAlert(`Cliente ${cliente.empresa} generado con éxito`, () => {
+                        //                 form.facturaObject = obj
+                        //                 this.setState({
+                        //                     ...this.state,
+                        //                     form
+                        //                 })
+                        //                 this.checkFactura(obj)                    
+                        //             })
+                        //         }, (error) => { printResponseErrorAlert(error) }
+                        //     ).catch((error) => { catchErrors(error) })
+                        // }
+                   
+
+        
+                        // data.append('empresa', obj.nombre_emisor)
+                        // data.append('nombre', obj.nombre_emisor)
+                        // data.append('rfc', obj.rfc_emisor)
+                
+                        // await axios.post( 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer $`}}).then(
+                        //     (response) => {
+                
+                        //         this.getIngresosAxios()
+                                
+                        //         swal({
+                        //             title: '¡Felicidades 🥳!',
+                        //             text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                        //             icon: 'success',
+                        //             timer: 1500,
+                        //             buttons: false
+                        //         })
+                        //     },
+                        //     (error) => {
+                        //         console.log(error, 'error')
+                        //         if(error.response.status === 401){
+                        //             forbiddenAccessAlert()
+                        //         }else{
+                        //             errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                        //         }
+                        //     }
+                        // ).catch((error) => {
+                        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                        //     console.log(error, 'error')
+                        // })
+                   
                 }else{
                     form.empresa = empresa.id.toString()
                     if(empresa.cuentas){
