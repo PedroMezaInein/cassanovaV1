@@ -307,7 +307,7 @@ class ActualizarPresupuestoForm extends Component {
                             <div className="card-toolbar" >
                                 {children}
                                 {
-                                    (presupuesto.estatus.estatus === 'En revisión' || presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Volumetrías') && (!modulo_calidad || !modulo_proyectos)?
+                                    (presupuesto.estatus.estatus === 'En revisión' || presupuesto.estatus.estatus === 'Conceptos' || presupuesto.estatus.estatus === 'Costos' || presupuesto.estatus.estatus === 'Volumetrías') && (!modulo_calidad || !modulo_proyectos)?
                                     <button type="button" className="btn btn-sm btn-light-info font-weight-bolder font-size-13px" onClick={openModal}>
                                         AGREGAR CONCEPTO
                                     </button>
