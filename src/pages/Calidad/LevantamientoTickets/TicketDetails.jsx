@@ -46,6 +46,7 @@ class TicketDetails extends Component {
             empresas: [],
             areas: [],
             subareas: [],
+            nom_cliente: [],
             estatus_final:[
                 {
                     id: 1, estatus: "Aceptado"
@@ -232,19 +233,31 @@ class TicketDetails extends Component {
                 const { ticket } = response.data
                 const { options, data, formularios } = this.state
                 let aux = []
+                let res = []
                 if(ticket.proyecto){
                     if(ticket.proyecto.equipos_instalados){
-                        ticket.proyecto.equipos_instalados.forEach((element) => {
+                        ticket.proyecto.equipos_instalados.forEach((element) => {                            
                             if(element.equipo){
                                 const { texto } = element.equipo
                                 aux.push({ value: element.id.toString(), name: `${element.fecha} - (${element.cantidad}) ${texto}` })
                             }
                         })
                     }
+                    if(ticket.proyecto.clientes){
+                        ticket.proyecto.clientes.forEach((element) => {
+                            if(element.empresa){
+                                const { texto } = element.empresa
+                                res.push({ value: element.empresa.toString(), name: `${element.empresa}` })
+                            }                            
+                        })
+                    }
                 }
-                formularios.ticket.adjuntos.solicitud_servicio.files = ticket.adjuntos_servicios
 
+                formularios.ticket.adjuntos.solicitud_servicio.files = ticket.adjuntos_servicios
+                formularios.nom_cliente = ticket.nom_cliente
+                options.nom_cliente = res
                 options.equipos = aux
+
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
                 this.setState({ticket: ticket, formularios, options, data })
@@ -749,7 +762,8 @@ class TicketDetails extends Component {
             formularios.ticket.fechaAutorizada = new Date( moment(ticket.fecha_autorizada) )
             else
             formularios.ticket.fechaAutorizada = new Date()
-
+            
+            formularios.ticket.nom_cliente = ticket.nom_cliente
         formularios.ticket.empleado = ticket.tecnico_asiste === null || ticket.tecnico_asiste === 'null' ? '' : ticket.tecnico_asiste
         formularios.ticket.descripcion_solucion = ticket.descripcion_solucion === null || ticket.descripcion_solucion === 'null' ? '' : ticket.descripcion_solucion
         formularios.ticket.recibe = ticket.recibe === null || ticket.recibe === 'null' ? '' : ticket.recibe

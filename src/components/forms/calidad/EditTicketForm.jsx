@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
-import { CalendarDay,  Button } from '../../form-components'
+import { CalendarDay,  Button,SelectSearchGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 class EditTicketForm extends Component {
     isMantenimiento = () => {
@@ -16,10 +16,14 @@ class EditTicketForm extends Component {
         }
         return false;
     }
+    updateProyecto = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'proyecto' } })
+    }
 
     updateSelect = (value, type) => {
         const { onChange } = this.props
-        onChange({ target: { name: type, value: value } })
+        onChange({ target: { name: 'cliente', value: value } })
     }
     render() {
         const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, at, ...props } = this.props
@@ -36,12 +40,32 @@ class EditTicketForm extends Component {
                                         <div className="col-md-12 text-center px-0" style={{ height: '1px' }}>
                                             <label className="text-center font-weight-bold text-dark-60">Fecha Autorizada</label>
                                         </div>
-                                        <div className="col-md-12 text-center px-0">
+                                        <div className="col-md-6 text-center px-0">
                                             <div className="calendar-tickets">
                                                 <CalendarDay value = { form.fechaAutorizada } date = { form.fechaAutorizada }
                                                     onChange = { onChange } name = 'fechaAutorizada' withformgroup = { 0 }
                                                     requirevalidation = { 0 } />
                                             </div>
+                                        </div>                                        
+                                    </div>
+                                </Col>  
+                                <Col md="6" className="align-self-center px-0 d-flex justify-content-center">
+                                    <div>
+                                        <div className="col-md-12">
+                                            <SelectSearchGray
+                                                formeditado={formeditado}
+                                                options={options.nom_cliente}
+                                                placeholder="SELECCIONA EL CLIENTE"
+                                                name="nom_cliente"
+                                                value={form.nom_cliente}
+                                                onChange={this.updateSelect}
+                                                iconclass="las la-swatchbook icon-2x"
+                                                customdiv="mb-0"
+                                                iconvalid={1}
+                                                withtaglabel={1}
+                                                withtextlabel={1}
+                                                withicon={1}
+                                            />                                           
                                         </div>
                                     </div>
                                 </Col>                                
