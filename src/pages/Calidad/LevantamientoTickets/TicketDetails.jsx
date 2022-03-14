@@ -246,7 +246,6 @@ class TicketDetails extends Component {
                     if(ticket.proyecto.clientes){
                         ticket.proyecto.clientes.forEach((element) => {
                             if(element.empresa){
-                                const { texto } = element.empresa
                                 res.push({ value: element.empresa.toString(), name: `${element.empresa}` })
                             }                            
                         })
@@ -961,6 +960,22 @@ class TicketDetails extends Component {
                 value: user.email,
                 label: user.email
             })
+            aux_contactos.push({
+                value:"jc.alvarez@clinicadentalcentauro.com.mx",
+                label:"jc.alvarez@clinicadentalcentauro.com.mx"
+            })
+            aux_contactos.push({
+                value:"jordi.timoneda@keralty.com",
+                label:"jordi.timoneda@keralty.com"
+            })
+            aux_contactos.push({
+                value:"antonio.galvan@clinicadentalcentauro.com.mx",
+                label:"antonio.galvan@clinicadentalcentauro.com.mx"
+            })
+            aux_contactos.push({
+                value:"claudio@infraestructuramedica.mx",
+                label:"claudio@infraestructuramedica.mx"
+            })
         }
         options.correos_clientes = []
         presupuesto.proyecto.contactos.forEach(contacto => {
@@ -1666,6 +1681,10 @@ class TicketDetails extends Component {
         var arrayCorreos = formularios.presupuesto_generado.correos_reporte.map(function (obj) {
             return obj.label;
         });
+        var arrayServicios = ticket.adjuntos_servicios.map(function (ser) {
+            return ser.url;
+        });
+        formularios.presupuesto_generado.adjuntos_servicios = arrayServicios
         formularios.presupuesto_generado.correos_reporte = arrayCorreos
         await axios.put(`${URL_DEV}v2/calidad/tickets/${ticket.id}/correo`, formularios.presupuesto_generado, { headers: setSingleHeader(access_token) }).then(
             (response) => { 
