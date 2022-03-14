@@ -21,6 +21,7 @@ class ActualizarPresupuesto extends Component {
         modal_adjuntos:false,
         modal_mail: false,
         presupuesto: '',
+        ticket: '',
         form: {
             unidad: '',
             partida: '',
@@ -618,7 +619,7 @@ class ActualizarPresupuesto extends Component {
                 <ActualizarPresupuestoForm formeditado = { formeditado } form = { form } onChange = { this.onChange } checkButton = { this.checkButton }
                     onSubmit = { this.onSubmit } presupuesto = { presupuesto } openModal = { this.openModal } showInputsCalidad = { false }
                     options = { options } modulo_calidad = { false } aux_presupuestos = { aux_presupuestos }
-                    historialPresupuestos = { this.openModalDownloadPDF } {...this.props} />
+                    historialPresupuestos = { this.openModalDownloadPDF } {...this.props} /> 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
                     <AgregarConcepto
                         options={options}

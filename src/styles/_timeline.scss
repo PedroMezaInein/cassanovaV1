@@ -399,12 +399,14 @@ $color-rechazado-presupuesto:#F64E60;
 .ribbon-tickets{
     background-image: linear-gradient(to right,#de6c55, #d56d98, #a383c1, #6d94c3, #649baa);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .ribbon-presupuesto{
     background-image: linear-gradient(to right, #27b8c9, #00a3d0, #008acf, #4e6ec1, #764ca2);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 

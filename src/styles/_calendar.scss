@@ -1,7 +1,8 @@
 .evento {
     padding: 0.4rem 1rem;
     border: 0px;
-    text-align: center; 
+    text-align: center;
+
     i {
         color: white
     }
@@ -14,6 +15,7 @@
     background-color: #EEE5FF;
     border-color: transparent;
     min-width: 100%;
+
     i {
         color: #8950FC;
     }
@@ -34,6 +36,7 @@
     background-color: #E8F5E9;
     border-color: transparent;
     min-width: 100%;
+
     i {
         color: #388E3C;
     }
@@ -45,10 +48,11 @@ a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-
 
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-future {
     border-color: white;
-    background-color: transparent!important;
+    background-color: transparent !important;
 }
-a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-today{
-    border-color: #F3F6F9 ;
+
+a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-today {
+    border-color: #F3F6F9;
 }
 
 .cumpleaños {
@@ -103,24 +107,8 @@ button.fc-today-button.btn.btn-primary {
     padding: 0 1.25rem;
     font-size: 1rem;
     border-radius: 0px 0px;
-    font-weight: 700!important;
+    font-weight: 700 !important;
 }
-
-// .btn.btn-primary:hover:not(.btn-text){
-//     background: #F3F6F9;
-//     border: 1px solid #ECF0F3;
-//     color: #80808F;
-// }
-
-// .btn.btn-primary:not(:disabled):not(.disabled):active:not(.btn-text),
-// .btn.btn-primary:not(:disabled):not(.disabled).active,
-// .show>.btn.btn-primary.dropdown-toggle,
-// .show .btn.btn-primary.btn-dropdown {
-//     color: #2171c1;
-//     background-color: #E1F0FF;
-//     border-color: transparent;
-//     font-weight: 500!important;
-// }
 
 h2.fc-toolbar-title {
     font-size: 1.5rem !important;
@@ -129,7 +117,8 @@ h2.fc-toolbar-title {
     margin-top: 0.75rem !important;
     color: #80808F !important;
     font-weight: 600 !important;
-    white-space:nowrap;
+    white-space: nowrap;
+
     @include down-screen($xxs) {
         white-space: pre-line;
     }
@@ -141,42 +130,49 @@ a.fc-col-header-cell-cushion {
     font-size: 1rem;
     font-weight: 700 !important;
 }
-.table-bordered thead th{
+
+.table-bordered thead th {
     padding: 0.75rem 0.5rem;
     font-size: 1rem;
     font-weight: 500;
 }
 
-.fc-h-event{
+.fc-h-event {
     border: transparent !important;
-    background-color:transparent!important;
+    background-color: transparent !important;
 }
 
-.tool-calendar{
-    .tool-titulo{
+.tool-calendar {
+    .tool-titulo {
         background-color: #ECEFF1;
         padding: 0.5rem;
     }
-    .tool-horario{
-        span{
+
+    .tool-horario {
+        span {
             color: #5F6A6A;
             font-weight: bold;
         }
     }
+
     .tooltip-inner {
         min-width: 200px;
         width: auto;
+
         @include screen ($lg) {
             max-width: 30vw;
         }
+
         padding: 0;
     }
-    .calendar-avatar{
+
+    .calendar-avatar {
         width: 45px;
         height: 45px;
     }
 }
-.calendar-avatar{
+
+.calendar-avatar {
     width: 25px;
     height: auto;
     border-radius: 50%;
@@ -184,47 +180,41 @@ a.fc-col-header-cell-cushion {
     border: solid 1px #525252;
 }
 
-i.icon-green{
+i.icon-green {
     color: #388E3C
 }
 
-i.icon-purple{
+i.icon-purple {
     color: #8950FC
 }
 
-.time-picker{
-    border-top: 0px transparent!important;
-    border-right: 0px transparent!important;
-    border-left: 0px transparent!important;
+.time-picker {
+    border-top: 0px transparent !important;
+    border-right: 0px transparent !important;
+    border-left: 0px transparent !important;
 }
 
 .parrilla {
-    .fc{
-        a.fc-daygrid-day-number{
+    .fc {
+        a.fc-daygrid-day-number {
             font-size: 16px;
             margin-bottom: 4px;
             letter-spacing: 1px;
         }
-        .fc-daygrid-body-unbalanced{
-            .fc-daygrid-day-events{
+
+        .fc-daygrid-body-unbalanced {
+            .fc-daygrid-day-events {
                 display: flex;
                 flex-flow: wrap;
                 overflow: hidden;
-                .fc-daygrid-event-harness{
-                    // &:nth-child(odd){
-                    //     .fc-h-event{
-                    //         background-color: #D8005ABF;
-                    //     }
-                    // }
-                    // &:nth-child(even){
-                    //     .fc-h-event{
-                    //         background-color: #444444BF;
-                    //     }
-                    // }
-                    .fc-h-event{
-                        border: none!important;
-                        background-color: transparent!important;
-                        &:hover{
+
+                .fc-daygrid-event-harness {
+
+                    .fc-h-event {
+                        border: none !important;
+                        background-color: transparent !important;
+
+                        &:hover {
                             cursor: pointer;
                         }
                     }
@@ -233,3 +223,51 @@ i.icon-purple{
         }
     }
 }
+
+////////////////////////////////Acordion////////////////////////////////////
+.accordion{
+    &__toggler{
+        &:hover{
+            cursor: pointer;
+        }
+    }
+}
+
+//////////////////////////////Animation//////////////////////////////////// 
+.animation{
+    &__heart{
+        animation: heartbeat 5s infinite;
+    }
+    &__comment{
+        animation: comment 5s infinite;
+    }
+    &__people{
+        animation: people 10s infinite;
+    }
+}
+
+@keyframes heartbeat {
+    0% { transform: scale( 1 );  opacity: .25; }
+    20% { transform: scale( 1.25 ); }
+    40% { transform: scale( 1 ); }
+    60% { transform: scale( 1.25 ); }
+    80% { transform: scale( 1 ); }
+    100% { transform: scale( 1.25 ); }
+}
+
+@keyframes comment {
+    0% { opacity: .5; }
+    25% { opacity: 1; }
+    50% { opacity: .5; }
+    75% { opacity: 1; }
+    100% { opacity: .5; }
+}
+
+@keyframes people{
+    0% { opacity: 0.1; display: none; }
+    25% { opacity: 1; }
+    50% { opacity: 0.1; display: none; }
+    75% { opacity: 1; }
+    100% { opacity: 0.1; display: none; }
+}
+

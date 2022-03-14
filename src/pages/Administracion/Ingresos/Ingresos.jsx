@@ -16,7 +16,7 @@ import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
-import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert } from '../../../functions/alert'
+import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert, } from '../../../functions/alert'
 import { setNaviIcon, setOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, setTextTableReactDom, setOptionsWithLabel } from '../../../functions/setters'
 class Ingresos extends Component {
     state = {
@@ -726,6 +726,7 @@ class Ingresos extends Component {
         })
         this.reloadTable(filter)
     }
+
     reloadTable = (filter) => {
         let arregloFilterKeys = Object.keys(filter)
         let aux = {}
@@ -773,6 +774,7 @@ class Ingresos extends Component {
     render() {
         const { form, options, modal, ingreso, filters } = this.state
         const { access_token } = this.props.authUser
+        // createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
         return (
             <Layout active='administracion'  {...this.props}>
                 <NewTable
@@ -794,7 +796,7 @@ class Ingresos extends Component {
                     <FacturasFormTable at = { access_token } tipo_factura='ingresos' id={ingreso.id} dato={ingreso} reloadTable = {this.reloadTableFacturas}/>
                 </Modal>
                 <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >
-                    <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
+                    <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos}  />
                 </Modal>
                 <Modal size="lg" title="Ingreso" show={modal.see} handleClose={this.handleClose} >
                     <IngresosCard ingreso={ingreso} />

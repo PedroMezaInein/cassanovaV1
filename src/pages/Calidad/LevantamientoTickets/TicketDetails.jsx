@@ -12,12 +12,12 @@ import { renderToString } from 'react-dom/server'
 import { Calendar } from '../../../assets/animate'
 import Layout from '../../../components/layout/layout'
 import { CommonLottie } from '../../../components/Lottie/'
-import { apiPutForm, catchErrors } from '../../../functions/api'
+import { apiPutForm, catchErrors,apiPostFormResponseBlob } from '../../../functions/api'
 import { Modal as CustomModal } from '../../../components/singles'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { setSingleHeader, setFormHeader } from '../../../functions/routers'
 import { TicketView, HistorialPresupuestos } from '../../../components/forms'
-import { CreatableMultiselectGray } from '../../../components/form-components'
+import {  CreatableMultiselectGray } from '../../../components/form-components'
 import { SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import { setOptions, setSelectOptions, setAdjuntosList, setTextTableCenter, dayDMY } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAlert, questionAlert2, customInputAlert, questionAlertY, deleteAlert, validateAlert, htmlLottieTimer } from '../../../functions/alert'
@@ -76,6 +76,11 @@ class TicketDetails extends Component {
                     reporte_problema_solucionado: {
                         value: '',
                         placeholder: 'Trabajos realizados',
+                        files: []
+                    },
+                    solicitud_servicio: {
+                        value: '',
+                        placeholder: 'Solicitud de servicio',
                         files: []
                     }
                 },
@@ -237,6 +242,8 @@ class TicketDetails extends Component {
                         })
                     }
                 }
+                formularios.ticket.adjuntos.solicitud_servicio.files = ticket.adjuntos_servicios
+
                 options.equipos = aux
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
@@ -1304,6 +1311,7 @@ class TicketDetails extends Component {
         e.preventDefault();
         const { adjuntos } = this.state.formularios.ticket
         let aux = []
+
         adjuntos.reporte_problema_reportado.files.forEach((file) => {
             if(file.id === undefined)
                 aux.push({'file': file.file, type: 'reportado'})
@@ -1311,6 +1319,10 @@ class TicketDetails extends Component {
         adjuntos.reporte_problema_solucionado.files.forEach((file) => {
             if(file.id === undefined)
                 aux.push({'file': file.file, type: 'solucionado'})
+        })
+        adjuntos.solicitud_servicio.files.forEach((file) => {
+            if(file.id === undefined)
+                aux.push({'file': file.file, type: 'servicio'})
         })
         if(aux.length > 0 ){
             this.addS3Images(aux, false)
@@ -1348,6 +1360,19 @@ class TicketDetails extends Component {
             this.addS3Images(aux, true)
         }else{
             this.saveProcesoTicketAxios( true ) 
+        }
+    }
+    generateSolicitud = () => {
+        const { adjuntos } = this.state.formularios.ticket
+        let aux = []
+        adjuntos.reporte_problema_solucionado.files.forEach((file) => {
+        if(file.id === undefined)
+                aux.push({'file': file.file, type: 'solucionado'})
+        })
+        if(aux.length > 0 ){
+            this.addS3Images(aux, true)
+        }else{
+            this.DescargaArchivo( true ) 
         }
     }
 
@@ -1429,6 +1454,35 @@ class TicketDetails extends Component {
                 }else{
                     this.saveForm(ticket)
                 }
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    DescargaArchivo = async(flag) =>{
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { ticket} = this.state
+
+        apiPostFormResponseBlob(`ticket-pdf`, ticket, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const nombre = ticket.identificador+'.pdf'
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+
+                link.setAttribute('download', nombre );
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'el pdf fue descargado con éxito.'
+                )
+  
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1684,7 +1738,7 @@ class TicketDetails extends Component {
             
         this.setState({formularios})
     }
-
+    
     showStatusTickets = (data) => {
         let auxiliar = '';
         if (data) {
@@ -1868,7 +1922,7 @@ class TicketDetails extends Component {
                     onSubmit = { this.onSubmit }  openModalConceptos={this.openModalConceptos}  deleteFile = { this.deleteFile }  
                     openModalSolicitud = {this.openModalSolicitud}  handleCloseSolicitud={this.handleCloseSolicitud} deleteSolicitud={this.deleteSolicitud}
                     onSubmitSVenta={this.onSubmitSVenta}  onChangeTicketProceso={this.onChangeTicketProceso}  onSubmitTicketProceso={this.onSubmitTicketProceso} 
-                    handleChangeTicketProceso={this.handleChangeTicketProceso}  generateEmailTicketProceso={this.generateEmailTicketProceso}  
+                    handleChangeTicketProceso={this.handleChangeTicketProceso}  generateEmailTicketProceso={this.generateEmailTicketProceso}   generateSolicitud={this.generateSolicitud} 
                     controlledNav={this.controlledNav}  openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } 
                     checkButtonConceptos = { this.checkButtonConceptos }  controlledTab={this.controlledTab} onSubmitConcept = { this.onSubmitConcept } 
                     handleCloseConceptos={this.handleCloseConceptos} openModalReporte={this.openModalReporte} addRows = { this.addRows } 

@@ -1,11 +1,5 @@
 @charset "UTF-8";
 
-/*!
- * Bootstrap v4.4.1 (https://getbootstrap.com/)
- * Copyright 2011-2019 The Bootstrap Authors
- * Copyright 2011-2019 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
 :root {
   --blue: #2171c1;
   --indigo: #6610f2;
@@ -34375,10 +34369,8 @@ a.text-hover-dark-75:hover .svg-icon svg:hover g [fill],
 .text-stroke {
   -webkit-text-stroke-width: 0.35rem;
   -moz-text-stroke-width: 0.35rem;
-  text-stroke-width: 0.35rem;
   -webkit-text-stroke-color: #ffffff;
   -moz-text-stroke-color: #ffffff;
-  text-stroke-color: #ffffff;
 }
 
 .cursor-pointer {
@@ -38945,7 +38937,6 @@ button {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -38964,7 +38955,6 @@ button {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   display: none;
 }
@@ -39031,7 +39021,6 @@ button {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -39046,7 +39035,6 @@ button {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -52406,12 +52394,6 @@ code {
   vertical-align: middle;
 }
 
-.dropdown-menu .dropdown-menu:not(.daterangepicker) {
-  /*rtl:raw:
-        left: auto !important;
-        */
-}
-
 .dropdown-menu.dropdown-menu-anim-up {
   -webkit-animation: animation-dropdown-menu-fade-in .3s ease 1, animation-dropdown-menu-move-up .3s ease-out 1;
   animation: animation-dropdown-menu-fade-in .3s ease 1, animation-dropdown-menu-move-up .3s ease-out 1;
@@ -53261,42 +53243,6 @@ code {
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
 }
 
-.tooltip.bs-tooltip-left .arrow,
-.tooltip.bs-tooltip-auto[x-placement^="left"] .arrow,
-.tooltip.bs-tooltip-auto[x-placement^="left"] .arrow {
-  /*rtl:raw:
-        left: auto;
-        right: 0;
-        */
-}
-
-.tooltip.bs-tooltip-left .arrow:before,
-.tooltip.bs-tooltip-auto[x-placement^="left"] .arrow:before,
-.tooltip.bs-tooltip-auto[x-placement^="left"] .arrow:before {
-  /*rtl:raw:
-        border-width: 0.4rem 0 0.4rem 0.4rem;
-        border-left-color: #fff;
-        */
-}
-
-.tooltip.bs-tooltip-right .arrow,
-.tooltip.bs-tooltip-auto[x-placement^="right"] .arrow,
-.tooltip.bs-tooltip-auto[x-placement^="right"] .arrow {
-  /*rtl:raw:
-        right: auto;
-        left: 0;
-        */
-}
-
-.tooltip.bs-tooltip-right .arrow:before,
-.tooltip.bs-tooltip-auto[x-placement^="right"] .arrow:before,
-.tooltip.bs-tooltip-auto[x-placement^="right"] .arrow:before {
-  /*rtl:raw:
-        border-width: 0.4rem 0.4rem 0.4rem 0;
-        border-right-color: #fff;
-        */
-}
-
 .tooltip.tooltop-auto-width .tooltip-inner {
   white-space: nowrap;
   max-width: none;
@@ -53533,7 +53479,6 @@ code {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.75rem;
   color: #2171c1;
@@ -53557,7 +53502,6 @@ code {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -53578,7 +53522,6 @@ code {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   color: #2171c1;
   font-size: 0.7rem;
@@ -56686,7 +56629,6 @@ td>.radio.radio-single {
 }
 
 .switch input:empty~span {
-  display: inline-block;
   position: relative;
   float: left;
   width: 1px;
@@ -56739,7 +56681,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   line-height: 0;
 }
@@ -67830,7 +67771,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.6rem;
 }
@@ -67846,10 +67786,10 @@ td>.radio.radio-single {
 
 [direction="rtl"] .navi .navi-item .navi-link .navi-arrow.navi-arrow-down {
   -webkit-transform: rotateZ(90deg)
-    /*rtl:ignore*/
+
   ;
   transform: rotateZ(90deg)
-    /*rtl:ignore*/
+
   ;
 }
 
@@ -67857,9 +67797,6 @@ td>.radio.radio-single {
   border-bottom: 0 !important;
 }
 
-.navi .navi-item:last-child .navi-link {
-  /* border-bottom: 0 !important;  */
-}
 
 .navi .navi-separator {
   margin: 0;
@@ -69578,7 +69515,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.7rem;
 }
@@ -69594,7 +69530,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.7rem;
 }
@@ -69808,7 +69743,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -69905,7 +69839,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -70011,7 +69944,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -70812,7 +70744,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -70829,7 +70760,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -71436,7 +71366,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -71451,7 +71380,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -72400,11 +72328,6 @@ td>.radio.radio-single {
 .fc-unthemed .fc-toolbar .fc-button.fc-button-disabled {
   opacity: 0.7;
 }
-
-.gmaps {
-  /* important!  bootstrap sets max-width on img to 100% which conflicts with google map canvas*/
-}
-
 .gmaps img {
   max-width: none;
 }
@@ -73528,7 +73451,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.6rem;
   color: #80808F;
@@ -73580,7 +73502,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.6rem;
   color: #80808F;
@@ -73631,7 +73552,6 @@ td>.radio.radio-single {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.6rem;
   color: #80808F;
@@ -74074,7 +73994,6 @@ body.swal2-height-auto {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.6rem;
   color: #B5B5C3;
@@ -74475,7 +74394,6 @@ body.swal2-height-auto {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
   font-size: 0.9rem;
 }
@@ -75031,7 +74949,6 @@ body.swal2-height-auto {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -75063,7 +74980,6 @@ body.swal2-height-auto {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -75367,7 +75283,8 @@ a:focus {
 canvas {
   -moz-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
 }
 
 body {
@@ -75567,6 +75484,7 @@ body {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
     border-radius: 4px;
     padding: 20px 0px;
   }
@@ -75976,7 +75894,6 @@ body {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
   }
 
@@ -76072,7 +75989,6 @@ body {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
   }
 
@@ -76207,7 +76123,6 @@ body {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
   }
 
@@ -76595,6 +76510,7 @@ body {
   .header-menu-mobile .menu-nav .menu-item>.menu-heading .menu-arrow:before,
   .header-menu-mobile .menu-nav .menu-item>.menu-link .menu-arrow:before {
     -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 
   .header-menu-mobile .menu-nav .menu-item.menu-item-open>.menu-heading>.menu-arrow:before,
@@ -76763,7 +76679,6 @@ body {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
   }
 
@@ -76872,7 +76787,6 @@ body {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
   }
 
@@ -77516,6 +77430,7 @@ body {
 .aside-menu .menu-nav .menu-item>.menu-heading .menu-arrow:before,
 .aside-menu .menu-nav .menu-item>.menu-link .menu-arrow:before {
   -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
 .aside-menu .menu-nav .menu-item.menu-item-open>.menu-heading>.menu-arrow:before,
@@ -77685,7 +77600,6 @@ body {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -77796,7 +77710,6 @@ body {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   content: "";
 }
 
@@ -77929,6 +77842,7 @@ body {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
   }
 
   .aside-minimize .aside-menu .menu-nav .menu-item:not([data-menu-submenu-mode=accordion])>.menu-submenu,
@@ -77937,6 +77851,7 @@ body {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
   }
 
   .aside-minimize .aside-menu .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover,
@@ -78016,6 +77931,7 @@ body {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
   }
 
   .aside-minimize .aside-menu .menu-nav .menu-item:not([data-menu-submenu-mode=accordion]).menu-item-hover>.menu-submenu .menu-subnav>.menu-item .menu-link .menu-icon,
@@ -78175,7 +78091,6 @@ body {
     text-transform: none;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-smoothing: antialiased;
     content: "";
   }
 

@@ -1,9 +1,3 @@
-// @media (min-width: 1200px) {
-//     .container {
-//         max-width: 1240px;
-//     }
-// }
-
 .gtco-news .owl-carousel .card a,
 #gtco-footer .submit-button {
     background-image: -moz-linear-gradient(0deg, #06c6f9 0%, #38eaf9 100%);
@@ -39,9 +33,6 @@
     margin-bottom: 30px;
 }
 
-//   .gtco-features {
-//     margin-top: 100px;
-//   }
 .gtco-features svg {
     position: absolute;
     margin-left: -100px;
@@ -74,18 +65,6 @@
     margin-top: 150px;
 }
 
-// @media (max-width: 600px) {
-//     .gtco-features .col-cards .row .col-md-6:first-child {
-//         margin-top: 50px;
-//     }
-// }
-
-// @media (max-width: 600px) {
-//     .gtco-features .col-cards .col {
-//         flex: 0 0 100%;
-//         max-width: 100%;
-//     }
-// }
 
 .gtco-features .col-cards .card {
     background: #fff;
@@ -137,14 +116,17 @@
     height: 60px;
     width: 60px;
 }
+
 @media (max-width: 750px) {
-    .gtco-features .col-cards .card{
+    .gtco-features .col-cards .card {
         box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
     }
-    .gtco-features svg{
-        display:none;
+
+    .gtco-features svg {
+        display: none;
     }
-    .gtco-features .col-cards .row .col-md-6:first-child{
+
+    .gtco-features .col-cards .row .col-md-6:first-child {
         margin-top: 0 !important;
     }
 }
@@ -165,11 +147,11 @@
     font-size: 22px;
 }
 
-.tb-contacto{
-    td{
+.tb-contacto {
+    td {
         padding-top: 0;
         padding-bottom: 0;
-        height:2rem;
+        height: 2rem;
     }
 }
 
@@ -211,7 +193,7 @@
     transition: fill 0.3s ease;
 }
 
-.p-sticky-card{
+.p-sticky-card {
     position: sticky;
     top: 130px;
     z-index: 1;
@@ -242,7 +224,7 @@
 .show>.btn.btn-light-primary2 {
     color: #fff;
     border-color: #009ef7;
-    background-color:#009ef7!important
+    background-color: #009ef7 !important
 }
 
 .btn.btn-light-primary2.active .svg-icon svg [fill]:not(.permanent):not(g),
@@ -254,23 +236,27 @@
     transition: fill .3s ease;
     fill: #fff
 }
+
 .btn.btn-light-primary2 i {
     color: #009ef7
 }
+
 .btn.btn-primary2 {
     color: #fff;
     border-color: #009ef7;
     background-color: #009ef7
 }
 
-.btn.btn-primary2 i{
+.btn.btn-primary2 i {
     color: #fff
 }
-.btn.btn-light-primary2:hover{
-    i{
+
+.btn.btn-light-primary2:hover {
+    i {
         color: #fff;
     }
 }
+
 .btn.btn-primary2 .svg-icon svg [fill]:not(.permanent):not(g) {
     transition: fill .3s ease;
     fill: #fff
@@ -341,6 +327,7 @@
 .show>.btn.btn-primary2.dropdown-toggle:after {
     color: #fff
 }
+
 .btn.btn-hover-primary2:hover:not(.btn-text),
 .btn.btn-hover-primary2:focus:not(.btn-text),
 .btn.btn-hover-primary2.focus:not(.btn-text) {
@@ -354,8 +341,9 @@
 .btn.btn-hover-primary2.focus:not(.btn-text) i {
     color: #FFFFFF !important;
 }
-.text-primary2{
-    color: #007af0!important;
+
+.text-primary2 {
+    color: #007af0 !important;
 }
 
 .svg-icon.svg-icon-primary2 svg [fill]:not(.permanent):not(g) {
@@ -458,21 +446,25 @@
 .btn.btn-color-primary2.dropdown-toggle:after {
     color: #009ef7
 }
+
 .symbol.symbol-light-primary2 .symbol-label {
     color: #009ef7;
     background-color: #ecf8ff;
 }
+
 .symbol.symbol-light-success2 .symbol-label {
     color: #26A69A;
     background-color: #e4f8f7;
 }
-.table-notas thead{
+
+.table-notas thead {
     font-weight: 600;
     color: #212121 !important;
     font-size: 1rem;
     letter-spacing: 0.1rem;
 }
-.table-notas td{
+
+.table-notas td {
     border-top: 1px dashed #ECF0F3;
 }
 
@@ -770,13 +762,16 @@
 .btn.btn-color-danger i {
     color: #f1416c
 }
+
 .btn.btn-color-danger .svg-icon svg [fill]:not(.permanent):not(g) {
     transition: fill .3s ease;
     fill: #f1416c
 }
+
 .btn.btn-color-danger .svg-icon svg:hover [fill]:not(.permanent):not(g) {
     transition: fill .3s ease
 }
+
 .btn.btn-color-danger.dropdown-toggle:after {
     color: #f1416c
 }
@@ -900,18 +895,21 @@
 .navi.navi-accent.navi-primary2 .navi-item .navi-link.active:before {
     background-color: #009ef7;
 }
-.bg-light-primary2{
+
+.bg-light-primary2 {
     background-color: #ecf8ff;
 }
 
-a.text-hover-primary2, .text-hover-primary2 {
+a.text-hover-primary2,
+.text-hover-primary2 {
     -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease;
 }
 
-a.text-hover-primary2:hover, .text-hover-primary2:hover {
+a.text-hover-primary2:hover,
+.text-hover-primary2:hover {
     -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
@@ -919,22 +917,26 @@ a.text-hover-primary2:hover, .text-hover-primary2:hover {
     color: #009ef7 !important;
 }
 
-a.text-hover-primary2:hover i, .text-hover-primary2:hover i {
+a.text-hover-primary2:hover i,
+.text-hover-primary2:hover i {
     color: #009ef7 !important;
 }
 
-a.text-hover-primary2:hover .svg-icon svg g [fill], .text-hover-primary2:hover .svg-icon svg g [fill] {
+a.text-hover-primary2:hover .svg-icon svg g [fill],
+.text-hover-primary2:hover .svg-icon svg g [fill] {
     -webkit-transition: fill 0.3s ease;
     transition: fill 0.3s ease;
     fill: #009ef7;
 }
 
-a.text-hover-primary2:hover .svg-icon svg:hover g [fill], .text-hover-primary2:hover .svg-icon svg:hover g [fill] {
+a.text-hover-primary2:hover .svg-icon svg:hover g [fill],
+.text-hover-primary2:hover .svg-icon svg:hover g [fill] {
     -webkit-transition: fill 0.3s ease;
     transition: fill 0.3s ease;
 }
 
-.hoverable:hover a.text-hover-primary2, .hoverable:hover .text-hover-primary2 {
+.hoverable:hover a.text-hover-primary2,
+.hoverable:hover .text-hover-primary2 {
     -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
@@ -942,20 +944,24 @@ a.text-hover-primary2:hover .svg-icon svg:hover g [fill], .text-hover-primary2:h
     color: #009ef7 !important;
 }
 
-.hoverable:hover a.text-hover-primary2 i, .hoverable:hover .text-hover-primary2 i {
+.hoverable:hover a.text-hover-primary2 i,
+.hoverable:hover .text-hover-primary2 i {
     color: #009ef7 !important;
 }
 
-.hoverable:hover a.text-hover-primary2 .svg-icon svg g [fill], .hoverable:hover .text-hover-primary2 .svg-icon svg g [fill] {
+.hoverable:hover a.text-hover-primary2 .svg-icon svg g [fill],
+.hoverable:hover .text-hover-primary2 .svg-icon svg g [fill] {
     -webkit-transition: fill 0.3s ease;
     transition: fill 0.3s ease;
     fill: #009ef7 !important;
 }
 
-.hoverable:hover a.text-hover-primary2 .svg-icon svg:hover g [fill], .hoverable:hover .text-hover-primary2 .svg-icon svg:hover g [fill] {
+.hoverable:hover a.text-hover-primary2 .svg-icon svg:hover g [fill],
+.hoverable:hover .text-hover-primary2 .svg-icon svg:hover g [fill] {
     -webkit-transition: fill 0.3s ease;
     transition: fill 0.3s ease;
 }
+
 .btn-success2 {
     color: #000;
     background-color: #26A69A;
@@ -1082,6 +1088,7 @@ a.text-hover-primary2:hover .svg-icon svg:hover g [fill], .text-hover-primary2:h
 .show>.btn.btn-success2.dropdown-toggle:after {
     color: #fff
 }
+
 .btn.btn-light-success2 {
     color: #26A69A;
     border-color: #e4f8f7;
@@ -1162,6 +1169,7 @@ a.text-hover-primary2:hover .svg-icon svg:hover g [fill], .text-hover-primary2:h
 .show>.btn.btn-light-success2.dropdown-toggle:after {
     color: #fff
 }
+
 .btn-check:active+.btn.btn-active-light-success2,
 .btn-check:checked+.btn.btn-active-light-success2,
 .btn.btn-active-light-success2.active,

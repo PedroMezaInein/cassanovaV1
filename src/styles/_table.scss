@@ -80,10 +80,7 @@ only screen and (max-width: 760px),
     #kt_datatable_compras, #kt_datatable_ventas, #kt_datatable_egresos, #kt_datatable_partidas, #kt_datatable_contratos { 
             table{
             overflow-x:auto;
-            }
-            table, thead, tbody { 
-                /* display: block;  */
-            }		
+            }	
     }
 }
 
