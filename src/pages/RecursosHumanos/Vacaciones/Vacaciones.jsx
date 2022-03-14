@@ -6,6 +6,8 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
+import { Tabs, Tab } from 'react-bootstrap'
+import { setSingleHeader } from '../../../functions/routers'
 import { printResponseErrorAlert, errorAlert, createAlert, doneAlert, waitAlert, questionAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
@@ -27,6 +29,7 @@ const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', '
 class Vacaciones extends Component {
 
     state = {
+        key: 'vacaciones',
         formeditado: 0,
         modal: false,
         events: [],
@@ -713,11 +716,52 @@ class Vacaciones extends Component {
             console.error(error, 'error')
         })
     }
+    exportAxios = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'vacaciones/vacaciones', { responseType:'blob', headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                // console.log(response)
+                // console.log('sss')
+
+                 const url = window.URL.createObjectURL(new Blob([response.data]));
+                 const link = document.createElement('a');
+                 link.href = url;
+                //  link.setAttribute('download', `${quincena}Q-${mes_number}-${año}.xlsx`);
+                 link.setAttribute('download', `vacaciones.xlsx`);
+
+                 document.body.appendChild(link);
+                 link.click();
+                //  doneAlert(`Horarios de ${quincena}Q de ${mes} del ${año} fue exportado con éxito`)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El documento fue generado con éxito.')
+               
+            }, (error) => { printResponseErrorAlert(error) }    
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        } )
+    }
+    controlledTab = value => {
+        const { form } = this.state
+        if (value === 'vacaciones')
+        //  { this.getEmpleadosAxios() }
+        if (value === 'permisos') {
+            // this.getEmpleadosObraAxios()
+            // form.tipo_empleado = 'Obra'
+        }
+        if (value === 'incapacidades') {
+            // this.getEmpleadosObraAxios()
+            // form.tipo_empleado = 'Obra'
+        }
+        this.setState({ ...this.state, key: value, form })
+    }
 
     render() {
-        const { events, espera, modal, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, disabledDates, modal_cajones, modal_date, activeKey, date, eventos } = this.state
+        const { events, espera, modal, key, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, disabledDates, modal_cajones, modal_date, activeKey, date, eventos } = this.state
         return (
             <Layout active='rh'  {...this.props}>
+                   <Tabs defaultActiveKey="vacaciones" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
+                    <Tab eventKey="vacaciones" title="Vacaciones">
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
@@ -740,6 +784,13 @@ class Vacaciones extends Component {
                                 <Dropdown.Item onClick={this.openModalAddFeriados}>Agregar feriados</Dropdown.Item>
                                 {/* <Dropdown.Item onClick={this.openModalCajones}>Agendar cajones de estacionamiento</Dropdown.Item> */}
                             </DropdownButton>
+                            <div className="col-md-auto mr-4 mb-4 mb-md-0">
+                                <span className="btn btn-light-info font-weight-bold" 
+                                    onClick = { (e) => { e.preventDefault(); this.exportAxios() } } 
+                                    >
+                                    <i className="far fa-file-excel" /> EXPORTAR
+                                </span>
+                            </div>
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -751,6 +802,10 @@ class Vacaciones extends Component {
                         />
                     </Card.Body>
                 </Card>
+                </Tab>
+                <Tab eventKey="permisos" title="Permisos"> <h4>Permisos</h4> </Tab>
+                <Tab eventKey="incapacidades" title="Incapacidades">  <h4>Incapacidades</h4>  </Tab>
+                </Tabs>
                 <Modal size="lg" title="Solicitudes de vacaciones" show={modal} handleClose={this.handleClose} >
                     <div className="table-responsive mt-6">
                         <table className="table table-head-custom table-head-bg table-vertical-center">

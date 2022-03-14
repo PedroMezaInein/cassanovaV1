@@ -93,9 +93,9 @@ class ContratosRhForm extends Component {
                         })
                     }
                     else
-                        history.push('/rh/contratos-rrhh')
+                        history.push('/rh/impresos')
                 } else
-                    history.push('/rh/contratos-rrhh')
+                    history.push('/rh/impresos')
                 break;
             default:
                 break;
@@ -235,7 +235,7 @@ class ContratosRhForm extends Component {
                 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
                 const { history } = this.props
-                history.push({ pathname: '/rh/contratos-rrhh' });
+                history.push({ pathname: '/rh/impresos' });
                 
                 var win = window.open(contrato.contrato, '_blank');
                 if(contrato.carta)
@@ -258,7 +258,7 @@ class ContratosRhForm extends Component {
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
                 const { history } = this.props
-                history.push({ pathname: '/rh/contratos-rrhh' });
+                history.push({ pathname: '/rh/impresos' });
 
                 var win = window.open(contrato.contrato, '_blank');
                 if(contrato.carta)

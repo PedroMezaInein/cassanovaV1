@@ -258,7 +258,7 @@ class ContratosRh extends Component {
     changePageRenovar = contrato => {
         const { history } = this.props
         history.push({
-            pathname: '/rh/contratos-rrhh/renovar',
+            pathname: '/rh/impresos/renovar',
             state: { contrato: contrato, tipo:'administrativo'}
 
         });
@@ -266,7 +266,7 @@ class ContratosRh extends Component {
     changePageEditObra = contrato => {
         const { history } = this.props
         history.push({
-            pathname: '/rh/contratos-rrhh/renovar',
+            pathname: '/rh/impresos/renovar',
             state: { contrato: contrato, tipo:'obra'}
         });
     }
@@ -354,7 +354,7 @@ class ContratosRh extends Component {
             <Layout active = 'rh' { ...this.props } >
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="administrativo" title="Administrativo">
-                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=administrativo'
+                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/impresos/add?tipo=administrativo'
                             abrir_modal = { false } mostrar_acciones = { true } accessToken = { access_token } setter = { this.setContratos } 
                             urlRender = { `${URL_DEV}v1/rh/contratos-rrhh?type=admin` } cardBody = 'cardBody_admin'  isTab = { true } 
                             actions = { { 
@@ -364,7 +364,7 @@ class ContratosRh extends Component {
                             } } idTable = 'contratos_admin_table'  cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin' />
                     </Tab>
                     <Tab eventKey="obra" title="Obra">
-                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/contratos-rrhh/add?tipo=obra'
+                        <NewTableServerRender columns = { CONTRATOS_RRHH_COLUMNS } title = 'Contratos' subtitle = 'Listado de contratos' mostrar_boton = { true } url='/rh/impresos/add?tipo=obra'
                             abrir_modal = { false } mostrar_acciones = { true } urlRender = { `${URL_DEV}v1/rh/contratos-rrhh?type=obra` } 
                             accessToken = { access_token } setter = { this.setContratos } idTable = 'contratos_obra_table' cardTable = 'cardTable_obra' 
                             actions = { {
