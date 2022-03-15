@@ -44,6 +44,10 @@ class EmpleadosForm extends Component {
             nomina_extras: 0.0,
             salario_hr: 0.0,
             salario_hr_extra: 0.0,
+            email_personal: '',
+            estacionamiento: 0.0,
+            gimnacio: 0.0,
+            estudios: 0.0,
             adjuntos: {
                 datosGenerales: {
                     value: '',
@@ -103,6 +107,7 @@ class EmpleadosForm extends Component {
                     if (state.empleado) {
                         const { form, options} = this.state
                         const { empleado } = state
+                        console.log(empleado)
                         form.nombre = empleado.nombre
                         form.curp = empleado.curp
                         form.rfc = empleado.rfc
@@ -118,6 +123,11 @@ class EmpleadosForm extends Component {
                         form.nomina_extras = empleado.nomina_extras
                         form.salario_hr = empleado.salario_hr
                         form.salario_hr_extra = empleado.salario_hr_extra
+                        form.email_personal = empleado.email_personal
+                        form.estacionamiento = empleado.estacionamiento
+                        form.gimnacio = empleado.gimnacio
+                        form.estudios = empleado.estudios
+
                         if (empleado.empresa) { form.empresa = empleado.empresa.id.toString() }
                         form.fechaInicio = empleado.fecha_inicio !== null ? new Date(moment(empleado.fecha_inicio)):''
                         form.fechaFin = empleado.fecha_fin !== null ? new Date(moment(empleado.fecha_fin)):''

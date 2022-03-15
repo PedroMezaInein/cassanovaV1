@@ -46,6 +46,7 @@ class TicketDetails extends Component {
             empresas: [],
             areas: [],
             subareas: [],
+            nom_cliente: [],
             estatus_final:[
                 {
                     id: 1, estatus: "Aceptado"
@@ -232,19 +233,30 @@ class TicketDetails extends Component {
                 const { ticket } = response.data
                 const { options, data, formularios } = this.state
                 let aux = []
+                let res = []
                 if(ticket.proyecto){
                     if(ticket.proyecto.equipos_instalados){
-                        ticket.proyecto.equipos_instalados.forEach((element) => {
+                        ticket.proyecto.equipos_instalados.forEach((element) => {                            
                             if(element.equipo){
                                 const { texto } = element.equipo
                                 aux.push({ value: element.id.toString(), name: `${element.fecha} - (${element.cantidad}) ${texto}` })
                             }
                         })
                     }
+                    if(ticket.proyecto.clientes){
+                        ticket.proyecto.clientes.forEach((element) => {
+                            if(element.empresa){
+                                res.push({ value: element.empresa.toString(), name: `${element.empresa}` })
+                            }                            
+                        })
+                    }
                 }
-                formularios.ticket.adjuntos.solicitud_servicio.files = ticket.adjuntos_servicios
 
+                formularios.ticket.adjuntos.solicitud_servicio.files = ticket.adjuntos_servicios
+                formularios.nom_cliente = ticket.nom_cliente
+                options.nom_cliente = res
                 options.equipos = aux
+
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
                 this.setState({ticket: ticket, formularios, options, data })
@@ -749,7 +761,8 @@ class TicketDetails extends Component {
             formularios.ticket.fechaAutorizada = new Date( moment(ticket.fecha_autorizada) )
             else
             formularios.ticket.fechaAutorizada = new Date()
-
+            
+            formularios.ticket.nom_cliente = ticket.nom_cliente
         formularios.ticket.empleado = ticket.tecnico_asiste === null || ticket.tecnico_asiste === 'null' ? '' : ticket.tecnico_asiste
         formularios.ticket.descripcion_solucion = ticket.descripcion_solucion === null || ticket.descripcion_solucion === 'null' ? '' : ticket.descripcion_solucion
         formularios.ticket.recibe = ticket.recibe === null || ticket.recibe === 'null' ? '' : ticket.recibe
@@ -946,6 +959,22 @@ class TicketDetails extends Component {
             aux_contactos.push({
                 value: user.email,
                 label: user.email
+            })
+            aux_contactos.push({
+                value:"jc.alvarez@clinicadentalcentauro.com.mx",
+                label:"jc.alvarez@clinicadentalcentauro.com.mx"
+            })
+            aux_contactos.push({
+                value:"jordi.timoneda@keralty.com",
+                label:"jordi.timoneda@keralty.com"
+            })
+            aux_contactos.push({
+                value:"antonio.galvan@clinicadentalcentauro.com.mx",
+                label:"antonio.galvan@clinicadentalcentauro.com.mx"
+            })
+            aux_contactos.push({
+                value:"claudio@infraestructuramedica.mx",
+                label:"claudio@infraestructuramedica.mx"
             })
         }
         options.correos_clientes = []
@@ -1652,6 +1681,10 @@ class TicketDetails extends Component {
         var arrayCorreos = formularios.presupuesto_generado.correos_reporte.map(function (obj) {
             return obj.label;
         });
+        var arrayServicios = ticket.adjuntos_servicios.map(function (ser) {
+            return ser.url;
+        });
+        formularios.presupuesto_generado.adjuntos_servicios = arrayServicios
         formularios.presupuesto_generado.correos_reporte = arrayCorreos
         await axios.put(`${URL_DEV}v2/calidad/tickets/${ticket.id}/correo`, formularios.presupuesto_generado, { headers: setSingleHeader(access_token) }).then(
             (response) => { 
