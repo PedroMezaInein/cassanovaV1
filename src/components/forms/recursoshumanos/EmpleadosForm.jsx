@@ -128,246 +128,84 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-8">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={1}
-                                                    onChange={onChange}
-                                                    formeditado={formeditado}
-                                                    name="nombre"
-                                                    type="text"
-                                                    value={form.nombre}
-                                                    placeholder="NOMBRE DEL COLABORADOR"
-                                                    iconclass="fas fa-user"
-                                                    messageinc="Incorrecto. Ingresa el nombre."
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} onChange={onChange} formeditado={formeditado} name="nombre"
+                                                    type="text" value={form.nombre} placeholder="NOMBRE DEL COLABORADOR" iconclass="fas fa-user" messageinc="Incorrecto. Ingresa el nombre."/>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange} name="curp" 
+                                                type="text" value={form.curp} placeholder="CURP" iconclass="far fa-address-card" patterns={CURP} messageinc="Incorrecto. Ej. SIHC400128HDFLLR01" maxLength="18"/>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange} name="rfc" 
+                                                type="text" value={form.rfc} placeholder="RFC" iconclass="far fa-file-alt" patterns={RFC} messageinc="Incorrecto. Ej. ABCD001122ABC" maxLength="13"/>
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-4">
+                                                <InputGray withtaglabel={1}
+                                                 withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange} name="nacionalidad" type="text" 
+                                                 value={form.nacionalidad} placeholder="NACIONALIDAD" iconclass="far fa-flag" messageinc="Incorrecto. Ingresa la nacionalidad." />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputPhoneGray withformgroup={0} requirevalidation={0} formeditado={formeditado} placeholder="TELÉFONO MÓVIL" name="telefono_movil" value={form.telefono_movil} onChange={onChange} 
+                                                iconclass="fas fa-mobile-alt" patterns={TEL} messageinc="Incorrecto. Ingresa el número de teléfono móvil." thousandseparator={false} prefix={''} />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputPhoneGray withformgroup={0} requirevalidation={0} formeditado={formeditado} placeholder="TELÉFONO PARTICULAR" name="telefono_particular" value={form.telefono_particular} 
+                                                onChange={onChange} iconclass="fas fa-mobile-alt" patterns={TEL} messageinc="Incorrecto. Ingresa el número de teléfono particular." thousandseparator={false} prefix={''} />
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-4">
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange}
+                                                 name="estado_civil" type="text" value={form.estado_civil} placeholder="ESTADO CIVIL" iconclass={"far fa-heart"} messageinc="Incorrecto. Ingresa el estado civil" />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange}
+                                                 name="nombre_emergencia" value={form.nombre_emergencia} placeholder="CONTACTO DE EMERGENCIA" iconclass={"fas fa-user-circle"} 
+                                                 messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="curp"
-                                                    type="text"
-                                                    value={form.curp}
-                                                    placeholder="CURP"
-                                                    iconclass="far fa-address-card"
-                                                    patterns={CURP}
-                                                    messageinc="Incorrecto. Ej. SIHC400128HDFLLR01"
-                                                    maxLength="18"
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="rfc"
-                                                    type="text"
-                                                    value={form.rfc}
-                                                    placeholder="RFC"
-                                                    iconclass="far fa-file-alt"
-                                                    patterns={RFC}
-                                                    messageinc="Incorrecto. Ej. ABCD001122ABC"
-                                                    maxLength="13"
+                                                <InputPhoneGray withformgroup={0} requirevalidation={0} formeditado={formeditado} placeholder="TELÉFONO DE EMERGENCIA" name="telefono_emergencia" value={form.telefono_emergencia}
+                                                 onChange={onChange} iconclass={"fas fa-mobile-alt"} patterns={TEL} messageinc="Incorrecto. Ingresa el número de teléfono." thousandseparator={false} prefix={''}
                                                 />
                                             </div>
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="nacionalidad"
-                                                    type="text"
-                                                    value={form.nacionalidad}
-                                                    placeholder="NACIONALIDAD"
-                                                    iconclass="far fa-flag"
-                                                    messageinc="Incorrecto. Ingresa la nacionalidad."
-                                                />
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange}
+                                                 name="email_personal" type="email" value={form.email_personal} placeholder="CORREO PERSONAL" iconclass={"far fa-envelope"} messageinc="Incorrecto.Ej. usuario@dominio.com" />
                                             </div>
-                                            <div className="col-md-4">
-                                                <InputPhoneGray
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    placeholder="TELÉFONO MÓVIL"
-                                                    name="telefono_movil"
-                                                    value={form.telefono_movil}
-                                                    onChange={onChange}
-                                                    iconclass="fas fa-mobile-alt"
-                                                    patterns={TEL}
-                                                    messageinc="Incorrecto. Ingresa el número de teléfono móvil."
-                                                    thousandseparator={false}
-                                                    prefix={''}
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputPhoneGray
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    placeholder="TELÉFONO PARTICULAR"
-                                                    name="telefono_particular"
-                                                    value={form.telefono_particular}
-                                                    onChange={onChange}
-                                                    iconclass="fas fa-mobile-alt"
-                                                    patterns={TEL}
-                                                    messageinc="Incorrecto. Ingresa el número de teléfono particular."
-                                                    thousandseparator={false}
-                                                    prefix={''}
-                                                />
-                                            </div>
+                                            
                                         </div>
+
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="estado_civil"
-                                                    type="text"
-                                                    value={form.estado_civil}
-                                                    placeholder="ESTADO CIVIL"
-                                                    iconclass={"far fa-heart"}
-                                                    messageinc="Incorrecto. Ingresa el estado civil"
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="banco" type="text" value={form.banco} placeholder="BANCO" iconclass={" fab fa-cc-discover "} messageinc="Incorrecto. Ingresa el banco."
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="nombre_emergencia"
-                                                    value={form.nombre_emergencia}
-                                                    placeholder="CONTACTO DE EMERGENCIA"
-                                                    iconclass={"fas fa-user-circle"}
-                                                    messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
+                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="cuenta" type="text" value={form.cuenta} placeholder="CUENTA" iconclass={" fas fa-id-card "} messageinc="Incorrecto. Ingresa el número de cuenta." typeformat ="##################"
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputPhoneGray
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    placeholder="TELÉFONO DE EMERGENCIA"
-                                                    name="telefono_emergencia"
-                                                    value={form.telefono_emergencia}
-                                                    onChange={onChange}
-                                                    iconclass={"fas fa-mobile-alt"}
-                                                    patterns={TEL}
-                                                    messageinc="Incorrecto. Ingresa el número de teléfono."
-                                                    thousandseparator={false}
-                                                    prefix={''}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="banco"
-                                                    type="text"
-                                                    value={form.banco}
-                                                    placeholder="BANCO"
-                                                    iconclass={" fab fa-cc-discover "}
-                                                    messageinc="Incorrecto. Ingresa el banco."
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputNumberGray
-                                                    withtaglabel = { 1 }
-                                                    withtextlabel = { 1 }
-                                                    withplaceholder = { 1 }
-                                                    withicon={1}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="cuenta"
-                                                    type="text"
-                                                    value={form.cuenta}
-                                                    placeholder="CUENTA"
-                                                    iconclass={" fas fa-id-card "}
-                                                    messageinc="Incorrecto. Ingresa el número de cuenta."
-                                                    typeformat ="##################"
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputNumberGray
-                                                    withtaglabel = { 1 }
-                                                    withtextlabel = { 1 }
-                                                    withplaceholder = { 1 }
-                                                    withicon={1}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="clabe"
-                                                    type="text"
-                                                    value={form.clabe}
-                                                    placeholder="CLABE"
-                                                    iconclass={"fas fa-money-check-alt"}
-                                                    messageinc="Incorrecto. Ingresa la clabe."
-                                                    typeformat ="##################"
+                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="clabe" type="text" value={form.clabe} placeholder="CLABE" iconclass={"fas fa-money-check-alt"} messageinc="Incorrecto. Ingresa la clabe." typeformat ="##################"
                                                 />
                                             </div>
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-12">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="domicilio"
-                                                    type="text"
-                                                    value={form.domicilio}
-                                                    placeholder="DOMICILIO"
-                                                    iconclass="fas fa-map-marker-alt"
-                                                    messageinc="Incorrecto. Ingresa el domicilio."
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="domicilio" type="text" value={form.domicilio} placeholder="DOMICILIO" iconclass="fas fa-map-marker-alt" messageinc="Incorrecto. Ingresa el domicilio."
                                                 />
                                             </div>
                                         </div>
@@ -450,50 +288,21 @@ class EmpleadosForm extends Component {
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-6">
-                                                <SelectSearchGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    customdiv="mb-0"
-                                                    formeditado={formeditado}
-                                                    options={options.empresas}
-                                                    placeholder="Selecciona la empresa"
-                                                    name="empresa"
-                                                    value={form.empresa}
-                                                    onChange={this.updateEmpresa}
-                                                    iconclass={"far fa-building"}
-                                                    messageinc="Incorrecto. Selecciona la empresa"
+                                                <SelectSearchGray  withtaglabel={1}  withtextlabel={1}  customdiv="mb-0"  formeditado={formeditado}  options={options.empresas}  placeholder="Selecciona la empresa"  
+                                                name="empresa"  value={form.empresa}  onChange={this.updateEmpresa}  iconclass={"far fa-building"}  messageinc="Incorrecto. Selecciona la empresa"
                                                 />
                                             </div>
                                             <div className="col-md-6">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={1}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="puesto"
-                                                    type="text"
-                                                    value={form.puesto}
-                                                    placeholder="PUESTO"
-                                                    iconclass={"fas fa-user-tie"}
-                                                    messageinc="Incorrecto. Ingresa el puesto."
+                                                <InputGray  withtaglabel={1}  withtextlabel={1}  withplaceholder={1}  withicon={1}  withformgroup={0}  requirevalidation={1}  formeditado={formeditado}  onChange={onChange} 
+                                                 name="puesto"  type="text"  value={form.puesto}  placeholder="PUESTO"  iconclass={"fas fa-user-tie"}  messageinc="Incorrecto. Ingresa el puesto."
                                                 />
                                             </div>
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="row form-group-marginless">
                                             <div className="col-md-12">
-                                                <TagSelectSearchGray
-                                                    placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
-                                                    options={this.transformarOptions(options.departamentos)}
-                                                    defaultvalue={this.transformarOptions(form.departamentos)}
-                                                    onChange={this.nuevoUpdateDepartamento}
-                                                    iconclass="fas fa-layer-group"
-                                                    requirevalidation={0}
-                                                    messageinc="Incorrecto. Selecciona el(los) departamento(s)"
+                                                <TagSelectSearchGray  placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"  options={this.transformarOptions(options.departamentos)}  defaultvalue={this.transformarOptions(form.departamentos)}  
+                                                onChange={this.nuevoUpdateDepartamento}  iconclass="fas fa-layer-group"  requirevalidation={0}  messageinc="Incorrecto. Selecciona el(los) departamento(s)"
                                                 />
                                             </div>
                                         </div>
@@ -546,41 +355,13 @@ class EmpleadosForm extends Component {
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputNumberGray
-                                                    withtaglabel = { 1 }
-                                                    withtextlabel = { 1 }
-                                                    withplaceholder = { 1 }
-                                                    withicon={1}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="nss"
-                                                    type="text"
-                                                    value={form.nss}
-                                                    placeholder="NSS"
-                                                    iconclass="fas fa-hospital-user"
-                                                    patterns={NSS}
-                                                    messageinc="Incorrecto. Ej. 01234567891"
-                                                    typeformat ="###########"
+                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="nss" type="text" value={form.nss} placeholder="NSS" iconclass="fas fa-hospital-user" patterns={NSS} messageinc="Incorrecto. Ej. 01234567891" typeformat ="###########"
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputNumberGray
-                                                    withtaglabel = { 1 }
-                                                    withtextlabel = { 1 }
-                                                    withplaceholder = { 1 }
-                                                    withicon={1}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="numero_alta_imss"
-                                                    type="text"
-                                                    value={form.numero_alta_imss}
-                                                    placeholder="NÚMERO DE ALTA IMSS"
-                                                    iconclass={"fas fa-hospital-user"}
-                                                    patterns={NSS}
-                                                    messageinc="Incorrecto. Ej. 01234567891"
-                                                    typeformat="###########"
+                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="numero_alta_imss" type="text" value={form.numero_alta_imss} placeholder="NÚMERO DE ALTA IMSS" iconclass={"fas fa-hospital-user"} patterns={NSS} messageinc="Incorrecto. Ej. 01234567891" typeformat="###########"
                                                 />
                                             </div>
                                             
@@ -588,59 +369,18 @@ class EmpleadosForm extends Component {
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={0}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="vacaciones_disponibles"
-                                                    type="text"
-                                                    value={form.vacaciones_disponibles}
-                                                    placeholder="VACACIONES DISPONIBLES"
-                                                    iconclass="far fa-calendar-alt"
-                                                    messageinc="Incorrecto. Ingresa loS días de vacaciones disponibles al año."
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="vacaciones_disponibles" type="text" value={form.vacaciones_disponibles} placeholder="VACACIONES DISPONIBLES" iconclass="far fa-calendar-alt" messageinc="Incorrecto. Ingresa loS días de vacaciones disponibles al año."
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputNumberGray
-                                                    withtaglabel = { 1 }
-                                                    withtextlabel = { 1 }
-                                                    withplaceholder = { 1 }
-                                                    withicon={1}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="salario_imss"
-                                                    type="text"
-                                                    value={form.salario_imss}
-                                                    placeholder="SALARIO IMSS"
-                                                    iconclass="fas fa-money-check-alt"
-                                                    messageinc="Incorrecto. Ingresa el salario de imss."
-                                                    thousandseparator={true}
-                                                    prefix={'$'}
+                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="salario_imss" type="text" value={form.salario_imss} placeholder="SALARIO IMSS" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa el salario de imss." thousandseparator={true} prefix={'$'}
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputNumberGray
-                                                    withtaglabel = { 1 }
-                                                    withtextlabel = { 1 }
-                                                    withplaceholder = { 1 }
-                                                    withicon={1}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="salario_bruto"
-                                                    type="text"
-                                                    value={form.salario_bruto}
-                                                    placeholder="SALARIO BRUTO"
-                                                    iconclass="fas fa-money-check-alt"
-                                                    messageinc="Incorrecto. Ingresa el salario bruto."
-                                                    thousandseparator={true}
-                                                    prefix={'$'}
+                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="salario_bruto" type="text" value={form.salario_bruto} placeholder="SALARIO BRUTO" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa el salario bruto." thousandseparator={true} prefix={'$'}
                                                 />
                                             </div>
                                         </div>
@@ -651,84 +391,30 @@ class EmpleadosForm extends Component {
                                         NÓMINA
                                     </div>
                                     <div className={form.tipo_empleado === 'Obra' ? "col-md-4" : "col-md-6"}>
-                                        <InputNumberGray
-                                            withtaglabel = { 1 }
-                                            withtextlabel = { 1 }
-                                            withplaceholder = { 1 }
-                                            withicon={1}
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="nomina_imss"
-                                            type="text"
-                                            value={form.nomina_imss}
-                                            placeholder="Nomina IMSS"
-                                            iconclass="fas fa-money-check-alt"
-                                            messageinc="Incorrecto. Ingresa la nomina imss."
-                                            thousandseparator={true}
-                                            prefix={'$'}
+                                        <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                        name="nomina_imss" type="text" value={form.nomina_imss} placeholder="Nomina IMSS" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa la nomina imss." thousandseparator={true} prefix={'$'}
                                         />
                                     </div>
                                     {
                                         form.tipo_empleado === 'Obra' ?
                                             <>
                                                 <div className="col-md-4">
-                                                    <InputNumberGray
-                                                        withtaglabel = { 1 }
-                                                        withtextlabel = { 1 }
-                                                        withplaceholder = { 1 }
-                                                        withicon={1}
-                                                        requirevalidation={0}
-                                                        formeditado={formeditado}
-                                                        onChange={onChange}
-                                                        name="salario_hr"
-                                                        type="text"
-                                                        value={form.salario_hr}
-                                                        placeholder="SALARIO POR HORA"
-                                                        iconclass="fas fa-money-check-alt"
-                                                        messageinc="Incorrecto. Ingresa el salario por hora."
-                                                        thousandseparator={true}
-                                                        prefix={'$'}
+                                                    <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange} 
+                                                     name="salario_hr"  type="text"  value={form.salario_hr}  placeholder="SALARIO POR HORA"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el salario por hora."  
+                                                     thousandseparator={true}  prefix={'$'}
                                                     />
                                                 </div>
                                                 <div className="col-md-4">
-                                                    <InputNumberGray
-                                                        withtaglabel = { 1 }
-                                                        withtextlabel = { 1 }
-                                                        withplaceholder = { 1 }
-                                                        withicon={1}
-                                                        requirevalidation={0}
-                                                        formeditado={formeditado}
-                                                        onChange={onChange}
-                                                        name="salario_hr_extra"
-                                                        type="text"
-                                                        value={form.salario_hr_extra}
-                                                        placeholder="SALARIO POR HORA EXTRA"
-                                                        iconclass="fas fa-money-check-alt"
-                                                        messageinc="Incorrecto. Ingresa el salario por hora extra."
-                                                        thousandseparator={true}
-                                                        prefix={'$'}
+                                                    <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange}   
+                                                    name="salario_hr_extra"  type="text"  value={form.salario_hr_extra}  placeholder="SALARIO POR HORA EXTRA"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el salario por hora extra."  thousandseparator={true}  prefix={'$'}
                                                     />
                                                 </div>
                                             </>
                                             :
                                             <div className="col-md-6">
-                                                <InputNumberGray
-                                                    withtaglabel = { 1 }
-                                                    withtextlabel = { 1 }
-                                                    withplaceholder = { 1 }
-                                                    withicon={1}
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    onChange={onChange}
-                                                    name="nomina_extras"
-                                                    type="text"
-                                                    value={form.nomina_extras}
-                                                    placeholder="RESTANTE DE NOMINA"
-                                                    iconclass="fas fa-money-check-alt"
-                                                    messageinc="Incorrecto. Ingresa el restante de nómina."
-                                                    thousandseparator={true}
-                                                    prefix={'$'}
+                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} 
+                                                name="nomina_extras" type="text" value={form.nomina_extras} placeholder="RESTANTE DE NOMINA" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa el restante de nómina." 
+                                                thousandseparator={true} prefix={'$'}
                                                 />
                                             </div>
                                     }
@@ -738,82 +424,47 @@ class EmpleadosForm extends Component {
                                         PRESTACIONES DE LEY
                                     </div>
                                     <div className="col-md-3">
-                                        <InputNumberGray
-                                            withtaglabel = { 1 }
-                                            withtextlabel = { 1 }
-                                            withplaceholder = { 1 }
-                                            withicon={1}
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="imss"
-                                            type="text"
-                                            value={form.imss}
-                                            placeholder="IMSS"
-                                            iconclass="fas fa-money-check-alt"
-                                            messageinc="Incorrecto. Ingresa el dato de imss."
-                                            thousandseparator={true}
-                                            prefix={'$'}
+                                        <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange}  name="imss"  
+                                        type="text"  value={form.imss}  placeholder="IMSS"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el dato de imss."  thousandseparator={true}  prefix={'$'}
                                         />
                                     </div>
                                     <div className="col-md-3">
-                                        <InputNumberGray
-                                            withtaglabel = { 1 }
-                                            withtextlabel = { 1 }
-                                            withplaceholder = { 1 }
-                                            withicon={1}
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="rcv"
-                                            type="text"
-                                            value={form.rcv}
-                                            placeholder="RCV"
-                                            iconclass="fas fa-money-check-alt"
-                                            messageinc="Incorrecto. Ingresa el dato de RCV."
-                                            thousandseparator={true}
-                                            prefix={'$'}
+                                        <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange}  name="rcv"  
+                                        type="text"  value={form.rcv}  placeholder="RCV"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el dato de RCV."  thousandseparator={true}  prefix={'$'}
                                         />
                                     </div>
                                     <div className="col-md-3">
-                                        <InputNumberGray
-                                            withtaglabel = { 1 }
-                                            withtextlabel = { 1 }
-                                            withplaceholder = { 1 }
-                                            withicon={1}
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="infonavit"
-                                            type="text"
-                                            value={form.infonavit}
-                                            placeholder="INFONAVIT"
-                                            iconclass="fas fa-money-check-alt"
-                                            messageinc="Incorrecto. Ingresa el dato de infonavit."
-                                            thousandseparator={true}
-                                            prefix={'$'}
+                                        <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange}  name="infonavit" 
+                                         type="text"  value={form.infonavit}  placeholder="INFONAVIT"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el dato de infonavit."  thousandseparator={true}  prefix={'$'}
                                         />
                                     </div>
                                     <div className="col-md-3">
-                                        <InputNumberGray
-                                            withtaglabel = { 1 }
-                                            withtextlabel = { 1 }
-                                            withplaceholder = { 1 }
-                                            withicon={1}
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChange={onChange}
-                                            name="isn"
-                                            type="text"
-                                            value={form.isn}
-                                            placeholder="ISN"
-                                            iconclass="fas fa-money-check-alt"
-                                            messageinc="Incorrecto. Ingresa el dato de isn."
-                                            thousandseparator={true}
-                                            prefix={'$'}
+                                        <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange}  name="isn"  
+                                        type="text"  value={form.isn}  placeholder="ISN"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el dato de isn."  thousandseparator={true}  prefix={'$'}
                                         />
                                     </div>
-                                </div>          
+                                </div>    
+                                <div className="form-group row mx-0 form-group-marginless border-rh-info ribbon ribbon-top mt-10">
+                                    <div className="ribbon-target bg-light-primary text-primary font-weight-bolder ribbon-rh shadow-none">
+                                        Otras PRESTACIONES
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange}  name="estacionamiento"  
+                                        type="text"  value={form.estacionamiento}  placeholder="ESTACIONAMIENTO"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el dato de estacionamiento."  thousandseparator={true}  prefix={'$'}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange}  name="gimnacio"  
+                                        type="text"  value={form.gimnacio}  placeholder="GIMNACIO"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el dato de gimnacio."  thousandseparator={true}  prefix={'$'}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray  withtaglabel = { 1 }  withtextlabel = { 1 }  withplaceholder = { 1 }  withicon={1}  requirevalidation={0}  formeditado={formeditado}  onChange={onChange}  name="estudios" 
+                                         type="text"  value={form.estudios}  placeholder="ESTUDIOS"  iconclass="fas fa-money-check-alt"  messageinc="Incorrecto. Ingresa el dato de estudios."  thousandseparator={true}  prefix={'$'}
+                                        />
+                                    </div>
+                                    
+                                </div>       
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2_4TABS() }} data-wizard-type="action-prev">Anterior</button>
