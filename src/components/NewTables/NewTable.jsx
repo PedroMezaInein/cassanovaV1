@@ -181,7 +181,15 @@ class NewTable extends Component{
             createdRow: function (row, data) {
                 const { objeto } = data
                 let pdfFlag = false
+                let pendingPaymentClick = false
                 switch (tableName) {
+                    case 'tickets':
+                        if (pendingPaymentClick){
+                            console.log(objeto)
+                        }
+                    console.log(objeto)
+                    $('row').addClass('verde');
+                    break;
                     case 'compras':
                     case 'egresos':
                         if (objeto.facturas_pdf) {
@@ -235,7 +243,9 @@ class NewTable extends Component{
                         break
                 }
                 if (tableName === 'ingresos') {
+                    console.log(objeto)
                     if(objeto.total <= 0 ){ /* objeto.total < 1 */
+                    
                         $(row).removeClass('blanco');
                         $(row).addClass('rojo');
                     }
