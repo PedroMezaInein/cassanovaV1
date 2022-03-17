@@ -97,6 +97,10 @@ class TicketTable extends Component {
     setCalidad = calidad => {
         let aux = []
         calidad.map((calidad) => {
+            const clave = calidad.identificador.substring(-1,2)
+            let resultado = true
+            if(clave === 'VO'){resultado = false}
+
             aux.push(
                 {
                     actions: this.setActionsMantenimientos(calidad),
@@ -127,20 +131,25 @@ class TicketTable extends Component {
                     ),
                     costo_presupuesto: setArrayTableReactDom(
                         [
-                            { 'name': 'Precio', 'text': calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE' },
-                            { 'name': 'Monto pagado', 'text': calidad.totalVentas ? calidad.totalVentas : 'PENDIENTE' },
+                            clave !== 'VO' ? 
+                            { 'name': 'Precio', 'text': calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE' }:
+                            { 'name': 'Precio', 'text':  'N/A' },
+                            clave !== 'VO' ? 
+                            { 'name': 'Factura', 'text':  calidad.factura_folio ? calidad.factura_folio : 'PENDIENTE' } : '',
+                            clave !== 'VO' ? 
+                            { 'name': 'Orden de compra', 'text': calidad.numero_orden ? calidad.numero_orden : 'PENDIENTE' }: '',
+                            
                         ], '100px', this.doubleClick, calidad, 'costo_presupuesto', 'text-center'
                     ),
                     estatus: setArrayTableReactDom(
                         [
                             { 'name': 'tickets', 'text': calidad.estatus ? calidad.estatus.estatus : 'PENDIENTE' },
-                            { 'name': 'Factura', 'text': calidad.factura_estatus ? calidad.factura_estatus : 'PENDIENTE' },
-                            { 'name': 'Orden de compra', 'text': calidad.numero_orden ? calidad.numero_orden : 'PENDIENTE' },
-
+                           
                         ], '150px', this.doubleClick, calidad, 'estatus', 'text-center'
                     ),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
-                    id: calidad.id
+                    id: calidad.id,
+                    objeto: calidad
                 }
             )
             return false

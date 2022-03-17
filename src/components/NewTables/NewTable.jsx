@@ -182,6 +182,24 @@ class NewTable extends Component{
                 const { objeto } = data
                 let pdfFlag = false
                 switch (tableName) {
+                    case 'tickets':                       
+                        if (objeto.estatus.estatus) {
+                            if (objeto.estatus.estatus === 'Rechazado' || objeto.estatus.estatus === 'Presupuesto no autorizado') {
+                                $(row).addClass('rojo');
+                            } else if (objeto.estatus.estatus === 'Aceptado') {
+                                $(row).addClass('verde');
+                            } else if (objeto.estatus.estatus === 'En proceso') {
+                                $(row).addClass('morado');
+                            }else if (objeto.estatus.estatus === 'Terminado') {
+                                $(row).addClass('gris');
+                            }if (objeto.estatus.estatus === 'Pendiente de pago') {
+                                $(row).addClass('amarillo');
+                            }
+                        } else {
+                            $(row).addClass('blanco');
+                        }
+
+                        break;
                     case 'compras':
                     case 'egresos':
                         if (objeto.facturas_pdf) {
