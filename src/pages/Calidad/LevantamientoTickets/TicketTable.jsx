@@ -158,24 +158,23 @@ class TicketTable extends Component {
                 <div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                         <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2 " style={{ color: "green" }}  />   
-                        <span className="font-size-11px"> {`${ calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' }`}</span>                            
-                    
+                        <span className="font-size-11px"> SOLICITADA -  {`${ calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' }`}</span>                           
                     </div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                         <FontAwesomeIcon icon={faPaperPlane} className="icon-md mr-2" style={{ color: "green" }} />                                   
-                        <span className="font-size-11px">{`${ calidad.fecha_ppto ? moment(calidad.fecha_ppto).format("DD/MM/YYYY") : 'PENDIENTE' }`}</span>                            
+                        <span className="font-size-11px">PPTO ENVIADO - {`${ calidad.fecha_ppto ? moment(calidad.fecha_ppto).format("DD/MM/YYYY") : 'PENDIENTE' }`}</span>                            
                     </div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                         <FontAwesomeIcon icon={faSpellCheck} className="icon-md mr-2" style={{ color: "green" }}/>                                   
-                        <span className="font-size-11px">{`${ calidad.fecha_autorizada ? moment(calidad.fecha_autorizada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                        <span className="font-size-11px">Autorizado - {`${ calidad.fecha_autorizada ? moment(calidad.fecha_autorizada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
                     </div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                         <FontAwesomeIcon icon={faPersonBooth} className="icon-md mr-3" style={{ color: "green" }} />                                   
-                        <span className="font-size-11px">{`${ calidad.fecha_programada ? moment(calidad.fecha_programada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                        <span className="font-size-11px">INICIO DE TRABAJO - {`${ calidad.fecha_programada ? moment(calidad.fecha_programada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
                     </div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                         <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2"style={{ color: "red" }}  />                                   
-                        <span className="font-size-11px">{`${ calidad.fecha_termino ? moment(calidad.fecha_termino).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                        <span className="font-size-11px">TERMINO DE TRABAJO - {`${ calidad.fecha_termino ? moment(calidad.fecha_termino).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
                     </div>
                 </div>
             )
@@ -187,6 +186,7 @@ class TicketTable extends Component {
 
             return(
                 <div>
+                    
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                         <FontAwesomeIcon icon={faMoneyBillWaveAlt} className="icon-md mr-2 " style={{ color: "green" }}  />   
                         <span className="font-size-11px"> {`${ calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE' }`}</span>  
