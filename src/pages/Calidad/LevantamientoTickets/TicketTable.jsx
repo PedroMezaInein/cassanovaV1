@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../../constants'
-import { setTextTable, setOptions, setArrayTableReactDom } from '../../../functions/setters'
+import { setTextTable, setOptions, setLabelTable } from '../../../functions/setters'
 import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, /* waitAlert, */ pendingPaymentAlert } from '../../../functions/alert'
 import { setSingleHeader } from '../../../functions/routers'
 import axios from 'axios'
@@ -15,6 +15,8 @@ import { TickesFilter } from '../../../components/filters'
 import { DropdownButton, Dropdown } from 'react-bootstrap'
 import { setNaviIcon } from '../../../functions/setters'
 import moment from 'moment'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHashtag ,faUserAlt, faToolbox, faCalendarCheck, faPaperPlane, faSpellCheck, faPersonBooth, faMoneyBillWaveAlt , faFileInvoice } from '@fortawesome/free-solid-svg-icons'
 
 class TicketTable extends Component {
 
@@ -97,56 +99,14 @@ class TicketTable extends Component {
     setCalidad = calidad => {
         let aux = []
         calidad.map((calidad) => {
-            const clave = calidad.identificador.substring(-1,2)
-            let resultado = true
-            if(clave === 'VO'){resultado = false}
-
             aux.push(
                 {
                     actions: this.setActionsMantenimientos(calidad),
-                    identificador: setArrayTableReactDom(
-                        [
-                            { 'name': 'Clave', 'text': calidad.no_clave ? calidad.no_clave : 'Sin clave' },
-                            { 'name': 'No. TICKET', 'text': calidad.identificador ? calidad.identificador : 'Sin Identificador' },
-                        ], '50px', this.doubleClick, calidad, 'identificador', 'text-center'
-                    ),
-                    proyectos: setArrayTableReactDom(
-                        [
-                            { 'name': 'Proyecto', 'text': calidad.proyecto ? calidad.proyecto.nombre : '' },
-                            { 'name': 'Solicita', 'text': calidad.solicito },
-                            { 'name': 'Tipo trabajo', 'text': calidad.tipo ? calidad.tipo.nombre : '' },
-
-                        ], '250px', this.doubleClick, calidad, 'fechas', 'text-center'
-                    ),
-
-                    fechas: setArrayTableReactDom(
-                        [
-                            { 'name': 'Solicitada', 'text': calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' },
-                            { 'name': 'PPTO enviado', 'text': calidad.fecha_ppto ? moment(calidad.fecha_ppto).format("DD/MM/YYYY") : 'PENDIENTE' },
-                            { 'name': 'Autorizada', 'text': calidad.fecha_autorizada ? moment(calidad.fecha_autorizada).format("DD/MM/YYYY") : 'PENDIENTE' },
-                            { 'name': 'Inicio de trabajo', 'text': calidad.fecha_programada ? moment(calidad.fecha_programada).format("DD/MM/YYYY") : 'PENDIENTE' },
-                            { 'name': 'Termino de trabajo', 'text': calidad.fecha_termino ? moment(calidad.fecha_termino).format("DD/MM/YYYY") : 'PENDIENTE' },
-
-                        ], '200px', this.doubleClick, calidad, 'fechas', 'text-center'
-                    ),
-                    costo_presupuesto: setArrayTableReactDom(
-                        [
-                            clave !== 'VO' ? 
-                            { 'name': 'Precio', 'text': calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE' }:
-                            { 'name': 'Precio', 'text':  'N/A' },
-                            clave !== 'VO' ? 
-                            { 'name': 'Factura', 'text':  calidad.factura_folio ? calidad.factura_folio : 'PENDIENTE' } : '',
-                            clave !== 'VO' ? 
-                            { 'name': 'Orden de compra', 'text': calidad.numero_orden ? calidad.numero_orden : 'PENDIENTE' }: '',
-                            
-                        ], '100px', this.doubleClick, calidad, 'costo_presupuesto', 'text-center'
-                    ),
-                    estatus: setArrayTableReactDom(
-                        [
-                            { 'name': 'tickets', 'text': calidad.estatus ? calidad.estatus.estatus : 'PENDIENTE' },
-                           
-                        ], '150px', this.doubleClick, calidad, 'estatus', 'text-center'
-                    ),
+                    identificador: this.label(calidad) ,
+                    proyectos: this.proyectos(calidad) ,
+                    fechas: this.fechas(calidad) ,
+                    costo_presupuesto: this.presupuesto(calidad) ,
+                    estatus: renderToString( calidad.estatus ? setLabelTable(calidad.estatus) : ''),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
                     id: calidad.id,
                     objeto: calidad
@@ -156,6 +116,101 @@ class TicketTable extends Component {
         })
         return aux
     }
+    label(calidad){
+                return(
+                    <div>
+                        <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                            <FontAwesomeIcon icon={faHashtag} className="icon-md mr-2" />                        
+                            <span className="font-size-11px"> {`${calidad.no_clave}`} </span>                            
+                           
+                        </div>
+                        <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                            <i style={{ color: "#9E9D24" }} className={`las la-ticket-alt icon-xl mr-2`} />                           
+                            <span className="font-size-11px"> {`${calidad.identificador}`} </span>                            
+                        </div>
+                    </div>
+                )
+     
+    }
+    proyectos(calidad){
+        return(
+            <div>
+                <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                <i style={{ color: "#EF6C00" }} className={`las la-hard-hat icon-xl mr-2`} />
+                    <span className="font-size-11px"> {`${calidad.proyecto ? calidad.proyecto.nombre : ''}`}</span>                            
+                   
+                </div>
+                <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                    <FontAwesomeIcon icon={faUserAlt} className="icon-md mr-2" />                                   
+                    <span className="font-size-11px">{`${ calidad.solicito }`}</span>                            
+                </div>
+                <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                    <FontAwesomeIcon icon={faToolbox} className="icon-md mr-2" />                                   
+                    <span className="font-size-11px">{`${ calidad.tipo ? calidad.tipo.nombre : '' }`}</span>                            
+                </div>
+            </div>
+        )
+
+}
+
+        fechas(calidad){
+            return(
+                <div>
+                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                        <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2 " style={{ color: "green" }}  />   
+                        <span className="font-size-11px"> {`${ calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' }`}</span>                            
+                    
+                    </div>
+                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                        <FontAwesomeIcon icon={faPaperPlane} className="icon-md mr-2" style={{ color: "green" }} />                                   
+                        <span className="font-size-11px">{`${ calidad.fecha_ppto ? moment(calidad.fecha_ppto).format("DD/MM/YYYY") : 'PENDIENTE' }`}</span>                            
+                    </div>
+                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                        <FontAwesomeIcon icon={faSpellCheck} className="icon-md mr-2" style={{ color: "green" }}/>                                   
+                        <span className="font-size-11px">{`${ calidad.fecha_autorizada ? moment(calidad.fecha_autorizada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                    </div>
+                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                        <FontAwesomeIcon icon={faPersonBooth} className="icon-md mr-3" style={{ color: "green" }} />                                   
+                        <span className="font-size-11px">{`${ calidad.fecha_programada ? moment(calidad.fecha_programada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                    </div>
+                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                        <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2"style={{ color: "red" }}  />                                   
+                        <span className="font-size-11px">{`${ calidad.fecha_termino ? moment(calidad.fecha_termino).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                    </div>
+                </div>
+            )
+
+        }
+
+        presupuesto(calidad){
+            const clave = calidad.identificador.substring(-1,2)
+
+            return(
+                <div>
+                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                        <FontAwesomeIcon icon={faMoneyBillWaveAlt} className="icon-md mr-2 " style={{ color: "green" }}  />   
+                        <span className="font-size-11px"> {`${ calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE' }`}</span>  
+                    </div>
+                    {
+                         clave !== 'VO' ? 
+                         <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                            <FontAwesomeIcon icon={faFileInvoice} className="icon-md mr-2" style={{ color: "green" }} />                                   
+                            <span className="font-size-11px">{`${ calidad.factura_folio ? calidad.factura_folio : 'PENDIENTE' }`}</span>                            
+                         </div>
+                         : ''
+                    }                   
+                   {
+                      clave !== 'VO' ? 
+                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                        <i style={{ color: "#EF6C00" }} className={`las la-cart-plus icon-xl mr-2`} />                                  
+                        <span className="font-size-11px">{`${ calidad.numero_orden ? calidad.numero_orden : 'PENDIENTE'  }`}</span>                            
+                    </div>  
+                    : ''
+                    }                  
+                </div>
+            )
+
+        }
 
     setActionsMantenimientos = (calidad) => {
         return (
