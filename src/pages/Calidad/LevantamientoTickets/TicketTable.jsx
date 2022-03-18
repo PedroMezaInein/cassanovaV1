@@ -192,19 +192,23 @@ class TicketTable extends Component {
                         <span className="font-size-11px"> {`${ calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE' }`}</span>  
                     </div>
                     {
-                         clave !== 'VO' ? 
+                         clave !== 'VO'  ?
+                            calidad.estatus.estatus !== "Presupuesto no autorizado" ? 
                          <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                             <FontAwesomeIcon icon={faFileInvoice} className="icon-md mr-2" style={{ color: "green" }} />                                   
                             <span className="font-size-11px">{`${ calidad.factura_folio ? calidad.factura_folio : 'PENDIENTE' }`}</span>                            
                          </div>
                          : ''
+                         : ''
                     }                   
                    {
                       clave !== 'VO' ? 
+                        calidad.estatus.estatus !== "Presupuesto no autorizado" ? 
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
                         <i style={{ color: "#EF6C00" }} className={`las la-cart-plus icon-xl mr-2`} />                                  
                         <span className="font-size-11px">{`${ calidad.numero_orden ? calidad.numero_orden : 'PENDIENTE'  }`}</span>                            
                     </div>  
+                    : ''
                     : ''
                     }                  
                 </div>

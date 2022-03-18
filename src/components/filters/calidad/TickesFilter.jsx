@@ -105,7 +105,7 @@ class TickesFilter extends Component {
                     </div>
                     <div className="col-md-6">
                         <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } requirevalidation = { 0 }
-                            withformgroup = { 0 } name = 'solicito' placeholder = '¿QUIÉN REALIZÓ EL TICKET?' value = { form.solicito }
+                            withformgroup = { 0 } name = 'solicito' placeholder = 'FOLIO DE FACTURA' value = { form.solicito }
                             onChange = { this.onChange } iconclass='las la-user icon-xl' />
                     </div>
                 </div>
