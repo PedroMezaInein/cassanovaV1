@@ -241,6 +241,19 @@ export const AREAS_COMPRAS_COLUMNS = [
     { Header: 'Sub áreas', accessor: 'subareas', customRender: true },
     { Header: 'Partida', accessor: 'partida' }
 ]
+export const PERMISOS_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'area', customRender: true },
+    { Header: 'Fecha incio', accessor: 'fecha', customRender: true },
+    { Header: 'Fecha fin', accessor: 'fecha', customRender: true },
+]
+export const INCAPACIDAD_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'area', customRender: true },
+    { Header: 'Documento', accessor: 'area', customRender: true },
+    { Header: 'Fecha incio', accessor: 'fecha', customRender: true },
+    { Header: 'Fecha fin', accessor: 'fecha', customRender: true },
+]
 
 export const PARTIDAS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },

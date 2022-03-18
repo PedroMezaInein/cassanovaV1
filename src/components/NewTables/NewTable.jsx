@@ -24,6 +24,7 @@ class NewTable extends Component{
     componentDidMount = () => {
         const { data } = this.props
         this.setState({...this.state, stateData: data})
+        // console.log(this.state)
         $.event.special.touchstart = {
             setup: function( _, ns, handle ){
                 if ( ns.includes("noPreventDefault") ) {
@@ -181,13 +182,15 @@ class NewTable extends Component{
             createdRow: function (row, data) {
                 const { objeto } = data
                 let pdfFlag = false
-                let pendingPaymentClick = false
+                //  let estatus_ticket = false
                 switch (tableName) {
                     case 'tickets':
-                        if (pendingPaymentClick){
-                            console.log(objeto)
-                        }
-                    console.log(objeto)
+                    // console.log(data.props)
+                    // let aa = data.costo_presupuesto.props
+                    // let aa = data.costo_presupuesto.props.onClick
+                    // let aa = objeto.costo_presupuesto
+
+                    // console.log(aa)
                     $('row').addClass('verde');
                     break;
                     case 'compras':
@@ -201,6 +204,7 @@ class NewTable extends Component{
                             $(row).addClass('blanco');
                         } else {
                             if (objeto.factura) {
+                                console.log(objeto)
                                 if (objeto.total_facturas - objeto.monto > 1) {
                                     $(row).addClass('verde');
                                 } else if (objeto.total_facturas - objeto.monto < -1) {
@@ -357,7 +361,7 @@ class NewTable extends Component{
     clickHandler = () => {
         const { onClick } = this.props
         if (typeof onClick === 'function') {
-            onClick();
+            this.props.onClick();
         }
     }
     clickHandlerExport = () => {
@@ -377,7 +381,7 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
+        const { tableName, customtitle, customlabel, customsubtitle,addClick, title, subtitle, abrir_modal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
                 <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
@@ -391,16 +395,16 @@ class NewTable extends Component{
                     <div className="card-toolbar toolbar-dropdown">
                         <DropdownButton menualign="right" title={<span>OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-newtable-options' >
                             {
-                                hideNew !== true ? 
-                                    abrirModal === true ?
-                                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={this.clickHandler} >
+                                 hideNew !== true ? 
+                                 abrir_modal === false ?
+                                    <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
+                                    {this.setNaviIcon('flaticon-add', 'AGREGAR')} 
+                                        </Dropdown.Item>
+                                     :
+                                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={addClick} >
                                             {this.setNaviIcon('flaticon-add', 'AGREGAR')}
                                         </Dropdown.Item>
-                                        :
-                                        <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
-                                            {this.setNaviIcon('flaticon-add', 'AGREGAR')}
-                                        </Dropdown.Item>
-                                : <></>
+                                    : <></>
                             }
                             <Dropdown.Item className="text-hover-info dropdown-info" onClick={filterClick}>
                                 {this.setNaviIcon('fas fa-filter', 'FILTRAR')}

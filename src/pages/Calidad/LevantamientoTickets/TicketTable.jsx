@@ -101,27 +101,27 @@ class TicketTable extends Component {
         const tr = $('tr.odd');
         let aux = []
         calidad.map((calidad) => {
-                switch (calidad.estatus.estatus) {
-                case 'Aceptado':
-                    console.log('verde')
-                //    document.getElementsByClassName('odd').addClass('verde');
-                //    element.classList.addClass('verde')
-                // this.$('row').addClass('verde');
-                    break;
-                case 'En proceso':
-                    console.log('rojo')
-                    document.getElementsByClassName('sorting_1 dtr-control')
-                    break;
-                case 'Aprobación pendiente':
-                    // ('tbody').addClass('morado')
-                    document.getElementsByClassName('sorting_1 dtr-control');{
-                        console.log('morado');
-                    }
-                    break;
-                default:
-                    break;
-                }
-            console.log(calidad.estatus.estatus)
+            //     switch (calidad.estatus.estatus) {
+            //     case 'Aceptado':
+            //         console.log('verde')
+            //     //    document.getElementsByClassName('odd').addClass('verde');
+            //     //    element.classList.addClass('verde')
+            //     // this.$('row').addClass('verde');
+            //         break;
+            //     case 'En proceso':
+            //         console.log('rojo')
+            //         document.getElementsByClassName('sorting_1 dtr-control')
+            //         break;
+            //     case 'Aprobación pendiente':
+            //         // ('tbody').addClass('morado')
+            //         document.getElementsByClassName('sorting_1 dtr-control');{
+            //             console.log('morado');
+            //         }
+            //         break;
+            //     default:
+            //         break;
+            //     }
+            // console.log(calidad.estatus.estatus)
 
             aux.push(
                 {
@@ -393,7 +393,7 @@ class TicketTable extends Component {
                 <NewTable tableName='tickets' subtitle='Listado de tickets' title='Tickets' mostrar_boton={true}        abrir_modal={false}
                     url='/calidad/tickets/nuevo-ticket' columns={PROYECTOS_TICKETS} accessToken={this.props.authUser.access_token}
                     setter={this.setCalidad} urlRender={`${URL_DEV}v3/calidad/tickets`} filterClick={this.openModalFiltros} exportar_boton={true}
-                    onClickExport={() => this.exportTicketsAxios()} pendingPaymentClick={this.pendingPaymentClick} />
+                    onClickExport={() => this.exportTicketsAxios()} pendingPaymentClick={this.pendingPaymentClick}  />
                 <Modal size='lg' title='Filtros' show={modal.filtros} handleClose={this.handleCloseFiltros}>
                     <TickesFilter filters={filters} clearFiltros={this.clearFiltros} onSubmitFilters={this.onSubmitFilters}
                         onChangeFilter={this.onChangeFilter} options={options} />
