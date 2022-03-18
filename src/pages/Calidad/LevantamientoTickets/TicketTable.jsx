@@ -161,7 +161,7 @@ class TicketTable extends Component {
                         <span className="font-size-11px"> SOLICITADA -  {`${ calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' }`}</span>                           
                     </div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <FontAwesomeIcon icon={faPaperPlane} className="icon-md mr-2" style={{ color: "green" }} />                                   
+                        <FontAwesomeIcon icon={faPaperPlane} className="icon-md mr-2" />                                   
                         <span className="font-size-11px">PPTO ENVIADO - {`${ calidad.fecha_ppto ? moment(calidad.fecha_ppto).format("DD/MM/YYYY") : 'PENDIENTE' }`}</span>                            
                     </div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
@@ -169,7 +169,7 @@ class TicketTable extends Component {
                         <span className="font-size-11px">Autorizado - {`${ calidad.fecha_autorizada ? moment(calidad.fecha_autorizada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
                     </div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <FontAwesomeIcon icon={faPersonBooth} className="icon-md mr-3" style={{ color: "green" }} />                                   
+                        <FontAwesomeIcon icon={faPersonBooth} className="icon-md mr-3"  />                                   
                         <span className="font-size-11px">INICIO DE TRABAJO - {`${ calidad.fecha_programada ? moment(calidad.fecha_programada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
                     </div>
                     <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
