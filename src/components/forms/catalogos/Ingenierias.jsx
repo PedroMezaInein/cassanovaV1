@@ -112,7 +112,6 @@ export default class IngenieriaForm extends Component {
                                                         value = { tipo.porcentaje }
                                                         onChange = { (e) => { this.onChange(e, tipo) }}
                                                         thousandseparator={true}
-                                                        prefix={'$'}
                                                         // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
                                                         customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
                                                     />
