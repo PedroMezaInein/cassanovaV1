@@ -326,7 +326,6 @@ class Modulo extends Component {
                     ),
                     captura: setTextTableCenter(sipare.linea_captura ? sipare.linea_captura : 'Sin Linea de captura'),
                     monto: setMoneyTable(sipare.monto ? sipare.monto : ''),
-                    estatus: sipare.estatus ? setEstatusTableReactDom(sipare, this.changeEstatus ) : '',
                     id: sipare.id,
                 }
             )
@@ -347,7 +346,6 @@ class Modulo extends Component {
             aux.push(
                 {
                     actions: this.setActions(accesos),
-                    estatus: accesos.estatus ? setEstatusTableReactDom(accesos, this.changeEstatus ) : '',
                     plataforma: setTextTableCenter(accesos.plataforma ? accesos.plataforma : ''),
                     liga: setTextTableCenter(accesos.url ? accesos.url : ''),
                     usuario: setClipboardArrayTableReactDom(

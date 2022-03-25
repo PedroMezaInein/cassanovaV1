@@ -909,9 +909,7 @@ export const COLABORADOR = [
 export const RECIBOS = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
-    { Header: 'Periodo', accessor: 'periodo', customRender: true },
-    { Header: 'Estatus', accessor: 'estatus', customRender: true },
-
+    { Header: 'Periodo', accessor: 'periodo', customRender: true }
 ]
 
 export const SIPARE = [
@@ -919,18 +917,14 @@ export const SIPARE = [
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
     { Header: 'Linea de Captura', accessor: 'captura', customRender: true },
-    { Header: 'Monto', accessor: 'monto', customRender: true },
-    { Header: 'Estatus', accessor: 'estatus', customRender: true },
-
+    { Header: 'Monto', accessor: 'monto', customRender: true }
 ]
 
 export const CLAVES = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Plataforma', accessor: 'plataforma', customRender: true },
     { Header: 'Liga', accessor: 'liga', customRender: true },
-    { Header: 'Usuario', accessor: 'usuario', customRender: true },
-    { Header: 'Estatus', accessor: 'estatus', customRender: true },
-
+    { Header: 'Usuario', accessor: 'usuario', customRender: true }
 ]
 export const ADJ_TRASPASO_COLUMNS = [
     { Header: 'Opciones', accessor: 'actions' },

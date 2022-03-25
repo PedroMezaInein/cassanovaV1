@@ -6,7 +6,7 @@ import { setSelectOptions } from '../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAlert, errorAdjuntos, deleteAlertSA2Parametro, createAlertSA2Parametro } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
-import { DiseñoForm, ObraForm } from '../../components/forms'
+import { DiseñoForm, ObraForm , IngenieriaForm} from '../../components/forms'
 import { Line } from 'react-chartjs-2'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
@@ -33,7 +33,8 @@ class Diseño extends Component {
         },
         options: {
             empresas: [],
-            tipos: []
+            tipos: [],
+            tipos2: []
         },
         form: {
             m2: '',
@@ -50,6 +51,7 @@ class Diseño extends Component {
                 cambio: ''
             }],
             tipos: [],
+            tipos2: [],
             adjuntos: {
                 subportafolio: {
                     value: '',
@@ -225,7 +227,6 @@ class Diseño extends Component {
                 if (empresas) {
                     if (empresas.length) {
                         empresa = empresas[0]
-
                         if(empresas[0].tipos.length){
                             activeTipo = empresas[0].tipos[0].id
                             let auxSub = []
@@ -313,12 +314,20 @@ class Diseño extends Component {
                     }
 
                     options.tipos = []
+                    options.tipos2 = []
 
                     empresa.tipos_planos.forEach((tipo) => {
                         options.tipos.push({
                             text: tipo.tipo,
                             value: tipo.id,
                             label: tipo.tipo
+                        })
+                    })
+                    empresa.tipos_planos2.forEach((tipos2) => {
+                        options.tipos2.push({
+                            text: tipos2.tipo,
+                            value: tipos2.id,
+                            label: tipos2.tipo
                         })
                     })
                 }
@@ -930,6 +939,9 @@ class Diseño extends Component {
         if(datos.esquema === 'esquema_3')
             datos.value.tipo = form.tipoTarget
 
+            if(datos.esquema === 'esquema_2')
+            datos.value.tipo = form.tipoTarget
+
         await axios.post(`${URL_DEV}empresa/${empresa.id}/plano/${datos.esquema}`, datos.value, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresa } = response.data
@@ -1069,10 +1081,22 @@ class Diseño extends Component {
                                         <Nav.Link eventKey="planos">
                                             <span className="nav-icon mr-2">
                                                 <span className="svg-icon mr-3">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/highvoltage.svg')} />
+                                                <i style={{ color: "#EF6C00" }} className={`las la-blueprints icon-xl mr-2`} />
+
+                                                    {/* <SVG  style={{ color : "red" }}  src={toAbsoluteUrl('/images/svg/highvoltage.svg')} /> */}
                                                 </span>
                                             </span>
                                             <span className="nav-text">Planos</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item className="nav-item mr-3">
+                                        <Nav.Link eventKey="ingenierias">
+                                            <span className="nav-icon mr-2">
+                                                <span className="svg-icon mr-3">
+                                                <i style={{ color: "#EF6C00" }} className={`las la-hard-hat icon-xl mr-2`} />
+                                                </span>
+                                            </span>
+                                            <span className="nav-text">Ingenierías</span>
                                         </Nav.Link>
                                     </Nav.Item>
                                 </Nav>
@@ -1082,6 +1106,15 @@ class Diseño extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="obra">
                                         <ObraForm
+                                            form={form}
+                                            onChange={this.onChange}
+                                            onSubmit={this.onSubmitObra}
+                                            addRow={this.addParametricRow}
+                                        />
+                                    </Tab.Pane>
+                                    
+                                    <Tab.Pane eventKey="ingenierias">
+                                        <IngenieriaForm
                                             form={form}
                                             onChange={this.onChange}
                                             onSubmit={this.onSubmitObra}
@@ -1124,15 +1157,29 @@ class Diseño extends Component {
                                                             </Card.Header>
                                                             <Card.Body className='py-0 px-0' style={{border:"3px solid #ECF0F3"}}>
                                                                 <div className="pt-0">
-                                                                    <Esquema planos = { form.esquema_2 } deletePlano = { this.deletePlano } 
+                                                                    <Esquema3 planos = { form.esquema_2 } deletePlano = { this.deletePlano } 
                                                                         changePosicionPlano = { this.changePosicionPlano } />
                                                                     <div className = 'row mx-0 py-2'>
-                                                                        <div className = 'col-10 w-100 align-self-center text-justify'>
+                                                                    <div className = 'col-md-6 align-self-center text-justify pb-2 px-1'>
+
+                                                                            <SelectCreateSinText 
+                                                                                name = 'tipo'
+                                                                                placeholder = "TIPO"
+                                                                                iconclass = "far fa-file-alt"
+                                                                                requirevalidation = { 1 }
+                                                                                messageinc = "Ingresa el tipo"
+                                                                                onChange = { this.handleChangeCreate }
+                                                                                onCreateOption = { this.handleCreateOption }
+                                                                                elementoactual = { form.tipoTarget }
+                                                                                options = { options.tipos2 }
+                                                                            />
+                                                                        </div>
+                                                                        <div className = 'col-5 w-100 align-self-center text-justify'>
                                                                             <InputSinText name = 'nombre' placeholder = 'PLANO' requireValidation = { 1 }
                                                                                 value = { form.esquema_2[form.esquema_2.length-1].nombre } onChange = { (e) => { this.handleChangePlanos('esquema_2', e,form.esquema_2.length-1) }}
                                                                                 customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" />
                                                                         </div>
-                                                                        <div className='col-2 text-center d-flex align-items-end justify-content-center'>
+                                                                        <div className='col-1 text-center d-flex align-items-end justify-content-center'>
                                                                             <Button icon = '' onClick = { () => { this.sendPlano('esquema_2', form.esquema_2.length - 1) } } 
                                                                                 className = "btn btn-icon btn-light-success btn-xs mr-2 px-2" only_icon = "fas fa-plus icon-xs"
                                                                                 tooltip={{text:'ENVIAR'}}/>
