@@ -241,6 +241,7 @@ export const AREAS_COMPRAS_COLUMNS = [
     { Header: 'Partida', accessor: 'partida' }
 ]
 export const PERMISOS_COLUMNS = [
+    // { Header: 'Empleado', accessor: 'empleado' , customRender: false },
     { Header: 'OPCIONES', accessor: 'actions', customRender: true },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },    
     { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
@@ -933,10 +934,12 @@ export const SIROC = [
 export const COLABORADOR = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
-    { Header: 'Repse', accessor: 'repse', customRender: true },
-    { Header: 'Siroc', accessor: 'sirco', customRender: true },
+    // { Header: 'Repse', accessor: 'repse', customRender: true },
+    { Header: 'Siroc', accessor: 'siroc', customRender: true },
     { Header: 'Semana', accessor: 'semana', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'curp', accessor: 'curp', customRender: true },
+    { Header: 'rfc', accessor: 'rfc', customRender: true },
 
 ]
 

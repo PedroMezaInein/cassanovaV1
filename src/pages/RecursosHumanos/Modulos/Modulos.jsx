@@ -275,7 +275,33 @@ class Modulo extends Component {
     }
 
     setTableColaborador = (datos) => {
-       
+        const { data } = this.state
+
+        let aux = []
+        this.setState({
+            data
+        })
+        datos.forEach((siroc) => {
+            aux.push(
+                {
+                    actions: this.setActions(siroc),
+                    proyecto: setTextTableCenter(siroc.proyecto_id ? siroc.proyecto.nombre : '', this.doubleClick, siroc, 'proyecto', 'text-center'),
+                    patronal: setTextTableCenter(siroc.repse_id ? siroc.patronal.name_patronal : '', this.doubleClick, siroc, 'patronal', 'text-center'),
+                    fecha: setDateTableReactDom(siroc.fecha_alta, this.doubleClick, siroc, 'fecha', 'text-center'),
+                    obra: setTextTableCenter(siroc.no_obra, this.doubleClick, siroc, 'obra', 'text-center'),
+                    folio: setTextTableCenter(siroc.folio, this.doubleClick, siroc, 'folio', 'text-center'),
+                    curp: setTextTableCenter(siroc.curp, this.doubleClick, siroc, 'folio', 'text-center'),
+                    rfc: setTextTableCenter(siroc.rfc, this.doubleClick, siroc, 'folio', 'text-center'),
+                    estatus: siroc.estatus ? setEstatusTableReactDom(siroc, this.changeEstatus ) : '',
+                   
+                    id: siroc.id,
+
+                }
+            )
+
+        })
+
+        return aux    
     }
 
     setTableNomina = (datos) => {
@@ -912,7 +938,7 @@ class Modulo extends Component {
 
     render() {
         const { authUser: {access_token} } = this.props
-        const { modal, options, form,  key, filters , titulo1,titulo2,titulo3,titulo4,titulo5,titulo6,titulo7,titulo8} = this.state
+        const { modal, options, form,  key, filters , titulo1,titulo2,titulo3,titulo4,titulo5,titulo6,titulo7,titulo8, } = this.state
 
         return (
             <> 
@@ -951,7 +977,7 @@ class Modulo extends Component {
                     <Tab eventKey="Colaborador" title="COLABORADORES EN OBRA">
                         <NewTable tableName = 'Colaborador' subtitle = 'Listado de Colaborador de Obra' title = {titulo4}  mostrar_boton = { true }
                                 abrir_modal = { false } url = '/rh/modulo/Colaborador' columns = { COLABORADOR }
-                                accessToken = { this.props.authUser.access_token } setter = { this.setTableSiroc }
+                                accessToken = { this.props.authUser.access_token } setter = { this.setTableColaborador }
                                 filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
                                 urlRender = { `${URL_DEV}siroc?tab=Colaborador` } type='tab'
                             />

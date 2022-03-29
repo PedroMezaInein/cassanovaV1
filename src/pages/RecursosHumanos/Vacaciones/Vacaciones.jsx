@@ -10,7 +10,7 @@ import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { setSingleHeader } from '../../../functions/routers'
 import { printResponseErrorAlert, errorAlert, deleteAlert, createAlert, doneAlert, waitAlert, questionAlert } from '../../../functions/alert'
-import { URL_DEV, PERMISOS_COLUMNS, SOLICITUD_EGRESO_COLUMNS,INCAPACIDAD_COLUMNS } from '../../../constants'
+import { URL_DEV, PERMISOS_COLUMNS, SOLICITUD_EGRESO_COLUMNS, INCAPACIDAD_COLUMNS } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip, Tabs, Tab, Form, } from 'react-bootstrap'
 import { setDateTableLG, setOptions } from '../../../functions/setters'
@@ -18,12 +18,12 @@ import { ItemSlider, Modal } from '../../../components/singles'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { AgregarVacacionesForm } from "../../../components/forms"
-import { Button, SelectSearch, InputGray, FileInput, RangeCalendar,SelectHorario } from '../../../components/form-components'
+import { Button, SelectSearch, InputGray, FileInput, RangeCalendar, SelectHorario } from '../../../components/form-components'
 import readXlsxFile from 'read-excel-file'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import { Nav } from 'react-bootstrap'
-import { apiOptions, catchErrors,apiGet } from '../../../functions/api'
+import { apiOptions,apiPostForm, catchErrors, apiGet } from '../../../functions/api'
 import {
     setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter,
     setTextTableReactDom, setNaviIcon
@@ -49,49 +49,49 @@ class Vacaciones extends Component {
         modal_permisos: false,
         eventos: '',
         date: '',
-        permiso:'',
+        permiso: '',
         form: {
             fechas: { start: null, end: null },
-            nombre: this.props.authUser.user.name,
+            // nombre: this.props.authUser.user.name,
+            nombre:'JOSE CARLOS HERRERA GALLEGOS',
             fechaInicio: new Date(),
             fechaFin: new Date(),
-            empleado: '',
             descripcion: '',
-            tipo:'',
+            tipo: '',
+            empleado:'JOSE CARLOS HERRERA GALLEGOS',
             hora_salida: 0,
             hora_entrada: 0,
-            minuto_entrada:0,
-            minuto_salida:0,
+            minuto_entrada: 0,
+            minuto_salida: 0,
             lider: 'aa',
             adjuntos: {
                 adjuntos: {
-           
-                    value: '',
-                    placeholder: 'Adjuntos',
                     files: [],
+                    value: '',
+                    placeholder: 'Adjuntos'
                 },
-                documento: {
-                    value: '',
-                    placeholder: 'Documentación',
-                    files: [],
-                },
-                permisos: {
-                    value: '',
-                    placeholder: 'Permiso',
-                    files: [],
-                  },
+                // documento: {
+                //     value: '',
+                //     placeholder: 'Documentación',
+                //     files: []
+                // },
+                // permisos: {
+                //     value: '',
+                //     placeholder: 'Permiso',
+                //     files: []
+                //   },
             }
         },
         espera: [],
         options: {
-            empleados: []
+            // empleados: []
         },
         data: {
             permiso: [],
         },
         disabledDates: []
     }
-                        // add:permiso/admin
+    // add:permiso/admin
 
     // async getDataAjax(){
     //     $('#form_permisos').DataTable().ajax.reload();
@@ -108,7 +108,7 @@ class Vacaciones extends Component {
     //             this.setState({
     //                 ...this.state,
     //                 permiso:permisos, 
-                    
+
     //             })
     //             console.log(this.state.permiso)
     //         }, (error) => { printResponseErrorAlert(error) }
@@ -133,7 +133,7 @@ class Vacaciones extends Component {
 
         this.getVacaciones()
         this.setEgresos()
-        this.setPermisos()     
+        this.setPermisos()
         // this.getAxios()
     }
     onChange = e => {
@@ -152,6 +152,22 @@ class Vacaciones extends Component {
         this.setState({ ...this.state, form })
     }
     onChangeAdjunto = e => {
+        const { value, files } = e.target
+        const { form } = this.state
+        form.adjuntos.value = value
+        form.adjuntos.files = []
+        files.forEach((file, index) => {
+            form.adjuntos.files.push({
+                name: file.name,
+                file: file,
+                url: URL.createObjectURL(file),
+                key: index
+            })
+        })
+        this.setState({ ...this.state, form })
+    }
+
+    onChangeAdjuntoP = e => {
         const { value, files } = e.target
         const { form } = this.state
         form.adjuntos.value = value
@@ -224,7 +240,7 @@ class Vacaciones extends Component {
         })
     }
 
-    
+
     handleCloseAddVacaciones = () => {
         const { modal_add_vacaciones } = this.state
         this.setState({
@@ -675,8 +691,8 @@ class Vacaciones extends Component {
     async addVacationAxiosAdmin() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-     console.log(access_token)
-
+        console.log(access_token)
+        console.log(this.props.authUser)
         await axios.post(URL_DEV + 'v2/rh/vacaciones/admin', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Vacaciones aceptadas con éxito')
@@ -693,21 +709,23 @@ class Vacaciones extends Component {
     }
 
     async addPermisoAxiosAdmin() {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-     console.log(access_token)
-     console.log(this.props.authUser)
-
-        // await axios.post(URL_DEV + 'permiso/admin', form, { headers: { Authorization: `Bearer ${this.props.authUser}` } }).then(
-            
-        await axios.post(URL_DEV + 'permiso/admin', form, { headers: { Authorization: `Bearer ${this.props.authUser}` } }).then(
-        // await axios.post(URL_DEV + 'permiso/admin', form, { headers: { Authorization: `Bearer ${access_token}`} ).then(
-
+        // const { access_token } = this.props.authUser
+        // const { form } = this.state
+        const { authUser: { user: { permisos } } } = this.props
+     
+        const { form, } = this.state
+        const { at, } = this.props
+        //  console.log(access_token)
+        console.log(this.props.authUser)
+        // apiPostForm('v3/administracion/egresos', form, at).then(
+        apiPostForm('permiso/admin', form, this.props).then(
+        // await axios.post(URL_DEV + 'v2/rh/vacaciones/admin', form, { empleado: form.empleado }, { headers: { Authorization:`Bearer ${access_token}` } }).then(
+        // await axios.post(URL_DEV + 'permiso/admin', form, { empleado: form.empleado }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 doneAlert('Permiso enviado con éxito')
-                this.setPermisos()     
-                this.handleClosePermisos()
+                // this.setPermisos()     
+                // this.handleClosePermisos()
                 console.log(response)
             },
             (error) => {
@@ -754,24 +772,24 @@ class Vacaciones extends Component {
         })
     }
 
-    solicitarCajon = async () => {
-        const { access_token } = this.props.authUser
-        const { date, form } = this.state
-        waitAlert()
-        await axios.post(URL_DEV + 'vacaciones/cajones', { fecha: date, empleado: form.empleado }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                Swal.close()
-                doneAlert('EL CAJÓN FUE ASIGNADO CON ÉXITO')
-                this.getEventsOneDateAxios(date)
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+    // solicitarCajon = async () => {
+    //     const { access_token } = this.props.authUser
+    //     const { date, form } = this.state
+    //     waitAlert()
+    //     await axios.post(URL_DEV + 'vacaciones/cajones', { fecha: date, empleado: form.empleado }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+    //         (response) => {
+    //             Swal.close()
+    //             doneAlert('EL CAJÓN FUE ASIGNADO CON ÉXITO')
+    //             this.getEventsOneDateAxios(date)
+    //         },
+    //         (error) => {
+    //             printResponseErrorAlert(error)
+    //         }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.error(error, 'error')
+    //     })
+    // }
 
     deleteCajon = async (id) => {
         const { access_token } = this.props.authUser
@@ -1040,46 +1058,48 @@ class Vacaciones extends Component {
         let aux = []
         let _aux = []
         if (permisos)
-        permisos.map((permiso) => {
-            permiso.permiso.forEach((arregloPermiso)=>{
-                console.log(permiso.nombre)
-                console.log(arregloPermiso)
-                aux.push(
-                    {
-                        actions: this.setActionsPermiso(permiso.permiso),
-                        identificador: setTextTableCenter( permiso.permiso.id),
-                        horas: setArrayTable(
-                            [
-                                { name: 'Hora entrada', text:  arregloPermiso.hora_entrada ? arregloPermiso.hora_entrada : '' },
-                                { name: 'Hora saldia', text:  arregloPermiso.hora_salida ?  arregloPermiso.hora_salida : '' },
-                            ], '250px'
-                        ),
-                        fechas: setArrayTable(
-                            [
-                                { name: 'Fecha inicio', text:  arregloPermiso.fecha_inicio ?  arregloPermiso.fecha_inicio : '' },
-                                { name: 'Fecha fin', text:  arregloPermiso.fecha_fin ?  arregloPermiso.fecha_fin : '' },
-                            ], '250px'
-                        ),
-                        nombre: setTextTable(permiso.nombre ?permiso.nombre : ''),
-                        lider: setTextTable(arregloPermiso.lider_inmediato ? arregloPermiso.lider_inmediato : ''),
-                        estatus: setTextTable(arregloPermiso.estatus ? arregloPermiso.estatus : ''),
-                        tipo: setTextTable(arregloPermiso.tipo_permiso ? arregloPermiso.tipo_permiso : ''),
-                        rechazo: setTextTable(arregloPermiso.motivo_rechazo ? arregloPermiso.motivo_rechazo : ''),
-                        adjuntos: setArrayTable(_aux),
-                        id: permiso.id,
-                        // objeto: permiso.
-                    }
-                )
-                return false
+            permisos.map((permiso) => {
+                permiso.permiso.forEach((arregloPermiso) => {
+                    console.log(permiso.nombre)
+                    console.log(arregloPermiso)
+                    aux.push(
+                        {
+                            actions: this.setActionsPermiso(permiso.permiso),
+                            identificador: setTextTableCenter(permiso.permiso.id),
+                            horas: setArrayTable(
+                                [
+                                    { name: 'Hora entrada', text: arregloPermiso.hora_entrada ? arregloPermiso.hora_entrada : '' },
+                                    { name: 'Hora saldia', text: arregloPermiso.hora_salida ? arregloPermiso.hora_salida : '' },
+                                ], '250px'
+                            ),
+                            fechas: setArrayTable(
+                                [
+                                    { name: 'Fecha inicio', text: arregloPermiso.fecha_inicio ? arregloPermiso.fecha_inicio : '' },
+                                    { name: 'Fecha fin', text: arregloPermiso.fecha_fin ? arregloPermiso.fecha_fin : '' },
+                                ], '250px'
+                            ),
+                            nombre: setTextTable(permiso.nombre ? permiso.nombre : ''),
+                            lider: setTextTable(arregloPermiso.lider_inmediato ? arregloPermiso.lider_inmediato : ''),
+                            estatus: setTextTable(arregloPermiso.estatus ? arregloPermiso.estatus : ''),
+                            tipo: setTextTable(arregloPermiso.tipo_permiso ? arregloPermiso.tipo_permiso : ''),
+                            rechazo: setTextTable(arregloPermiso.motivo_rechazo ? arregloPermiso.motivo_rechazo : ''),
+                            adjuntos: setArrayTable(_aux),
+                            id: permiso.id,
+                            // objeto: permiso.
+                        }
+                    )
+                    return false
+                })
+                return aux;
             })
-            return aux ; 
-        })
-    return aux ; 
+        return aux;
     }
 
     render() {
-        const { events, espera, modal, key, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados,modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos } = this.state
-        const { access_token } = this.props.authUser
+        const { events, espera, modal, key, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos } = this.state
+        const { authUser: {access_token} } = this.props
+        // const { user } = this.props
+
         return (
             <Layout active='rh'  {...this.props}>
                 <Tabs defaultActiveKey="vacaciones" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -1158,8 +1178,73 @@ class Vacaciones extends Component {
                             // urlRender={`${URL_DEV}permiso/permiso`}
                             filterClick={this.openModalAddIncapacidad}
                             exportar_boton={true}
-                            onClickExport={() => { this.exportEgresosAxios() }} 
-                        /> </Tab>
+                            onClickExport={() => { this.exportEgresosAxios() }}
+                        />
+                        <Modal size={"lg"} show={modal_incapacidad} handleClose={this.handleCloseIncapacidad}>
+                            <Card className="card-custom">
+                                <Card.Header>
+                                    <div className="card-title">
+                                        <h3 className="card-label"> Nueva incapacidad </h3>
+                                    </div>
+                                </Card.Header>
+                                <Card.Body className="pt-0">
+                                    <Form id='form-incapacidad'
+                                        onSubmit={
+                                            //   (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-incapacidad') }
+                                            //    (e) => { e.preventDefault(); validateAlert(localStorage.setItem('data', ss), e, 'form-incapacidad') }
+                                            (e) => { e.preventDefault(); }
+
+                                        }>
+                                        <div className="form-group row form-group-marginless justify-content-between">
+                                            <div className="col-md-4 text-center align-self-center">
+                                                <div className="col-md-4 text-center">
+                                                    <label className="col-form-label font-weight-bold text-dark-60">Fecha</label><br />
+                                                    <RangeCalendar start={form.fechas.start} end={form.fechas.end}
+                                                        onChange={(value) => { this.onChange({ target: { name: 'fechas', value: { start: value.startDate, end: value.endDate } } }) }} />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6 ">
+                                                <div className="form-group row form-group-marginless ">
+                                                    <div className="col-md-12">
+                                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}
+                                                            requirevalidation={1}
+                                                            value={form.nombre}
+                                                            name="nombre" onChange={this.onChange} placeholder="NOMBRE"
+                                                            iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Incorrecto. ingresa el tipo nombre"
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-12 ">
+                                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1}
+                                                            name='lider' iconclass="far fa-file-alt icon-lg text-dark-50" placeholder='LÍDER INMEDIATO' onChange={this.onChange}
+                                                            value={form.lider} messageinc="Incorrecto. Ingresa el líder inmediato" />
+                                                    </div>
+                                                    <div className="col-md-12 ">
+                                                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} requirevalidation={0} as='textarea' rows='1'
+                                                            withformgroup={0} name='descripcion' placeholder='DESCRIPCIÓN' value={form.descripcion} onChange={this.onChange}
+                                                            withicon={0} customclass="px-2" /></div>
+                                                    <div className="col-md-12 text-center mt-5">
+                                                        <FileInput requirevalidation={0}
+                                                            onChangeAdjunto={this.onChangeAdjunto}
+                                                            placeholder={'Documentación'} value={form.adjuntos.adjuntos.value} name='adjuntoPermiso' id='adjuntoPermiso' files={form.adjuntos.adjuntos.files} deleteAdjunto={this.clearFiles} multiple classinput='file-input' accept='*/*' iconclass='flaticon2-clip-symbol text-primary'
+                                                            classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
+                                                            formeditado={formeditado}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="d-flex justify-content-end border-top mt-3 pt-3">
+                                            <Button icon='' className="btn btn-primary font-weight-bold text-uppercase"
+                                                //  type='submit' 
+                                                //  onClick={()=> {localStorage.setItem('data', this.state.form.adjuntos.documento.files[0] )}}
+                                                onClick={() => { console.log(this.state.form); this.handleCloseIncapacidad() }}
+                                                text="ENVIAR" />
+                                        </div>
+                                    </Form>
+                                </Card.Body>
+                            </Card>
+                        </Modal>
+                    </Tab>
                 </Tabs>
                 <Modal size="lg" title="Solicitudes de vacaciones" show={modal} handleClose={this.handleClose} >
                     <div className="table-responsive mt-6">
@@ -1307,158 +1392,36 @@ class Vacaciones extends Component {
                             : ''
                     }
                 </Modal>
-                <Modal size={"lg"} show={modal_incapacidad} handleClose={this.handleCloseIncapacidad}>
+
+                <Modal size={"lg"} show={modal_permisos} handleClose={this.handleClosePermisos} at = { this.props }>
                     <Card className="card-custom">
                         <Card.Header>
                             <div className="card-title">
-                                <h3 className="card-label"> Nueva incapacidad </h3>
+                                <h3 className="card-label"> Nuevo permiso </h3>
                             </div>
                         </Card.Header>
                         <Card.Body className="pt-0">
-                            <Form id='form-incapacidad'
-                                onSubmit={
-                                    //   (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-incapacidad') }
-                                    //    (e) => { e.preventDefault(); validateAlert(localStorage.setItem('data', ss), e, 'form-incapacidad') }
-                                    (e) => { e.preventDefault(); }
+                            <Form id='form-permisos'         
+                                // accessToken = { this.props.authUser.access_token }      
+                                //   onSubmit={
+                                //  (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-permisos') }
+                                // (e) => { console.log('asdasd') }
 
-                                }>
-                                <div className="form-group row form-group-marginless justify-content-between">
-                                    <div className="col-md-4 text-center align-self-center">
-                                        <div className="col-md-4 text-center">
-                                            <label className="col-form-label font-weight-bold text-dark-60">Fecha</label><br />
-                                            <RangeCalendar start={form.fechas.start} end={form.fechas.end}
-                                                onChange={(value) => { this.onChange({ target: { name: 'fechas', value: { start: value.startDate, end: value.endDate } } }) }} />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6 ">
-                                        <div className="form-group row form-group-marginless ">
-                                            <div className="col-md-12">
-                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}
-                                                    requirevalidation={1}
-                                                    value={form.nombre}
-                                                    name="nombre" onChange={this.onChange} placeholder="NOMBRE"
-                                                    iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Incorrecto. ingresa el tipo nombre"
-                                                />
-                                            </div>
-                                            <div className="col-md-12 ">
-                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1}
-                                                    name='lider' iconclass="far fa-file-alt icon-lg text-dark-50" placeholder='LÍDER INMEDIATO' onChange={this.onChange}
-                                                    value={form.lider} messageinc="Incorrecto. Ingresa el líder inmediato" />
-                                            </div>
-                                            <div className="col-md-12 ">
-                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} requirevalidation={0} as='textarea' rows='1'
-                                                    withformgroup={0} name='descripcion' placeholder='DESCRIPCIÓN' value={form.descripcion} onChange={this.onChange}
-                                                    withicon={0} customclass="px-2" /></div>
-                                            <div className="col-md-12 text-center mt-5">
-                                                <FileInput requirevalidation={0}
-                                                    onChangeAdjunto={this.onChangeAdjunto}
-                                                    placeholder={'Documentación'} value={form.adjuntos.documento.value} name='adjuntoPermiso' id='adjuntoPermiso' files={form.adjuntos.documento.files} deleteAdjunto={this.clearFiles} multiple classinput='file-input' accept='*/*' iconclass='flaticon2-clip-symbol text-primary'
-                                                    classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
-                                   
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                //   }
+                                // onSubmit
+                            >
+
                                 <div className="d-flex justify-content-end border-top mt-3 pt-3">
                                     <Button icon='' className="btn btn-primary font-weight-bold text-uppercase"
-                                        //  type='submit' 
-                                        //  onClick={()=> {localStorage.setItem('data', this.state.form.adjuntos.documento.files[0] )}}
-                                        onClick={() => { console.log(this.state.form); this.handleCloseIncapacidad() }}
-                                        text="ENVIAR" />
+                                        // type='submit'
+                                        text="ENVIAR"       
+                                      onClick={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
+                                    />
                                 </div>
                             </Form>
                         </Card.Body>
-                    </Card></Modal>
-                    <Modal size={"lg"} show={modal_permisos} handleClose={this.handleClosePermisos}>
-                    <Card className="card-custom">
-          <Card.Header>
-            <div className="card-title">
-              <h3 className="card-label"> Nuevo permiso </h3>
-            </div>
-          </Card.Header>
-          <Card.Body className="pt-0">
-            <Form id='form-permisos'
-            //   onSubmit={
-                //  (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-permisos') }
-                // (e) => { console.log('asdasd') }
-                
-            //   }
-            onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
-              >
-                    <div className="form-group row form-group-marginless justify-content-between">
-                    <div className="col-md-4 text-center align-self-center">
-                    <div className="col-md-4 text-center">
-                    <label className="col-form-label font-weight-bold text-dark-60">Fecha</label><br />
-                    <RangeCalendar start = { form.fechas.start } end = { form.fechas.end } 
-                        onChange = { ( value ) => { this.onChange( { target: { name: 'fechas', value: { start: value.startDate, end: value.endDate } } }) } }  />
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
-                      <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}
-                        requirevalidation={1}
-                        value={this.state.form.nombre}
-                        name="nombre" onChange={this.onChangeNombre} placeholder="NOMBRE"
-                        iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Incorrecto. ingresa el tipo nomrbe"
-                      />
-                    </div>
-                    <div className="col-md-12">
-                      <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}
-                        requirevalidation={1}
-                        name="tipo"
-                        value={form.tipo}
-                        onChange={this.onChange}
-                        placeholder="TIPO DE PERMISO"
-                        iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Incorrecto. ingresa el tipo de permiso"
-                      />
-                    </div>
-                    <div className="col-md-12 ">
-                      <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1}
-                        name='lider' iconclass="far fa-file-alt icon-lg text-dark-50" placeholder='LÍDER INMEDIATO' onChange={this.onChange}
-                        value={form.lider} messageinc="Incorrecto. Ingresa el líder inmediato" />
-                    </div>
-                    <div className="col-md-12 ">
-                      <label className="col-form-label font-weight-bolder text-dark-60">Entrada tardía</label>
-                      <div className="mb-3 row d-flex justify-content-center">
-                        <SelectHorario onChange={this.onChange} minuto={{ value: form.minuto_entrada, name: 'minuto_entrada' }}
-                          hora={{ value: form.hora_entrada, name: 'hora_entrada' }} allhours={true} width='w-60' />
-                      </div>
-                    </div>
-                    <div className="col-md-12 ">
-                      <label className="col-form-label font-weight-bolder text-dark-60">Salida anticipada</label>
-                      <div className="mb-3 row d-flex justify-content-center">
-                        <SelectHorario onChange={this.onChange} minuto={{ value: form.minuto_salida, name: 'minuto_fin' }}
-                          hora={{ value: form.hora_salida, name: 'hora_salida' }} allhours={true} width='w-60' />
-                      </div>
-                      <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} requirevalidation={0} as='textarea' rows='1'
-                        withformgroup={0} name='descripcion' placeholder='DESCRIPCIÓN' value={form.descripcion} onChange={this.onChange}
-                        withicon={0} customclass="px-2" />
-                    </div>
-                    <div className="col-md-12 text-center mt-5">
-                      <FileInput requirevalidation={0} onChangeAdjunto={this.onChangeAdjunto}
-                        placeholder={form.adjuntos.permisos.placeholder} value={form.adjuntos.permisos.value} name='adjuntoPermiso' id='adjuntoPermiso'
-                        files={form.adjuntos.permisos.files} deleteAdjunto={this.clearFiles} multiple
-                        classinput='file-input' accept='*/*' iconclass='flaticon2-clip-symbol text-primary'
-                        classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
-                      // formeditado = { formeditado }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="d-flex justify-content-end border-top mt-3 pt-3">
-                <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" 
-                type='submit'
-                 text="ENVIAR"
-                //  onClick={()=> { console.log(this.state.form); this.handleClosePermisos()}}
-                  />
-              </div>
-            </Form>
-          </Card.Body>
-        </Card>
-    </Modal>
+                    </Card>
+                </Modal>
             </Layout>
         );
     }
