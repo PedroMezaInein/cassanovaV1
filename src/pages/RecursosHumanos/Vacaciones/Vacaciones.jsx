@@ -3,13 +3,14 @@ import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
 import axios from 'axios'
+import $ from 'jquery'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { setSingleHeader } from '../../../functions/routers'
 import { printResponseErrorAlert, errorAlert, deleteAlert, createAlert, doneAlert, waitAlert, questionAlert } from '../../../functions/alert'
-import { URL_DEV, PERMISOS_COLUMNS, INCAPACIDAD_COLUMNS } from '../../../constants'
+import { URL_DEV, PERMISOS_COLUMNS, SOLICITUD_EGRESO_COLUMNS,INCAPACIDAD_COLUMNS } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip, Tabs, Tab, Form, } from 'react-bootstrap'
 import { setDateTableLG, setOptions } from '../../../functions/setters'
@@ -22,7 +23,7 @@ import readXlsxFile from 'read-excel-file'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import { Nav } from 'react-bootstrap'
-import { apiOptions, catchErrors, } from '../../../functions/api'
+import { apiOptions, catchErrors,apiGet } from '../../../functions/api'
 import {
     setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter,
     setTextTableReactDom, setNaviIcon
@@ -48,6 +49,7 @@ class Vacaciones extends Component {
         modal_permisos: false,
         eventos: '',
         date: '',
+        permiso:'',
         form: {
             fechas: { start: null, end: null },
             nombre: this.props.authUser.user.name,
@@ -63,19 +65,20 @@ class Vacaciones extends Component {
             lider: 'aa',
             adjuntos: {
                 adjuntos: {
-                    files: [],
+           
                     value: '',
-                    placeholder: 'Adjuntos'
+                    placeholder: 'Adjuntos',
+                    files: [],
                 },
                 documento: {
                     value: '',
                     placeholder: 'Documentación',
-                    files: []
+                    files: [],
                 },
                 permisos: {
                     value: '',
                     placeholder: 'Permiso',
-                    files: []
+                    files: [],
                   },
             }
         },
@@ -83,9 +86,35 @@ class Vacaciones extends Component {
         options: {
             empleados: []
         },
+        data: {
+            permiso: [],
+        },
         disabledDates: []
     }
+                        // add:permiso/admin
 
+    // async getDataAjax(){
+    //     $('#form_permisos').DataTable().ajax.reload();
+    // }
+
+
+    // async getAxios() {
+    //     const { access_token } = this.props.authUser
+    //     apiGet(`permiso/permiso`, access_token).then(
+    //         (response) => {
+    //             let { permisos } = this.state.data.permiso
+    //             permisos =response.data.permiso_espera
+    //             console.log(permisos)
+    //             this.setState({
+    //                 ...this.state,
+    //                 permiso:permisos, 
+                    
+    //             })
+    //             console.log(this.state.permiso)
+    //         }, (error) => { printResponseErrorAlert(error) }
+    //     ).catch((error) => { catchErrors(error) })
+    //     $('#form_permisos').DataTable().ajax.reload();
+    // }
 
     setOptionsArray = (name, array) => {
         const { options } = this.state
@@ -104,7 +133,8 @@ class Vacaciones extends Component {
 
         this.getVacaciones()
         this.setEgresos()
-
+        this.setPermisos()     
+        // this.getAxios()
     }
     onChange = e => {
         const { form } = this.state
@@ -645,11 +675,40 @@ class Vacaciones extends Component {
     async addVacationAxiosAdmin() {
         const { access_token } = this.props.authUser
         const { form } = this.state
+     console.log(access_token)
+
         await axios.post(URL_DEV + 'v2/rh/vacaciones/admin', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Vacaciones aceptadas con éxito')
                 this.getVacaciones()
                 this.handleCloseAddVacaciones()
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    async addPermisoAxiosAdmin() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+     console.log(access_token)
+     console.log(this.props.authUser)
+
+        // await axios.post(URL_DEV + 'permiso/admin', form, { headers: { Authorization: `Bearer ${this.props.authUser}` } }).then(
+            
+        await axios.post(URL_DEV + 'permiso/admin', form, { headers: { Authorization: `Bearer ${this.props.authUser}` } }).then(
+        // await axios.post(URL_DEV + 'permiso/admin', form, { headers: { Authorization: `Bearer ${access_token}`} ).then(
+
+            (response) => {
+
+                doneAlert('Permiso enviado con éxito')
+                this.setPermisos()     
+                this.handleClosePermisos()
+                console.log(response)
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -876,22 +935,26 @@ class Vacaciones extends Component {
                     <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL EGRESO CON IDENTIFICADOR: ${egreso.id}`, () => this.deleteEgresoAxios(egreso.id)) }}>
                         {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(egreso) }}>
+                    {/* <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(egreso) }}>
                         {setNaviIcon('flaticon2-magnifier-tool', 'Ver egreso')}
-                    </Dropdown.Item>
+                    </Dropdown.Item> */}
                     <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(egreso) }}>
                         {setNaviIcon('flaticon-attachment', 'Adjuntos')}
                     </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openFacturaExtranjera(egreso) }}>
+                    {/* <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openFacturaExtranjera(egreso) }}>
                         {setNaviIcon('flaticon-interface-10', 'Factura extranjera')}
+                    </Dropdown.Item> */}
+                </DropdownButton>
+            </div>
+        )
+    }
+    setActionsPermiso = permiso => {
+        return (
+            <div className="w-100 d-flex justify-content-center">
+                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(permiso) }}>
+                        {setNaviIcon('flaticon-attachment', 'Adjuntos')}
                     </Dropdown.Item>
-                    {
-                        egreso.factura ?
-                            <Dropdown.Item className="text-hover-dark dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalFacturas(egreso) }}>
-                                {setNaviIcon('flaticon2-download-1', 'Facturas')}
-                            </Dropdown.Item>
-                            : <></>
-                    }
                 </DropdownButton>
             </div>
         )
@@ -921,6 +984,7 @@ class Vacaciones extends Component {
     setEgresos = egresos => {
         let aux = []
         let _aux = []
+        // console.log(egresos)
         if (egresos)
             egresos.map((egreso) => {
                 // _aux = []
@@ -972,6 +1036,46 @@ class Vacaciones extends Component {
             })
         return aux
     }
+    setPermisos = (permisos) => {
+        let aux = []
+        let _aux = []
+        if (permisos)
+        permisos.map((permiso) => {
+            permiso.permiso.forEach((arregloPermiso)=>{
+                console.log(permiso.nombre)
+                console.log(arregloPermiso)
+                aux.push(
+                    {
+                        actions: this.setActionsPermiso(permiso.permiso),
+                        identificador: setTextTableCenter( permiso.permiso.id),
+                        horas: setArrayTable(
+                            [
+                                { name: 'Hora entrada', text:  arregloPermiso.hora_entrada ? arregloPermiso.hora_entrada : '' },
+                                { name: 'Hora saldia', text:  arregloPermiso.hora_salida ?  arregloPermiso.hora_salida : '' },
+                            ], '250px'
+                        ),
+                        fechas: setArrayTable(
+                            [
+                                { name: 'Fecha inicio', text:  arregloPermiso.fecha_inicio ?  arregloPermiso.fecha_inicio : '' },
+                                { name: 'Fecha fin', text:  arregloPermiso.fecha_fin ?  arregloPermiso.fecha_fin : '' },
+                            ], '250px'
+                        ),
+                        nombre: setTextTable(permiso.nombre ?permiso.nombre : ''),
+                        lider: setTextTable(arregloPermiso.lider_inmediato ? arregloPermiso.lider_inmediato : ''),
+                        estatus: setTextTable(arregloPermiso.estatus ? arregloPermiso.estatus : ''),
+                        tipo: setTextTable(arregloPermiso.tipo_permiso ? arregloPermiso.tipo_permiso : ''),
+                        rechazo: setTextTable(arregloPermiso.motivo_rechazo ? arregloPermiso.motivo_rechazo : ''),
+                        adjuntos: setArrayTable(_aux),
+                        id: permiso.id,
+                        // objeto: permiso.
+                    }
+                )
+                return false
+            })
+            return aux ; 
+        })
+    return aux ; 
+    }
 
     render() {
         const { events, espera, modal, key, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados,modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos } = this.state
@@ -1022,17 +1126,18 @@ class Vacaciones extends Component {
                         </Card>
                     </Tab>
                     <Tab eventKey="permisos" title="Permisos">
-                        <NewTable
-                            tableName='permisos'
+                        <NewTable idTable='form_permisos'
+                            tableName='form_permisos'
                             subtitle='Lista de permisos'
                             title='Permisos'
                             mostrar_boton={true}
                             abrir_modal={true}
                             accessToken={access_token}
                             columns={PERMISOS_COLUMNS}
-                            setter={this.setEgresos}
+                            setter={this.setPermisos}
                             addClick={this.openModalAddPermisos}
-                            urlRender={`${URL_DEV}v3/administracion/egreso`}
+                            urlRender={`${URL_DEV}permiso/permiso`}
+                            // urlRender={`${URL_DEV}v3/administracion/egreso`}
                             // url='/rh/incidencias/permisos/add'
                             filterClick={this.openModalFiltros}
                             exportar_boton={true}
@@ -1050,6 +1155,7 @@ class Vacaciones extends Component {
                             setter={this.setEgresos}
                             addClick={this.openModalAddIncapacidad}
                             urlRender={`${URL_DEV}v3/administracion/egreso`}
+                            // urlRender={`${URL_DEV}permiso/permiso`}
                             filterClick={this.openModalAddIncapacidad}
                             exportar_boton={true}
                             onClickExport={() => { this.exportEgresosAxios() }} 
@@ -1248,7 +1354,7 @@ class Vacaciones extends Component {
                                                     onChangeAdjunto={this.onChangeAdjunto}
                                                     placeholder={'Documentación'} value={form.adjuntos.documento.value} name='adjuntoPermiso' id='adjuntoPermiso' files={form.adjuntos.documento.files} deleteAdjunto={this.clearFiles} multiple classinput='file-input' accept='*/*' iconclass='flaticon2-clip-symbol text-primary'
                                                     classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
-                                                //     formeditado = { formeditado }
+                                   
                                                 />
                                             </div>
                                         </div>
@@ -1273,10 +1379,13 @@ class Vacaciones extends Component {
           </Card.Header>
           <Card.Body className="pt-0">
             <Form id='form-permisos'
-              onSubmit={
+            //   onSubmit={
                 //  (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-permisos') }
-                (e) => { console.log('asdasd') }
-              }>
+                // (e) => { console.log('asdasd') }
+                
+            //   }
+            onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
+              >
                     <div className="form-group row form-group-marginless justify-content-between">
                     <div className="col-md-4 text-center align-self-center">
                     <div className="col-md-4 text-center">
@@ -1341,15 +1450,15 @@ class Vacaciones extends Component {
               </div>
               <div className="d-flex justify-content-end border-top mt-3 pt-3">
                 <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" 
-                ///type='submit'
+                type='submit'
                  text="ENVIAR"
-                 onClick={()=> { console.log(this.state.form); this.handleClosePermisos()}}
+                //  onClick={()=> { console.log(this.state.form); this.handleClosePermisos()}}
                   />
               </div>
             </Form>
           </Card.Body>
         </Card>
-                    </Modal>
+    </Modal>
             </Layout>
         );
     }

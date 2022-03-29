@@ -241,13 +241,17 @@ export const AREAS_COMPRAS_COLUMNS = [
     { Header: 'Partida', accessor: 'partida' }
 ]
 export const PERMISOS_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions' },
-    { Header: 'Nombre', accessor: 'area', customRender: true },
-    { Header: 'Fecha incio', accessor: 'fecha', customRender: true },
-    { Header: 'Fecha fin', accessor: 'fecha', customRender: true },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },    
+    { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
+    { Header: 'Horas', accessor: 'horas', customRender: true },
+    { Header: 'Fechas', accessor: 'fechas', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'Tipo de permiso', accessor: 'tipo', customRender: true },
+    { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
 ]
 export const INCAPACIDAD_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
     { Header: 'Nombre', accessor: 'area', customRender: true },
     { Header: 'Documento', accessor: 'area', customRender: true },
     { Header: 'Fecha incio', accessor: 'fecha', customRender: true },
@@ -259,6 +263,23 @@ export const PARTIDAS_COLUMNS = [
     { Header: 'Clave', accessor: 'clave' },
     { Header: 'Partida', accessor: 'partida', customRender: true },
     { Header: 'Sub partidas', accessor: 'subpartidas', customRender: true }
+]
+
+export const MINUTAS_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'Colaboradores', accessor: 'fecha', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'descripción', accessor: 'fecha', customRender: true  },
+    { Header: 'adjunto', accessor: 'fecha', customRender: true  }
+
+]
+
+export const BIBLIOTECA_COLUMNS = [
+    // { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'fecha', accessor: 'fecha', customRender: true },
+    { Header: 'nombre', accessor: 'fecha', customRender: true },
+    { Header: 'adjuntos', accessor: 'fecha', customRender: true }
+
 ]
 
 export const PARTIDAS_DISEÑO_COLUMNS = [

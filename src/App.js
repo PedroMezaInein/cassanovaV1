@@ -171,6 +171,7 @@ const ContratosRhForm = React.lazy(() => import('./pages/RecursosHumanos/Contrat
 // const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados') )
 const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados/Empleados') )
 const EmpleadosForm = React.lazy(() => import('./pages/RecursosHumanos/Empleados/EmpleadosForm') )
+const Biblioteca = React.lazy(() => import('./pages/RecursosHumanos/Biblioteca/Biblioteca') )
 
 // const PagoImpuestos = React.lazy(() => import('./pages/RecursosHumanos/PagoImpuestos/PagoImpuestos') )
 // const PagoImpuestosForm = React.lazy(() => import('./pages/RecursosHumanos/PagoImpuestos/PagoImpuestosForm') )
@@ -183,7 +184,6 @@ const Prestamos = React.lazy(() => import('./pages/RecursosHumanos/Prestamos/Pre
 const PrestamosForm = React.lazy(() => import('./pages/RecursosHumanos/Prestamos/PrestamosForm') )
 
 const Vacaciones = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
-const PermisosForm = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/PermisosForm') )
 
 
 const Minutas = React.lazy(() => import('./pages/RecursosHumanos/Minutas/Minutas') )
@@ -487,9 +487,7 @@ class App extends Component{
                     <Route path = "/rh/pago-impuestos/single/:id" exact component ={ PagoImpuestoSingle } /> */}
                     
                     <Route path = "/rh/incidencias" exact component ={ Vacaciones } />
-                    <Route path = "/rh/incidencias/permisos/:action" exact component ={ PermisosForm } />
-
-
+                    <Route path = "/rh/biblioteca" exact component ={ Biblioteca } />
                     <Route path = "/rh/minutas" exact component ={ Minutas } />
 
                     

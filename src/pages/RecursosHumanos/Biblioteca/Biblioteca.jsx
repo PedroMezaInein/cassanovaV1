@@ -3,22 +3,24 @@ import $ from 'jquery'
 import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
-// import { Modal } from '../../../components/singles'
+import { Modal } from '../../../components/singles'
 import { Update } from '../../../components/Lottie'
 import Layout from '../../../components/layout/layout'
 // import { EgresosCard } from '../../../components/cards'
 import { NewTable } from '../../../components/NewTables'
 // import { EngresosFilters } from '../../../components/filters'
-import { URL_DEV, BIBLIOTECA_COLS} from '../../../constants'
+import { URL_DEV, BIBLIOTECA_COLUMNS } from '../../../constants'
 import { printSwalHeader } from '../../../functions/printers'
 // import { FacturasFormTable } from '../../../components/tables'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 // import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
-import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, FileInput, } from '../../../components/form-components'
 import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert } from '../../../functions/alert'
-import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, 
-    setTextTableReactDom, setNaviIcon } from '../../../functions/setters'
+import {
+    setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter,
+    setTextTableReactDom, setNaviIcon
+} from '../../../functions/setters'
 class Biblioteca extends Component {
     state = {
         modal: {
@@ -58,16 +60,7 @@ class Biblioteca extends Component {
                     placeholder: 'Pago',
                     files: []
                 },
-                presupuesto: {
-                    value: '',
-                    placeholder: 'Presupuesto',
-                    files: []
-                },
-                facturas_pdf: {
-                    value: '',
-                    placeholder: 'Factura extranjera',
-                    files: []
-                }
+        
             }
         },
         options: {
@@ -217,7 +210,7 @@ class Biblioteca extends Component {
         form.adjuntos[item].files = aux
         this.setState({ ...this.state, form })
     }
-    
+
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -261,7 +254,7 @@ class Biblioteca extends Component {
                 }
                 aux.push(
                     {
-                        actions: this.setActions(egreso),
+                        // actions: this.setActions(egreso),
                         identificador: setTextTableCenter(egreso.id),
                         cuenta: setArrayTable(
                             [
@@ -292,109 +285,31 @@ class Biblioteca extends Component {
         return aux
     }
 
-    setActions = egreso => {
-        const { history } = this.props
-        return (
-            <div className="w-100 d-flex justify-content-center">
-                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); 
-                        history.push({ pathname: '/administracion/egresos/edit', state: { egreso: egreso } }) }} >
-                        {setNaviIcon('flaticon2-pen', 'editar')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL EGRESO CON IDENTIFICADOR: ${egreso.id}`, () => this.deleteEgresoAxios(egreso.id)) }}>
-                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(egreso) }}>
-                        {setNaviIcon('flaticon2-magnifier-tool', 'Ver egreso')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(egreso) }}>
-                        {setNaviIcon('flaticon-attachment', 'Adjuntos')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openFacturaExtranjera(egreso) }}>
-                        {setNaviIcon('flaticon-interface-10', 'Factura extranjera')}
-                    </Dropdown.Item>
-                    {
-                        egreso.factura ?
-                            <Dropdown.Item className="text-hover-dark dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalFacturas(egreso) }}>
-                                {setNaviIcon('flaticon2-download-1', 'Facturas')}
-                            </Dropdown.Item>
-                            : <></>
-                    }
-                </DropdownButton>
-            </div>
-        )
-    }
-    openModalSee = async (egreso) => {
+  
+    openModalSee = () => {
         waitAlert()
-        const { access_token } = this.props.authUser
-        apiGet(`v2/administracion/egresos/${egreso.id}`, access_token).then(
-            (response) => {
-                const { egreso } = response.data
-                const { modal } = this.state
-                modal.see = true
-                Swal.close()
-                this.setState({ ...this.state, modal, egreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    openModalAdjuntos = async (egreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiGet(`v2/administracion/egresos/adjuntos/${egreso.id}`, access_token).then(
-            (response) => {
-                const { egreso } = response.data
-                let { form } = this.state
-                const { modal } = this.state
-                form = this.revertForm(egreso)
-                Swal.close()
-                modal.adjuntos = true
-                this.setState({ ...this.state, form, modal, egreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    openFacturaExtranjera = async (egreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiGet(`v2/administracion/egresos/adjuntos/${egreso.id}`, access_token).then(
-            (response) => {
-                let { form } = this.state
-                const { egreso } = response.data
-                const { modal } = this.state
-                form = this.revertForm(egreso)
-                modal.facturaExtranjera = true
-                Swal.close()
-                this.setState({ ...this.state, form, modal, egreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    openModalFacturas = async (egreso) => {
+        // const { access_token } = this.props.authUser
+        // apiGet(`v2/administracion/egresos/${egreso.id}`, access_token).then(
+        //     (response) => {
+        //         const { egreso } = response.data
         const { modal } = this.state
-        modal.facturas = true
-        this.setState({ ...this.state, modal, egreso:egreso })
-    }
-    openModalFiltros = () => {
-        const { modal } = this.state
-        modal.filters = true
+        modal.see = true
+        Swal.close()
         this.setState({ ...this.state, modal })
+        //     }, (error) => { printResponseErrorAlert(error) }
+        // ).catch((error) => { catchErrors(error) })
     }
-    openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
-    }
+
     handleClose = () => {
         const { modal, data } = this.state
         data.adjuntos = []
         modal.see = false
-        modal.adjuntos = false
-        modal.facturaExtranjera = false
-        modal.download = false
-        modal.filters = false
-        modal.facturas = false
+
         this.setState({
             ...this.state,
             data,
             modal,
             egreso: '',
-            facturas: [],
             adjuntos: [],
             form: this.clearForm()
         })
@@ -415,7 +330,7 @@ class Biblioteca extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.', () => { this.reloadTable(filters) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
-    }    
+    }
     exportEgresosAxios = async () => {
         waitAlert()
         const { filters } = this.state
@@ -429,14 +344,14 @@ class Biblioteca extends Component {
                 document.body.appendChild(link);
                 link.click();
                 doneAlert(
-                    response.data.message !== undefined ? 
-                        response.data.message 
-                    : 'Ingresos exportados con éxito.'
+                    response.data.message !== undefined ?
+                        response.data.message
+                        : 'Ingresos exportados con éxito.'
                 )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
-    attachFiles = async(files, item) => {
+    attachFiles = async (files, item) => {
         waitAlert()
         const { egreso } = this.state
         const { access_token } = this.props.authUser
@@ -445,10 +360,10 @@ class Biblioteca extends Component {
                 const { alma } = response.data
                 let filePath = `egresos/${egreso.id}/`
                 let aux = ''
-                switch(item){
+                switch (item) {
                     case 'presupuesto':
                     case 'pago':
-                        aux = files.map( ( file ) => {
+                        aux = files.map((file) => {
                             return {
                                 name: `${filePath}${item}s/${Math.floor(Date.now() / 1000)}-${file.name}`,
                                 file: file,
@@ -457,7 +372,7 @@ class Biblioteca extends Component {
                         })
                         break;
                     case 'facturas_pdf':
-                        aux = files.map( ( file ) => {
+                        aux = files.map((file) => {
                             return {
                                 name: `${filePath}facturas-extranjeras/${Math.floor(Date.now() / 1000)}-${file.name}`,
                                 file: file,
@@ -467,12 +382,12 @@ class Biblioteca extends Component {
                         break;
                     default: break;
                 }
-                let auxPromises  = aux.map((file) => {
+                let auxPromises = aux.map((file) => {
                     return new Promise((resolve, reject) => {
                         new S3(alma).uploadFile(file.file, file.name)
-                            .then((data) =>{
-                                const { location,status } = data
-                                if(status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
+                            .then((data) => {
+                                const { location, status } = data
+                                if (status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
                                 else reject(data)
                             })
                             .catch((error) => {
@@ -482,226 +397,11 @@ class Biblioteca extends Component {
                             })
                     })
                 })
-                Promise.all(auxPromises).then(values => { this.attachFilesS3(values, item)}).catch(err => console.error(err)) 
+                Promise.all(auxPromises).then(values => { this.attachFilesS3(values, item) }).catch(err => console.error(err))
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
 
-    attachFilesS3 = async(files, item) => {
-        const { egreso, filters } = this.state
-        const { access_token } = this.props.authUser
-        apiPutForm( `v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, access_token ).then(
-            ( response ) => {
-                doneAlert(`Archivos adjuntados con éxito`, 
-                    () => { 
-                        switch(item){
-                            case 'presupuesto':
-                            case 'pago':
-                                this.openModalAdjuntos(egreso)         
-                                break;
-                            case 'facturas_pdf':
-                                this.openFacturaExtranjera(egreso) 
-                                this.reloadTable(filters)
-                                break;
-                            default: break;
-                        }
-                        
-                    }
-                )
-            }, ( error ) => { printResponseErrorAlert( error ) }
-        ).catch( ( error ) => { catchErrors( error ) } )
-    }
-    deleteAdjuntoAxios = async (id) => {
-        const { access_token } = this.props.authUser
-        const { egreso } = this.state
-        apiDelete(`v2/administracion/egresos/${egreso.id}/adjuntos/${id}`, access_token).then(
-            (response) => {
-                const { egreso } = response.data
-                let { form } = this.state
-                const { filters } = this.state
-                form = this.revertForm(egreso)
-                this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    doubleClick = (data, tipo) => {
-        const { form, options } = this.state
-        let busqueda = undefined
-        let flag = false
-        switch (tipo) {
-            case 'subarea':
-                options.subareas = []
-                flag = false
-                if (data.area) {
-                    busqueda = options.areas.find((elemento) => { return elemento.value === data.area.id.toString() })
-                    if (busqueda) {
-                        options.subareas = setOptions(busqueda.subareas, 'nombre', 'id')
-                        if (data.subarea) {
-                            busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                            if (busqueda) { form.subarea = busqueda.value }
-                        }
-                    }
-                } else {
-                    flag = true
-                    if (data.area) {
-                        form.area = data.area.id.toString()
-                        options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
-                    }
-                    if (data.subarea) {
-                        busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                        if (busqueda) form.subarea = data.subarea.id.toString()
-                    }
-                }
-                break
-            case 'area':
-                options.subareas = []
-                if (data.area) {
-                    form.area = data.area.id.toString()
-                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
-                }
-                if (data.subarea) {
-                    busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                    if (busqueda) form.subarea = data.subarea.id.toString()
-                }
-                break
-            case 'fecha':
-                form.fecha = new Date(data.created_at)
-                break
-            case 'tipoImpuesto':
-                if (data.tipo_impuesto)
-                    form[tipo] = data.tipo_impuesto.id
-                break
-            case 'tipoPago':
-                if (data.tipo_pago)
-                    form[tipo] = data.tipo_pago.id
-                break
-            case 'estatusCompra':
-                if (data.estatus_compra)
-                    form[tipo] = data.estatus_compra.id
-                break
-            default:
-                form[tipo] = data[tipo]
-                break
-        }
-        this.setState({ form, options })
-        customInputAlert(
-            <div>
-                <h2 className='swal2-title mb-4 mt-2'> {printSwalHeader(tipo)} </h2>
-                {
-                    tipo === 'descripcion' &&
-                    <InputGray withtaglabel={0} withtextlabel={0} withplaceholder={0} withicon={0}
-                        requirevalidation={0} value={form[tipo]} name={tipo} rows={6} as='textarea'
-                        onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} swal={true} />
-                }
-                {
-                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra') ?
-                        <div className="input-icon my-3">
-                            <span className="input-icon input-icon-right">
-                                <span>
-                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
-                                </span>
-                            </span>
-                            <Form.Control className="form-control text-uppercase form-control-solid"
-                                onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo}
-                                defaultValue={form[tipo]} as="select">
-                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
-                                {this.setOptions(data, tipo).map((tipo, key) => { return (<option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>) })}
-                            </Form.Control>
-                        </div>
-                        : <></>
-                }
-                {
-                    tipo === 'fecha' ?
-                        <CalendarDaySwal value={form[tipo]} onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo} date={form[tipo]} withformgroup={0} />
-                        : <></>
-                }
-                {
-                    tipo === 'subarea' ?
-                        flag ?
-                            <DoubleSelectSearchGray options={options} form={form} onChange={this.onChangeSwal}
-                                one={{ placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas' }}
-                                two={{ placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas' }} />
-                            :
-                            <SelectSearchGray options={options.subareas} placeholder='Selecciona el subárea' value={form.subarea}
-                                onChange={(value) => { this.onChangeSwal(value, tipo) }} withtaglabel={1}
-                                name={tipo} customdiv="mb-3" withicon={1} />
-                        : ''
-                }
-                {
-                    tipo === 'area' &&
-                    <DoubleSelectSearchGray options={options} form={form} onChange={this.onChangeSwal}
-                        one={{ placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas' }}
-                        two={{ placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas' }} />
-                }
-            </div>,
-            <Update />,
-            () => { this.patchEgresos(data, tipo, flag) },
-            () => { this.setState({ ...this.state, form: this.clearForm() }); Swal.close(); },
-        )
-    }
-    setSwalPlaceholder = (tipo) => {
-        switch (tipo) {
-            case 'tipoImpuesto':
-                return 'SELECCIONA EL IMPUESTO'
-            case 'tipoPago':
-                return 'SELECCIONA EL TIPO DE PAGO'
-            case 'estatusCompra':
-                return 'SELECCIONA EL ESTATUS DE COMPRA'
-            default:
-                return ''
-        }
-    }
-    onChangeSwal = (value, tipo) => {
-        const { form } = this.state
-        form[tipo] = value
-        this.setState({ ...this.state, form })
-    }
-    setOptions = (data, tipo) => {
-        const { options } = this.state
-        switch (tipo) {
-            case 'estatusCompra':
-                return options.estatusCompras
-            case 'tipoPago':
-                return options.tiposPagos
-            case 'tipoImpuesto':
-                return options.tiposImpuestos
-            default: return []
-        }
-    }
-    patchEgresos = async (data, tipo, flag) => {
-        const { access_token } = this.props.authUser
-        const { form, filters } = this.state
-        let value = ''
-        let newType = tipo
-        switch (tipo) {
-            case 'area':
-                value = { area: form.area, subarea: form.subarea }
-                break
-            case 'subarea':
-                if (flag === true) {
-                    value = { area: form.area, subarea: form.subarea }
-                    newType = 'area'
-                } else {
-                    value = form[tipo]
-                }
-                break
-            default:
-                value = form[tipo]
-                break
-        }
-        waitAlert()
-        apiPutForm(`v2/administracion/egresos/${newType}/${data.id}`, { value: value }, access_token).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.', () => { this.reloadTable(filters) })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    setOptionsArray = (name, array) => {
-        const { options } = this.state
-        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
-        this.setState({ ...this.state, options })
-    }
     sendFilters = filter => {
         const { modal } = this.state
         modal.filters = false
@@ -712,86 +412,44 @@ class Biblioteca extends Component {
         })
         this.reloadTable(filter)
     }
-    reloadTable = (filter) => {
-        let arregloFilterKeys = Object.keys(filter)
-        let aux = {}
-        arregloFilterKeys.forEach((elemento) => {
-            switch(elemento){
-                case 'area':
-                case 'proveedor':
-                case 'cuenta':
-                case 'empresa':
-                case 'estatusCompra':
-                case 'proyecto':
-                case 'subarea':
-                case 'factura':
-                    aux[elemento] = {
-                        value: filter[elemento]['value'],
-                        name: filter[elemento]['name'],
-                    }
-                    break;
-                default:
-                    aux[elemento] = filter[elemento]
-                    break;
-            }
-        })
-        $(`#egresos`).DataTable().search(JSON.stringify(aux)).draw();
-    }
-    revertForm = (egreso) => {
-        const { form } = this.state
-        form.adjuntos.pago.value = null
-        form.adjuntos.presupuesto.value = null
-        form.adjuntos.facturas_pdf.value = null
-        form.adjuntos.pago.files = []
-        form.adjuntos.presupuesto.files = []
-        form.adjuntos.facturas_pdf.files = []
-        egreso.pagos.forEach(element => {
-            form.adjuntos.pago.files.push(element);
-        });
-        egreso.presupuestos.forEach(element => {
-            form.adjuntos.presupuesto.files.push(element);
-        });
-        egreso.facturas_pdf.forEach(element => {
-            form.adjuntos.facturas_pdf.files.push(element);
-        });
-        return form
-    }
+
+
     render() {
-        // const { form, options, egreso, modal, filters } = this.state
+        const { form,  modal, } = this.state
         const { access_token } = this.props.authUser
         return (
-            <Layout  active={'rh'} {...this.props} >
+            <Layout active={'rh'} {...this.props} >
                 <NewTable
                     tableName='biblioteca'
                     subtitle='Listado de documentos'
                     title='biblioteca'
                     mostrar_boton={true}
-                    abrir_modal={false}
+                    abrir_modal={true}
                     accessToken={access_token}
-                    columns={BIBLIOTECA_COLS}
+                    columns={BIBLIOTECA_COLUMNS}
                     setter={this.setEgresos}
+                    addClick={this.openModalSee}
                     url='/administracion/egresos/add'
                     urlRender={`${URL_DEV}v3/administracion/egreso`}
                     filterClick={this.openModalFiltros}
                     exportar_boton={true}
-                    onClickExport = { () => { this.exportEgresosAxios() } }
+                    onClickExport={() => { this.exportEgresosAxios() }}
                 />
-                {/* <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose} >
-                    <FacturasFormTable at = { access_token } tipo_factura='egresos' id={egreso.id} dato={egreso} reloadTable = {this.reloadTableFacturas}/>
+                <Modal size="lg" title="Agregar archivo" show={modal.see} handleClose={this.handleClose} >
+                    <div className="col-md-12 ">
+                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1}
+                            name='lider' iconclass="far fa-file-alt icon-lg text-dark-50" placeholder='NOMBRE DEL ARCHIVO' onChange={this.onChange}
+                            value={form.formaPago} messageinc="Incorrecto. Ingresa el nombre del archivo" />
+                    </div>
+                    <div className="col-md-12 text-center mt-5">
+                        <FileInput requirevalidation={1}
+                            onChangeAdjunto={this.onChangeAdjunto}
+                            placeholder={'Archivo'} value={form.adjuntos.factura.value} name='adjuntoPermiso' id='adjuntoPermiso' files={form.adjuntos.factura.files} deleteAdjunto={this.clearFiles} multiple classinput='file-input' accept='*/*' iconclass='flaticon2-clip-symbol text-primary'
+                            classbtn='btn btn-sm btn-light font-weight-bolder mb-0'
+                        //     formeditado = { formeditado }
+                        />
+                    </div>
                 </Modal>
-                <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleClose}>
-                    <AdjuntosForm form={form} onChangeAdjunto={this.handleChange}
-                        clearFiles={this.clearFiles} deleteFile={this.openModalDeleteAdjuntos} />
-                </Modal>
-                <Modal size="lg" title="Egreso" show={modal.see} handleClose={this.handleClose} >
-                    <EgresosCard egreso={egreso} />
-                </Modal>
-                <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
-                    <FacturaExtranjera form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
-                </Modal>
-                <Modal size='xl' show={modal.filters} handleClose={this.handleClose} title='Filtros'>
-                    <EngresosFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptionsArray} />
-                </Modal> */}
             </Layout>
         )
     }

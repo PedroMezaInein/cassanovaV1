@@ -3,21 +3,20 @@ import $ from 'jquery'
 import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
+import { NewTable } from '../../../components/NewTables'
 // import { Modal } from '../../../components/singles'
-import { Update } from '../../../components/Lottie'
 import Layout from '../../../components/layout/layout'
 // import { EgresosCard } from '../../../components/cards'
 // import { NewTable } from '../../../components/NewTables'
 // import { EngresosFilters } from '../../../components/filters'
-// import { URL_DEV, BIBLIOTECA_COLS} from '../../../constants'
-import { printSwalHeader } from '../../../functions/printers'
+import { URL_DEV, MINUTAS_COLUMNS } from '../../../constants'
 // import { FacturasFormTable } from '../../../components/tables'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 // import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
 import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
-import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert } from '../../../functions/alert'
-import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, 
+import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert,  errorAlert } from '../../../functions/alert'
+import {  setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, 
     setTextTableReactDom, setNaviIcon } from '../../../functions/setters'
 class Minutas extends Component {
     state = {
@@ -304,22 +303,12 @@ class Minutas extends Component {
                     <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL EGRESO CON IDENTIFICADOR: ${egreso.id}`, () => this.deleteEgresoAxios(egreso.id)) }}>
                         {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(egreso) }}>
+                    {/* <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(egreso) }}>
                         {setNaviIcon('flaticon2-magnifier-tool', 'Ver egreso')}
-                    </Dropdown.Item>
+                    </Dropdown.Item> */}
                     <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(egreso) }}>
                         {setNaviIcon('flaticon-attachment', 'Adjuntos')}
                     </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openFacturaExtranjera(egreso) }}>
-                        {setNaviIcon('flaticon-interface-10', 'Factura extranjera')}
-                    </Dropdown.Item>
-                    {
-                        egreso.factura ?
-                            <Dropdown.Item className="text-hover-dark dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalFacturas(egreso) }}>
-                                {setNaviIcon('flaticon2-download-1', 'Facturas')}
-                            </Dropdown.Item>
-                            : <></>
-                    }
                 </DropdownButton>
             </div>
         )
@@ -526,119 +515,7 @@ class Minutas extends Component {
         ).catch((error) => { catchErrors(error) })
     }
     doubleClick = (data, tipo) => {
-        const { form, options } = this.state
-        let busqueda = undefined
-        let flag = false
-        switch (tipo) {
-            case 'subarea':
-                options.subareas = []
-                flag = false
-                if (data.area) {
-                    busqueda = options.areas.find((elemento) => { return elemento.value === data.area.id.toString() })
-                    if (busqueda) {
-                        options.subareas = setOptions(busqueda.subareas, 'nombre', 'id')
-                        if (data.subarea) {
-                            busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                            if (busqueda) { form.subarea = busqueda.value }
-                        }
-                    }
-                } else {
-                    flag = true
-                    if (data.area) {
-                        form.area = data.area.id.toString()
-                        options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
-                    }
-                    if (data.subarea) {
-                        busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                        if (busqueda) form.subarea = data.subarea.id.toString()
-                    }
-                }
-                break
-            case 'area':
-                options.subareas = []
-                if (data.area) {
-                    form.area = data.area.id.toString()
-                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
-                }
-                if (data.subarea) {
-                    busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                    if (busqueda) form.subarea = data.subarea.id.toString()
-                }
-                break
-            case 'fecha':
-                form.fecha = new Date(data.created_at)
-                break
-            case 'tipoImpuesto':
-                if (data.tipo_impuesto)
-                    form[tipo] = data.tipo_impuesto.id
-                break
-            case 'tipoPago':
-                if (data.tipo_pago)
-                    form[tipo] = data.tipo_pago.id
-                break
-            case 'estatusCompra':
-                if (data.estatus_compra)
-                    form[tipo] = data.estatus_compra.id
-                break
-            default:
-                form[tipo] = data[tipo]
-                break
-        }
-        this.setState({ form, options })
-        customInputAlert(
-            <div>
-                <h2 className='swal2-title mb-4 mt-2'> {printSwalHeader(tipo)} </h2>
-                {
-                    tipo === 'descripcion' &&
-                    <InputGray withtaglabel={0} withtextlabel={0} withplaceholder={0} withicon={0}
-                        requirevalidation={0} value={form[tipo]} name={tipo} rows={6} as='textarea'
-                        onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} swal={true} />
-                }
-                {
-                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra') ?
-                        <div className="input-icon my-3">
-                            <span className="input-icon input-icon-right">
-                                <span>
-                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
-                                </span>
-                            </span>
-                            <Form.Control className="form-control text-uppercase form-control-solid"
-                                onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo}
-                                defaultValue={form[tipo]} as="select">
-                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
-                                {this.setOptions(data, tipo).map((tipo, key) => { return (<option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>) })}
-                            </Form.Control>
-                        </div>
-                        : <></>
-                }
-                {
-                    tipo === 'fecha' ?
-                        <CalendarDaySwal value={form[tipo]} onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo} date={form[tipo]} withformgroup={0} />
-                        : <></>
-                }
-                {
-                    tipo === 'subarea' ?
-                        flag ?
-                            <DoubleSelectSearchGray options={options} form={form} onChange={this.onChangeSwal}
-                                one={{ placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas' }}
-                                two={{ placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas' }} />
-                            :
-                            <SelectSearchGray options={options.subareas} placeholder='Selecciona el subárea' value={form.subarea}
-                                onChange={(value) => { this.onChangeSwal(value, tipo) }} withtaglabel={1}
-                                name={tipo} customdiv="mb-3" withicon={1} />
-                        : ''
-                }
-                {
-                    tipo === 'area' &&
-                    <DoubleSelectSearchGray options={options} form={form} onChange={this.onChangeSwal}
-                        one={{ placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas' }}
-                        two={{ placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas' }} />
-                }
-            </div>,
-            <Update />,
-            () => { this.patchEgresos(data, tipo, flag) },
-            () => { this.setState({ ...this.state, form: this.clearForm() }); Swal.close(); },
-        )
+       
     }
     setSwalPlaceholder = (tipo) => {
         switch (tipo) {
@@ -758,24 +635,24 @@ class Minutas extends Component {
     }
     render() {
         // const { form, options, egreso, modal, filters } = this.state
-        // const { access_token } = this.props.authUser
+        const { access_token } = this.props.authUser
         return (
             <Layout  active={'rh'} {...this.props} >
-                {/* <NewTable
-                    tableName='biblioteca'
-                    subtitle='Listado de documentos'
-                    title='biblioteca'
+                <NewTable
+                    tableName='minutas'
+                    subtitle='Listado de minutas'
+                    title='minutas'
                     mostrar_boton={true}
-                    abrir_modal={false}
+                    abrir_modal={true}
                     accessToken={access_token}
-                    columns={BIBLIOTECA_COLS}
+                    columns={MINUTAS_COLUMNS}
                     setter={this.setEgresos}
                     url='/administracion/egresos/add'
                     urlRender={`${URL_DEV}v3/administracion/egreso`}
                     filterClick={this.openModalFiltros}
                     exportar_boton={true}
                     onClickExport = { () => { this.exportEgresosAxios() } }
-                /> */}
+                />
                 {/* <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose} >
                     <FacturasFormTable at = { access_token } tipo_factura='egresos' id={egreso.id} dato={egreso} reloadTable = {this.reloadTableFacturas}/>
                 </Modal>

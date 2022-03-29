@@ -324,6 +324,38 @@ class Egresos extends Component {
             </div>
         )
     }
+    setActionsPermiso = egreso => {
+        const { history } = this.props
+        return (
+            <div className="w-100 d-flex justify-content-center">
+                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); 
+                        history.push({ pathname: '/administracion/egresos/edit', state: { egreso: egreso } }) }} >
+                        {setNaviIcon('flaticon2-pen', 'editar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL EGRESO CON IDENTIFICADOR: ${egreso.id}`, () => this.deleteEgresoAxios(egreso.id)) }}>
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(egreso) }}>
+                        {setNaviIcon('flaticon2-magnifier-tool', 'Ver egreso')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(egreso) }}>
+                        {setNaviIcon('flaticon-attachment', 'Adjuntos')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openFacturaExtranjera(egreso) }}>
+                        {setNaviIcon('flaticon-interface-10', 'Factura extranjera')}
+                    </Dropdown.Item>
+                    {
+                        egreso.factura ?
+                            <Dropdown.Item className="text-hover-dark dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalFacturas(egreso) }}>
+                                {setNaviIcon('flaticon2-download-1', 'Facturas')}
+                            </Dropdown.Item>
+                            : <></>
+                    }
+                </DropdownButton>
+            </div>
+        )
+    }
     openModalSee = async (egreso) => {
         waitAlert()
         const { access_token } = this.props.authUser
