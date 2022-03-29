@@ -15,9 +15,9 @@ import { Modal } from '../../../components/singles'
 import { TickesFilter } from '../../../components/filters'
 import { setNaviIcon } from '../../../functions/setters'
 import moment from 'moment'
-import { element } from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHashtag ,faUserAlt, faToolbox, faCalendarCheck, faPaperPlane, faSpellCheck, faPersonBooth, faMoneyBillWaveAlt , faFileInvoice } from '@fortawesome/free-solid-svg-icons'
+// import { element } from 'prop-types';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faHashtag ,faUserAlt, faToolbox, faCalendarCheck, faPaperPlane, faSpellCheck, faPersonBooth, faMoneyBillWaveAlt , faFileInvoice } from '@fortawesome/free-solid-svg-icons'
 
 class TicketTable extends Component {
 
@@ -147,12 +147,12 @@ class TicketTable extends Component {
                 return(
                     <div>
                         <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                            <FontAwesomeIcon icon={faHashtag} className="icon-md mr-2" />                        
-                            <span className="font-size-11px"> {`${calidad.no_clave}`} </span>                            
+                            {/* <FontAwesomeIcon icon={faHashtag} className="icon-md mr-2" />                         */}
+                            <span className="font-size-11px"> <strong>CLAVE -</strong> {`${calidad.no_clave}`} </span>                            
                            
                         </div>
                         <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                            <i style={{ color: "#9E9D24" }} className={`las la-ticket-alt icon-xl mr-2`} />                           
+                            <i style={{ color: "#00565" }} className={`las la-ticket-alt icon-xl mr-2`} />                           
                             <span className="font-size-11px"> {`${calidad.identificador}`} </span>                            
                         </div>
                     </div>
@@ -162,18 +162,18 @@ class TicketTable extends Component {
     proyectos(calidad){
         return(
             <div>
-                <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                <i style={{ color: "#EF6C00" }} className={`las la-hard-hat icon-xl mr-2`} />
-                    <span className="font-size-11px"> {`${calidad.proyecto ? calidad.proyecto.nombre : ''}`}</span>                            
+                <div className='d-flex align-items-center  text-dark-75 white-space-nowrap'>
+                {/* <i style={{ color: "#EF6C00" }} className={`las la-hard-hat icon-xl mr-2`} /> */}
+                    <span className="font-size-11px"> <strong>PROYECTO -</strong> {`${calidad.proyecto ? calidad.proyecto.nombre : ''}`}</span>                            
                    
                 </div>
-                <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                    <FontAwesomeIcon icon={faUserAlt} className="icon-md mr-2" />                                   
-                    <span className="font-size-11px">{`${ calidad.solicito }`}</span>                            
+                <div className='d-flex align-items-center  text-dark-75 white-space-nowrap'>
+                    {/* <FontAwesomeIcon icon={faUserAlt} className="icon-md mr-2" />                                    */}
+                    <span className="font-size-11px"> <strong>SOLICITANTE -</strong> {`${ calidad.solicito }`}</span>                            
                 </div>
-                <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                    <FontAwesomeIcon icon={faToolbox} className="icon-md mr-2" />                                   
-                    <span className="font-size-11px">{`${ calidad.tipo ? calidad.tipo.nombre : '' }`}</span>                            
+                <div className='d-flex align-items-center  text-dark-75 white-space-nowrap'>
+                    {/* <FontAwesomeIcon icon={faToolbox} className="icon-md mr-2" />                                    */}
+                    <span className="font-size-11px"> <strong>TIPO DE TRABAJO -</strong> {`${ calidad.tipo ? calidad.tipo.nombre : '' }`}</span>                            
                 </div>
             </div>
         )
@@ -183,26 +183,43 @@ class TicketTable extends Component {
         fechas(calidad){
             return(
                 <div>
-                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2 " style={{ color: "green" }}  />   
-                        <span className="font-size-11px"> SOLICITADA -  {`${ calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' }`}</span>                           
+                     <div className="toolbar-dropdown">
+                        <DropdownButton menualign="center" title={<span className="d-flex">
+                            {/* <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2 " style={{ color: "green" }}  />    */}
+                                <span className="font-size-11px "style={{ color: "#3f4254" }} > <strong>SOLICITADA - </strong> {`${ calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' }`}</span>  
+                                <i className="las la-angle-down icon-md p-0 ml-2"></i></span>}
+                            id='dropdown-white' >
+                            
+                                    <Dropdown.Item className="text-hover-success dropdown-success" >
+                                        <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                                            {/* <FontAwesomeIcon icon={faPaperPlane} className="icon-md mr-2" />                                    */}
+                                            <span className="font-size-11px">PPTO ENVIADO - {`${ calidad.fecha_ppto ? moment(calidad.fecha_ppto).format("DD/MM/YYYY") : 'PENDIENTE' }`}</span><br />                            
+                                        </div>
+                                    </Dropdown.Item>
+                            
+                                    <Dropdown.Item className="text-hover-primary dropdown-primary" >
+                                        <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                                            {/* <FontAwesomeIcon icon={faSpellCheck} className="icon-md mr-2" style={{ color: "green" }}/>                                    */}
+                                            <span className="font-size-11px">Autorizado - {`${ calidad.fecha_autorizada ? moment(calidad.fecha_autorizada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                                        </div>
+                                    </Dropdown.Item>
+                            
+                                    <Dropdown.Item className="text-hover-info dropdown-info" >
+                                        <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                                            {/* <FontAwesomeIcon icon={faPersonBooth} className="icon-md mr-3"  />                                    */}
+                                            <span className="font-size-11px">INICIO DE TRABAJO - {`${ calidad.fecha_programada ? moment(calidad.fecha_programada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                                        </div>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item className="text-hover-info dropdown-info" >
+                                        <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
+                                        {/* <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2"style={{ color: "red" }}  />                                    */}
+                                        <span className="font-size-11px">TERMINO DE TRABAJO - {`${ calidad.fecha_termino ? moment(calidad.fecha_termino).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
+                                        </div>
+                                    </Dropdown.Item>
+                            
+                        </DropdownButton>
                     </div>
-                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <FontAwesomeIcon icon={faPaperPlane} className="icon-md mr-2" />                                   
-                        <span className="font-size-11px">PPTO ENVIADO - {`${ calidad.fecha_ppto ? moment(calidad.fecha_ppto).format("DD/MM/YYYY") : 'PENDIENTE' }`}</span>                            
-                    </div>
-                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <FontAwesomeIcon icon={faSpellCheck} className="icon-md mr-2" style={{ color: "green" }}/>                                   
-                        <span className="font-size-11px">Autorizado - {`${ calidad.fecha_autorizada ? moment(calidad.fecha_autorizada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
-                    </div>
-                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <FontAwesomeIcon icon={faPersonBooth} className="icon-md mr-3"  />                                   
-                        <span className="font-size-11px">INICIO DE TRABAJO - {`${ calidad.fecha_programada ? moment(calidad.fecha_programada).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
-                    </div>
-                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2"style={{ color: "red" }}  />                                   
-                        <span className="font-size-11px">TERMINO DE TRABAJO - {`${ calidad.fecha_termino ? moment(calidad.fecha_termino).format("DD/MM/YYYY") : 'PENDIENTE'  }`}</span>                            
-                    </div>
+                    
                 </div>
             )
 
@@ -214,16 +231,16 @@ class TicketTable extends Component {
             return(
                 <div>
                     
-                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <FontAwesomeIcon icon={faMoneyBillWaveAlt} className="icon-md mr-2 " style={{ color: "green" }}  />   
-                        <span className="font-size-11px"> {`${ calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE' }`}</span>  
+                    <div className='d-flex align-items-center  text-dark-75 white-space-nowrap'>
+                        {/* <FontAwesomeIcon icon={faMoneyBillWaveAlt} className="icon-md mr-2 " style={{ color: "green" }}  />    */}
+                        <span className="font-size-11px"> <strong>PRESUPUESTO -</strong> {`${ calidad.presupuesto_preeliminar ? calidad.presupuesto_preeliminar.totalPresupuesto : 'PENDIENTE' }`}</span>  
                     </div>
                     {
                          clave !== 'VO'  ?
                             calidad.estatus.estatus !== "Presupuesto no autorizado" ? 
-                         <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                            <FontAwesomeIcon icon={faFileInvoice} className="icon-md mr-2" style={{ color: "green" }} />                                   
-                            <span className="font-size-11px">{`${ calidad.factura_folio ? calidad.factura_folio : 'PENDIENTE' }`}</span>                            
+                         <div className='d-flex align-items-center  text-dark-75 white-space-nowrap'>
+                            {/* <FontAwesomeIcon icon={faFileInvoice} className="icon-md mr-2" style={{ color: "green" }} />                                    */}
+                            <span className="font-size-11px"> <strong>FACTURA -</strong> {`${ calidad.factura_folio ? calidad.factura_folio : 'PENDIENTE' }`}</span>                            
                          </div>
                          : ''
                          : ''
@@ -231,9 +248,9 @@ class TicketTable extends Component {
                    {
                       clave !== 'VO' ? 
                         calidad.estatus.estatus !== "Presupuesto no autorizado" ? 
-                    <div className='d-flex align-items-center justify-content-center text-dark-75 white-space-nowrap'>
-                        <i style={{ color: "#EF6C00" }} className={`las la-cart-plus icon-xl mr-2`} />                                  
-                        <span className="font-size-11px">{`${ calidad.numero_orden ? calidad.numero_orden : 'PENDIENTE'  }`}</span>                            
+                    <div className='d-flex align-items-center  text-dark-75 white-space-nowrap'>
+                        {/* <i style={{ color: "#EF6C00" }} className={`las la-cart-plus icon-xl mr-2`} />                                   */}
+                        <span className="font-size-11px"> <strong>ORDEN DE COMPRA -</strong> {`${ calidad.numero_orden ? calidad.numero_orden : 'PENDIENTE'  }`}</span>                            
                     </div>  
                     : ''
                     : ''
@@ -246,7 +263,7 @@ class TicketTable extends Component {
     setActionsMantenimientos = (calidad) => {
         return (
             <div className="w-100 d-flex justify-content-center">
-                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                <DropdownButton menualign="right" title={<i className="las la-angle-down icon-md  icon-md p-0 "></i>} id='dropdown-button-newtable' >
                     <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.changePageSee(calidad) }}>
                         {setNaviIcon('flaticon2-magnifier-tool', 'Ver ticket')}
                     </Dropdown.Item>

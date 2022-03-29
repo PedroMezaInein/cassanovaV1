@@ -184,24 +184,24 @@ class NewTable extends Component{
                 let pdfFlag = false
                 //  let estatus_ticket = false
                 switch (tableName) {
-                    case 'tickets':                       
-                        if (objeto.estatus.estatus) {
-                            if (objeto.estatus.estatus === 'Rechazado' || objeto.estatus.estatus === 'Presupuesto no autorizado') {
-                                $(row).addClass('rojo');
-                            } else if (objeto.estatus.estatus === 'Aceptado') {
-                                $(row).addClass('verde');
-                            } else if (objeto.estatus.estatus === 'En proceso') {
-                                $(row).addClass('morado');
-                            }else if (objeto.estatus.estatus === 'Terminado') {
-                                $(row).addClass('gris');
-                            }if (objeto.estatus.estatus === 'Pendiente de pago') {
-                                $(row).addClass('amarillo');
-                            }
-                        } else {
-                            $(row).addClass('blanco');
-                        }
+                    // case 'tickets':                       
+                    //     if (objeto.estatus.estatus) {
+                    //         if (objeto.estatus.estatus === 'Rechazado' || objeto.estatus.estatus === 'Presupuesto no autorizado') {
+                    //             $(row).addClass('rojo');
+                    //         } else if (objeto.estatus.estatus === 'Aceptado') {
+                    //             $(row).addClass('verde');
+                    //         } else if (objeto.estatus.estatus === 'En proceso') {
+                    //             $(row).addClass('morado');
+                    //         }else if (objeto.estatus.estatus === 'Terminado') {
+                    //             $(row).addClass('gris');
+                    //         }if (objeto.estatus.estatus === 'Pendiente de pago') {
+                    //             $(row).addClass('amarillo');
+                    //         }
+                    //     } else {
+                    //         $(row).addClass('blanco');
+                    //     }
 
-                        break;
+                    //     break;
                     case 'compras':
                     case 'egresos':
                         if (objeto.facturas_pdf) {
