@@ -383,6 +383,46 @@ class Empleados extends Component {
                 )
                 return false
             })
+            localStorage.setItem('activeKeyTabColaboradores', 'administrativo')
+        return aux
+    }
+    setEmpleadoObra = colaboradores => {
+        let aux = []
+        if (colaboradores)
+            colaboradores.map((colaborador) => {
+                aux.push(
+                    {
+                        actions: this.setActions(colaborador),
+                        nombre: setTextTableReactDom(colaborador.nombre, this.doubleClick, colaborador, 'nombre', 'text-center'),
+                        empresa: setTextTableReactDom(colaborador.empresa ? colaborador.empresa.name : '', this.doubleClick, colaborador, 'empresa', 'text-center '),
+                        departamento: colaborador.departamentos.length === 0 ? setTextTableCenter("Sin definir") 
+                        : setTagLabelReactDom(colaborador, colaborador.departamentos, 'departamento_empleado', this.deleteElementAxios, ''),
+                        puesto: setTextTableReactDom(colaborador.puesto, this.doubleClick, colaborador, 'puesto', 'text-center'),
+                        rfc: setTextTableReactDom(colaborador.rfc, this.doubleClick, colaborador, 'rfc', 'text-center'),
+                        nss: setTextTableReactDom(colaborador.nss, this.doubleClick, colaborador, 'nss', 'text-center'),
+                        curp: setTextTableReactDom(colaborador.curp, this.doubleClick, colaborador, 'curp', 'text-center'),
+                        estatus: setEstatusBancoTableReactDom(colaborador, this.changeEstatus ),
+                        fechaInicio: setDateTableReactDom(colaborador.fecha_inicio, this.doubleClick, colaborador, 'fecha', 'text-center'),
+                        cuenta: renderToString(setArrayTable(
+                            [
+                                { 'name': 'Banco', 'text': colaborador.banco ? colaborador.banco : 'Sin definir' },
+                                { 'name': 'No. Cuenta', 'text': colaborador.cuenta ? colaborador.cuenta : 'Sin definir' },
+                                { 'name': 'Clabe', 'text': colaborador.clabe ? colaborador.clabe : 'Sin definir' },
+                            ], '180px'
+                        )),
+                        nombre_emergencia:setArrayTableReactDom(
+                            [
+                                { 'name': 'Nombre', 'text': colaborador.nombre_emergencia ? colaborador.nombre_emergencia : 'Sin definir' },
+                                { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia ? colaborador.telefono_emergencia : 'Sin definir' }
+                            ],'120px', this.doubleClick, colaborador, 'nombre_emergencia'
+                        ),
+                        vacaciones_tomadas: setTextTableReactDom(colaborador.vacaciones_disponibles, this.doubleClick, colaborador, 'vacaciones_disponibles', 'text-center'),
+                        id: colaborador.id
+                    }
+                )
+                return false
+            })
+            localStorage.setItem('activeKeyTabColaboradores', 'obra')
         return aux
     }
     doubleClick = (data, tipo) => {
@@ -1019,7 +1059,7 @@ class Empleados extends Component {
         const { access_token } = this.props.authUser
         return (
             <Layout active={'rh'} {...this.props}>
-                <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
+                <Tabs defaultActiveKey={localStorage.getItem('activeKeyTabColaboradores')} activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="administrativo" title="Administrativo">
                         <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
                             subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
@@ -1053,7 +1093,7 @@ class Empleados extends Component {
                                 'see': { function: this.openModalSee },
                                 'contrato' : { function: this.openModalContrato }
                             }}
-                            accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado } cardTable = 'cardTable_obra'
+                            accessToken = { this.props.authUser.access_token } setter = { this.setEmpleadoObra } cardTable = 'cardTable_obra'
                             urlRender = { `${URL_DEV}v2/rh/empleados?type=obra` } idTable = 'empleados_obra_table'
                             cardTableHeader = 'cardTableHeader_obra' cardBody = 'cardBody_obra' isTab = { true } />
                     </Tab>
