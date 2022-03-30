@@ -51,6 +51,9 @@ $l-black-blue: #293747;
 $l-black-dark-blue: #132036;
 $l-black-gold: #423b28;
 
+$scrollbar-color:#252525;
+$color-text:#80808F;
+
 .hidden {
     transition: all 0.5s;
     width: 0px;
@@ -60,6 +63,14 @@ $l-black-gold: #423b28;
     &.active {
         width: auto;
         height: auto;
+    }
+}
+
+.nav-item.nav-link.active{
+    background: $scrollbar-color!important;
+    color: white;
+    &:hover{
+        color: $color-text
     }
 }
 
@@ -1617,7 +1628,7 @@ body::-webkit-scrollbar {
   }
    
   body::-webkit-scrollbar-thumb {
-    background-color: #252525;
+    background-color: $scrollbar-color;
     border-radius: .25rem;
 
   }
@@ -2338,12 +2349,12 @@ div#task {
 
 div#responsable-notify {
     .tagify .tagify__tag .tagify__tag__removeBtn:after {
-        color: #80808F !important;
+        color: $color-text !important;
     }
 }
 
 .text-color-8080 {
-    color: #80808f;
+    color: $color-text;
 }
 
 div#symbol-total-contactos {
@@ -2371,7 +2382,7 @@ div#symbol-total-contactos {
 
     path,
     rect {
-        fill: #80808F;
+        fill: $color-text;
     }
 }
 

@@ -861,3 +861,16 @@ table.dataTable {
         }
       }
     }
+    #tickets-card-body-id{
+      th.sorting:first-child{
+        width: 10% !important;
+        // background-color: blue;
+      }
+      // th.sorting:nth-child(3){
+      //   width: -5 rem  !important;
+      // }
+      th.sorting:nth-child(4){
+        width: 95% !important;
+      }
+      
+      }

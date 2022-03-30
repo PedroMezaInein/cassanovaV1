@@ -155,7 +155,7 @@ export const INGRESOS_COLUMNS = [
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
-    { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }
+    // { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }
 ]
 
 export const EGRESOS_COLUMNS = [
@@ -172,7 +172,7 @@ export const EGRESOS_COLUMNS = [
     { Header: 'Cuenta', accessor: 'cuenta', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
-    { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }, 
+    // { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }, 
     { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
@@ -240,12 +240,47 @@ export const AREAS_COMPRAS_COLUMNS = [
     { Header: 'Sub áreas', accessor: 'subareas', customRender: true },
     { Header: 'Partida', accessor: 'partida' }
 ]
+export const PERMISOS_COLUMNS = [
+    // { Header: 'Empleado', accessor: 'empleado' , customRender: false },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },    
+    { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
+    { Header: 'Horas', accessor: 'horas', customRender: true },
+    { Header: 'Fechas', accessor: 'fechas', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'Tipo de permiso', accessor: 'tipo', customRender: true },
+    { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
+]
+export const INCAPACIDAD_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'Nombre', accessor: 'area', customRender: true },
+    { Header: 'Documento', accessor: 'area', customRender: true },
+    { Header: 'Fecha incio', accessor: 'fecha', customRender: true },
+    { Header: 'Fecha fin', accessor: 'fecha', customRender: true },
+]
 
 export const PARTIDAS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Clave', accessor: 'clave' },
     { Header: 'Partida', accessor: 'partida', customRender: true },
     { Header: 'Sub partidas', accessor: 'subpartidas', customRender: true }
+]
+
+export const MINUTAS_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'Colaboradores', accessor: 'fecha', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'descripción', accessor: 'fecha', customRender: true  },
+    { Header: 'adjunto', accessor: 'fecha', customRender: true  }
+
+]
+
+export const BIBLIOTECA_COLUMNS = [
+    // { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'fecha', accessor: 'fecha', customRender: true },
+    { Header: 'nombre', accessor: 'fecha', customRender: true },
+    { Header: 'adjuntos', accessor: 'fecha', customRender: true }
+
 ]
 
 export const PARTIDAS_DISEÑO_COLUMNS = [
@@ -899,10 +934,12 @@ export const SIROC = [
 export const COLABORADOR = [
     { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
-    { Header: 'Repse', accessor: 'repse', customRender: true },
-    { Header: 'Siroc', accessor: 'sirco', customRender: true },
+    // { Header: 'Repse', accessor: 'repse', customRender: true },
+    { Header: 'Siroc', accessor: 'siroc', customRender: true },
     { Header: 'Semana', accessor: 'semana', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'curp', accessor: 'curp', customRender: true },
+    { Header: 'rfc', accessor: 'rfc', customRender: true },
 
 ]
 

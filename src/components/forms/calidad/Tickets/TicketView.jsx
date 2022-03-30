@@ -222,6 +222,7 @@ class TicketView extends Component {
                 switch(data.estatus_ticket.estatus){
                     case 'En proceso':
                     case 'Pendiente de pago':
+                    case 'Aprobación pendiente':
                         return <span>Ticket en proceso</span>
                     case 'Terminado':
                         return <span>Ticket terminado</span>
@@ -591,19 +592,19 @@ class TicketView extends Component {
                                                     </Nav.Link>
                                                 </Nav.Item>
                                                 
-                                                {
-                                                    data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revisión' ?
+                                                {/* {
+                                                    data.estatus_ticket.estatus !== 'Rechazado' && data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'En revisión' ? */}
                                                         <Nav.Item onClick = { (e) => { e.preventDefault(); onClick('volumetrias'); controlledNav("presupuesto") } } >
                                                             <Nav.Link eventKey="presupuesto">
                                                                 <span className="nav-icon"> <i className="las la-file-invoice-dollar icon-lg mr-2" /> </span>
                                                                 { this.showStepOfPresupuesto() }
                                                             </Nav.Link>
                                                         </Nav.Item>
-                                                    : <></>
-                                                }
-                                                {
+                                                    {/* : <></>
+                                                } */}
+                                                {/* {
                                                     presupuesto?
-                                                        presupuesto.estatus.estatus === "Aceptado" ?
+                                                        presupuesto.estatus.estatus === "Aceptado" ? */}
                                                         <>
                                                             <Nav.Item onClick={(e) => { e.preventDefault(); onClick('solicitud-compra'); controlledNav("solicitud-compra") }}>
                                                                 <Nav.Link eventKey="solicitud-compra">
@@ -638,9 +639,9 @@ class TicketView extends Component {
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                             </>
-                                                        :<></>
-                                                    :<></>
-                                                }
+                                                        {/* :<></> */}
+                                                {/* //     :<></> */}
+                                                {/* // } */}
                                                
                                             </Nav>
                                         </div>
@@ -684,10 +685,10 @@ class TicketView extends Component {
                                             </Col>
                                         </Row>
                                     </Tab.Pane>
-                                    {
+                                    {/* {
                                                     presupuesto?
                                                         presupuesto.estatus.estatus === "Aceptado" ?
-                                                        <>
+                                                        <> */}
                                         <Tab.Pane eventKey="servicio">
                                             <Row className="mx-0">
                                                 <Col lg="6" className="px-0">
@@ -708,10 +709,10 @@ class TicketView extends Component {
                                                 </Col>
                                             </Row>
                                         </Tab.Pane>
-                                        </>
+                                        {/* </>
                                                 :<></>
                                             :<></>
-                                        }
+                                        } */}
                                     <Tab.Pane eventKey="presupuesto">
                                         {
                                             presupuesto === '' ?
