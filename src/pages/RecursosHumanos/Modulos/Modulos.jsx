@@ -26,7 +26,7 @@ class Modulo extends Component {
         },
         title: 'Nueva Repse',
         licencia: '',
-        key:'Repse',
+        // key:'Repse',
         adjuntos: [],
 
         options: {
@@ -148,8 +148,9 @@ class Modulo extends Component {
         if (value === 'isn') {
             this.getEmpleadosAxios()
         }
-        this.setState({ ...this.state, key: value, form })
+        this.setState({ ...this.state, key: value, form,activeKeyTabModulo:value })
     }
+
 
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -175,6 +176,13 @@ class Modulo extends Component {
                 this.getVentaAxios(id)
             }
         }
+        // let { key } = this.state
+        // if (key==='')  {
+        //  key = 'Repse'  
+        // }else {
+        //   key= localStorage.get('activeKeyTabModulo') 
+        // }
+        // this.setState({...this.state, key})
     }
 
     getOptionsAxios = async () => {
@@ -202,6 +210,7 @@ class Modulo extends Component {
     setTableRepse = (datos) => {
         const { data } = this.state
         let aux = []
+
         this.setState({
             data
         })
@@ -217,13 +226,14 @@ class Modulo extends Component {
                 }
             )
         })
-
+        localStorage.setItem('activeKeyTabModulo', 'Repse')
         return aux        
     }
 
     setTablePatronal = (datos) => {
         const { data } = this.state
         let aux = []
+
         this.setState({
             data
         })
@@ -241,7 +251,7 @@ class Modulo extends Component {
                 }
             )
         })
-
+        localStorage.setItem('activeKeyTabModulo', 'Patronal')
         return aux        
     }
 
@@ -270,7 +280,7 @@ class Modulo extends Component {
             )
 
         })
-
+        localStorage.setItem('activeKeyTabModulo', 'Siroc')
         return aux        
     }
 
@@ -300,7 +310,7 @@ class Modulo extends Component {
             )
 
         })
-
+        localStorage.setItem('activeKeyTabModulo', 'Colaborador')
         return aux    
     }
 
@@ -328,7 +338,7 @@ class Modulo extends Component {
             )
 
         })
-
+        localStorage.setItem('activeKeyTabModulo', 'Nomina')
         return aux        
     }
 
@@ -358,7 +368,7 @@ class Modulo extends Component {
             )
 
         })
-
+        localStorage.setItem('activeKeyTabModulo', 'Sipare')
         return aux        
     }
 
@@ -387,7 +397,7 @@ class Modulo extends Component {
             )
 
         })
-
+        localStorage.setItem('activeKeyTabModulo', 'claves')
         return aux        
     }
 
@@ -417,7 +427,7 @@ class Modulo extends Component {
             )
 
         })
-
+        localStorage.setItem('activeKeyTabModulo', 'isn')
         return aux        
     }
 
@@ -518,35 +528,35 @@ class Modulo extends Component {
         this.setState({...this.state, key: tab, filters: {}})
     }
 
-    setTableSipare = (datos) => {
-        const { data } = this.state
+    // setTableSipare = (datos) => {
+    //     const { data } = this.state
 
-        let aux = []
-        this.setState({
-            data
-        })
-        datos.forEach((isn) => {
-            aux.push(
-                {
-                    actions: this.setActions(isn),
-                    empresa: setTextTableCenter(isn.empresas ? isn.empresas.name : ''),
-                    periodo:setArrayTableReactDom(
-                        [
-                            { 'name': 'Fecha Fnicio', 'text': isn.fecha_fin ? isn.fecha_fin : 'Sin definir' },
-                            { 'name': 'Fecha Fin', 'text': isn.fecha_inicio ? isn.fecha_inicio : 'Sin definir' },
-                        ],'50px', this.doubleClick, isn, 'periodo' ,'text-center'
-                    ),
-                    captura: setTextTableCenter(isn.linea_captura ? isn.linea_captura : 'Sin Linea de captura'),
-                    monto: setMoneyTable(isn.monto ? isn.monto : ''),
-                    estatus: isn.estatus ? setEstatusTableReactDom(isn, this.changeEstatus ) : '',
-                    id: isn.id,
-                }
-            )
+    //     let aux = []
+    //     this.setState({
+    //         data
+    //     })
+    //     datos.forEach((isn) => {
+    //         aux.push(
+    //             {
+    //                 actions: this.setActions(isn),
+    //                 empresa: setTextTableCenter(isn.empresas ? isn.empresas.name : ''),
+    //                 periodo:setArrayTableReactDom(
+    //                     [
+    //                         { 'name': 'Fecha Fnicio', 'text': isn.fecha_fin ? isn.fecha_fin : 'Sin definir' },
+    //                         { 'name': 'Fecha Fin', 'text': isn.fecha_inicio ? isn.fecha_inicio : 'Sin definir' },
+    //                     ],'50px', this.doubleClick, isn, 'periodo' ,'text-center'
+    //                 ),
+    //                 captura: setTextTableCenter(isn.linea_captura ? isn.linea_captura : 'Sin Linea de captura'),
+    //                 monto: setMoneyTable(isn.monto ? isn.monto : ''),
+    //                 estatus: isn.estatus ? setEstatusTableReactDom(isn, this.changeEstatus ) : '',
+    //                 id: isn.id,
+    //             }
+    //         )
 
-        })
+    //     })
 
-        return aux        
-    }
+    //     return aux        
+    // }
 
     handleClose = () => {
         const { modal, data } = this.state
@@ -938,14 +948,14 @@ class Modulo extends Component {
 
     render() {
         const { authUser: {access_token} } = this.props
-        const { modal, options, form,  key, filters , titulo1,titulo2,titulo3,titulo4,titulo5,titulo6,titulo7,titulo8, } = this.state
+        const { modal, options, form, key, filters , titulo1,titulo2,titulo3,titulo4,titulo5,titulo6,titulo7,titulo8, } = this.state
 
         return (
             <> 
-            <Layout active={'rh'} {...this.props}>
-                 <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey="Repse" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
-                    <Tab eventKey="Repse" title="Repse">
-                        <NewTable 
+            <Layout active={'rh'} {...this.props} >
+                 <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey={ localStorage.getItem('activeKeyTabModulo')} activeKey={key} onSelect={(value) => { this.controlledTab(value)}  } >
+                    <Tab eventKey="Repse" title="Repse"  >
+                        <NewTable  
                             tableName = "Repse" subtitle = 'Repse' title = {titulo1}  mostrar_boton = { true }
                             abrir_modal = { false } url = '/rh/modulo/repse' columns = { REPSE }
                             accessToken = { this.props.authUser.access_token } setter = { this.setTableRepse }
@@ -954,7 +964,9 @@ class Modulo extends Component {
                         />
                     </Tab>
                     
-                    <Tab eventKey="Patronal" title="REGISTRO PATRONAL">
+                    {/* <Tab eventKey="Patronal" title="REGISTRO PATRONAL" > */}
+                    <Tab eventKey="Patronal" title="REGISTRO PATRONAL" >
+
                         <NewTable 
                             tableName = 'Patronal' subtitle = 'Listado de Patronal' title = {titulo2}  mostrar_boton = { true }
                             abrir_modal = { false } url = '/rh/modulo/patronal' columns = { PATRONAL }
@@ -1009,8 +1021,7 @@ class Modulo extends Component {
                             urlRender = { `${URL_DEV}accesos_claves?tab=claves` } type='tab'
                         />  
                     </Tab>
-
-                    <Tab eventKey="isn" title="ISN">
+                    <Tab eventKey="isn" title="ISN" >
                        <NewTable tableName = 'claves' subtitle = 'Inpuesto sobre nomina' title = {titulo8}  mostrar_boton = { true }
                             abrir_modal = { false } url = '/rh/modulo/isn' columns = { SIPARE }
                             accessToken = { this.props.authUser.access_token } setter = { this.setTableIsn }
