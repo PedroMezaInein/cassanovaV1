@@ -72,6 +72,7 @@ class Diseño extends Component {
             esquema_1:[],
             esquema_2:[],
             esquema_3:[],
+            esquema_4:[],
             tipo: '',
             tipoTarget: {taget: '', value: ''},
         },
@@ -289,14 +290,18 @@ class Diseño extends Component {
                         let auxEsquema1 = []
                         let auxEsquema2 = []
                         let auxEsquema3 = []
+                        let auxEsquema4 = []
 
                         empresas[0].planos.map((plano) => {
+
                             if(plano.esquema_1)
                                 auxEsquema1.push(plano)
                             if(plano.esquema_2)
                                 auxEsquema2.push(plano)
                             if(plano.esquema_3)
                                 auxEsquema3.push(plano)
+                            if(plano.esquema_4)
+                                auxEsquema4.push(plano)
                             return ''
                         })
                         
@@ -307,6 +312,7 @@ class Diseño extends Component {
                         form.esquema_1 = auxEsquema1
                         form.esquema_2 = auxEsquema2
                         form.esquema_3 = auxEsquema3
+                        form.esquema_4 = auxEsquema4
 
                         this.setState({...this.state, form})
 
@@ -330,7 +336,11 @@ class Diseño extends Component {
                             label: tipos2.tipo
                         })
                     })
+                    empresa.tipos_planos3.forEach((tipos2) => {
+                        form.esquema_4.push(tipos2)
+                    })
                 }
+                console.log(form)
                 
                 this.setState({
                     ...this.state,
@@ -631,6 +641,7 @@ class Diseño extends Component {
         if (name === 'precio_inicial_diseño' || name === 'incremento_esquema_2' || name === 'incremento_esquema_3')
             if (form.precio_inicial_diseño !== '' && form.incremento_esquema_2 !== '' && form.incremento_esquema_3 !== '')
                 grafica = this.setGrafica(form)
+                console.log(value)
         this.setState({
             ...this.state,
             form,
