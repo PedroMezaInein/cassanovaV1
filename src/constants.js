@@ -155,7 +155,7 @@ export const INGRESOS_COLUMNS = [
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
-    { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }
+    // { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }
 ]
 
 export const EGRESOS_COLUMNS = [
@@ -172,7 +172,7 @@ export const EGRESOS_COLUMNS = [
     { Header: 'Cuenta', accessor: 'cuenta', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
-    { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }, 
+    // { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }, 
     { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
