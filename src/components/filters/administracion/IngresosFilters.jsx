@@ -124,35 +124,77 @@ class IngresosFilters extends Component{
                             </div>
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <ReactSelectSearchGray placeholder = 'Selecciona el cliente' defaultvalue = { form.cliente } iconclass = 'las la-user icon-xl'
-                                    options = { options.clientes } onChange = { (value) => { this.updateSelect(value, 'cliente') } } />
+                                    options = { options.clientes } 
+                                    onChange={(value) => {
+                                        if (value !== null) { this.updateSelect(value, 'cliente') } 
+                                        if (value===null){
+                                            form.cliente = ''
+                                            this.setState({ ...this.state, form })
+                                        }}}
+                                />
                             </div>
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <ReactSelectSearchGray placeholder = 'Selecciona la empresa' defaultvalue = { form.empresa } iconclass = 'las la-building icon-xl'
-                                    options = { options.empresas } onChange = { (value) => { this.updateSelect(value, 'empresa') } } />
+                                    options = { options.empresas } 
+                                    onChange={(value) => {
+                                        if (value !== null) { this.updateSelect(value, 'empresa') } 
+                                        if (value===null){
+                                            form.empresa = ''
+                                            this.setState({ ...this.state, form })
+                                        }}}
+                                    />
                             </div>
                             {
                                 form.empresa ?
                                     <div className="col-md-4 col-xxl-3 mb-5">
                                         <ReactSelectSearchGray placeholder = 'Selecciona la cuenta' defaultvalue = { form.cuenta } iconclass = 'las la-credit-card icon-xl'
-                                            options = { options.cuentas } onChange = { (value) => { this.updateSelect(value, 'cuenta') } } />   
+                                            options = { options.cuentas }
+                                            onChange={(value) => {
+                                                if (value !== null) { this.updateSelect(value, 'cuenta') } 
+                                                if (value===null){
+                                                    form.cuenta = ''
+                                                    this.setState({ ...this.state, form })
+                                                }}}
+                                        />   
                                     </div>
                                 :<></>
                             }
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <ReactSelectSearchGray placeholder = 'Selecciona el área' defaultvalue = { form.area } iconclass = 'las la-window-minimize icon-xl'
-                                    options = { options.areas } onChange = { (value) => { this.updateSelect(value, 'area') } } />
+                                    options = { options.areas } 
+                                    onChange={(value) => {
+                                        if (value !== null) { this.updateSelect(value, 'area') } 
+                                        if (value===null){
+                                            form.area = ''
+                                            this.setState({ ...this.state, form })
+                                        }}}
+                                    />
                             </div>
                             {
                                 form.area ?
                                     <div className="col-md-4 col-xxl-3 mb-5">
                                         <ReactSelectSearchGray placeholder = 'Selecciona el subárea' defaultvalue = { form.subarea } iconclass = 'las la-window-maximize icon-xl'
-                                        options = { options.subareas } onChange = { (value) => { this.updateSelect(value, 'subarea') } } />
+                                        options = { options.subareas } 
+                                        onChange={(value) => {
+                                            if (value !== null) { this.updateSelect(value, 'subarea') } 
+                                            if (value===null){
+                                                form.subarea = ''
+                                                this.setState({ ...this.state, form })
+                                            }}}
+                                        />
                                     </div>
                                 :<></>
                             }
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <ReactSelectSearchGray placeholder = 'Selecciona el estatus de compra' defaultvalue = { form.estatusCompra } iconclass = 'las la-check-circle icon-xl'
-                                    options = { options.estatusCompras } onChange = { (value) => { this.updateSelect(value, 'estatusCompra') } } />    
+                                    options = { options.estatusCompras } 
+                                    onChange={(value) => {
+                                        if (value !== null) { this.updateSelect(value, 'estatusCompra') } 
+                                        if (value===null){
+                                            form.estatusCompra = 0
+                                            this.setState({ ...this.state, form })
+                                        }}}
+                                    />    
                             </div>
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 0 } 
@@ -161,7 +203,14 @@ class IngresosFilters extends Component{
                             </div>
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <ReactSelectSearchGray placeholder = '¿Lleva factura?' defaultvalue = { form.factura } iconclass = 'las la-question-circle icon-xl'
-                                    options = { [ { label: 'Si', value: 'Con factura' }, { label: 'No', value: 'Sin factura' } ] } onChange = { (value) => { this.updateSelect(value, 'factura') } } />
+                                    options = { [ { label: 'Si', value: 'Con factura' }, { label: 'No', value: 'Sin factura' } ] } 
+                                    onChange={(value) => {
+                                        if (value !== null) { this.updateSelect(value, 'factura') } 
+                                        if (value===null){
+                                            form.factura = ''
+                                            this.setState({ ...this.state, form })
+                                        }}}
+                                    />
                             </div>
                             <div className="col col-xxl-12">
                                 <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } requirevalidation = { 0 } as ='textarea' rows = '1'
