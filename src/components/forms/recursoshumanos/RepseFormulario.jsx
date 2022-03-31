@@ -632,12 +632,12 @@ class RepseFormulario extends Component{
     }
 
     render(){
-        const { form, options, formeditado} = this.state
+        const { form, options, formeditado,onClickM,handleClose} = this.state
         const { type} = this.props
 
         return(
               <Form id = 'form-repse'
-                onSubmit = { (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-repse') } }>
+                onSubmit = { (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-repse');  } }>
                 <div className = 'row mx-0 mt-5'>
                     <Col md="12" className="align-self-center">                                            
                             {
@@ -1086,7 +1086,7 @@ class RepseFormulario extends Component{
                     </Col>
                 </div>
                 <div className="d-flex justify-content-end border-top mt-3 pt-3">
-                    <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type = 'submit' text="ENVIAR" />
+                    <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type = 'submit' text="ENVIAR" onClick={onClickM}/>
                 </div>
             </Form>
             
