@@ -918,23 +918,25 @@ class PresupuestoDiseñoForm extends Component {
             let ra = 0
 
             if(esquema === 'esquema_3'){
-                data.empresa.tipos_planos3.map((tipos) => {                
-                    // accu = parseInt(tipos.monto) + accu
-                    ra= Math.sqrt(tipos.monto * m2 ) * tipos.monto;
-                    sum = ra.toFixed(3) *  (1 + 0)
-                    console.log( sum)
+                if( data.empresa.tipos_planos3){
+                    data.empresa.tipos_planos3.map((tipos) => {                
+                        // accu = parseInt(tipos.monto) + accu
+                        ra= Math.sqrt(tipos.monto * m2 ) * tipos.monto;
+                        sum = ra.toFixed(3) *  (1 + 0)
+                        console.log( sum)
+    
+                        accu =  sum + accu
+                        // console.log( accu)
+                    })
+                    console.log('toal esrea')
+                    console.log( accu)
+                    console.log( total)
+                    sum=  parseInt(accu) + total
 
-                    accu =  sum + accu
-                    // console.log( accu)
-                })
-                console.log('toal esrea')
-                console.log( accu)
-                console.log( total)
-
+                }               
                 // ra= Math.sqrt(accu * m2 ) * accu;
                 // console.log(ra)
                 // sum = ra.toFixed(3) *  (1 + incremento)
-                sum=  parseInt(accu) + total
             }else{
                 sum = total
             }
