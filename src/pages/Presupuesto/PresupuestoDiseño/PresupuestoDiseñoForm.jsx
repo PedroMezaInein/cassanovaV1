@@ -750,6 +750,7 @@ class PresupuestoDiseñoForm extends Component {
                 break;
         }
         if (name === 'm2' || name === 'esquema')
+
             if (form.m2 && form.esquema)
                 form.subtotal = this.getSubtotal(form.m2, form.esquema)
         if (form.subtotal > 0)
@@ -854,7 +855,7 @@ class PresupuestoDiseñoForm extends Component {
         let acumulado = 0
         let total = 0
         let raiz = 0
-
+     
         if (data.empresa)
             precio_inicial = data.empresa.precio_inicial_diseño
         else {
@@ -905,10 +906,44 @@ class PresupuestoDiseñoForm extends Component {
                 }
                 return ''
             })
+            console.log(precio_inicial)
+
             raiz= Math.sqrt(precio_inicial * m2 ) * precio_inicial;
             total = raiz.toFixed(3) *  (1 + incremento)
+            // console.log(total)
 
-            return total 
+            // console.log(data.empresa)
+            let accu = 0
+            let sum = 0
+            let ra = 0
+
+            if(esquema === 'esquema_3'){
+                data.empresa.tipos_planos3.map((tipos) => {                
+                    // accu = parseInt(tipos.monto) + accu
+                    ra= Math.sqrt(tipos.monto * m2 ) * tipos.monto;
+                    sum = ra.toFixed(3) *  (1 + 0)
+                    console.log( sum)
+
+                    accu =  sum + accu
+                    // console.log( accu)
+                })
+                console.log('toal esrea')
+                console.log( accu)
+                console.log( total)
+
+                // ra= Math.sqrt(accu * m2 ) * accu;
+                // console.log(ra)
+                // sum = ra.toFixed(3) *  (1 + incremento)
+                sum=  parseInt(accu) + total
+            }else{
+                sum = total
+            }
+            
+            // console.log(sum)
+
+            // console.log(total)
+
+            return sum 
         }
 
         if (limiteSup < m2Aux) {

@@ -847,13 +847,21 @@ class TicketDetails extends Component {
         /* -------------------------------------------------------------------------- */
         /*                           ANCHOR MODAL SOLICITUD                           */
         /* -------------------------------------------------------------------------- */
-        const { modal, formularios } = this.state
+        const { modal, formularios,presupuesto } = this.state
         let { title } = this.state
-        title = 'Nueva solicitud de compra'
-        formularios.conceptos = this.clearFormConceptos()
-        modal.solicitud = true
-        this.setState({ ...this.state, modal, formeditado: 1, title:title, formularios })
-        this.getOptionsAxios()
+        let aux = presupuesto.conceptos
+        // console.log(aux)
+        if(aux!== undefined){
+            title = 'Nueva solicitud de compra'
+            formularios.conceptos = this.clearFormConceptos()
+            modal.solicitud = true
+            this.setState({ ...this.state, modal, formeditado: 1, title:title, formularios })
+            this.getOptionsAxios()
+            // console.log('hay partida')
+        }else{
+            // console.log('no hay partida')
+            errorAlert('Por favor, agrega las partidas necesarias')
+        }
     }
 
     handleCloseSolicitud = () => {
@@ -1053,6 +1061,7 @@ class TicketDetails extends Component {
     clearFormConceptos = () => {
         const { presupuesto } = this.state
         let aux = presupuesto.conceptos
+        console.log(aux)
         aux.sort(function (a, b) {
             if(a.concepto === null)
                 return 0;
