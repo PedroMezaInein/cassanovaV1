@@ -17,7 +17,7 @@ import { setDateTableLG, setOptions } from '../../../functions/setters'
 import { ItemSlider, Modal } from '../../../components/singles'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
-import { AgregarVacacionesForm } from "../../../components/forms"
+import { AgregarVacacionesForm , AgregarPermisosForm} from "../../../components/forms"
 import { Button, SelectSearch, InputGray, FileInput, RangeCalendar, SelectHorario } from '../../../components/form-components'
 import readXlsxFile from 'read-excel-file'
 import moment from 'moment'
@@ -31,7 +31,6 @@ import {
 import { /* Parking, ParkingRed, */ PassportTravel, HappyBirthday, Calendar /* , EmptyParkSlot */ } from '../../../components/Lottie'
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO',]
-
 
 class Vacaciones extends Component {
 
@@ -97,7 +96,6 @@ class Vacaciones extends Component {
     //     $('#form_permisos').DataTable().ajax.reload();
     // }
 
-
     // async getAxios() {
     //     const { access_token } = this.props.authUser
     //     apiGet(`permiso/permiso`, access_token).then(
@@ -142,7 +140,6 @@ class Vacaciones extends Component {
         form[name] = value
         this.setState({ ...this.state, form })
     }
-
 
     onChangeRange = range => {
         const { startDate, endDate } = range
@@ -240,7 +237,6 @@ class Vacaciones extends Component {
         })
     }
 
-
     handleCloseAddVacaciones = () => {
         const { modal_add_vacaciones } = this.state
         this.setState({
@@ -260,7 +256,6 @@ class Vacaciones extends Component {
             form: this.clearForm()
         })
     }
-
 
     handleCloseIncapacidad = () => {
         const { modal_incapacidad } = this.state
@@ -709,18 +704,9 @@ class Vacaciones extends Component {
     }
 
     async addPermisoAxiosAdmin() {
-        // const { access_token } = this.props.authUser
-        // const { form } = this.state
-        const { authUser: { user: { permisos } } } = this.props
-     
-        const { form, } = this.state
-        const { at, } = this.props
-        //  console.log(access_token)
-        console.log(this.props.authUser)
-        // apiPostForm('v3/administracion/egresos', form, at).then(
-        apiPostForm('permiso/admin', form, this.props).then(
-        // await axios.post(URL_DEV + 'v2/rh/vacaciones/admin', form, { empleado: form.empleado }, { headers: { Authorization:`Bearer ${access_token}` } }).then(
-        // await axios.post(URL_DEV + 'permiso/admin', form, { empleado: form.empleado }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+            await axios.post(URL_DEV + 'permiso/admin', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 doneAlert('Permiso enviado con éxito')
@@ -809,8 +795,6 @@ class Vacaciones extends Component {
         })
     }
 
-
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -837,7 +821,6 @@ class Vacaciones extends Component {
         })
         return form;
     }
-
 
     sendVacaciones = () => {
         const { form } = this.state
@@ -937,7 +920,6 @@ class Vacaciones extends Component {
         }
         this.setState({ ...this.state, key: value, form })
     }
-
 
     setActions = egreso => {
         const { history } = this.props
@@ -1096,7 +1078,7 @@ class Vacaciones extends Component {
     }
 
     render() {
-        const { events, espera, modal, key, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos } = this.state
+        const { events, onSubmit,validateAlert,espera, modal, key, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos } = this.state
         const { authUser: {access_token} } = this.props
         // const { user } = this.props
 
@@ -1394,33 +1376,14 @@ class Vacaciones extends Component {
                 </Modal>
 
                 <Modal size={"lg"} show={modal_permisos} handleClose={this.handleClosePermisos} at = { this.props }>
-                    <Card className="card-custom">
-                        <Card.Header>
-                            <div className="card-title">
-                                <h3 className="card-label"> Nuevo permiso </h3>
-                            </div>
-                        </Card.Header>
-                        <Card.Body className="pt-0">
-                            <Form id='form-permisos'         
-                                // accessToken = { this.props.authUser.access_token }      
-                                //   onSubmit={
-                                //  (e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-permisos') }
-                                // (e) => { console.log('asdasd') }
-
-                                //   }
-                                // onSubmit
-                            >
-
-                                <div className="d-flex justify-content-end border-top mt-3 pt-3">
-                                    <Button icon='' className="btn btn-primary font-weight-bold text-uppercase"
-                                        // type='submit'
-                                        text="ENVIAR"       
-                                      onClick={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
-                                    />
-                                </div>
-                            </Form>
-                        </Card.Body>
-                    </Card>
+                    <AgregarPermisosForm
+                            disabledDates={disabledDates}
+                            formeditado={formeditado}
+                            form={form}
+                            onChange={this.onChange}
+                            options={options}
+                            onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
+                        />
                 </Modal>
             </Layout>
         );
