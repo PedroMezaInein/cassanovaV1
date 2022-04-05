@@ -16,11 +16,11 @@ class AgregarPermisosForm extends Component {
     render() {
         const { onSubmit, form, formeditado, options, disabledDates } = this.props
         return (
-            <Form id="form-add-vacaciones"
+            <Form id="form-add-permisos"
                 onSubmit={
                     (e) => {
                         e.preventDefault();
-                        validateAlert(onSubmit, e, 'form-add-vacaciones')
+                        validateAlert(onSubmit, e, 'form-add-permisos')
                     }
                 }
             >
@@ -52,7 +52,7 @@ class AgregarPermisosForm extends Component {
                                 onClick={
                                     (e) => {
                                         e.preventDefault();
-                                        validateAlert(onSubmit, e, 'form-add-vacaciones')
+                                        validateAlert(onSubmit, e, 'form-add-permisos')
                                     }
                                 }
                                 text="ENVIAR" />
