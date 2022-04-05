@@ -1008,7 +1008,7 @@ class Vacaciones extends Component {
                         area: setTextTableReactDom(egreso.area ? egreso.area.nombre : '', this.doubleClick, egreso, 'area', 'text-center'),
                         subarea: setTextTableReactDom(egreso.subarea ? egreso.subarea.nombre : '', this.doubleClick, egreso, 'subarea', 'text-center'),
                         estatusCompra: setTextTableReactDom(egreso.estatus_compra ? egreso.estatus_compra.estatus : '', this.doubleClick, egreso, 'estatusCompra', 'text-center'),
-                        adjuntos: setArrayTable(_aux),
+                        adjuntos: setArrayTable(aux),
                         fecha: setDateTableReactDom(egreso.created_at, this.doubleClick, egreso, 'fecha', 'text-center'),
                         id: egreso.id,
                         objeto: egreso
@@ -1025,8 +1025,6 @@ class Vacaciones extends Component {
         this.setState({
             data
         })
-        let _aux = []
-
         if (permisos)
             permisos.map((permiso) => {
                     aux.push(
