@@ -373,6 +373,10 @@ class IngresosFormulario extends Component {
                                 apiPostForm( 'cliente', objeto, at ).then(
                                     (response) => {
                                         const { cliente } = response.data
+                                        form.cliente = response.data.cliente.id.toString()
+                                        this.setState({
+                                            ...this.state,form
+                                        })
                                         this.getOptions()
                                         doneAlert(`Cliente ${cliente.empresa} generado con éxito`, () => {
                                             form.facturaObject = obj

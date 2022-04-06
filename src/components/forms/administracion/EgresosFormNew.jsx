@@ -38,6 +38,10 @@ class EgresosFormNew extends Component {
             comision: 0,
             factura: 'Sin factura',
             fecha: new Date(),
+            facturaItem:{
+                nombre_emisor:'',
+                nombre_receptor:'',
+            },
             adjuntos: {
                 xml: {
                     files: [], value: ''
@@ -97,7 +101,7 @@ class EgresosFormNew extends Component {
             this.getPago()
         }
         if (!proveedor) {
-            console.log('no proveedor')
+            // console.log('no proveedor')
          this.getOptionsProv()
 
         }
@@ -191,10 +195,9 @@ class EgresosFormNew extends Component {
         const { at } = this.props
         await axios.post(URL_DEV + 'proveedores', form, { headers: setSingleHeader(at) }).then(
             (response) => {
+                form.proveedor = response.data.proveedor.id.toString()
                 this.setState({
-                    ...this.state,
-                    // form: this.clearForm(),
-                   
+                    ...this.state,form
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
        
@@ -206,21 +209,25 @@ class EgresosFormNew extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
+
         const { modal } = this.state
         modal.see = false
         this.setState({ ...this.state, modal })
     }
     setOptionsProveedor = (name, array) => {
+
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
+
         this.setState({
             ...this.state,
-            options
+            options,
+            
         })
     }
 
     updateSelect = (value, name) => {
-        const { form, options, data } = this.state
+        const { form, options } = this.state
         form[name] = value
         let item = null
         switch (name) {
@@ -243,15 +250,23 @@ class EgresosFormNew extends Component {
                 }
                 break;
             case 'proveedor':
-                data.proveedores.find(function (elemento) {
-                    if (value.toString() === elemento.id.toString()) {
-                        if (elemento.rfc !== '') {
-                            form.rfc = elemento.rfc
-                        }
-                    }
-                    return false
+                item = options.proveedores.find((elemento) => {
+                    return elemento.value === value
                 })
+                if (item) {
+                    form.proveedor = ''
+                    options.proveedores = setOptions(item.proveedores, 'nombre', 'id')
+                }
                 break;
+                // data.proveedores.find(function (elemento) {
+                //     if (value.toString() === elemento.id.toString()) {
+                //         if (elemento.rfc !== '') {
+                //             form.rfc = elemento.rfc
+                //         }
+                //     }
+                //     return false
+                // })
+                // break;
             case 'tipoPago':
                 if (form.facturaObject) {
                     let tipoPago = options.tiposPagos.find((elemento) => {
@@ -304,6 +319,10 @@ class EgresosFormNew extends Component {
             let cadena = value.replace(/,/g, '')
             cadena = cadena.replace(/\./g, '')
             form[name] = cadena
+            this.setState({
+                ...this.state,
+                form
+            })
         }
         // if (name === 'area') {
         //     form[name] = value
@@ -319,9 +338,8 @@ class EgresosFormNew extends Component {
             ...this.state,
             form
         })
-        console.log('onCHange', form.name)
+        // console.log('onCHange', form.name)
     }
-
 
     onChangeAdjunto = e => {
         const { name, value, files } = e.target
@@ -338,11 +356,18 @@ class EgresosFormNew extends Component {
         })
         this.setState({ ...this.state, form })
     }
+
+    
+    openModalSee = () => {
+        const { modal } = this.state
+        modal.see = true
+        this.setState({ ...this.state, modal })
+    }
     onChangeFactura = (e) => {
 
         waitAlert()
         const { files, name } = e.target
-        const { form, options, data, modal } = this.state
+        const { form, options, data } = this.state
         const { dato } = this.props
         let empresa = null
         let proveedor = null
@@ -373,12 +398,23 @@ class EgresosFormNew extends Component {
                     obj.rfc_receptor = jsonObj['cfdi:Receptor']['Rfc']
                     obj.nombre_receptor = jsonObj['cfdi:Receptor']['Nombre']
                     obj.uso_cfdi = jsonObj['cfdi:Receptor']['UsoCFDI']
+                    form.nombre = obj.nombre_receptor
+                  
+                    this.setState({
+                        ...this.state,
+                        form
+                    })
                 } else { errores.push('El XML no tiene el receptor') }
                 if (keys.includes('cfdi:Emisor')) {
                     obj.rfc_emisor = jsonObj['cfdi:Emisor']['Rfc']
                     obj.nombre_emisor = jsonObj['cfdi:Emisor']['Nombre']
                     obj.regimen_fiscal = jsonObj['cfdi:Emisor']['RegimenFiscal']
                     form.rfc = obj.rfc_emisor
+                    form.razonSocial = obj.nombre_emisor 
+                    this.setState({
+                        ...this.state,
+                        form
+                    })
                 } else { errores.push('El XML no tiene el emisor') }
                 obj.lugar_expedicion = jsonObj['LugarExpedicion']
                 obj.fecha = jsonObj['Fecha'] ? new Date(jsonObj['Fecha']) : null
@@ -441,8 +477,27 @@ class EgresosFormNew extends Component {
                     options.cuentas = setOptions(empresa.cuentas, 'nombre', 'id')
                 }
                 if (!proveedor) {
-                    modal.see = true
+                    // console.log('negativo')
+                    
+                    Swal.fire({
+                        title: '¿DESEAS AGREGAR UN NUEVO PROVEEDOR?',
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Sí",
+                        cancelButtonText: "No",
+                        reverseButtons: true,
+                        customClass: {
+                            content: 'd-none',
+                        }
+                    }).then((result) => {
+                        if (result.value) {
+                            this.openModalSee()
+                            // console.log(form)
+                        }
+                    })
+                    // modal.see = true
                     // errores.push( 'No existe el proveedor, genéralo desde el apartado de Leads/Proveedores' )
+                    //editando
                 } else {
                     form.proveedor = proveedor.id.toString()
                 }
@@ -462,13 +517,15 @@ class EgresosFormNew extends Component {
                     setTimeout(function () {
                         errorAlert(textError)
                     }, 100);
+                    // Swal.close()
                 } else {
                     form.facturaObject = obj
-                    Swal.close()
+                    
                     this.setState({ ...this.state, form, options })
                     this.checkFactura(obj)
                 }
             } else {
+              
                 form.facturaObject = {}
                 form.facturaItem = ''
                 form.adjuntos.xml.files = []
@@ -813,9 +870,6 @@ class EgresosFormNew extends Component {
                 form.fecha = new Date(egreso.created_at)
                 form.descripcion = egreso.descripcion
                 form.comision = egreso.comision
-
-                Swal.close()
-
                 this.setState({
                     ...this.state,
                     form,
@@ -846,7 +900,7 @@ class EgresosFormNew extends Component {
             if (pago.subarea) {
                 form.subarea = pago.subarea.id.toString()
             }
-        }
+        } 
         Swal.close()
         this.setState({ ...this.state, form, options })
     }
@@ -885,7 +939,16 @@ class EgresosFormNew extends Component {
             if (form.factura === 'Con factura') {
                 return true
             }
+            else{
+                // console.log('sin factura')
+                form.adjuntos.xml.value=''
+                form.adjuntos.xml.files=[]
+                form.adjuntos.pdf.files=[]
+                form.adjuntos.pdf.value=''
+
+            }
         }
+
         return false
     }
     onSubmit = () => {
@@ -915,29 +978,30 @@ class EgresosFormNew extends Component {
                     modal.see = false
                     this.setState({ ...this.state, modal })
                 }} >
+                    {/* modaleditando */}
                 <Form id="form-proveedor">
                 <div className="form-group row form-group-marginless mt-4">
                     <div className="col-md-4">
                         <Input
-                            requirevalidation={1}
+                            requirevalidation={0}
                             name="nombre"
                             value={form.nombre}
                             placeholder="NOMBRE DE CONTACTO"
-                             onChange={this.onChangeProv}
+                            onChange={this.onChangeProv}
                             iconclass={"far fa-user"}
-                            formeditado={formeditado}
+                            formeditado={0}
                             messageinc="Incorrecto. Ingresa el nombre."
                         />
                     </div>
                     <div className="col-md-4">
                         <Input
-                            requirevalidation={1}
+                            requirevalidation={0}
                             name="razonSocial"
                             value={form.razonSocial}
                             placeholder="RAZÓN SOCIAL / NOMBRE DE LA EMPRESA"
                             onChange={this.onChangeProv}
                             iconclass={"far fa-building"}
-                            formeditado={formeditado}
+                            formeditado={0}
                             messageinc="Incorrecto. Ingresa la razón social."
                         />
                     </div>
@@ -1154,14 +1218,16 @@ class EgresosFormNew extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    : <></>
+                                    : 
+                                    
+                                    <></>
                             }
                             <div className="col-md-12 mt-5">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
                             <div className="col-md-6">
                                 <SelectSearchGray options={options.proveedores} placeholder='Selecciona el proveedor' value={form.proveedor}
-                                    onChange={(value) => { this.updateSelect(value, 'proveedor') ; console.log(value)}} withtaglabel={1} withtextlabel={1}
+                                    onChange={(value) => { this.updateSelect(value, 'proveedor') }} withtaglabel={1} withtextlabel={1}
                                     withicon={1} iconclass="far fa-user" messageinc="Selecciona el proveedor" formeditado={formeditado} />
                             </div>
                             <div className="col-md-6">
@@ -1172,13 +1238,15 @@ class EgresosFormNew extends Component {
                             </div>
                         </div>
                         <div className="d-flex justify-content-between border-top mt-3 pt-3">
-                            <div className="mr-2"></div>
-                            <div>
+                                <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"
+                                    onClick={()=>{this.openModalSee()}}>
+                                    Agregar Proveedor
+                                </button>
                                 <button type="button" className="btn btn-primary font-weight-bold text-uppercase"
                                     onClick={openWizard2} data-wizard-type="action-next">
                                     Siguiente
                                 </button>
-                            </div>
+
                         </div>
                     </div>
                     <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
