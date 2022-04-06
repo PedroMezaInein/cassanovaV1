@@ -26,7 +26,7 @@ class Modulo extends Component {
         },
         title: 'Nueva Repse',
         licencia: '',
-        // key:'Repse',
+        // key:'',
         adjuntos: [],
 
         options: {
@@ -176,13 +176,6 @@ class Modulo extends Component {
                 this.getVentaAxios(id)
             }
         }
-        // let { key } = this.state
-        // if (key==='')  {
-        //  key = 'Repse'  
-        // }else {
-        //   key= localStorage.get('activeKeyTabModulo') 
-        // }
-        // this.setState({...this.state, key})
     }
 
     getOptionsAxios = async () => {
