@@ -121,36 +121,73 @@ class FiltersSolicitudFactura extends Component{
                     </div>
                     <div className="col-md-6">
                         <ReactSelectSearchGray placeholder = 'Selecciona el tipo de pago' defaultvalue = { form.tipo } iconclass = 'las la-credit-card'
-                            options = { options.tipos } onChange = { (value) => { this.updateSelect(value, 'tipo') } } />
+                            options = { options.tipos } 
+                            onChange={(value) => {
+                                if (value !== null) { this.updateSelect(value, 'tipo') } 
+                                if (value===null){
+                                    form.tipo = ''
+                                    this.setState({ ...this.state, form })
+                                }}}
+                            />
                     </div>
                     <div className="col-12 mt-4 mb-2 d-none d-md-block">
                         <div className="separator separator-dashed" />
                     </div>
                     <div className="col-md-6">
                         <ReactSelectSearchGray placeholder = 'Selecciona la forma de pago' defaultvalue = { form.forma } iconclass = 'las la-credit-card'
-                            options = { options.formas } onChange = { (value) => { this.updateSelect(value, 'forma') } } />
+                            options = { options.formas }
+                            onChange={(value) => {
+                                if (value !== null) { this.updateSelect(value, 'forma') } 
+                                if (value===null){
+                                    form.forma = ''
+                                    this.setState({ ...this.state, form })
+                                }}}
+                        />
                     </div>
                     <div className="col-md-6">
                         <ReactSelectSearchGray placeholder = 'Selecciona el método de pago' defaultvalue = { form.metodo } iconclass = 'las la-credit-card'
-                            options = { options.metodos } onChange = { (value) => { this.updateSelect(value, 'metodo') } } />
+                            options = { options.metodos } 
+                            onChange={(value) => {
+                                if (value !== null) { this.updateSelect(value, 'metodo') } 
+                                if (value===null){
+                                    form.metodo = ''
+                                    this.setState({ ...this.state, form })
+                                }}}
+                            />
                     </div>
                     <div className="col-12 mt-4 mb-2 d-none d-md-block">
                         <div className="separator separator-dashed" />
                     </div>
                     <div className="col-md-6">
                         <ReactSelectSearchGray placeholder = 'Selecciona el estatus de facturación' defaultvalue = { form.estatus } 
-                            iconclass = 'las la-credit-card' options = { options.estatus } onChange = { (value) => { this.updateSelect(value, 'estatus') } } />
+                            iconclass = 'las la-credit-card' options = { options.estatus } 
+                            onChange={(value) => {
+                                if (value !== null) { this.updateSelect(value, 'estatus') } 
+                                if (value===null){
+                                    form.estatus = ''
+                                    this.setState({ ...this.state, form })
+                                }}}
+                            />
                     </div>
                     <div className="col-md-6">
                         <ReactSelectSearchGray placeholder = 'Selecciona el origen' defaultvalue = { form.origen } options = { options.origenes } 
-                            iconclass = 'las la-credit-card' onChange = { (value) => { this.updateSelect(value, 'origen') } } />
+                            iconclass = 'las la-credit-card'
+                            onChange={(value) => {
+                                if (value !== null) { this.updateSelect(value, 'origen') } 
+                                if (value===null){
+                                    form.origen = ''
+                                    this.setState({ ...this.state, form })
+                                }}}
+
+                            />
                     </div>
                     <div className="col-12 mt-4 mb-2 d-none d-md-block">
                         <div className="separator separator-dashed" />
                     </div>
                     <div className="col-12">
                         <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } requirevalidation = { 0 } as ='textarea' rows = '2'
-                            withformgroup = { 0 } name = 'detalle' placeholder = 'DETALLE' value = { form.detalle } onChange = { this.onChange } 
+                            withformgroup = { 0 } name = 'detalle' placeholder = 'DETALLE' value = { form.detalle } 
+                            onChange = { this.onChange } 
                             withicon = { 1 } iconclass = 'las la-text-height' />
                     </div>
                 </div>

@@ -421,6 +421,7 @@ class Egresos extends Component {
         modal.download = false
         modal.filters = false
         modal.facturas = false
+        
         this.setState({
             ...this.state,
             data,

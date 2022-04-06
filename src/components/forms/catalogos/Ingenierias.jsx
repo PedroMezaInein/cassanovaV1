@@ -15,13 +15,11 @@ export default class IngenieriaForm extends Component {
             if(element.nombre === tipo.nombre){
                 element[name] = value
             }
-            element['porcentaje'] = value
             // console.log(element)
             // element['porcentaje'] = 50
             // form.esquema_4.porcentaje = 50
             return ''
         })
-        console.log(name)
 
         onChange({target:{value:aux,name:'esquema_4'}})
     }
@@ -56,9 +54,9 @@ export default class IngenieriaForm extends Component {
                                 <InputNumberSinText
                                     requirevalidation={0}
                                     formeditado={formeditado}
-                                    name="m2"
+                                    name="inge_m2"
                                     onChange={onChange}
-                                    value={form.m2}
+                                    value={form.inge_m2}
                                     type="text"
                                     placeholder="M2"
                                     messageinc="Incorrecto. Ingresa los M2."
