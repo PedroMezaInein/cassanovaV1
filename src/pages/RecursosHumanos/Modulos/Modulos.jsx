@@ -32,7 +32,7 @@ class Modulo extends Component {
         },
         title: 'Nueva Repse',
         licencia: '',
-        // key:'Repse',
+        // key:'',
         adjuntos: [],
 
         options: {
