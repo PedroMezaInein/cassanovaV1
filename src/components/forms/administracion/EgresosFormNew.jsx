@@ -227,9 +227,9 @@ class EgresosFormNew extends Component {
     }
 
     updateSelect = (value, name) => {
-        const { form, options } = this.state
+        const { form, options,data } = this.state
         form[name] = value
-        let item = null
+        let item = ''
         switch (name) {
             case 'area':
                 item = options.areas.find((elemento) => {
@@ -250,23 +250,27 @@ class EgresosFormNew extends Component {
                 }
                 break;
             case 'proveedor':
-                item = options.proveedores.find((elemento) => {
-                    return elemento.value === value
+                data.proveedores.find(function (elemento) {
+                    if (value.toString() === elemento.id.toString()) {
+                        if (elemento.rfc !== '') {
+                            form.rfc = elemento.rfc
+                        }
+                    }
+                    return false
                 })
-                if (item) {
-                    form.proveedor = ''
-                    options.proveedores = setOptions(item.proveedores, 'nombre', 'id')
-                }
                 break;
-                // data.proveedores.find(function (elemento) {
-                //     if (value.toString() === elemento.id.toString()) {
-                //         if (elemento.rfc !== '') {
-                //             form.rfc = elemento.rfc
-                //         }
-                //     }
-                //     return false
+                // console.log(item)
+                // item = options.proveedores.find((elemento) => {
+                //     return elemento.value === value
                 // })
+                // if (item) {
+                //     form.proveedor = ''
+                //     options.proveedores = setOptions(item.proveedores, 'nombre', 'id')
+                // } else {
+                //     options.proveedores = setOptions(options.proveedores, 'nombre', 'id')
+                // }
                 // break;
+            
             case 'tipoPago':
                 if (form.facturaObject) {
                     let tipoPago = options.tiposPagos.find((elemento) => {
