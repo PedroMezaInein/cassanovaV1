@@ -251,7 +251,7 @@ class Traspasos extends Component {
     }
     setAdjuntos = adjuntos => {
         let aux = []
-        adjuntos.map((documento) => {
+        adjuntos.map((documento,key) => {
             aux.push({
                 actions: this.setActionsAdjuntos(documento),
                 adjunto: renderToString(setArrayTable([{ text: documento.name, url: documento.url }])),

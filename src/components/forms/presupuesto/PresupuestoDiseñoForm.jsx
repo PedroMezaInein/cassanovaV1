@@ -219,11 +219,11 @@ class PresupuestoDiseñoForm extends Component {
                                     </Col>
                                 </Row>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6 mb-2">
+                                    <div className="col-md-9 mb-2">
                                         <OptionsCheckboxHeaders requirevalidation = { 0 } formeditado = { formeditado } placeholder = "SELECCIONA LOS PLANOS"
                                             options = { form.planos } name = 'planos'  value = { form.planos } onChange = { this.handleChangeCheckboxPlanos } />
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-1">
                                         <div className="form-group">
                                             <label className="font-weight-bolder m-0">Fases</label>
                                             <div className="checkbox-list pt-2">
@@ -237,6 +237,27 @@ class PresupuestoDiseñoForm extends Component {
                                                     Fase 2
                                                     <span></span>
                                                 </label>  
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                        <div className="form-group">
+                                            <label className="font-weight-bolder m-0">desglose de montos</label>
+                                            <div className="checkbox-list pt-2">
+                                               
+                                                {
+                                                // form.desglose?
+                                                     form.desglose.map((desglo,key) => {
+                                                        return (
+                                                        <label className=" font-weight-light">
+                                                            { desglo[0].nombre } <strong>- ${desglo[0].monto.toFixed(2) }</strong>
+                                                            <span></span>
+                                                        </label>
+                                                      )
+                                                    })
+                                                // :''
+                                                 }
+                                               
                                             </div>
                                         </div>
                                     </div>
