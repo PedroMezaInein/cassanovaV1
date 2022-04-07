@@ -52,38 +52,38 @@ class Vacaciones extends Component {
         form: {
             fechas: { start: null, end: null },
             // nombre: this.props.authUser.user.name,
-            nombre:'JOSE CARLOS HERRERA GALLEGOS',
+            nombre:'',
             fechaInicio: new Date(),
             fechaFin: new Date(),
             descripcion: '',
             tipo: '',
-            empleado:'JOSE CARLOS HERRERA GALLEGOS',
+            empleado:'',
             hora_salida: 0,
             hora_entrada: 0,
             minuto_entrada: 0,
             minuto_salida: 0,
-            lider: 'aa',
+            lider: '',
             adjuntos: {
                 adjuntos: {
                     files: [],
                     value: '',
                     placeholder: 'Adjuntos'
                 },
-                // documento: {
-                //     value: '',
-                //     placeholder: 'Documentación',
-                //     files: []
-                // },
-                // permisos: {
-                //     value: '',
-                //     placeholder: 'Permiso',
-                //     files: []
-                //   },
+                documento: {
+                    value: '',
+                    placeholder: 'Documentación',
+                    files: []
+                },
+                permisos: {
+                    value: '',
+                    placeholder: 'Permiso',
+                    files: []
+                  },
             }
         },
         espera: [],
         options: {
-            // empleados: []
+             empleados: []
         },
         data: {
             permiso: [],
@@ -151,10 +151,10 @@ class Vacaciones extends Component {
     onChangeAdjunto = e => {
         const { value, files } = e.target
         const { form } = this.state
-        form.adjuntos.value = value
-        form.adjuntos.files = []
+        form.adjuntos.adjuntos.value = value
+        form.adjuntos.adjuntos.files = []
         files.forEach((file, index) => {
-            form.adjuntos.files.push({
+            form.adjuntos.adjuntos.files.push({
                 name: file.name,
                 file: file,
                 url: URL.createObjectURL(file),
@@ -207,7 +207,7 @@ class Vacaciones extends Component {
         this.setState({
             ...this.state,
             modal_permisos: true,
-            title: 'Agregar permisos',
+            title: 'Agregar permiso',
             form: this.clearForm(),
             formeditado: 0
         })
@@ -328,6 +328,17 @@ class Vacaciones extends Component {
             ...this.state,
             form
         })
+    }
+
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        if (name === 'adjuntoPermiso') {
+               form.adjuntos.adjuntos.files.splice(key, 1)
+        if (form.adjuntos.adjuntos.files.length === 0) {
+            form.adjuntos.adjuntos.value = ''
+        }
+        }
+        this.setState({ ...this.state, form })
     }
 
     setOptions = (name, array) => {
@@ -707,23 +718,49 @@ class Vacaciones extends Component {
     }
 
     async addPermisoAxiosAdmin() {
+       
         const { access_token } = this.props.authUser
         const { form } = this.state
-
-            await axios.post(URL_DEV + 'v2/rh/vacaciones/adminPermiso', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-
-                doneAlert('Permiso enviado con éxito')
-                this.setPermisos()     
-                this.handleClosePermisos()
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+        let aux = Object.keys(form)
+        const data = new FormData();
+        aux = Object.keys(form.adjuntos)
+        console.log(this.props)
+        // if(id === 'form-add-permisos'){
+        //     aux.forEach((element) => {
+        //         switch (element) {               
+        //             case 'adjuntos':
+        //                 break;
+        //             default:
+        //                 data.append(element, form[element])
+        //                 break
+        //         }
+        //     })}
+        // aux.forEach((element) => {
+            // if (form.adjuntos.adjuntos.value !== '') {
+                // form.adjuntos.adjuntos.files.forEach((file) => {
+                //     data.append(`files_name_adjuntoPermiso[]`, file.name)
+                //     data.append(`files_adjuntoPermiso[]`, file.file)
+                // })
+                 data.append('adjuntos[]', form.adjuntos.adjuntos.files.forEach((file) => {
+                    data.append(`files_name_adjuntoPermiso[]`, file.name)
+                    data.append(`files_adjuntoPermiso[]`, file.file)
+                }))
+            // }
+        // // })
+        //     await axios.post(URL_DEV + 'v2/rh/vacaciones/adminPermiso', data, { headers: { Authorization: `Bearer ${access_token}`} }).then(
+        //     (response) => {
+                
+        //         doneAlert('Permiso enviado con éxito')
+        //         this.setPermisos()     
+        //         this.handleClosePermisos()
+        //     },
+        //     (error) => {
+        //         printResponseErrorAlert(error)
+        //     }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.error(error, 'error')
+        // })
     }
 
     async editVacacionesAxios(vacacion, estatus) {
@@ -1293,12 +1330,14 @@ class Vacaciones extends Component {
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addVacationAxiosAdmin() }}
                     />
                 </Modal>
-                <Modal size={"lg"} show={modal_permisos} handleClose={this.handleClosePermisos} at = { this.props }>
+                <Modal size={"lg"} title={title}  show={modal_permisos} handleClose={this.handleClosePermisos} at = { this.props }>
                     <AgregarPermisosForm
                      disabledDates={disabledDates}
                      formeditado={formeditado}
+                     deleteAdjunto={this.clearFiles}
                      form={form}
                      onChange={this.onChange}
+                     onChangeAdjunto={this.onChangeAdjunto}
                      options={options}
                      onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
                         />
