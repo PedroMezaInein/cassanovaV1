@@ -41,7 +41,7 @@ class IngresosFormulario extends Component {
             tipoPago: 0,
             facturaObject: {},
             tipoImpuesto: 0,
-            estatusCompra: 0,
+            estatusCompra: 2,
         },
         options: {
             empresas: [],
@@ -296,8 +296,6 @@ class IngresosFormulario extends Component {
                         //     ).catch((error) => { catchErrors(error) })
                         // }
                    
-
-        
                         // data.append('empresa', obj.nombre_emisor)
                         // data.append('nombre', obj.nombre_emisor)
                         // data.append('rfc', obj.rfc_emisor)
@@ -391,8 +389,10 @@ class IngresosFormulario extends Component {
                             }
                         )
                     } else {
+                        console.log(obj)
                         form.cliente = cliente.id.toString()
                         form.facturaObject = obj
+                        form.total = obj.total
                         Swal.close()
                         this.setState({ ...this.state, form, options })
                         this.checkFactura(obj)
@@ -921,13 +921,13 @@ class IngresosFormulario extends Component {
                                     withicon = { 1 } iconclass = "far fa-credit-card" messageinc = "Selecciona la cuenta" 
                                     formeditado = { formeditado } requirevalidation = { 1 }/>
                             </div>
-                            <div className="col-md-6">
+                            {/* <div className="col-md-6">
                                 <SelectSearchGray options = { options.estatusCompras } placeholder = 'Selecciona el estatus de la compra' 
                                     value = { form.estatusCompra } onChange = { (value) => { this.updateSelect(value, 'estatusCompra') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "flaticon2-time" 
                                     messageinc = "Selecciona el estatus de la compra"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
-                            </div>
+                            </div> */}
                             <div className="col-md-12">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
