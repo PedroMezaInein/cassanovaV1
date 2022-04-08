@@ -59,7 +59,7 @@ class EgresosFormNew extends Component {
             tipoPago: 0,
             facturaObject: {},
             tipoImpuesto: 0,
-            estatusCompra: 2,
+            estatusCompra: 0,
         },
         options: {
             empresas: [],
@@ -526,6 +526,7 @@ class EgresosFormNew extends Component {
                     console.log(obj)
                     form.total = obj.total
                     form.facturaObject = obj
+                    form.estatusCompra = '2'.toString()
                     
                     this.setState({ ...this.state, form, options })
                     this.checkFactura(obj)
@@ -1317,6 +1318,17 @@ class EgresosFormNew extends Component {
                                     messageinc="Selecciona el tipo de pago" formeditado={formeditado}
                                     requirevalidation={1} />
                             </div>
+                            
+                            <div className="col-md-4">
+                                <SelectSearchGray options={options.estatusCompras} placeholder='Selecciona el estatus de la compra'
+                                    value={form.estatusCompra} onChange={(value) => { this.updateSelect(value, 'estatusCompra') }}
+                                    withtaglabel={1} withtextlabel={1} withicon={1} iconclass="flaticon2-time"
+                                    messageinc="Selecciona el estatus de la compra" formeditado={formeditado}
+                                    requirevalidation={1} />
+                            </div>
+                            <div className="col-md-12">
+                                <div className="separator separator-dashed mt-1 mb-2" />
+                            </div>
                             <div className="col-md-4">
                                 <SelectSearchGray options={options.tiposImpuestos} placeholder='Selecciona el tipo de impuesto'
                                     value={form.tipoImpuesto} onChange={(value) => { this.updateSelect(value, 'tipoImpuesto') }}
@@ -1324,16 +1336,6 @@ class EgresosFormNew extends Component {
                                     messageinc="Selecciona el tipo de impuesto" formeditado={formeditado}
                                     requirevalidation={1} />
                             </div>
-                            <div className="col-md-12">
-                                <div className="separator separator-dashed mt-1 mb-2" />
-                            </div>
-                            {/* <div className="col-md-4">
-                                <SelectSearchGray options={options.estatusCompras} placeholder='Selecciona el estatus de la compra'
-                                    value={form.estatusCompra} onChange={(value) => { this.updateSelect(value, 'estatusCompra') }}
-                                    withtaglabel={1} withtextlabel={1} withicon={1} iconclass="flaticon2-time"
-                                    messageinc="Selecciona el estatus de la compra" formeditado={formeditado}
-                                    requirevalidation={1} />
-                            </div> */}
                             <div className="col-md-4">
                                 <InputMoneyGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}
                                     requirevalidation={1} formeditado={formeditado} thousandseparator={true} prefix='$'

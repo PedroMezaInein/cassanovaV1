@@ -41,7 +41,7 @@ class IngresosFormulario extends Component {
             tipoPago: 0,
             facturaObject: {},
             tipoImpuesto: 0,
-            estatusCompra: 2,
+            estatusCompra: 0,
         },
         options: {
             empresas: [],
@@ -371,10 +371,6 @@ class IngresosFormulario extends Component {
                                 apiPostForm( 'cliente', objeto, at ).then(
                                     (response) => {
                                         const { cliente } = response.data
-                                        form.cliente = response.data.cliente.id.toString()
-                                        this.setState({
-                                            ...this.state,form
-                                        })
                                         this.getOptions()
                                         doneAlert(`Cliente ${cliente.empresa} generado con éxito`, () => {
                                             form.facturaObject = obj
@@ -389,10 +385,9 @@ class IngresosFormulario extends Component {
                             }
                         )
                     } else {
-                        console.log(obj)
                         form.cliente = cliente.id.toString()
                         form.facturaObject = obj
-                        form.total = obj.total
+                        form.estatusCompra = '2'.toString()
                         Swal.close()
                         this.setState({ ...this.state, form, options })
                         this.checkFactura(obj)
@@ -921,13 +916,13 @@ class IngresosFormulario extends Component {
                                     withicon = { 1 } iconclass = "far fa-credit-card" messageinc = "Selecciona la cuenta" 
                                     formeditado = { formeditado } requirevalidation = { 1 }/>
                             </div>
-                            {/* <div className="col-md-6">
+                            <div className="col-md-6">
                                 <SelectSearchGray options = { options.estatusCompras } placeholder = 'Selecciona el estatus de la compra' 
                                     value = { form.estatusCompra } onChange = { (value) => { this.updateSelect(value, 'estatusCompra') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "flaticon2-time" 
                                     messageinc = "Selecciona el estatus de la compra"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
-                            </div> */}
+                            </div>
                             <div className="col-md-12">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
