@@ -7,7 +7,6 @@ import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAler
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm , IngenieriaForm} from '../../components/forms'
-import { Line } from 'react-chartjs-2'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
 import InputSinText from '../../components/form-components/SinText/InputSinText'
@@ -75,6 +74,7 @@ class Diseño extends Component {
             esquema_3:[],
             esquema_4:[],
             tipo: '',
+            tipo1: '',
             tipoTarget: {taget: '', value: ''},
         },
         data: {
@@ -648,24 +648,15 @@ class Diseño extends Component {
         form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
         form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
         form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_3 / 100))
-        console.log(form)
         if(name === 'inge_m2'){
-            
-            let accu = 0
-            let sum = ''
             let ra = 0 
             // console.log(form.esquema_4)
-            form.esquema_4.map((element)=>{
-                // element.porcentaje = element.monto * (1 + (form.incremento_esquema_3 / 100))
-                // element.porcentaje = element.monto * value
-                ra= Math.sqrt(element.monto * form.inge_m2 ) * element.monto;
-                element.porcentaje = ra.toFixed(3) *  (1 + 0)
-
-                // console.log(element.monto)
-            })
+            form.esquema_4.map(function (element) {
+                    ra = Math.sqrt(element.monto * form.inge_m2) * element.monto
+                    element.porcentaje = ra.toFixed(3)
+                })
 
         }
-        console.log(form.esquema_4)
         if (name === 'precio_inicial_diseño' || name === 'incremento_esquema_2' || name === 'incremento_esquema_3')
             if (form.precio_inicial_diseño !== '' && form.incremento_esquema_2 !== '' && form.incremento_esquema_3 !== '')
                 grafica = this.setGrafica(form)
@@ -1054,7 +1045,7 @@ class Diseño extends Component {
                         deleteRow = { this.deleteRow } onChangeVariaciones = { this.onChangeVariaciones } grafica = { grafica } />
                 </div>
                 <div className="col-lg-7">
-                    {
+                    {/* {
                         grafica !== '' ?
                             <div className="row mx-0 justify-content-center align-items center">
                                 <div className="col-md-11">
@@ -1062,7 +1053,7 @@ class Diseño extends Component {
                                 </div>
                             </div>
                         : <></>
-                    }
+                    } */}
                 </div>
             </div>
         )      
@@ -1120,7 +1111,6 @@ class Diseño extends Component {
                                             <span className="nav-icon mr-2">
                                                 <span className="svg-icon mr-3">
                                                 <i style={{ color: "#EF6C00" }} className={`las la-blueprints icon-xl mr-2`} />
-
                                                     {/* <SVG  style={{ color : "red" }}  src={toAbsoluteUrl('/images/svg/highvoltage.svg')} /> */}
                                                 </span>
                                             </span>
@@ -1199,9 +1189,8 @@ class Diseño extends Component {
                                                                         changePosicionPlano = { this.changePosicionPlano } />
                                                                     <div className = 'row mx-0 py-2'>
                                                                     <div className = 'col-md-6 align-self-center text-justify pb-2 px-1'>
-
                                                                             <SelectCreateSinText 
-                                                                                name = 'tipo'
+                                                                                name = 'tipo1'
                                                                                 placeholder = "TIPO"
                                                                                 iconclass = "far fa-file-alt"
                                                                                 requirevalidation = { 1 }
@@ -1246,7 +1235,6 @@ class Diseño extends Component {
                                                                                     onChange = { (e) => { this.handleChangePlanos('esquema_3', e, form.esquema_3.length-1) }}
                                                                                     customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
                                                                                 /> */}
-
                                                                             <SelectCreateSinText 
                                                                                 name = 'tipo'
                                                                                 placeholder = "TIPO"

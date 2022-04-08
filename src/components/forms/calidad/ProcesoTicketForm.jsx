@@ -31,7 +31,7 @@ class ProcesoTicketForm extends Component {
         return (
             <div>
                 {
-                    estatus === 'En proceso' || estatus === 'Aprobación pendiente' ?
+                    estatus === 'En proceso' || estatus === 'Aprobación pendiente' || estatus === 'Aceptado'|| estatus === 'En espera' || estatus === 'En revisión'  ?
                         <div className="wizard wizard-3" id="for2-wizardP" data-wizard-state="step-first">
                             <div className="wizard-nav px-6 px-md-0">
                                 <div className="wizard-steps">

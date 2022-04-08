@@ -16,11 +16,15 @@ class OptionsCheckboxHeaders extends Component {
 
         return (
             <>
-                <Form.Label className="font-weight-bolder m-0">{placeholder}</Form.Label>
-                {
+            <Form.Label className="font-weight-bolder m-0">{placeholder}</Form.Label>
+             <div className="row justify-content-center">
+                                {
                     Object.keys(options_tipo).map((tipo, key) => {
                         return (
+                            
                             <div key = { key } >
+                                <div className="col-md-12 mx-5 px-2">
+
                                 {tipo !== "" ? <div className="text-dark-50 font-weight-bolder font-size-base mt-3">{tipo}</div> : ""}
                                 <div>
                                     <div className="checkbox-list pt-2">
@@ -42,10 +46,14 @@ class OptionsCheckboxHeaders extends Component {
                                         }
                                     </div>
                                 </div>
+                                </div>      
+
                             </div>
                         )
                     })
                 }
+                  </div>
+
             </>
         )
     }

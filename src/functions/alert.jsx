@@ -42,7 +42,8 @@ async function waitAlert() {
             </div>,
         customClass: {
             actions: 'd-none'
-        }
+        },
+        timer: 4000,
     })
 }
 

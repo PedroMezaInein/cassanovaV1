@@ -41,12 +41,19 @@ class LoginForm extends React.Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             token = params.get("token")
+
         }
         this.setState({
             ...this.state,
             tab: token === '' ? 'login' : 'nueva',
             token: token
         })
+        if( localStorage.getItem('activeKeyTabModulo')===null){
+            localStorage.setItem('activeKeyTabModulo', 'Repse')
+        }
+        if( localStorage.getItem('activeKeyTabColaboradores')===null){
+            localStorage.setItem('activeKeyTabColaboradores', 'administrativo')
+        }
     }
 
     validateEmail = (value) => {
@@ -166,6 +173,7 @@ class LoginForm extends React.Component {
         ).catch(( error) => {
             errorAlert('Ingresaste un correo o contraseña equivocado. Intenta de nuevo')
         }) 
+     
    }
 
     handleChange(event) {

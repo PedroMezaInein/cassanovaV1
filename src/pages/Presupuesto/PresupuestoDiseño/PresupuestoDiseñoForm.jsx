@@ -33,6 +33,7 @@ class PresupuestoDiseñoForm extends Component {
             tiempo_ejecucion_diseno: '',
             tiempo_ejecucion_construccion: 0,
             descuento: 0.0,
+            desglose: [],
             conceptos: [
                 {
                     value: '',
@@ -542,11 +543,13 @@ class PresupuestoDiseñoForm extends Component {
         // let { defaultKey, activeKey } = this.state
         form[name] = value
         let planos = []
+
         switch (name) {
             case 'empresa':
                 data.empresas.map((empresa)=>{
                     if(empresa.id.toString() === value){
                         options.tipos = setOptions(empresa.tipos, 'tipo', 'id')
+
                         data.tipos = empresa.tipos
                         form.tipoProyecto = ''
                         form.construccion_civil_inf = 0
@@ -846,6 +849,7 @@ class PresupuestoDiseñoForm extends Component {
             return 0.0
 
         const { data } = this.state
+        const { form } = this.state
 
         let precio_inicial = 0
         let incremento = 0
@@ -906,46 +910,49 @@ class PresupuestoDiseñoForm extends Component {
                 }
                 return ''
             })
-            console.log(precio_inicial)
 
             raiz= Math.sqrt(precio_inicial * m2 ) * precio_inicial;
             total = raiz.toFixed(3) *  (1 + incremento)
-            // console.log(total)
-
-            // console.log(data.empresa)
             let accu = 0
             let sum = 0
             let ra = 0
-
+            form.desglose = []
             if(esquema === 'esquema_3'){
                 if( data.empresa.tipos_planos3){
-                    data.empresa.tipos_planos3.map((tipos) => {                
-                        // accu = parseInt(tipos.monto) + accu
+                    data.empresa.tipos_planos3.map((tipos,key) => {     
+                        
                         ra= Math.sqrt(tipos.monto * m2 ) * tipos.monto;
-                        sum = ra.toFixed(3) *  (1 + 0)
-                        console.log( sum)
-    
+                        sum = ra.toFixed(2) *  (1 + 0)
+
+                        form.desglose.push( [
+                            {
+                                id: tipos.id,
+                                nombre: tipos.tipo,
+                                monto: sum
+                            }
+                        ])
                         accu =  sum + accu
-                        // console.log( accu)
                     })
-                    console.log('toal esrea')
-                    console.log( accu)
-                    console.log( total)
-                    sum=  parseInt(accu) + total
-
+                    form.desglose.push( [
+                        {
+                            id: 1,
+                            nombre: 'MONTO INGENIERIAS',
+                            monto: accu
+                        }
+                    ])
+                    form.desglose.push( [
+                        {
+                            id: 1,
+                            nombre: 'MONTO DE ESQUEMA',
+                            monto: total
+                        }
+                    ])
+                    sum =  accu + total
                 }               
-                // ra= Math.sqrt(accu * m2 ) * accu;
-                // console.log(ra)
-                // sum = ra.toFixed(3) *  (1 + incremento)
-            }else{
-                sum = total
-            }
-            
-            // console.log(sum)
-
-            // console.log(total)
-
-            return sum 
+                }else{
+                    sum = total
+                }            
+                return sum.toFixed(2)
         }
 
         if (limiteSup < m2Aux) {
