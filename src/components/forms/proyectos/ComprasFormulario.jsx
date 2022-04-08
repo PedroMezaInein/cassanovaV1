@@ -294,6 +294,8 @@ class ComprasFormulario extends Component {
                     }, 100);
                 }else{
                     form.facturaObject = obj
+                    form.total = obj.total
+                    form.estatusCompra = 2
                     Swal.close()
                     this.setState({ ...this.state, form, options })
                     this.checkFactura(obj)
@@ -890,23 +892,24 @@ class ComprasFormulario extends Component {
                                     messageinc = "Incorrecto. Selecciona el tipo de impuesto"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
                             </div>
-                            <div className="col-md-4">
+                            {/* <div className="col-md-4">
                                 <SelectSearchGray options = { options.estatusCompras } placeholder = 'Selecciona el estatus de la compra' 
                                     value = { form.estatusCompra } onChange = { (value) => { this.updateSelect(value, 'estatusCompra') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "flaticon2-time" 
                                     messageinc = "Incorrecto. Selecciona el estatus de la compra"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
-                            </div>
-                            <div className="col-md-12">
-                                <div className="separator separator-dashed mt-1 mb-2" />
-                            </div>
-                            <div className="col-md-3">
+                            </div> */}
+                             <div className="col-md-4">
                                 <SelectSearchGray options = { options.tiposPagos } placeholder = 'Selecciona el tipo de pago' 
                                     value = { form.tipoPago } onChange = { (value) => { this.updateSelect(value, 'tipoPago') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "fas fa-coins" 
                                     messageinc = "Incorrecto. Selecciona el tipo de pago"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
                             </div>
+                            <div className="col-md-12">
+                                <div className="separator separator-dashed mt-1 mb-2" />
+                            </div>
+                           
                             <div className="col-md-3">
                                 <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 0 } 
                                     requirevalidation = { 1 } formeditado = { formeditado } thousandseparator = { true } prefix = '$' 

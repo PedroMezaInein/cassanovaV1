@@ -59,7 +59,7 @@ class EgresosFormNew extends Component {
             tipoPago: 0,
             facturaObject: {},
             tipoImpuesto: 0,
-            estatusCompra: 0,
+            estatusCompra: 2,
         },
         options: {
             empresas: [],
@@ -227,9 +227,9 @@ class EgresosFormNew extends Component {
     }
 
     updateSelect = (value, name) => {
-        const { form, options } = this.state
+        const { form, options,data } = this.state
         form[name] = value
-        let item = null
+        let item = ''
         switch (name) {
             case 'area':
                 item = options.areas.find((elemento) => {
@@ -250,23 +250,27 @@ class EgresosFormNew extends Component {
                 }
                 break;
             case 'proveedor':
-                item = options.proveedores.find((elemento) => {
-                    return elemento.value === value
+                data.proveedores.find(function (elemento) {
+                    if (value.toString() === elemento.id.toString()) {
+                        if (elemento.rfc !== '') {
+                            form.rfc = elemento.rfc
+                        }
+                    }
+                    return false
                 })
-                if (item) {
-                    form.proveedor = ''
-                    options.proveedores = setOptions(item.proveedores, 'nombre', 'id')
-                }
                 break;
-                // data.proveedores.find(function (elemento) {
-                //     if (value.toString() === elemento.id.toString()) {
-                //         if (elemento.rfc !== '') {
-                //             form.rfc = elemento.rfc
-                //         }
-                //     }
-                //     return false
+                // console.log(item)
+                // item = options.proveedores.find((elemento) => {
+                //     return elemento.value === value
                 // })
+                // if (item) {
+                //     form.proveedor = ''
+                //     options.proveedores = setOptions(item.proveedores, 'nombre', 'id')
+                // } else {
+                //     options.proveedores = setOptions(options.proveedores, 'nombre', 'id')
+                // }
                 // break;
+            
             case 'tipoPago':
                 if (form.facturaObject) {
                     let tipoPago = options.tiposPagos.find((elemento) => {
@@ -357,14 +361,13 @@ class EgresosFormNew extends Component {
         this.setState({ ...this.state, form })
     }
 
-    
     openModalSee = () => {
         const { modal } = this.state
         modal.see = true
         this.setState({ ...this.state, modal })
     }
     onChangeFactura = (e) => {
-
+        
         waitAlert()
         const { files, name } = e.target
         const { form, options, data } = this.state
@@ -394,6 +397,7 @@ class EgresosFormNew extends Component {
                 const keys = Object.keys(jsonObj)
                 let obj = {}
                 let errores = []
+                console.log(obj)
                 if (keys.includes('cfdi:Receptor')) {
                     obj.rfc_receptor = jsonObj['cfdi:Receptor']['Rfc']
                     obj.nombre_receptor = jsonObj['cfdi:Receptor']['Nombre']
@@ -519,6 +523,8 @@ class EgresosFormNew extends Component {
                     }, 100);
                     // Swal.close()
                 } else {
+                    console.log(obj)
+                    form.total = obj.total
                     form.facturaObject = obj
                     
                     this.setState({ ...this.state, form, options })
@@ -940,12 +946,10 @@ class EgresosFormNew extends Component {
                 return true
             }
             else{
-                // console.log('sin factura')
                 form.adjuntos.xml.value=''
                 form.adjuntos.xml.files=[]
                 form.adjuntos.pdf.files=[]
                 form.adjuntos.pdf.value=''
-
             }
         }
 
@@ -965,7 +969,6 @@ class EgresosFormNew extends Component {
             default: break;
         }
     }
-
 
     render() {
         const { formeditado, form, options, modal } = this.state
@@ -1218,8 +1221,7 @@ class EgresosFormNew extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    : 
-                                    
+                                    :                                     
                                     <></>
                             }
                             <div className="col-md-12 mt-5">
@@ -1325,13 +1327,13 @@ class EgresosFormNew extends Component {
                             <div className="col-md-12">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
-                            <div className="col-md-4">
+                            {/* <div className="col-md-4">
                                 <SelectSearchGray options={options.estatusCompras} placeholder='Selecciona el estatus de la compra'
                                     value={form.estatusCompra} onChange={(value) => { this.updateSelect(value, 'estatusCompra') }}
                                     withtaglabel={1} withtextlabel={1} withicon={1} iconclass="flaticon2-time"
                                     messageinc="Selecciona el estatus de la compra" formeditado={formeditado}
                                     requirevalidation={1} />
-                            </div>
+                            </div> */}
                             <div className="col-md-4">
                                 <InputMoneyGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}
                                     requirevalidation={1} formeditado={formeditado} thousandseparator={true} prefix='$'
