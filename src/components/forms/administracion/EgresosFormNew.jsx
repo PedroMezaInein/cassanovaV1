@@ -56,10 +56,10 @@ class EgresosFormNew extends Component {
                     files: [], value: ''
                 }
             },
-            tipoPago: 0,
             facturaObject: {},
-            tipoImpuesto: 0,
-            estatusCompra: 0,
+            tipoImpuesto: '1'.toString(),
+            estatusCompra: '2'.toString(),
+            tipoPago : '4'.toString(),
         },
         options: {
             empresas: [],
@@ -523,10 +523,10 @@ class EgresosFormNew extends Component {
                     }, 100);
                     // Swal.close()
                 } else {
-                    console.log(obj)
-                    form.total = obj.total
                     form.facturaObject = obj
+                    form.total = obj.total
                     form.estatusCompra = '2'.toString()
+                    form.tipoPago = '4'.toString()
                     
                     this.setState({ ...this.state, form, options })
                     this.checkFactura(obj)
@@ -537,6 +537,8 @@ class EgresosFormNew extends Component {
                 form.facturaItem = ''
                 form.adjuntos.xml.files = []
                 form.adjuntos.xml.value = ''
+                form.estatusCompra = '2'.toString()
+                form.tipoPago = '4'.toString()
                 this.setState({ ...this.state, form })
                 errorAlert(`La factura no tiene el formato correcto`)
             }

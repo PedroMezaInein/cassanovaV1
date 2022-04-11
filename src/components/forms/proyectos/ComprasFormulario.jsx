@@ -27,6 +27,8 @@ class ComprasFormulario extends Component {
             comision: 0,
             factura: 'Sin factura',
             fecha: new Date(),
+            estatusCompra: '2'.toString(),
+            tipoPago : '4'.toString(),
             adjuntos: {
                 xml: {
                     files: [], value: ''
@@ -296,6 +298,7 @@ class ComprasFormulario extends Component {
                     form.facturaObject = obj
                     form.total = obj.total
                     form.estatusCompra = '2'.toString()
+                    form.tipoPago = '4'.toString()
                     Swal.close()
                     this.setState({ ...this.state, form, options })
                     this.checkFactura(obj)
@@ -305,6 +308,9 @@ class ComprasFormulario extends Component {
                 form.facturaItem = ''
                 form.adjuntos.xml.files = []
                 form.adjuntos.xml.value = ''
+                form.estatusCompra = '2'.toString()
+                form.tipoPago = '4'.toString()
+
                 this.setState({ ...this.state, form })
                 errorAlert(`La factura no tiene el formato correcto`) 
             }
