@@ -390,7 +390,7 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const { tableName, customtitle, customlabel, customsubtitle,addClick, title, subtitle, abrir_modal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
+        const { tableName,revisar_permisos, mostarPermisos,customtitle, customlabel, customsubtitle,addClick, title, subtitle, abrir_modal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
                 <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
@@ -403,6 +403,13 @@ class NewTable extends Component{
                     </div>
                     <div className="card-toolbar toolbar-dropdown">
                         <DropdownButton menualign="right" title={<span>OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-newtable-options' >
+                        {
+                                revisar_permisos === true ?
+                                <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={mostarPermisos} >
+                                {this.setNaviIcon('flaticon2-search-1', 'MOSTRAR PERMISOS')}
+                            </Dropdown.Item>
+                        : <></>
+                            }
                             {
                                  hideNew !== true ? 
                                  abrir_modal === false ?
@@ -432,6 +439,7 @@ class NewTable extends Component{
                                     </Dropdown.Item>
                                 :<></>
                             }
+                       
                         </DropdownButton>
                     </div>
                 </Card.Header>

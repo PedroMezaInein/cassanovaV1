@@ -1,25 +1,25 @@
 import React, { Component } from 'react'
-import $ from 'jquery'
+// import $ from 'jquery'
 import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
 import { Modal } from '../../../components/singles'
-import { Update } from '../../../components/Lottie'
+// import { Update } from '../../../components/Lottie'
 import Layout from '../../../components/layout/layout'
 // import { EgresosCard } from '../../../components/cards'
 import { NewTable } from '../../../components/NewTables'
 // import { EngresosFilters } from '../../../components/filters'
 import { URL_DEV, BIBLIOTECA_COLUMNS } from '../../../constants'
-import { printSwalHeader } from '../../../functions/printers'
+// import { printSwalHeader } from '../../../functions/printers'
 // import { FacturasFormTable } from '../../../components/tables'
-import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
+// import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 // import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
-import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
-import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray, FileInput, } from '../../../components/form-components'
-import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert } from '../../../functions/alert'
+import { apiOptions, apiGet, apiDelete, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
+import { InputGray, FileInput, } from '../../../components/form-components'
+import { waitAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert,  errorAlert } from '../../../functions/alert'
 import {
-    setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter,
-    setTextTableReactDom, setNaviIcon
+    setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter,
+    setTextTableReactDom,
 } from '../../../functions/setters'
 class Biblioteca extends Component {
     state = {

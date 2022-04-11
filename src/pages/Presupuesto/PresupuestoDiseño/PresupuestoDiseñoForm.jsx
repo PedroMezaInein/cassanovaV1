@@ -919,7 +919,7 @@ class PresupuestoDiseñoForm extends Component {
             form.desglose = []
             if(esquema === 'esquema_3'){
                 if( data.empresa.tipos_planos3){
-                    data.empresa.tipos_planos3.map((tipos,key) => {     
+                    data.empresa.tipos_planos3.forEach((tipos,key) => {     
                         
                         ra= Math.sqrt(tipos.monto * m2 ) * tipos.monto;
                         sum = ra.toFixed(2) *  (1 + 0)

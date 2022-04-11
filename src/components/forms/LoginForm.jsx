@@ -54,6 +54,9 @@ class LoginForm extends React.Component {
         if( localStorage.getItem('activeKeyTabColaboradores')===null){
             localStorage.setItem('activeKeyTabColaboradores', 'administrativo')
         }
+        if( localStorage.getItem('activeKeyIncidencias')===null){
+            localStorage.setItem('activeKeyIncidencias', 'vacaciones')
+        }
     }
 
     validateEmail = (value) => {

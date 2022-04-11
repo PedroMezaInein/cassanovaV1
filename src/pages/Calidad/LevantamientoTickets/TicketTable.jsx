@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
-import { Card, DropdownButton, Dropdown, } from 'react-bootstrap';
+import {  DropdownButton, Dropdown, } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../../constants'
 import { setTextTable, setOptions, setLabelTable } from '../../../functions/setters'
@@ -100,7 +100,7 @@ class TicketTable extends Component {
 
 
     setCalidad = calidad => {
-        const tr = $('tr.odd');
+        // const tr = $('tr.odd');
         let aux = []
         calidad.map((calidad) => {
             //     switch (calidad.estatus.estatus) {

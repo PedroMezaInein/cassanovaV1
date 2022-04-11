@@ -18,7 +18,7 @@ class AgregarPermisosForm extends Component {
     }
 
     onChange = value => {
-        const { onChange, form } = this.props
+        const { onChange } = this.props
         // const { name, value } = e.target
         onChange({ target: { value: value, name: 'tipo' } })
         // form[name] = value
@@ -26,7 +26,7 @@ class AgregarPermisosForm extends Component {
         // console.log(form)
     }
     render() {
-        const { onSubmit,updateEmpleado, onChange, deleteAdjunto, form, onChangeAdjunto, formeditado, options, disabledDates } = this.props
+        const { onSubmit, onChange, deleteAdjunto, form, onChangeAdjunto, formeditado, options, disabledDates } = this.props
         return (
             <Form id="form-add-permisos"
             onSubmit={
@@ -95,17 +95,17 @@ class AgregarPermisosForm extends Component {
                                 <div className="mb-3 row d-flex justify-content-center">
                                     <SelectHorario
                                         onChange={onChange}
-                                        minuto={{ value: form.minuto_salida, name: 'minuto_fin' }}
+                                        minuto={{ value: form.minuto_salida, name: 'minuto_salida' }}
                                         hora={{ value: form.hora_salida, name: 'hora_salida' }} allhours={true} width='w-60' />
                                 </div>
                              
                          </div>     
-                         <div className="col-md-12 ">
+                         {/* <div className="col-md-12 ">
                          <InputGray withtaglabel={1} withtextlabel={1} withzplaceholder={1} requirevalidation={0} as='textarea' rows='1'
                                     withformgroup={0} name='descripcion' placeholder='DESCRIPCIÓN' value={form.descripcion}
                                     onChange={onChange}
                                     withicon={0} customclass="px-2" />
-                         </div>
+                         </div> */}
                             
                         </div>
                         <div className="col-md-12 text-center mt-5 mb-10" >
