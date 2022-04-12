@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
 import axios from 'axios'
+import $ from "jquery";
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
@@ -115,6 +116,20 @@ class Vacaciones extends Component {
     //     $('#form_permisos').DataTable().ajax.reload();
     // }
 
+    controlledTab = value => {
+        const { form } = this.state
+        if (value === 'vacaciones')
+        this.getVacaciones()
+            if (value === 'permisos') {
+                this.setPermisoEstatus()
+                this.getPermisosModal()
+            }
+        if (value === 'incapacidades') {
+            this.setEgresos()
+        }
+        this.setState({ ...this.state, key: value, form })
+    }
+
     setOptionsArray = (name, array) => {
         const { options } = this.state
         options[name] = setOptionsWithLabel(array, 'nombre', 'id')
@@ -129,12 +144,12 @@ class Vacaciones extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
-
         this.getVacaciones()
-         this.setEgresos()
-        this.setPermisos()
-        this.getPermisosModal()
-        // this.getAxios()
+        this.controlledTab()
+    }
+
+    async setPermisoEstatus(){
+        $('#Permisos').DataTable().ajax.reload();
     }
     onChange = e => {
         const { form } = this.state
@@ -208,7 +223,7 @@ class Vacaciones extends Component {
     openModalAddPermisos = () => {
         this.setState({
             ...this.state,
-            modal_mostrar_permisos: true,
+            modal_permisos: true,
         })
     }
 
@@ -274,9 +289,17 @@ class Vacaciones extends Component {
             modal_mostrar_permisos: !modal_mostrar_permisos,
             
         })
-       this.setPermisos()
+        this.setPermisoEstatus()
+        this.getPermisosModal()
     }
 
+    openEstatusPermisos = () => {
+       
+        this.setState({
+            ...this.state,
+            modal_mostrar_permisos: true,
+        })
+    }
     handleClosePermisos = () => {
         const { modal_permisos } = this.state
         this.setState({
@@ -285,6 +308,7 @@ class Vacaciones extends Component {
             title: 'Agregar permisos',
             form: this.clearForm()
         })
+        this.setPermisoEstatus()
     }
 
     handleCloseCajones = () => {
@@ -673,7 +697,7 @@ async getPermisosModal() {
         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
         console.error(error, 'error')
     })
-
+    // $('#form_permisos').DataTable().ajax.reload();
 }
 
     async getVacaciones() {
@@ -781,7 +805,6 @@ async getPermisosModal() {
                 data.append('adjuntos[]', element)
             }
         })
-        console.log(data)
         let fechaInicioA = form.fechaInicio
         let fechaInicioAString = fechaInicioA.toISOString();
         data.append('fechaInicio', fechaInicioAString)
@@ -805,7 +828,6 @@ async getPermisosModal() {
 
         await axios.post(URL_DEV + 'v2/rh/vacaciones/adminPermiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                console.log(response.data.permiso)
                 doneAlert('Permiso enviado con éxito')
                 this.handleClosePermisos()
             },
@@ -1017,20 +1039,7 @@ async getPermisosModal() {
             console.error(error, 'error')
         })
     }
-    controlledTab = value => {
-        const { form } = this.state
-        if (value === 'vacaciones')
-            //  { this.getEmpleadosAxios() }
-            if (value === 'permisos') {
-                // this.getEmpleadosObraAxios()
-                // form.tipo_empleado = 'Obra'
-            }
-        if (value === 'incapacidades') {
-            // this.getEmpleadosObraAxios()
-            // form.tipo_empleado = 'Obra'
-        }
-        this.setState({ ...this.state, key: value, form })
-    }
+
 
     setActions = egreso => {
         const { history } = this.props
@@ -1219,9 +1228,11 @@ async getPermisosModal() {
                         </Card>
                     </Tab>
                     <Tab eventKey="permisos" title="Permisos">
-                        <NewTable tableName='Permisos' subtitle='Listado de Permisos' title='Permisos' mostrar_boton={true}
+                        <NewTable tableName='Permisos' subtitle='Listado de Permisos' title='Permisos'
+                         idTable='Permisos'
+                        mostrar_boton={true}
                             abrir_modal={true} addClick={this.openModalAddPermisos} columns={PERMISOS_COLUMNS}
-                            accessToken={access_token} setter={this.setPermisos} revisar_permisos={true} mostarPermisos={this.openModalAddPermisos}
+                            accessToken={access_token} setter={this.setPermisos} revisar_permisos={true} mostarPermisos={this.openEstatusPermisos}
                             filterClick={this.openModalFiltros} exportar_boton={true} onClickExport={() => { this.exportEgresosAxios() }}
                             urlRender={`${URL_DEV}permiso?tab=permisos`} type='tab'
                         />

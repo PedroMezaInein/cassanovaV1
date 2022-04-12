@@ -185,7 +185,7 @@ class TableForModals extends Component {
         });
     }
 
-    UNSAFE_componentWillMount () {
+    componentWillMount () {
         $('.data-table-wrapper')
             .find('table')
             .DataTable()

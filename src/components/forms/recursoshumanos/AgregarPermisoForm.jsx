@@ -133,7 +133,6 @@ class AgregarPermisosForm extends Component {
                                         (e) => {
                                          e.preventDefault();
                                             validateAlert(onSubmit, e, 'form-add-permisos')
-                                            console.log(form)
                                         }
                                     }
                                     text="ENVIAR" />

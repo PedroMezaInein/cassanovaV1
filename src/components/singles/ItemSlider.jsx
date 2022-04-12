@@ -63,7 +63,7 @@ class ItemSlider extends Component {
 
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {
         this.setState({
             ...this.state,
             active: 0
