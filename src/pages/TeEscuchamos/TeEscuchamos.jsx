@@ -21,7 +21,7 @@ import { Input, Button, SelectSearch } from '../../components/form-components'
 class TeEscuchamos extends Component {
 
     state = {
-        idPropsAuth: this.props.authUser.user.id,
+        idPropsAuth: this.props.authUser.user.tipo.id,
         modal: {
             filters: false,
             externa: false,
@@ -55,11 +55,13 @@ class TeEscuchamos extends Component {
         this.getOptions()
         // console.log(this.props)
         this.getTableRevisionSolicitudes()
+        console.log(this.props)
     }
     updateSelect = (value, name) => {
         const { form, options, } = this.state
         form[name] = value
         this.setState({ ...this.state, form, options })
+       
     }
     async reloadTableSugerencias() {
         $('#TeEscuchamos').DataTable().ajax.reload();
