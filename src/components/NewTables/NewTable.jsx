@@ -22,7 +22,7 @@ class NewTable extends Component{
     }
 
     componentDidMount = () => {
-        const { data } = this.props
+        const { data,authUser } = this.props
         this.setState({...this.state, stateData: data})
         $.event.special.touchstart = {
             setup: function( _, ns, handle ){
@@ -44,6 +44,7 @@ class NewTable extends Component{
         };
         this.reloadHeader();
         this.initTableData()
+  
     }
 
     componentDidUpdate = (prevProps) => {
@@ -385,7 +386,8 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick,addPropio,addExterno, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
+        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick,addPropio,addExterno, children, exportar_boton, pendingPaymentClick, hideNew,idAuth,verSugerencias } = this.props
+      
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
                 <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
@@ -398,15 +400,27 @@ class NewTable extends Component{
                     </div>
                     <div className="card-toolbar toolbar-dropdown">
                         <DropdownButton menualign="right" title={<span>OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-newtable-options' >
-                        {
+                        { 
                                 tableName === 'TeEscuchamos' ?  
-                              <>  <Dropdown.Item className="text-hover-success dropdown-success" onClick={addPropio} >
+                                 idAuth===1 ? 
+                              <> 
+                               <Dropdown.Item className="text-hover-success dropdown-success" onClick={verSugerencias} >
+                              {this.setNaviIcon('flaticon-exclamation', 'Sugerencias en espera')}
+                               </Dropdown.Item>
+                               <Dropdown.Item className="text-hover-success dropdown-success" onClick={addPropio} >
                               {this.setNaviIcon('flaticon-add', 'AGREGAR propio')}
                                </Dropdown.Item>
                                 <Dropdown.Item className="text-hover-success dropdown-success" onClick={addExterno} >
-                                {this.setNaviIcon('flaticon-add', 'AGREGAR externo')}
+                                {this.setNaviIcon('flaticon-add', 'AGREGAR externo')} 
                                  </Dropdown.Item></>
-                                 : console.log('')
+                                 :  <> 
+                                 <Dropdown.Item className="text-hover-success dropdown-success" onClick={addPropio} >
+                                {this.setNaviIcon('flaticon-add', 'AGREGAR propio')}
+                                 </Dropdown.Item>
+                                  <Dropdown.Item className="text-hover-success dropdown-success" onClick={addExterno} >
+                                  {this.setNaviIcon('flaticon-add', 'AGREGAR externo')} 
+                                   </Dropdown.Item></> : <></>   
+                                
                             }
                             {
                                 hideNew !== true && tableName !== 'TeEscuchamos' ? 

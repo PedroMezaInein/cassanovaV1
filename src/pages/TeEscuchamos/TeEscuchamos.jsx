@@ -10,7 +10,7 @@ import { URL_DEV, SUGERENCIA_COLUMN } from '../../constants'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { apiOptions, catchErrors, apiGet, } from '../../functions/api'
 import { setSingleHeader, } from '../../functions/routers'
-import { printResponseErrorAlert, deleteAlert, createAlert, waitAlert, doneAlert, errorAlert, } from '../../functions/alert'
+import { printResponseErrorAlert, createAlert, waitAlert, doneAlert, errorAlert, } from '../../functions/alert'
 import { setOptions, setTextTableCenter, setNaviIcon } from '../../functions/setters'
 import { connect } from 'react-redux'
 import { Card, } from 'react-bootstrap'
@@ -26,7 +26,8 @@ class TeEscuchamos extends Component {
             filters: false,
             externa: false,
             see: false,
-            revision: true,
+            revision: false,
+            sugerencia:false,
         },
         form: {
             empleado_id: '',
@@ -34,6 +35,8 @@ class TeEscuchamos extends Component {
             sugerencia: '',
             areas_id: '',
             id: '',
+
+
         },
         data: [],
         options: {
@@ -45,10 +48,13 @@ class TeEscuchamos extends Component {
 
     }
     componentDidMount() {
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { history } = this.props
         this.setTableSugerencias()
         this.getOptions()
+        // console.log(this.props)
         this.getTableRevisionSolicitudes()
-
     }
     updateSelect = (value, name) => {
         const { form, options, } = this.state
@@ -74,7 +80,7 @@ class TeEscuchamos extends Component {
                             form.areas_id = sugerencia.areas_id.toString()
                             form.id = sugerencia.id
                             this.setState({ ...this.state, form })
-                            this.openModalRevision()
+                            this.openModalSugerencia()
                         }}>
                         {setNaviIcon('flaticon2-magnifier-tool', 'Ver sugerencia')}
                     </Dropdown.Item>
@@ -103,23 +109,7 @@ class TeEscuchamos extends Component {
         }
     }
 
-    getTableRevisionSolicitudes = async () => {
-        const { data } = this.state
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}sugerencia/espera`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
 
-                this.setState({
-                    ...this.state,
-                    data: response.data.data
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
 
     onChange = e => {
         const { name, value } = e.target
@@ -138,6 +128,24 @@ class TeEscuchamos extends Component {
                 this.setState({ ...this.state, options, form, response: response.data })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
+    }
+
+    getTableRevisionSolicitudes = async () => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}sugerencia/espera`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+
+                this.setState({
+                    ...this.state,
+                    data: response.data.data
+                })
+                // console.log(this.state.data.data)
+            }, (error) => { printResponseErrorAlert(error) }
+
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
 
 
@@ -164,7 +172,7 @@ class TeEscuchamos extends Component {
 
     changeEstatusAxios = async (data) => {
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}sugerencia/edit/${data}`, { estatus: 'Revisado' }, { headers: setSingleHeader(access_token) }).then(
+        await axios.put(`${URL_DEV}sugerencia/edit/${data}`, { estatus: 'Revisada' }, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito la prestación.')
                 this.setTableSugerencias()
@@ -199,6 +207,11 @@ class TeEscuchamos extends Component {
         modal.revision = true
         this.setState({ ...this.state, modal })
     }
+    openModalSugerencia = () => {
+        const { modal } = this.state
+        modal.sugerencia = true
+        this.setState({ ...this.state, modal })
+    }
     clearForm = () => {
         const { form } = this.state
         form.empleado_id = ''
@@ -225,6 +238,7 @@ class TeEscuchamos extends Component {
                     <Card.Body>
                         <NewTable
                             idAuth={idPropsAuth}
+                            idTable='aa'
                             tableName='TeEscuchamos'
                             subtitle='Listado de Sugerencias'
                             title='Sugerencias' mostrar_boton={true}
@@ -248,7 +262,7 @@ class TeEscuchamos extends Component {
                         />
                     </Card.Body>
                 </Card>
-                <Modal size="lg" title='Nueva Sugerencia'
+                <Modal active={'usuarios'}  {...this.props} size="lg" title='Nueva Sugerencia'
                     show={modal.see}
                     handleClose={() => {
                         const { modal } = this.state
@@ -324,7 +338,58 @@ class TeEscuchamos extends Component {
                         </div>
                     </Form>
                 </Modal>
-                <Modal size="lg" title="Nueva Sugerencia Externa"
+                <Modal active={'usuarios'}  {...this.props} size="lg" title='Sugerencia'
+                    show={modal.sugerencia}
+                    handleClose={() => {
+                        const { modal } = this.state
+                        modal.sugerencia = false
+                        this.setState({ ...this.state, modal })
+                    }} >
+                    <Form id="form-proveedor">
+                        <div className="form-group row form-group-marginless mt-4 col-md-10 m-auto">
+                            <div className="col-md-12">
+                                <Input
+                                    disabled={true}
+                                    requirevalidation={0}
+                                    name="nombre"
+                                    value={form.namePropio}
+                                    placeholder="NOMBRE "
+                                    onChange={this.onChangeProv}
+                                    iconclass={"far fa-user"}
+                                    formeditado={1}
+                                    messageinc="Incorrecto. Ingresa el nombre."
+                                />
+                            </div>
+                            <div className="col-md-12">
+                                <Input
+                                    disabled={true}
+                                    requirevalidation={0}
+                                    name="sugerencia"
+                                    value={form.sugerencia}
+                                    placeholder="SUGERENCIA"
+                                    onChange={this.onChange}
+                                    iconclass={"far fa-user"}
+                                    formeditado={1}
+                                    as='textarea'
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-5">
+                                <SelectSearch
+                                    disabled={true}
+                                    options={options.departamentos}
+                                    placeholder="SELECCIONA EL DEPARTAMENTO"
+                                    name="area"
+                                    value={form.areas_id}
+                                    onChange={(value) => { this.updateSelect(value, 'areas_id') }}
+                                    formeditado={1}
+                                    iconclass={"far fa-window-maximize"}
+                                />
+                            </div>
+                        </div>
+                    </Form>
+                </Modal>
+                <Modal active={'usuarios'}  {...this.props} size="lg" title="Nueva Sugerencia Externa"
                     show={modal.externa}
                     handleClose={() => {
                         const { modal } = this.state
@@ -417,31 +482,31 @@ class TeEscuchamos extends Component {
                             <tbody >
                                 {data !== '' ? data.map((sugerencia, key) => {
                                     return (
-                                       
-                                            <tr className="font-size-13px">
-                                                <td style={{ minWidth: "100px" }} className="">
-                                                    <div className="mb-1">{sugerencia.usuarios.nombre}</div>
-                                                </td>
-                                                <td className="text-center">
-                                                    <span>{sugerencia.departamentos.nombre}</span>
-                                                </td>
-                                                <td className="text-center">
-                                                    <span>{sugerencia.sugerencia}</span>
-                                                </td>
-                                                <td className="pr-0 text-center">
-                                                    <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR LA SUGERENCIA?', '',
-                                                                () => {this.changeEstatusAxios(sugerencia.id.toString());this.getTableRevisionSolicitudes();this.reloadTableSugerencias() }
-                                                            )
-                                                        }}
-                                                    >
-                                                        <i className="flaticon2-check-mark icon-sm"></i>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                   
+
+                                        <tr className="font-size-13px">
+                                            <td style={{ minWidth: "100px" }} className="">
+                                                <div className="mb-1">{sugerencia.usuarios.nombre}</div>
+                                            </td>
+                                            <td className="text-center">
+                                                <span>{sugerencia.departamentos.nombre}</span>
+                                            </td>
+                                            <td className="text-center">
+                                                <span>{sugerencia.sugerencia}</span>
+                                            </td>
+                                            <td className="pr-0 text-center">
+                                                <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR LA SUGERENCIA?', '',
+                                                            () => { this.changeEstatusAxios(sugerencia.id.toString()); this.getTableRevisionSolicitudes(); this.reloadTableSugerencias() }
+                                                        )
+                                                    }}
+                                                >
+                                                    <i className="flaticon2-check-mark icon-sm"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+
                                     )
                                 }) : <></>}
                             </tbody>
