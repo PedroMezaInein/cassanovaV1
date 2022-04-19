@@ -331,6 +331,7 @@ class TeEscuchamos extends Component {
                                                 form.empleado_id = this.props.authUser.user.empleado_id
                                                 this.setState({ ...this.state, form })
                                                 this.addSugerencia()
+                                                this.getTableRevisionSolicitudes()
                                             }
                                         }
                                         text="ENVIAR"
@@ -449,6 +450,7 @@ class TeEscuchamos extends Component {
                                                 e.preventDefault()
                                                 waitAlert()
                                                 this.addSugerencia()
+                                                this.getTableRevisionSolicitudes()
                                             }
                                         }
                                         text="ENVIAR"
