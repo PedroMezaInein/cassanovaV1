@@ -409,11 +409,11 @@ class PresupuestosEnviadosFinish extends Component {
                 const { user } = this.props.authUser
                 let aux_contactos = [];
                 if(user.email){
-                    form.correos_presupuesto.push({ value: user.email, label: user.email })
-                    aux_contactos.push({
-                        value: user.email,
-                        label: user.email
-                    })
+                    form.correos_presupuesto.push({ value: 'calidad@infraestructuramedica.mx', label: 'calidad@infraestructuramedica.mx' })
+                    // aux_contactos.push({
+                    //     value: user.email,
+                    //     label: user.email
+                    // })
                 }
                 options.correos_clientes = []
                 presupuesto.proyecto.contactos.forEach(contacto => {
@@ -613,7 +613,7 @@ class PresupuestosEnviadosFinish extends Component {
                             <div className="col-md-11 font-weight-light mt-5 text-justify">
                                 Si deseas enviar el presupuesto agrega el o los correos de los destinatarios, de lo contario da clic en <span className="font-weight-bold">cancelar</span>.
                             </div>
-                            <div className="col-md-11 mt-5">
+                            <div className="col-md-12 mt-5">
                                 <div>
                                     <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email"
                                         requirevalidation = { 1 } messageinc = "Selecciona el o los correos" uppercase={false} 
