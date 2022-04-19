@@ -129,11 +129,15 @@ class PresupuestosEnviadosFinish extends Component {
 
                     let precio_unitario = concepto.precio_unitario
                     if (concepto.margen === 0) {
-                        precio_unitario = (concepto.costo / (1 - (concepto.margen / 100))).toFixed(2)
+                        precio_unitario = Math.round((concepto.costo / (1 - (concepto.margen / 100))))
                     }
                     let importe = concepto.importe
                     if (precio_unitario !== 0) {
-                        importe = (concepto.cantidad * precio_unitario).toFixed(2)
+                        if( concepto.precio_unitario === 0){
+                            importe = (concepto.cantidad * concepto.costo)
+                        }else{
+                            importe = (concepto.cantidad * concepto.precio_unitario)
+                        }
                     }
                     if(concepto.vicio_oculto){
                         importe = (0).toFixed(2)
@@ -314,13 +318,13 @@ class PresupuestosEnviadosFinish extends Component {
     }
     getPrecioUnitario(key){
         const { form } = this.state
-        let precio_unitario =(form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100))).toFixed(2)
+        let precio_unitario =(form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100)))
         return precio_unitario
     }
     
     getImporte(key){
         const { form } = this.state
-        let importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad).toFixed(2)
+        let importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad)
         return importe
     }
     checkButton = (key, e) => {

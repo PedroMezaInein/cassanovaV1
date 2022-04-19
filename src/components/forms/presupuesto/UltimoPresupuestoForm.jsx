@@ -18,7 +18,7 @@ class UltimoPresupuesto extends Component {
                 aux = aux + parseFloat(concepto.importe)
             return false
         })
-        return aux.toFixed(2)
+        return aux
     }
 
     onChangeMensaje = ( e, key ) => {
@@ -498,10 +498,10 @@ class UltimoPresupuesto extends Component {
                                                                         requirevalidation={1}
                                                                         formeditado={formeditado}
                                                                         name="costo"
-                                                                        value={form['conceptos'][key]['costo']}
+                                                                        value={form['conceptos'][key]['costo'] }
                                                                         onChange={e => onChange(key, e, 'costo')}
                                                                         thousandseparator={true}
-                                                                        typeformat="###########"
+                                                                        typeformat=""
                                                                         disabled={!form.conceptos[key].active} 
                                                                         prefix="$"
                                                                         customclass={`disable-presupuesto ${form.conceptos[key].vicio_oculto?'vicio_oculto-presupuesto':''} rounded-pill px-2 text-center border`}
@@ -524,7 +524,7 @@ class UltimoPresupuesto extends Component {
                                                                 <td className="text-center">
                                                                     <div className="font-weight-bold font-size-sm">
                                                                         <NumberFormat
-                                                                            value= {form['conceptos'][key]['precio_unitario']}
+                                                                            value= {Math.trunc( Math.round(form['conceptos'][key]['precio_unitario']))}
                                                                             displayType={'text'}
                                                                             thousandSeparator={true}
                                                                             renderText={value => <div>{value}</div>}
@@ -534,7 +534,7 @@ class UltimoPresupuesto extends Component {
                                                                 <td className="text-center">
                                                                     <div className="font-weight-bold font-size-sm">
                                                                         <NumberFormat
-                                                                            value= {form['conceptos'][key]['importe']}
+                                                                            value= {Math.trunc( Math.round(form['conceptos'][key]['importe'])) }
                                                                             displayType={'text'}
                                                                             thousandSeparator={true}
                                                                             renderText={value => <div>{value}</div>}

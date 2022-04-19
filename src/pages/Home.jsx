@@ -27,6 +27,9 @@ class Home extends Component{
                 if(perm.modulo.slug === 'crm'){
                     window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
                 }
+                if(perm.modulo.slug === 'mi-proyecto'){
+                    window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`
+                }
             }else{
                 history.push(user.permisos[0].modulo.url)
             }}

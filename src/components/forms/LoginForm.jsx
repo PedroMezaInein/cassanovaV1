@@ -151,14 +151,14 @@ class LoginForm extends React.Component {
                 })
                 if(perm){
                     if(perm.modulo.slug === 'crm'){
-                        window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
+                        window.location.href = `${LEADS_FRONT}/crm?tag=${access_token}`
                     }
                     else{
                         history.push(perm.modulo.url)
                     }
                 } else  if(perm){
                     if(perm.modulo.slug === 'mi-proyecto'){
-                        window.location.href = `home.inein.com/mi-proyecto?tag=${access_token}`
+                        window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`
                     }
                     else{
                         history.push(perm.modulo.url)
