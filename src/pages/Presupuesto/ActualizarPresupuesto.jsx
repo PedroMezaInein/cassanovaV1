@@ -229,7 +229,7 @@ class ActualizarPresupuesto extends Component {
                     } else {
                         aux.push({
                             descripcion: concepto.descripcion,
-                            costo: concepto.costo.toFixed(2),
+                            costo: concepto.costo,
                             cantidad_preliminar: concepto.cantidad_preliminar,
                             desperdicio: concepto.desperdicio,
                             cantidad: (concepto.cantidad_preliminar * (1 + (concepto.desperdicio / 100))).toFixed(2),

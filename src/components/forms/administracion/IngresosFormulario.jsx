@@ -38,7 +38,6 @@ class IngresosFormulario extends Component {
                     files: [], value: ''
                 }
             },
-            // tipoPago: 0,
             facturaObject: {},
             tipoImpuesto: '1'.toString(),
             estatusCompra: '2'.toString(),

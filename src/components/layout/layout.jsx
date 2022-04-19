@@ -274,7 +274,7 @@ class Layout extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className={this.props.location.pathname==='/mi-proyecto' ?"content d-flex flex-column flex-column-fluid pt-0":"content d-flex flex-column flex-column-fluid"}>
+                            <div className={this.props.location.pathname==='/leads/mi-proyecto' ?"content d-flex flex-column flex-column-fluid pt-0":"content d-flex flex-column flex-column-fluid"}>
                                 {
                                     tipo_usuario === 'Cliente' ?
                                         '' :

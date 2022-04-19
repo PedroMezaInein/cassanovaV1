@@ -129,11 +129,15 @@ class PresupuestosEnviadosFinish extends Component {
 
                     let precio_unitario = concepto.precio_unitario
                     if (concepto.margen === 0) {
-                        precio_unitario = (concepto.costo / (1 - (concepto.margen / 100))).toFixed(2)
+                        precio_unitario = Math.round((concepto.costo / (1 - (concepto.margen / 100))))
                     }
                     let importe = concepto.importe
                     if (precio_unitario !== 0) {
-                        importe = (concepto.cantidad * precio_unitario).toFixed(2)
+                        if( concepto.precio_unitario === 0){
+                            importe = (concepto.cantidad * concepto.costo)
+                        }else{
+                            importe = (concepto.cantidad * concepto.precio_unitario)
+                        }
                     }
                     if(concepto.vicio_oculto){
                         importe = (0).toFixed(2)
@@ -314,13 +318,13 @@ class PresupuestosEnviadosFinish extends Component {
     }
     getPrecioUnitario(key){
         const { form } = this.state
-        let precio_unitario =(form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100))).toFixed(2)
+        let precio_unitario =(form.conceptos[key].costo / (1 - (form.conceptos[key].margen / 100)))
         return precio_unitario
     }
     
     getImporte(key){
         const { form } = this.state
-        let importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad).toFixed(2)
+        let importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad)
         return importe
     }
     checkButton = (key, e) => {
@@ -405,11 +409,11 @@ class PresupuestosEnviadosFinish extends Component {
                 const { user } = this.props.authUser
                 let aux_contactos = [];
                 if(user.email){
-                    form.correos_presupuesto.push({ value: user.email, label: user.email })
-                    aux_contactos.push({
-                        value: user.email,
-                        label: user.email
-                    })
+                    form.correos_presupuesto.push({ value: 'calidad@infraestructuramedica.mx', label: 'calidad@infraestructuramedica.mx' })
+                    // aux_contactos.push({
+                    //     value: user.email,
+                    //     label: user.email
+                    // })
                 }
                 options.correos_clientes = []
                 presupuesto.proyecto.contactos.forEach(contacto => {
@@ -609,7 +613,7 @@ class PresupuestosEnviadosFinish extends Component {
                             <div className="col-md-11 font-weight-light mt-5 text-justify">
                                 Si deseas enviar el presupuesto agrega el o los correos de los destinatarios, de lo contario da clic en <span className="font-weight-bold">cancelar</span>.
                             </div>
-                            <div className="col-md-11 mt-5">
+                            <div className="col-md-12 mt-5">
                                 <div>
                                     <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email"
                                         requirevalidation = { 1 } messageinc = "Selecciona el o los correos" uppercase={false} 
