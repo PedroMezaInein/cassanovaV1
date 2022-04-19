@@ -141,7 +141,7 @@ class LoginForm extends React.Component {
                     history.push('/login')
                 }
                 let perm = null
-                let arreglo = ['calendario-tareas', 'crm', 'tareas', 'mi-proyecto']
+                let arreglo = ['calendario-tareas', 'crm', 'tareas']
                 arreglo.forEach( (elemento) => {
                     if(!perm){
                         perm = user.permisos.find((permiso) => {
@@ -156,14 +156,16 @@ class LoginForm extends React.Component {
                     else{
                         history.push(perm.modulo.url)
                     }
-                } else  if(perm){
-                    if(perm.modulo.slug === 'mi-proyecto'){
-                        window.location.href = `home.inein.com/mi-proyecto?tag=${access_token}`
-                    }
-                    else{
-                        history.push(perm.modulo.url)
-                    }
-                }else{
+                } 
+                // else  if(perm){
+                //     if(perm.modulo.slug === 'mi-proyecto'){
+                //         window.location.href = `home.inein.com/mi-proyecto?tag=${access_token}`
+                //     }
+                //     else{
+                //         history.push(perm.modulo.url)
+                //     }
+                // }
+                else{
                     history.push(user.permisos[0].modulo.url)
                 }
             },
