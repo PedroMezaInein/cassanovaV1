@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl} from "../../functions/routers"
-import { LEADS_FRONT, MI_PROYECTO_FRONT } from "../../constants";
+import { LEADS_FRONT } from "../../constants";
 
 class AsideMenuList extends Component{
 
@@ -36,10 +36,8 @@ class AsideMenuList extends Component{
         const { access_token } = this.props.props.authUser
         switch(name){
             case 'CRM':
-                return `${LEADS_FRONT}${url}?tag=${access_token}`
-            // case 'Mi Proyecto':
-            //      return  `${MI_PROYECTO_FRONT}${url}?tag=${access_token}`
-               
+            case 'Mi Proyecto':
+                return `${LEADS_FRONT}${url}?tag=${access_token}`               
             default:
                 return url;
         }
@@ -51,6 +49,7 @@ class AsideMenuList extends Component{
             <ul className = 'menu-nav'>
                 {
                     modulos.map( (modulo, key) => {
+
                         return(
                             <li className = 'menu-item menu-item-submenu' key = { key } data-menu-toggle = "hover"
                                 onClick = { () => { console.log(modulo.slug); this.openSubmenu(modulo.slug) } }>
@@ -60,9 +59,13 @@ class AsideMenuList extends Component{
                                     </span>
                                     {
                                         modulo.url ? 
-                                            <NavLink className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</NavLink>
-                                        : 
+                                            modulo.url === '/mi-proyecto' ? 
                                             <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
+                                            : 
+                                            ''
+                                        : 
+                                        <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
+
                                     }
                                     {
                                         modulo.modulos.length > 1 || modulo.url === null  ? 
@@ -71,7 +74,7 @@ class AsideMenuList extends Component{
                                     }
                                 </div>
                                 {
-                                    modulo.modulos.length > 1 || modulo.url === null ?
+                                    modulo.modulos.length > 0 || modulo.url === null ?
                                         <div className="menu-submenu submenu-asidemenu" id = {`submenu-${modulo.slug}`}>
                                             <i className="menu-arrow"  />
                                             <ul className="menu-subnav">

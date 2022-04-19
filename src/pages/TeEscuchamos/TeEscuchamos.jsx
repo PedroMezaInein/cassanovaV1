@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
+
 import { NewTable } from '../../components/NewTables'
 import moment from 'moment'
 import axios from 'axios'
@@ -50,11 +51,9 @@ class TeEscuchamos extends Component {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
-     
         this.setTableSugerencias()
         this.getOptions()
-        // console.log($.fn.dataTable.isDataTable())
-        // console.log( $('#aa').DataTable())
+        console.log(this.props)
     }
     updateSelect = (value, name) => {
         const { form, options, } = this.state
@@ -200,9 +199,10 @@ class TeEscuchamos extends Component {
 
 
     render() {
-        const { form, modal, options, title } = this.state
+        const { form, modal, options } = this.state
+        const { type } = this.props
         return (
-            <Layout active={'usuarios'} {...this.props}>
+            <Layout active={'administracion'}  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="d-flex align-items-center">
@@ -268,7 +268,7 @@ class TeEscuchamos extends Component {
                                 />
                             </div>
 
-                            <div className="col-md-12">
+                            <div className="col-md-12 mb-5">
                                 <SelectSearch
                                     required
                                     options={options.departamentos}
@@ -344,7 +344,7 @@ class TeEscuchamos extends Component {
                                 />
                             </div>
 
-                            <div className="col-md-12">
+                            <div className="col-md-12 mb-5">
                                 <SelectSearch
                                     readOnly
                                     options={options.departamentos}
@@ -356,12 +356,8 @@ class TeEscuchamos extends Component {
                                     iconclass={"far fa-window-maximize"}
                                 />
                             </div>
-
                         </div>
-
-
-
-                        <div className="card-footer py-3 pr-1">
+                      {/*    <div className="card-footer py-3 pr-1">
                             <div className="row mx-0">
                                 <div className="col-lg-12 text-right pr-0 pb-0">
                                     <Button icon='' onClick={() => {
@@ -374,13 +370,13 @@ class TeEscuchamos extends Component {
                                     }}
                                         className={"btn btn-icon btn-light-success btn-lg mr-2 ml-auto"}
                                         only_icon={"flaticon2-check-mark icon-md"} tooltip={{ text: 'Marcar como revisada' }} />
-                                                                            {/* <Button icon='' onClick={() => { 
+                                                                           <Button icon='' onClick={() => { 
                                                                             openModalWithInput('Rechazado')}}
                                                                             className={"btn btn-icon btn-light-danger btn-l pulse pulse-danger"}
-                                                                            only_icon={"flaticon2-cross icon-sm"} tooltip={{ text:'RECHAZAR' }} /> */}
+                                                                            only_icon={"flaticon2-cross icon-sm"} tooltip={{ text:'RECHAZAR' }} /> 
                                 </div>
                             </div>
-                        </div>
+                        </div>*/}
                     </Form>
                 </Modal>
                 <Modal active={'usuarios'}  {...this.props} size="lg" title="Nueva Sugerencia Externa"
@@ -417,7 +413,7 @@ class TeEscuchamos extends Component {
                                     as='textarea'
                                 />
                             </div>
-                            <div className="col-md-12">
+                            <div className="col-md-12 mb-5">
                                 <SelectSearch
                                     required
                                     options={options.departamentos}
