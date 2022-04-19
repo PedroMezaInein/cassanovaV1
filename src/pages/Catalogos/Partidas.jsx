@@ -361,7 +361,7 @@ class Partidas extends Component {
     async addPartidaAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.put(URL_DEV + 'partidas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'partidas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 
                 const { modal } = this.state
