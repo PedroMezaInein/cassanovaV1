@@ -483,7 +483,7 @@ class TeEscuchamos extends Component {
                                 {data !== '' ? data.map((sugerencia, key) => {
                                     return (
 
-                                        <tr className="font-size-13px">
+                                        <tr key={sugerencia.id} className="font-size-13px">
                                             <td style={{ minWidth: "100px" }} className="">
                                                 <div className="mb-1">{sugerencia.usuarios.nombre}</div>
                                             </td>
