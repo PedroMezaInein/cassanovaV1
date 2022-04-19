@@ -220,7 +220,10 @@ class TicketView extends Component {
         if( data ){
             if(data.estatus_ticket){
                 switch(data.estatus_ticket.estatus){
+                    case 'Aceptado':
                     case 'En proceso':
+                    case 'En revisión':
+                    case 'En espera':
                     case 'Pendiente de pago':
                     case 'Aprobación pendiente':
                         return <span>Ticket en proceso</span>
@@ -667,7 +670,7 @@ class TicketView extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="fechas">
                                         <Row className="mx-0">
-                                            <Col lg="12" className="px-0">
+                                            <Col lg="6" className="px-0">
                                                 <Card className="card-custom gutter-b card-stretch">
                                                     <Card.Header className="border-0 pt-8 pt-md-0">
                                                         <Card.Title className="m-0">

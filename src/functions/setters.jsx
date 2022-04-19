@@ -618,6 +618,17 @@ export function setLabelTableReactDom (data, changeEstatus) {
                             : <></>
                         }
                         {
+                            data.estatus.estatus !== 'Mantenimiento' ?
+                                <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Mantenimiento', data) }} >
+                                    <span className="navi-link w-100">
+                                        <span className="navi-text">
+                                            <span className="label label-xl label-inline label-light-warning rounded-0 w-100 font-size-12px">Mantenimiento</span>
+                                        </span>
+                                    </span>
+                                </Dropdown.Item>
+                            : <></>
+                        }
+                        {
                             data.estatus.estatus !== 'En proceso' ?
                                 <Dropdown.Item className="p-0" onClick={() => { changeEstatus('En proceso', data) }} >
                                     <span className="navi-link w-100">

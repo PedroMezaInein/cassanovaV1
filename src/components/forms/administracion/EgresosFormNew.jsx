@@ -56,10 +56,10 @@ class EgresosFormNew extends Component {
                     files: [], value: ''
                 }
             },
-            tipoPago: 0,
             facturaObject: {},
-            tipoImpuesto: 0,
-            estatusCompra: 0,
+            tipoImpuesto: '1'.toString(),
+            estatusCompra: '2'.toString(),
+            tipoPago : '4'.toString(),
         },
         options: {
             empresas: [],
@@ -361,14 +361,13 @@ class EgresosFormNew extends Component {
         this.setState({ ...this.state, form })
     }
 
-    
     openModalSee = () => {
         const { modal } = this.state
         modal.see = true
         this.setState({ ...this.state, modal })
     }
     onChangeFactura = (e) => {
-
+        
         waitAlert()
         const { files, name } = e.target
         const { form, options, data } = this.state
@@ -398,6 +397,7 @@ class EgresosFormNew extends Component {
                 const keys = Object.keys(jsonObj)
                 let obj = {}
                 let errores = []
+                console.log(obj)
                 if (keys.includes('cfdi:Receptor')) {
                     obj.rfc_receptor = jsonObj['cfdi:Receptor']['Rfc']
                     obj.nombre_receptor = jsonObj['cfdi:Receptor']['Nombre']
@@ -524,6 +524,9 @@ class EgresosFormNew extends Component {
                     // Swal.close()
                 } else {
                     form.facturaObject = obj
+                    form.total = obj.total
+                    form.estatusCompra = '2'.toString()
+                    form.tipoPago = '4'.toString()
                     
                     this.setState({ ...this.state, form, options })
                     this.checkFactura(obj)
@@ -534,6 +537,8 @@ class EgresosFormNew extends Component {
                 form.facturaItem = ''
                 form.adjuntos.xml.files = []
                 form.adjuntos.xml.value = ''
+                form.estatusCompra = '2'.toString()
+                form.tipoPago = '4'.toString()
                 this.setState({ ...this.state, form })
                 errorAlert(`La factura no tiene el formato correcto`)
             }
@@ -945,12 +950,10 @@ class EgresosFormNew extends Component {
                 return true
             }
             else{
-                // console.log('sin factura')
                 form.adjuntos.xml.value=''
                 form.adjuntos.xml.files=[]
                 form.adjuntos.pdf.files=[]
                 form.adjuntos.pdf.value=''
-
             }
         }
 
@@ -970,7 +973,6 @@ class EgresosFormNew extends Component {
             default: break;
         }
     }
-
 
     render() {
         const { formeditado, form, options, modal } = this.state
@@ -1223,8 +1225,7 @@ class EgresosFormNew extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    : 
-                                    
+                                    :                                     
                                     <></>
                             }
                             <div className="col-md-12 mt-5">
@@ -1320,21 +1321,22 @@ class EgresosFormNew extends Component {
                                     messageinc="Selecciona el tipo de pago" formeditado={formeditado}
                                     requirevalidation={1} />
                             </div>
+                            
                             <div className="col-md-4">
-                                <SelectSearchGray options={options.tiposImpuestos} placeholder='Selecciona el tipo de impuesto'
-                                    value={form.tipoImpuesto} onChange={(value) => { this.updateSelect(value, 'tipoImpuesto') }}
-                                    withtaglabel={1} withtextlabel={1} withicon={1} iconclass="fas fa-file-invoice-dollar"
-                                    messageinc="Selecciona el tipo de impuesto" formeditado={formeditado}
+                                <SelectSearchGray options={options.estatusCompras} placeholder='Selecciona el estatus de la compra'
+                                    value={form.estatusCompra} onChange={(value) => { this.updateSelect(value, 'estatusCompra') }}
+                                    withtaglabel={1} withtextlabel={1} withicon={1} iconclass="flaticon2-time"
+                                    messageinc="Selecciona el estatus de la compra" formeditado={formeditado}
                                     requirevalidation={1} />
                             </div>
                             <div className="col-md-12">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
                             <div className="col-md-4">
-                                <SelectSearchGray options={options.estatusCompras} placeholder='Selecciona el estatus de la compra'
-                                    value={form.estatusCompra} onChange={(value) => { this.updateSelect(value, 'estatusCompra') }}
-                                    withtaglabel={1} withtextlabel={1} withicon={1} iconclass="flaticon2-time"
-                                    messageinc="Selecciona el estatus de la compra" formeditado={formeditado}
+                                <SelectSearchGray options={options.tiposImpuestos} placeholder='Selecciona el tipo de impuesto'
+                                    value={form.tipoImpuesto} onChange={(value) => { this.updateSelect(value, 'tipoImpuesto') }}
+                                    withtaglabel={1} withtextlabel={1} withicon={1} iconclass="fas fa-file-invoice-dollar"
+                                    messageinc="Selecciona el tipo de impuesto" formeditado={formeditado}
                                     requirevalidation={1} />
                             </div>
                             <div className="col-md-4">

@@ -27,6 +27,9 @@ class VentasFormulario extends Component {
             total: 0,
             factura: 'Sin factura',
             fecha: new Date(),
+            tipoImpuesto: '1'.toString(),
+            estatusCompra: '2'.toString(),
+            tipoPago : '4'.toString(),
             adjuntos: {
                 xml: {
                     files: [], value: ''
@@ -181,6 +184,7 @@ class VentasFormulario extends Component {
         form.adjuntos[name].files = []
         form.facturaObject = {}
         form.facturaItem = ''
+
         files.forEach((file, index) => {
             form.adjuntos[name].files.push({
                 name: file.name,
@@ -330,6 +334,10 @@ class VentasFormulario extends Component {
                         )
                     }else{
                         form.facturaObject = obj
+                        form.total = obj.total
+                        form.estatusCompra = '2'.toString()
+                        form.tipoPago = '4'.toString()
+
                         Swal.close()
                         this.setState({ ...this.state, form, options })
                         this.checkFactura(obj)
@@ -340,6 +348,8 @@ class VentasFormulario extends Component {
                 form.facturaItem = ''
                 form.adjuntos.xml.files = []
                 form.adjuntos.xml.value = ''
+                form.estatusCompra = '2'.toString()
+                form.tipoPago = '4'.toString()
                 this.setState({ ...this.state, form })
                 errorAlert(`La factura no tiene el formato correcto`) 
             }
@@ -935,6 +945,7 @@ class VentasFormulario extends Component {
                                     messageinc = "Incorrecto. Selecciona el estatus de la compra"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
                             </div>
+                            
                             <div className="col-md-12">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>

@@ -40,8 +40,9 @@ class IngresosFormulario extends Component {
             },
             tipoPago: 0,
             facturaObject: {},
-            tipoImpuesto: 0,
-            estatusCompra: 0,
+            tipoImpuesto: '1'.toString(),
+            estatusCompra: '2'.toString(),
+            tipoPago : '4'.toString(),
         },
         options: {
             empresas: [],
@@ -296,8 +297,6 @@ class IngresosFormulario extends Component {
                         //     ).catch((error) => { catchErrors(error) })
                         // }
                    
-
-        
                         // data.append('empresa', obj.nombre_emisor)
                         // data.append('nombre', obj.nombre_emisor)
                         // data.append('rfc', obj.rfc_emisor)
@@ -373,10 +372,6 @@ class IngresosFormulario extends Component {
                                 apiPostForm( 'cliente', objeto, at ).then(
                                     (response) => {
                                         const { cliente } = response.data
-                                        form.cliente = response.data.cliente.id.toString()
-                                        this.setState({
-                                            ...this.state,form
-                                        })
                                         this.getOptions()
                                         doneAlert(`Cliente ${cliente.empresa} generado con éxito`, () => {
                                             form.facturaObject = obj
@@ -393,6 +388,9 @@ class IngresosFormulario extends Component {
                     } else {
                         form.cliente = cliente.id.toString()
                         form.facturaObject = obj
+                        form.total = obj.total
+                        form.estatusCompra = '2'.toString()
+                        form.tipoPago = '4'.toString()
                         Swal.close()
                         this.setState({ ...this.state, form, options })
                         this.checkFactura(obj)
@@ -403,6 +401,8 @@ class IngresosFormulario extends Component {
                 form.facturaItem = ''
                 form.adjuntos.xml.files = []
                 form.adjuntos.xml.value = ''
+                form.estatusCompra = '2'.toString()
+                form.tipoPago = '4'.toString()
                 this.setState({ ...this.state, form })
                 errorAlert(`La factura no tiene el formato correcto`) 
             }
