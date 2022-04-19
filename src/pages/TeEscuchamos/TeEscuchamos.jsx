@@ -9,8 +9,8 @@ import { Modal } from '../../components/singles'
 import { URL_DEV, SUGERENCIA_COLUMN } from '../../constants'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { apiOptions, catchErrors, apiGet, } from '../../functions/api'
-import { setSingleHeader,  } from '../../functions/routers'
-import { printResponseErrorAlert, deleteAlert, waitAlert, doneAlert, errorAlert, } from '../../functions/alert'
+import { setSingleHeader, } from '../../functions/routers'
+import { printResponseErrorAlert, deleteAlert, createAlert, waitAlert, doneAlert, errorAlert, } from '../../functions/alert'
 import { setOptions, setTextTableCenter, setNaviIcon } from '../../functions/setters'
 import { connect } from 'react-redux'
 import { Card, } from 'react-bootstrap'
@@ -21,24 +21,21 @@ import { Input, Button, SelectSearch } from '../../components/form-components'
 class TeEscuchamos extends Component {
 
     state = {
-
+        idPropsAuth: this.props.authUser.user.id,
         modal: {
             filters: false,
             externa: false,
             see: false,
-            revision: false,
+            revision: true,
         },
         form: {
             empleado_id: '',
             namePropio: this.props.authUser.user.name,
             sugerencia: '',
-            // subarea: '',
             areas_id: '',
-            id:''
-
+            id: '',
         },
-        data: {
-        },
+        data: [],
         options: {
             departamentos: [],
             subareas: [],
@@ -48,12 +45,10 @@ class TeEscuchamos extends Component {
 
     }
     componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { history } = this.props
         this.setTableSugerencias()
         this.getOptions()
-        console.log(this.props)
+        this.getTableRevisionSolicitudes()
+
     }
     updateSelect = (value, name) => {
         const { form, options, } = this.state
@@ -61,8 +56,8 @@ class TeEscuchamos extends Component {
         this.setState({ ...this.state, form, options })
     }
     async reloadTableSugerencias() {
-         $('#TeEscuchamos').DataTable().ajax.reload();
-        
+        $('#TeEscuchamos').DataTable().ajax.reload();
+
     }
 
 
@@ -108,7 +103,23 @@ class TeEscuchamos extends Component {
         }
     }
 
+    getTableRevisionSolicitudes = async () => {
+        const { data } = this.state
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}sugerencia/espera`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
 
+                this.setState({
+                    ...this.state,
+                    data: response.data.data
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
 
     onChange = e => {
         const { name, value } = e.target
@@ -151,14 +162,14 @@ class TeEscuchamos extends Component {
     }
 
 
-    changeEstatusAxios = async(data) =>{
+    changeEstatusAxios = async (data) => {
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}sugerencia/edit/${data}`,  {estatus: 'Revisada'}, { headers: setSingleHeader(access_token) }).then(
+        await axios.put(`${URL_DEV}sugerencia/edit/${data}`, { estatus: 'Revisado' }, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                   doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito la prestación.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito la prestación.')
                 this.setTableSugerencias()
             }, (error) => { printResponseErrorAlert(error) }
-            
+
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
@@ -199,7 +210,7 @@ class TeEscuchamos extends Component {
 
 
     render() {
-        const { form, modal, options } = this.state
+        const { form, modal, options, idPropsAuth, data } = this.state
         const { type } = this.props
         return (
             <Layout active={'administracion'}  {...this.props}>
@@ -212,27 +223,32 @@ class TeEscuchamos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <NewTable 
-                        idTable='aa' 
-                        tableName='TeEscuchamos' 
-                        subtitle='Listado de Sugerencias'
-                             title='Sugerencias' mostrar_boton={true}
+                        <NewTable
+                            idAuth={idPropsAuth}
+                            tableName='TeEscuchamos'
+                            subtitle='Listado de Sugerencias'
+                            title='Sugerencias' mostrar_boton={true}
                             columns={SUGERENCIA_COLUMN}
                             accessToken={this.props.authUser.access_token} setter={this.setTableSugerencias}
                             addPropio={() => {
                                 this.clearForm()
                                 this.openModalSugePropia()
                             }}
-                            addExterno={() => { 
+                            verSugerencias={() => {
                                 this.clearForm()
-                                this.openModalSugeExterna() }}
+                                this.openModalRevision()
+                            }}
+                            addExterno={() => {
+                                this.clearForm()
+                                this.openModalSugeExterna()
+                            }}
                             filterClick={this.openModalFiltros} exportar_boton={true} onClickExport={() => { this.exportVentasAxios() }}
                             urlRender={`${URL_DEV}sugerencia`}
 
                         />
                     </Card.Body>
                 </Card>
-                <Modal active={'usuarios'}  {...this.props} size="lg" title='Nueva Sugerencia'
+                <Modal size="lg" title='Nueva Sugerencia'
                     show={modal.see}
                     handleClose={() => {
                         const { modal } = this.state
@@ -244,7 +260,7 @@ class TeEscuchamos extends Component {
                         <div className="form-group row form-group-marginless mt-4 col-md-10 m-auto">
                             <div className="col-md-12">
                                 <Input
-                                    readOnly
+                                    disabled={true}
                                     requirevalidation={0}
                                     name="nombre"
                                     value={form.namePropio}
@@ -257,7 +273,7 @@ class TeEscuchamos extends Component {
                             </div>
                             <div className="col-md-12">
                                 <Input
-                                    requirevalidation={0}
+                                    requirevalidation={1}
                                     name="sugerencia"
                                     value={form.sugerencia}
                                     placeholder="SUGERENCIA"
@@ -308,78 +324,7 @@ class TeEscuchamos extends Component {
                         </div>
                     </Form>
                 </Modal>
-                <Modal active={'usuarios'}  {...this.props} size="lg" title='Revisión de sugerencia'
-                    show={modal.revision}
-                    handleClose={() => {
-                        const { modal } = this.state
-                        modal.revision = false
-                        this.setState({ ...this.state, modal })
-                    }} >
-                    <Form id="form-proveedor">
-                        <div className="form-group row form-group-marginless mt-4 col-md-10 m-auto">
-                            <div className="col-md-12">
-                                <Input
-                                    readOnly
-                                    requirevalidation={0}
-                                    name="nombre"
-                                    value={form.namePropio}
-                                    placeholder="NOMBRE "
-                                    onChange={this.onChangeProv}
-                                    iconclass={"far fa-user"}
-                                    formeditado={1}
-                                    messageinc="Incorrecto. Ingresa el nombre."
-                                />
-                            </div>
-                            <div className="col-md-12">
-                                <Input
-                                    readOnly
-                                    requirevalidation={0}
-                                    name="sugerencia"
-                                    value={form.sugerencia}
-                                    placeholder="SUGERENCIA"
-                                    onChange={this.onChange}
-                                    iconclass={"far fa-user"}
-                                    formeditado={1}
-                                    as='textarea'
-                                />
-                            </div>
-
-                            <div className="col-md-12 mb-5">
-                                <SelectSearch
-                                    readOnly
-                                    options={options.departamentos}
-                                    placeholder="SELECCIONA EL DEPARTAMENTO"
-                                    name="area"
-                                    value={form.areas_id}
-                                    onChange={(value) => { this.updateSelect(value, 'areas_id') }}
-                                    formeditado={1}
-                                    iconclass={"far fa-window-maximize"}
-                                />
-                            </div>
-                        </div>
-                      {/*    <div className="card-footer py-3 pr-1">
-                            <div className="row mx-0">
-                                <div className="col-lg-12 text-right pr-0 pb-0">
-                                    <Button icon='' onClick={() => {
-                                        this.changeEstatusAxios(form.id)
-                                        waitAlert()
-                                        this.reloadTableSugerencias()
-                                        const { modal } = this.state
-                                        modal.revision = false
-                                        this.setState({ ...this.state, modal })
-                                    }}
-                                        className={"btn btn-icon btn-light-success btn-lg mr-2 ml-auto"}
-                                        only_icon={"flaticon2-check-mark icon-md"} tooltip={{ text: 'Marcar como revisada' }} />
-                                                                           <Button icon='' onClick={() => { 
-                                                                            openModalWithInput('Rechazado')}}
-                                                                            className={"btn btn-icon btn-light-danger btn-l pulse pulse-danger"}
-                                                                            only_icon={"flaticon2-cross icon-sm"} tooltip={{ text:'RECHAZAR' }} /> 
-                                </div>
-                            </div>
-                        </div>*/}
-                    </Form>
-                </Modal>
-                <Modal active={'usuarios'}  {...this.props} size="lg" title="Nueva Sugerencia Externa"
+                <Modal size="lg" title="Nueva Sugerencia Externa"
                     show={modal.externa}
                     handleClose={() => {
                         const { modal } = this.state
@@ -396,14 +341,14 @@ class TeEscuchamos extends Component {
                                     name="empleado"
                                     value={form.empleado_id}
                                     onChange={(value) => { this.updateSelect(value, 'empleado_id') }}
-                                    // formeditado={formeditado}
+                                    formeditado={0}
                                     iconclass={"far fa-window-maximize"}
                                     messageinc="Incorrecto. Selecciona al empleado"
                                 />
                             </div>
                             <div className="col-md-12">
                                 <Input
-                                    requirevalidation={0}
+                                    requirevalidation={1}
                                     name="sugerencia"
                                     value={form.sugerencia}
                                     placeholder="SUGERENCIA"
@@ -411,6 +356,7 @@ class TeEscuchamos extends Component {
                                     iconclass={"far fa-user"}
                                     formeditado={0}
                                     as='textarea'
+                                    messageinc="Incorrecto. Ingresa una sugerencia"
                                 />
                             </div>
                             <div className="col-md-12 mb-5">
@@ -421,7 +367,7 @@ class TeEscuchamos extends Component {
                                     name="area"
                                     value={form.areas_id}
                                     onChange={(value) => { this.updateSelect(value, 'areas_id') }}
-                                    // formeditado={formeditado}
+                                    formeditado={0}
                                     iconclass={"far fa-window-maximize"}
                                     messageinc="Incorrecto. Selecciona el departamento"
                                 />
@@ -444,6 +390,63 @@ class TeEscuchamos extends Component {
                             </div>
                         </div>
                     </Form>
+                </Modal>
+                <Modal size="lg" title="Revisión de sugerencias" show={modal.revision} handleClose={() => {
+
+                    modal.revision = false
+                    this.setState({ ...this.state, modal })
+                }} >
+                    <div className="table-responsive mt-6">
+                        <table className="table table-head-custom table-head-bg table-vertical-center">
+                            <thead>
+                                <tr className="text-left">
+                                    <th style={{ minWidth: "100px" }} className="pl-7">
+                                        <span className="text-dark-75 font-size-13px">Empleado</span>
+                                    </th>
+                                    <th style={{ minWidth: "100px" }} className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Departamento</span>
+                                    </th>
+                                    <th style={{ minWidth: "200px" }} className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Sugerencia</span>
+                                    </th>
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Revisado</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                {data !== '' ? data.map((sugerencia, key) => {
+                                    return (
+                                       
+                                            <tr className="font-size-13px">
+                                                <td style={{ minWidth: "100px" }} className="">
+                                                    <div className="mb-1">{sugerencia.usuarios.nombre}</div>
+                                                </td>
+                                                <td className="text-center">
+                                                    <span>{sugerencia.departamentos.nombre}</span>
+                                                </td>
+                                                <td className="text-center">
+                                                    <span>{sugerencia.sugerencia}</span>
+                                                </td>
+                                                <td className="pr-0 text-center">
+                                                    <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR LA SUGERENCIA?', '',
+                                                                () => {this.changeEstatusAxios(sugerencia.id.toString());this.getTableRevisionSolicitudes();this.reloadTableSugerencias() }
+                                                            )
+                                                        }}
+                                                    >
+                                                        <i className="flaticon2-check-mark icon-sm"></i>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                   
+                                    )
+                                }) : <></>}
+                            </tbody>
+                        </table>
+                    </div>
                 </Modal>
             </Layout>
 
