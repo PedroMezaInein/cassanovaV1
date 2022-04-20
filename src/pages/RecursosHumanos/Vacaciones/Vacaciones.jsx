@@ -700,6 +700,8 @@ async getPermisosModal() {
     // $('#form_permisos').DataTable().ajax.reload();
 }
 
+
+
     async getVacaciones() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones/vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -990,7 +992,31 @@ async getPermisosModal() {
         const { modal } = this.state
         modal.filters_permisos = true
         this.setState({ ...this.state, modal })
+    }
 
+    async getAdjuntosPermisos(data) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'permiso/adjuntos/' + data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                // Swal.close()
+                // const { eventos } = response.data
+                // let bandera = 'estacionamiento'
+                // this.setState({
+                //     ...this.state,
+                //     modal_date: true,
+                //     date: date,
+                //     eventos: eventos,
+                //     activeKey: bandera
+                // })
+                console.log(response.data.modulo.adjuntos)
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
 
     async getEventsOneDateAxios(date) {
@@ -1069,10 +1095,14 @@ async getPermisosModal() {
         )
     }
     setActionsPermiso = permiso => {
+        console.log(permiso)
         return (
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(permiso) }}>
+                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); 
+                        this.getAdjuntosPermisos(permiso.id.toString())
+                        console.log(permiso.id.toString())
+                        }}>
                         {setNaviIcon('flaticon-attachment', 'Adjuntos')}
                     </Dropdown.Item>
                 </DropdownButton>
@@ -1462,7 +1492,7 @@ async getPermisosModal() {
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addVacationAxiosAdmin() }}
                     />
                 </Modal>
-                <Modal size={"lg"} title={title} show={modal_permisos} handleClose={this.handleClosePermisos} at={this.props}>
+                <Modal size={"lg"} title='nuevo permiso' show={modal_permisos} handleClose={this.handleClosePermisos} at={this.props}>
                     <AgregarPermisosForm
                         disabledDates={disabledDates}
                         formeditado={formeditado}
