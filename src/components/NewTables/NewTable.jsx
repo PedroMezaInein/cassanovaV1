@@ -44,6 +44,7 @@ class NewTable extends Component{
         };
         this.reloadHeader();
         this.initTableData()
+  
     }
 
     componentDidUpdate = (prevProps) => {
@@ -385,7 +386,8 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
+        const {filter_boton, tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick,addPropio,addExterno, children, exportar_boton, pendingPaymentClick, hideNew,idAuth,verSugerencias } = this.props
+      
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
                 <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
@@ -398,9 +400,31 @@ class NewTable extends Component{
                     </div>
                     <div className="card-toolbar toolbar-dropdown">
                         <DropdownButton menualign="right" title={<span>OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-newtable-options' >
+                        { 
+                                tableName === 'TeEscuchamos' ?  
+                                 idAuth===1 ? 
+                              <> 
+                               <Dropdown.Item className="text-hover-success dropdown-success" onClick={verSugerencias} >
+                              {this.setNaviIcon('flaticon-exclamation', 'Sugerencias en espera')}
+                               </Dropdown.Item>
+                               <Dropdown.Item className="text-hover-success dropdown-success" onClick={addPropio} >
+                              {this.setNaviIcon('flaticon-add', 'AGREGAR propio')}
+                               </Dropdown.Item>
+                                <Dropdown.Item className="text-hover-success dropdown-success" onClick={addExterno} >
+                                {this.setNaviIcon('flaticon-add', 'AGREGAR externo')} 
+                                 </Dropdown.Item></>
+                                 :  <> 
+                                 <Dropdown.Item className="text-hover-success dropdown-success" onClick={addPropio} >
+                                {this.setNaviIcon('flaticon-add', 'AGREGAR propio')}
+                                 </Dropdown.Item>
+                                  <Dropdown.Item className="text-hover-success dropdown-success" onClick={addExterno} >
+                                  {this.setNaviIcon('flaticon-add', 'AGREGAR externo')} 
+                                   </Dropdown.Item></> : <></>   
+                                
+                            }
                             {
-                                hideNew !== true ? 
-                                    abrirModal === true ?
+                                hideNew !== true && tableName !== 'TeEscuchamos' ? 
+                                    abrirModal === true  ?
                                         <Dropdown.Item className="text-hover-success dropdown-success" onClick={this.clickHandler} >
                                             {this.setNaviIcon('flaticon-add', 'AGREGAR')}
                                         </Dropdown.Item>
@@ -408,11 +432,16 @@ class NewTable extends Component{
                                         <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
                                             {this.setNaviIcon('flaticon-add', 'AGREGAR')}
                                         </Dropdown.Item>
+                                        
                                 : <></>
                             }
+                           {
+                                filter_boton !== false ?
                             <Dropdown.Item className="text-hover-info dropdown-info" onClick={filterClick}>
                                 {this.setNaviIcon('fas fa-filter', 'FILTRAR')}
                             </Dropdown.Item>
+                               : <></>
+                            }
                             {
                                 exportar_boton === true ?
                                     <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => this.clickHandlerExport()} >
@@ -427,6 +456,7 @@ class NewTable extends Component{
                                     </Dropdown.Item>
                                 :<></>
                             }
+                        
                         </DropdownButton>
                     </div>
                 </Card.Header>
