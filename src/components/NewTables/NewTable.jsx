@@ -22,7 +22,7 @@ class NewTable extends Component{
     }
 
     componentDidMount = () => {
-        const { data,authUser } = this.props
+        const { data } = this.props
         this.setState({...this.state, stateData: data})
         $.event.special.touchstart = {
             setup: function( _, ns, handle ){

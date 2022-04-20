@@ -2,18 +2,16 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 
 import { NewTable } from '../../components/NewTables'
-import moment from 'moment'
 import axios from 'axios'
 import $ from 'jquery'
 import { Modal } from '../../components/singles'
 import { URL_DEV, SUGERENCIA_COLUMN } from '../../constants'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
-import { apiOptions, catchErrors, apiGet, } from '../../functions/api'
+import { apiOptions, catchErrors } from '../../functions/api'
 import { setSingleHeader, } from '../../functions/routers'
 import { printResponseErrorAlert, createAlert, waitAlert, doneAlert, errorAlert, } from '../../functions/alert'
 import { setOptions, setTextTableCenter, setNaviIcon } from '../../functions/setters'
 import { connect } from 'react-redux'
-import { Card, } from 'react-bootstrap'
 import { Input, Button, SelectSearch } from '../../components/form-components'
 
 // import PropTypes from 'prop-types'
@@ -36,7 +34,6 @@ class TeEscuchamos extends Component {
             areas_id: '',
             id: '',
 
-
         },
         data: [],
         options: {
@@ -48,12 +45,8 @@ class TeEscuchamos extends Component {
 
     }
     componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { history } = this.props
         this.setTableSugerencias()
         this.getOptions()
-        // console.log(this.props)
         this.getTableRevisionSolicitudes()
         console.log(this.props)
     }
@@ -67,7 +60,6 @@ class TeEscuchamos extends Component {
         $('#TeEscuchamos').DataTable().ajax.reload();
 
     }
-
 
     setActions = (sugerencia) => {
         const { form, } = this.state
@@ -111,8 +103,6 @@ class TeEscuchamos extends Component {
         }
     }
 
-
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -150,7 +140,6 @@ class TeEscuchamos extends Component {
         })
     }
 
-
     async addSugerencia() {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -170,7 +159,6 @@ class TeEscuchamos extends Component {
             console.error(error, 'error')
         })
     }
-
 
     changeEstatusAxios = async (data) => {
         const { access_token } = this.props.authUser
@@ -223,10 +211,8 @@ class TeEscuchamos extends Component {
         this.setState({ ...this.state, form })
     }
 
-
     render() {
         const { form, modal, options, idPropsAuth, data } = this.state
-        const { type } = this.props
         return (
             <Layout active={'te-escuchamos'}  {...this.props}>
            
@@ -250,8 +236,9 @@ class TeEscuchamos extends Component {
                                 this.clearForm()
                                 this.openModalSugeExterna()
                             }}
-                            filter_boton={false}
+                            filterClick={this.openModalFiltros} exportar_boton={true} onClickExport={() => { this.exportVentasAxios() }}
                             urlRender={`${URL_DEV}sugerencia`}
+
                         />
                 <Modal active={'usuarios'}  {...this.props} size="lg" title='Nueva Sugerencia'
                     show={modal.see}
@@ -304,8 +291,6 @@ class TeEscuchamos extends Component {
                             </div>
 
                         </div>
-
-
 
                         <div className="card-footer py-3 pr-1">
                             <div className="row mx-0">
