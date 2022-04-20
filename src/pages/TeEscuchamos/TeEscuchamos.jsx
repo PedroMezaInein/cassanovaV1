@@ -228,16 +228,8 @@ class TeEscuchamos extends Component {
         const { form, modal, options, idPropsAuth, data } = this.state
         const { type } = this.props
         return (
-            <Layout active={'administracion'}  {...this.props}>
-                <Card className="card-custom">
-                    <Card.Header>
-                        <div className="d-flex align-items-center">
-                            <div className="align-items-start flex-column">
-                                <span className="font-weight-bolder text-dark font-size-h3">Te escuchamos</span>
-                            </div>
-                        </div>
-                    </Card.Header>
-                    <Card.Body>
+            <Layout active={'te-escuchamos'}  {...this.props}>
+           
                         <NewTable
                             idAuth={idPropsAuth}
                             idTable='aa'
@@ -262,8 +254,6 @@ class TeEscuchamos extends Component {
                             urlRender={`${URL_DEV}sugerencia`}
 
                         />
-                    </Card.Body>
-                </Card>
                 <Modal active={'usuarios'}  {...this.props} size="lg" title='Nueva Sugerencia'
                     show={modal.see}
                     handleClose={() => {
