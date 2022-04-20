@@ -561,6 +561,7 @@ class EgresosFormNew extends Component {
 
     getOptions = async () => {
         const { at, state } = this.props
+        console.log(this.props)
         apiOptions(`v2/administracion/egresos`, at).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proveedores } = response.data

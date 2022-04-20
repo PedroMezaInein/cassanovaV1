@@ -52,7 +52,7 @@ class AsideMenuList extends Component{
 
                         return(
                             <li className = 'menu-item menu-item-submenu' key = { key } data-menu-toggle = "hover"
-                                onClick = { () => { this.openSubmenu(modulo.slug) } }>
+                                onClick = { () => { console.log(modulo.slug); this.openSubmenu(modulo.slug) } }>
                                 <div className="menu-link menu-toggle" to = { modulo.url } >
                                     <span className="svg-icon menu-icon">
                                         <SVG src={toAbsoluteUrl(modulo.icon)}/>
