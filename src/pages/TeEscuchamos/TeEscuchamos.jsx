@@ -250,9 +250,8 @@ class TeEscuchamos extends Component {
                                 this.clearForm()
                                 this.openModalSugeExterna()
                             }}
-                            filterClick={this.openModalFiltros} exportar_boton={true} onClickExport={() => { this.exportVentasAxios() }}
+                            filter_boton={false}
                             urlRender={`${URL_DEV}sugerencia`}
-
                         />
                 <Modal active={'usuarios'}  {...this.props} size="lg" title='Nueva Sugerencia'
                     show={modal.see}

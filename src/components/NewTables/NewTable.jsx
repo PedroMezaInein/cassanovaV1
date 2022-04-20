@@ -386,7 +386,7 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const { tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick,addPropio,addExterno, children, exportar_boton, pendingPaymentClick, hideNew,idAuth,verSugerencias } = this.props
+        const {filter_boton, tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick,addPropio,addExterno, children, exportar_boton, pendingPaymentClick, hideNew,idAuth,verSugerencias } = this.props
       
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
@@ -432,11 +432,16 @@ class NewTable extends Component{
                                         <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
                                             {this.setNaviIcon('flaticon-add', 'AGREGAR')}
                                         </Dropdown.Item>
+                                        
                                 : <></>
                             }
+                           {
+                                filter_boton !== false ?
                             <Dropdown.Item className="text-hover-info dropdown-info" onClick={filterClick}>
                                 {this.setNaviIcon('fas fa-filter', 'FILTRAR')}
                             </Dropdown.Item>
+                               : <></>
+                            }
                             {
                                 exportar_boton === true ?
                                     <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => this.clickHandlerExport()} >
