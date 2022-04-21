@@ -853,7 +853,6 @@ export const LICENCIAS = [
     { Header: 'Códigos', accessor: 'codigos', customRender: true },
 ]
 export const EQUIPOS_ADMINISTRACION = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
     { Header: 'Colaborador', accessor: 'colaborador', customRender: true },
     { Header: 'Equipo', accessor: 'equipo', customRender: true },
     { Header: 'Modelo', accessor: 'modelo', customRender: true },

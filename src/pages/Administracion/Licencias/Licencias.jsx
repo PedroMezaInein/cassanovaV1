@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
-import { LicenciasForm, EquiposForm } from '../../../components/forms'
+import { LicenciasForm } from '../../../components/forms'
 import { setTextTableCenter,setNaviIcon } from '../../../functions/setters'
 import {  Tabs, Tab } from 'react-bootstrap'
 import { FiltersLicencias, FiltersEquipos } from '../../../components/filters'
@@ -15,7 +15,7 @@ import { DropdownButton, Dropdown } from 'react-bootstrap'
 class Licencias extends Component {
 
     state = {
-        modal: { filtros: false, form: false ,equipo: false},
+        modal: { filtros: false, form: false },
         filtersLicencia: {},
         filtersEquipos: {},
         title: 'Nueva licencia',
@@ -30,17 +30,6 @@ class Licencias extends Component {
             (response) => {
                 const { filtersLicencia } = this.state
                 doneAlert(`Licencia eliminada con éxito`, () => { this.reloadTableLicencias(filtersLicencia) })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    
-    deleteEquipos = async(id) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiDelete(`v1/administracion/equipos/${id}`, access_token).then(
-            (response) => {
-                const { filtersEquipos } = this.state
-                doneAlert(`Equipo eliminada con éxito`, () => { this.reloadTableEquipos(filtersEquipos ) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
@@ -97,32 +86,6 @@ class Licencias extends Component {
             </div>
         )
     }
-
-    setActionsEquipo = (element) => {
-
-        return(
-            <div className="w-100 d-flex justify-content-center">
-                            <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-success dropdown-success" 
-                 onClick={(e) => { e.preventDefault(); this.openModalEquipo(element, 'edit') }}  >
-                        {setNaviIcon('las la-pen icon-lg', 'editar')}
-                    </Dropdown.Item> 
-                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
-                      onClick = { (e) => { 
-                        e.preventDefault(); 
-                        deleteAlert(
-                            `Eliminarás El eqiopo asignado`,
-                            `¿Deseas continuar?`,
-                            () => { this.deleteEquipos(element.id) }
-                        )
-                    } }>
-                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
-                    </Dropdown.Item>
-                </DropdownButton>
-            </div>
-        )
-    }
-
     openModal = (element, type) => {
         const { modal } = this.state
         let { title } = this.state
@@ -131,18 +94,6 @@ class Licencias extends Component {
             title= 'Editar licencia'
         }else{
             title= 'Nueva licencia'
-        }
-        this.setState({ ...this.state, modal, title, licencia:element})
-    }
-
-    openModalEquipo = (element, type) => {
-        const { modal } = this.state
-        let { title } = this.state
-        modal.equipo = true
-        if(type==='edit'){
-            title= 'Editar equipo'
-        }else{
-            title= 'Nuevo Equipo'
         }
         this.setState({ ...this.state, modal, title, licencia:element})
     }
@@ -157,8 +108,6 @@ class Licencias extends Component {
         const { modal } = this.state
         modal.filtros = false
         modal.form = false
-        modal.equipo = false
-
         this.setState({ ...this.state, modal })
     }
 
@@ -174,14 +123,10 @@ class Licencias extends Component {
     }
 
     refresh = () => {
-        const { filtersLicencia, filtersEquipos, modal } = this.state
+        const { filtersLicencia, modal } = this.state
         modal.form = false
-        modal.equipo = false
-
         this.setState({ ...this.state, modal })
         this.reloadTableLicencias(filtersLicencia)
-        this.reloadTableEquipos(filtersEquipos)
-
     }
     
     exportLicenciasAxios = async () => {
@@ -215,7 +160,6 @@ class Licencias extends Component {
         let aux = []
         equipos.forEach((equipo) => {
             aux.push({
-                actions: this.setActionsEquipo(equipo),
                 colaborador: setTextTableCenter(equipo.colaborador?equipo.colaborador.nombre:'Sin colaborador'),
                 equipo:setTextTableCenter(equipo.equipo),
                 modelo: setTextTableCenter(equipo.modelo),
@@ -293,7 +237,7 @@ class Licencias extends Component {
                         />
                     </Tab>
                     <Tab eventKey="equipos" title="Equipos">
-                        <NewTable tableName = 'equipos' subtitle = 'Listado de equipos' title = 'Equipos' abrirModal = { true } onClick = { this.openModalEquipo }
+                        <NewTable tableName = 'equipos' subtitle = 'Listado de equipos' title = 'Equipos' hideNew = { true }
                             accessToken = { access_token } columns = { EQUIPOS_ADMINISTRACION } setter = { this.setTableEquipos } 
                             urlRender = {`${URL_DEV}v1/administracion/equipos`}  filterClick = { this.openModalFiltros } type='tab'
                             exportar_boton={true} onClickExport={() => this.exportEquiposAxios()} 
@@ -312,16 +256,6 @@ class Licencias extends Component {
                     {
                         modal.form ? 
                             <LicenciasForm title = { title } at = { access_token } refresh = { this.refresh } licencia={licencia} 
-                                letterCase = { false } /> 
-                        : <></>
-                    }
-                    
-                </Modal>
-
-                <Modal size = 'xl' show = { modal.equipo } handleClose = { this.handleClose } title = { title }>
-                    {
-                        modal.equipo ? 
-                            <EquiposForm title = { title } at = { access_token } refresh = { this.refresh } licencia={licencia} 
                                 letterCase = { false } /> 
                         : <></>
                     }
