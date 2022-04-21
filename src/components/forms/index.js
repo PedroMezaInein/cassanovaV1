@@ -149,6 +149,7 @@ import VentasList from './administracion/Utilidad/VentasList'
 import ComprasList from './administracion/Utilidad/ComprasList'
 import LicenciasEquiposForm from './recursoshumanos/LicenciasEquiposForm'
 import LicenciasForm from './administracion/Licencias/LicenciasForm'
+import EquiposForm from './administracion/Licencias/EquipoForm'
 import RHLicenciasForm from './recursoshumanos/RHLicenciasForm'
 import RHEquiposForm from './recursoshumanos/RHEquiposForm'
 import HistorialVacaciones from './recursoshumanos/HistorialVacaciones'
@@ -272,6 +273,6 @@ export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResul
     PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion,DetailsTickets,  HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos,
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
-    PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
+    PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm, EquiposForm,RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
     CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario, AddEvent, PagoImpuestosForm,RepseFormulario
 }
