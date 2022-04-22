@@ -12,7 +12,7 @@ const Login = React.lazy(() => import('./pages/Login') )
 
 const Home = React.lazy(() => import('./pages/Home') )
 
-const TeEscuchamos = React.lazy(() => import('./pages/TeEscuchamos/TeEscuchamos') )
+// const TeEscuchamos = React.lazy(() => import('./pages/TeEscuchamos/TeEscuchamos') )
 const Encuesta = React.lazy(() => import('./pages/Encuesta/Encuesta') )
 
 
@@ -303,7 +303,7 @@ class App extends Component{
 
                     {/* ANCHOR Routes for usuarios */}
 
-                    <Route path = "/te-escuchamos" exact component = { TeEscuchamos } />
+                    {/* <Route path = "/te-escuchamos" exact component = { TeEscuchamos } /> */}
                     
                     <Route path = "/mi-proyecto/encuesta" exact component = { Encuesta } />
 
