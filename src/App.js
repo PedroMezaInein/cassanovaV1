@@ -12,11 +12,8 @@ const Login = React.lazy(() => import('./pages/Login') )
 
 const Home = React.lazy(() => import('./pages/Home') )
 
-const TeEscuchamos = React.lazy(() => import('./pages/TeEscuchamos/TeEscuchamos') )
-const Encuesta = React.lazy(() => import('./pages/Encuesta/Encuesta') )
-
-
-
+// const TeEscuchamos = React.lazy(() => import('./pages/TeEscuchamos/TeEscuchamos') )
+// const Encuesta = React.lazy(() => import('./pages/Encuesta/Encuesta') )
 
 const Tareas = React.lazy(() => import('./pages/Usuarios/Tareas') )
 const Empresas = React.lazy(() => import('./pages/Usuarios/Empresas/Empresas') )
@@ -303,10 +300,9 @@ class App extends Component{
 
                     {/* ANCHOR Routes for usuarios */}
 
-                    <Route path = "/te-escuchamos" exact component = { TeEscuchamos } />
+                    {/* <Route path = "/te-escuchamos" exact component = { TeEscuchamos } /> */}
                     
-                    <Route path = "/mi-proyecto/encuesta" exact component = { Encuesta } />
-
+                    {/* <Route path = "/mi-proyecto/encuesta" exact component = { Encuesta } /> */}
 
                     <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
                     <Route path = "/usuarios/usuarios/:action" exact component ={ UsuariosForm } />

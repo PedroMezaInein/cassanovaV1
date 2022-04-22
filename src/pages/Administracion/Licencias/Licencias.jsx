@@ -129,7 +129,6 @@ class Licencias extends Component {
         this.reloadTableLicencias(filtersLicencia)
     }
     
-
     exportLicenciasAxios = async () => {
         waitAlert()
         const { filtersLicencia } = this.state
