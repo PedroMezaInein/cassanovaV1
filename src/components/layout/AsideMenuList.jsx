@@ -37,6 +37,7 @@ class AsideMenuList extends Component{
         switch(name){
             case 'CRM':
             case 'Mi Proyecto':
+            case 'Te escuchamos':    
                 return `${LEADS_FRONT}${url}?tag=${access_token}`               
             default:
                 return url;
@@ -59,7 +60,7 @@ class AsideMenuList extends Component{
                                     </span>
                                     {
                                         modulo.url ? 
-                                            modulo.url === '/mi-proyecto' ? 
+                                            modulo.url === '/mi-proyecto' ||  modulo.url === '/te-escuchamos' ? 
                                             <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
                                             : 
                                             ''
