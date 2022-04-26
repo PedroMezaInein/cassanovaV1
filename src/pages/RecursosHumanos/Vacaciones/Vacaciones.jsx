@@ -85,7 +85,8 @@ class Vacaciones extends Component {
         },
         espera: [],
         options: {
-            empleados: []
+            empleados: [],
+            lider: []
         },
         data: {
             // permiso: [],
@@ -667,9 +668,14 @@ async getPermisosModal() {
     await axios.get(URL_DEV + 'permiso/permiso', { headers: { Authorization: `Bearer ${access_token}` } }).then(
         (response) => {
             let aux = []
-            // console.log(response.data)
+            const { options } = this.state
+
+            console.log(response.data)
+
             response.data.data.map((permiso)=>{
                 // console.log(permiso)
+                options['lider'] = setOptions(response.data.direcciones, 'nombre', 'id')
+
                 permiso.permiso.forEach((tipo)=>{
                     // console.log(tipo.tipo_permiso)
                     aux.push({
@@ -683,7 +689,7 @@ async getPermisosModal() {
                 return false
             })
             // console.log(response.data.data)
-            // console.log(this.state)
+            console.log(options)
             this.setState({
                 ...this.state,
                 permisosM: aux,
@@ -1039,7 +1045,6 @@ async getPermisosModal() {
             console.error(error, 'error')
         })
     }
-
 
     setActions = egreso => {
         const { history } = this.props
