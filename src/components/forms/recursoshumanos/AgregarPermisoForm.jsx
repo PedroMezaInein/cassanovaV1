@@ -3,6 +3,9 @@ import { validateAlert } from '../../../functions/alert'
 import { Form } from 'react-bootstrap'
 import { Button, SelectSearch, RangeCalendar, InputGray, FileInput, SelectHorario } from '../../form-components'
 class AgregarPermisosForm extends Component {
+    componentDidMount(){
+        console.log(this.props)
+    } 
     state={
         auxName: ''
     }
@@ -53,32 +56,46 @@ class AgregarPermisosForm extends Component {
                     </div>
                     <div className="col-md-6">
                         <div className="form-group row form-group-marginless">
-                            <div className="col-md-12">
-                                <InputGray
+                        <div className="col-md-12">
+                        <InputGray
                                     withtaglabel={1}
                                     withicon={1}
                                     requirevalidation={1}
-                                    withtextlabel={1} withplaceholder={1}
+                                    withtextlabel={1} withplaceholder={0}
                                     name="tipo"
                                     formeditado={formeditado}
                                     value={form.tipo}
-                                    onChange={onChange}
-                                    placeholder="TIPO DE PERMISO"
-                                    iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Incorrecto. ingresa el tipo de permiso"
+                                    // onChange={onChange}
+                                    iconclass="far fa-file-alt icon-lg text-dark-50" 
                                 />
                             </div>
-                            <div className="col-md-12">
+                        {/* <div className="col-md-12">
                                 <SelectSearch
                                     options={options.empleados}
-                                    placeholder="SELECCIONA EL EMPLEADO"
+                                    placeholder="EMPLEADO"
                                     name="empleado"
                                     value={form.empleado}
                                     onChange={this.updateEmpleado}
                                     iconclass={"fas fa-layer-group"}
                                     formeditado={formeditado}
-                                    messageinc="Incorrecto. Selecciona el empleado"
+                                />
+                            </div> */}
+                            <div className="col-md-12">
+                                <InputGray
+                                    withtaglabel={1}
+                                    withicon={1}
+                                    requirevalidation={1}
+                                    withtextlabel={1} withplaceholder={0}
+                                    as='textarea'
+                                    name="tipo"
+                                    formeditado={formeditado}
+                                    value={form.tipo}
+                                    onChange={onChange}
+                                    placeholder="DESCRIPCIÓN DE PERMISO"
+                                    iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Ingresa la descripción del permiso"
                                 />
                             </div>
+
                             <div className="col-md-12 ">
                              <SelectSearch
                                     options={options.lider}

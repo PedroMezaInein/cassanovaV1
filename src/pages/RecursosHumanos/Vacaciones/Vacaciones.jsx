@@ -147,6 +147,7 @@ class Vacaciones extends Component {
         });
         this.getVacaciones()
         this.controlledTab()
+        console.log(this.props.authUser.user.empleado_id)
     }
 
     async setPermisoEstatus(){
