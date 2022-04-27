@@ -16,6 +16,10 @@ class AgregarPermisosForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empleado' } })
     }
+    updateLider = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'lider' } })
+    }
 
     onChange = value => {
         const { onChange } = this.props
@@ -76,9 +80,19 @@ class AgregarPermisosForm extends Component {
                                 />
                             </div>
                             <div className="col-md-12 ">
-                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0}
+                             <SelectSearch
+                                    options={options.lider}
+                                    placeholder="SELECCIONA EL LÍDER INMEDIATO"
+                                    name="lider"
+                                    value={form.lider}
+                                    onChange={this.updateLider}
+                                    iconclass={"fas fa-layer-group"}
+                                    formeditado={formeditado}
+                                    messageinc="Incorrecto. Ingresa el líder inmediato"
+                                />
+                                {/* <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0}
                                     name='lider' iconclass="far fa-file-alt icon-lg text-dark-50" placeholder='LÍDER INMEDIATO' onChange={onChange}
-                                    value={form.lider} messageinc="Incorrecto. Ingresa el líder inmediato" />
+                                    value={form.lider} messageinc="Incorrecto. Ingresa el líder inmediato" /> */}
                             </div>
                             <div className="col-md-12 ">
                                 <label className="col-form-label font-weight-bolder text-dark-60">Entrada tardía</label>
