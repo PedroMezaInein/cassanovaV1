@@ -37,7 +37,7 @@ class NewAsideMenu extends Component{
                     </span>
                 </div> 
                 <div className="aside-menu-wrapper flex-column-fluid">     
-                    <div className="aside-menu my-4" id = "asideMenuScroll" style={{ display: 'flex', maxHeight: '629px'}}>
+                    <div className="aside-menu my-4" id = "asideMenuScroll" style={{ display: 'flex', maxHeight: '829px'}}>
                         <Scrollbar>
                             <AsideMenuList  props = {props}/>
                         </Scrollbar>
