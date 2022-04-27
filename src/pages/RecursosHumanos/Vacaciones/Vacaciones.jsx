@@ -669,27 +669,21 @@ async getPermisosModal() {
         (response) => {
             let aux = []
             const { options } = this.state
-
-            console.log(response.data)
+            options.lider = setOptions(response.data.direcciones, 'nombre', 'id')
 
             response.data.data.map((permiso)=>{
-                // console.log(permiso)
-                options['lider'] = setOptions(response.data.direcciones, 'nombre', 'id')
 
                 permiso.permiso.forEach((tipo)=>{
-                    // console.log(tipo.tipo_permiso)
                     aux.push({
                         shortName: "Tipo",
                         tipo: tipo.tipo_permiso,  
                         name: permiso.nombre, 
                         id:tipo.id,
                     })
-                //    console.log(tipo.id)
                 })
                 return false
             })
-            // console.log(response.data.data)
-            console.log(options)
+// /            console.log(options)
             this.setState({
                 ...this.state,
                 permisosM: aux,
