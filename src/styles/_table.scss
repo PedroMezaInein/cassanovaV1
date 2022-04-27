@@ -289,3 +289,15 @@ div#cardList div:last-child{
         min-width: unset!important;
     }
 }
+    input#acta,
+    input#curp,
+    input#rfc,
+    input#nss,
+    input#identificacion,
+    input#domicilio,
+    input#estudios,
+    input#bancaria,
+    input#retencion
+    {
+        display: none;
+    }
