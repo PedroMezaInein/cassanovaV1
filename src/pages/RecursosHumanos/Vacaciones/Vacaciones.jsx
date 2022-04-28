@@ -54,12 +54,13 @@ class Vacaciones extends Component {
         form: {
             fechas: { start: null, end: null },
             // nombre: this.props.authUser.user.name,
+            idEmpleado: this.props.authUser.user.name,
             nombre: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
             descripcion: '',
             tipo: '',
-            empleado: '',
+            empleado: this.props.authUser.user.empleado_id,
             hora_salida: 0,
             hora_entrada: 0,
             minuto_entrada: 0,
@@ -121,12 +122,13 @@ class Vacaciones extends Component {
         const { form } = this.state
         if (value === 'vacaciones')
         this.getVacaciones()
-            if (value === 'permisos') {
+        if (value === 'permisos') {
                 this.setPermisoEstatus()
                 this.getPermisosModal()
+                this.setPermisos()
             }
         if (value === 'incapacidades') {
-            this.setEgresos()
+            this.setIncapacidades()
         }
         this.setState({ ...this.state, key: value, form })
     }
@@ -139,15 +141,12 @@ class Vacaciones extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        // const { match: { params: { action } } } = this.props
-        // const { history, location: { state } } = this.props
         permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
         this.getVacaciones()
         this.controlledTab()
-        console.log(this.props.authUser.user.empleado_id)
     }
 
     async setPermisoEstatus(){
@@ -684,7 +683,6 @@ async getPermisosModal() {
                 })
                 return false
             })
-// /            console.log(options)
             this.setState({
                 ...this.state,
                 permisosM: aux,
@@ -698,18 +696,56 @@ async getPermisosModal() {
         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
         console.error(error, 'error')
     })
-    // $('#form_permisos').DataTable().ajax.reload();
+}
+
+async getIncapacidadesModal() {
+    const { access_token } = this.props.authUser
+    await axios.get(URL_DEV + 'permiso/permiso', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        (response) => {
+            let aux = []
+            const { options } = this.state
+            options.lider = setOptions(response.data.direcciones, 'nombre', 'id')
+
+            response.data.data.map((permiso)=>{
+
+                permiso.permiso.forEach((tipo)=>{
+                    aux.push({
+                        shortName: "Tipo",
+                        tipo: tipo.tipo_permiso,  
+                        name: permiso.nombre, 
+                        id:tipo.id,
+                    })
+                })
+                return false
+            })
+            this.setState({
+                ...this.state,
+                permisosM: aux,
+            })
+          
+        },
+        (error) => {
+            printResponseErrorAlert(error)
+        }
+    ).catch((error) => {
+        errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        console.error(error, 'error')
+    })
 }
 
 
 
     async getVacaciones() {
+        
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones/vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+              
                 const { empleados, vacaciones, vacaciones_espera, feriados } = response.data
                 const { options } = this.state
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
+                // console.log(response.data, 'data')
+                // console.log(this.state.options.empleados,'empleados')
                 let aux2 = []
                 let aux = []
                 let mes = ''
@@ -800,35 +836,36 @@ async getPermisosModal() {
         aux.forEach((element) => {
             if (form.adjuntos.adjuntos.value !== '') {
                 form.adjuntos.adjuntos.files.forEach((file) => {
-                    console.log('file', file)
+                    // console.log('file', file)
                     data.append(`files_name_permiso[]`, file.name)
                     data.append(`files_permiso[]`, file.file)
-                    console.log(aux)
+                    // console.log(aux)
                 })
                 data.append('adjuntos[]', element)
             }
         })
+        // form.tipo = 'permiso';
         let fechaInicioA = form.fechaInicio
         let fechaInicioAString = fechaInicioA.toISOString();
-        data.append('fechaInicio', fechaInicioAString)
+        data.append('fecha_inicio', fechaInicioAString)
         let fechaFinA = form.fechaFin
         let fechaFinAString = fechaFinA.toISOString();
-        data.append('fechaFin', fechaFinAString)
-        let empleadoA = form.empleado
-        data.append('empleado', empleadoA)
+        data.append('fecha_fin', fechaFinAString)
+        // let empleadoA = form.empleado
+        data.append('empleado', this.props.authUser.user.empleado_id)
+        data.append('empleado_id', this.props.authUser.user.empleado_id)
         let liderA = form.lider
-        data.append('lider_inmediato', liderA)
-        let tipoA = form.tipo
-        data.append('tipo_permiso', tipoA)
-
+        data.append('lider', liderA)
+        // data.append('lider_id', liderA)
+        data.append('tipo_permiso', 'permiso')
         let minutoSalidaA = Math.floor(form.minuto_salida * 100);
         let horaSalidaA = Math.floor((form.hora_salida * 10000) + minutoSalidaA);
         data.append('hora_salida', horaSalidaA)
-
+        let comentarioA = form.descripcion
+        data.append('descripcion', comentarioA)
         let minutoEntradaA = Math.floor(form.minuto_entrada * 100);
         let horaEntradaA = Math.floor((form.hora_entrada * 10000) + minutoEntradaA);
         data.append('hora_entrada', horaEntradaA)
-
         await axios.post(URL_DEV + 'v2/rh/vacaciones/adminPermiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Permiso enviado con éxito')
@@ -999,6 +1036,7 @@ async getPermisosModal() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'permiso/adjuntos/' + data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                console.log(response)
                 // Swal.close()
                 // const { eventos } = response.data
                 // let bandera = 'estacionamiento'
@@ -1009,7 +1047,7 @@ async getPermisosModal() {
                 //     eventos: eventos,
                 //     activeKey: bandera
                 // })
-                console.log(response.data.modulo.adjuntos)
+                // console.log(response.data.modulo.adjuntos)
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -1094,14 +1132,12 @@ async getPermisosModal() {
             </div>
         )
     }
-    setActionsPermiso = permiso => {
-        console.log(permiso)
+    setActionsPermisoIncapacidad = permiso => {
         return (
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
                     <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); 
                         this.getAdjuntosPermisos(permiso.id.toString())
-                        console.log(permiso.id.toString())
                         }}>
                         {setNaviIcon('flaticon-attachment', 'Adjuntos')}
                     </Dropdown.Item>
@@ -1109,76 +1145,20 @@ async getPermisosModal() {
             </div>
         )
     }
-
-    getOptionsAxios = async () => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiOptions(`v2/administracion/egresos`, access_token).then(
-            (response) => {
-                const { data, options } = this.state
-                const { proveedores, empresas, estatusCompras, areas, tiposPagos, tiposImpuestos, cuentas } = response.data
-                data.proveedores = proveedores
-                data.empresas = empresas
-                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
-                options['areas'] = setOptionsWithLabel(areas, 'nombre', 'id')
-                options['proveedores'] = setOptionsWithLabel(proveedores, 'razon_social', 'id')
-                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
-                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
-                options.allCuentas = setOptionsWithLabel(cuentas, 'nombre', 'id')
-                Swal.close()
-                this.setState({ ...this.state, data, options })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    setEgresos = egresos => {
-        let aux = []
-        if (egresos)
-            egresos.map((egreso) => {
-                aux.push(
-                    {
-                        actions: this.setActions(egreso),
-                        identificador: setTextTableCenter(egreso.id),
-                        cuenta: setArrayTable(
-                            [
-                                { name: 'Empresa', text: egreso.empresa ? egreso.empresa.name : '' },
-                                { name: 'Cuenta', text: egreso.cuenta ? egreso.cuenta.nombre : '' },
-                                { name: 'No. de cuenta', text: egreso.cuenta ? egreso.cuenta.numero : '' }
-                            ], '250px'
-                        ),
-                        proveedor: setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : ''),
-                        factura: setTextTableCenter(egreso.factura ? 'Con factura' : 'Sin factura'),
-                        monto: setMoneyTable(egreso.monto),
-                        comision: setMoneyTable(egreso.comision ? egreso.comision : 0.0),
-                        total: setMoneyTable(egreso.total),
-                        impuesto: setTextTableReactDom(egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, egreso, 'tipoImpuesto', 'text-center'),
-                        tipoPago: setTextTableReactDom(egreso.tipo_pago.tipo, this.doubleClick, egreso, 'tipoPago', 'text-center'),
-                        descripcion: setTextTableReactDom(egreso.descripcion !== null ? egreso.descripcion : '', this.doubleClick, egreso, 'descripcion', 'text-justify'),
-                        area: setTextTableReactDom(egreso.area ? egreso.area.nombre : '', this.doubleClick, egreso, 'area', 'text-center'),
-                        subarea: setTextTableReactDom(egreso.subarea ? egreso.subarea.nombre : '', this.doubleClick, egreso, 'subarea', 'text-center'),
-                        estatusCompra: setTextTableReactDom(egreso.estatus_compra ? egreso.estatus_compra.estatus : '', this.doubleClick, egreso, 'estatusCompra', 'text-center'),
-                        adjuntos: setArrayTable(aux),
-                        fecha: setDateTableReactDom(egreso.created_at, this.doubleClick, egreso, 'fecha', 'text-center'),
-                        id: egreso.id,
-                        objeto: egreso
-                    }
-                )
-                return false
-            })
-        return aux
-    }
+ 
     setPermisos = (permisos) => {
-        const { data } = this.state
-
+        const { data,options } = this.state
         let aux = []
         this.setState({
             data
         })
+        
         if (permisos)
+        
             permisos.map((permiso) => {
                 aux.push(
                     {
-                        actions: this.setActionsPermiso(permiso),
+                        actions: this.setActionsPermisoIncapacidad(permiso),
                         identificador: setTextTableCenter(permiso.id),
                         horas: setArrayTable(
                             [
@@ -1193,13 +1173,66 @@ async getPermisosModal() {
                             ], '250px'
                         ),
                         nombre: setTextTable(permiso.empleado ? permiso.empleado.nombre : ''),
-                        lider: setTextTable(permiso.lider_inmediato ? permiso.lider_inmediato : ''),
+                        lider: setTextTable(permiso.lider_id ? 
+                            options.empleados.map((empleado)=>{
+                                if(permiso.lider_id.toString() === empleado.value){
+                                    return empleado.name
+                                }
+                            })
+                         : ''),
                         estatus: setTextTable(permiso.estatus ? permiso.estatus : ''),
-                        tipo: setTextTable(permiso.tipo_permiso ? permiso.tipo_permiso : ''),
+                        descripcion: setTextTable(permiso.comentarios ? permiso.comentarios : ''),
                         rechazo: setTextTable(permiso.motivo_rechazo ? permiso.motivo_rechazo : ''),
                         // adjuntos: setArrayTable(_aux),
                         id: permiso.id,
                        // objeto: permiso.
+                    }
+                )
+                return aux;
+            })
+        return aux;
+    }
+
+    setIncapacidades = (incapacidades) => {
+        const { data,options } = this.state
+        let aux = []
+        this.setState({
+            data
+        })
+        
+        if (incapacidades)
+        
+            incapacidades.map((incapacidad) => {
+                aux.push(
+                    {
+                        actions: this.setActionsPermisoIncapacidad(incapacidad),
+                        identificador: setTextTableCenter(incapacidad.id),
+                        horas: setArrayTable(
+                            [
+                                { name: 'Hora entrada', text: incapacidad.hora_entrada ? incapacidad.hora_entrada : '' },
+                                { name: 'Hora salida', text: incapacidad.hora_salida ? incapacidad.hora_salida : '' },
+                            ], '250px'
+                        ),
+                        fechas: setArrayTable(
+                            [
+                                { name: 'Fecha inicio', text: incapacidad.fecha_inicio ? incapacidad.fecha_inicio : '' },
+                                { name: 'Fecha fin', text: incapacidad.fecha_fin ? incapacidad.fecha_fin : '' },
+                            ], '250px'
+                        ),
+                        nombre: setTextTable(incapacidad.empleado ? incapacidad.empleado.nombre : ''),
+                        lider: setTextTable(incapacidad.lider_id ? 
+                            options.empleados.map((empleado)=>{
+                                if(incapacidad.lider_id.toString() === empleado.value){
+                                    return empleado.name
+                                }
+                            })
+                         : ''),
+                        estatus: setTextTable(incapacidad.estatus ? incapacidad.estatus : ''),
+                        descripcion: setTextTable(incapacidad.comentarios ? incapacidad.comentarios : ''),
+                        rechazo: setTextTable(incapacidad.motivo_rechazo ? incapacidad.motivo_rechazo : ''),
+                        // adjuntos: setArrayTable(_aux),
+                        id: incapacidad.id,
+                       // objeto: incapacidad.
                     }
                 )
                 return aux;
@@ -1214,7 +1247,7 @@ async getPermisosModal() {
 
         return (
             <Layout active='rh'  {...this.props}>
-                <Tabs defaultActiveKey="vacaciones" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
+                <Tabs defaultActiveKey="incapacidades" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="vacaciones" title="Vacaciones" >
                         <Card className="card-custom">
                             <Card.Header>
@@ -1258,13 +1291,24 @@ async getPermisosModal() {
                         </Card>
                     </Tab>
                     <Tab eventKey="permisos" title="Permisos">
-                        <NewTable tableName='Permisos' subtitle='Listado de Permisos' title='Permisos'
-                         idTable='Permisos'
-                        mostrar_boton={true}
-                            abrir_modal={true} addClick={this.openModalAddPermisos} columns={PERMISOS_COLUMNS}
-                            accessToken={access_token} setter={this.setPermisos} revisar_permisos={true} mostarPermisos={this.openEstatusPermisos}
-                            filterClick={this.openModalFiltros} exportar_boton={true} onClickExport={() => { this.exportEgresosAxios() }}
-                            urlRender={`${URL_DEV}permiso?tab=permisos`} type='tab'
+                        <NewTable
+                            tableName='Permisos'
+                            subtitle='Listado de Permisos'
+                            title='Permisos'
+                            exportar_boton={false}
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            ocultar_filtrar={true}
+                            revisar_elementos={true}
+                            addClick={this.openModalAddPermisos}
+                            columns={PERMISOS_COLUMNS}
+                            accessToken={access_token}
+                            setter={this.setPermisos}
+                            mostarPermisos={this.openEstatusPermisos}
+                            mostarPalabra={'PERMISOS'}
+                            onClickExport={() => { this.exportEgresosAxios() }}
+                            urlRender={`${URL_DEV}permiso?tab=permisos`}
+                            type='tab'
                         />
                     </Tab>
                     <Tab eventKey="incapacidades" title="Incapacidades">
@@ -1272,16 +1316,18 @@ async getPermisosModal() {
                             tableName='incapacidades'
                             subtitle='Lista de incapacidades'
                             title='Incapacidades'
+                            exportar_boton={false}
+                            ocultar_filtrar={true} 
+                            revisar_elementos={true}
                             mostrar_boton={true}
                             abrir_modal={true}
                             accessToken={access_token}
                             columns={INCAPACIDAD_COLUMNS}
-                            setter={this.setEgresos}
+                            setter={this.setPermisos}
                             addClick={this.openModalAddIncapacidad}
-                            urlRender={`${URL_DEV}v3/administracion/egreso`}
-                            // urlRender={`${URL_DEV}permiso/permiso`}
+                            urlRender={`${URL_DEV}permiso?tab=permisos`}
+                            mostarPalabra={'INCAPACIDADES'}
                             filterClick={this.openModalAddIncapacidad}
-                            exportar_boton={true}
                             onClickExport={() => { this.exportEgresosAxios() }}
                         />
                         <Modal size={"lg"} show={modal_incapacidad} handleClose={this.handleCloseIncapacidad}>
@@ -1341,7 +1387,7 @@ async getPermisosModal() {
                                             <Button icon='' className="btn btn-primary font-weight-bold text-uppercase"
                                                 //  type='submit' 
                                                 //  onClick={()=> {localStorage.setItem('data', this.state.form.adjuntos.documento.files[0] )}}
-                                                onClick={() => { console.log(this.state.form); this.handleCloseIncapacidad() }}
+                                                onClick={() => { this.handleCloseIncapacidad() }}
                                                 text="ENVIAR" />
                                         </div>
                                     </Form>
@@ -1371,6 +1417,7 @@ async getPermisosModal() {
                             </thead>
                             {
                                 permisosM.map((empleado, key) => {
+                                    // console.log(empleado)
                                     return (
                                                 <tbody key={key}>
                                                     <tr className="font-size-13px">
@@ -1391,7 +1438,7 @@ async getPermisosModal() {
                                                             <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick={(e) => {
                                                                 e.preventDefault();
                                                                 createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR EL PERMISO?', '',
-                                                                    () => this.editEstatusPermisos(empleado.id, 'Aceptadas')
+                                                                    () => this.editEstatusPermisos(empleado.id, 'Aceptado')
                                                                     )
                                                             }}
                                                             >
@@ -1400,7 +1447,7 @@ async getPermisosModal() {
                                                             <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger" onClick={(e) => {
                                                                 e.preventDefault();
                                                                 createAlert('¿ESTÁS SEGURO QUE DESEAS RECHAZAR EL PERMISO?', '',
-                                                                    () => this.editEstatusPermisos(empleado.id, 'Rechazadas')
+                                                                    () => this.editEstatusPermisos(empleado.id, 'Rechazado')
                                                                     )
                                                             }}
                                                             >
@@ -1501,6 +1548,7 @@ async getPermisosModal() {
                         onChange={this.onChange}
                         onChangeAdjunto={this.onChangeAdjunto}
                         options={options}
+                        empleadoId={form.idEmpleado}
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
                     />
                 </Modal>

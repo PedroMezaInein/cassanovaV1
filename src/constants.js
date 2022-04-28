@@ -248,15 +248,17 @@ export const PERMISOS_COLUMNS = [
     { Header: 'Horas', accessor: 'horas', customRender: true },
     { Header: 'Fechas', accessor: 'fechas', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
-    { Header: 'Tipo de permiso', accessor: 'tipo', customRender: true },
+    { Header: 'Descripción del permiso', accessor: 'descripcion', customRender: true },
     { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
 ]
 export const INCAPACIDAD_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions', customRender: true },
-    { Header: 'Nombre', accessor: 'area', customRender: true },
-    { Header: 'Documento', accessor: 'area', customRender: true },
-    { Header: 'Fecha incio', accessor: 'fecha', customRender: true },
-    { Header: 'Fecha fin', accessor: 'fecha', customRender: true },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
+    { Header: 'Fechas', accessor: 'fechas', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'Descripción del permiso', accessor: 'descripcion', customRender: true },
+    { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
 ]
 
 export const PARTIDAS_COLUMNS = [
