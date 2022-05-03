@@ -23,10 +23,8 @@ import readXlsxFile from 'read-excel-file'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import { Nav } from 'react-bootstrap'
-import { apiOptions,  catchErrors} from '../../../functions/api'
 import {
-    setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter,
-    setTextTableReactDom, setNaviIcon
+    setOptionsWithLabel, setTextTable,  setArrayTable, setTextTableCenter, setNaviIcon
 } from '../../../functions/setters'
 import { /* Parking, ParkingRed, */ PassportTravel, HappyBirthday, Calendar /* , EmptyParkSlot */ } from '../../../components/Lottie'
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
