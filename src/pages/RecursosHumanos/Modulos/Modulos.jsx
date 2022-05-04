@@ -27,7 +27,7 @@ class Modulo extends Component {
             filters: false,
             adjuntos: false,
             see: false,
-            repseM: true,
+            repseM: false,
         },
         title: 'Nueva Repse',
         licencia: '',

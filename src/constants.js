@@ -245,10 +245,10 @@ export const PERMISOS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions', customRender: true },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },    
     { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
-    { Header: 'Horas', accessor: 'horas', customRender: true },
-    { Header: 'Fechas', accessor: 'fechas', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
     { Header: 'Descripción del permiso', accessor: 'descripcion', customRender: true },
+    { Header: 'Horas', accessor: 'horas', customRender: true },
+    { Header: 'Fechas', accessor: 'fechas', customRender: true },
     { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
 ]
 export const INCAPACIDAD_COLUMNS = [

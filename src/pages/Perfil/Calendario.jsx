@@ -7,13 +7,12 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { Modal } from '../../components/singles'
-import { NewTable } from '../../components/NewTables'
 import { AgregarPermisosForm } from "../../components/forms"
 import { SolicitarVacacionesForm, EstatusForm, AgendarReunionGoogle } from "../../components/forms"
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, questionAlert, deleteAlert } from '../../functions/alert'
-import { URL_DEV,PERMISOS_COLUMNS } from '../../constants'
+import { URL_DEV } from '../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav, Form, } from 'react-bootstrap'
+import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav, } from 'react-bootstrap'
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
@@ -119,6 +118,8 @@ class Calendario extends Component {
             if (id)
                 this.getEventAxios(id)
         }
+        this.addIncapacidadAxiosAdmin()
+        this.setOptionsModal()
     }
 
         clearFiles = (name, key) => {
@@ -323,31 +324,41 @@ class Calendario extends Component {
         formEvento[name] = value
         this.setState({ ...this.state, formEvento })
     }
-
-    async getPermisosModal() {
+   async setOptionsModal(){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'permiso/permiso', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'permiso/permiso',{ headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                let aux = []
                 const { options } = this.state
                 options.lider = setOptions(response.data.direcciones, 'nombre', 'id')
                 this.setState({
                     ...this.state,
                     options
                 })
-                response.data.data.map((permiso)=>{             
-                    permiso.permiso.forEach((tipo)=>{
-                        aux.push({
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    async getPermisosModal() {
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'permiso/usuario',access_token, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                let aux = []
+                response.data.permisos.map((permiso)=>{         
+                            aux.push({
                             shortName: "Tipo",
-                            tipo: tipo.tipo_permiso,  
-                            name: permiso.nombre, 
-                            estatus:tipo.estatus,
-                            id:tipo.id,
-                            mRechazo: tipo.motivo_rechazo,
-                            comentarios: tipo.comentarios,
+                            tipo: permiso.tipo_permiso,  
+                            name: permiso.empleado.nombre, 
+                            estatus:permiso.estatus,
+                            id:permiso.id,
+                            mRechazo: permiso.motivo_rechazo,
+                            comentarios: permiso.comentarios,
                         })
-                    })
-                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -365,28 +376,19 @@ class Calendario extends Component {
 
     async getIncapacidadModal() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'permiso/incapacidad', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'permiso/usuario',access_token,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 let aux = []
-                const { options } = this.state
-                options.lider = setOptions(response.data.direcciones, 'nombre', 'id')
-                this.setState({
-                    ...this.state,
-                    options
-                })
-                response.data.data.map((permiso)=>{
-                    permiso.permiso.forEach((tipo)=>{
-                        aux.push({
+                response.data.incapacidad.map((permiso)=>{         
+                            aux.push({
                             shortName: "Tipo",
-                            tipo: tipo.tipo_permiso,  
-                            name: permiso.nombre, 
-                            estatus:tipo.estatus,
-                            id:tipo.id,
-                            mRechazo: tipo.motivo_rechazo,
-                            comentarios: tipo.comentarios,
+                            tipo: permiso.tipo_permiso,  
+                            name: permiso.empleado.nombre, 
+                            estatus:permiso.estatus,
+                            id:permiso.id,
+                            mRechazo: permiso.motivo_rechazo,
+                            comentarios: permiso.comentarios,
                         })
-                    })
-                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -549,7 +551,7 @@ class Calendario extends Component {
             (response) => {
                 doneAlert('Permiso enviado con éxito')
                 this.handleClosePermisos()
-                this.getPermisosModal()
+                
             },
             (error) => {
             printResponseErrorAlert(error)
@@ -598,7 +600,6 @@ class Calendario extends Component {
             (response) => {
                 doneAlert('Incapacidad enviada con éxito')
                 this.handleClosePermisos()
-                this.getIncapacidadModal()
             },
             (error) => {
             // printResponseErrorAlert(error)
@@ -717,9 +718,9 @@ class Calendario extends Component {
                     result.push(moment(current).toDate());
                     current.add(1, "day");
                 }
-                const timeStamp = new Date().getTime();
-                const yesterdayTimeStamp = timeStamp - 2*24*60*60*1000;
-                const yesterdayDate = new Date(yesterdayTimeStamp);
+                // const timeStamp = new Date().getTime();
+                // const yesterdayTimeStamp = timeStamp - 2*24*60*60*1000;
+                // const yesterdayDate = new Date(yesterdayTimeStamp);
                 let arr3 = [...aux2, ...result]
                 eventos.map((evento) => {
                     aux.push({
@@ -1488,7 +1489,7 @@ class Calendario extends Component {
                         onChangeAdjunto={this.onChangeAdjunto}
                         options={options}
                         empleadoId={form.idEmpleado}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin();this.getPermisosModal() }}
                         tipoDeFormulario='permiso'
                     />
                 </Modal>                        
@@ -1502,7 +1503,7 @@ class Calendario extends Component {
                         onChangeAdjunto={this.onChangeAdjunto}
                         options={options}
                         empleadoId={form.idEmpleado}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addIncapacidadAxiosAdmin() }}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addIncapacidadAxiosAdmin();this.getIncapacidadModal() }}
                         tipoDeFormulario='incapacidad'
                     />
                         </Modal>
