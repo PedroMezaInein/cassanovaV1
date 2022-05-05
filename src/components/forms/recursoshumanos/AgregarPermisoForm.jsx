@@ -378,6 +378,42 @@ class AgregarPermisosForm extends Component {
                 </div> : <></>
                 }
                 {
+                    tipoDeFormulario==='rechazarElemento' ?
+                    <div className="form-group row form-group-marginless justify-content-between">
+                    <div className="col-md-12">
+                        {/* <div className="form-group row form-group-marginless"> */}
+                                <InputGray
+                                    as='textarea'
+                                    withtaglabel={1}
+                                    withicon={1}
+                                    requirevalidation={1}
+                                    withtextlabel={1} withplaceholder={1}
+                                    name="motivo_rechazo"
+                                    formeditado={formeditado}
+                                    value={form.motivo_rechazo}
+                                    onChange={onChange}
+                                    placeholder="DESCRIPCIÓN DEL MOTIVO DE RECHAZO"
+                                    iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Ingresa el motivo de rechazo"
+                                />
+                        {/* </div> */}
+                    </div>
+                    <div className="card-footer col-md-12 py-3 pr-1">
+                        <div className="row mx-0 ">
+                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                <Button icon='' className="btn btn-primary mr-2"
+                                    onClick={
+                                        (e) => {
+                                         e.preventDefault();
+                                            validateAlert(onSubmit, e, 'form-add-permisos')
+                                        }
+                                    }
+                                    text="ENVIAR" />
+                            </div>
+                        </div>
+                    </div>
+                </div> : <></>
+                }
+                            {
                     tipoDeFormulario==='incapacidad' ?
                     <div className="form-group row form-group-marginless justify-content-between">
                     <div className="col-md-4 text-center align-self-center">

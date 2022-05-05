@@ -9,7 +9,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { setSingleHeader } from '../../../functions/routers'
-import { printResponseErrorAlert, errorAlert,  createAlert, doneAlert, waitAlert, questionAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, errorAlert,  createAlert,createAlertSA2WithActionOnClose, doneAlert,questionAlertY, waitAlert, questionAlert } from '../../../functions/alert'
 import { URL_DEV, PERMISOS_COLUMNS, INCAPACIDAD_COLUMNS } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip, Tabs, Tab, } from 'react-bootstrap'
@@ -49,9 +49,13 @@ class Vacaciones extends Component {
         modal_mostrar_permisos: false,
         modal_mostrar_incapacidades: false,
         modal_adjuntos_permisos: false,
+        modal_motivo_rechazo_I:false,
+        modal_motivo_rechazo_P: false,
         eventos: '',
         date: '',
         permiso: '',
+        motivo_rechazo:'',
+        id_rechazo:'',
         form: {
             fechas: { start: null, end: null },
             // nombre: this.props.authUser.user.name,
@@ -66,6 +70,7 @@ class Vacaciones extends Component {
             hora_entrada: 0,
             minuto_entrada: 0,
             minuto_salida: 0,
+            motivo_rechazo:'',
             lider: '',
             adjuntos: {
                 adjuntos: {
@@ -189,6 +194,12 @@ class Vacaciones extends Component {
             modal: true
         })
     }
+
+    setId = (id) => {
+        let { id_rechazo } = this.state
+        id_rechazo = id
+        this.setState({...this.state, id_rechazo})
+    }
     openModalAddVacaciones = () => {
         this.setState({
             ...this.state,
@@ -210,6 +221,19 @@ class Vacaciones extends Component {
         this.setState({
             ...this.state,
             modal_permisos: true,
+        })
+    }
+    openModalRechazarI = () => {
+        this.setState({
+            ...this.state,
+            modal_motivo_rechazo_I: true,
+        })
+    }
+
+    openModalRechazarP = () => {
+        this.setState({
+            ...this.state,
+            modal_motivo_rechazo_P: true,
         })
     }
 
@@ -265,6 +289,14 @@ class Vacaciones extends Component {
             ...this.state,
             modal_incapacidad: false,
             modal_adjuntos_permisos: false,
+        })
+    }
+
+        handleCloseRechazo = () => {
+        this.setState({
+            ...this.state,
+            modal_motivo_rechazo_I:false,
+            modal_motivo_rechazo_P: false,
         })
     }
 
@@ -911,7 +943,7 @@ class Vacaciones extends Component {
             (response) => {
                 doneAlert('Incapacidad enviada con éxito')
                 this.handleClosePermisos()
-                this.getIncapacidadModal()
+                // this.getIncapacidadModal()
                 this.setIncapacidadEstatus()
             },
             (error) => {
@@ -923,16 +955,19 @@ class Vacaciones extends Component {
         })
     }
 
-    async editEstatusPermisos(permiso, estatus) {
+    async editEstatusPermisos(permiso, estatus,motivo) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/vacaciones/permiso/${permiso}`, { estatus: estatus }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/vacaciones/permiso/${permiso}`, {   estatus: estatus, 
+            motivo_rechazo:motivo, }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 if (estatus === 'Aceptadas')
                     doneAlert('Permiso aceptado con éxito')
                 if (estatus === 'Rechazadas')
-                    doneAlert('Permiso rechazado con éxito')
+                    {doneAlert('Permiso rechazado con éxito')}
+                this.setPermisoEstatus()
                 this.handleCloseEstatusPermisos();
+                this.handleCloseRechazo();
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -941,17 +976,21 @@ class Vacaciones extends Component {
     }
 
 
-    async editEstatusIncapacidad(permiso, estatus) {
+    async editEstatusIncapacidad(permiso, estatus, motivo) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/vacaciones/incapacidad/${permiso}`, { estatus: estatus }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/vacaciones/incapacidad/${permiso}`, {
+             estatus: estatus, 
+             motivo_rechazo:motivo,
+            }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 if (estatus === 'Aceptadas')
                     doneAlert('Permiso aceptado con éxito')
                 if (estatus === 'Rechazadas')
-                    doneAlert('Permiso rechazado con éxito')
+                   { doneAlert('Permiso rechazado con éxito')}
                 this.setIncapacidadEstatus()
                 this.handleCloseEstatusPermisos();
+                this.handleCloseRechazo();
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1093,44 +1132,44 @@ class Vacaciones extends Component {
         this.setState({ ...this.state, modal })
     }
 
-    async getIncapacidadModal() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'permiso/incapacidad', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                // let aux = []
-                // const { options } = this.state
-                // options.lider = setOptions(response.data.direcciones, 'nombre', 'id')
-                // this.setState({
-                //     ...this.state,
-                //     options
-                // })
-                // response.data.data.map((permiso)=>{
-                //     permiso.permiso.forEach((tipo)=>{
-                //         aux.push({
-                //             shortName: "Tipo",
-                //             tipo: tipo.tipo_permiso,  
-                //             name: permiso.nombre, 
-                //             estatus:tipo.estatus,
-                //             id:tipo.id,
-                //             mRechazo: tipo.motivo_rechazo,
-                //             comentarios: tipo.comentarios,
-                //         })
-                //     })
-                //     return false
-                // })
-                // this.setState({
-                //     ...this.state,
-                //     incapacidadesM: aux,
-                // })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+    // async getIncapacidadModal() {
+    //     const { access_token } = this.props.authUser
+    //     await axios.get(URL_DEV + 'permiso/incapacidad', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+    //         (response) => {
+    //             // let aux = []
+    //             // const { options } = this.state
+    //             // options.lider = setOptions(response.data.direcciones, 'nombre', 'id')
+    //             // this.setState({
+    //             //     ...this.state,
+    //             //     options
+    //             // })
+    //             // response.data.data.map((permiso)=>{
+    //             //     permiso.permiso.forEach((tipo)=>{
+    //             //         aux.push({
+    //             //             shortName: "Tipo",
+    //             //             tipo: tipo.tipo_permiso,  
+    //             //             name: permiso.nombre, 
+    //             //             estatus:tipo.estatus,
+    //             //             id:tipo.id,
+    //             //             mRechazo: tipo.motivo_rechazo,
+    //             //             comentarios: tipo.comentarios,
+    //             //         })
+    //             //     })
+    //             //     return false
+    //             // })
+    //             // this.setState({
+    //             //     ...this.state,
+    //             //     incapacidadesM: aux,
+    //             // })
+    //         },
+    //         (error) => {
+    //             printResponseErrorAlert(error)
+    //         }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.error(error, 'error')
+    //     })
+    // }
 
     async getAdjuntosPermisos(data) {
         const { access_token } = this.props.authUser
@@ -1309,7 +1348,7 @@ class Vacaciones extends Component {
     }
 
     render() {
-        const { modal_adjuntos_permisos, modal_mostrar_incapacidades, incapacidadesM, events, espera, modal, key, permisosM, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos, modal_mostrar_permisos, adjuntoArray } = this.state
+        const {modal_motivo_rechazo_I,modal_motivo_rechazo_P, id_rechazo,modal_adjuntos_permisos, modal_mostrar_incapacidades, incapacidadesM, events, espera, modal, key, permisosM, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos, modal_mostrar_permisos, adjuntoArray } = this.state
         const { authUser: { access_token } } = this.props
         // const { user } = this.props
 
@@ -1409,9 +1448,36 @@ class Vacaciones extends Component {
                                 onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addIncapacidadAxiosAdmin() }}
                             />
                         </Modal>
-                     
                     </Tab>
                 </Tabs>
+                <Modal size={"lg"} show={modal_motivo_rechazo_I} handleClose={this.handleCloseRechazo} title="Motivo de rechazo" >
+                            <AgregarPermisosForm
+                                tipoDeFormulario='rechazarElemento'
+                                disabledDates={disabledDates}
+                                formeditado={formeditado}
+                                deleteAdjunto={this.clearFiles}
+                                form={form}
+                                onChange={this.onChange}
+                                onChangeAdjunto={this.onChangeAdjunto}
+                                options={options}
+                                empleadoId={form.idEmpleado}
+                                onSubmit={(e) => { e.preventDefault(); waitAlert(); this.editEstatusIncapacidad(id_rechazo, 'Rechazado',form.motivo_rechazo); this.clearForm(); }}
+                            />
+                        </Modal>
+                        <Modal size={"lg"} show={modal_motivo_rechazo_P} handleClose={this.handleCloseRechazo} title="Motivo de rechazo" >
+                            <AgregarPermisosForm
+                                tipoDeFormulario='rechazarElemento'
+                                disabledDates={disabledDates}
+                                formeditado={formeditado}
+                                deleteAdjunto={this.clearFiles}
+                                form={form}
+                                onChange={this.onChange}
+                                onChangeAdjunto={this.onChangeAdjunto}
+                                options={options}
+                                empleadoId={form.idEmpleado}
+                                onSubmit={(e) => { e.preventDefault(); waitAlert(); this.editEstatusPermisos(id_rechazo, 'Rechazado',form.motivo_rechazo); this.clearForm(); }}
+                            />
+                        </Modal>
                 <Modal size={"lg"} title="adjuntos" show={modal_adjuntos_permisos} handleClose={this.handleCloseIncapacidad}>
                             <div className="col-md-12 px-2 text-center align-self-center">
                                 <ItemSlider
@@ -1459,7 +1525,7 @@ class Vacaciones extends Component {
                                                     <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick={(e) => {
                                                         e.preventDefault();
                                                         createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR EL PERMISO?', '',
-                                                            () => this.editEstatusPermisos(empleado.id, 'Aceptado')
+                                                        () => this.editEstatusIncapacidad(empleado.id, 'Aceptado','No rechazado')
                                                         )
                                                     }}
                                                     >
@@ -1467,8 +1533,10 @@ class Vacaciones extends Component {
                                                     </span>
                                                     <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger" onClick={(e) => {
                                                         e.preventDefault();
-                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS RECHAZAR EL PERMISO?', '',
-                                                            () => this.editEstatusPermisos(empleado.id, 'Rechazado')
+                                                        this.openModalRechazarP()
+                                                        createAlertSA2WithActionOnClose('¿ESTÁS SEGURO QUE DESEAS RECHAZAR EL PERMISO?', '',
+                                                        ()=> {this.setId(empleado.id)},
+                                                        ()=>{this.handleCloseRechazo()}
                                                         )
                                                     }}
                                                     >
@@ -1523,8 +1591,8 @@ class Vacaciones extends Component {
                                                 <td className="pr-0 text-center">
                                                     <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick={(e) => {
                                                         e.preventDefault();
-                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR EL PERMISO?', '',
-                                                            () => this.editEstatusIncapacidad(empleado.id, 'Aceptado')
+                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR LA INCAPACIDAD?', '',
+                                                            () => this.editEstatusIncapacidad(empleado.id, 'Aceptado','No rechazado')
                                                         )
                                                     }}
                                                     >
@@ -1532,9 +1600,10 @@ class Vacaciones extends Component {
                                                     </span>
                                                     <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger" onClick={(e) => {
                                                         e.preventDefault();
-                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS RECHAZAR EL PERMISO?', '',
-                                                            () => this.editEstatusIncapacidad(empleado.id, 'Rechazado')
-                                                        )
+                                                        this.openModalRechazarI();  
+                                                        createAlertSA2WithActionOnClose('¿ESTÁS SEGURO QUE DESEAS RECHAZAR LA INCAPACIDAD?', '',
+                                                        ()=> {this.setId(empleado.id)},
+                                                        ()=>{this.handleCloseRechazo()})
                                                     }}
                                                     >
                                                         <i className="flaticon2-cross icon-sm"></i>
