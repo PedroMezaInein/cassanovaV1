@@ -1527,6 +1527,7 @@ class TicketDetails extends Component {
             console.error(error, 'error')
         })
     }
+    
     generarReporteFotograficoAxios = async() => {
         const { access_token } = this.props.authUser
         const { ticket, formularios } = this.state
