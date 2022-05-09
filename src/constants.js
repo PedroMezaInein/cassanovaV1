@@ -242,7 +242,7 @@ export const AREAS_COMPRAS_COLUMNS = [
 ]
 export const PERMISOS_COLUMNS = [
     // { Header: 'Empleado', accessor: 'empleado' , customRender: false },
-    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true,searchable: false  },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },    
     { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },

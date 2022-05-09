@@ -56,6 +56,8 @@ class NewTable extends Component{
     runAjax = (request) => {
         const { accessToken, urlRender, setter } = this.props
         var deferred = new $.Deferred();
+        console.log(request)
+
         $.ajax({
             data: request,
             url: urlRender,
@@ -213,7 +215,6 @@ class NewTable extends Component{
                             $(row).addClass('blanco');
                         } else {
                             if (objeto.factura) {
-                                console.log(objeto)
                                 if (objeto.total_facturas - objeto.monto > 1) {
                                     $(row).addClass('verde');
                                 } else if (objeto.total_facturas - objeto.monto < -1) {

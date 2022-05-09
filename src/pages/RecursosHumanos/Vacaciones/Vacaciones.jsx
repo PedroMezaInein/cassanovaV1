@@ -24,7 +24,7 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 import { Nav } from 'react-bootstrap'
 import {
-    setOptionsWithLabel, setTextTable, setArrayTable, setTextTableCenter, setNaviIcon
+    setOptionsWithLabel, setTextTable,setArrayTable, setTextTableCenter, setNaviIcon
 } from '../../../functions/setters'
 import { /* Parking, ParkingRed, */ PassportTravel, HappyBirthday, Calendar /* , EmptyParkSlot */ } from '../../../components/Lottie'
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
@@ -58,14 +58,12 @@ class Vacaciones extends Component {
         id_rechazo:'',
         form: {
             fechas: { start: null, end: null },
-            // nombre: this.props.authUser.user.name,
-            idEmpleado: this.props.authUser.user.name,
+            idSelectEmpleado:'',
             nombre: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
             descripcion: '',
             tipo: '',
-            empleado: this.props.authUser.user.empleado_id,
             hora_salida: 0,
             hora_entrada: 0,
             minuto_entrada: 0,
@@ -125,7 +123,7 @@ class Vacaciones extends Component {
         if (value === 'permisos') {
             this.setPermisoEstatus()
             this.getPermisosModal()
-            this.setPermisos()
+            // this.setPermisos()
         }
         if (value === 'incapacidades') {
             this.setIncapacidades()
@@ -135,7 +133,7 @@ class Vacaciones extends Component {
         }
         this.setState({ ...this.state, key: value, form })
     }
-
+ 
     async setPermisoEstatus() {
         $('#Permisos').DataTable().ajax.reload();
     }
@@ -877,9 +875,9 @@ class Vacaciones extends Component {
         let fechaFinA = form.fechaFin
         let fechaFinAString = fechaFinA.toISOString();
         data.append('fecha_fin', fechaFinAString)
-        // let empleadoA = form.empleado
-        data.append('empleado', this.props.authUser.user.empleado_id)
-        data.append('empleado_id', this.props.authUser.user.empleado_id)
+        let empleadoA = form.empleado
+        data.append('empleado', empleadoA)
+        data.append('empleado_id',empleadoA )
         let liderA = form.lider
         data.append('lider', liderA)
         // data.append('lider_id', liderA)
@@ -894,6 +892,7 @@ class Vacaciones extends Component {
         data.append('hora_entrada', horaEntradaA)
         await axios.post(URL_DEV + 'v2/rh/vacaciones/adminPermiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                console.log(response)
                 doneAlert('Permiso enviado con éxito')
                 this.handleClosePermisos()
             },
@@ -926,9 +925,9 @@ class Vacaciones extends Component {
         let fechaFinA = form.fechaFin
         let fechaFinAString = fechaFinA.toISOString();
         data.append('fechaFin', fechaFinAString)
-        // let empleadoA = form.empleado
-        data.append('empleado', this.props.authUser.user.empleado_id)
-        data.append('empleado_id', this.props.authUser.user.empleado_id)
+        let empleadoA = form.idSelectEmpleado
+        data.append('empleado',empleadoA )
+        data.append('empleado_id',empleadoA )
         let liderA = form.lider
         data.append('lider', liderA)
         // data.append('lider_id', liderA)
@@ -1253,16 +1252,16 @@ class Vacaciones extends Component {
         )
     }
 
-    setPermisos = (permisos) => {
-        const { data, options } = this.state
+  setPermisos = (datos) => {
+         const { data ,options } = this.state
         let aux = []
         this.setState({
             data
         })
 
-        if (permisos)
-
-            permisos.map((permiso) => {
+console.log(datos, 'permisos')
+//   if(permisos)
+datos.forEach((permiso) => {
                 aux.push(
                     {
                         actions: this.setActionsPermisoIncapacidad(permiso),
@@ -1279,25 +1278,36 @@ class Vacaciones extends Component {
                                 { name: 'Fecha fin', text: permiso.fecha_fin ? permiso.fecha_fin : '' },
                             ], '250px'
                         ),
-                        nombre: setTextTable(permiso.empleado ? permiso.empleado.nombre : ''),
+                        // nombre: setTextTable(permiso.empleado ? permiso.empleado.nombre : ''),
+                        // nombre: setTextTable(permiso.empleado ? console.log(permiso.empleado.nombre) : ''),
+
                         lider: setTextTable(permiso.lider_id ?
-                            options.empleados.map((empleado) => {
+                            options.lider.map((empleado) => {
                                 if (permiso.lider_id.toString() === empleado.value) {
                                     return (empleado.name)
                                 }
                                 return false
                             })
                             : ''),
+                            nombre: setTextTable(permiso.empleado_id ?
+                                options.empleados.map((empleado) => {
+                                    if (permiso.empleado_id.toString() === empleado.value) {
+                                        return (empleado.name)
+                                    }
+                                    return false
+                                })
+                                : ''),
                         estatus: setTextTable(permiso.estatus ? permiso.estatus : ''),
                         descripcion: setTextTable(permiso.comentarios ? permiso.comentarios : ''),
                         rechazo: setTextTable(permiso.motivo_rechazo ? permiso.motivo_rechazo : ''),
                         // adjuntos: setArrayTable(_aux),
                         id: permiso.id,
-                        // objeto: permiso.
+                        objeto: permiso,
                     }
                 )
                 return aux;
             })
+       
         return aux;
     }
 
@@ -1414,6 +1424,7 @@ class Vacaciones extends Component {
                             mostarPermisos={this.openEstatusPermisos}
                             mostarPalabra={'PERMISOS'}
                             urlRender={`${URL_DEV}permiso`}
+                            type='tab'
                         />
                     </Tab>
                     <Tab eventKey="incapacidades" title="Incapacidades">
@@ -1444,7 +1455,7 @@ class Vacaciones extends Component {
                                 onChange={this.onChange}
                                 onChangeAdjunto={this.onChangeAdjunto}
                                 options={options}
-                                empleadoId={form.idEmpleado}
+                                // empleadoId={form.idEmpleado}
                                 onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addIncapacidadAxiosAdmin() }}
                             />
                         </Modal>
@@ -1460,7 +1471,7 @@ class Vacaciones extends Component {
                                 onChange={this.onChange}
                                 onChangeAdjunto={this.onChangeAdjunto}
                                 options={options}
-                                empleadoId={form.idEmpleado}
+                                // empleadoId={form.idEmpleado}
                                 onSubmit={(e) => { e.preventDefault(); waitAlert(); this.editEstatusIncapacidad(id_rechazo, 'Rechazado',form.motivo_rechazo); this.clearForm(); }}
                             />
                         </Modal>
@@ -1474,7 +1485,7 @@ class Vacaciones extends Component {
                                 onChange={this.onChange}
                                 onChangeAdjunto={this.onChangeAdjunto}
                                 options={options}
-                                empleadoId={form.idEmpleado}
+                                // empleadoId={form.idEmpleado}
                                 onSubmit={(e) => { e.preventDefault(); waitAlert(); this.editEstatusPermisos(id_rechazo, 'Rechazado',form.motivo_rechazo); this.clearForm(); }}
                             />
                         </Modal>
@@ -1704,8 +1715,10 @@ class Vacaciones extends Component {
                         onChange={this.onChange}
                         onChangeAdjunto={this.onChangeAdjunto}
                         options={options}
-                        empleadoId={form.idEmpleado}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin() }}
+                        // empleadoId={form.idEmpleado}
+                        onSubmit={(e) => { console.log(form)
+                            e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin()
+                         }}
                     />
                 </Modal>
                 <Modal size="lg" title={title} show={modal_cajones} handleClose={this.handleCloseCajones} >
