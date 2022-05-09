@@ -1177,7 +1177,7 @@ class Empleados extends Component {
                 <Modal size="lg" title="Colaborador" show={modal.see} handleClose={this.handleCloseSee} >
                     <EmpleadosCard empleado={empleado} />
                 </Modal>
-                <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
+                <Modal size="xl" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
                         generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
                         cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } formeditado={formeditado}
