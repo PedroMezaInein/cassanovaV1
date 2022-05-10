@@ -56,7 +56,7 @@ class NewTable extends Component{
     runAjax = (request) => {
         const { accessToken, urlRender, setter } = this.props
         var deferred = new $.Deferred();
-        console.log(request)
+       
 
         $.ajax({
             data: request,
@@ -66,6 +66,7 @@ class NewTable extends Component{
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
             success: function (response) {
                 deferred.resolve({ data: setter(response.data), draw: response.draw, recordsTotal: response.recordsTotal, recordsFiltered: response.recordsFiltered, elements: response.data });
+
             },
             error: function (error) {
                 console.error(error, 'error')

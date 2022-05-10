@@ -9,7 +9,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { setSingleHeader } from '../../../functions/routers'
-import { printResponseErrorAlert, errorAlert,  createAlert,createAlertSA2WithActionOnClose, doneAlert,questionAlertY, waitAlert, questionAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, errorAlert, createAlert, createAlertSA2WithActionOnClose, doneAlert, questionAlertY, waitAlert, questionAlert } from '../../../functions/alert'
 import { URL_DEV, PERMISOS_COLUMNS, INCAPACIDAD_COLUMNS } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip, Tabs, Tab, } from 'react-bootstrap'
@@ -24,7 +24,7 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 import { Nav } from 'react-bootstrap'
 import {
-    setOptionsWithLabel, setTextTable,setArrayTable, setTextTableCenter, setNaviIcon
+    setOptionsWithLabel, setTextTable, setArrayTable, setTextTableCenter, setNaviIcon
 } from '../../../functions/setters'
 import { /* Parking, ParkingRed, */ PassportTravel, HappyBirthday, Calendar /* , EmptyParkSlot */ } from '../../../components/Lottie'
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
@@ -49,16 +49,16 @@ class Vacaciones extends Component {
         modal_mostrar_permisos: false,
         modal_mostrar_incapacidades: false,
         modal_adjuntos_permisos: false,
-        modal_motivo_rechazo_I:false,
+        modal_motivo_rechazo_I: false,
         modal_motivo_rechazo_P: false,
         eventos: '',
         date: '',
         permiso: '',
-        motivo_rechazo:'',
-        id_rechazo:'',
+        motivo_rechazo: '',
+        id_rechazo: '',
         form: {
             fechas: { start: null, end: null },
-            idSelectEmpleado:'',
+            idSelectEmpleado: '',
             nombre: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -68,7 +68,7 @@ class Vacaciones extends Component {
             hora_entrada: 0,
             minuto_entrada: 0,
             minuto_salida: 0,
-            motivo_rechazo:'',
+            motivo_rechazo: '',
             lider: '',
             adjuntos: {
                 adjuntos: {
@@ -93,8 +93,9 @@ class Vacaciones extends Component {
             empleados: [],
             lider: []
         },
+        prueba: [],
         data: {
-            // permiso: [],
+            // permiso:[]
         },
         disabledDates: [],
         adjuntoArray: [],
@@ -121,19 +122,19 @@ class Vacaciones extends Component {
         if (value === 'vacaciones')
             this.getVacaciones()
         if (value === 'permisos') {
-            this.setPermisoEstatus()
+            // this.setPermisoEstatus()
             this.getPermisosModal()
             // this.setPermisos()
         }
         if (value === 'incapacidades') {
-            this.setIncapacidades()
+            // this.setIncapacidades()
             this.setIncapacidadEstatus()
             this.getIncapacidadesModal()
 
         }
         this.setState({ ...this.state, key: value, form })
     }
- 
+
     async setPermisoEstatus() {
         $('#Permisos').DataTable().ajax.reload();
     }
@@ -196,7 +197,7 @@ class Vacaciones extends Component {
     setId = (id) => {
         let { id_rechazo } = this.state
         id_rechazo = id
-        this.setState({...this.state, id_rechazo})
+        this.setState({ ...this.state, id_rechazo })
     }
     openModalAddVacaciones = () => {
         this.setState({
@@ -290,10 +291,10 @@ class Vacaciones extends Component {
         })
     }
 
-        handleCloseRechazo = () => {
+    handleCloseRechazo = () => {
         this.setState({
             ...this.state,
-            modal_motivo_rechazo_I:false,
+            modal_motivo_rechazo_I: false,
             modal_motivo_rechazo_P: false,
         })
     }
@@ -877,7 +878,7 @@ class Vacaciones extends Component {
         data.append('fecha_fin', fechaFinAString)
         let empleadoA = form.empleado
         data.append('empleado', empleadoA)
-        data.append('empleado_id',empleadoA )
+        data.append('empleado_id', empleadoA)
         let liderA = form.lider
         data.append('lider', liderA)
         // data.append('lider_id', liderA)
@@ -895,6 +896,7 @@ class Vacaciones extends Component {
                 console.log(response)
                 doneAlert('Permiso enviado con éxito')
                 this.handleClosePermisos()
+                this.setPermisoEstatus()
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -925,9 +927,9 @@ class Vacaciones extends Component {
         let fechaFinA = form.fechaFin
         let fechaFinAString = fechaFinA.toISOString();
         data.append('fechaFin', fechaFinAString)
-        let empleadoA = form.idSelectEmpleado
-        data.append('empleado',empleadoA )
-        data.append('empleado_id',empleadoA )
+        let empleadoA = form.empleado
+        data.append('empleado', empleadoA)
+        data.append('empleado_id', empleadoA)
         let liderA = form.lider
         data.append('lider', liderA)
         // data.append('lider_id', liderA)
@@ -954,16 +956,17 @@ class Vacaciones extends Component {
         })
     }
 
-    async editEstatusPermisos(permiso, estatus,motivo) {
+    async editEstatusPermisos(permiso, estatus, motivo) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/vacaciones/permiso/${permiso}`, {   estatus: estatus, 
-            motivo_rechazo:motivo, }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/vacaciones/permiso/${permiso}`, {
+            estatus: estatus,
+            motivo_rechazo: motivo,
+        }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 if (estatus === 'Aceptadas')
                     doneAlert('Permiso aceptado con éxito')
-                if (estatus === 'Rechazadas')
-                    {doneAlert('Permiso rechazado con éxito')}
+                if (estatus === 'Rechazadas') { doneAlert('Permiso rechazado con éxito') }
                 this.setPermisoEstatus()
                 this.handleCloseEstatusPermisos();
                 this.handleCloseRechazo();
@@ -979,14 +982,13 @@ class Vacaciones extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v2/rh/vacaciones/incapacidad/${permiso}`, {
-             estatus: estatus, 
-             motivo_rechazo:motivo,
-            }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            estatus: estatus,
+            motivo_rechazo: motivo,
+        }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 if (estatus === 'Aceptadas')
                     doneAlert('Permiso aceptado con éxito')
-                if (estatus === 'Rechazadas')
-                   { doneAlert('Permiso rechazado con éxito')}
+                if (estatus === 'Rechazadas') { doneAlert('Permiso rechazado con éxito') }
                 this.setIncapacidadEstatus()
                 this.handleCloseEstatusPermisos();
                 this.handleCloseRechazo();
@@ -1252,113 +1254,106 @@ class Vacaciones extends Component {
         )
     }
 
-  setPermisos = (datos) => {
-         const { data ,options } = this.state
+    setPermisos = (datos) => {
+        const { data, options } = this.state
         let aux = []
+
         this.setState({
             data
         })
 
-console.log(datos, 'permisos')
-//   if(permisos)
-datos.forEach((permiso) => {
-                aux.push(
-                    {
-                        actions: this.setActionsPermisoIncapacidad(permiso),
-                        identificador: setTextTableCenter(permiso.id),
-                        horas: setArrayTable(
-                            [
-                                { name: 'Hora entrada', text: permiso.hora_entrada ? permiso.hora_entrada : '' },
-                                { name: 'Hora salida', text: permiso.hora_salida ? permiso.hora_salida : '' },
-                            ], '250px'
-                        ),
-                        fechas: setArrayTable(
-                            [
-                                { name: 'Fecha inicio', text: permiso.fecha_inicio ? permiso.fecha_inicio : '' },
-                                { name: 'Fecha fin', text: permiso.fecha_fin ? permiso.fecha_fin : '' },
-                            ], '250px'
-                        ),
-                        // nombre: setTextTable(permiso.empleado ? permiso.empleado.nombre : ''),
-                        // nombre: setTextTable(permiso.empleado ? console.log(permiso.empleado.nombre) : ''),
+        datos.map((permiso) => {
+            aux.push(
+                {
+                    actions: this.setActionsPermisoIncapacidad(permiso),
+                    identificador: setTextTableCenter(permiso.id),
+                    horas: setArrayTable(
+                        [
+                            { name: 'Hora entrada', text: permiso.hora_entrada ? permiso.hora_entrada : '' },
+                            { name: 'Hora salida', text: permiso.hora_salida ? permiso.hora_salida : '' },
+                        ], '250px'
+                    ),
+                    fechas: setArrayTable(
+                        [
+                            { name: 'Fecha inicio', text: permiso.fecha_inicio ? permiso.fecha_inicio : '' },
+                            { name: 'Fecha fin', text: permiso.fecha_fin ? permiso.fecha_fin : '' },
+                        ], '250px'
+                    ),
+                    lider: setTextTable(permiso.lider_id ?
+                        options.lider.map((empleado) => {
+                            if (permiso.lider_id.toString() === empleado.value) {
+                                return (empleado.name)
+                            }
+                            return false
+                        })
+                        : ''),
+                    nombre: setTextTable(permiso.empleado_id ?
+                        options.empleados.map((empleado) => {
+                            if (permiso.empleado_id.toString() === empleado.value) {
+                                return (empleado.name)
+                            }
+                            return false
+                        })
+                        : ''),
+                    estatus: setTextTable(permiso.estatus ? permiso.estatus : ''),
+                    descripcion: setTextTable(permiso.comentarios ? permiso.comentarios : ''),
+                    rechazo: setTextTable(permiso.motivo_rechazo ? permiso.motivo_rechazo : ''),
+                    // adjuntos: setArrayTable(_aux),
+                    id: permiso.id,
+                    objeto: permiso,
+                }
+            )
+            return aux;
+        })
 
-                        lider: setTextTable(permiso.lider_id ?
-                            options.lider.map((empleado) => {
-                                if (permiso.lider_id.toString() === empleado.value) {
-                                    return (empleado.name)
-                                }
-                                return false
-                            })
-                            : ''),
-                            nombre: setTextTable(permiso.empleado_id ?
-                                options.empleados.map((empleado) => {
-                                    if (permiso.empleado_id.toString() === empleado.value) {
-                                        return (empleado.name)
-                                    }
-                                    return false
-                                })
-                                : ''),
-                        estatus: setTextTable(permiso.estatus ? permiso.estatus : ''),
-                        descripcion: setTextTable(permiso.comentarios ? permiso.comentarios : ''),
-                        rechazo: setTextTable(permiso.motivo_rechazo ? permiso.motivo_rechazo : ''),
-                        // adjuntos: setArrayTable(_aux),
-                        id: permiso.id,
-                        objeto: permiso,
-                    }
-                )
-                return aux;
-            })
-       
         return aux;
     }
 
-    setIncapacidades = (incapacidades) => {
-        const { data, options } = this.state
+    setIncapacidades = incapacidades => {
+        const { options } = this.state
         let aux = []
-        this.setState({
-            data
+        incapacidades.map((incapacidad) => {
+            aux.push(
+                {
+                    actions: this.setActionsPermisoIncapacidad(incapacidad),
+                    identificador: setTextTableCenter(incapacidad.id),
+                    horas: setArrayTable(
+                        [
+                            { name: 'Hora entrada', text: incapacidad.hora_entrada ? incapacidad.hora_entrada : '' },
+                            { name: 'Hora salida', text: incapacidad.hora_salida ? incapacidad.hora_salida : '' },
+                        ], '250px'
+                    ),
+                    fechas: setArrayTable(
+                        [
+                            { name: 'Fecha inicio', text: incapacidad.fecha_inicio ? incapacidad.fecha_inicio : '' },
+                            { name: 'Fecha fin', text: incapacidad.fecha_fin ? incapacidad.fecha_fin : '' },
+                        ], '250px'
+                    ),
+                    nombre: setTextTable(incapacidad.empleado ? incapacidad.empleado.nombre : ''),
+                    lider: setTextTable(incapacidad.lider_id ?
+                        options.empleados.map((empleado) => {
+                            if (incapacidad.lider_id.toString() === empleado.value) {
+                                return (empleado.name)
+                            }
+                            return false
+                        })
+                        : ''),
+                    estatus: setTextTable(incapacidad.estatus ? incapacidad.estatus : ''),
+                    descripcion: setTextTable(incapacidad.comentarios ? incapacidad.comentarios : ''),
+                    rechazo: setTextTable(incapacidad.motivo_rechazo ? incapacidad.motivo_rechazo : ''),
+                    // adjuntos: setArrayTable(_aux),
+                    id: incapacidad.id,
+                    // objeto: incapacidad.
+                }
+            )
+            return false;
         })
-        if (incapacidades)
-            incapacidades.map((incapacidad) => {
-                aux.push(
-                    {
-                        actions: this.setActionsPermisoIncapacidad(incapacidad),
-                        identificador: setTextTableCenter(incapacidad.id),
-                        horas: setArrayTable(
-                            [
-                                { name: 'Hora entrada', text: incapacidad.hora_entrada ? incapacidad.hora_entrada : '' },
-                                { name: 'Hora salida', text: incapacidad.hora_salida ? incapacidad.hora_salida : '' },
-                            ], '250px'
-                        ),
-                        fechas: setArrayTable(
-                            [
-                                { name: 'Fecha inicio', text: incapacidad.fecha_inicio ? incapacidad.fecha_inicio : '' },
-                                { name: 'Fecha fin', text: incapacidad.fecha_fin ? incapacidad.fecha_fin : '' },
-                            ], '250px'
-                        ),
-                        nombre: setTextTable(incapacidad.empleado ? incapacidad.empleado.nombre : ''),
-                        lider: setTextTable(incapacidad.lider_id ?
-                            options.empleados.map((empleado) => {
-                                if (incapacidad.lider_id.toString() === empleado.value) {
-                                    return (empleado.name)
-                                }
-                                return false
-                            })
-                            : ''),
-                        estatus: setTextTable(incapacidad.estatus ? incapacidad.estatus : ''),
-                        descripcion: setTextTable(incapacidad.comentarios ? incapacidad.comentarios : ''),
-                        rechazo: setTextTable(incapacidad.motivo_rechazo ? incapacidad.motivo_rechazo : ''),
-                        // adjuntos: setArrayTable(_aux),
-                        id: incapacidad.id,
-                        // objeto: incapacidad.
-                    }
-                )
-                return aux;
-            })
+
         return aux;
     }
 
     render() {
-        const {modal_motivo_rechazo_I,modal_motivo_rechazo_P, id_rechazo,modal_adjuntos_permisos, modal_mostrar_incapacidades, incapacidadesM, events, espera, modal, key, permisosM, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos, modal_mostrar_permisos, adjuntoArray } = this.state
+        const { modal_motivo_rechazo_I, modal_motivo_rechazo_P, id_rechazo, modal_adjuntos_permisos, modal_mostrar_incapacidades, incapacidadesM, events, espera, modal, key, permisosM, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos, modal_mostrar_permisos, adjuntoArray } = this.state
         const { authUser: { access_token } } = this.props
         // const { user } = this.props
 
@@ -1444,6 +1439,7 @@ datos.forEach((permiso) => {
                             urlRender={`${URL_DEV}permiso/getall`}
                             mostarPermisos={this.openEstatusIncapacidades}
                             mostarPalabra={'INCAPACIDADES'}
+                            type='tab'
                         />
                         <Modal size={"lg"} show={modal_incapacidad} handleClose={this.handleCloseIncapacidad} title="Agregar incapacidad" >
                             <AgregarPermisosForm
@@ -1462,39 +1458,39 @@ datos.forEach((permiso) => {
                     </Tab>
                 </Tabs>
                 <Modal size={"lg"} show={modal_motivo_rechazo_I} handleClose={this.handleCloseRechazo} title="Motivo de rechazo" >
-                            <AgregarPermisosForm
-                                tipoDeFormulario='rechazarElemento'
-                                disabledDates={disabledDates}
-                                formeditado={formeditado}
-                                deleteAdjunto={this.clearFiles}
-                                form={form}
-                                onChange={this.onChange}
-                                onChangeAdjunto={this.onChangeAdjunto}
-                                options={options}
-                                // empleadoId={form.idEmpleado}
-                                onSubmit={(e) => { e.preventDefault(); waitAlert(); this.editEstatusIncapacidad(id_rechazo, 'Rechazado',form.motivo_rechazo); this.clearForm(); }}
-                            />
-                        </Modal>
-                        <Modal size={"lg"} show={modal_motivo_rechazo_P} handleClose={this.handleCloseRechazo} title="Motivo de rechazo" >
-                            <AgregarPermisosForm
-                                tipoDeFormulario='rechazarElemento'
-                                disabledDates={disabledDates}
-                                formeditado={formeditado}
-                                deleteAdjunto={this.clearFiles}
-                                form={form}
-                                onChange={this.onChange}
-                                onChangeAdjunto={this.onChangeAdjunto}
-                                options={options}
-                                // empleadoId={form.idEmpleado}
-                                onSubmit={(e) => { e.preventDefault(); waitAlert(); this.editEstatusPermisos(id_rechazo, 'Rechazado',form.motivo_rechazo); this.clearForm(); }}
-                            />
-                        </Modal>
+                    <AgregarPermisosForm
+                        tipoDeFormulario='rechazarElemento'
+                        disabledDates={disabledDates}
+                        formeditado={formeditado}
+                        deleteAdjunto={this.clearFiles}
+                        form={form}
+                        onChange={this.onChange}
+                        onChangeAdjunto={this.onChangeAdjunto}
+                        options={options}
+                        // empleadoId={form.idEmpleado}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.editEstatusIncapacidad(id_rechazo, 'Rechazado', form.motivo_rechazo); this.clearForm(); }}
+                    />
+                </Modal>
+                <Modal size={"lg"} show={modal_motivo_rechazo_P} handleClose={this.handleCloseRechazo} title="Motivo de rechazo" >
+                    <AgregarPermisosForm
+                        tipoDeFormulario='rechazarElemento'
+                        disabledDates={disabledDates}
+                        formeditado={formeditado}
+                        deleteAdjunto={this.clearFiles}
+                        form={form}
+                        onChange={this.onChange}
+                        onChangeAdjunto={this.onChangeAdjunto}
+                        options={options}
+                        // empleadoId={form.idEmpleado}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.editEstatusPermisos(id_rechazo, 'Rechazado', form.motivo_rechazo); this.clearForm(); }}
+                    />
+                </Modal>
                 <Modal size={"lg"} title="adjuntos" show={modal_adjuntos_permisos} handleClose={this.handleCloseIncapacidad}>
-                            <div className="col-md-12 px-2 text-center align-self-center">
-                                <ItemSlider
-                                    items={adjuntoArray} />
-                            </div>
-                        </Modal>
+                    <div className="col-md-12 px-2 text-center align-self-center">
+                        <ItemSlider
+                            items={adjuntoArray} />
+                    </div>
+                </Modal>
                 <Modal size="lg" title="Solicitudes de permiso" show={modal_mostrar_permisos} handleClose={this.handleCloseEstatusPermisos} >
                     <div className="table-responsive mt-6">
                         <table className="table table-head-custom table-head-bg table-vertical-center">
@@ -1536,7 +1532,7 @@ datos.forEach((permiso) => {
                                                     <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick={(e) => {
                                                         e.preventDefault();
                                                         createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR EL PERMISO?', '',
-                                                        () => this.editEstatusIncapacidad(empleado.id, 'Aceptado','No rechazado')
+                                                            () => this.editEstatusIncapacidad(empleado.id, 'Aceptado', 'No rechazado')
                                                         )
                                                     }}
                                                     >
@@ -1546,8 +1542,8 @@ datos.forEach((permiso) => {
                                                         e.preventDefault();
                                                         this.openModalRechazarP()
                                                         createAlertSA2WithActionOnClose('¿ESTÁS SEGURO QUE DESEAS RECHAZAR EL PERMISO?', '',
-                                                        ()=> {this.setId(empleado.id)},
-                                                        ()=>{this.handleCloseRechazo()}
+                                                            () => { this.setId(empleado.id) },
+                                                            () => { this.handleCloseRechazo() }
                                                         )
                                                     }}
                                                     >
@@ -1603,7 +1599,7 @@ datos.forEach((permiso) => {
                                                     <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick={(e) => {
                                                         e.preventDefault();
                                                         createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR LA INCAPACIDAD?', '',
-                                                            () => this.editEstatusIncapacidad(empleado.id, 'Aceptado','No rechazado')
+                                                            () => this.editEstatusIncapacidad(empleado.id, 'Aceptado', 'No rechazado')
                                                         )
                                                     }}
                                                     >
@@ -1611,10 +1607,10 @@ datos.forEach((permiso) => {
                                                     </span>
                                                     <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger" onClick={(e) => {
                                                         e.preventDefault();
-                                                        this.openModalRechazarI();  
+                                                        this.openModalRechazarI();
                                                         createAlertSA2WithActionOnClose('¿ESTÁS SEGURO QUE DESEAS RECHAZAR LA INCAPACIDAD?', '',
-                                                        ()=> {this.setId(empleado.id)},
-                                                        ()=>{this.handleCloseRechazo()})
+                                                            () => { this.setId(empleado.id) },
+                                                            () => { this.handleCloseRechazo() })
                                                     }}
                                                     >
                                                         <i className="flaticon2-cross icon-sm"></i>
@@ -1716,9 +1712,10 @@ datos.forEach((permiso) => {
                         onChangeAdjunto={this.onChangeAdjunto}
                         options={options}
                         // empleadoId={form.idEmpleado}
-                        onSubmit={(e) => { console.log(form)
+                        onSubmit={(e) => {
+                            console.log(form)
                             e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin()
-                         }}
+                        }}
                     />
                 </Modal>
                 <Modal size="lg" title={title} show={modal_cajones} handleClose={this.handleCloseCajones} >

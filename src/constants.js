@@ -252,7 +252,7 @@ export const PERMISOS_COLUMNS = [
     { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
 ]
 export const INCAPACIDAD_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true,searchable: false  },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
     { Header: 'Fechas', accessor: 'fechas', customRender: true },

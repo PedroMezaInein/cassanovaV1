@@ -120,6 +120,7 @@ class Calendario extends Component {
         }
         this.addIncapacidadAxiosAdmin()
         this.setOptionsModal()
+        // this.getIncapacidadModal()
     }
 
         clearFiles = (name, key) => {
@@ -348,6 +349,7 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'permiso/usuario',access_token, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                console.log(response)
                 let aux = []
                 response.data.permisos.map((permiso)=>{         
                             aux.push({
@@ -378,6 +380,7 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'permiso/usuario',access_token,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                console.log(response)
                 let aux = []
                 response.data.incapacidad.map((permiso)=>{         
                             aux.push({
@@ -389,6 +392,8 @@ class Calendario extends Component {
                             mRechazo: permiso.motivo_rechazo,
                             comentarios: permiso.comentarios,
                         })
+                        console.log(aux)
+                        return aux
                 })
                 this.setState({
                     ...this.state,
