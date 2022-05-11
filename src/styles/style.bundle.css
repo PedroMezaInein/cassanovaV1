@@ -2945,6 +2945,8 @@ pre code {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  max-height: 80vh!important;
+  overflow-y: scroll;
 }
 
 .table-responsive>.table-bordered {

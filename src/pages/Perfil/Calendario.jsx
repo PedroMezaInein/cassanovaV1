@@ -1566,8 +1566,8 @@ class Calendario extends Component {
                             : ''
                     }
                 </Modal>
-                <Modal size={"lg"} title='estatus de permisos' show={modal.modal_ver_permiso} handleClose={this.handleClosePermisos}>
-                <div className="table-responsive mt-6">
+                <Modal className='max-height' size={"lg"} title='estatus de permisos' show={modal.modal_ver_permiso} handleClose={this.handleClosePermisos}>
+                <div className="table-responsive mt-6 ">
                         <table className="table table-head-custom table-head-bg table-vertical-center">
                             <thead>
                                 <tr className="text-left">

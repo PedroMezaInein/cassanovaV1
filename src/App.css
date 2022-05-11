@@ -37,3 +37,7 @@
   }
 }
  
+.max-height{
+  max-height: 90vh!important;
+  overflow-y: scroll;
+}

@@ -137,9 +137,11 @@ class Vacaciones extends Component {
 
     async setPermisoEstatus() {
         $('#Permisos').DataTable().ajax.reload();
+
     }
     async setIncapacidadEstatus() {
         $('#incapacidades').DataTable().ajax.reload();
+        
     }
     onChange = e => {
         const { form } = this.state
@@ -330,14 +332,83 @@ class Vacaciones extends Component {
             modal_mostrar_incapacidades: true,
         })
     }
-    handleClosePermisos = () => {
+    clearModals = () => {
+        const { form } = this.state
+        form.fechaInicio= new Date()
+        form.fechaFin= new Date()
+        form.descripcion = ''
+        form.tipo= ''
+        form.hora_salida= 0
+        form.hora_entrada= 0
+        form.minuto_entrada= 0
+        form.minuto_salida= 0 
+        form.lider= ''
+        form.adjuntos= {
+            adjuntos: {
+                files: [],
+                value: '',
+                placeholder: 'Adjuntos'
+            }
+        }
         this.setState({
             ...this.state,
+            form,
+        })
+    } 
+
+    handleClosePermisos = () => {
+        const { form } = this.state
+        form.fechaInicio= new Date()
+        form.fechaFin= new Date()
+        form.descripcion = ''
+        form.empleado=''
+        form.tipo= ''
+        form.hora_salida= 0
+        form.hora_entrada= 0
+        form.minuto_entrada= 0
+        form.minuto_salida= 0 
+        form.lider= ''
+        form.adjuntos= {
+            adjuntos: {
+                files: [],
+                value: '',
+                placeholder: 'Adjuntos'
+            }
+        }
+        this.setState({
+            ...this.state,
+            form,
             modal_permisos: false,
-            modal_incapacidad: false,
-            form: this.clearForm()
         })
         this.setPermisoEstatus()
+     
+    }
+    handleCloseIncapacidad = () => {
+        const { form } = this.state
+        form.fechaInicio= new Date()
+        form.fechaFin= new Date()
+        form.descripcion = ''
+        form.empleado=''
+        form.tipo= ''
+        form.hora_salida= 0
+        form.hora_entrada= 0
+        form.minuto_entrada= 0
+        form.minuto_salida= 0 
+        form.lider= ''
+        form.adjuntos= {
+            adjuntos: {
+                files: [],
+                value: '',
+                placeholder: 'Adjuntos'
+            }
+        }
+        this.setState({
+            ...this.state,
+            form,
+            modal_incapacidad: false,
+        })
+        this.setPermisoEstatus()
+     
     }
 
     handleCloseCajones = () => {
@@ -1713,7 +1784,6 @@ class Vacaciones extends Component {
                         options={options}
                         // empleadoId={form.idEmpleado}
                         onSubmit={(e) => {
-                            console.log(form)
                             e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin()
                         }}
                     />

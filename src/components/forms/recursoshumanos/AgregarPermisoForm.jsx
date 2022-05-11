@@ -309,7 +309,7 @@ class AgregarPermisosForm extends Component {
                                     options={options.empleados}
                                     placeholder="SELECCIONA EL EMPLEADO"
                                     name="empleado"
-                                    value={form.idSelectEmpleado}
+                                    value={form.empleado}
                                     onChange={this.updateEmpleado}
                                     iconclass={"fas fa-layer-group"}
                                     formeditado={formeditado}
