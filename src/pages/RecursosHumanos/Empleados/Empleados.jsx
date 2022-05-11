@@ -67,19 +67,49 @@ class Empleados extends Component {
             salario_hr: 0.0,
             salario_hr_extra: 0.0,
             adjuntos: {
-                datosGenerales: {
+                acta: {
                     value: '',
-                    placeholder: 'Datos generales',
+                    placeholder: 'Acta de nacimiento',
                     files: []
                 },
-                recibosNomina: {
+                curp: {
                     value: '',
-                    placeholder: 'Recibos de Nómina',
+                    placeholder: 'CURP',
                     files: []
                 },
-                altasBajas: {
+                rfc: {
                     value: '',
-                    placeholder: 'Altas y bajas',
+                    placeholder: 'RFC',
+                    files: []
+                },
+                nss: {
+                    value: '',
+                    placeholder: 'NSS',
+                    files: []
+                },
+                identificacion: {
+                    value: '',
+                    placeholder: 'Identificación Oficial',
+                    files: []
+                },
+                domicilio: {
+                    value: '',
+                    placeholder: 'Comprobante Domicilio',
+                    files: []
+                },
+                estudios: {
+                    value: '',
+                    placeholder: 'Comprobante Estudios',
+                    files: []
+                },
+                bancaria: {
+                    value: '',
+                    placeholder: 'Cuenta Bancaria',
+                    files: []
+                },
+                retencion: {
+                    value: '',
+                    placeholder: 'Aviso Retención INFONAVIT',
                     files: []
                 }
             }
@@ -310,19 +340,49 @@ class Empleados extends Component {
                     break;
                 case 'adjuntos':
                     form[element] = {
-                        datosGenerales: {
+                        acta: {
                             value: '',
-                            placeholder: 'Datos generales',
+                            placeholder: 'Acta de nacimiento',
                             files: []
                         },
-                        recibosNomina: {
+                        curp: {
                             value: '',
-                            placeholder: 'Recibos de Nómina',
+                            placeholder: 'CURP',
                             files: []
                         },
-                        altasBajas: {
+                        rfc: {
                             value: '',
-                            placeholder: 'Altas y bajas',
+                            placeholder: 'RFC',
+                            files: []
+                        },
+                        nss: {
+                            value: '',
+                            placeholder: 'NSS',
+                            files: []
+                        },
+                        identificacion: {
+                            value: '',
+                            placeholder: 'Identificación Oficial',
+                            files: []
+                        },
+                        domicilio: {
+                            value: '',
+                            placeholder: 'Comprobante Domicilio',
+                            files: []
+                        },
+                        estudios: {
+                            value: '',
+                            placeholder: 'Comprobante Estudios',
+                            files: []
+                        },
+                        bancaria: {
+                            value: '',
+                            placeholder: 'Cuenta Bancaria',
+                            files: []
+                        },
+                        retencion: {
+                            value: '',
+                            placeholder: 'Aviso Retención INFONAVIT',
                             files: []
                         }
                     }
@@ -659,14 +719,19 @@ class Empleados extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            
             return false
         })
-        data.append('id', empleado.id)
+        data.append('id', empleado.id)     
+        await console.log(form)
+        await console.log(data.append)      
         await axios.post(URL_DEV + 'rh/empleado/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                // console.log(response)               
                 const { empleado } = response.data
                 const { data, key } = this.state
                 data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
+                // console.log(data.adjuntos)
                 if (key === 'administrativo') { this.getEmpleadosAxios() }
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
                 this.setState({
@@ -1175,7 +1240,7 @@ class Empleados extends Component {
                 <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles }
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoEmpleadoAxios() }}
-                        adjuntos={['datosGenerales', 'recibosNomina', 'altasBajas']} />
+                        adjuntos={['acta', 'curp', 'rfc','nss', 'identificacion', 'domicilio','estudios', 'bancaria','retencion']} />
                     <div className="separator separator-dashed separator-border-2 mb-6 mt-7"></div>
                     <TableForModals columns = { ADJUNTOS_COLUMNS } data = { adjuntos } hideSelector = { true } mostrar_acciones = { true }
                         actions = { { 'deleteAdjunto': { function: this.openModalDeleteAdjuntos } }} dataID = 'adjuntos'
@@ -1184,7 +1249,7 @@ class Empleados extends Component {
                 <Modal size="lg" title="Colaborador" show={modal.see} handleClose={this.handleCloseSee} >
                     <EmpleadosCard empleado={empleado} />
                 </Modal>
-                <Modal size="lg" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
+                <Modal size="xl" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
                     <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
                         generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
                         cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } formeditado={formeditado}

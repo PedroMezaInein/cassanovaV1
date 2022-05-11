@@ -25,7 +25,7 @@ export const PUSHER_OBJECT = { broadcaster: 'pusher', key: '112ff49dfbf7dccb6934
 
 export const MAIN_FRONT = process.env.NODE_ENV === 'production' ? 'https://inein.com.mx' : 'http://localhost:3000'
 export const LEADS_FRONT = process.env.NODE_ENV === 'production' ? 'https://leads.inein.com.mx' : 'http://localhost:3001'
-export const MI_PROYECTO_FRONT = process.env.NODE_ENV === 'production' ? 'https://mi-proyecto.inein.com.mx' : 'http://localhost:3000'
+// export const MI_PROYECTO_FRONT = process.env.NODE_ENV === 'production' ? 'https://mi-proyecto.inein.com.mx' : 'http://localhost:3000'
 
 export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1","#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C"];
 
@@ -950,7 +950,13 @@ export const RECIBOS = [
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
+]
 
+export const SUGERENCIA_COLUMN = [
+    { Header: 'Opciones', accessor: 'actions',customRender: true },
+    { Header: 'Empleado', accessor: 'empleado', customRender: true },
+    { Header: 'Departamento', accessor: 'departamento', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
 ]
 
 export const SIPARE = [

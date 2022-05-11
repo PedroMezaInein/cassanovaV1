@@ -26,18 +26,18 @@ class NewAsideMenu extends Component{
         return(
             <div id = "aside" onMouseEnter = { this.asideOnMouseEnter } onMouseLeave = { this.asideOnMouseLeave } 
                 className="aside aside-left aside-fixed d-flex flex-column flex-row-auto" >
-                <div className="brand flex-column-auto" >
-                    <a href="/mi-proyecto" className="brand-logo">
+                 <div className="brand flex-column-auto" >
+                    {/*<a href="/mi-proyecto" className="brand-logo">
                         <i className = 'fas fa-home home-icon-menu' />
-                    </a> 
+                    </a> */}
                     <span className="brand-toggle btn btn-sm px-0"> 
                         <span className="svg-icon svg-icon svg-icon-xl">
                             <SVG src={toAbsoluteUrl('/images/svg/Angle-double-left.svg')} />
                         </span>
                     </span>
-                </div>
+                </div> 
                 <div className="aside-menu-wrapper flex-column-fluid">     
-                    <div className="aside-menu my-4" id = "asideMenuScroll" style={{ display: 'flex', maxHeight: '629px'}}>
+                    <div className="aside-menu my-4" id = "asideMenuScroll" style={{ display: 'flex', maxHeight: '829px'}}>
                         <Scrollbar>
                             <AsideMenuList  props = {props}/>
                         </Scrollbar>

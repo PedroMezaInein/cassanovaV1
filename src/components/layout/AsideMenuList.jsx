@@ -37,6 +37,7 @@ class AsideMenuList extends Component{
         switch(name){
             case 'CRM':
             case 'Mi Proyecto':
+            case 'Te escuchamos':    
                 return `${LEADS_FRONT}${url}?tag=${access_token}`               
             default:
                 return url;
@@ -52,14 +53,14 @@ class AsideMenuList extends Component{
 
                         return(
                             <li className = 'menu-item menu-item-submenu' key = { key } data-menu-toggle = "hover"
-                                onClick = { () => { this.openSubmenu(modulo.slug) } }>
+                                onClick = { () => { console.log(modulo.slug); this.openSubmenu(modulo.slug) } }>
                                 <div className="menu-link menu-toggle" to = { modulo.url } >
                                     <span className="svg-icon menu-icon">
                                         <SVG src={toAbsoluteUrl(modulo.icon)}/>
                                     </span>
                                     {
                                         modulo.url ? 
-                                            modulo.url === '/mi-proyecto' ? 
+                                            modulo.url === '/mi-proyecto' ||  modulo.url === '/te-escuchamos' ? 
                                             <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
                                             : 
                                             ''

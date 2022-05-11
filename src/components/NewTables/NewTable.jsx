@@ -45,6 +45,7 @@ class NewTable extends Component{
         };
         this.reloadHeader();
         this.initTableData()
+  
     }
 
     componentDidUpdate = (prevProps) => {

@@ -1790,7 +1790,7 @@ class Vacaciones extends Component {
                 </Modal>
                 <Modal size="lg" title={title} show={modal_cajones} handleClose={this.handleCloseCajones} >
                 </Modal>
-                <Modal size='lg' title={title} show={modal_add_feriados} handleClose={this.handleCloseAddFeriados}>
+                <Modal size = "lg" title = { title } show = { modal_add_feriados } handleClose = { this.handleCloseAddFeriados }>
                     <div className="d-flex m-2 justify-content-end">
                         <Button
                             onClick={() => { this.downloadPlantilla() }}

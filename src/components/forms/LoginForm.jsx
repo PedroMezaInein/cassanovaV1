@@ -144,7 +144,7 @@ class LoginForm extends React.Component {
                     history.push('/login')
                 }
                 let perm = null
-                let arreglo = ['calendario-tareas', 'crm', 'tareas', 'mi-proyecto']
+                let arreglo = ['calendario-tareas', 'crm', 'tareas']
                 arreglo.forEach( (elemento) => {
                     if(!perm){
                         perm = user.permisos.find((permiso) => {
