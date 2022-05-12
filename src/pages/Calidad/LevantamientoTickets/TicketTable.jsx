@@ -155,9 +155,12 @@ class TicketTable extends Component {
             return(
                 <div>
                      <div className="toolbar-dropdown">
+                     <span className="font-size-11px "style={{ color: "#3f4254" }} > <strong>Trabajo - </strong> {`${ calidad.reporte_url ? 'Terminado' : 'Pendiente' }`}</span>  
+
                         <DropdownButton menualign="center" title={<span className="d-flex">
                             {/* <FontAwesomeIcon icon={faCalendarCheck} className="icon-md mr-2 " style={{ color: "green" }}  />    */}
                                 <span className="font-size-11px "style={{ color: "#3f4254" }} > <strong>SOLICITADA - </strong> {`${ calidad.created_at ? moment(calidad.created_at).format("DD/MM/YYYY") : 'Sin fecha' }`}</span>  
+
                                 <i className="las la-angle-down icon-md p-0 ml-2"></i></span>}
                             id='dropdown-white' >
                             
