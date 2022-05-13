@@ -8,6 +8,8 @@ class TickesFilter extends Component {
         form: {
             check_solicitud: false,
             check_termino: false,
+            check_trabajo: false,
+            check_trabajo_termino: false,
             descripcion: '',
             estatus: '',
             estatus_pago: '',
@@ -70,6 +72,14 @@ class TickesFilter extends Component {
                     form.check_termino = checked
                     form.check_solicitud = false
                     form.fecha_solicitud = { start: null, end: null }
+                    break;
+                case 'check_trabajo':
+                    form.check_trabajo = checked
+                    form.check_trabajo_termino = false
+                    break;
+                case 'check_trabajo_termino':
+                    form.check_trabajo_termino = checked
+                    form.check_trabajo = false
                     break;
                 default:
                     break;
@@ -179,6 +189,23 @@ class TickesFilter extends Component {
                         </>
                         : <></>
                 }
+                 <div className="separator separator-dashed mt-1 mb-2"></div>
+                    <div className="col-md-12">
+                        <label className="col-form-label font-weight-bold text-dark-60">¿Filtrar por trabajo terminado?</label>
+                        <div className="checkbox-outline pt-2">
+                            <label className="checkbox font-weight-light mr-5">
+                                <input name = 'check_trabajo' type = "checkbox" checked = { form.check_trabajo } onChange = { this.onChange } /> 
+                                    Trabajo terminado
+                                <span></span>
+                            </label>
+                            <label className="checkbox font-weight-light">
+                                <input name = 'check_trabajo_termino' type = "checkbox" checked = { form.check_trabajo_termino } onChange = { this.onChange } />
+                                    Trabajo Pendientes
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+
                 <div className="mx-0 row justify-content-between border-top pt-4">
                     <Button only_icon='las la-redo-alt icon-lg' className="btn btn-light-danger btn-sm font-weight-bold" type='button' text="LIMPIAR" onClick={clearFiltros} />
                     <Button only_icon='las la-filter icon-xl' className="btn btn-light-info btn-sm font-weight-bold" type='submit' text="FILTRAR" />
