@@ -8,6 +8,8 @@ import Layout from '../../../components/layout/layout'
 import { ProveedorForm as ProveedorFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import Swal from 'sweetalert2'
+import moment from 'moment'
+
 class ProveedorForm extends Component {
     state = {
         title: 'Nuevo proveedor',
@@ -23,7 +25,19 @@ class ProveedorForm extends Component {
             banco: 0,
             leadId: '',
             area: '',
-            subarea: ''
+            subarea: '',
+            fecha_sociedad: new Date(),
+            nombre_persona: '',
+            direccion_persona: '',
+            rfc_persona: '',
+            telefono_persona: '',
+            email_persona: '',
+            tipo_consta: '',
+            numero_consta: '',
+            nombre_notario: '',
+            numero_notario: '',
+            ciudad_notario: '',
+            nombre_representante: '',
         },
         data: {
             proveedores: []
@@ -33,7 +47,15 @@ class ProveedorForm extends Component {
             areas: [],
             subareas: [],
             bancos: [],
-            tipos: []
+            tipos: [],
+            tipo_persona: [
+                { text: "Persona Fisica", value: "Persona Fisica" },
+                { text: "Persona Moral", value: "Persona Moral" },
+            ],
+            tipo_consta: [
+                { text: "El libro", value: "El libro" },
+                { text: "La poliza", value: "La poliza" },
+            ]
         }
     }
     componentDidMount() {
@@ -110,6 +132,7 @@ class ProveedorForm extends Component {
     onChange = e => {
         const { form } = this.state
         const { name, value } = e.target
+        console.log(name)
         if (name === 'razonSocial') {
             let cadena = value.replace(/,/g, '')
             cadena = cadena.replace(/\./g, '')
@@ -121,6 +144,25 @@ class ProveedorForm extends Component {
             form
         })
     }
+
+    isActiveFactura = () => {
+        const { form } = this.state
+        const { type } = this.props
+        if (type !== 'edit') {
+            if (form.factura === 'Con factura') {
+                return true
+            }
+            else{
+                form.adjuntos.xml.value=''
+                form.adjuntos.xml.files=[]
+                form.adjuntos.pdf.files=[]
+                form.adjuntos.pdf.value=''
+            }
+        }
+
+        return false
+    }
+
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -149,6 +191,20 @@ class ProveedorForm extends Component {
         form.numCuenta = proveedor.numero_cuenta
         form.banco = proveedor.banco ? proveedor.banco.id : 0
         form.tipo = proveedor.tipo_cuenta ? proveedor.tipo_cuenta.id : 0
+        form.tipo_persona = proveedor.tipo_persona
+        form.nombre_persona = proveedor.nombre_persona
+        form.direccion_persona = proveedor.direccion_persona
+        form.rfc_persona = proveedor.rfc_persona
+        form.telefono_persona = proveedor.telefono_persona
+        form.email_persona = proveedor.email_persona
+        form.tipo_consta = proveedor.tipo_consta
+        form.numero_consta = proveedor.numero_consta
+        form.nombre_notario = proveedor.nombre_notario
+        form.numero_notario = proveedor.numero_notario
+        form.ciudad_notario = proveedor.ciudad_notario
+        form.fecha_sociedad = proveedor.fecha_sociedad !== null ? new Date(moment(proveedor.fecha_sociedad)):''
+        form.nombre_representante = proveedor.nombre_representante
+
         if (proveedor.subarea) {
             form.area = proveedor.subarea.area.id.toString()
             options['subareas'] = setOptions(proveedor.subarea.area.subareas, 'nombre', 'id')

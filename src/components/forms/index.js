@@ -14,6 +14,8 @@ import IngresosFormulario from './administracion/IngresosFormulario'
 import egresosForm from './administracion/EgresosForm'
 import proveedorForm from './administracion/ProveedorForm'
 import contratoForm from './administracion/ContratoForm'
+import generadorcontratoForm from './proyectos/ContratoForm'
+
 import areasForm from './catalogos/AreaForm'
 import servicioForm from './catalogos/ServicioForm'
 import partidaForm from './catalogos/PartidaForm'
@@ -177,6 +179,8 @@ export const IngresosForm = ingresosForm
 export const EgresosForm = egresosForm
 export const ProveedorForm = proveedorForm
 export const ContratoForm = contratoForm
+export const GeneradorcontratoForm = generadorcontratoForm
+
 export const AreasForm = areasForm
 export const ServicioForm = servicioForm
 export const PartidaForm = partidaForm
@@ -268,7 +272,7 @@ export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
 export const RepseForm = repseForm
 
-export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH, NotaBitacoraForm, 
+export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResultados, FormularioContrato, ContratoFormRH,  NotaBitacoraForm, 
     PestamosDevoluciones, FormCalendarioIEquipos, EquipoForm, DetailsInstalacion,DetailsTickets,  HistorialHM, FormNuevoTicket, SolicitudTabla, HistorialPresupuestos,
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 

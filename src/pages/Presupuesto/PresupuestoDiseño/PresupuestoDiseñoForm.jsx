@@ -33,6 +33,9 @@ class PresupuestoDiseñoForm extends Component {
             tiempo_ejecucion_diseno: '',
             tiempo_ejecucion_construccion: 0,
             descuento: 0.0,
+            concepto1:'60',
+            concepto2: '30',
+            concepto3: '10',
             desglose: [],
             conceptos: [
                 {
@@ -262,6 +265,9 @@ class PresupuestoDiseñoForm extends Component {
                 
                 form.si_renders = presupuesto.con_renders === 1 ? true : false;
                 form.si_desglose = presupuesto.desglose === 1 ? true : false;
+                form.concepto1 = presupuesto.concepto1;
+                form.concepto2 = presupuesto.concepto2;
+                form.concepto3 = presupuesto.concepto3;
 
                 let aux = ''
 

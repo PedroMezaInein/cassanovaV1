@@ -378,6 +378,57 @@ class PresupuestoDiseñoForm extends Component {
                                             <Calendar locale={es} date={date} color = {"#2171c1"}/>
                                         </div>
                                     </div>
+                                    <div className="col-md-6">
+                                        <div className="table-responsive-lg col-md-8">
+                                            <table className="table table-vertical-center">
+                                                <thead >
+                                                    <tr>
+                                                        <th className="dia">Anticipo porcentaje %</th>
+                                                        <th>Nombre</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="text-justify">
+                                                  <tr>
+                                                    <td className="">
+                                                        <InputMoney requirevalidation = { 0 } type = "text" placeholder = "ANTICIPO" value = { form.concepto1 }
+                                                            iconclass = "fas fa-percentage" thousandseparator = { true } onChange = { onChange } prefix = '%'
+                                                            messageinc = "Ingresa el porcentaje." formeditado = { formeditado }  name = "concepto1"/>
+                                                     </td>
+                                                     <td className="justify-content-center">
+                                                         <div className="font-weight-bold text-dark-75 justify-content-center">
+                                                            ANTICIPO
+                                                         </div>
+                                                     </td>
+                                                  </tr>         
+                                                  <tr>
+                                                    <td className="">
+                                                      <InputMoney requirevalidation = { 0 } type = "text" placeholder = "AVANCE DE OBRA" value = { form.concepto2 }
+                                                            iconclass = "fas fa-percentage" thousandseparator = { true } onChange = { onChange } prefix = '%'
+                                                            messageinc = "Ingresa el porcentaje." formeditado = { formeditado }  name = "concepto2"/>                                                        
+                                                     </td>
+                                                     <td className="justify-content-center">
+                                                         <div className="font-weight-bold text-dark-75 justify-content-center">
+                                                             AVANCE DE OBRA
+                                                         </div>
+                                                     </td>
+                                                  </tr>         
+                                                  <tr>
+                                                    <td className="">
+                                                        <InputMoney requirevalidation = { 0 } type = "text" placeholder = "FINIQUITO" value = { form.concepto3 }
+                                                            iconclass = "fas fa-percentage" thousandseparator = { true } onChange = { onChange } prefix = '%'
+                                                            messageinc = "Ingresa el porcentaje." formeditado = { formeditado }  name = "concepto3"/>
+                                                     </td>
+                                                     <td className="justify-content-center">
+                                                         <div className="font-weight-bold text-dark-75 justify-content-center">
+                                                            FINIQUITO
+                                                         </div>
+                                                     </td>
+                                                  </tr>                                                  
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
