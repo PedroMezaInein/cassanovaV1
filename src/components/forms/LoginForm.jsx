@@ -181,14 +181,14 @@ class LoginForm extends React.Component {
                         history.push(perm.modulo.url)
                     }
                 }
-                // if(perm){
-                //     if(perm.modulo.slug === 'incidencias'){
-                //         window.location.href = `${LEADS_FRONT}/satisfaccion?tag=${access_token}`
-                //     }
-                //     else{
-                //         history.push(perm.modulo.url)
-                //     }
-                // }
+                if(perm){
+                    if(perm.modulo.slug === 'incidencias'){
+                        window.location.href = `${LEADS_FRONT}/rh/incidencias?tag=${access_token}`
+                    }
+                    else{
+                        history.push(perm.modulo.url)
+                    }
+                }
                 else{
                     history.push(user.permisos[0].modulo.url)
                 }
