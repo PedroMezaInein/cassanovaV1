@@ -56,7 +56,8 @@ class ProveedorForm extends Component {
                 { text: "El libro", value: "El libro" },
                 { text: "La poliza", value: "La poliza" },
             ]
-        }
+        },
+        personaElementos: true,
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -131,18 +132,50 @@ class ProveedorForm extends Component {
     }
     onChange = e => {
         const { form } = this.state
+        let { personaElementos } = this.state
         const { name, value } = e.target
-        console.log(name)
-        if (name === 'razonSocial') {
-            let cadena = value.replace(/,/g, '')
-            cadena = cadena.replace(/\./g, '')
-            form[name] = cadena
-        } else
-            form[name] = value
+        // console.log(name,value)
+        switch (name) {
+            case 'razonSocial':
+                let cadena = value.replace(/,/g, '')
+                cadena = cadena.replace(/\./g, '')
+                form[name] = cadena
+                break;
+            case 'tipo_persona':
+            // console.log(value)
+            if(value === 'Persona Moral' )
+           { personaElementos = false
+
+            console.log(personaElementos,'moral',)
+            this.setState({
+                ...this.state,
+                personaElementos,
+
+            })}
+            if(value === 'Persona Fisica' )
+           { personaElementos = true
+            this.setState({
+                ...this.state,
+                personaElementos,
+
+            })
+            console.log('fisica',personaElementos,)}
+            break;
+            default:
+                form[name] = value
+                break;
+        }
+        // if (name === 'razonSocial') {
+        //     let cadena = value.replace(/,/g, '')
+        //     cadena = cadena.replace(/\./g, '')
+        //     form[name] = cadena
+        // } else
+        //     form[name] = value
         this.setState({
             ...this.state,
             form
         })
+        
     }
 
     isActiveFactura = () => {
