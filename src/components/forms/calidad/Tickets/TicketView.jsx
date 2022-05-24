@@ -450,6 +450,14 @@ class TicketView extends Component {
                                                             }
                                                         </div>
                                                     </div>
+                                                     <div className="flex-grow-6 align-self-center">
+                                                        <div className="mr-3">
+                                                            <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center mr-3">
+                                                                <i className="la la-calendar-check icon-lg text-info mr-1" />
+                                                                {data.garantia ? dayDMY(data.garantia) : 'sin fecha de termimo'} ->  { data.vigencia}
+                                                            </div>
+                                                        </div>
+                                                     </div>
                                                     <div className="mb-2">
                                                         {
                                                             data.estatus_ticket ?
