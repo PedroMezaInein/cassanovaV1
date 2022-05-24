@@ -15,7 +15,7 @@ class Home extends Component{
         else {
             let perm = null   
              const { access_token } = this.props.authUser.access_token
-            let arreglo = ['calendario-tareas', 'crm', 'tareas', 'mi-proyecto']
+            let arreglo = ['calendario-tareas', 'crm', 'tareas', 'mi-proyecto','incidencias']
             arreglo.forEach( (elemento) => {
                 if(!perm){
                     perm = user.permisos.find((permiso) => {
@@ -26,6 +26,9 @@ class Home extends Component{
             if(perm){
                 if(perm.modulo.slug === 'crm'){
                     window.location.href = `${LEADS_FRONT}/leads/crm?tag=${access_token}`
+                }
+                if(perm.modulo.slug === 'incidencias'){
+                    window.location.href = `${LEADS_FRONT}/rh/incidencias?tag=${access_token}`
                 }
                 if(perm.modulo.slug === 'mi-proyecto'){
                     window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`

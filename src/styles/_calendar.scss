@@ -10,6 +10,9 @@
     overflow: hidden;
 }
 
+.fc-direction-ltr{
+    height: 65vh;
+}
 .vacaciones {
     color: #8950FC;
     background-color: #EEE5FF;
@@ -44,11 +47,14 @@
 
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-past {
     border-color: white;
+
 }
 
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-future {
     border-color: white;
     background-color: transparent !important;
+
+
 }
 
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-today {

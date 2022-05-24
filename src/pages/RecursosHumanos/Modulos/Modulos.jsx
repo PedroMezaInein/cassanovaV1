@@ -3,6 +3,7 @@ import $ from 'jquery'
 import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
 import { connect } from 'react-redux'
+import { RepseFormulario } from '../../../components/forms'
 import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
@@ -19,10 +20,14 @@ import moment from 'moment'
 class Modulo extends Component {
 
     state = {
+        type: 'repse',
+        venta: null,
+        solicitud: null,
         modal:{
             filters: false,
             adjuntos: false,
-            see: false
+            see: false,
+            repseM: false,
         },
         title: 'Nueva Repse',
         licencia: '',
@@ -154,7 +159,7 @@ class Modulo extends Component {
 
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
+        const { history: { location: { pathname } },match: { params: { action } } } = this.props            
         const { history } = this.props
         const ventas = permisos.find(function (venta, index) {
             const { modulo: { url } } = venta
@@ -175,6 +180,100 @@ class Modulo extends Component {
                 this.reloadTable(filters)
                 this.getVentaAxios(id)
             }
+        }
+        // switch (action) {
+        //     case 'repse':
+        //         this.setState({
+        //             ...this.state,
+        //             type: action
+        //         })
+        //         break;
+
+        //     case 'patronal':
+        //         this.setState({
+        //             ...this.state,
+        //             type: action
+        //         })
+        //         break;
+        //     case 'siroc':
+        //         this.setState({
+        //             ...this.state,
+        //             type: action
+        //         })
+        //         break;
+        //     case 'Colaborador':
+        //         this.setState({
+        //             ...this.state,
+        //             type: action
+        //         })
+        //         break;
+        //     case 'Nomina':
+        //         this.setState({
+        //             ...this.state,
+        //             type: action
+        //         })
+        //         break;
+        //     case 'Sipare':
+        //         this.setState({
+        //             ...this.state,
+        //             type: action
+        //         })
+        //         break;
+        //     case 'claves':
+        //             this.setState({
+        //                 ...this.state,
+        //                 type: action
+        //             })
+        //             break;
+        //     case 'isn':
+        //             this.setState({
+        //                 ...this.state,
+        //                 type: action
+        //             })
+        //             break;
+
+        //         case 'add':
+        //             this.setState({
+        //                 ...this.state,
+        //                 type: action
+        //             })
+        //             break;
+        //         case 'edit_Repse':
+        //         case 'edit_Registro Patronal':
+        //         case 'edit_Siroc':
+        //         case 'edit_Recibos nomina':
+        //         case 'edit_Sipare':
+        //         case 'edit_Accesos claves':
+        //         case 'edit_Isn':
+        //             //  permisos.find((venta) => {
+        //             //     return pathname === `${venta.modulo.url}/${action}`
+        //             // })
+        //             // if(state){
+        //             //     if(state.venta){
+        //             //         this.setState({
+        //             //             ...this.state,
+        //             //             venta: state.venta,
+        //             //             type: action
+        //             //         })
+        //             //     }else{
+        //             //         history.push( '/rh/modulo' )
+        //             //     }
+        //             // }else{
+        //             //     history.push( '/rh/modulo' )
+        //             // }
+        //             break;
+        //     default:
+        //         // history.push('/')
+        //         break;
+        // }
+        const modulo = permisos.find((venta) => {
+            return pathname === `${venta.modulo.url}/${action}`
+        })
+        if (!modulo){
+            errorAlert(
+                `No tienes acceso a este módulo`,
+                () => { history.push('/') }
+            )
         }
     }
 
@@ -558,6 +657,7 @@ class Modulo extends Component {
         modal.facturaExtranjera = false
         modal.see = false
         modal.facturas = false
+        modal.repseM = false
         data.adjuntos = []
         this.setState({
             ...this.state,
@@ -567,7 +667,9 @@ class Modulo extends Component {
             form: this.clearForm(),
             adjuntos: [],
         })
-    }
+        this.getRepse()
+
+        }
 
     handleChange = (files, item) => {
         const { form } = this.state
@@ -899,6 +1001,12 @@ class Modulo extends Component {
         this.setState({ ...this.state, modal })
     }
 
+    openModalRepse = () => {
+        const { modal } = this.state
+        modal.repse = true
+        this.setState({ ...this.state, modal })
+    }
+
     sendFilters = filter => {
         const { modal } = this.state
         modal.filters = false
@@ -939,25 +1047,75 @@ class Modulo extends Component {
         $(`#ventas_${key}`).DataTable().search(JSON.stringify(aux)).draw();
     }
 
+    setTitleModal = () => {
+        const { type } = this.state
+
+        switch(type){
+            case 'repse':
+                return 'Nuevo registro de Repse'
+            case 'patronal':
+                return 'Nuevo registro Patronal'
+            case 'siroc':
+                return 'Nuevo Registro Siroc'
+            case 'Colaborador':
+                return 'Nuevo Registro de Colaboradores de obra'                
+            case 'Nomina':
+                return 'Nuevo Recibos de Nomina'
+            case 'Sipare':
+                return 'Nuevo registro de Sipare'
+            case 'claves':
+                return 'Nuevo registro de acceso y clave'
+            case 'isn':
+                return 'Nuevo registro de ISN'
+            case 'edit':
+            case 'edit_Repse':
+                return 'Editar Repse'
+            case 'edit_Registro Patronal':
+                return 'Editar Registro Patronal'
+            case 'edit_Siroc':
+                return 'Editar Siroc'
+            case 'edit_Recibos nomina':
+                return 'Editar Recibo de monina'
+            case 'edit_Sipare':
+                return 'Editar Sipare'
+            case 'edit_Accesos claves':
+                return 'Editar Accesos y claves'
+            case 'edit_Isn':
+                return 'Editar Isn'
+            case 'convert':
+                return 'Convertir solicitud de venta'
+            default: break;
+        }
+    }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({ ...this.state, form })
+    }
+
     render() {
         const { authUser: {access_token} } = this.props
-        const { modal, options, form, key, filters , titulo1,titulo2,titulo3,titulo4,titulo5,titulo6,titulo7,titulo8, } = this.state
+        const { modal, options, form, type, key, filters,venta , titulo1,titulo2,titulo3,titulo4,titulo5,titulo6,titulo7,titulo8, } = this.state
 
         return (
             <> 
             <Layout active={'rh'} {...this.props} >
+            <Modal size = 'lg' show = { modal.repseM } handleClose = { this.handleClose } title ={ this.setTitleModal()}>
+            <RepseFormulario type = { type } at = { access_token } 
+                            dato = { venta } onSubmit={this.handleClose} />
+                </Modal>
                  <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey={ localStorage.getItem('activeKeyTabModulo')} activeKey={key} onSelect={(value) => { this.controlledTab(value)}  } >
                     <Tab eventKey="Repse" title="Repse"  >
                         <NewTable  
                             tableName = "Repse" subtitle = 'Repse' title = {titulo1}  mostrar_boton = { true }
-                            abrir_modal = { false } url = '/rh/modulo/repse' columns = { REPSE }
+                            abrir_modal = { true } url = '/rh/modulo/repse' columns = { REPSE }
                             accessToken = { this.props.authUser.access_token } setter = { this.setTableRepse }
                             filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
-                            urlRender = { `${URL_DEV}repse?tab=Repse` } type='tab'
+                            urlRender = { `${URL_DEV}repse?tab=Repse` } type='tab' addClick={this.openModalFiltros}
                         />
                     </Tab>
-                    
-                    {/* <Tab eventKey="Patronal" title="REGISTRO PATRONAL" > */}
                     <Tab eventKey="Patronal" title="REGISTRO PATRONAL" >
 
                         <NewTable 
