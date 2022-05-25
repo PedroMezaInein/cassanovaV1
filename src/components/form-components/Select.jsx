@@ -11,6 +11,7 @@ class Select extends Component {
     validarSelect(e) {
         const { value } = e.target
         const { requirevalidation } = this.props
+        console.log(value)
         if (value !== '' && value !== null && value !== undefined) {
             if (requirevalidation) {
                 if (value > 0) {
@@ -38,6 +39,11 @@ class Select extends Component {
                 })
             }
         }
+        if (value === 'personaFisica' || value === 'personaMoral' || value === 'elLibro' || value === 'laPoliza'){
+            this.setState({
+                selectValido: true
+            })
+        }
     }
 
     componentDidUpdate(nextProps) {
@@ -63,39 +69,97 @@ class Select extends Component {
     }
 
     render() {
-        const { options, placeholder, value, name, onChange, iconclass, messageinc, customclass,...props } = this.props
+        const { options, tipo, placeholder, general, value, name, onChange, iconclass, messageinc, customclass, ...props } = this.props
         const { selectValido } = this.state
         return (
             <>
-                <Form.Label className="col-form-label">{placeholder}</Form.Label>
+                {
+                    general !== false ?
+                        <>
+                            <Form.Label className="col-form-label">{placeholder}</Form.Label>
 
-                <div className="input-icon">
-                    <span className="input-icon input-icon-right">
-                        <span>
-                            <i className={iconclass + " kt-font-boldest text-primary"}></i>
-                        </span>
-                    </span>
-                    <Form.Control
-                        className={`form-control text-uppercase ${selectValido ? "is-valid sin_icono" : "is-invalid sin_icono"} ${customclass}`}
-                        onChange={(e) => { e.preventDefault(); this.validarSelect(e); onChange(e) }}
-                        name={name}
-                        value={value}
-                        as="select" {...props}>
-                        <option value={0} disabled>
-                            {placeholder}
-                        </option>
-                        {
-                            options.map((option, key) => {
-                                return (
-                                    <option key={key} value={option.value}>
-                                        {option.text}
+                            <div className="input-icon">
+                                <span className="input-icon input-icon-right">
+                                    <span>
+                                        <i className={iconclass + " kt-font-boldest text-primary"}></i>
+                                    </span>
+                                </span>
+                                <Form.Control
+                                    className={`form-control text-uppercase ${selectValido ? "is-valid sin_icono" : "is-invalid sin_icono"} ${customclass}`}
+                                    onChange={(e) => { e.preventDefault(); this.validarSelect(e); onChange(e) }}
+                                    name={name}
+                                    value={value}
+                                    as="select" {...props}>
+                                    <option value={0} disabled>
+                                        {placeholder}
                                     </option>
-                                )
-                            })
-                        }
-                    </Form.Control>
-                </div>
-                <span className={selectValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
+                                    {
+                                        options.map((option, key) => {
+                                            return (
+                                                <option key={key} value={option.value}>
+                                                    {option.text}
+                                                </option>
+                                            )
+                                        })
+                                    }
+                                </Form.Control>
+                            </div>
+                            <span className={selectValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
+                            
+                        </> : <></>
+               }
+                {
+                            general === false ?
+                            <>
+                            <Form.Label className="col-form-label">{placeholder}</Form.Label>
+
+                            <div className="input-icon">
+                                <span className="input-icon input-icon-right">
+                                    <span>
+                                        <i className={iconclass + " kt-font-boldest text-primary"}></i>
+                                    </span>
+                                </span>
+                                <Form.Control
+                                    className={`form-control text-uppercase ${selectValido ? "is-valid sin_icono" : "is-invalid sin_icono"} ${customclass}`}
+                                    onChange={(e) => { e.preventDefault(); 
+                                    this.validarSelect(e);
+                                    onChange(e) }}
+                                    name={name}
+                                    value={value}
+                                    as="select" {...props}>
+                                    <option value={0} disabled selected>
+                                        {placeholder}
+                                            </option>
+                                            {
+                                            tipo === 'tipoPersona' ?
+                                            <>     
+                                            <option  value={'personaFisica'}>
+                                            Persona Fisica
+                                            </option>
+                                            <option  value={'personaMoral'}>
+                                            Persona Moral
+                                            </option></>
+                                        : <></>
+                                            }
+                                            {
+                                            tipo === 'tipoConstancia' ?
+                                            <>     
+                                            <option  value={'elLibro'}>
+                                            El Libro
+                                            </option>
+                                            <option  value={'laPoliza'}>
+                                            La Póliza
+                                            </option></>
+                                        : <></>
+                                            }
+                                    
+                                </Form.Control>
+                            </div>
+                            <span className={selectValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
+                        </>
+                        :
+                        <></>
+                }
             </>
         )
     }

@@ -54,6 +54,21 @@ $l-black-gold: #423b28;
 $scrollbar-color:#252525;
 $color-text:#80808F;
 
+
+// .stay-bottom{
+//     position: fixed!important;
+//     bottom: 0;
+// }
+.heightCard{
+   min-height: 60vh!important;
+  
+   .stay-bottom{
+    position: absolute!important;
+    bottom: 2rem;
+    width: 95%!important;
+}
+}
+
 .hidden {
     transition: all 0.5s;
     width: 0px;
@@ -86,7 +101,6 @@ $color-text:#80808F;
     input {
         text-transform: none !important;
     }
-
     text-transform: none !important;
 }
 

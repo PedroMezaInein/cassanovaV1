@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
-import { setOptions, setSelectOptions } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setOptionsWithLabel } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ProveedorForm as ProveedorFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import Swal from 'sweetalert2'
+
 import moment from 'moment'
 
 class ProveedorForm extends Component {
@@ -32,12 +33,13 @@ class ProveedorForm extends Component {
             rfc_persona: '',
             telefono_persona: '',
             email_persona: '',
-            tipo_consta: '',
+            // tipo_consta: '',
             numero_consta: '',
             nombre_notario: '',
             numero_notario: '',
             ciudad_notario: '',
             nombre_representante: '',
+            tipo_persona_form: '',
         },
         data: {
             proveedores: []
@@ -49,25 +51,33 @@ class ProveedorForm extends Component {
             bancos: [],
             tipos: [],
             tipo_persona: [
-                { text: "Persona Fisica", value: "Persona Fisica" },
-                { text: "Persona Moral", value: "Persona Moral" },
+                // { text: 'Persona Fisica', name: 'Persona Fisica'},
+                // { text: 'Persona Moral', name: 'Persona Moral'},
+
+                // { text: "Persona Fisica", value: "Persona Fisica" },
+                // { text: "Persona Moral", value: "Persona Moral" },
             ],
             tipo_consta: [
-                { text: "El libro", value: "El libro" },
-                { text: "La poliza", value: "La poliza" },
+                // { text: "El libro", value: "El libro" },
+                // { text: "La poliza", value: "La poliza" },
             ]
         },
-        personaElementos: true,
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { match: { params: { action } } } = this.props
         const { history, location: { state } } = this.props
+        let { personaElementos } = this.state
+        this.setState({
+            ...this.state,
+            personaElementos,
+        })
         const proveedores = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         })
+        personaElementos = true;
         switch (action) {
             case 'add':
                 this.setState({
@@ -112,6 +122,8 @@ class ProveedorForm extends Component {
         if (!proveedores)
             history.push('/')
         this.getOptionsAxios()
+
+
     }
     clearForm = () => {
         const { form } = this.state
@@ -132,7 +144,8 @@ class ProveedorForm extends Component {
     }
     onChange = e => {
         const { form } = this.state
-        let { personaElementos } = this.state
+        let { tipo_persona, tipo_consta } = this.state.form
+
         const { name, value } = e.target
         // console.log(name,value)
         switch (name) {
@@ -142,28 +155,40 @@ class ProveedorForm extends Component {
                 form[name] = cadena
                 break;
             case 'tipo_persona':
-            // console.log(value)
-            if(value === 'Persona Moral' )
-           { personaElementos = false
-
-            console.log(personaElementos,'moral',)
-            this.setState({
-                ...this.state,
-                personaElementos,
-
-            })}
-            if(value === 'Persona Fisica' )
-           { personaElementos = true
-            this.setState({
-                ...this.state,
-                personaElementos,
-
-            })
-            console.log('fisica',personaElementos,)}
-            break;
+                if (value === 'personaMoral') {
+                    let cambioClaseM = document.getElementById('personaMoralContenedor')
+                    cambioClaseM.classList.remove('d-none')
+                    // dClassPFisica = 'd-none'
+                    // dClassPMoral = ''
+                    tipo_persona = value
+                    this.setState({
+                        ...this.state,
+                        tipo_persona,
+                    })
+                }
+                if (value === 'personaFisica') {
+                    // dClassPFisica = ''
+                    // dClassPMoral = 'd-none'
+                    let cambioClaseM = document.getElementById('personaMoralContenedor')
+                    cambioClaseM.classList.add('d-none')
+                    tipo_persona = value
+                    this.setState({
+                        ...this.state,
+                        tipo_persona,
+                    })
+                }
+                break;
+                case 'tipo_consta':
+                tipo_consta = value;
+                this.setState({
+                    ...this.state,
+                    tipo_consta,
+                })
+                break;
             default:
                 form[name] = value
                 break;
+
         }
         // if (name === 'razonSocial') {
         //     let cadena = value.replace(/,/g, '')
@@ -175,7 +200,7 @@ class ProveedorForm extends Component {
             ...this.state,
             form
         })
-        
+
     }
 
     isActiveFactura = () => {
@@ -185,11 +210,11 @@ class ProveedorForm extends Component {
             if (form.factura === 'Con factura') {
                 return true
             }
-            else{
-                form.adjuntos.xml.value=''
-                form.adjuntos.xml.files=[]
-                form.adjuntos.pdf.files=[]
-                form.adjuntos.pdf.value=''
+            else {
+                form.adjuntos.xml.value = ''
+                form.adjuntos.xml.files = []
+                form.adjuntos.pdf.files = []
+                form.adjuntos.pdf.value = ''
             }
         }
 
@@ -235,7 +260,7 @@ class ProveedorForm extends Component {
         form.nombre_notario = proveedor.nombre_notario
         form.numero_notario = proveedor.numero_notario
         form.ciudad_notario = proveedor.ciudad_notario
-        form.fecha_sociedad = proveedor.fecha_sociedad !== null ? new Date(moment(proveedor.fecha_sociedad)):''
+        form.fecha_sociedad = proveedor.fecha_sociedad !== null ? new Date(moment(proveedor.fecha_sociedad)) : ''
         form.nombre_representante = proveedor.nombre_representante
 
         if (proveedor.subarea) {
@@ -311,7 +336,7 @@ class ProveedorForm extends Component {
     }
     async updateProveedorAxios() {
         const { access_token } = this.props.authUser
-        const { form, proveedor } = this.state
+        const { form, proveedor, } = this.state
         await axios.put(URL_DEV + 'proveedores/' + proveedor.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
@@ -334,7 +359,7 @@ class ProveedorForm extends Component {
         })
     }
     render() {
-        const { form, title, options, formeditado } = this.state
+        const { form, title, options, formeditado} = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
                 <Card className="card-custom">
@@ -343,7 +368,7 @@ class ProveedorForm extends Component {
                             <h3 className="card-label">{title}</h3>
                         </div>
                     </Card.Header>
-                    <Card.Body className="pt-0">
+                    <Card.Body className="pt-0 heightCard">
                         <ProveedorFormulario
                             formeditado={formeditado}
                             title={title}
