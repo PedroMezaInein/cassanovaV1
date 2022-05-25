@@ -94,13 +94,14 @@ class ContratoForm extends Component {
                         <SelectSearchGray options = { options.prediseño }  placeholder="SELECCIONA EL PRESUPUESTO DE DISEÑO" value = { form.prediseño } 
                             onChange = { (value) => { this.updateprediseño(value, 'prediseño') } } withtaglabel = { 1 } withtextlabel = { 1 } 
                             withicon = { 1 } iconclass={"far fa-building"} messageinc = "Incorrecto. Selecciona el presupuesto de diseño" name="prediseño"
-                            formeditado = { formeditado }/>   
-                        {/* <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} 
-                            name='semanas' iconclass="flaticon2-website" placeholder='SEMANAS'onChange={onChange} 
-                            value={form.semanas} messageinc="Ingresa las semanas del contrato." />    */}
-                       
+                            formeditado = { formeditado }/>                          
                     </div>
-                </div>
+                    <div className="col-md-3">
+                        <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} 
+                            name='semanas' iconclass="flaticon2-website" placeholder='SEMANAS'onChange={onChange} 
+                            value={form.semanas} messageinc="Ingresa las semanas del contrato." />  
+                    </div>
+                </div>  
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     {/* <div className="col-md-3">
