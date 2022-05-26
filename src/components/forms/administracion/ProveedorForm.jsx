@@ -5,12 +5,44 @@ import { RFC, TEL, EMAIL } from '../../../constants'
 import { validateAlert } from '../../../functions/alert'
 import { openWizard1, openWizard2 } from '../../../functions/wizard'
 class ProveedorForm extends Component {
+    // state= {
+    //     variableCampoRequerido:0
+    // }
 
-    componentDidMount() {
-
+    componentWillUpdate() {
+        const { form } = this.props
+        // let { variableCampoRequerido } = this.state
+        if(form.tipo_persona!== "personaMoral"  ){
         let cambioClaseM = document.getElementById('personaMoralContenedor')
         cambioClaseM.classList.add('d-none')
+        // variableCampoRequerido=0
+        // this.setState({
+        //     ...this.state,
+        //     variableCampoRequerido
+        // })
+        }
+
     }
+
+    // changeRequired = (e) => {
+    //     // let { variableCampoRequerido } = this.state
+    //     if(e=== 'personaMoral'){
+    //         // variableCampoRequerido = 1 
+    //         // console.log(variableCampoRequerido, 'moral')
+    //         this.setState({
+    //             ...this.state,
+    //             // variableCampoRequerido,
+    //         })
+    //     }
+    //     if(e==='personaFisica'){
+    //         variableCampoRequerido = 0 
+    //         console.log(variableCampoRequerido, 'fisica')
+    //         this.setState({
+    //             ...this.state,
+    //             variableCampoRequerido,
+    //         })
+    //     }
+    // }
 
     updateArea = value => {
         const { onChange, setOptions } = this.props
@@ -30,7 +62,49 @@ class ProveedorForm extends Component {
         onChange({ target: { name: 'subarea', value: value.toString() } })
     }
 
+    onChangeA = e => {
+        let { form } = this.props
+        const { name, value } = e.target
+      
+        if (value === 'personaMoral') {
+            let cambioClaseM = document.getElementById('personaMoralContenedor')
+            cambioClaseM.classList.remove('d-none')
+             form.tipo_persona = value
+            //  this.changeRequired('personaMoral')
+            this.setState({
+                ...this.state,
+                form,
+            })
+            // this.setState({
+            //     ...this.state,
+            //     variableCampoRequerido,
+            // })
+        }
+        if (value === 'personaFisica') {
+            let cambioClaseM = document.getElementById('personaMoralContenedor')
+            cambioClaseM.classList.add('d-none')
+             form.tipo_persona = value
+            //  this.changeRequired('personaFisica')
+             this.setState({
+                ...this.state,
+                form,
+            })
+            // this.setState({
+            //     ...this.state,
+            //     variableCampoRequerido,
+            // })
+        }else{
+            form[name] = value
+            this.setState({
+                ...this.state,
+                form,
+            })
+        }
+
+        }
+
     render() {
+        // const { variableCampoRequerido } =this.state
         const { title, options, form, onChange, setOptions, onSubmit, formeditado, ...props } = this.props
         return (
 
@@ -62,7 +136,15 @@ class ProveedorForm extends Component {
                             </div>
                         </div>
                     </div>
-                    <Form>
+                     <Form id="form-proveedor"
+               onSubmit={
+                     (e) => {
+                     e.preventDefault();
+                         validateAlert(onSubmit, e, 'form-proveedor')
+                     }
+                }
+                 {...props}
+         >
                         <div id="wizard-1-content" className="pb-3 " data-wizard-type="step-content" data-wizard-state="current">
                             <div className="form-group row form-group-marginless mt-4">
                                 <div className="col-md-3">
@@ -231,10 +313,10 @@ class ProveedorForm extends Component {
                                     general={false}
                                     requirevalidation={1}
                                     name='tipo_persona'
-                                    // options={options.tipo_persona}
+                                    options={options.tipo_persona}
                                     placeholder='SELECCIONA TIPO DE PERSONA'
                                     value={form.tipo_persona}
-                                    onChange={onChange}
+                                    onChange={this.onChangeA}
                                     formeditado={formeditado}
                                     iconclass={" fab fa-cc-discover "}
                                 />
@@ -325,25 +407,26 @@ class ProveedorForm extends Component {
                             </div>
                             <div id='personaMoralContenedor' className="form-group row pb-6 mb-8 border-top pt-4">
                             
-                                <div className="col-4 " >
-                                    {/* <div className="col-md-4"> */}
-                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                            <label className="text-center font-weight-bold text-dark-60">Fecha de la sociedad</label>
-                                        </div>
-                                        <CalendarDay value={form.fecha_sociedad} name='fecha_sociedad' date={form.fecha_sociedad} onChange={onChange} withformgroup={0} requirevalidation={1} />
-                                    {/* </div> */}
+                                <div className="col-md-4 mr-4" >
+                                    <div className="col-md-12 d-flex flex-column align-items-center">
+                                        {/* <div className="d-flex justify-content-center" style={{ height: '1px' }}>  */}
+                                            <label  className="text-center font-weight-bold text-dark-60">Fecha de la sociedad</label>
+                                        
+                                        {/* </div>  */}
+                                        <CalendarDay  value={form.fecha_sociedad} name='fecha_sociedad' date={form.fecha_sociedad} onChange={onChange} withformgroup={0} />
+                                    </div>
                                 </div>
-                                <div className="row col-8">
+                                <div className="row col-md-8">
                                     <div className="col-md-4 align-self-center">
                                         <Select
                                             general={false}
-                                            requirevalidation={1}
+                                            // requirevalidation={variableCampoRequerido}
                                             tipo= 'tipoConstancia'
                                             name='tipo_consta'
-                                            // options={options.tipo_consta}
-                                            placeholder='SELECCIONA TIPO DE CONSTANCIA'
+                                            options={options.tipo_consta}
+                                            placeholder='SELECCIONA TIPO DE ACTA CONSTITUTIVA'
                                             value={form.tipo_consta}
-                                            onChange={onChange}
+                                            onChange={this.onChangeA}
                                             formeditado={formeditado}
                                             iconclass={" fab fa-cc-discover "}
                                             messageinc="Incorrecto. Selecciona el tipo de constancia."
@@ -352,7 +435,8 @@ class ProveedorForm extends Component {
                                     <div className="col-md-4 align-self-center">
                                         <Input
                                             name="numero_consta"
-                                            requirevalidation={1}
+                                            // requirevalidation={1}
+                                            // variableCampoRequerido={variableCampoRequerido}
                                             value={form.numero_consta}
                                             placeholder="NÚMERO"
                                             onChange={onChange}
@@ -365,7 +449,7 @@ class ProveedorForm extends Component {
                                     </div>
                                     <div className="col-md-4 align-self-center">
                                         <Input
-                                            requirevalidation={1}
+                                            // requirevalidation={variableCampoRequerido}
                                             name="nombre_notario"
                                             value={form.nombre_notario}
                                             placeholder="NOMBRE DEL NOTARIO O CORREDOR"
@@ -378,7 +462,7 @@ class ProveedorForm extends Component {
                                     <div className="col-md-4 align-self-center">
                                         <Input
                                             name="numero_notario"
-                                            requirevalidation={1}
+                                            // requirevalidation={variableCampoRequerido}
                                             value={form.numero_notario}
                                             placeholder="NÚMERO DEL NOTARIO O CORREDOR"
                                             onChange={onChange}
@@ -391,7 +475,7 @@ class ProveedorForm extends Component {
                                     </div>
                                     <div className="col-md-4 align-self-center">
                                         <Input
-                                            requirevalidation={1}
+                                            // requirevalidation={variableCampoRequerido}
                                             name="ciudad_notario"
                                             value={form.ciudad_notario}
                                             placeholder="CIUDAD"
@@ -417,6 +501,7 @@ class ProveedorForm extends Component {
                                             (e) => {
                                                 e.preventDefault();
                                                 validateAlert(onSubmit, e, 'form-proveedor')
+                                                console.log(form)
                                             }
                                         } />
                                 </div>

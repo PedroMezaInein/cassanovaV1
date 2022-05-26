@@ -11,7 +11,6 @@ class Select extends Component {
     validarSelect(e) {
         const { value } = e.target
         const { requirevalidation } = this.props
-        console.log(value)
         if (value !== '' && value !== null && value !== undefined) {
             if (requirevalidation) {
                 if (value > 0) {
@@ -127,7 +126,7 @@ class Select extends Component {
                                     name={name}
                                     value={value}
                                     as="select" {...props}>
-                                    <option value={0} disabled selected>
+                                    <option value={'indicacion'} disabled>
                                         {placeholder}
                                             </option>
                                             {
