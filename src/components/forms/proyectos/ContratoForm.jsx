@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import {  Button, InputGray, SelectSearchGray,InputMoneyGray } from '../../form-components'
+import {  Button, InputGray, SelectSearchGray,InputMoneyGray,InputNumberGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 class ContratoForm extends Component {
     updateEmpresa = value => {
@@ -42,10 +42,19 @@ class ContratoForm extends Component {
                 {...props}>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-3">
-                         <SelectSearchGray options = { options.tiposContratos }  placeholder="SELECCIONA EL TIPO DE CONTRATO" value = { form.tipoContrato } 
-                            onChange = { (value) => { this.updateTipoContrato(value, 'tipoContrato') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                            withicon = { 1 } iconclass={"fas fa-pen-fancy"} messageinc = "Incorrecto. Selecciona el tipo de contrato" 
-                            formeditado = { formeditado }/>  
+                    {
+                            tipo === 'Cliente' ?
+                                <SelectSearchGray options = { options.tiposContratosC }  placeholder="SELECCIONA EL TIPO DE CONTRATO" value = { form.tipoContrato } 
+                                    onChange = { (value) => { this.updateTipoContrato(value, 'tipoContrato') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                    withicon = { 1 } iconclass={"fas fa-pen-fancy"} messageinc = "Incorrecto. Selecciona el tipo de contrato" 
+                                    formeditado = { formeditado }/>                                  
+                                :
+                                <SelectSearchGray options = { options.tiposContratosP }  placeholder="SELECCIONA EL TIPO DE CONTRATO" value = { form.tipoContrato } 
+                                onChange = { (value) => { this.updateTipoContrato(value, 'tipoContrato') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                withicon = { 1 } iconclass={"fas fa-pen-fancy"} messageinc = "Incorrecto. Selecciona el tipo de contrato" 
+                                formeditado = { formeditado }/>    
+                        }
+                          
                     </div>                    
                     <div className="col-md-3">
                         <SelectSearchGray options = { options.proyectos }  placeholder="SELECCIONA EL PROYECTO" value = { form.proyecto } 
@@ -101,31 +110,16 @@ class ContratoForm extends Component {
                             name='semanas' iconclass="flaticon2-website" placeholder='SEMANAS'onChange={onChange} 
                             value={form.semanas} messageinc="Ingresa las semanas del contrato." />  
                     </div>
-                </div>  
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    {/* <div className="col-md-3">
-                        <SelectSearchGray options = { options.tiposContratos }  placeholder="SELECCIONA EL TIPO DE CONTRATO" value = { form.tipoContrato } 
-                            onChange = { (value) => { this.updateTipoContrato(value, 'empresa') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                            withicon = { 1 } iconclass={"fas fa-pen-fancy"} messageinc = "Incorrecto. Selecciona la empresa" 
-                            formeditado = { formeditado }/>                        
-                    </div> */}
-                    {/* <div className="col-md-9">
-                        <Input
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            rows="1"
-                            as="textarea"
-                            placeholder="DESCRIPCIÓN"
-                            name="descripcion"
-                            onChange={onChange}
-                            value={form.descripcion}
-                            messageinc="Incorrecto. Ingresa la descripción."
-                            customclass="px-2"
+                    <div className="col-md-3">
+                         <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} 
+                            formeditado = { formeditado } placeholder = "anexo en numero"
+                            value = { form.anexo } name = "anexo" onChange = { onChange } iconclass = "fas fa-folder-open"
+                            messageinc = "Ingresa el anexo en numero."
                         />
-                    </div> */}
-                </div>
-                <div className="separator separator-dashed mt-1 mb-4"></div>
+                    </div>
+                </div>  
+                {/* <div className="separator separator-dashed mt-1 mb-2"></div> */}
+                
                 <div className="form-group row form-group-marginless d-flex justify-content-center">
                     {/* <div className="col text-center">
                         <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>

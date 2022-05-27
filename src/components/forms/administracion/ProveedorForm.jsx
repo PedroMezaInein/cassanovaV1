@@ -31,7 +31,7 @@ class ProveedorForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onSubmit, formeditado, ...props } = this.props
+        const { options, form, onChange,  onSubmit, formeditado, ...props } = this.props
         return (
 
             // <Form id="form-proveedor"
