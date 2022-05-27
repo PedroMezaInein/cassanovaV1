@@ -33,13 +33,13 @@ class ProveedorForm extends Component {
             rfc_persona: '',
             telefono_persona: '',
             email_persona: '',
-            // tipo_consta: '',
+            tipo_consta: 'indicacion',
             numero_consta: '',
             nombre_notario: '',
             numero_notario: '',
             ciudad_notario: '',
             nombre_representante: '',
-            tipo_persona_form: '',
+            tipo_persona: 'indicacion',
         },
         data: {
             proveedores: []
@@ -49,17 +49,16 @@ class ProveedorForm extends Component {
             areas: [],
             subareas: [],
             bancos: [],
-            tipos: [],
+            tipos: [], 
             tipo_persona: [
-                // { text: 'Persona Fisica', name: 'Persona Fisica'},
-                // { text: 'Persona Moral', name: 'Persona Moral'},
-
-                // { text: "Persona Fisica", value: "Persona Fisica" },
-                // { text: "Persona Moral", value: "Persona Moral" },
+                { text: "SELECCIONA TIPO DE PERSONA", value: 'indicacion' },
+                { text: "Persona Fisica", value: "personaFisica" },
+                { text: "Persona Moral", value: "personaMoral" },
             ],
             tipo_consta: [
-                // { text: "El libro", value: "El libro" },
-                // { text: "La poliza", value: "La poliza" },
+                { text: "SELECCIONA TIPO DE ACTA CONSTITUTIVA", value: 'indicacion' },
+                { text: "El libro", value: "elLibro" },
+                { text: "La poliza", value: "laPoliza" },
             ]
         },
     }
@@ -122,7 +121,10 @@ class ProveedorForm extends Component {
         if (!proveedores)
             history.push('/')
         this.getOptionsAxios()
-
+        // if(this.state.form.tipo_persona!== "personaMoral"  ){
+        //     let cambioClaseM = document.getElementsByClassName('personaMoralContenedor')
+        //     cambioClaseM.classList.add('d-none')
+        //     }
 
     }
     clearForm = () => {
@@ -144,63 +146,17 @@ class ProveedorForm extends Component {
     }
     onChange = e => {
         const { form } = this.state
-        let { tipo_persona, tipo_consta } = this.state.form
-
         const { name, value } = e.target
-        // console.log(name,value)
-        switch (name) {
-            case 'razonSocial':
-                let cadena = value.replace(/,/g, '')
-                cadena = cadena.replace(/\./g, '')
-                form[name] = cadena
-                break;
-            case 'tipo_persona':
-                if (value === 'personaMoral') {
-                    let cambioClaseM = document.getElementById('personaMoralContenedor')
-                    cambioClaseM.classList.remove('d-none')
-                    // dClassPFisica = 'd-none'
-                    // dClassPMoral = ''
-                    tipo_persona = value
-                    this.setState({
-                        ...this.state,
-                        tipo_persona,
-                    })
-                }
-                if (value === 'personaFisica') {
-                    // dClassPFisica = ''
-                    // dClassPMoral = 'd-none'
-                    let cambioClaseM = document.getElementById('personaMoralContenedor')
-                    cambioClaseM.classList.add('d-none')
-                    tipo_persona = value
-                    this.setState({
-                        ...this.state,
-                        tipo_persona,
-                    })
-                }
-                break;
-                case 'tipo_consta':
-                tipo_consta = value;
-                this.setState({
-                    ...this.state,
-                    tipo_consta,
-                })
-                break;
-            default:
-                form[name] = value
-                break;
-
-        }
-        // if (name === 'razonSocial') {
-        //     let cadena = value.replace(/,/g, '')
-        //     cadena = cadena.replace(/\./g, '')
-        //     form[name] = cadena
-        // } else
-        //     form[name] = value
+        if (name === 'razonSocial') {
+            let cadena = value.replace(/,/g, '')
+            cadena = cadena.replace(/\./g, '')
+            form[name] = cadena
+        } else
+            form[name] = value
         this.setState({
             ...this.state,
             form
         })
-
     }
 
     isActiveFactura = () => {
@@ -328,6 +284,10 @@ class ProveedorForm extends Component {
             },
             (error) => {
                 printResponseErrorAlert(error)
+                console.log(error.message)
+                if(error.message ==='Request failed with status code 400'){
+                    errorAlert('Favor de completar todos los campos de la persona moral, intenta de nuevo.')
+                }else{   printResponseErrorAlert(error)  }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
