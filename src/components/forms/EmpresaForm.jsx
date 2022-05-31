@@ -26,6 +26,15 @@ class EmpresaForm extends Component {
                 
         }
     }
+    onChangeA = e => {
+        let { form } = this.props
+        const { name, value } = e.target
+            form[name] = value
+            this.setState({
+                ...this.state,
+                form,
+            })
+        }
 
     removeTipo = (tipo) => {
         const { form, onChange } = this.props
@@ -103,10 +112,10 @@ class EmpresaForm extends Component {
                                 </div>
                             </div>
                             <div className="form-group row form-group-marginless">
-                            <div className="col-md-3">
+                            {/* <div className="col-md-3">
                                  <Input requirevalidation={0} formeditado={formeditado} onChange={onChange} name="facebook"  type="text"  value={form.facebook} placeholder="FACEBOOK"
                                         iconclass={"socicon-facebook"} messageinc="Incorrecto. Ingresa la liga de facebook" letterCase = { false }/>
-                                </div>
+                                </div> */}
                                 <div className="col-md-3">
                                     <Input requirevalidation={0} formeditado={formeditado}  onChange={onChange} name="facebook" type="text" value={form.facebook}
                                         placeholder="FACEBOOK" iconclass={"socicon-facebook"} messageinc="Incorrecto. Ingresa la liga de facebook" letterCase = { false } />
@@ -160,68 +169,148 @@ class EmpresaForm extends Component {
                         </div>
                         <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                           <Row className="mx-0">
-                                <Col md="3" className="text-center">
+                                <Col md="4" className="text-center">
                                     <label className="text-center font-weight-bold text-dark-60">Fecha de la sociedad</label>
                                     <CalendarDay value={form.fecha_sociedad} name='fecha_sociedad' date={form.fecha_sociedad}  onChange={onChange} withformgroup={0} requirevalidation={0}/>
                                 </Col>
 
-                                <Col md="9" className="align-self-center">
+                                <Col md="8" className="align-self-center">
                                     <div className="form-group row form-group-marginless">      
-                                        <div className="col-md-3">
-                                            <Select requirevalidation={0} name='tipo_persona' options={options.tipo_persona} placeholder='SELECCIONA TIPO DE PERSONA' value={form.tipo_persona} 
+                                        <div className="col-md-4">
+                                            <Select requirevalidation={0} name='tipo_persona' options={options.tipo_persona} placeholder='TIPO DE PERSONA' value={form.tipo_persona} 
                                             onChange={onChange} formeditado={formeditado} iconclass={" fab fa-cc-discover "}  />
                                         </div>
                                         <div className="col-md-4">
-                                             <Input requirevalidation={1} name="nombre_persona" value={form.nombre_persona} placeholder="Nombre persona moral  / fisica" onChange={onChange} 
-                                             iconclass={"far fa-building"} formeditado={formeditado} messageinc="Incorrecto. Ingresa el nombre persona moral  / fisica." />
+                                        <Input
+                                            requirevalidation={1}
+                                            name="nombre_persona"
+                                            value={form.nombre_persona}
+                                            placeholder="NOMBRE"
+                                            onChange={onChange}
+                                            iconclass={"far fa-building"}
+                                            formeditado={formeditado}
+                                            messageinc="Incorrecto. Ingresa el nombre."
+                                        />
                                         </div>
-                                        <div className="col-md-5">
-                                             <Input requirevalidation={1} name="direccion_persona"  value={form.direccion_persona}  placeholder="Direccion del persona  moral  / fisica." 
-                                              onChange={onChange}  iconclass={"far fa-building"} formeditado={formeditado}  messageinc="Incorrecto. Ingresa la direccion de la persona moral  / fisica."  />
+                                        <div className="col-md-4">
+                                        <Input
+                                            requirevalidation={1}
+                                            name="direccion_persona"
+                                            value={form.direccion_persona}
+                                            placeholder="DIRECCIÓN"
+                                            onChange={onChange}
+                                            iconclass={"far fa-building"}
+                                            formeditado={formeditado}
+                                            messageinc="Incorrecto. Ingresa la dirección ."
+                                        />
                                         </div>
-                                    </div>
+                                    {/* </div> */}
 
-                                    <div className="form-group row form-group-marginless">      
-                                        <div className="col-md-3">
-                                            <Input name="rfc_persona" value={form.rfc_persona} placeholder="RFC persona moral  / fisica" onChange={onChange} iconclass={"far fa-file-alt"} 
-                                            patterns={RFC} formeditado={formeditado} messageinc="Incorrecto. Ingresa el rfc persona moral  / fisica." maxLength="13" />                        
+                                    {/* <div className="form-group row form-group-marginless">       */}
+                                        <div className="col-md-4">
+                                        <Input
+                                            name="rfc_persona"
+                                            value={form.rfc_persona}
+                                            placeholder="RFC "
+                                            onChange={onChange}
+                                            iconclass={"far fa-file-alt"}
+                                            patterns={RFC}
+                                            formeditado={formeditado}
+                                            messageinc="Incorrecto. Ingresa el rfc ."
+                                            maxLength="13"
+                                        />                     
                                         </div>
-                                        <div className="col-md-3">
-                                             <InputPhone requirevalidation={1} thousandseparator={false} prefix={''} name="telefono_persona" value={form.telefono_persona} 
-                                             placeholder="TELÉFONO persona moral  / fisica" onChange={onChange} iconclass={"fas fa-mobile-alt"} messageinc="Incorrecto. Ingresa el número de teléfono."
-                                             patterns={TEL} formeditado={formeditado}/>
+                                        <div className="col-md-4">
+                                        <InputPhone
+                                            requirevalidation={1}
+                                            thousandseparator={false}
+                                            prefix={''}
+                                            name="telefono_persona"
+                                            value={form.telefono_persona}
+                                            placeholder="TELÉFONO"
+                                            onChange={onChange}
+                                            iconclass={"fas fa-mobile-alt"}
+                                            messageinc="Incorrecto. Ingresa el número de teléfono."
+                                            patterns={TEL}
+                                            formeditado={formeditado}
+                                        />
                                         </div>
-                                        <div className="col-md-3">
+                                        <div className="col-md-4">
                                             <Input  requirevalidation={0} name="email_persona" value={form.email_persona} placeholder="CORREO ELECTRÓNICO"  type="email" 
                                             onChange={onChange}  iconclass={"fas fa-envelope"}  messageinc="Incorrecto. Ej. usuario@dominio.com" patterns={EMAIL} formeditado={formeditado} />
                                         </div>    
-                                        <div className="col-md-3">
-                                            <Input  requirevalidation={1}  name="nombre_representante"  value={form.nombre_representante}  placeholder="Nombre del representante"  
-                                            onChange={onChange} iconclass={"far fa-building"}  formeditado={formeditado}  messageinc="Incorrecto. Ingresa el Nombre del representante." />
+                                        <div className="col-md-4">
+                                        <Input
+                                            requirevalidation={1}
+                                            name="nombre_representante"
+                                            value={form.nombre_representante}
+                                            placeholder="NOMBRE DEL REPRESENTANTE"
+                                            onChange={onChange}
+                                            iconclass={"far fa-building"}
+                                            formeditado={formeditado}
+                                            messageinc="Incorrecto. Ingresa el Nombre del representante."
+                                        />
                                         </div>      
-                                    </div>
-                                    <div className="form-group row form-group-marginless">  
-                                        <div className="col-md-3">
-                                            <Select  requirevalidation={0} name='tipo_consta'  options={options.tipo_consta}  placeholder='SELECCIONA TIPO DE CONSTA' value={form.tipo_consta}  onChange={onChange} 
-                                             formeditado={formeditado} iconclass={" fab fa-cc-discover "} />
+                                    {/* </div>
+                                    <div className="form-group row form-group-marginless">   */}
+                                        <div className="col-md-4">
+                                        <Select
+                                            general={false}
+                                            // requirevalidation={variableCampoRequerido}
+                                            tipo= 'tipoConstancia'
+                                            name='tipo_consta'
+                                            options={options.tipo_consta}
+                                            placeholder='SELECCIONA TIPO DE ACTA CONSTITUTIVA'
+                                            value={form.tipo_consta}
+                                            onChange={this.onChangeA}
+                                            formeditado={formeditado}
+                                            iconclass={" fab fa-cc-discover "}
+                                            messageinc="Incorrecto. TIPO DE ACTA CONSTITUTIVA."
+                                        />
                                         </div>  
-                                        <div className="col-md-2">
-                                             <Input name="numero_consta" requirevalidation={0} value={form.numero_consta} placeholder="Numero" onChange={onChange} iconclass={"far fa-file-alt"} 
+                                        <div className="col-md-4">
+                                             <Input name="numero_consta" requirevalidation={0} value={form.numero_consta}  placeholder="NÚMERO" onChange={onChange} iconclass={"far fa-file-alt"} 
                                               patterns={RFC} formeditado={formeditado} messageinc="Incorrecto. Ingresa el numero." maxLength="13" />                        
                                         </div>
                                         <div className="col-md-4">
-                                             <Input requirevalidation={0} name="nombre_notario" value={form.nombre_notario} placeholder="Nombre del notario o corredor" onChange={onChange} iconclass={"far fa-building"} 
-                                             formeditado={formeditado} messageinc="Incorrecto. Ingresa el Nombre del notario o corredor." />
+                                        <Input
+                                            // requirevalidation={variableCampoRequerido}
+                                            name="nombre_notario"
+                                            value={form.nombre_notario}
+                                            placeholder="NOMBRE DEL NOTARIO O CORREDOR"
+                                            onChange={onChange}
+                                            iconclass={"far fa-building"}
+                                            formeditado={formeditado}
+                                            messageinc="Incorrecto. Ingresa el Nombre del notario o corredor."
+                                        />
                                         </div>   
-                                        <div className="col-md-3">
-                                            <Input  name="numero_notario"  requirevalidation={0}  value={form.numero_notario} placeholder="Numero del notario o corredor."  onChange={onChange}  
-                                            iconclass={"far fa-file-alt"}  patterns={RFC}  formeditado={formeditado}  messageinc="Incorrecto. Ingresa el numero del notario o corredor."  maxLength="13" />                        
+                                        <div className="col-md-4">
+                                        <Input
+                                            name="numero_notario"
+                                            // requirevalidation={variableCampoRequerido}
+                                            value={form.numero_notario}
+                                            placeholder="NÚMERO DEL NOTARIO O CORREDOR"
+                                            onChange={onChange}
+                                            iconclass={"far fa-file-alt"}
+                                            patterns={RFC}
+                                            formeditado={formeditado}
+                                            messageinc="Incorrecto. Ingresa el número del notario o corredor."
+                                            maxLength="13"
+                                        />                      
                                         </div>                                        
-                                    </div>
-                                    <div className="form-group row form-group-marginless">  
-                                        <div className="col-md-3">
-                                            <Input requirevalidation={0} name="ciudad_notario" value={form.ciudad_notario}  placeholder="Ciduad" onChange={onChange}  iconclass={"far fa-building"} 
-                                            formeditado={formeditado}  messageinc="Incorrecto. Ingresa lac iudad." />
+                                    {/* </div>
+                                    <div className="form-group row form-group-marginless">   */}
+                                        <div className="col-md-4">
+                                        <Input
+                                            // requirevalidation={variableCampoRequerido}
+                                            name="ciudad_notario"
+                                            value={form.ciudad_notario}
+                                            placeholder="CIUDAD"
+                                            onChange={onChange}
+                                            iconclass={"far fa-building"}
+                                            formeditado={formeditado}
+                                            messageinc="Incorrecto. Ingresa la ciudad."
+                                        />
                                         </div>   
                                     </div>
 

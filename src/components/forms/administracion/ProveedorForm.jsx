@@ -332,7 +332,7 @@ class ProveedorForm extends Component {
                                             onChange={onChange}
                                             iconclass={"far fa-building"}
                                             formeditado={formeditado}
-                                            messageinc="Incorrecto. Ingresa el nombre ."
+                                            messageinc="Incorrecto. Ingresa el nombre."
                                         />
                                     </div>
                                     <div className="col-md-3">
@@ -344,7 +344,7 @@ class ProveedorForm extends Component {
                                             onChange={onChange}
                                             iconclass={"far fa-building"}
                                             formeditado={formeditado}
-                                            messageinc="Incorrecto. Ingresa la direccion de la ."
+                                            messageinc="Incorrecto. Ingresa la dirección ."
                                         />
                                     </div>
                                     <div className="col-md-3">
@@ -429,7 +429,7 @@ class ProveedorForm extends Component {
                                             onChange={this.onChangeA}
                                             formeditado={formeditado}
                                             iconclass={" fab fa-cc-discover "}
-                                            messageinc="Incorrecto. Selecciona el tipo de constancia."
+                                            messageinc="Incorrecto. TIPO DE ACTA CONSTITUTIVA."
                                         />
                                     </div>
                                     <div className="col-md-4 align-self-center">

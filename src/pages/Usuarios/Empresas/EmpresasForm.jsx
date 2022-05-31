@@ -41,13 +41,13 @@ class EmpresasForm extends Component {
             rfc_persona: '',
             telefono_persona: '',
             email_persona: '',
-            tipo_consta: '',
+            tipo_consta: 'indicacion',
             numero_consta: '',
             nombre_notario: '',
             numero_notario: '',
             ciudad_notario: '',
             nombre_representante: '',
-            tipo_persona: '',
+            tipo_persona: 'personaMoral',
             departamentos: []
         },
         data: {
@@ -88,13 +88,16 @@ class EmpresasForm extends Component {
         options: { 
             departamentos: [],
             tipo_persona: [
-                { text: "Persona Fisica", value: "Persona Fisica" },
-                { text: "Persona Moral", value: "Persona Moral" },
+                // { text: "SELECCIONA TIPO DE PERSONA", value: 'indicacion' },
+                // { text: "Persona Fisica", value: "personaFisica" },
+                { text: "Persona Moral", value: "personaMoral" },
             ],
             tipo_consta: [
-                { text: "El libro", value: "El libro" },
-                { text: "La poliza", value: "La poliza" },
-            ] }
+                { text: "SELECCIONA TIPO DE ACTA CONSTITUTIVA", value: 'indicacion' },
+                { text: "El libro", value: "elLibro" },
+                { text: "La poliza", value: "laPoliza" },
+            ]
+        }
     }
     /* constructor(props) {
         super(props)
@@ -226,6 +229,7 @@ class EmpresasForm extends Component {
     addEmpresaAxios = async () => {
         const { access_token } = this.props.authUser
         const { form } = this.state
+        console.log(form)
         await axios.post(`${URL_DEV}v2/usuarios/empresas`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 console.log(response)
