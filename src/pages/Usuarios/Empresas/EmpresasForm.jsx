@@ -9,11 +9,15 @@ import Echo from 'laravel-echo';
 import Swal from 'sweetalert2'
 import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert, userWarningAlert } from '../../../functions/alert'
 import { setSingleHeader } from "../../../functions/routers"
+import moment from 'moment'
+
 class EmpresasForm extends Component {
 
     state = {
         empresas: [],
         empresa: {},
+        navInfo: 'info',
+
         form: {
             name: '',
             razonSocial: '',
@@ -31,6 +35,19 @@ class EmpresasForm extends Component {
             pagina_web:'',
             telefono:'',
             blog:'',
+            fecha_sociedad: new Date(),
+            nombre_persona: '',
+            direccion_persona: '',
+            rfc_persona: '',
+            telefono_persona: '',
+            email_persona: '',
+            tipo_consta: 'indicacion',
+            numero_consta: '',
+            nombre_notario: '',
+            numero_notario: '',
+            ciudad_notario: '',
+            nombre_representante: '',
+            tipo_persona: 'personaMoral',
             departamentos: []
         },
         data: {
@@ -68,7 +85,19 @@ class EmpresasForm extends Component {
         ],
         adjuntos: [],
         defaultactivekey: "",
-        options: { departamentos: [] }
+        options: { 
+            departamentos: [],
+            tipo_persona: [
+                // { text: "SELECCIONA TIPO DE PERSONA", value: 'indicacion' },
+                // { text: "Persona Fisica", value: "personaFisica" },
+                { text: "Persona Moral", value: "personaMoral" },
+            ],
+            tipo_consta: [
+                { text: "SELECCIONA TIPO DE ACTA CONSTITUTIVA", value: 'indicacion' },
+                { text: "El libro", value: "elLibro" },
+                { text: "La poliza", value: "laPoliza" },
+            ]
+        }
     }
     /* constructor(props) {
         super(props)
@@ -200,12 +229,19 @@ class EmpresasForm extends Component {
     addEmpresaAxios = async () => {
         const { access_token } = this.props.authUser
         const { form } = this.state
+        console.log(form)
         await axios.post(`${URL_DEV}v2/usuarios/empresas`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
+                console.log(response)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
                 const { history } = this.props
                 history.push({ pathname: '/usuarios/empresas' });
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => { 
+                console.log(error.message)
+                if(error.message ==='Request failed with status code 400'){
+                    errorAlert('Favor de completar todos los campos, intenta de nuevo.')
+                }else{   printResponseErrorAlert(error)  }
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
@@ -232,6 +268,19 @@ class EmpresasForm extends Component {
                 form.direccion = empresa.direccion
                 form.telefono = empresa.telefono
                 form.blog = empresa.blog
+                form.tipo_persona = empresa.tipo_persona
+                form.nombre_persona = empresa.nombre_persona
+                form.direccion_persona = empresa.direccion_persona
+                form.rfc_persona = empresa.rfc_persona
+                form.telefono_persona = empresa.telefono_persona
+                form.email_persona = empresa.email_persona
+                form.tipo_consta = empresa.tipo_consta
+                form.numero_consta = empresa.numero_consta
+                form.nombre_notario = empresa.nombre_notario
+                form.numero_notario = empresa.numero_notario
+                form.ciudad_notario = empresa.ciudad_notario
+                form.fecha_sociedad = empresa.fecha_sociedad !== null ? new Date(moment(empresa.fecha_sociedad)):''
+                form.nombre_representante = empresa.nombre_representante
                 let aux = []
                 empresa.tipos.forEach((tipo) => { aux.push(tipo.tipo) })
                 form.tipos = aux
@@ -250,8 +299,8 @@ class EmpresasForm extends Component {
 
     handleChange = (e) => {
         /* e.preventDefault(); */
-        const { name, value } = e.target
         const { form } = this.state
+        const { name, value } = e.target
         if (name === 'logo') {
             form['logo'] = value
             form['file'] = e.target.files[0]
@@ -262,7 +311,6 @@ class EmpresasForm extends Component {
                 img: img
             })
         }
-
         else {
             if (name === 'razonSocial') {
                 let cadena = value.replace(/,/g, '')
@@ -296,6 +344,7 @@ class EmpresasForm extends Component {
                         <EmpresaForm
                             form={form}
                             onSubmit={this.onSubmit}
+                            // onChange={this.handleChange}
                             onChange={(e) => this.handleChange(e)}
                             title={title}
                             formeditado={formeditado}

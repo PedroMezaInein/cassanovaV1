@@ -195,7 +195,7 @@ class TickesFilter extends Component {
                         <div className="checkbox-outline pt-2">
                             <label className="checkbox font-weight-light mr-5">
                                 <input name = 'check_trabajo' type = "checkbox" checked = { form.check_trabajo } onChange = { this.onChange } /> 
-                                    Trabajo terminado
+                                    Trabajo terminados
                                 <span></span>
                             </label>
                             <label className="checkbox font-weight-light">

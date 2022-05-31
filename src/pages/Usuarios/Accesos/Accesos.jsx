@@ -61,7 +61,6 @@ class Accesos extends Component {
         });
     }
     
-
     setAccesos = accesos => {
         let aux = []
         accesos.map((acceso) => {
@@ -69,10 +68,12 @@ class Accesos extends Component {
                 {
                     actions: this.setActions(acceso),
                     plataforma: setTextTableReactDom(acceso.plataforma, this.doubleClick, acceso, 'plataforma', 'text-justify'),
+                    url: setTextTableReactDom(acceso.url, this.doubleClick, acceso, 'url', 'text-justify'),
                     usuario: setClipboardArrayTableReactDom(
                         [
                             { 'name': 'USUARIO', 'text': acceso.usuario ? acceso.usuario : '-' },
-                            { 'name': 'CONTRASEÑA', 'text': acceso.contraseña ? acceso.contraseña : '-', type: 'password' }
+                            { 'name': 'CONTRASEÑA', 'text': acceso.contraseña ? acceso.contraseña : '-', type: 'password' },
+
                         ],'186px', this.doubleClick, acceso, 'usuario_contraseña'
                     ),
                     correo: setClipboardArrayTableReactDom(
@@ -84,7 +85,6 @@ class Accesos extends Component {
                     empresa: acceso.empresas.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.empresas, 'empresa_acceso', this.deleteElementAxios, ''),
                     responsables: acceso.usuarios.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.usuarios, 'responsables_acceso', this.deleteElementAxios, 'min-width-136px'),
                     departamento: acceso.departamentos.length === 0 ? setTextTableCenter("Sin definir") : setTagLabelReactDom(acceso, acceso.departamentos, 'departamento_acceso', this.deleteElementAxios,''),
-                    descripcion: setTextTableReactDom(acceso.descripcion, this.doubleClick, acceso, 'descripcion', 'text-justify'),
                     id: acceso.id
                 }
             )
@@ -156,6 +156,7 @@ class Accesos extends Component {
 
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
+        console.log(tipo)
         switch(tipo){
             case 'usuario_contraseña':
                 form.usuario = data.usuario
@@ -164,6 +165,9 @@ class Accesos extends Component {
             case 'correo_telefono':
                 form.correo = data.correo
                 form.telefono = data.numero
+                break;
+            case 'url':
+                form.url = data.url
                 break;
             default:
                 form[tipo] = data[tipo]
@@ -210,6 +214,14 @@ class Accesos extends Component {
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }/>
+                }
+                {
+                    tipo === 'url' &&
+                    <>
+                        <InputGray withformgroup = { 1 } withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 1 } placeholder="url"
+                            requirevalidation = { 0 }  value = { form.url} name = { 'url' } letterCase = { false } iconclass={"fas fa-user"}
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'url')} } swal = { true } />
+                    </>
                 }
                 </div>,
             <Update />,

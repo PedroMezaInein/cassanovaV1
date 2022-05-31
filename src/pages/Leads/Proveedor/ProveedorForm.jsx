@@ -8,6 +8,9 @@ import Layout from '../../../components/layout/layout'
 import { ProveedorForm as ProveedorFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import Swal from 'sweetalert2'
+
+import moment from 'moment'
+
 class ProveedorForm extends Component {
     state = {
         title: 'Nuevo proveedor',
@@ -23,7 +26,20 @@ class ProveedorForm extends Component {
             banco: 0,
             leadId: '',
             area: '',
-            subarea: ''
+            subarea: '',
+            fecha_sociedad: new Date(),
+            nombre_persona: '',
+            direccion_persona: '',
+            rfc_persona: '',
+            telefono_persona: '',
+            email_persona: '',
+            tipo_consta: 'indicacion',
+            numero_consta: '',
+            nombre_notario: '',
+            numero_notario: '',
+            ciudad_notario: '',
+            nombre_representante: '',
+            tipo_persona: 'indicacion',
         },
         data: {
             proveedores: []
@@ -33,18 +49,34 @@ class ProveedorForm extends Component {
             areas: [],
             subareas: [],
             bancos: [],
-            tipos: []
-        }
+            tipos: [], 
+            tipo_persona: [
+                { text: "SELECCIONA TIPO DE PERSONA", value: 'indicacion' },
+                { text: "Persona Fisica", value: "personaFisica" },
+                { text: "Persona Moral", value: "personaMoral" },
+            ],
+            tipo_consta: [
+                { text: "SELECCIONA TIPO DE ACTA CONSTITUTIVA", value: 'indicacion' },
+                { text: "El libro", value: "elLibro" },
+                { text: "La poliza", value: "laPoliza" },
+            ]
+        },
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { match: { params: { action } } } = this.props
         const { history, location: { state } } = this.props
+        let { personaElementos } = this.state
+        this.setState({
+            ...this.state,
+            personaElementos,
+        })
         const proveedores = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         })
+        personaElementos = true;
         switch (action) {
             case 'add':
                 this.setState({
@@ -89,6 +121,11 @@ class ProveedorForm extends Component {
         if (!proveedores)
             history.push('/')
         this.getOptionsAxios()
+        // if(this.state.form.tipo_persona!== "personaMoral"  ){
+        //     let cambioClaseM = document.getElementsByClassName('personaMoralContenedor')
+        //     cambioClaseM.classList.add('d-none')
+        //     }
+
     }
     clearForm = () => {
         const { form } = this.state
@@ -121,6 +158,25 @@ class ProveedorForm extends Component {
             form
         })
     }
+
+    isActiveFactura = () => {
+        const { form } = this.state
+        const { type } = this.props
+        if (type !== 'edit') {
+            if (form.factura === 'Con factura') {
+                return true
+            }
+            else {
+                form.adjuntos.xml.value = ''
+                form.adjuntos.xml.files = []
+                form.adjuntos.pdf.files = []
+                form.adjuntos.pdf.value = ''
+            }
+        }
+
+        return false
+    }
+
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -149,6 +205,20 @@ class ProveedorForm extends Component {
         form.numCuenta = proveedor.numero_cuenta
         form.banco = proveedor.banco ? proveedor.banco.id : 0
         form.tipo = proveedor.tipo_cuenta ? proveedor.tipo_cuenta.id : 0
+        form.tipo_persona = proveedor.tipo_persona
+        form.nombre_persona = proveedor.nombre_persona
+        form.direccion_persona = proveedor.direccion_persona
+        form.rfc_persona = proveedor.rfc_persona
+        form.telefono_persona = proveedor.telefono_persona
+        form.email_persona = proveedor.email_persona
+        form.tipo_consta = proveedor.tipo_consta
+        form.numero_consta = proveedor.numero_consta
+        form.nombre_notario = proveedor.nombre_notario
+        form.numero_notario = proveedor.numero_notario
+        form.ciudad_notario = proveedor.ciudad_notario
+        form.fecha_sociedad = proveedor.fecha_sociedad !== null ? new Date(moment(proveedor.fecha_sociedad)) : ''
+        form.nombre_representante = proveedor.nombre_representante
+
         if (proveedor.subarea) {
             form.area = proveedor.subarea.area.id.toString()
             options['subareas'] = setOptions(proveedor.subarea.area.subareas, 'nombre', 'id')
@@ -214,6 +284,10 @@ class ProveedorForm extends Component {
             },
             (error) => {
                 printResponseErrorAlert(error)
+                console.log(error.message)
+                if(error.message ==='Request failed with status code 400'){
+                    errorAlert('Favor de completar todos los campos de la persona moral, intenta de nuevo.')
+                }else{   printResponseErrorAlert(error)  }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -222,7 +296,7 @@ class ProveedorForm extends Component {
     }
     async updateProveedorAxios() {
         const { access_token } = this.props.authUser
-        const { form, proveedor } = this.state
+        const { form, proveedor, } = this.state
         await axios.put(URL_DEV + 'proveedores/' + proveedor.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
@@ -245,7 +319,7 @@ class ProveedorForm extends Component {
         })
     }
     render() {
-        const { form, title, options, formeditado } = this.state
+        const { form, title, options, formeditado} = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
                 <Card className="card-custom">
@@ -254,7 +328,7 @@ class ProveedorForm extends Component {
                             <h3 className="card-label">{title}</h3>
                         </div>
                     </Card.Header>
-                    <Card.Body className="pt-0">
+                    <Card.Body className="pt-0 heightCard">
                         <ProveedorFormulario
                             formeditado={formeditado}
                             title={title}

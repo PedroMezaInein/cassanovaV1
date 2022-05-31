@@ -31,6 +31,7 @@ class CuentaForm extends Component {
             empresas: [],
             descripcion: '',
             usuarios: [],
+            clabe: ''
         }
     }
     componentDidMount() {
@@ -69,6 +70,8 @@ class CuentaForm extends Component {
                         const { cuenta } = state
                         form.nombre = cuenta.nombre
                         form.numero = cuenta.numero
+                        form.clabe = cuenta.clabe_interbancaria
+                        
                         if (cuenta.estatus)
                             form.estatus = cuenta.estatus.id
                         if (cuenta.tipo)

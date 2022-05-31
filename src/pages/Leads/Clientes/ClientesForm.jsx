@@ -6,6 +6,8 @@ import { ClienteForm } from '../../../components/forms'
 import Layout from '../../../components/layout/layout';
 import { URL_DEV } from '../../../constants'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import moment from 'moment'
+
 class ClientesForm extends Component {
     state = {
         clientes: [],
@@ -30,8 +32,27 @@ class ClientesForm extends Component {
             calle: '',
             perfil: '',
             rfc: '',
-            contacto:''
-        }
+            contacto:'',
+            tipo_persona: 'indicacion',
+            fecha_sociedad: new Date(),
+            numero_consta: '',
+            nombre_notario: '',
+            numero_notario: '',
+            ciudad_notario: '',
+            tipo_consta: 'indicacion',
+        },
+        options: { 
+            tipo_persona: [
+                { text: "SELECCIONA TIPO DE PERSONA", value: 'indicacion' },
+                { text: "Persona Fisica", value: "personaFisica" },
+                { text: "Persona Moral", value: "personaMoral" },
+            ],
+            tipo_consta: [
+                { text: "SELECCIONA TIPO DE ACTA CONSTITUTIVA", value: 'indicacion' },
+                { text: "El libro", value: "elLibro" },
+                { text: "La poliza", value: "laPoliza" },
+            ]
+        },
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -53,7 +74,7 @@ class ClientesForm extends Component {
             case 'edit':
                 if (state) {
                     if (state.cliente) {
-                        const { form } = this.state
+                        const { form } = this.state                     
                         const { cliente } = state
                         if (cliente.cp) {
                             form['cp'] = cliente.cp
@@ -69,6 +90,19 @@ class ClientesForm extends Component {
                         form['calle'] = cliente.calle
                         form['perfil'] = cliente.perfil
                         form['rfc'] = cliente.rfc
+                        form.ciudad_notario = cliente.ciudad_notario
+                        form.direccion_persona = cliente.direccion_persona
+                        form.email_persona = cliente.email_persona
+                        form.fecha_sociedad = cliente.fecha_sociedad !== null ? new Date(moment(cliente.fecha_sociedad)) : ''
+                        form.nombre_notario = cliente.nombre_notario
+                        form.nombre_persona = cliente.nombre_persona
+                        form.nombre_representante = cliente.nombre_representante
+                        form.numero_consta = cliente.numero_consta
+                        form.numero_notario = cliente.numero_notario
+                        form.rfc_persona = cliente.rfc_persona
+                        form.telefono_persona = cliente.telefono_persona
+                        form.tipo_consta = cliente.tipo_consta
+                        form.tipo_persona = cliente.tipo_persona
                         this.setState({
                             ...this.state,
                             cliente: cliente,
@@ -169,7 +203,7 @@ class ClientesForm extends Component {
                             estado={estado}
                             municipio={municipio}
                             colonias={colonias}
-                            updateColonia={this.updateColonia}
+                            // updateColonia={this.updateColonia}
                             onSubmit={this.onSubmit}
                         />
                     </Card.Body>

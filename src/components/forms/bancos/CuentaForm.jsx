@@ -82,7 +82,7 @@ export default class CuentaForm extends Component {
                 {...props}
             >
                 <div className="form-group row form-group-marginless">
-                    <div className={tipo === 'cajas' ? 'col-md-6' : "col-md-4"}>
+                    <div className={tipo === 'cajas' ? 'col-md-4' : "col-md-4"}>
                         <Input requirevalidation={1}
                             formeditado={formeditado}
                             placeholder="INGRESE EL NOMBRE DE LA CUENTA"
@@ -96,7 +96,7 @@ export default class CuentaForm extends Component {
                     </div>
                     {
                         tipo !== 'cajas' ?
-                            <div className={tipo === 'cajas' ? 'd-none' : "col-md-4"}>
+                            <div className={tipo === 'cajas' ? 'd-none' : "col-md-3"}>
                                 <InputNumber requirevalidation={1}
                                     formeditado={formeditado}
                                     placeholder="INGRESA EL NÚMERO DE CUENTA"
@@ -109,21 +109,25 @@ export default class CuentaForm extends Component {
                             </div>
                             : ''
                     }
-                    <div className={tipo === 'cajas' ? 'col-md-6' : "col-md-4"}>
-                        <Select requirevalidation={1}
-                            formeditado={formeditado}
-                            name='estatus'
-                            options={options.estatus}
-                            placeholder='SELECCIONA EL ESTATUS'
-                            value={form.estatus}
-                            onChange={onChange}
-                            iconclass=" far fa-check-square "
-                            messageinc="Incorrecto. Selecciona el estatus." />
-                    </div>
+                      {
+                        tipo !== 'cajas' ?
+                            <div className={tipo === 'cajas' ? 'd-none' : "col-md-4"}>
+                                <InputNumber requirevalidation={1}
+                                    formeditado={formeditado}
+                                    placeholder="INGRESA LA CLABE INTERBANCARIA"
+                                    type="text"
+                                    name="clabe"
+                                    value={form.clabe}
+                                    onChange={onChange}
+                                    iconclass=" fas fa-id-card "
+                                    messageinc="Incorrecto. Ingresa el número de cuenta." />
+                            </div>
+                            : ''
+                    }                   
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch requirevalidation={1}
                             formeditado={formeditado}
                             name='tipo'
@@ -135,7 +139,19 @@ export default class CuentaForm extends Component {
                             messageinc='Incorrecto. Selecciona el tipo de cuenta.'
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className={tipo === 'cajas' ? 'col-md-2' : "col-md-2"}>
+                        <Select requirevalidation={1}
+                            formeditado={formeditado}
+                            name='estatus'
+                            options={options.estatus}
+                            placeholder='SELECCIONA EL ESTATUS'
+                            value={form.estatus}
+                            onChange={onChange}
+                            iconclass=" far fa-check-square "
+                            messageinc="Incorrecto. Selecciona el estatus." />
+                    </div>
+                    
+                    <div className="col-md-2">
                         <SelectSearch requirevalidation={1}
                             formeditado={formeditado}
                             name='banco'
@@ -147,7 +163,7 @@ export default class CuentaForm extends Component {
                             messageinc="Incorrecto. Selecciona el banco."
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearchTrue requirevalidation={0}
                             formeditado={formeditado}
                             name='empresa_principal'
@@ -162,7 +178,7 @@ export default class CuentaForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                         <TagSelectSearch
                             placeholder="SELECCIONA LA EMPRESA"
                             options={this.transformarOptions(options.empresas)}
