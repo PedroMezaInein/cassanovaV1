@@ -24,6 +24,7 @@ class NewTable extends Component{
     componentDidMount = () => {
         const { data } = this.props
         this.setState({...this.state, stateData: data})
+        // console.log(this.state)
         $.event.special.touchstart = {
             setup: function( _, ns, handle ){
                 if ( ns.includes("noPreventDefault") ) {
@@ -56,6 +57,8 @@ class NewTable extends Component{
     runAjax = (request) => {
         const { accessToken, urlRender, setter } = this.props
         var deferred = new $.Deferred();
+       
+
         $.ajax({
             data: request,
             url: urlRender,
@@ -64,6 +67,7 @@ class NewTable extends Component{
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
             success: function (response) {
                 deferred.resolve({ data: setter(response.data), draw: response.draw, recordsTotal: response.recordsTotal, recordsFiltered: response.recordsFiltered, elements: response.data });
+
             },
             error: function (error) {
                 console.error(error, 'error')
@@ -182,6 +186,7 @@ class NewTable extends Component{
             createdRow: function (row, data) {
                 const { objeto } = data
                 let pdfFlag = false
+                //  let estatus_ticket = false
                 switch (tableName) {
                     // case 'tickets':                       
                     //     if (objeto.estatus.estatus) {
@@ -254,7 +259,9 @@ class NewTable extends Component{
                         break
                 }
                 if (tableName === 'ingresos') {
+                    console.log(objeto)
                     if(objeto.total <= 0 ){ /* objeto.total < 1 */
+                    
                         $(row).removeClass('blanco');
                         $(row).addClass('rojo');
                     }
@@ -366,7 +373,7 @@ class NewTable extends Component{
     clickHandler = () => {
         const { onClick } = this.props
         if (typeof onClick === 'function') {
-            onClick();
+            this.props.onClick();
         }
     }
     clickHandlerExport = () => {
@@ -386,8 +393,7 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const {filter_boton, tableName, customtitle, customlabel, customsubtitle, title, subtitle, abrirModal, url, filterClick,addPropio,addExterno, children, exportar_boton, pendingPaymentClick, hideNew,idAuth,verSugerencias } = this.props
-      
+        const {mostarPalabra, tableName,ocultar_filtrar,revisar_elementos, mostarPermisos,customtitle, customlabel, customsubtitle,addClick, title, subtitle, abrir_modal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
                 <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
@@ -400,47 +406,30 @@ class NewTable extends Component{
                     </div>
                     <div className="card-toolbar toolbar-dropdown">
                         <DropdownButton menualign="right" title={<span>OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-newtable-options' >
-                        { 
-                                tableName === 'TeEscuchamos' ?  
-                                 idAuth===1 ? 
-                              <> 
-                               <Dropdown.Item className="text-hover-success dropdown-success" onClick={verSugerencias} >
-                              {this.setNaviIcon('flaticon-exclamation', 'Sugerencias en espera')}
-                               </Dropdown.Item>
-                               <Dropdown.Item className="text-hover-success dropdown-success" onClick={addPropio} >
-                              {this.setNaviIcon('flaticon-add', 'AGREGAR propio')}
-                               </Dropdown.Item>
-                                <Dropdown.Item className="text-hover-success dropdown-success" onClick={addExterno} >
-                                {this.setNaviIcon('flaticon-add', 'AGREGAR externo')} 
-                                 </Dropdown.Item></>
-                                 :  <> 
-                                 <Dropdown.Item className="text-hover-success dropdown-success" onClick={addPropio} >
-                                {this.setNaviIcon('flaticon-add', 'AGREGAR propio')}
-                                 </Dropdown.Item>
-                                  <Dropdown.Item className="text-hover-success dropdown-success" onClick={addExterno} >
-                                  {this.setNaviIcon('flaticon-add', 'AGREGAR externo')} 
-                                   </Dropdown.Item></> : <></>   
-                                
+                        {
+                                revisar_elementos === true ?
+                                <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={mostarPermisos} >
+                                {this.setNaviIcon('flaticon2-search-1', `MOSTAR ${mostarPalabra}`)}
+                            </Dropdown.Item>
+                        : <></>
                             }
                             {
-                                hideNew !== true && tableName !== 'TeEscuchamos' ? 
-                                    abrirModal === true  ?
-                                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={this.clickHandler} >
+                                 hideNew !== true ? 
+                                 abrir_modal === false ?
+                                    <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
+                                    {this.setNaviIcon('flaticon-add', 'AGREGAR')} 
+                                        </Dropdown.Item>
+                                     :
+                                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={addClick} >
                                             {this.setNaviIcon('flaticon-add', 'AGREGAR')}
                                         </Dropdown.Item>
-                                        :
-                                        <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
-                                            {this.setNaviIcon('flaticon-add', 'AGREGAR')}
-                                        </Dropdown.Item>
-                                        
-                                : <></>
-                            }
-                           {
-                                filter_boton !== false ?
+                                    : <></>
+                            } 
+                          {  
+                          ocultar_filtrar === true ? <></> : 
                             <Dropdown.Item className="text-hover-info dropdown-info" onClick={filterClick}>
                                 {this.setNaviIcon('fas fa-filter', 'FILTRAR')}
-                            </Dropdown.Item>
-                               : <></>
+                            </Dropdown.Item>   
                             }
                             {
                                 exportar_boton === true ?
@@ -456,7 +445,7 @@ class NewTable extends Component{
                                     </Dropdown.Item>
                                 :<></>
                             }
-                        
+                       
                         </DropdownButton>
                     </div>
                 </Card.Header>

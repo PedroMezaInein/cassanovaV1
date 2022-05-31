@@ -651,7 +651,7 @@ class Diseño extends Component {
         if(name === 'inge_m2'){
             let ra = 0 
             // console.log(form.esquema_4)
-            form.esquema_4.map(function (element) {
+            form.esquema_4.forEach(function (element) {
                     ra = Math.sqrt(element.monto * form.inge_m2) * element.monto
                     element.porcentaje = ra.toFixed(3)
                 })

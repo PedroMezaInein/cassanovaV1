@@ -242,21 +242,23 @@ export const AREAS_COMPRAS_COLUMNS = [
 ]
 export const PERMISOS_COLUMNS = [
     // { Header: 'Empleado', accessor: 'empleado' , customRender: false },
-    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true,searchable: false  },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },    
     { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'Descripción del permiso', accessor: 'descripcion', customRender: true },
     { Header: 'Horas', accessor: 'horas', customRender: true },
     { Header: 'Fechas', accessor: 'fechas', customRender: true },
-    { Header: 'Estatus', accessor: 'estatus', customRender: true },
-    { Header: 'Tipo de permiso', accessor: 'tipo', customRender: true },
     { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
 ]
 export const INCAPACIDAD_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions', customRender: true },
-    { Header: 'Nombre', accessor: 'area', customRender: true },
-    { Header: 'Documento', accessor: 'area', customRender: true },
-    { Header: 'Fecha incio', accessor: 'fecha', customRender: true },
-    { Header: 'Fecha fin', accessor: 'fecha', customRender: true },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true,searchable: false  },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
+    { Header: 'Fechas', accessor: 'fechas', customRender: true },
+    { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'Descripción del permiso', accessor: 'descripcion', customRender: true },
+    { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
 ]
 
 export const PARTIDAS_COLUMNS = [

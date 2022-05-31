@@ -141,7 +141,7 @@ class LoginForm extends React.Component {
                     history.push('/login')
                 }
                 let perm = null
-                let arreglo = ['calendario-tareas', 'crm', 'tareas']
+                let arreglo = ['calendario-tareas', 'crm', 'tareas','te-escuchamos','cuestionario-satisfaccion','incidencias']
                 arreglo.forEach( (elemento) => {
                     if(!perm){
                         perm = user.permisos.find((permiso) => {
@@ -156,14 +156,40 @@ class LoginForm extends React.Component {
                     else{
                         history.push(perm.modulo.url)
                     }
-                } else  if(perm){
+                } else  
+                if(perm){
                     if(perm.modulo.slug === 'mi-proyecto'){
                         window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`
                     }
                     else{
                         history.push(perm.modulo.url)
                     }
-                }else{
+                }
+                if(perm){
+                    if(perm.modulo.slug === 'te-escuchamos'){
+                        window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`
+                    }
+                    else{
+                        history.push(perm.modulo.url)
+                    }
+                }
+                if(perm){
+                    if(perm.modulo.slug === 'cuestionario-satisfaccion'){
+                        window.location.href = `${LEADS_FRONT}/satisfaccion?tag=${access_token}`
+                    }
+                    else{
+                        history.push(perm.modulo.url)
+                    }
+                }
+                if(perm){
+                    if(perm.modulo.slug === 'incidencias'){
+                        window.location.href = `${LEADS_FRONT}/rh/incidencias?tag=${access_token}`
+                    }
+                    else{
+                        history.push(perm.modulo.url)
+                    }
+                }
+                else{
                     history.push(user.permisos[0].modulo.url)
                 }
             },

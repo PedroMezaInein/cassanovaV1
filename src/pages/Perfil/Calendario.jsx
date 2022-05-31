@@ -7,15 +7,17 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { Modal } from '../../components/singles'
+import { AgregarPermisosForm } from "../../components/forms"
 import { SolicitarVacacionesForm, EstatusForm, AgendarReunionGoogle } from "../../components/forms"
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, questionAlert, deleteAlert } from '../../functions/alert'
 import { URL_DEV } from '../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav } from 'react-bootstrap'
+import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav, } from 'react-bootstrap'
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie'
+import {  setOptions } from '../../functions/setters'
 import { Button } from '../../components/form-components'
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
@@ -29,16 +31,41 @@ class Calendario extends Component {
         final: new Date(),
         modal: {
             solicitar_vacaciones: false,
-            status_vacaciones:false,
-            date:false,
-            estacionamiento:false,
-            form_event:false
+            status_vacaciones: false,
+            date: false,
+            estacionamiento: false,
+            form_event: false,
+            modal_permisos: false,
+            modal_incapacidad: false,
+            modal_ver_permiso:false,
+            modal_ver_incapacidad:false,
         },
+        permisosM:[],
+        incapacidadesM:[],
         empleado: '',
         vacaciones_totales: '',
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
+            fechas: { start: null, end: null },
+            // nombre: this.props.authUser.user.name,
+            idEmpleado: this.props.authUser.user.name,
+            nombre: '',
+            descripcion: '',
+            tipo: '',
+            empleado: this.props.authUser.user.empleado_id,
+            hora_salida: 0,
+            hora_entrada: 0,
+            minuto_entrada: 0,
+            minuto_salida: 0,
+            lider: '',
+            adjuntos: {
+                adjuntos: {
+                    files: [],
+                    value: '',
+                    placeholder: 'Adjuntos'
+                },
+            }
         },
         formEvento: {
             fecha: new Date(),
@@ -46,7 +73,7 @@ class Calendario extends Component {
             minuto: "00",
             hora_final: "08",
             minuto_final: "00",
-            correos:[]
+            correos: []
         },
         data: {
             usuarios: []
@@ -69,7 +96,11 @@ class Calendario extends Component {
                 active: 'estacionamiento'
             }
         ],
-        title:''
+        title: '',
+        options: {
+            empleados: [],
+            lider: []
+        },
     };
 
     componentDidMount() {
@@ -84,12 +115,26 @@ class Calendario extends Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = params.get("id")
-            if(id)
+            if (id)
                 this.getEventAxios(id)
         }
+        this.addIncapacidadAxiosAdmin()
+        this.setOptionsModal()
+        // this.getIncapacidadModal()
     }
 
-    getEventAxios = async(id) => {
+        clearFiles = (name, key) => {
+        const { form } = this.state
+        if (name === 'adjuntoPermiso') {
+            form.adjuntos.adjuntos.files.splice(key, 1)
+            if (form.adjuntos.adjuntos.files.length === 0) {
+                form.adjuntos.adjuntos.value = ''
+            }
+        }
+        this.setState({ ...this.state, form })
+    }
+
+    getEventAxios = async (id) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}vacaciones/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -97,10 +142,10 @@ class Calendario extends Component {
                 Swal.close()
                 const { evento } = response.data
                 const { formEvento, modal } = this.state
-                if(evento.googleEvent){
+                if (evento.googleEvent) {
                     const { start, end } = evento.googleEvent
-                    let fecha = new Date( moment( start.dateTime ) )
-                    let fechaFin = new Date( moment( end.dateTime ) )
+                    let fecha = new Date(moment(start.dateTime))
+                    let fechaFin = new Date(moment(end.dateTime))
                     formEvento.hora_final = this.setTimer(fechaFin.getHours());
                     formEvento.hora = this.setTimer(fecha.getHours());
                     formEvento.minuto_final = this.setTimer(fechaFin.getMinutes());
@@ -133,6 +178,65 @@ class Calendario extends Component {
             title: 'Solicitar vacaciones',
             form: this.clearForm(),
             formeditado: 0,
+        })
+    }
+
+    openModalSolicitarPermiso = () => {
+        const { modal } = this.state
+        modal.modal_permisos = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    clearModals = () => {
+        const { form } = this.state
+        form.fechaInicio= new Date()
+        form.fechaFin= new Date()
+        form.descripcion = ''
+        form.tipo= ''
+        form.hora_salida= 0
+        form.hora_entrada= 0
+        form.minuto_entrada= 0
+        form.minuto_salida= 0 
+        form.lider= ''
+        form.adjuntos= {
+            adjuntos: {
+                files: [],
+                value: '',
+                placeholder: 'Adjuntos'
+            }
+        }
+        this.setState({
+            ...this.state,
+            form,
+        })
+    }
+
+    openModalSolicitarIncapacidad = () => {
+        const { modal } = this.state
+        modal.modal_incapacidad = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+    openModalTablaIncapacidad = () => {
+        const { modal } = this.state
+        modal.modal_ver_incapacidad = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    openModalTablaPermiso = () => {
+        const { modal } = this.state
+        modal.modal_ver_permiso = true
+        this.setState({
+            ...this.state,
+            modal,
         })
     }
 
@@ -221,45 +325,130 @@ class Calendario extends Component {
         formEvento[name] = value
         this.setState({ ...this.state, formEvento })
     }
+   async setOptionsModal(){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'permiso/permiso',{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { options } = this.state
+                options.lider = setOptions(response.data.direcciones, 'nombre', 'id')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    async getPermisosModal() {
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'permiso/usuario',access_token, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                console.log(response)
+                let aux = []
+                response.data.permisos.map((permiso)=>{         
+                            aux.push({
+                            shortName: "Tipo",
+                            tipo: permiso.tipo_permiso,  
+                            name: permiso.empleado.nombre, 
+                            estatus:permiso.estatus,
+                            id:permiso.id,
+                            mRechazo: permiso.motivo_rechazo,
+                            comentarios: permiso.comentarios,
+                        })
+                })
+                this.setState({
+                    ...this.state,
+                    permisosM: aux,
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    async getIncapacidadModal() {
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'permiso/usuario',access_token,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                console.log(response)
+                let aux = []
+                response.data.incapacidad.map((permiso)=>{         
+                            aux.push({
+                            shortName: "Tipo",
+                            tipo: permiso.tipo_permiso,  
+                            name: permiso.empleado.nombre, 
+                            estatus:permiso.estatus,
+                            id:permiso.id,
+                            mRechazo: permiso.motivo_rechazo,
+                            comentarios: permiso.comentarios,
+                        })
+                        console.log(aux)
+                        return aux
+                })
+                this.setState({
+                    ...this.state,
+                    incapacidadesM: aux,
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
 
     getDiasDisponibles = (empleado, vacaciones_totales) => {
         /* const { empleado, vacaciones_totales } = this.state */
+        this.getPermisosModal()
+        this.getIncapacidadModal()
         let contador = empleado.vacaciones_disponibles
         let fecha_inicio_empleado = ''
         let final = ''
-        let inicio = ''    
+        let inicio = ''
         if (empleado) {
             fecha_inicio_empleado = new Date(moment(empleado.fecha_inicio))
             let mes = fecha_inicio_empleado.getMonth() + 1
-            if (mes.toString().length === 1)  
+            if (mes.toString().length === 1)
                 mes = '0' + mes
             let dia = fecha_inicio_empleado.getDate()
             let now = new Date();
             let año = new Date().getFullYear();
             let verificador = new Date(mes + '/' + dia + '/' + año)
-            if(now > verificador){
+            if (now > verificador) {
                 inicio = verificador
                 final = new Date(mes + '/' + dia + '/' + (año + 1))
             }
-            else{
+            else {
                 final = verificador
                 inicio = new Date(mes + '/' + dia + '/' + (año - 1))
             }
             empleado.vacaciones.forEach((vacacion) => {
                 if (vacacion.estatus === 'En espera') {
                     let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
-                    for(let i = 0; i < dias; i++){
+                    for (let i = 0; i < dias; i++) {
                         let date = new Date(moment(vacacion.fecha_inicio).add(i, 'days'))
-                        if(date.getDay() > 0 && date.getDay() < 6)
-                            if(date >= inicio && date < final)
+                        if (date.getDay() > 0 && date.getDay() < 6)
+                            if (date >= inicio && date < final)
                                 contador--
                     }
                 }
             })
         }
-        if(contador < 0)
+        if (contador < 0)
             contador = 0
-        return { contador: contador, inicio: inicio,  final: final }
+        return { contador: contador, inicio: inicio, final: final }
     }
 
     getVacaciones(empleado, vacaciones_totales) {
@@ -305,10 +494,10 @@ class Calendario extends Component {
             return contador
     }
 
-    deleteEventoAxios = async(gEvent) => {
+    deleteEventoAxios = async (gEvent) => {
         const { access_token } = this.props.authUser
         const { id } = gEvent.googleEvent
-        await axios.delete(`${URL_DEV}vacaciones/google-calendar/${id}`, { headers: { Authorization: `Bearer ${access_token}` } } ).then(
+        await axios.delete(`${URL_DEV}vacaciones/google-calendar/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
                 this.getVacacionesAxios()
@@ -323,21 +512,125 @@ class Calendario extends Component {
         })
     }
 
+    async addPermisoAxiosAdmin() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let aux = Object.keys(form)
+        const data = new FormData();
+        aux = Object.keys(form.adjuntos)
+        aux.forEach((element) => {
+            if (form.adjuntos.adjuntos.value !== '') {
+                form.adjuntos.adjuntos.files.forEach((file) => {
+                    data.append(`files_name_permiso[]`, file.name)
+                    data.append(`files_permiso[]`, file.file)
+                })
+                data.append('adjuntos[]', element)
+            }
+        })
+        let fechaInicioA = form.fechaInicio
+        let fechaInicioAString = fechaInicioA.toISOString();
+        data.append('fechaInicio', fechaInicioAString)
+        let fechaFinA = form.fechaFin
+        let fechaFinAString = fechaFinA.toISOString();
+        data.append('fechaFin', fechaFinAString)
+        // let empleadoA = form.empleado
+        data.append('empleado', this.props.authUser.user.empleado_id)
+        data.append('empleado_id', this.props.authUser.user.empleado_id)
+        let liderA = form.lider
+        data.append('lider', liderA)
+        // data.append('lider_id', liderA)
+        data.append('tipo_permiso', 'permiso')
+        let minutoSalidaA = Math.floor(form.minuto_salida );
+        // let horaSalidaA = Math.floor((form.hora_salida * 10000) + minutoSalidaA);
+        let horaSalidaA = Math.floor((form.hora_salida));
+        data.append('hora_salida', horaSalidaA)
+        data.append('minuto_salida', minutoSalidaA)
+        let minutoEntradaA = Math.floor(form.minuto_entrada );
+        let horaEntradaA = Math.floor((form.hora_entrada ) );
+        data.append('hora_entrada', horaEntradaA)
+        data.append('minuto_entrada', minutoEntradaA)
+        let comentarioA = form.descripcion
+        data.append('descripcion', comentarioA)
+        // let horaEntradaA = Math.floor((form.hora_entrada * 10000) + minutoEntradaA);
+            await axios.post(URL_DEV + 'permiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Permiso enviado con éxito')
+                this.handleClosePermisos()
+                
+            },
+            (error) => {
+            printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
+    async addIncapacidadAxiosAdmin() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let aux = Object.keys(form)
+        const data = new FormData();
+        aux = Object.keys(form.adjuntos)
+        aux.forEach((element) => {
+            if (form.adjuntos.adjuntos.value !== '') {
+                form.adjuntos.adjuntos.files.forEach((file) => {
+                    data.append(`files_name_permiso[]`, file.name)
+                    data.append(`files_permiso[]`, file.file)
+                })
+                data.append('adjuntos[]', element)
+            }
+        })
+        let fechaInicioA = form.fechaInicio
+        let fechaInicioAString = fechaInicioA.toISOString();
+        data.append('fechaInicio', fechaInicioAString)
+        let fechaFinA = form.fechaFin
+        let fechaFinAString = fechaFinA.toISOString();
+        data.append('fechaFin', fechaFinAString)
+        // let empleadoA = form.empleado
+        data.append('empleado', this.props.authUser.user.empleado_id)
+        data.append('empleado_id', this.props.authUser.user.empleado_id)
+        let liderA = form.lider
+        data.append('lider', liderA)
+        // data.append('lider_id', liderA)
+        data.append('tipo_permiso', 'incapacidad')
+        data.append('hora_salida', 0)
+        data.append('minuto_salida', 0)
+        data.append('hora_entrada', 0)
+        data.append('minuto_entrada', 0)
+        let comentarioA = form.descripcion
+        data.append('descripcion', comentarioA)
+            await axios.post(URL_DEV + 'permiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Incapacidad enviada con éxito')
+                this.handleClosePermisos()
+            },
+            (error) => {
+            // printResponseErrorAlert(error)
+            console.log(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     async askVacationAxios() {
         const { access_token } = this.props.authUser
         const { form, disponibles, inicio, final } = this.state
         let contador = disponibles
         let dias = moment(form.fechaFin).diff(moment(form.fechaInicio), 'days') + 1
-        for(let i = 0; i < dias; i++){
+        for (let i = 0; i < dias; i++) {
             let date = new Date(moment(form.fechaInicio).add(i, 'days'))
-            if(date.getDay() > 0 && date.getDay() < 6)
-                if(date >= inicio && date < final)
+            if (date.getDay() > 0 && date.getDay() < 6)
+                if (date >= inicio && date < final)
                     contador = contador - 1
         }
-        if(contador < 0){
+        if (contador < 0) {
             errorAlert('Días disponibles insuficientes')
-        }else{
-            waitAlert(); 
+        } else {
+            waitAlert();
             await axios.post(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
                     doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
@@ -365,9 +658,9 @@ class Calendario extends Component {
                 let dia = ''
                 let año = new Date().getFullYear();
                 empleados.map((empleado) => {
-                    mes = empleado.rfc.substr(6,2);
-                    dia = empleado.rfc.substr(8,2);
-                    for(let x = -5; x <= 5; x++){
+                    mes = empleado.rfc.substr(6, 2);
+                    dia = empleado.rfc.substr(8, 2);
+                    for (let x = -5; x <= 5; x++) {
                         aux.push({
                             title: empleado.nombre,
                             // shortName: empleado.nombre.split(" ")[0],
@@ -389,15 +682,15 @@ class Calendario extends Component {
                             containerClass: 'vacaciones'
                         })
                     if (vacacion.estatus !== 'Rechazadas') {
-                        
-                        if(vacacion.empleado)
-                            if(vacacion.empleado.usuario){
-                                if(vacacion.empleado.usuario.id === user.id){
+
+                        if (vacacion.empleado)
+                            if (vacacion.empleado.usuario) {
+                                if (vacacion.empleado.usuario.id === user.id) {
                                     let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
-                                    for(let i = 0; i < dias; i++)
+                                    for (let i = 0; i < dias; i++)
                                         aux2.push(moment(vacacion.fecha_inicio).add(i, 'days').toDate())
                                 }
-                                
+
                             }
 
                     }
@@ -430,9 +723,10 @@ class Calendario extends Component {
                     result.push(moment(current).toDate());
                     current.add(1, "day");
                 }
-
+                // const timeStamp = new Date().getTime();
+                // const yesterdayTimeStamp = timeStamp - 2*24*60*60*1000;
+                // const yesterdayDate = new Date(yesterdayTimeStamp);
                 let arr3 = [...aux2, ...result]
-
                 eventos.map((evento) => {
                     aux.push({
                         shortName: 'Eventos',
@@ -442,10 +736,11 @@ class Calendario extends Component {
                         iconClass: 'far fa-clock',
                         containerClass: 'eventos',
                         evento: evento,
-                        identificador:evento.id
+                        identificador: evento.id
                     })
                     return false
                 })
+                // console.log(yesterdayDate)
 
                 let diasDisponibles = this.getDiasDisponibles(empleado, user_vacaciones)
                 this.setState({
@@ -460,6 +755,7 @@ class Calendario extends Component {
                     data,
                     disponibles: disponibles
                 })
+               
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -540,7 +836,7 @@ class Calendario extends Component {
         const { evento, formEvento } = this.state
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.put(`${URL_DEV}vacaciones/google-calendar/${evento.googleEvent.id}`, formEvento ,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}vacaciones/google-calendar/${evento.googleEvent.id}`, formEvento, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 modal.form_event = false
@@ -548,18 +844,18 @@ class Calendario extends Component {
                 this.setState({ ...this.state, modal, evento: '' })
                 this.getVacacionesAxios()
             },
-            (error) => {printResponseErrorAlert(error)}
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
     }
 
-    deleteEvent = async() => {
+    deleteEvent = async () => {
         const { evento } = this.state
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.delete(`${URL_DEV}vacaciones/google-calendar/${evento.googleEvent.id}`,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}vacaciones/google-calendar/${evento.googleEvent.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 modal.form_event = false
@@ -567,7 +863,7 @@ class Calendario extends Component {
                 this.setState({ ...this.state, modal, evento: '' })
                 this.getVacacionesAxios()
             },
-            (error) => {printResponseErrorAlert(error)}
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
@@ -590,9 +886,9 @@ class Calendario extends Component {
                                 })
                                 if (aux !== false) {
                                     if (aux.avatar)
-                                        return ( <img className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' key={index} /> )
+                                        return (<img className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' key={index} />)
                                     else
-                                        return ( <img className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' key={index} /> )
+                                        return (<img className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' key={index} />)
                                 }
                                 return false
                             })
@@ -624,7 +920,7 @@ class Calendario extends Component {
     }
 
     setTimer = (time) => {
-        if(time < 10)
+        if (time < 10)
             return '0'.time
         return time
     }
@@ -656,8 +952,8 @@ class Calendario extends Component {
                                         {
                                             this.setTimer(start.getHours()) + ':' + this.setTimer(start.getMinutes())
                                         }
-                                            &nbsp; - &nbsp;
-                                            {
+                                        &nbsp; - &nbsp;
+                                        {
                                             this.setTimer(end.getHours()) + ':' + this.setTimer(end.getMinutes())
                                         }
                                     </span>
@@ -736,6 +1032,8 @@ class Calendario extends Component {
         )
     }
 
+
+
     changeActiveKey = element => {
         this.setState({
             ...this.state,
@@ -779,10 +1077,10 @@ class Calendario extends Component {
         const { authUser } = this.props
         const { googleEvent } = gEvent
         let bandera = false
-        if(googleEvent.attendees)
-            if(googleEvent.attendees.length)
+        if (googleEvent.attendees)
+            if (googleEvent.attendees.length)
                 googleEvent.attendees.map((participante) => {
-                    if(participante.email === authUser.user.email)
+                    if (participante.email === authUser.user.email)
                         bandera = true
                     return ''
                 })
@@ -815,9 +1113,9 @@ class Calendario extends Component {
                                             <th style={{ minWidth: "50px" }} className="">
                                                 {
                                                     this.isActiveButton(gEvent) ?
-                                                        <i className="fas fa-trash text-danger text-hover-danger text-hover" 
-                                                            onClick = { (e) => { e.preventDefault(); deleteAlert('¿SEGURO DESEAS ELIMINAR EL EVENTO?','', () => this.deleteEventoAxios(gEvent)) } } />
-                                                    : ''
+                                                        <i className="fas fa-trash text-danger text-hover-danger text-hover"
+                                                            onClick={(e) => { e.preventDefault(); deleteAlert('¿SEGURO DESEAS ELIMINAR EL EVENTO?', '', () => this.deleteEventoAxios(gEvent)) }} />
+                                                        : ''
                                                 }
                                             </th>
                                             <td>
@@ -1001,9 +1299,9 @@ class Calendario extends Component {
             activeKeyTab: select
         })
     }
-    tagInputChange = ( nuevoTipos ) => {
+    tagInputChange = (nuevoTipos) => {
         const uppercased = nuevoTipos
-        const { formEvento } = this.state 
+        const { formEvento } = this.state
         let unico = {};
         uppercased.forEach(function (i) {
             if (!unico[i]) { unico[i] = true }
@@ -1012,18 +1310,57 @@ class Calendario extends Component {
         this.setState({
             formEvento
         })
-    } 
+    }
+
+    setOptions = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ...this.state,
+            options
+        })
+    }
+    onChangeAdjunto = e => {
+        const { value, files } = e.target
+        const { form } = this.state
+        form.adjuntos.adjuntos.value = value
+        form.adjuntos.adjuntos.files = []
+        files.forEach((file, index) => {
+            form.adjuntos.adjuntos.files.push({
+                name: file.name,
+                file: file,
+                url: URL.createObjectURL(file),
+                key: index
+            })
+        })
+        this.setState({ ...this.state, form })
+    }
+
+    handleClosePermisos = () => {
+        const { modal } = this.state
+        modal.modal_permisos = false
+        modal.modal_incapacidad = false
+        modal.modal_ver_incapacidad =false
+        modal.modal_ver_permiso =false
+        this.setState({
+            ...this.state,
+            modal
+        })
+        this.clearModals()
+
+    }
+
 
     render() {
-        const { events, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento } = this.state
+        const {permisosM,incapacidadesM, events, options,form, title,  formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento } = this.state
         return (
             <Layout {...this.props}>
                 {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
-                    <Card className="card-custom">
-                        <Card.Header>
-                            <div className="d-flex align-items-center">
-                                <h3 className="card-title align-items-start flex-column"><span className="font-weight-bolder text-dark">Calendario</span></h3>
-                                {/* <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center navi-info navi-accent">
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="d-flex align-items-center">
+                            <h3 className="card-title align-items-start flex-column"><span className="font-weight-bolder text-dark">Calendario</span></h3>
+                            {/* <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center navi-info navi-accent">
                                     {
                                         tab.map((tab, key) => {
                                             return (
@@ -1041,7 +1378,8 @@ class Calendario extends Component {
                                         })
                                     }
                                 </Nav> */}
-                            </div>
+                        </div>
+                        <div className="d-flex">
                             <div className="card-toolbar" id="dropdown-calendario">
                                 {
                                     disponibles > 0 ?
@@ -1054,32 +1392,61 @@ class Calendario extends Component {
                                         >
                                             <Dropdown.Item onClick={this.openModalSolicitarVacaciones}>Solicitar vacaciones</Dropdown.Item>
                                             <Dropdown.Item onClick={this.openModalEstatusVacaciones}>Estatus de vacaciones</Dropdown.Item>
-                                            {/* <Dropdown.Item onClick={this.openModalEstacionamiento}>Solicitar lugar de estacionamiento</Dropdown.Item> */}
                                         </DropdownButton>
                                         : ''
                                 }
                             </div>
-                        </Card.Header>
-                        <Card.Body>
-                            <div className="mb-4">
-                                <i className="fa fa-genderless text-info mr-2"></i>
-                                <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
-                                <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
-                                <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
+                            <div className="card-toolbar" id="dropdown-calendario">
+                                {
+                                    <DropdownButton 
+                                        title={
+                                            <i className="flaticon2-paper p-0"></i>
+                                        }
+                                        id={`dropdown-button-drop-left`}
+                                        drop={'left'}
+                                    >
+                                        <Dropdown.Item onClick={this.openModalSolicitarPermiso}>Solicitar permisos</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalTablaPermiso}>Estatus de permisos</Dropdown.Item>
+                                    </DropdownButton>
+                                }
                             </div>
-                            <FullCalendar
-                                locale={esLocale}
-                                plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
-                                initialView="dayGridMonth"
-                                weekends={true}
-                                events={events}
-                                dateClick={this.handleDateClick}
-                                eventContent={this.renderEventContent}
-                                firstDay={1}
-                                themeSystem='bootstrap'
-                                height='1290.37px'
-                            />
-                            {/* <Tab.Content>
+                            <div className="card-toolbar" id="dropdown-calendario">
+                                {
+                                    <DropdownButton 
+                                        title={
+                                        <i className="flaticon2-checking p-0"></i>
+                                        
+                                        }
+                                        id={`dropdown-button-drop-left`}
+                                        drop={'left'}
+                                    >
+                                        <Dropdown.Item onClick={this.openModalSolicitarIncapacidad}>Solicitar incapacidad</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalTablaIncapacidad}>Estatus de incapacidad</Dropdown.Item>
+                                    </DropdownButton>
+                                }
+                            </div>
+                        </div>
+                    </Card.Header>
+                    <Card.Body>
+                        <div className="mb-4">
+                            <i className="fa fa-genderless text-info mr-2"></i>
+                            <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
+                            <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
+                            <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
+                        </div>
+                        <FullCalendar
+                            locale={esLocale}
+                            plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
+                            initialView="dayGridMonth"
+                            weekends={true}
+                            events={events}
+                            dateClick={this.handleDateClick}
+                            eventContent={this.renderEventContent}
+                            firstDay={1}
+                            themeSystem='bootstrap'
+                            height='1290.37px'
+                        />
+                        {/* <Tab.Content>
                                 <Tab.Pane eventKey="citas">
                                     <div className="mb-4">
                                         <i className="fa fa-genderless text-info mr-2"></i>
@@ -1115,8 +1482,36 @@ class Calendario extends Component {
                                     />
                                 </Tab.Pane>
                             </Tab.Content> */}
-                        </Card.Body>
-                    </Card>
+                    </Card.Body>
+                </Card>
+                <Modal size={"lg"} title='solicitud de permiso' show={modal.modal_permisos} handleClose={this.handleClosePermisos} at={this.props}>
+                    <AgregarPermisosForm
+                        // disabledDates={disabledDates}
+                        formeditado={formeditado}
+                        deleteAdjunto={this.clearFiles}
+                        form={form}
+                        onChange={this.onChange}
+                        onChangeAdjunto={this.onChangeAdjunto}
+                        options={options}
+                        empleadoId={form.idEmpleado}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin();this.getPermisosModal() }}
+                        tipoDeFormulario='permiso'
+                    />
+                </Modal>                        
+                <Modal size={"lg"} title='solicitud de incapacidad' show={modal.modal_incapacidad} handleClose={this.handleClosePermisos}>
+                        <AgregarPermisosForm
+                        // disabledDates={disabledDates}
+                        formeditado={formeditado}
+                        deleteAdjunto={this.clearFiles}
+                        form={form}
+                        onChange={this.onChange}
+                        onChangeAdjunto={this.onChangeAdjunto}
+                        options={options}
+                        empleadoId={form.idEmpleado}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addIncapacidadAxiosAdmin();this.getIncapacidadModal() }}
+                        tipoDeFormulario='incapacidad'
+                    />
+                        </Modal>
                 {/* </Tab.Container> */}
                 <Modal size="lg" title={title} show={modal.solicitar_vacaciones} handleClose={this.handleClose}>
                     <SolicitarVacacionesForm
@@ -1171,6 +1566,98 @@ class Calendario extends Component {
                             : ''
                     }
                 </Modal>
+                <Modal className='max-height' size={"lg"} title='estatus de permisos' show={modal.modal_ver_permiso} handleClose={this.handleClosePermisos}>
+                <div className="table-responsive mt-6 ">
+                        <table className="table table-head-custom table-head-bg table-vertical-center">
+                            <thead>
+                                <tr className="text-left">
+                                    <th style={{ minWidth: "150px" }} className="pl-7">
+                                        <span className="text-dark-75 font-size-13px">Empleado</span>
+                                    </th>
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Detalles</span>
+                                    </th>
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Estatus</span>
+                                    </th>
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Motivo de rechazo</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            {
+                                permisosM.map((empleado, key) => {
+                                    //  console.log(empleado.estatus)
+                                    return (
+                                                <tbody key={key}>
+                                                    <tr className="font-size-13px">
+                                                    <td className="text-center">
+                                                            <span>{empleado.name}</span>
+                                                        </td>
+                                                        <td className="text-center">
+                                                    <span>{(empleado.comentarios)}</span>
+                                                </td>
+                                                        <td className="text-center">
+                                                            <span>{(empleado.estatus)}</span>
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <span>{(empleado.mRechazo)}</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                    )
+                                })
+                            }
+                        </table>
+                    </div>
+                </Modal>
+                <Modal size={"lg"} title='estatus de incapacidades' show={modal.modal_ver_incapacidad} handleClose={this.handleClosePermisos}>
+                <div className="table-responsive mt-6">
+                        <table className="table table-head-custom table-head-bg table-vertical-center">
+                            <thead>
+                                <tr className="text-left">
+                                    {/* <th style={{ minWidth: "150px" }} className="pl-7"> */}
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Empleado</span>
+                                    </th>
+                                    {/* <th style={{ minWidth: "200px" }} className="text-center"> */}
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Detalles</span>
+                                    </th>
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Estatus</span>
+                                    </th>
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Motivo de rechazo</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                         {
+                                incapacidadesM.map((empleado, key) => {
+                                    // console.log(empleado)
+                                    return (
+                                        <tbody key={key}>
+                                            <tr className="font-size-13px">
+                                            <td className="text-center">
+                                                    <span>{empleado.name}</span>
+                                                </td>
+                                                <td className="text-center">
+                                                    <span>{(empleado.comentarios)}</span>
+                                                </td>
+                                                <td className="text-center">
+                                                    <span>{(empleado.estatus)}</span>
+                                                </td>
+                                                <td className="text-center">
+                                                    <span>{(empleado.mRechazo)}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                            )
+                                })
+                            } 
+                        </table>
+                    </div>
+                </Modal>
                 {/* <Modal size="lg" title={title} show={modal.estacionamiento} handleClose={this.handleCloseEstacionamiento}>
                     <div className="d-flex justify-content-center mt-4">
                         <DatePickerMulti
@@ -1178,9 +1665,9 @@ class Calendario extends Component {
                     </div>
                 </Modal> */}
                 <Modal size="lg" title={title} show={modal.form_event} handleClose={this.handleCloseEvent}>
-                    <AgendarReunionGoogle form = { formEvento } onChange = { this.onChangeEvento }
-                        onSubmit = { this.onSubmitFormEvent } deleteEvent = { this.deleteEvent }
-                        tagInputChange = { (e) => this.tagInputChange(e) } evento={evento}/>
+                    <AgendarReunionGoogle form={formEvento} onChange={this.onChangeEvento}
+                        onSubmit={this.onSubmitFormEvent} deleteEvent={this.deleteEvent}
+                        tagInputChange={(e) => this.tagInputChange(e)} evento={evento} />
                 </Modal>
             </Layout>
 

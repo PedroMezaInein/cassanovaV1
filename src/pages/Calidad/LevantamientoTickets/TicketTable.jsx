@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
+import {  DropdownButton, Dropdown, } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../../constants'
 import { setTextTable, setOptions, setLabelTable } from '../../../functions/setters'
@@ -12,9 +13,11 @@ import { NewTable } from '../../../components/NewTables';
 // import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
 import { TickesFilter } from '../../../components/filters'
-import { DropdownButton, Dropdown } from 'react-bootstrap'
 import { setNaviIcon } from '../../../functions/setters'
 import moment from 'moment'
+// import { element } from 'prop-types';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faHashtag ,faUserAlt, faToolbox, faCalendarCheck, faPaperPlane, faSpellCheck, faPersonBooth, faMoneyBillWaveAlt , faFileInvoice } from '@fortawesome/free-solid-svg-icons'
 
 class TicketTable extends Component {
 
@@ -74,10 +77,10 @@ class TicketTable extends Component {
         await axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { estatus, tiposTrabajo, restante } = response.data
-                const { options, formularios, data } = this.state
+                const { options, formularios, data, filters } = this.state
                 options.estatus = setOptions(estatus, 'estatus', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'nombre', 'id')
-                this.setState({ ...this.state, options, data, formularios, restante: restante })
+                this.setState({ ...this.state, options, data, formularios, restante: restante, filters: filters, })
                 /* Swal.close() */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -94,9 +97,34 @@ class TicketTable extends Component {
 
     }
 
+
+
     setCalidad = calidad => {
+        // const tr = $('tr.odd');
         let aux = []
         calidad.map((calidad) => {
+            //     switch (calidad.estatus.estatus) {
+            //     case 'Aceptado':
+            //         console.log('verde')
+            //     //    document.getElementsByClassName('odd').addClass('verde');
+            //     //    element.classList.addClass('verde')
+            //     // this.$('row').addClass('verde');
+            //         break;
+            //     case 'En proceso':
+            //         console.log('rojo')
+            //         document.getElementsByClassName('sorting_1 dtr-control')
+            //         break;
+            //     case 'Aprobación pendiente':
+            //         // ('tbody').addClass('morado')
+            //         document.getElementsByClassName('sorting_1 dtr-control');{
+            //             console.log('morado');
+            //         }
+            //         break;
+            //     default:
+            //         break;
+            //     }
+            // console.log(calidad.estatus.estatus)
+
             aux.push(
                 {
                     actions: this.setActionsMantenimientos(calidad),
@@ -111,6 +139,7 @@ class TicketTable extends Component {
                 }
             )
             return false
+
         })
         return aux
     }
@@ -385,6 +414,16 @@ class TicketTable extends Component {
         }
         this.setState({ ...this.state, filters })
     }
+    setNaviIcon(icon, text) {
+        return (
+            <span className="navi-icon">
+                <i className={`${icon} mr-2`} />
+                <span className="navi-text">
+                    {text}
+                </span>
+            </span>
+        )
+    }
 
     pendingPaymentClick = () => {
         const { restante } = this.state
@@ -395,10 +434,54 @@ class TicketTable extends Component {
         const { modal, filters, options } = this.state
         return (
             <Layout active={'calidad'}  {...this.props}>
-                <NewTable tableName='tickets' subtitle='Listado de tickets' title='Tickets' mostrar_boton={true} abrir_modal={false}
+                {/* <Card id={`tickets-card-id`} className={`card-custom card-sticky tickets-card-class`}>
+                    <Card.Header id={`tickets-card-header-id`} className={`tickets-card-header-class border-0`}>
+                        <div className={`card-title Tickets`} >
+                            <h3 className={`card-label font-weight-bolder Listado de tickets`}> Tickets
+                                <span className={`d-block text-muted pt-2 font-size-sm Tickets`}>
+                                    Listado de tickets
+                                </span>
+                            </h3>
+                        </div>
+                        <div className="card-toolbar toolbar-dropdown">
+                            <DropdownButton menualign="right" title={<span>OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-newtable-options' >
+
+                                <Dropdown.Item className="text-hover-success dropdown-success" onClick={this.clickHandler} >
+                                    {this.setNaviIcon('flaticon-add', 'AGREGAR')}
+                                </Dropdown.Item>
+                                :
+                                        <Dropdown.Item className="text-hover-success dropdown-success" href={url} >
+                                            {this.setNaviIcon('flaticon-add', 'AGREGAR')}
+                                        </Dropdown.Item>
+                                <Dropdown.Item className="text-hover-info dropdown-info" onClick={this.openModalFiltros}>
+                                    {this.setNaviIcon('fas fa-filter', 'FILTRAR')}
+                                </Dropdown.Item>
+
+                                <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => this.clickHandlerExport()} >
+                                    {this.setNaviIcon('far fa-file-excel', 'EXPORTAR')}
+                                </Dropdown.Item>
+
+                                <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={this.pendingPaymentClick}>
+                                    {this.setNaviIcon('flaticon-exclamation', 'PENDIENTE DE PAGO')}
+                                </Dropdown.Item>
+                            </DropdownButton>
+                        </div>
+                    </Card.Header>
+                    <Card.Body id={`tickets-card-body-id`} className="pt-0">
+                        {/* {children} 
+                        <div className="table-responsive-xl">
+                            <table  url='/calidad/tickets/nuevo-ticket' columns={PROYECTOS_TICKETS}  accessToken={this.props.authUser.access_token}
+                    setter={this.setCalidad} urlRender={`${URL_DEV}v3/calidad/tickets`} filterClick={this.openModalFiltros} exportar_boton={true}
+                    onClickExport={() => this.exportTicketsAxios()} pendingPaymentClick={this.pendingPaymentClick}  ref='main' className="table table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id={'tickets'} />
+                        </div>
+                    </Card.Body>
+                </Card> */}
+
+
+                <NewTable tableName='tickets' subtitle='Listado de tickets' title='Tickets' mostrar_boton={true}        abrir_modal={false}
                     url='/calidad/tickets/nuevo-ticket' columns={PROYECTOS_TICKETS} accessToken={this.props.authUser.access_token}
                     setter={this.setCalidad} urlRender={`${URL_DEV}v3/calidad/tickets`} filterClick={this.openModalFiltros} exportar_boton={true}
-                    onClickExport={() => this.exportTicketsAxios()} pendingPaymentClick={this.pendingPaymentClick} />
+                    onClickExport={() => this.exportTicketsAxios()} pendingPaymentClick={this.pendingPaymentClick}  />
                 <Modal size='lg' title='Filtros' show={modal.filtros} handleClose={this.handleCloseFiltros}>
                     <TickesFilter filters={filters} clearFiltros={this.clearFiltros} onSubmitFilters={this.onSubmitFilters}
                         onChangeFilter={this.onChangeFilter} options={options} />

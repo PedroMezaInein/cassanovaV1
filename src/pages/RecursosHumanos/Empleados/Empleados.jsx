@@ -2,13 +2,17 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
+// import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
+// import { NewTable } from '../../../components/NewTables'
 import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, TEL } from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
-import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom, setTextTableCenter, setTagLabelReactDom } from '../../../functions/setters'
+import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom, setTextTableCenter, setTagLabelReactDom,
+    // setNaviIcon
+ } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert, sendFileAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -696,6 +700,9 @@ class Empleados extends Component {
             this.getEmpleadosObraAxios()
             form.tipo_empleado = 'Obra'
         }
+        if (value === 'prestaciones'){
+
+        }
         this.setState({ ...this.state, key: value, form })
     }
 
@@ -1110,7 +1117,7 @@ class Empleados extends Component {
             modal
         })
     }
-    openModalPrestaciones = colaborador => {
+    openModalPrestaciones = colaborador => { 
         const { modal } = this.state
         modal.prestaciones = true
         this.setState({
@@ -1119,6 +1126,57 @@ class Empleados extends Component {
             modal
         })
     }
+// setActions = empleados => {
+//     return (
+//         <div className="w-100 d-flex justify-content-center">
+//             <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+//                 <Dropdown.Item className="text-hover-success dropdown-success" 
+//                     onClick={(e) => { e.preventDefault(); this.changePageEdit(empleados)}} >
+//                     {setNaviIcon('flaticon2-pen', 'editar')}
+//                 </Dropdown.Item>
+//                 <Dropdown.Item className="text-hover-danger dropdown-danger" 
+//                     onClick={(e) => { e.preventDefault(); deleteAlert(`ELIMINARÁS LA empleados CON IDENTIFICADOR: ${empleados.id}`, 
+//                         '¿DESEAS CONTINUAR?', () => this.openModalDelete(empleados.id)) }}>
+//                     {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+//                 </Dropdown.Item>
+//                 <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(empleados) }}>
+//                     {setNaviIcon('flaticon2-magnifier-tool', 'Mostrar')}
+//                 </Dropdown.Item>
+//                 <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(empleados) }}>
+//                     {setNaviIcon('flaticon-attachment', 'Adjuntos')}
+//                 </Dropdown.Item>
+//                 <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openModalContrato(empleados) }}>
+//                     {setNaviIcon('flaticon2-file-1', 'Contrato')}
+//                 </Dropdown.Item>
+//                 <Dropdown.Item className="text-hover-warning dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalLicencias(empleados) }}>
+//                     {setNaviIcon('flaticon-imac', 'Licencias y equipos')}
+//                 </Dropdown.Item>
+//                 <Dropdown.Item className="text-hover-warning dropdown-success" onClick={(e) => { e.preventDefault(); this.openModalHistorialVacaciones(empleados) }}>
+//                     {setNaviIcon('la-umbrella-beach', 'Historial de vacaciones')}
+//                 </Dropdown.Item>
+//                 <Dropdown.Item className="text-hover-warning dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalHistorialVacaciones(empleados) }}>
+//                     {setNaviIcon('la-hand-holding-usd', 'Prestaciones')}
+//                 </Dropdown.Item>
+//             </DropdownButton>
+//         </div>
+//     )
+// }
+
+//     setEmpleados = empleados => {
+//         // let aux = []
+//         // empleados.map((empleado) => {
+//         // aux.push(
+//         //    {
+//         //     actions: this.setActions(empleado)
+//         //    }
+//         //         )    
+//         //      return false
+//         // })
+//         // return aux
+//     }
+
+
+
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato, formeditado } = this.state
         const { access_token } = this.props.authUser
@@ -1126,6 +1184,19 @@ class Empleados extends Component {
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey={localStorage.getItem('activeKeyTabColaboradores')} activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="administrativo" title="Administrativo">
+                    {/* <NewTable
+                    columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
+                            subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
+                            url = '/rh/colaboradores/add'
+                            mostrar_acciones = { true }
+                            exportar_boton = { true }
+                            onClickExport = { () => this.exportRHAxios() }
+                            actions = {  () => this.setEmpleados() }
+                            accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
+                            urlRender = { `${URL_DEV}v2/rh/empleados?type=admin` } idTable = 'empleados_admin_table'
+                            cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin'
+                            cardBody = 'cardBody_admin' isTab = { true } 
+                     /> */}
                         <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
                             subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
                             url = '/rh/colaboradores/add' mostrar_acciones = { true } exportar_boton = { true }
@@ -1162,6 +1233,7 @@ class Empleados extends Component {
                             urlRender = { `${URL_DEV}v2/rh/empleados?type=obra` } idTable = 'empleados_obra_table'
                             cardTableHeader = 'cardTableHeader_obra' cardBody = 'cardBody_obra' isTab = { true } />
                     </Tab>
+                    <Tab eventKey="prestaciones" title="Prestaciones de ley"> <h4>Prestaciones de Ley</h4></Tab>
                 </Tabs>
                 <ModalDelete title={'¿Quieres eliminar el colaborador?'} show={modal.delete} handleClose={this.handleCloseModalDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEmpleadoAxios() }}>
                 </ModalDelete>
