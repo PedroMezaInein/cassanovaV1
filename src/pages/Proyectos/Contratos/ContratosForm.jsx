@@ -31,7 +31,8 @@ class ContratosForm extends Component {
             empresas: [],
             clientes: [],
             proveedores: [],
-            tiposContratos: [],
+            tiposContratosC: [],
+            tiposContratosP: [],
             proyectos: [],
             prediseño: [],
 
@@ -49,6 +50,7 @@ class ContratosForm extends Component {
             proyecto: '',
             semanas: '',
             nombre: '',
+            anexo: '',
             adjuntos: {
                 adjunto: {
                     value: '',
@@ -201,12 +203,14 @@ class ContratosForm extends Component {
         await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, clientes, proveedores, tiposContratos, proyectos, presupuestodiseño } = response.data
+                const { empresas, clientes, proveedores, tiposContratosCliente, tiposContratosProveedor,proyectos, presupuestodiseño } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.proveedores = setOptions(proveedores, 'razon_social', 'id')
                 options.clientes = setOptions(clientes, 'empresa', 'id')
-                options.tiposContratos = setOptions(tiposContratos, 'tipo', 'tipo')
+                options.tiposContratosC = setOptions(tiposContratosCliente, 'tipo', 'tipo')
+                options.tiposContratosP = setOptions(tiposContratosProveedor, 'tipo', 'tipo')
+
                 options.proyectos = setSelectOptions(proyectos, 'nombre', 'id')
                 options.prediseño = setSelectOptions(presupuestodiseño, 'identificador', 'id')
 
@@ -243,11 +247,11 @@ class ContratosForm extends Component {
 
         apiPostFormResponseBlob(`pdf`, data, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const nombre = 'contrato.pdf'
+                const nombre = form.tipoContrato + ".pdf"
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-
+               
                 link.setAttribute('download', nombre );
                 document.body.appendChild(link);
                 link.click();

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Button, TagInput, InputPhone, TagSelectSearch, CalendarDay, Select, ReactSelectSearchGray,InputGray, SelectSearchGray, RangeCalendar, InputMoneyGray, InputNumberGray, InputPhoneGray,TagSelectSearchGray,TagInputGray} from '../form-components' 
+import { Input, Button, TagInput, InputPhone, TagSelectSearch, CalendarDay, Select} from '../form-components' 
 import { validateAlert } from '../../functions/alert'
 import { RFC, TEL, EMAIL } from '../../constants'
 import { openWizard1, openWizard2 /*, openWizard3 */ } from '../../functions/wizard'
