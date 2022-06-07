@@ -25,6 +25,7 @@ class VentasFormulario extends Component {
             rfc: '',
             contrato: '',
             total: 0,
+            tickets: '',
             factura: 'Sin factura',
             fecha: new Date(),
             tipoImpuesto: '1'.toString(),
@@ -48,7 +49,7 @@ class VentasFormulario extends Component {
         },
         options: {
             empresas: [], clientes: [], areas: [], subareas: [], proyectos: [], tiposPagos: [], tiposImpuestos: [], estatusCompras: [], 
-            estatusFacturas: [], formasPago: [], metodosPago: [], cuentas: [], contratos: []
+            estatusFacturas: [], formasPago: [], metodosPago: [], cuentas: [], contratos: [] , tickets: []
         },
         data: { clientes: [], empresas: [] },
         formeditado: 0
@@ -375,7 +376,7 @@ class VentasFormulario extends Component {
         apiOptions(`v2/proyectos/ventas`, at).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, clientes, formasPago, 
-                    metodosPago, estatusFacturas } = response.data
+                    metodosPago, estatusFacturas, tickets } = response.data
                 const { options, data } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.clientes = setOptions(clientes, 'empresa', 'id')
@@ -386,6 +387,7 @@ class VentasFormulario extends Component {
                 options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
                 options.formasPago = setOptions(formasPago, 'nombre', 'id')
                 options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
+                options.tickets = setOptions(tickets, 'identificador', 'id')
                 data.clientes = clientes
                 data.empresas = empresas
                 this.setState({ ...this.state, options, data })
@@ -671,6 +673,8 @@ class VentasFormulario extends Component {
                 form.total = venta.monto
                 form.fecha = new Date( venta.created_at )
                 form.descripcion = venta.descripcion
+                form.tickets = venta.ticketId.toString()
+
                 Swal.close()
 
                 this.setState({
@@ -861,6 +865,12 @@ class VentasFormulario extends Component {
                                     onChange = { (value) => { this.updateSelect(value, 'proyecto') } } withtaglabel = { 1 } withtextlabel = { 1 } 
                                     withicon = { 1 } iconclass = "far fa-folder-open" messageinc = "Incorrecto. Selecciona el proyecto" 
                                     formeditado = { formeditado }/>
+                            </div>
+                            <div className="col-md-4">
+                                <SelectSearchGrayTrue options = { options.tickets } placeholder = 'Selecciona el ticket' 
+                                    value = { form.tickets } onChange = { (value) => { this.updateSelect(value, 'tickets') } } 
+                                    withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "fas fa-file-signature" 
+                                    formeditado = { formeditado } requirevalidation = { 0 }/>
                             </div>
                         </div>
                         <div className="d-flex justify-content-between border-top mt-3 pt-3">
