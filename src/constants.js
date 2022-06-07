@@ -480,7 +480,7 @@ export const CONCEPTOS_COLUMNS = [
 export const ACCESOS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Plataforma', accessor: 'plataforma', customRender: true },
-    { Header: 'Url', accessor: 'url',  accessor: 'url', customRender: true },
+    { Header: 'Url', accessor: 'url', customRender: true },
     { Header: 'Usuario y Contraseña', accessor: 'usuario', customRender: true },
     { Header: 'Correo y teléfono de alta', accessor: 'correo', customRender: true },
     { Header: 'Empresas', accessor: 'empresa', customRender: true, orderable: false },

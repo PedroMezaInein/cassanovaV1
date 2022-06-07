@@ -30,7 +30,7 @@ class AgregarPermisosForm extends Component {
         // console.log(form)
     }
     render() {
-        const { onSubmit, tipoDeFormulario,idEmpleado,onChange, deleteAdjunto, form, onChangeAdjunto, formeditado, options, disabledDates } = this.props
+        const { onSubmit, tipoDeFormulario,onChange, deleteAdjunto, form, onChangeAdjunto, formeditado, options, disabledDates } = this.props
         return (
             <Form id="form-add-permisos"
             onSubmit={

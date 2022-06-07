@@ -76,6 +76,7 @@ class Ventas extends Component {
             email: '',
             //Fin factura
             tipoImpuesto: 0,
+            tickets: '',
             tipoPago: 0,
             estatusCompra: 0,
             fecha: new Date(),
