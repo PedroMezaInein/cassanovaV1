@@ -141,7 +141,7 @@ class LoginForm extends React.Component {
                     history.push('/login')
                 }
                 let perm = null
-                let arreglo = ['calendario-tareas', 'crm', 'tareas','te-escuchamos','cuestionario-satisfaccion','incidencias']
+                let arreglo = ['mi-proyecto','calendario-tareas', 'crm', 'tareas','te-escuchamos','cuestionario-satisfaccion','incidencias']
                 arreglo.forEach( (elemento) => {
                     if(!perm){
                         perm = user.permisos.find((permiso) => {
@@ -149,6 +149,17 @@ class LoginForm extends React.Component {
                         })
                     }
                 })
+                console.log(perm)
+                if(perm){
+                    if(perm.modulo.slug === 'mi-proyecto'){
+                        console.log('si entro')
+
+                        window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`
+                    }
+                    else{
+                        history.push(perm.modulo.url)
+                    }
+                } else  
                 if(perm){
                     if(perm.modulo.slug === 'crm'){
                         window.location.href = `${LEADS_FRONT}/crm?tag=${access_token}`
@@ -157,14 +168,6 @@ class LoginForm extends React.Component {
                         history.push(perm.modulo.url)
                     }
                 } else  
-                if(perm){
-                    if(perm.modulo.slug === 'mi-proyecto'){
-                        window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`
-                    }
-                    else{
-                        history.push(perm.modulo.url)
-                    }
-                }
                 if(perm){
                     if(perm.modulo.slug === 'te-escuchamos'){
                         window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`
@@ -190,6 +193,8 @@ class LoginForm extends React.Component {
                     }
                 }
                 else{
+                    console.log('no entro a ninguno')
+
                     history.push(user.permisos[0].modulo.url)
                 }
             },
