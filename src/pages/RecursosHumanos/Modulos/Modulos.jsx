@@ -156,7 +156,6 @@ class Modulo extends Component {
         this.setState({ ...this.state, key: value, form,activeKeyTabModulo:value })
     }
 
-
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } },match: { params: { action } } } = this.props            
@@ -177,7 +176,7 @@ class Modulo extends Component {
                 filters.identificador = id
                 modal.see = true
                 this.setState({ ...this.state, modal, filters })
-                this.reloadTable(filters)
+                // this.reloadTable(filters)
                 this.getVentaAxios(id)
             }
         }
@@ -280,8 +279,11 @@ class Modulo extends Component {
     getOptionsAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
+
         apiOptions(`v2/proyectos/ventas`, access_token).then(
             (response) => {
+                Swal.close()
+
                 const { empresas, repse, patronal, proyectos } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
@@ -289,14 +291,19 @@ class Modulo extends Component {
                 options['patronal'] = setOptionsWithLabel(patronal, 'name', 'id')
                 options['proyectos'] = setOptionsWithLabel(proyectos, 'nombre', 'id')
                 data.empresas = empresas
-                Swal.close()
                 this.setState({
                     ...this.state,
                     options,
                     data
                 })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
     }
 
     setTableRepse = (datos) => {
@@ -1110,10 +1117,10 @@ class Modulo extends Component {
                     <Tab eventKey="Repse" title="Repse"  >
                         <NewTable  
                             tableName = "Repse" subtitle = 'Repse' title = {titulo1}  mostrar_boton = { true }
-                            abrir_modal = { true } url = '/rh/modulo/repse' columns = { REPSE }
+                            abrir_modal = { false } url = '/rh/modulo/repse' columns = { REPSE }
                             accessToken = { this.props.authUser.access_token } setter = { this.setTableRepse }
-                            filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
-                            urlRender = { `${URL_DEV}repse?tab=Repse` } type='tab' addClick={this.openModalFiltros}
+                            exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
+                            urlRender = { `${URL_DEV}repse?tab=Repse` } type='tab' 
                         />
                     </Tab>
                     <Tab eventKey="Patronal" title="REGISTRO PATRONAL" >
@@ -1122,7 +1129,7 @@ class Modulo extends Component {
                             tableName = 'Patronal' subtitle = 'Listado de Patronal' title = {titulo2}  mostrar_boton = { true }
                             abrir_modal = { false } url = '/rh/modulo/patronal' columns = { PATRONAL }
                             accessToken = { this.props.authUser.access_token } setter = { this.setTablePatronal }
-                            filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
+                            exportar_boton = { true } onClickExport = { () => { this.exportVentasAxios() } }
                             urlRender = { `${URL_DEV}patronal?tab=Patronal` } type='tab'
                         />
                         
