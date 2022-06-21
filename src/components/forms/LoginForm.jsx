@@ -141,7 +141,7 @@ class LoginForm extends React.Component {
                     history.push('/login')
                 }
                 let perm = null
-                let arreglo = ['mi-proyecto','calendario-tareas', 'crm', 'tareas','te-escuchamos','cuestionario-satisfaccion','incidencias']
+                let arreglo = ['calendario-tareas','mi-proyecto', 'crm', 'tareas','te-escuchamos','cuestionario-satisfaccion','incidencias']
                 arreglo.forEach( (elemento) => {
                     if(!perm){
                         perm = user.permisos.find((permiso) => {
@@ -149,11 +149,8 @@ class LoginForm extends React.Component {
                         })
                     }
                 })
-                console.log(perm)
                 if(perm){
                     if(perm.modulo.slug === 'mi-proyecto'){
-                        console.log('si entro')
-
                         window.location.href = `${LEADS_FRONT}/mi-proyecto?tag=${access_token}`
                     }
                     else{
