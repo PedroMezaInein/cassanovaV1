@@ -504,6 +504,7 @@ class ActualizarPresupuesto extends Component {
         //     this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
         //     this.onChange(key, { target: { value: aux } }, 'mensajes')
         // }
+        
         this.setState({ ...this.state, form })
     }
     onSubmit = e => {
