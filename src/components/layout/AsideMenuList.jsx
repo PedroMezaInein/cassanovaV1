@@ -38,7 +38,9 @@ class AsideMenuList extends Component{
             case 'CRM':
             case 'Mi Proyecto':
             case 'Te escuchamos':  
-            case 'Incidencias':     
+            case 'Incidencias':   
+            case 'Directorio':
+  
                 return `${LEADS_FRONT}${url}?tag=${access_token}`               
             default:
                 return url;
