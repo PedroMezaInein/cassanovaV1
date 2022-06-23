@@ -259,7 +259,7 @@ class ClienteForm extends Component {
                                 <Select
                                     tipo='tipoPersona'
                                     general={false}
-                                    requirevalidation={1}
+                                    requirevalidation={0}
                                     name='tipo_persona'
                                     // options={options.tipo_persona}
                                     placeholder='SELECCIONA TIPO DE PERSONA'
@@ -273,7 +273,7 @@ class ClienteForm extends Component {
                                 <div className="form-group row form-group-marginless ">
                                     <div className="col-md-3">
                                         <Input
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             name="nombre_persona"
                                             value={form.nombre_persona}
                                             placeholder="NOMBRE"
@@ -285,7 +285,7 @@ class ClienteForm extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <Input
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             name="direccion_persona"
                                             value={form.direccion_persona}
                                             placeholder="DIRECCIÓN"
@@ -310,7 +310,7 @@ class ClienteForm extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <InputPhone
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             thousandseparator={false}
                                             prefix={''}
                                             name="telefono_persona"
@@ -341,7 +341,7 @@ class ClienteForm extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <Input
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             name="nombre_representante"
                                             value={form.nombre_representante}
                                             placeholder="NOMBRE DEL REPRESENTANTE"
