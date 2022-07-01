@@ -379,10 +379,10 @@ class TicketDetails extends Component {
                 const { alma } = response.data
                 let auxPromises  = arreglo.map((file) => {
                     return new Promise((resolve, reject) => {
-                        new S3(alma).uploadFile(file.file, `${filePath}${file.type}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+                        new S3(alma).uploadFile(file.file, `${filePath}${file.type}/${Math.floor(Date.now() / 1000)}-${file.file.name.replace('  ','').replace(' ','').replace('  ','_').replace('   ','').replace('- ','-')}`)
                             .then((data) =>{
                                 const { location,status } = data
-                                if(status === 204) resolve({ name: file.file.name, url: location, type: file.type })
+                                if(status === 204) resolve({ name: file.file.name.replace('  ','').replace(' ','').replace('  ','_').replace('   ','').replace('- ','-'), url: location, type: file.type })
                                 else reject(data)
                             }).catch(err => reject(err))
                     })
