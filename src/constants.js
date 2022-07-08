@@ -177,7 +177,7 @@ export const EGRESOS_COLUMNS = [
 ]
 
 export const FACTURAS_COLUMNS = [
-    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Opciones',accessor: 'actions', customRender: true },
     { Header: 'Folio', accessor: 'folio' },
     { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Fecha', accessor: 'fecha' },
@@ -195,18 +195,21 @@ export const FACTURAS_COLUMNS = [
 ]
 
 export const FACTURAS_COLUMNS_2 = [
-    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Opciones',accessor: 'actions', customRender: true },
     { Header: 'Folio', accessor: 'folio' },
+    { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Fecha', accessor: 'fecha' },
     { Header: 'Serie', accessor: 'serie' },
     { Header: 'Emisor', accessor: 'emisor' },
     { Header: 'Receptor', accessor: 'receptor' },
     { Header: 'Subtotal', accessor: 'subtotal' },
     { Header: 'Total', accessor: 'total' },
+    { Header: 'Monto acumulado', accessor: 'acumulado' },
+    { Header: 'Monto restante', accessor: 'restante' },
     { Header: 'Adjuntos', accessor: 'adjuntos' },
-    { Header: 'Descripción', accessor: 'descripcion' },
-    { Header: 'Uso CFDI', accessor: 'usoCFDI' },
-    { Header: 'Folio Fiscal', accessor: 'noCertificado' }
+    { Header: 'Descripción', accessor: 'descripcion' },   
+    // { Header: 'Número de certificado', accessor: 'noCertificado' },
+    // { Header: 'Uso CFDI', accessor: 'usoCFDI' }
 ]
 
 export const PROVEEDORES_COLUMNS = [
