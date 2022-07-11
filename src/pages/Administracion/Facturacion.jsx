@@ -3,17 +3,22 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
-import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable, setTextTableCenter } from '../../functions/setters'
+import { URL_DEV, FACTURAS_COLUMNS,FACTURAS_COLUMNS_2 } from '../../constants'
+import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable, setTextTableCenter,setNaviIcon,setOptionsWithLabel,setSelectOptions } from '../../functions/setters'
 import { errorAlert, doneAlert, waitAlert, createAlert, questionAlertY, printResponseErrorAlert, createAlertSA2WithActionOnClose, deleteAlert } from '../../functions/alert'
 import { Modal, ItemSlider, ItemDoubleSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
-import { Tabs, Tab, Form } from 'react-bootstrap'
+import { Tabs, Tab, Form, DropdownButton, Dropdown, Card } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
 import NumberFormat from 'react-number-format'
 import Swal from 'sweetalert2'
 import $ from "jquery";
+import { NewTable } from '../../components/NewTables'
+import { FiltersVentas } from '../../components/filters'
+import { apiOptions,catchErrors } from '../../functions/api'
+import { escapeLeadingUnderscores } from 'typescript'
+
 class Facturacion extends Component {
 
     state = {
@@ -23,6 +28,8 @@ class Facturacion extends Component {
         modalSee: false,
         modalRestante: false,
         modalFacturaRelacionada: false,
+        modalFiltersVentas: false,
+
         facturas: [],
         factura: '',
         empresas: [],
@@ -31,18 +38,21 @@ class Facturacion extends Component {
         },
         options: {
             empresas: [],
-            cuentas: [],
-            areas: [],
-            subareas: [],
             clientes: [],
             proyectos: [],
-            formasPago: [],
-            metodosPago: [],
             estatusFacturas: [],
             contratos: []
         },
         form: {
             facturaObject: '',
+            fecha: new Date(),
+            folio: '',
+            serie: '',
+            subtotal: '',
+            total: '',
+            descripcion: '',
+            cliente: '',
+            empresa: '',
             adjuntos: {
                 factura: {
                     value: '',
@@ -60,7 +70,9 @@ class Facturacion extends Component {
             }
         },
         tipo: 'Ventas',
-        key: 'ventas'
+        key: 'ventas',
+        filters: {}
+
     }
 
     componentDidMount() {
@@ -77,29 +89,59 @@ class Facturacion extends Component {
         this.getRestante()
     }
 
-    async getOptionsAxios() {
+    getOptionsAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'facturas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        apiOptions(`v2/administracion/ingresos`, access_token).then(
             (response) => {
-                const { empresas, clientes } = response.data
-                const { data } = this.state
+                const { data, options } = this.state
+                const { clientes, empresas, formasPago, metodosPago, estatusFacturas, estatusCompras, tiposPagos, tiposImpuestos, areas } = response.data
+                options['metodosPago'] = setOptionsWithLabel(metodosPago, 'nombre', 'id')
+                options['formasPago'] = setOptionsWithLabel(formasPago, 'nombre', 'id')
+                options['estatusFactura'] = setOptionsWithLabel(estatusFacturas, 'estatus', 'id')
+                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
+                options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
+                options['clientes'] = setOptionsWithLabel(clientes, 'empresa', 'id')
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
+                options['areas'] = setOptionsWithLabel(areas, 'nombre', 'id')
                 data.clientes = clientes
                 data.empresas = empresas
                 Swal.close()
                 this.setState({
                     ...this.state,
-                    data
+                    data,
+                    options
                 })
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
     }
 
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch (tipo) {
+            case 'estatusFacturas':
+                return options.estatusFacturas
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'tipoImpuesto':
+                return options.tiposImpuestos
+            case 'subarea':
+                if (data.subarea)
+                    if (data.subarea.area)
+                        if (data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                return []
+            default: return []
+        }
+    }
+
+    setOptionsArray = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
+        this.setState({ ...this.state, options })
+    }
+    
     async getRestante() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -123,7 +165,7 @@ class Facturacion extends Component {
 
     setFactura = facturas => {
         let aux = []
-        facturas.map((factura) => {
+        facturas.forEach((factura) => {
             aux.push(
                 {
                     actions: this.setActions(factura),
@@ -162,59 +204,33 @@ class Facturacion extends Component {
         this.setState({
             ...this.state,
             modalSee: false,
+            modalFiltersVentas: false,
+
             factura: ''
         })
     }
 
     setActions = factura => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Mostrar&nbsp;información',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-magnifier-tool',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'primary' },
-            },
-            {
-                text: 'Factura&nbsp;relacionada',
-                btnclass: 'warning',
-                iconclass: 'flaticon-interface-10',
-                action: 'facturaRelacionada',
-                tooltip: { id: 'facturaRelacionada', text: 'Factura extranjera'},
-            }
+        const { history } = this.props
+        return (
+            <div className="w-100 d-flex justify-content-center">
+                <DropdownButton menualign="right" title={<i className="las la-angle-down icon-md  icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(factura) }}>
+                        {setNaviIcon('flaticon2-magnifier-tool', 'Mostrar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openFacturaRelacionada(factura) }}>
+                        {setNaviIcon('flaticon-interface-10', 'Factura extranjera')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.inhabilitar(factura) }}>
+                        {setNaviIcon('flaticon2-lock', 'Inhabilitar factura')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.cancelarFactura(factura) }}>
+                        {setNaviIcon('flaticon-circle', 'Cancelar')}
+                    </Dropdown.Item>
+                    
+                </DropdownButton>
+            </div>
         )
-        if (!factura.detenida) {
-            aux.push(
-                {
-                    text: 'Inhabilitar&nbsp;factura',
-                    btnclass: 'info',
-                    iconclass: 'flaticon2-lock',
-                    action: 'inhabilitar',
-                    tooltip: { id: 'inhabilitar', text: 'Inhabilitar factura', type: 'info' },
-                })
-        }
-        if (!factura.cancelada) {
-            aux.push(
-                {
-                    text: 'Cancelar',
-                    btnclass: 'danger',
-                    iconclass: "flaticon-circle",
-                    action: 'cancelarFactura',
-                    tooltip: { id: 'delete-Adjunto', text: 'Cancelar', type: 'error' },
-                })
-        }
-        if (factura.cancelada) {
-            aux.push(
-                {
-                    text: 'Mostrar&nbsp;adjuntos',
-                    btnclass: 'info',
-                    iconclass: "flaticon-attachment",
-                    action: 'cancelarFactura',
-                    tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
-                })
-        }
-        return aux
     }
 
     deleteRelacionada = element => {
@@ -580,6 +596,7 @@ class Facturacion extends Component {
         const { modalCancelar } = this.state
         this.setState({
             ...this.state,
+
             modalCancelar: !modalCancelar,
             form: this.clearForm()
         })
@@ -600,6 +617,13 @@ class Facturacion extends Component {
             form: this.clearForm(),
             formeditado: 0
         })
+    }
+
+    openModalFiltrosVentas = () => {
+       
+        this.setState({ ...this.state,
+            modalFiltersVentas: true
+              })
     }
 
     handleCloseFacturas = () => {
@@ -657,6 +681,51 @@ class Facturacion extends Component {
             factura: '',
             form: this.clearForm()
         })
+    }
+
+    handleCloseFiltroVenta = () => {
+        const { modalFiltersVentas } = this.state
+        this.setState({
+            ...this.state,
+            modalFiltersVentas: !modalFiltersVentas,
+            factura: '',
+            form: this.clearForm()
+        })
+    }
+
+    clearFiltros = (e) => {
+        e.preventDefault()
+        const { modalFiltersVentas } = this.state
+        modalFiltersVentas = false
+        this.setState({ ...this.state, modalFiltersVentas, filters: this.clearFilters() })
+        this.getCalidadAxios();
+    }
+
+    clearFilters = () => {
+        const { filters } = this.state
+        let aux = Object.keys(filters)
+        aux.forEach((element) => {
+            switch (element) {
+                case 'fecha_solicitud':
+                case 'fecha_termino':
+                    filters[element] = { start: null, end: null }
+                    break;
+                case 'por_pagar':
+                case 'pagado':
+                case 'folio':
+                case 'check_termino':
+                    filters[element] = false
+                    break;
+                case 'estatus':
+                case 'tipo_trabajo':
+                    filters[element] = []
+                    break;
+                default:
+                    filters[element] = ''
+                    break;
+            }
+        })
+        return filters;
     }
 
     onChangeAdjuntoFacturas = e => {
@@ -931,30 +1000,76 @@ class Facturacion extends Component {
         })
     }
 
+    sendFilters = filter => {
+        // const { modalFiltersVentas } = this.state
+        // modalFiltersVentas = false
+        
+        this.setState({
+            ...this.state,
+            filters: filter,
+            modalFiltersVentas:false
+        })
+        this.reloadTable(filter)
+    }
+
+    reloadTable = (filter) => {
+        const { key } = this.state
+        // console.log(key)
+        if(key == 'ventas'){
+            $(`#ventas`).DataTable().search(JSON.stringify(filter)).draw();
+        }else{
+            $(`#compras`).DataTable().search(JSON.stringify(filter)).draw();
+        }
+    }
+
     render() {
-        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, empresas, modalFacturaRelacionada} = this.state
+        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, empresas, modalFacturaRelacionada, modalFiltersVentas, filters, clearFiltros,options} = this.state
+        const { access_token } = this.props.authUser
+
         return (
-            <Layout active = 'administracion'  {...this.props} >
-                <Tabs defaultActiveKey = "ventas" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
+            <Layout active='administracion'  {...this.props}>
+             <Tabs mountOnEnter={true} unmountOnExit={true} defaultActiveKey="ventas" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>                
                     <Tab eventKey = "ventas" title = "Ventas">
-                        <NewTableServerRender columns = { FACTURAS_COLUMNS } title = 'Facturas' subtitle = 'Listado de facturas'
-                            mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal }
-                            restante_empresa = { true } onClickRestante = { this.openModalRestante }
-                            actions = {
-                                {
-                                    'see': { function: this.openModalSee },
-                                    'cancelarFactura': { function: this.cancelarFactura },
-                                    'inhabilitar': { function: this.inhabilitar },
-                                    'facturaRelacionada': { function: this.openFacturaRelacionada}
-                                }
-                            }
-                            idTable = 'kt_datatable_ventas' accessToken = { this.props.authUser.access_token } setter = { this.setFactura }
-                            urlRender = { URL_DEV + 'facturas/ventas' } cardTable = 'cardTable_ventas' cardTableHeader = 'cardTableHeader_ventas'
-                            cardBody = 'cardBody_ventas' isTab = { true } tipo_validacion = 'facturas' exportar_boton = { true }
-                            onClickExport = { () => this.getExcelFacturasVentas() } />
+                    
+                            <NewTable
+                                tableName='ventas'
+                                subtitle='Listado de facturas'
+                                title='Facturas'
+                                mostrar_boton={true}
+                                abrir_modal={true}
+                                accessToken={access_token}
+                                columns={FACTURAS_COLUMNS}
+                                setter={this.setFactura}
+                                addClick = { this.openModal }
+                                urlRender={`${URL_DEV}facturas/ventas`}
+                                filterClick={this.openModalFiltrosVentas}
+                                exportar_boton={true}
+                                onClickExport = { () => { this.getExcelFacturasVentas() } }
+                                type='tab'
+
+                            />
+                        
                     </Tab>
-                    <Tab eventKey = "compras" title = "Compras">
-                        <NewTableServerRender columns = { FACTURAS_COLUMNS } title = 'Facturas' subtitle = 'Listado de facturas'
+
+                    <Tab eventKey = "compras" title = "Compras">         
+                        <NewTable
+                            tableName='compras'
+                            subtitle='Listado de facturas'
+                            title='Compras Facturas'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            accessToken={access_token}
+                            columns={FACTURAS_COLUMNS}
+                            setter={this.setFactura}
+                            addClick = { this.openModal }
+                            urlRender={`${URL_DEV}facturas/compras`}
+                            filterClick={this.openModalFiltrosVentas}
+                            exportar_boton={true}
+                            onClickExport = { () => { this.getExcelFacturasCompras() } }
+                             type='tab'
+                        />
+
+                        {/* <NewTableServerRender columns = { FACTURAS_COLUMNS } title = 'Facturas' subtitle = 'Listado de facturas'
                             mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal }
                             restante_empresa = { true } onClickRestante = { this.openModalRestante }
                             actions = {
@@ -967,8 +1082,9 @@ class Facturacion extends Component {
                             } idTable = 'kt_datatable_compras' accessToken = { this.props.authUser.access_token } setter = { this.setFactura }
                             urlRender = { URL_DEV + 'facturas/compras' } cardTable = 'cardTable_compras' cardTableHeader = 'cardTableHeader_compras'
                             cardBody = 'cardBody_compras' isTab = { true } tipo_validacion = 'facturas' exportar_boton = { true }
-                            onClickExport = { () => this.getExcelFacturasCompras() } />
+                            onClickExport = { () => this.getExcelFacturasCompras() } /> */}
                     </Tab>
+                   
                 </Tabs>
                 <Modal size="lg" title={"Agregar adjuntos"} show={modalCancelar} handleClose={this.handleClose} >
                     <div className="mt-4 mb-4">
@@ -1050,6 +1166,10 @@ class Facturacion extends Component {
                 <Modal size = "xl" title = "Facturas relacionadas" show = { modalFacturaRelacionada } handleClose = { this.handleCloseFacturaRelacionada } >
                     <ItemDoubleSlider items = { form.adjuntos.relacionados.files } handleChange = { this.handleChangeRelacionadas } item = 'relacionados' 
                         deleteFile = { this.deleteRelacionada } /> 
+                </Modal>
+                
+                <Modal size='xl' show={modalFiltersVentas} handleClose={this.handleCloseFiltroVenta} title='Filtros'>
+                    <FiltersVentas at={access_token} sendFilters={this.sendFilters} filters={filters}  options={options}   setOptions={this.setOptionsArray} />
                 </Modal>
             </Layout>
         )
