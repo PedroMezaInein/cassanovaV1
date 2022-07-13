@@ -31,7 +31,6 @@ export default class FacturaTable extends Component {
                 {
                     actions: this.setActions(factura),
                     folio: renderToString(setTextTable(factura.folio)),
-                    folio: renderToString(setTextTable(factura.folio)),
                     estatus: renderToString(this.setLabelTable(factura)),
 
                     fecha: renderToString(setDateTable(factura.fecha)),
