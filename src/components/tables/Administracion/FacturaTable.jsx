@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import TableForModals from '../../../components/tables/TableForModals'
 import { FACTURAS_COLUMNS_2 } from '../../../constants'
-import { setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
+import { setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setLabelTable } from '../../../functions/setters'
 import { deleteAlert } from '../../../functions/alert'
 
 export default class FacturaTable extends Component {
@@ -31,6 +31,8 @@ export default class FacturaTable extends Component {
                 {
                     actions: this.setActions(factura),
                     folio: renderToString(setTextTable(factura.folio)),
+                    estatus: renderToString(this.setLabelTable(factura)),
+
                     fecha: renderToString(setDateTable(factura.fecha)),
                     serie: renderToString(setTextTable(factura.serie)),
                     emisor: renderToString(setArrayTable(
@@ -52,12 +54,42 @@ export default class FacturaTable extends Component {
                     descripcion: renderToString(setTextTable(factura.descripcion)),
                     usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
                     noCertificado: renderToString(setTextTable(factura.numero_certificado)),
+                    acumulado: renderToString(setMoneyTable(factura.ventas_compras_count + factura.ingresos_egresos_count)),
+                    restante: renderToString(setMoneyTable(factura.total - factura.ventas_compras_count - factura.ingresos_egresos_count)),
                     id: factura.id
                 }
             )
             return false
         })
         return aux
+    }
+
+    setLabelTable = objeto => {
+        let restante = objeto.total - objeto.ventas_compras_count - objeto.ingresos_egresos_count
+        let text = {}
+        if (objeto.detenida) {
+            text.letra = '#5F6A6A'
+            text.fondo = '#ECEFF1'
+            text.estatus = 'DETENIDA'
+        }
+        else {
+            if (objeto.cancelada) {
+                text.letra = '#8950FC'
+                text.fondo = '#EEE5FF'
+                text.estatus = 'CANCELADA'
+            } else {
+                if (restante <= 1) {
+                    text.letra = '#388E3C'
+                    text.fondo = '#E8F5E9'
+                    text.estatus = 'PAGADA'
+                } else {
+                    text.letra = '#F64E60'
+                    text.fondo = '#FFE2E5'
+                    text.estatus = 'PENDIENTE'
+                }
+            }
+        }
+        return setLabelTable(text)
     }
 
     componentDidUpdate(prevProps) {

@@ -186,12 +186,14 @@ export const FACTURAS_COLUMNS = [
     { Header: 'Receptor', accessor: 'receptor' },
     { Header: 'Subtotal', accessor: 'subtotal' },
     { Header: 'Total', accessor: 'total' },
+    { Header: 'Número de certificado', accessor: 'noCertificado' },
+    { Header: 'Metodo de pago', accessor: 'metodoPago' },
+    { Header: 'Descripción', accessor: 'descripcion' },   
+
     { Header: 'Monto acumulado', accessor: 'acumulado' },
     { Header: 'Monto restante', accessor: 'restante' },
     { Header: 'Adjuntos', accessor: 'adjuntos' },
-    { Header: 'Descripción', accessor: 'descripcion' },   
-    { Header: 'Número de certificado', accessor: 'noCertificado' },
-    { Header: 'Uso CFDI', accessor: 'usoCFDI' }
+    { Header: 'Uso CFDI', accessor: 'usoCFDI' },
 ]
 
 export const FACTURAS_COLUMNS_2 = [
