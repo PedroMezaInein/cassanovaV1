@@ -3,13 +3,12 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, FACTURAS_COLUMNS,FACTURAS_COLUMNS_2 } from '../../constants'
+import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable, setTextTableCenter,setNaviIcon,setOptionsWithLabel,setSelectOptions } from '../../functions/setters'
 import { errorAlert, doneAlert, waitAlert, createAlert, questionAlertY, printResponseErrorAlert, createAlertSA2WithActionOnClose, deleteAlert } from '../../functions/alert'
 import { Modal, ItemSlider, ItemDoubleSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
 import { Tabs, Tab, Form, DropdownButton, Dropdown, Card } from 'react-bootstrap'
-import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
 import NumberFormat from 'react-number-format'
 import Swal from 'sweetalert2'
@@ -177,12 +176,15 @@ class Facturacion extends Component {
                     receptor: renderToString(this.setInfoTable(factura.rfc_receptor, factura.nombre_receptor)),
                     subtotal: renderToString(setMoneyTable(factura.subtotal)),
                     total: renderToString(setMoneyTable(factura.total)),
+                    noCertificado: renderToString(setTextTableCenter(factura.numero_certificado)),
+                    metodoPago: renderToString(setTextTableCenter(factura.metodo_pago)),
+                    descripcion: renderToString(setTextTable(factura.descripcion)),
+
                     acumulado: renderToString(setMoneyTable(factura.ventas_compras_count + factura.ingresos_egresos_count)),
                     restante: renderToString(setMoneyTable(factura.total - factura.ventas_compras_count - factura.ingresos_egresos_count)),
                     adjuntos: renderToString(this.setAdjuntosTable(factura)),
-                    descripcion: renderToString(setTextTable(factura.descripcion)),
-                    noCertificado: renderToString(setTextTableCenter(factura.numero_certificado)),
                     usoCFDI: renderToString(setTextTableCenter(factura.uso_cfdi)),
+
                     id: factura.id,
                     objeto: factura
                 }
@@ -546,13 +548,15 @@ class Facturacion extends Component {
             }
             return false
         })
+
         await axios.post(URL_DEV + 'facturas/cancelar/' + factura.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data, key } = this.state
                 const { facturasVentas } = response.data
                 data.facturas = facturasVentas
+                // console.log(response)
                 this.setState({
-                    facturas: this.setFactura(facturasVentas),
+                    // facturas: this.setFactura(facturasVentas),
                     data,
                     modalCancelar: false
                 })
@@ -873,8 +877,8 @@ class Facturacion extends Component {
         this.setState({ ...this.state, form })
     }
 
-    async getComprasAxios() { $('#kt_datatable_compras').DataTable().ajax.reload(); }
-    async getVentasAxios() { $('#kt_datatable_ventas').DataTable().ajax.reload(); }
+    async getComprasAxios() { $('#compras').DataTable().ajax.reload(); }
+    async getVentasAxios() { $('#ventas').DataTable().ajax.reload(); }
 
     controlledTab = value => {
         if (value === 'compras')
@@ -1000,10 +1004,7 @@ class Facturacion extends Component {
         })
     }
 
-    sendFilters = filter => {
-        // const { modalFiltersVentas } = this.state
-        // modalFiltersVentas = false
-        
+    sendFilters = filter => {        
         this.setState({
             ...this.state,
             filters: filter,
@@ -1068,25 +1069,10 @@ class Facturacion extends Component {
                             onClickExport = { () => { this.getExcelFacturasCompras() } }
                              type='tab'
                         />
-
-                        {/* <NewTableServerRender columns = { FACTURAS_COLUMNS } title = 'Facturas' subtitle = 'Listado de facturas'
-                            mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal }
-                            restante_empresa = { true } onClickRestante = { this.openModalRestante }
-                            actions = {
-                                {
-                                    'see': { function: this.openModalSee },
-                                    'cancelarFactura': { function: this.cancelarFactura },
-                                    'inhabilitar': { function: this.inhabilitar },
-                                    'facturaRelacionada': { function: this.openFacturaRelacionada}
-                                }
-                            } idTable = 'kt_datatable_compras' accessToken = { this.props.authUser.access_token } setter = { this.setFactura }
-                            urlRender = { URL_DEV + 'facturas/compras' } cardTable = 'cardTable_compras' cardTableHeader = 'cardTableHeader_compras'
-                            cardBody = 'cardBody_compras' isTab = { true } tipo_validacion = 'facturas' exportar_boton = { true }
-                            onClickExport = { () => this.getExcelFacturasCompras() } /> */}
                     </Tab>
                    
                 </Tabs>
-                <Modal size="lg" title={"Agregar adjuntos"} show={modalCancelar} handleClose={this.handleClose} >
+                <Modal size="lg" title={"Agregar adjuntos para cancelar"} show={modalCancelar} handleClose={this.handleClose} >
                     <div className="mt-4 mb-4">
                         <ItemSlider items={form.adjuntos.adjuntos.files} handleChange={this.handleChange} item="adjuntos" multiple={true} />
                     </div>
