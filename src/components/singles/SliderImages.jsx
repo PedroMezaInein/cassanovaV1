@@ -49,6 +49,7 @@ class SliderImages extends Component {
                                 <>
                                     <div>
                                         <img alt = '' src={elements[active].adjunto.url} className="rounded pdfview-img"/>
+                                         <a href={elements[active].adjunto.url} class="text-muted text-hover-primary font-weight-bold" target="_blank"> Ver imagen</a>
                                     </div>
                                 </>
                                 : ''
