@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { InputNumberSinText, InputMoneySinText } from '../../form-components'
+import { Button, InputNumberSinText, InputMoneySinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 class DiseñoForm extends Component {
@@ -122,6 +122,20 @@ class DiseñoForm extends Component {
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card-footer py-3 pr-1">
+                        <div className="row mx-0">
+                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                <Button icon='' className="btn btn-primary mr-2"
+                                    onClick={
+                                        (e) => {
+                                            e.preventDefault();
+                                            validateAlert(onSubmit, e, 'form-diseño')
+                                        }
+                                    }
+                                    text="ENVIAR" />
                             </div>
                         </div>
                     </div>
