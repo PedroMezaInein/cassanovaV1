@@ -652,8 +652,9 @@ class Diseño extends Component {
             let ra = 0 
             // console.log(form.esquema_4)
             form.esquema_4.forEach(function (element) {
-                    ra = Math.sqrt(element.monto * form.inge_m2) * element.monto
-                    element.porcentaje = ra.toFixed(3)
+                    // ra = Math.sqrt(element.monto * form.inge_m2) * element.monto
+                    // element.porcentaje = ra.toFixed(3)
+                    element.porcentaje = element.monto * form.inge_m2
                 })
 
         }
