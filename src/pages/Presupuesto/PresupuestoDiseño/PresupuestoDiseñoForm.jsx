@@ -37,6 +37,8 @@ class PresupuestoDiseñoForm extends Component {
             concepto2: '30',
             concepto3: '10',
             desglose: [],
+            MontoIngenerias: [],
+            MontoEsquemas: [],
             conceptos: [
                 {
                     value: '',
@@ -922,43 +924,65 @@ class PresupuestoDiseñoForm extends Component {
             let accu = 0
             let sum = 0
             let ra = 0
+            let nuevo = 0
+            
             form.desglose = []
+            form.MontoIngenerias = []
+            form.MontoEsquemas = []
+
             if(esquema === 'esquema_3'){
                 if( data.empresa.tipos_planos3){
                     data.empresa.tipos_planos3.forEach((tipos,key) => {     
                         
                         ra= Math.sqrt(tipos.monto * m2 ) * tipos.monto;
                         sum = ra.toFixed(2) *  (1 + 0)
+                        nuevo = tipos.monto * m2;
 
                         form.desglose.push( [
                             {
                                 id: tipos.id,
                                 nombre: tipos.tipo,
-                                monto: sum
+                                monto: nuevo,
+                                checked : true
+
                             }
                         ])
-                        accu =  sum + accu
+                        accu =  nuevo + accu
                     })
-                    form.desglose.push( [
+                    form.MontoIngenerias.push( [
                         {
                             id: 1,
                             nombre: 'MONTO INGENIERIAS',
                             monto: accu
                         }
                     ])
-                    form.desglose.push( [
+                    form.MontoEsquemas.push( [
                         {
                             id: 1,
                             nombre: 'MONTO DE ESQUEMA',
-                            monto: total
+                            monto: Math.round(total.toFixed(0))
                         }
                     ])
+                    // form.desglose.push( [
+                    //     {
+                    //         id: 1,
+                    //         nombre: 'MONTO INGENIERIAS',
+                    //         monto: accu
+                    //     }
+                    // ])
+                    // form.desglose.push( [
+                    //     {
+                    //         id: 1,
+                    //         nombre: 'MONTO DE ESQUEMA',
+                    //         monto: Math.round(total.toFixed(0))
+                    //     }
+                    // ])
                     sum =  accu + total
                 }               
                 }else{
                     sum = total
                 }            
-                return sum.toFixed(2)
+                return Math.round(sum.toFixed(2))
         }
 
         if (limiteSup < m2Aux) {

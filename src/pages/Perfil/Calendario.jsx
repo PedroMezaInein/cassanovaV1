@@ -349,7 +349,7 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'permiso/usuario',access_token, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                console.log(response)
+
                 let aux = []
                 response.data.permisos.map((permiso)=>{         
                             aux.push({
@@ -380,7 +380,6 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'permiso/usuario',access_token,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                console.log(response)
                 let aux = []
                 response.data.incapacidad.map((permiso)=>{         
                             aux.push({
@@ -392,7 +391,6 @@ class Calendario extends Component {
                             mRechazo: permiso.motivo_rechazo,
                             comentarios: permiso.comentarios,
                         })
-                        console.log(aux)
                         return aux
                 })
                 this.setState({
@@ -711,7 +709,7 @@ class Calendario extends Component {
                     return false
                 })
                 var now = moment();
-                var dias = moment().add(2, 'w');
+                var dias = moment().add(2, 'w').add(2, 'days');;
 
                 const start = moment(now, 'YYYY-MM-DD');
                 const end = moment(dias, 'YYYY-MM-DD');
@@ -727,6 +725,7 @@ class Calendario extends Component {
                 // const yesterdayTimeStamp = timeStamp - 2*24*60*60*1000;
                 // const yesterdayDate = new Date(yesterdayTimeStamp);
                 let arr3 = [...aux2, ...result]
+
                 eventos.map((evento) => {
                     aux.push({
                         shortName: 'Eventos',
@@ -1031,8 +1030,6 @@ class Calendario extends Component {
             </>
         )
     }
-
-
 
     changeActiveKey = element => {
         this.setState({
@@ -1349,7 +1346,6 @@ class Calendario extends Component {
         this.clearModals()
 
     }
-
 
     render() {
         const {permisosM,incapacidadesM, events, options,form, title,  formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento } = this.state
