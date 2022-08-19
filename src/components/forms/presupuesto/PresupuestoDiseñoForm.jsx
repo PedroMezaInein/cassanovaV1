@@ -78,6 +78,27 @@ class PresupuestoDiseñoForm extends Component {
         });
         onChangeCheckboxes(aux, 'partidasObra')
     }
+    handleChangeCheckboxDesglose = e => {
+        const { name, checked } = e.target
+        const { form, onChangeCheckboxes } = this.props
+        let aux = form.desglose
+        aux.find(function (_aux, index) {
+            if (_aux[0].id.toString() === name.toString()) {
+                _aux[0].checked = checked
+                if(checked == true){
+                    form.total = form.total + _aux[0].monto
+                    form.MontoIngenerias[0][0].monto = form.MontoIngenerias[0][0].monto + _aux[0].monto
+                }else{
+                    form.total = form.total - _aux[0].monto
+                    form.MontoIngenerias[0][0].monto = form.MontoIngenerias[0][0].monto - _aux[0].monto
+                }                
+
+            }
+            return false
+
+        });
+        onChangeCheckboxes(aux, 'desglose')
+    }
 
     render() {
         const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos,onClickTab, activeKey, defaultKey, onChangePartidas, ...props } = this.props
@@ -241,26 +262,65 @@ class PresupuestoDiseñoForm extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-2">
-                                        <div className="form-group">
-                                            <label className="font-weight-bolder m-0">desglose de montos</label>
-                                            <div className="checkbox-list pt-2">
-                                               
-                                                {
-                                                // form.desglose?
-                                                     form.desglose.map((desglo,key) => {
-                                                        return (
-                                                        <label className=" font-weight-light">
-                                                            { desglo[0].nombre } <strong>- ${desglo[0].monto.toFixed(2) }</strong>
-                                                            <span></span>
-                                                        </label>
-                                                      )
-                                                    })
-                                                // :''
-                                                 }
-                                               
-                                            </div>
-                                        </div>
-                                    </div>
+                                                    <div className="form-group">
+                                                        <label className="font-weight-bolder ">desglose de montos</label>
+                                                        <div className="checkbox-list pt-3">                                                        
+                                                            {
+                                                            form.desglose.map((desglo,index) => {
+                                                                    return (
+                                                                    <label className=" ">
+                                                                          <Form.Check                                                                                 
+                                                                                type="checkbox"
+                                                                                label={  desglo[0].nombre + " -$" +desglo[0].monto.toFixed(2)}
+                                                                                name={ desglo[0].id }
+                                                                                checked= { desglo[0].checked }
+                                                                                onChange = { this.handleChangeCheckboxDesglose }
+
+                                                                            />
+                                                                        <span></span>
+                                                                    </label> 
+                                                                    )
+                                                                })
+                                                            // :''
+                                                            }
+                                                        
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label className="font-weight-bolder m-0">desglose de Precios ingenerias</label>
+                                                        <div className="checkbox-list pt-3">
+                                                        
+                                                            {
+                                                            form.MontoIngenerias.map((desglo,index) => {
+                                                                    return (
+                                                                    <label className=" font-weight-light">
+                                                                          { desglo[0].nombre } <strong>- ${desglo[0].monto.toFixed(2) }</strong><br  ></br>
+                                                                        <span></span>
+                                                                    </label> 
+                                                                    )
+                                                                })
+                                                            }
+                                                        
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label className="font-weight-bolder m-0">desglose de Precios esquemas</label>
+                                                        <div className="checkbox-list pt-3">
+                                                        
+                                                            {
+                                                            form.MontoEsquemas.map((desglo,index) => {
+                                                                    return (
+                                                                    <label className=" font-weight-light">
+                                                                          { desglo[0].nombre } <strong>- ${desglo[0].monto.toFixed(2) }</strong><br  ></br>
+                                                                        <span></span>
+                                                                    </label> 
+                                                                    )
+                                                                })
+                                                            }
+                                                        
+                                                        </div>
+                                                    </div>
+                                                  </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
