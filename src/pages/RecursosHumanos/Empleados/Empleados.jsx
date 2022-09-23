@@ -111,7 +111,32 @@ class Empleados extends Component {
                     value: '',
                     placeholder: 'Aviso Retención INFONAVIT',
                     files: []
-                }
+                },
+                firma: {
+                    value: '',
+                    placeholder: 'Firma electrónica',
+                    files: []
+                },
+                foto: {
+                    value: '',
+                    placeholder: 'Foto de ingreso',
+                    files: []
+                },
+                imss: {
+                    value: '',
+                    placeholder: 'IMSS',
+                    files: []
+                },
+                bajaimss: {
+                    value: '',
+                    placeholder: 'Baja IMSS',
+                    files: []
+                },
+                responsiva: {
+                    value: '',
+                    placeholder: 'Responsiva',
+                    files: []
+                },
             }
         },
         options: {
@@ -384,7 +409,32 @@ class Empleados extends Component {
                             value: '',
                             placeholder: 'Aviso Retención INFONAVIT',
                             files: []
-                        }
+                        },
+                        firma: {
+                            value: '',
+                            placeholder: 'Firma electrónica',
+                            files: []
+                        },
+                        foto: {
+                            value: '',
+                            placeholder: 'Foto de ingreso',
+                            files: []
+                        },
+                        imss: {
+                            value: '',
+                            placeholder: 'IMSS',
+                            files: []
+                        },
+                        bajaimss: {
+                            value: '',
+                            placeholder: 'IMSS',
+                            files: []
+                        },
+                        responsiva: {
+                            value: '',
+                            placeholder: 'Responsiva',
+                            files: []
+                        },
                     }
                     break;
                 case 'estatus_empleado':
@@ -722,12 +772,13 @@ class Empleados extends Component {
             
             return false
         })
-        data.append('id', empleado.id)     
+        console.log(data)
+        data.append('id', empleado.id)
         await console.log(form)
         await console.log(data.append)      
         await axios.post(URL_DEV + 'rh/empleado/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                // console.log(response)               
+                //console.log(response)               
                 const { empleado } = response.data
                 const { data, key } = this.state
                 data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
@@ -1240,7 +1291,7 @@ class Empleados extends Component {
                 <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles }
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoEmpleadoAxios() }}
-                        adjuntos={['acta', 'curp', 'rfc','nss', 'identificacion', 'domicilio','estudios', 'bancaria','retencion']} />
+                        adjuntos={['acta', 'curp', 'rfc','nss', 'identificacion', 'domicilio','estudios', 'bancaria','retencion', 'firma', 'foto', 'imss', 'bajaimss', 'responsiva']} />
                     <div className="separator separator-dashed separator-border-2 mb-6 mt-7"></div>
                     <TableForModals columns = { ADJUNTOS_COLUMNS } data = { adjuntos } hideSelector = { true } mostrar_acciones = { true }
                         actions = { { 'deleteAdjunto': { function: this.openModalDeleteAdjuntos } }} dataID = 'adjuntos'
