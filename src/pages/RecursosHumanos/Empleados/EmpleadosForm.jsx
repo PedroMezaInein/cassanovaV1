@@ -192,8 +192,6 @@ class EmpleadosForm extends Component {
                         form.total_efectivo = empleado.total_efectivo
                         form.total = empleado.total
                         form.ispt = empleado.ispt
-                        console.log(empleado.organigrama.length )
-
                         if(empleado.organigrama.length > 0){
                             form.organigrama = empleado.organigrama[0].id_organigrama.toString()
                             form.responsable = empleado.organigrama[0].id_lider.toString()
@@ -203,7 +201,6 @@ class EmpleadosForm extends Component {
                         form.rcv = empleado.rcv
                         form.infonavit = empleado.infonavit
                         form.isn = empleado.isn
-                        console.log(form.fecha_nacimiento)
                         this.setState({
                             ...this.state,
                             form,
@@ -245,7 +242,6 @@ class EmpleadosForm extends Component {
         await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                console.log(response.data)
                 const { empresas, departamentos,bancos,organigrama,puestos,estado_civil,empleados } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -255,9 +251,7 @@ class EmpleadosForm extends Component {
                 options['puestos'] = setOptions(puestos, 'nombre_puesto', 'id')
                 options['estado_civil'] = setOptions(estado_civil,'nombre_ec', 'id')
                 options['responsable'] = setOptions(empleados,'nombre', 'id')
-                
-                console.log(options)
-
+            
                 this.setState({
                     ...this.state,
                     options
