@@ -22,32 +22,58 @@ class EmpleadosForm extends Component {
         title: 'Nuevo colaborador',
         form: {
             nombre: '',
+            ap_materno: '',
+            ap_paterno: '',
             curp: '',
             rfc: '',
             nss: '',
+            fecha_nacimiento: new Date(),
+            nacionalidad: '',
+            telefono_movil: '',
+            telefono_particular: '',
+            estado_civil: '',
             nombre_emergencia: '',
             telefono_emergencia: '',
+            email_personal: '',
+            email_empresarial: '',
+            domicilio: '',
+            estatus_empleado: 'Activo',
+            tipo_empleado: 'Administrativo',
+            organigrama: '',
+            puesto: '',
+            responsable: '',          
             banco: '',
             cuenta: '',
             clabe: '',
-            tipo_empleado: 'Administrativo',
-            estatus_empleado: 'Activo',
-            empresa: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
-            estatus_imss: 'Activo',
-            puesto: '',
-            vacaciones_disponibles: 0,
             fecha_alta_imss: '',
             numero_alta_imss: '',
+            numero_baja_imss: '',
+            fecha_baja_imss:' ',           
+            empresa: '',
+            departamentos: [],
+            salario_bruto: 0.0,
+            salario_neto_quincenal: 0.0,
+            salario_neto_mensal: 0.0,
             nomina_imss: 0.0,
-            nomina_extras: 0.0,
+            adicionales_imss: 0.0,
             salario_hr: 0.0,
             salario_hr_extra: 0.0,
-            email_personal: '',
-            estacionamiento: 0.0,
-            gimnacio: 0.0,
-            estudios: 0.0,
+            nomina_extras: 0.0,
+            adicionales_efectivo: 0.0,
+            total_efectivo: 0.0,
+            total: 0.0,
+            ispt: 0.0,
+            estatus_imss: 'Activo',
+            // puesto: '',
+            vacaciones_disponibles: 0,
+            
+            // estacionamiento: 0.0,
+            // gimnacio: 0.0,
+            // estudios: 0.0,
+            // organigrama:'',
+            // responsable:'',
             adjuntos: {
                 datosGenerales: {
                     value: '',
@@ -65,24 +91,22 @@ class EmpleadosForm extends Component {
                     files: []
                 }
             },
-            departamentos: [],
             departamento: '',
-            nacionalidad: '',
-            fecha_nacimiento: '',
-            estado_civil: '',
-            domicilio: '',
-            telefono_movil: '',
-            telefono_particular: '',
-            salario_imss: '',
-            salario_bruto:'',
-            imss: 0.0,
-            rcv: 0.0,
-            infonavit: 0.0,
-            isn: 0.0
+           
+            // salario_imss: '',
+            // imss: 0.0,
+            // rcv: 0.0,
+            // infonavit: 0.0,
+            // isn: 0.0
         },
         options: {
             empresas: [],
-            departamentos: []
+            departamentos: [],
+            bancos: [],
+            organigrama: [],
+            puestos:[],
+            estado_civil: [],
+            responsable: []
         }
     }
     componentDidMount() {
@@ -107,7 +131,7 @@ class EmpleadosForm extends Component {
                     if (state.empleado) {
                         const { form, options} = this.state
                         const { empleado } = state
-                        console.log(empleado)
+
                         form.nombre = empleado.nombre
                         form.curp = empleado.curp
                         form.rfc = empleado.rfc
@@ -129,19 +153,18 @@ class EmpleadosForm extends Component {
                         form.estudios = empleado.estudios
 
                         if (empleado.empresa) { form.empresa = empleado.empresa.id.toString() }
-                        form.fechaInicio = empleado.fecha_inicio !== null ? new Date(moment(empleado.fecha_inicio)):''
-                        form.fechaFin = empleado.fecha_fin !== null ? new Date(moment(empleado.fecha_fin)):''
+                        form.fechaInicio = empleado.fecha_inicio !== null ? moment(new Date(empleado.fecha_inicio)).format("YYYY-MM-DD") :''
+                        form.fechaFin = empleado.fecha_fin !== null ?  moment(new Date(empleado.fecha_fin)).format("YYYY-MM-DD") :''
                         form.puesto = empleado.puesto
                         form.estatus_imss = this.showStatusImss(empleado.estatus_imss);
                         form.vacaciones_disponibles = empleado.vacaciones_disponibles
-                        form.fecha_alta_imss =  new Date(empleado.fecha_alta_imss)
+                        form.fecha_alta_imss =   moment(new Date(empleado.fecha_alta_imss)).format("YYYY-MM-DD") 
                         form.numero_alta_imss = empleado.numero_alta_imss
                         form.departamentos = []
                         form.nacionalidad = empleado.nacionalidad
-                        if(moment(empleado.fecha_nacimiento).isValid())
-                            form.fecha_nacimiento = new Date(moment(empleado.fecha_nacimiento))
-                        else
-                            form.fecha_nacimiento = new Date()
+                        // if(moment(empleado.fecha_nacimiento).isValid())
+                            form.fecha_nacimiento = moment(new Date(empleado.fecha_nacimiento)).format("YYYY-MM-DD")
+                            // form.fecha_nacimiento = moment(new Date()).format("YYYY/MM/DD")
                         form.domicilio = empleado.domicilio
                         form.telefono_movil = empleado.telefono_movil
                         form.telefono_particular = empleado.telefono_particular
@@ -155,10 +178,32 @@ class EmpleadosForm extends Component {
                                 label: elemento.nombre
                             })
                         })
+                        form.ap_materno = empleado.apellido_paterno
+                        form.ap_paterno = empleado.apellido_materno
+                        form.email_empresarial = empleado.email_empresarial
+                        form.estado_civil = empleado.estado_civil
+                        form.puesto = empleado.id_puesto !== null ? empleado.id_puesto.toString() : ''
+                        form.fecha_baja_imss =  moment(new Date(empleado.fecha_baja_imss)).format("YYYY-MM-DD")
+                        form.numero_baja_imss = empleado.numero_baja_imss
+                        form.salario_neto_mensal = empleado.salario_neto_mensal
+                        form.salario_neto_quincenal = empleado.salario_neto_quincenal
+                        form.adicionales_imss = empleado.adicionales_imss
+                        form.adicionales_efectivo = empleado.adicionales_efectivo
+                        form.total_efectivo = empleado.total_efectivo
+                        form.total = empleado.total
+                        form.ispt = empleado.ispt
+                        console.log(empleado.organigrama.length )
+
+                        if(empleado.organigrama.length > 0){
+                            form.organigrama = empleado.organigrama[0].id_organigrama.toString()
+                            form.responsable = empleado.organigrama[0].id_lider.toString()
+                        }
+                      
                         form.imss = empleado.imss
                         form.rcv = empleado.rcv
                         form.infonavit = empleado.infonavit
                         form.isn = empleado.isn
+                        console.log(form.fecha_nacimiento)
                         this.setState({
                             ...this.state,
                             form,
@@ -200,10 +245,19 @@ class EmpleadosForm extends Component {
         await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, departamentos } = response.data
+                console.log(response.data)
+                const { empresas, departamentos,bancos,organigrama,puestos,estado_civil,empleados } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['departamentos'] = setOptions(departamentos, 'nombre', 'id')
+                options['bancos'] = setOptions(bancos, 'nombre', 'id')
+                options['organigrama'] = setOptions(organigrama, 'nombre', 'id')
+                options['puestos'] = setOptions(puestos, 'nombre_puesto', 'id')
+                options['estado_civil'] = setOptions(estado_civil,'nombre_ec', 'id')
+                options['responsable'] = setOptions(empleados,'nombre', 'id')
+                
+                console.log(options)
+
                 this.setState({
                     ...this.state,
                     options
