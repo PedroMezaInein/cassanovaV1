@@ -65,6 +65,7 @@ export default class DocumentosCard extends Component {
                             <div className="mt-2 d-flex justify-content-center">
                                 <div className="col-md-8">
                                     <ItemSlider items={documento.adjuntos} item='' />
+                                    
                                 </div>
                             </div>
                             : ''

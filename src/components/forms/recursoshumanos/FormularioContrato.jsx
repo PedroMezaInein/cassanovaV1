@@ -40,6 +40,7 @@ class FormularioContrato extends Component {
     }
 
     isAdmin = ( contrato ) => {
+        console.log(contrato)
         const { user } = this.props
         if(contrato.contrato_firmado)
             return false

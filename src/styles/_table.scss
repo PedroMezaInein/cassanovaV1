@@ -297,7 +297,12 @@ div#cardList div:last-child{
     input#domicilio,
     input#estudios,
     input#bancaria,
-    input#retencion
+    input#retencion,
+    input#firma,
+    input#foto,
+    input#imss,
+    input#bajaimss,
+    input#responsiva
     {
         display: none;
     }
