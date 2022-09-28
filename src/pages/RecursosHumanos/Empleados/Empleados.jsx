@@ -434,12 +434,12 @@ class Empleados extends Component {
                         },
                         imss: {
                             value: '',
-                            placeholder: 'IMSS',
+                            placeholder: 'IMSS ALTA',
                             files: []
                         },
                         bajaimss: {
                             value: '',
-                            placeholder: 'IMSS',
+                            placeholder: 'IMSS BAJA',
                             files: []
                         },
                         responsiva: {
