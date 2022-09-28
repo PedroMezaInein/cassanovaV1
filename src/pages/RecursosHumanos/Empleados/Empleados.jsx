@@ -319,8 +319,7 @@ class Empleados extends Component {
         await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas,bancos } = response.data
-                console.log(response.data)
+                const { empresas } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
 
@@ -784,7 +783,6 @@ class Empleados extends Component {
             
             return false
         })
-        console.log(data)
         data.append('id', empleado.id)
         await console.log(form)
         await console.log(data.append)      

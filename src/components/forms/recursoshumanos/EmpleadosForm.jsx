@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { RadioGroupGray, Button, FileInput, RangeCalendar, TagSelectSearchGray, CalendarDay, InputGray, InputPhoneGray, SelectSearchGray, InputNumberGray } from '../../form-components'
+import { RadioGroupGray, Button, TagSelectSearchGray,  InputGray, InputPhoneGray, SelectSearchGray, InputNumberGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { RFC, NSS, CURP, TEL } from '../../../constants'
-import { openWizard1_4TABS, openWizard2_4TABS, openWizard3_4TABS, openWizard4_4TABS } from '../../../functions/wizard'
+import { openWizard1_4TABS, openWizard2_4TABS } from '../../../functions/wizard'
+// import { openWizard1_4TABS, openWizard2_4TABS, openWizard3_4TABS, openWizard4_4TABS } from '../../../functions/wizard'
+
 import $ from "jquery";
-import { ItemSlider } from '../../../components/singles';
-import DatePicker from "react-datepicker";
 
 class EmpleadosForm extends Component {
 
@@ -114,7 +114,7 @@ class EmpleadosForm extends Component {
 
     render() {
 
-        const { options, onChange, form, onSubmit, formeditado, onChangeRange, handleChange, title } = this.props
+        const { options, onChange, form, onSubmit, formeditado,  } = this.props
 
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
