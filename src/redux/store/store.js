@@ -1,6 +1,7 @@
 import thunk from 'redux-thunk'
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose  } from 'redux';
 import reducer from '../reducers'
+const composeEnhaners = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const loadState = () => {
     try {
@@ -23,7 +24,7 @@ export const saveState = (state) => {
     }
 }
 
-const store = createStore(reducer, loadState(), applyMiddleware(thunk));
+const store = createStore(reducer, loadState(), composeEnhaners(applyMiddleware(thunk)));
 store.subscribe( function () {
     saveState(store.getState())
 })

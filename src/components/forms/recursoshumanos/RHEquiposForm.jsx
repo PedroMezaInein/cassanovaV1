@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg"
 import { Row, Form, Col } from 'react-bootstrap'
-import { Button, InputGray } from '../../form-components'
+import { Button, InputGray, ReactSelectSearchGray } from '../../form-components'
 import { toAbsoluteUrl } from '../../../functions/routers'
-import { apiDelete, apiGet, apiPostForm, catchErrors } from '../../../functions/api'
+import { apiDelete, apiGet, apiPostForm, catchErrors, apiOptions } from '../../../functions/api'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
+
 class RHLicenciasForm extends Component {
 
     state = {
@@ -21,31 +22,57 @@ class RHLicenciasForm extends Component {
             ],
         },
         equipos: [],
+        options: [],
         activeHistorial: true,
     }
 
+    
+    
     componentDidMount = () => {
         this.getEquipos()
+        this.getEquiposOptions()
     }
+    
 
     getEquipos = async() => {
         const { at, empleado } = this.props
-        apiGet(`v2/rh/empleados/equipos/${empleado.id}`, at).then(
+        if(empleado && empleado.id){
+            apiGet(`v2/rh/empleados/equipos/${empleado.id}`, at).then(
                 (response) => {
                     const { equipos } = response.data
-                    this.setState({
-                        ...this.state,
-                        equipos: equipos
-                    })
+                    if(equipos){
+                        this.setState({
+                            ...this.state,
+                            equipos: equipos
+                        })
+                    }
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => { catchErrors(error) } )
+        }
+    }
+
+    //api no responde con los equipos para el select
+    getEquiposOptions= async() => {
+        const { at } = this.props
+        apiOptions(`v1/administracion/equipos`, at).then(
+            (response) => {
+                let { data } = response.data
+                console.log(data)
+                if(data){
+                    this.setState({
+                        ...this.state,
+                        options: data
+                    })
+                }
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) } )
     }
     
     onSubmit = async () => {
         waitAlert()
-        const { at, empleado } = this.props
+        const { at, empleado, authUser } = this.props
         const { form } = this.state
-        apiPostForm(`v2/rh/empleados/equipos/${empleado.id}`, form, at).then(
+        apiPostForm(`v2/rh/empleados/equipos/222`, form, authUser).then(
             (response) => {
                 this.setState({
                     ...this.state,
@@ -123,33 +150,37 @@ class RHLicenciasForm extends Component {
             form
         })
     }
+     
     
     render() {
-        const { form, activeHistorial, equipos } = this.state
+        const { form, activeHistorial, equipos, options } = this.state
+        const {adminView, authUser} = this.props
         return (
             <div>
-                <div className="d-flex justify-content-end">
-                    <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
-                        {
-                            activeHistorial ?
-                                <div className = 'd-flex'>
-                                    <span className="svg-icon">
-                                        <SVG src={toAbsoluteUrl('/images/svg/Shield-protected.svg')} />
-                                    </span>
-                                    <div className="font-weight-bolder">AGREGAR EQUIPO</div>
-                                </div>
-                            : 
-                                <div className = 'd-flex'>
-                                    <span className="svg-icon">
-                                        <SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} />
-                                    </span>
-                                    <div className="font-weight-bolder">HISTORIAL DE EQUIPOS</div>
-                                </div>
-                        }
-                    </button>
-                </div>
+                {!adminView ?
+                    <div className="d-flex justify-content-end">
+                        <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
+                            {
+                                activeHistorial ?
+                                    <div className = 'd-flex'>
+                                        <span className="svg-icon">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Shield-protected.svg')} />
+                                        </span>
+                                        <div className="font-weight-bolder">ASIGNAR EQUIPO</div>
+                                    </div>
+                                : 
+                                    <div className = 'd-flex'>
+                                        <span className="svg-icon">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} />
+                                        </span>
+                                        <div className="font-weight-bolder">HISTORIAL DE EQUIPOS</div>
+                                    </div>
+                            }
+                        </button>
+                    </div>:null
+                }
                 {
-                    activeHistorial ?
+                    !adminView && activeHistorial ?
                         <div className="table-responsive">
                             <table className="table w-100 table-vertical-center table-hover text-center">
                                 <thead>
@@ -163,6 +194,7 @@ class RHLicenciasForm extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
+                                
                                     {
                                         equipos.length === 0 ?
                                             <tr className="font-weight-light border-top">
@@ -171,7 +203,7 @@ class RHLicenciasForm extends Component {
                                                 </td>
                                             </tr>
                                         : 
-                                            equipos.map((equipo) => {
+                                            equipos[0] && equipos.map((equipo) => {
                                                 return (
                                                     <tr key = { equipo.id } className="font-weight-light border-top">
                                                         <td>
@@ -209,127 +241,141 @@ class RHLicenciasForm extends Component {
                                 </tbody>
                             </table>
                         </div>
-                    :
-                        <Form id="form-equipos" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos') }}>
-                            <div className="mb-8">
-                                <Button className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" 
-                                    icon='' onClick={this.addRowEquipo} text='AGREGAR EQUIPO' only_icon="flaticon2-plus icon-13px mr-2 px-0 text-success" />
-                                <div className="mt-5">
-                                    {
-                                        form.equipos.map((equipo, key) => {
-                                            return (
-                                                <div>
-                                                    <div className="d-flex w-100" key={key}>
-                                                        <div className="w-auto align-self-center">
-                                                            <Button icon='' onClick={() => { this.deleteRowEquipo(key) }}
-                                                                className="btn btn-icon btn-xs p-4 btn-bg-white btn-icon-danger btn-hover-danger"
-                                                                only_icon="las la-trash text-danger icon-xl" />
-                                                        </div>
-                                                        <div className="w-100">
-                                                            <Row className="mx-0 form-group-marginless">
-                                                                <Col md="3">
-                                                                    <InputGray
-                                                                        requirevalidation={1}
-                                                                        iconvalid={1}
-                                                                        placeholder='EQUIPO'
-                                                                        value={form['equipos'][key]['equipo']}
-                                                                        withtaglabel={0}
-                                                                        name='equipo'
-                                                                        withtextlabel={0}
-                                                                        withplaceholder={1}
-                                                                        withicon={0}
-                                                                        iconclass='las la-clipboard-list'
-                                                                        onChange={e => this.onChangeEquipos(key, e, 'equipo')}
-                                                                        customclass="px-2"
-                                                                    />
-                                                                </Col>
-                                                                <Col md="3" className="mt-4 mt-lg-0">
-                                                                    <InputGray
-                                                                        requirevalidation={1}
-                                                                        iconvalid={1}
-                                                                        placeholder='MODELO'
-                                                                        value={form['equipos'][key]['modelo']}
-                                                                        withtaglabel={0}
-                                                                        name='modelo'
-                                                                        withtextlabel={0}
-                                                                        withplaceholder={1}
-                                                                        withicon={0}
-                                                                        iconclass='las la-clipboard-list'
-                                                                        onChange={e => this.onChangeEquipos(key, e, 'modelo')}
-                                                                        customclass="px-2"
-                                                                    />
-                                                                </Col>
-                                                                <Col md="3" className="mt-4 mt-lg-0">
-                                                                    <InputGray
-                                                                        requirevalidation={1}
-                                                                        iconvalid={1}
-                                                                        placeholder='MARCA'
-                                                                        value={form['equipos'][key]['marca']}
-                                                                        withtaglabel={0}
-                                                                        name='marca'
-                                                                        withtextlabel={0}
-                                                                        withplaceholder={1}
-                                                                        withicon={0}
-                                                                        iconclass='las la-clipboard-list'
-                                                                        onChange={e => this.onChangeEquipos(key, e, 'marca')}
-                                                                        customclass="px-2"
-                                                                    />
-                                                                </Col>
-                                                                <Col md="3" className="mt-4 mt-lg-0">
-                                                                    <InputGray
-                                                                        requirevalidation={1}
-                                                                        iconvalid={1}
-                                                                        placeholder='SERIE'
-                                                                        value={form['equipos'][key]['serie']}
-                                                                        withtaglabel={0}
-                                                                        name='serie'
-                                                                        withtextlabel={0}
-                                                                        withplaceholder={1}
-                                                                        withicon={0}
-                                                                        iconclass='las la-clipboard-list'
-                                                                        onChange={e => this.onChangeEquipos(key, e, 'serie')}
-                                                                        customclass="px-2"
-                                                                    />
-                                                                </Col>
-                                                                <Col md="12" className="mt-4">
-                                                                    <InputGray
-                                                                        requirevalidation={0}
-                                                                        placeholder='DESCRIPCIÓN'
-                                                                        value={form['equipos'][key]['descripcion']}
-                                                                        withtaglabel={0}
-                                                                        name='descripcion'
-                                                                        withtextlabel={0}
-                                                                        withplaceholder={1}
-                                                                        withicon={0}
-                                                                        iconclass='las la-clipboard-list'
-                                                                        onChange={e => this.onChangeEquipos(key, e, 'descripcion')}
-                                                                        customclass="px-2"
-                                                                        as="textarea"
-                                                                        rows="2"
-                                                                    />
-                                                                </Col>
-                                                            </Row>
-                                                        </div>
-                                                    </div>
-                                                    {
-                                                        form.equipos.length === 1 || key === form.equipos.length - 1 ? <></>
-                                                            : <div className="separator separator-solid my-3 w-100"></div>
-                                                    }
+                    : adminView ? 
+                    <Form id="form-equipos" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos') }}>
+                    <div className="mb-8">
+                        {/* <Button className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" 
+                            icon='' onClick={this.addRowEquipo} text='AGREGAR EQUIPO' only_icon="flaticon2-plus icon-13px mr-2 px-0 text-success" /> */}
+                        <div className="mt-5">
+                            {
+                                form.equipos.map((equipo, key) => {
+                                    return (
+                                        <div>
+                                            <div className="d-flex w-100" key={key}>
+                                                <div className="w-auto align-self-center">
+                                                    {/* <Button icon='' onClick={() => { this.deleteRowEquipo(key) }}
+                                                        className="btn btn-icon btn-xs p-4 btn-bg-white btn-icon-danger btn-hover-danger"
+                                                        only_icon="las la-trash text-danger icon-xl" /> */}
                                                 </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </div>
-                            <div className="card-footer pt-3 pb-0 px-0 text-right">
-                                <Button icon='' className="btn btn-primary" text="ENVIAR"
-                                    onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos') }} />
-                            </div>
-                        </Form>
+                                                <div className="w-100">
+                                                    <Row className="mx-0 form-group-marginless">
+                                                        <Col md="3">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                iconvalid={1}
+                                                                placeholder='EQUIPO'
+                                                                value={form['equipos'][key]['equipo']}
+                                                                withtaglabel={0}
+                                                                name='equipo'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'equipo')}
+                                                                customclass="px-2"
+                                                            />
+                                                        </Col>
+                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                iconvalid={1}
+                                                                placeholder='MODELO'
+                                                                value={form['equipos'][key]['modelo']}
+                                                                withtaglabel={0}
+                                                                name='modelo'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'modelo')}
+                                                                customclass="px-2"
+                                                            />
+                                                        </Col>
+                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                iconvalid={1}
+                                                                placeholder='MARCA'
+                                                                value={form['equipos'][key]['marca']}
+                                                                withtaglabel={0}
+                                                                name='marca'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'marca')}
+                                                                customclass="px-2"
+                                                            />
+                                                        </Col>
+                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                iconvalid={1}
+                                                                placeholder='SERIE'
+                                                                value={form['equipos'][key]['serie']}
+                                                                withtaglabel={0}
+                                                                name='serie'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'serie')}
+                                                                customclass="px-2"
+                                                            />
+                                                        </Col>
+                                                        <Col md="12" className="mt-4">
+                                                            <InputGray
+                                                                requirevalidation={0}
+                                                                placeholder='DESCRIPCIÓN'
+                                                                value={form['equipos'][key]['descripcion']}
+                                                                withtaglabel={0}
+                                                                name='descripcion'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'descripcion')}
+                                                                customclass="px-2"
+                                                                as="textarea"
+                                                                rows="2"
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                </div>
+                                            </div>
+                                            {
+                                                form.equipos.length === 1 || key === form.equipos.length - 1 ? <></>
+                                                    : <div className="separator separator-solid my-3 w-100"></div>
+                                            }
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                    <div className="card-footer pt-3 pb-0 px-0 text-right">
+                        <Button icon='' className="btn btn-primary" text="ENVIAR"
+                            onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos') }} />
+                    </div>
+                </Form>              
+                    :
+                    <Form id='form-equipos' >
+                        <Row className="form-group mx-0 form-group-marginless">
+                            <ReactSelectSearchGray
+                                requirevalidation={1} placeholder='SELECCIONA EL EQUIPO'
+                                defaultvalue={equipos}
+                                value={equipos}
+                                iconclass='las la-laptop icon-xl'
+                                messageinc="Incorrecto. Selecciona la licencia."
+                            />
+                        </Row>
+                    </Form>
+
                 }
             </div>
         )
     }
 }
+
 
 export default RHLicenciasForm

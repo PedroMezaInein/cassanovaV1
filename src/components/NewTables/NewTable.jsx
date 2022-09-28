@@ -393,7 +393,7 @@ class NewTable extends Component{
         )
     }
     render = () => {
-        const {mostarPalabra, tableName,ocultar_filtrar,revisar_elementos, mostarPermisos,customtitle, customlabel, customsubtitle,addClick, title, subtitle, abrir_modal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew } = this.props
+        const {mostarPalabra, tableName,ocultar_filtrar,revisar_elementos, mostarPermisos,customtitle, customlabel, customsubtitle,addClick, title, subtitle, abrir_modal, url, filterClick, children, exportar_boton, pendingPaymentClick, hideNew, agregar_licencia, agregar_equipo } = this.props
         return(
             <Card id = { `${tableName}-card-id` } className = { `card-custom card-sticky ${tableName}-card-class` }>
                 <Card.Header id  = { `${tableName}-card-header-id` } className = { `${tableName}-card-header-class border-0` }>
@@ -445,6 +445,21 @@ class NewTable extends Component{
                                     </Dropdown.Item>
                                 :<></>
                             }
+                            {
+                                agregar_licencia === true ? 
+                                    <Dropdown.Item onClick={addClick}>
+                                        {this.setNaviIcon('flaticon-add', 'AGREGAR')}
+                                    </Dropdown.Item>
+                                : <></>         
+                            }
+                            {
+                                agregar_equipo === true ? 
+                                    <Dropdown.Item onClick={addClick}>
+                                        {this.setNaviIcon('flaticon-add', 'AGREGAR')}
+                                    </Dropdown.Item>
+                                : <></>         
+                            }
+            
                        
                         </DropdownButton>
                     </div>

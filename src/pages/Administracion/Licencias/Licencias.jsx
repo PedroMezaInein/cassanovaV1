@@ -4,13 +4,15 @@ import { connect } from 'react-redux'
 import { Modal } from '../../../components/singles'
 import Layout from '../../../components/layout/layout'
 import { NewTable } from '../../../components/NewTables'
-import { LicenciasForm } from '../../../components/forms'
 import { setTextTableCenter,setNaviIcon } from '../../../functions/setters'
 import {  Tabs, Tab } from 'react-bootstrap'
 import { FiltersLicencias, FiltersEquipos } from '../../../components/filters'
 import { URL_DEV, LICENCIAS, EQUIPOS_ADMINISTRACION } from '../../../constants'
 import { apiDelete, apiPostFormResponseBlob, catchErrors } from '../../../functions/api'
 import { deleteAlert, doneAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import RHEquiposForm from '../../../components/forms/recursoshumanos/RHEquiposForm'
+import AddLicenciaForm from '../../../components/forms/administracion/Licencias/AddLicenciaForm'
+import LicenciasForm from '../../../components/forms/administracion/Licencias/LicenciasForm'
 import { DropdownButton, Dropdown } from 'react-bootstrap'
 class Licencias extends Component {
 
@@ -19,7 +21,8 @@ class Licencias extends Component {
         filtersLicencia: {},
         filtersEquipos: {},
         title: 'Nueva licencia',
-        licencia: '',
+        licencia: false,
+        equipo: false,
         key:'licencias'
     }
 
@@ -37,6 +40,7 @@ class Licencias extends Component {
     setTableLicencias = (datos) => {
         let aux = []
         datos.forEach((dato) => {
+            
             let codigos = JSON.parse(dato.codigos)
             aux.push({
                 actions: this.setActions(dato),
@@ -66,13 +70,19 @@ class Licencias extends Component {
 
         return(
             <div className="w-100 d-flex justify-content-center">
-                            <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-success dropdown-success" 
-                 onClick={(e) => { e.preventDefault(); this.openModal(element, 'edit') }}  >
+                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+
+                    {/* <Dropdown.Item className="text-hover-success dropdown-success" 
+                        onClick={(e) => {
+                             e.preventDefault(); 
+                            this.openModal(element, 'edit') 
+                        }}  
+                    >
                         {setNaviIcon('las la-pen icon-lg', 'editar')}
-                    </Dropdown.Item> 
+                    </Dropdown.Item>  */}
+
                     <Dropdown.Item className="text-hover-danger dropdown-danger" 
-                      onClick = { (e) => { 
+                        onClick = { (e) => { 
                         e.preventDefault(); 
                         deleteAlert(
                             `Eliminarás la licencia`,
@@ -82,6 +92,7 @@ class Licencias extends Component {
                     } }>
                         {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
+
                 </DropdownButton>
             </div>
         )
@@ -102,6 +113,30 @@ class Licencias extends Component {
         const { modal } = this.state
         modal.filtros = true
         this.setState({ ...this.state, modal })
+    }
+
+    openModalLicencia = () => {
+        const {modal} = this.state
+        modal.licencia = true
+        this.setState({...this.state, modal})
+    }
+
+    openModalEquipo = () => {
+        const {modal} = this.state
+        modal.equipo = true
+        this.setState({...this.state, modal})
+    }
+
+    handleCloseLicencias = () => {
+        const {modal} = this.state
+        modal.licencia = false
+        this.setState({...this.state, modal})
+    }
+
+    handleCloseEquipos = () => {
+        const {modal} = this.state
+        modal.equipo = false
+        this.setState({...this.state, modal})
     }
 
     handleClose = () => {
@@ -225,22 +260,34 @@ class Licencias extends Component {
 
     render(){
         const { authUser: {access_token} } = this.props
-        const { modal, filtersLicencia, filtersEquipos, title, licencia, key } = this.state
+        const { modal, filtersLicencia, filtersEquipos, title, licencia, key, authUser } = this.state
         return(
             <Layout active = 'administracion' { ...this.props } >
                 <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey="licencias" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="licencias" title="Licencias">
-                        <NewTable tableName = 'licencias' subtitle = 'Listado de licencias' title = 'Licencias' abrirModal = { true }
-                            accessToken = { access_token } columns = { LICENCIAS } setter = { this.setTableLicencias } onClick = { this.openModal }
-                            urlRender = {`${URL_DEV}v1/administracion/licencias`}  filterClick = { this.openModalFiltros } type='tab'
-                            exportar_boton={true} onClickExport={() => this.exportLicenciasAxios()}
+                        <NewTable 
+                            tableName = 'licencias' 
+                            subtitle = 'Listado de licencias' 
+                            title = 'Licencias' 
+                            agregar_licencia = {true}
+                            accessToken = { access_token } 
+                            columns = { LICENCIAS } 
+                            addClick={this.openModalLicencia}
+                            hideNew={true}
+                            setter = { this.setTableLicencias } 
+                            onClick = { this.openModal }
+                            urlRender = {`${URL_DEV}v1/administracion/licencias`}  
+                            filterClick = { this.openModalFiltros } 
+                            type='tab'
+                            exportar_boton={true} 
+                            onClickExport={() => this.exportLicenciasAxios()}
                         />
                     </Tab>
                     <Tab eventKey="equipos" title="Equipos">
                         <NewTable tableName = 'equipos' subtitle = 'Listado de equipos' title = 'Equipos' hideNew = { true }
                             accessToken = { access_token } columns = { EQUIPOS_ADMINISTRACION } setter = { this.setTableEquipos } 
                             urlRender = {`${URL_DEV}v1/administracion/equipos`}  filterClick = { this.openModalFiltros } type='tab'
-                            exportar_boton={true} onClickExport={() => this.exportEquiposAxios()} 
+                            exportar_boton={true} onClickExport={() => this.exportEquiposAxios()} agregar_equipo = {true} addClick={this.openModalEquipo}
                         />
                     </Tab>
                 </Tabs>
@@ -259,7 +306,20 @@ class Licencias extends Component {
                                 letterCase = { false } /> 
                         : <></>
                     }
-                    
+                </Modal>
+                <Modal size= 'xl' show={modal.licencia} handleClose={this.handleCloseLicencias} title='Licencias'>
+                    {
+                        modal.licencia?
+                        <AddLicenciaForm/>
+                        :<></>
+                    }
+                </Modal>
+                <Modal size= 'xl' show={modal.equipo} handleClose={this.handleCloseEquipos} title='Equipos'>
+                    {
+                        modal.equipo?
+                        <RHEquiposForm adminView={true} authUser={access_token}/>
+                        :<></>
+                    }
                 </Modal>
             </Layout>
         )
