@@ -57,6 +57,7 @@ class Empleados extends Component {
             empresa: '',
             fechaInicio: new Date(),
             fechaFin: '',
+            fecha_egreso:'',
             estatus_imss: 'Activo',
             puesto: '',
             vacaciones_disponibles: 0,
@@ -66,6 +67,7 @@ class Empleados extends Component {
             nomina_extras: 0.0,
             salario_hr: 0.0,
             salario_hr_extra: 0.0,
+            organigrama:'',
             adjuntos: {
                 acta: {
                     value: '',
@@ -140,7 +142,15 @@ class Empleados extends Component {
             }
         },
         options: {
-            empresas: []
+            empresas: [],
+            bancos: [],
+            estado_civil: [
+                { value: 'Soltero(a)', name: 'Soltero(a)', label: 'Soltero(a)' },
+                { value: 'Casado(a)', name: 'Casado(a)', label: 'Casado(a)' },
+                { value: 'Divorciado(a)', name: 'Divorciado(a)', label: 'Divorciado(a)' },
+                { value: 'Viudo(a)', name: 'Viudo(a)', label: 'Viudo(a)' },
+                { value: 'Union libre', name: 'Unión libre', label: 'Unión libre' },
+            ]
         },
         formContrato: {
             fechaInicio: new Date(),
@@ -312,6 +322,7 @@ class Empleados extends Component {
                 const { empresas } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+
                 this.setState({
                     ...this.state,
                     options
@@ -772,7 +783,6 @@ class Empleados extends Component {
             
             return false
         })
-        console.log(data)
         data.append('id', empleado.id)
         await console.log(form)
         await console.log(data.append)      
@@ -1061,6 +1071,7 @@ class Empleados extends Component {
         let data = new FormData();
         if(file){
             data.append(`file`, file)
+            console.log(valor)
             await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
                     const { empleado } = response.data
@@ -1225,8 +1236,6 @@ class Empleados extends Component {
 //         // })
 //         // return aux
 //     }
-
-
 
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato, formeditado } = this.state
