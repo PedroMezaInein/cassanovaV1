@@ -68,12 +68,20 @@ class InputGray extends Component {
             if(letterCase !== false)
                 e.target.value = value.toUpperCase()
             if( type !== 'email'){
-                e.target.selectionStart = selectionStart
-                e.target.selectionEnd = selectionEnd
+                if(type == 'date'){
+                    e.target.value = value
+                }else{
+                    e.target.selectionStart = selectionStart
+                    e.target.selectionEnd = selectionEnd
+                }
+            }
+            if(type == 'date' && value == ""){
+                return 
             }
             this.setState({...this.state, valor: e.target.value})
             return e
         }
+        
         return (
             <div className={withformgroup?`form-group ${customdiv}`:''}>
                 {
@@ -94,7 +102,7 @@ class InputGray extends Component {
                     
                     <Form.Control placeholder = { withplaceholder ? placeholder :'' } style = { customstyle }
                         className = {`form-control text-dark-50 font-weight-bold text-justify ${customclass} ${inputValido ? 'is-valid sin_icono' : `is-invalid ${iconvalid?'':'sin_icono'}`}`}
-                        onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}
+                        onChange = { (e) => { e.preventDefault();this.validarInput(e); onChange(toInputUppercase(e)) }}
                         value = { swal === true ? valor : value } {...props} />
                 </div>
                 {
