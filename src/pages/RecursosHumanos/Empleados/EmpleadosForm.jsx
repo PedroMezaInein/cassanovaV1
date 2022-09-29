@@ -147,14 +147,14 @@ class EmpleadosForm extends Component {
                         form.nomina_extras = empleado.nomina_extras
                         form.salario_hr = empleado.salario_hr
                         form.salario_hr_extra = empleado.salario_hr_extra
-                        form.email_personal = empleado.email_personal
+                        form.email_personal = empleado.email_personal === null ? '' : empleado.email_personal
                         form.estacionamiento = empleado.estacionamiento
                         form.gimnacio = empleado.gimnacio
                         form.estudios = empleado.estudios
 
                         if (empleado.empresa) { form.empresa = empleado.empresa.id.toString() }
-                        form.fechaInicio = empleado.fecha_inicio !== null ? moment(new Date(empleado.fecha_inicio)).format("YYYY-MM-DD") :''
-                        form.fechaFin = empleado.fecha_fin !== null ?  moment(new Date(empleado.fecha_fin)).format("YYYY-MM-DD") :''
+                        form.fechaInicio = empleado.fecha_inicio !== null ? empleado.fecha_inicio:''
+                        form.fechaFin = empleado.fecha_fin !== null ?  empleado.fecha_fin :''
                         form.puesto = empleado.puesto
                         form.estatus_imss = this.showStatusImss(empleado.estatus_imss);
                         form.vacaciones_disponibles = empleado.vacaciones_disponibles
@@ -165,7 +165,7 @@ class EmpleadosForm extends Component {
                         // if(moment(empleado.fecha_nacimiento).isValid())
                             form.fecha_nacimiento = moment(new Date(empleado.fecha_nacimiento)).format("YYYY-MM-DD")
                             // form.fecha_nacimiento = moment(new Date()).format("YYYY/MM/DD")
-                        form.domicilio = empleado.domicilio
+                        form.domicilio = empleado.domicilio === null ? '' : empleado.domicilio
                         form.telefono_movil = empleado.telefono_movil
                         form.telefono_particular = empleado.telefono_particular
                         form.salario_imss = empleado.salario_imss
@@ -178,9 +178,9 @@ class EmpleadosForm extends Component {
                                 label: elemento.nombre
                             })
                         })
-                        form.ap_materno = empleado.apellido_paterno
-                        form.ap_paterno = empleado.apellido_materno
-                        form.email_empresarial = empleado.email_empresarial
+                        form.ap_materno = empleado.apellido_paterno === null ? '' : empleado.apellido_paterno
+                        form.ap_paterno = empleado.apellido_materno === null ? '' : empleado.apellido_materno
+                        form.email_empresarial = empleado.email_empresarial === null ? '' : empleado.email_empresarial
                         form.estado_civil = empleado.estado_civil
                         form.puesto = empleado.id_puesto !== null ? empleado.id_puesto.toString() : ''
                         form.fecha_baja_imss =  moment(new Date(empleado.fecha_baja_imss)).format("YYYY-MM-DD")
@@ -393,13 +393,16 @@ class EmpleadosForm extends Component {
         return form;
     }
     onChange = (e) => {
-        const { name, value } = e.target
-        const { form } = this.state
-        form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        if(e){
+            let { name, value } = e.target
+            let { form } = this.state
+            form[name] = value
+            this.setState({
+                ...this.state,
+                form
+            })
+        }
+        
     }
     onSubmit = e => {
         e.preventDefault()
