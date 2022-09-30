@@ -97,6 +97,40 @@ class Licencias extends Component {
             </div>
         )
     }
+
+    setActionsEquipos = (element) => {
+
+        return(
+            <div className="w-100 d-flex justify-content-center">
+                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+
+                    {/* <Dropdown.Item className="text-hover-success dropdown-success" 
+                        onClick={(e) => {
+                             e.preventDefault(); 
+                            this.openModal(element, 'edit') 
+                        }}  
+                    >
+                        {setNaviIcon('las la-pen icon-lg', 'editar')}
+                    </Dropdown.Item>  */}
+
+                   {/*  <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                        onClick = { (e) => { 
+                        e.preventDefault(); 
+                        alert('eliminar')
+                        deleteAlert(
+                            `Eliminarás la licencia`,
+                            `¿Deseas continuar?`,
+                            () => { this.deleteLicencia(element.id) }
+                        )
+                    } }>
+                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                    </Dropdown.Item> */}
+
+                </DropdownButton>
+            </div>
+        )
+    }
+
     openModal = (element, type) => {
         const { modal } = this.state
         let { title } = this.state
@@ -195,6 +229,7 @@ class Licencias extends Component {
         let aux = []
         equipos.forEach((equipo) => {
             aux.push({
+                actions: this.setActionsEquipos(equipos),
                 colaborador: setTextTableCenter(equipo.colaborador?equipo.colaborador.nombre:'Sin colaborador'),
                 equipo:setTextTableCenter(equipo.equipo),
                 modelo: setTextTableCenter(equipo.modelo),
@@ -284,10 +319,21 @@ class Licencias extends Component {
                         />
                     </Tab>
                     <Tab eventKey="equipos" title="Equipos">
-                        <NewTable tableName = 'equipos' subtitle = 'Listado de equipos' title = 'Equipos' hideNew = { true }
-                            accessToken = { access_token } columns = { EQUIPOS_ADMINISTRACION } setter = { this.setTableEquipos } 
-                            urlRender = {`${URL_DEV}v1/administracion/equipos`}  filterClick = { this.openModalFiltros } type='tab'
-                            exportar_boton={true} onClickExport={() => this.exportEquiposAxios()} agregar_equipo = {true} addClick={this.openModalEquipo}
+                        <NewTable 
+                            tableName = 'equipos' 
+                            subtitle = 'Listado de equipos' 
+                            title = 'Equipos' 
+                            hideNew = { true }
+                            accessToken = { access_token } 
+                            columns = { EQUIPOS_ADMINISTRACION } 
+                            setter = { this.setTableEquipos } 
+                            urlRender = {`${URL_DEV}v1/administracion/equipos`}  
+                            filterClick = { this.openModalFiltros } 
+                            type='tab'
+                            exportar_boton={true} 
+                            onClickExport={() => this.exportEquiposAxios()} 
+                            agregar_equipo = {true} 
+                            addClick={this.openModalEquipo}
                         />
                     </Tab>
                 </Tabs>

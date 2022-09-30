@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg"
+import $ from 'jquery'
+import Swal from 'sweetalert2';
 import { Row, Form, Col } from 'react-bootstrap'
 import { Button, InputGray, ReactSelectSearchGray } from '../../form-components'
 import { toAbsoluteUrl } from '../../../functions/routers'
@@ -20,9 +22,12 @@ class RHLicenciasForm extends Component {
                     descripcion: ''
                 }
             ],
+            equipo: '',
         },
         equipos: [],
-        options: [],
+        options: {
+            equipos: [{ value: 'alfa', label: 'alfa  1 5' }, { value: 'beta', label: 'beta' }],
+        },
         activeHistorial: true,
     }
 
@@ -30,7 +35,6 @@ class RHLicenciasForm extends Component {
     
     componentDidMount = () => {
         this.getEquipos()
-        this.getEquiposOptions()
     }
     
 
@@ -52,18 +56,30 @@ class RHLicenciasForm extends Component {
     }
 
     //api no responde con los equipos para el select
-    getEquiposOptions= async() => {
+    getOptions = async() => {
+        waitAlert()
         const { at } = this.props
-        apiOptions(`v1/administracion/equipos`, at).then(
+        apiGet(`v2/rh/empleados/equipos/222`, at).then( //falta url de equipos generales y no de usuario
             (response) => {
-                let { data } = response.data
-                console.log(data)
-                if(data){
+                //debugger
+                if(response.data){
+                   const { equipos } = response.data
+                    const { options } = this.state
+                    let aux =[]
+                    equipos.forEach(elemento => {
+                        aux.push({
+                            name: elemento.serie,
+                            label: `${elemento.equipo} || ${elemento.marca} || ${elemento.modelo}` ,
+                            value: elemento.id.toString()
+                        })
+                    })
+                    
+                    options.equipos = aux
                     this.setState({
-                        ...this.state,
-                        options: data
+                        ...this.state
                     })
                 }
+                Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) } )
     }
@@ -81,6 +97,7 @@ class RHLicenciasForm extends Component {
                 doneAlert(`Equipo registrado con éxito`,  () => { this.getEquipos() })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
+        this.resetForm()
     }
     
     deleteEquipo = async(id) => {
@@ -99,6 +116,12 @@ class RHLicenciasForm extends Component {
             ...this.state,
             activeHistorial: !activeHistorial
         })
+        if(activeHistorial){
+            this.getOptions()
+        } else{
+            this.getEquipos()
+            
+        }
     }
     
     onChangeEquipos = (key, e, name) => {
@@ -115,7 +138,7 @@ class RHLicenciasForm extends Component {
         this.setState({ ...this.state, form })
     }
     
-    addRowEquipo = () => {
+    addRowEquipo = () => { //deprecated
         const { form } = this.state
         form.equipos.push({
             equipo: '',
@@ -127,7 +150,7 @@ class RHLicenciasForm extends Component {
         this.setState({ ...this.state, form })
     }
     
-    deleteRowEquipo = (key) => {
+    deleteRowEquipo = (key) => { //deprecated
         let aux = []
         const { form } = this.state
         form.equipos.forEach((element, index) => {
@@ -150,11 +173,49 @@ class RHLicenciasForm extends Component {
             form
         })
     }
-     
+
+    resetForm = () => {
+        this.setState({
+            form: {
+                tipo: '',
+                equipos: [
+                    {
+                        equipo: '',
+                        modelo: '',
+                        marca: '',
+                        serie: '',
+                        descripcion: ''
+                    }
+                ],
+            },
+        })
+    }
+
+    updateSelect = (value, name) => {
+        this.onChange({ target: { value: value, name: name } })
+    }
+
+    onChange = e => {
+        const { name, value } = e.target
+        const { form, options } = this.state
+        options.equipos.forEach(element => {
+            if(element.value === value.value){
+                form[name] = value
+            }
+        })
+        this.setState({ ...this.state, form })
+        
+    }
+ 
     
     render() {
         const { form, activeHistorial, equipos, options } = this.state
-        const {adminView, authUser} = this.props
+        const {adminView, authUser, updateSelect} = this.props
+
+        const reloadTableEquipos = (filter) => {
+            $(`#equipos`).DataTable().search(JSON.stringify(filter)).draw();
+        }
+
         return (
             <div>
                 {!adminView ?
@@ -355,22 +416,26 @@ class RHLicenciasForm extends Component {
                     </div>
                     <div className="card-footer pt-3 pb-0 px-0 text-right">
                         <Button icon='' className="btn btn-primary" text="ENVIAR"
-                            onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos') }} />
+                            onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos'); reloadTableEquipos({}) }} />
                     </div>
                 </Form>              
                     :
                     <Form id='form-equipos' >
                         <Row className="form-group mx-0 form-group-marginless">
-                            <ReactSelectSearchGray
-                                requirevalidation={1} placeholder='SELECCIONA EL EQUIPO'
-                                defaultvalue={equipos}
-                                value={equipos}
+                            <div className="col-md-6">
+                                <ReactSelectSearchGray
+                                requirevalidation={1} 
+                                placeholder='SELECCIONA EL EQUIPO'
+                                defaultvalue={form.equipo} //valor si no se selecciona nada
+                                options={options.equipos} // lista de opciones
                                 iconclass='las la-laptop icon-xl'
-                                messageinc="Incorrecto. Selecciona la licencia."
-                            />
+                                onChange={(value) => { this.updateSelect(value, 'equipo') }}
+                                messageinc="Incorrecto. Selecciona el equipo."
+                                />
+                            </div>
+                            
                         </Row>
                     </Form>
-
                 }
             </div>
         )

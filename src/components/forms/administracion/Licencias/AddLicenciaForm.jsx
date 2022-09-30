@@ -44,6 +44,11 @@ export default function AddLicenciaForm() {
 
 
   const handleChange = (e) => {
+    if(e.target.name === 'duracion' && typeof e.target.value !== 'number'){ {
+      return
+    }
+
+    }
     setLicencia({
       ...licencia,
       [e.target.name]: e.target.value
