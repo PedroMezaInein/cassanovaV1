@@ -296,7 +296,7 @@ class EmpleadosForm extends Component {
                                         </div>
                                         <div className="col-md-2">
                                             <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
-                                                name="checador" type="text" value={form.checador} placeholder="Numero asignado cehcador" iconclass="fas fa-hospital-user" patterns={NSS} messageinc="Incorrecto. Ej. 01234567891" typeformat="###########"
+                                                name="checador" type="text" value={form.checador} placeholder="Numero asignado checador" iconclass="fas fa-hospital-user" patterns={NSS} messageinc="Incorrecto. Ej. 01234567891" typeformat="###########"
                                             />
                                         </div>
                                     </div>
