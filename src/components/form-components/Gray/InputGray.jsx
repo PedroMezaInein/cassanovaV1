@@ -69,6 +69,7 @@ class InputGray extends Component {
                 e.target.value = value.toUpperCase()
             if( type !== 'email'){
                 if(type == 'date'){
+
                     e.target.value = value
                 }else{
                     e.target.selectionStart = selectionStart
@@ -77,6 +78,7 @@ class InputGray extends Component {
             }
             if(type == 'date' && value == ""){
                 return 
+
             }
             this.setState({...this.state, valor: e.target.value})
             return e
