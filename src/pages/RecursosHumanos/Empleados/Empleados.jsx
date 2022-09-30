@@ -68,6 +68,7 @@ class Empleados extends Component {
             salario_hr: 0.0,
             salario_hr_extra: 0.0,
             organigrama:'',
+            checador:'',
             adjuntos: {
                 acta: {
                     value: '',
