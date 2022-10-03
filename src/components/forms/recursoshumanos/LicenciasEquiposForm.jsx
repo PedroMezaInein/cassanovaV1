@@ -38,12 +38,12 @@ class LicenciasEquiposForm extends Component {
                 <Tab.Content>
                     <Tab.Pane eventKey="licencias">
                         {
-                            key === 'licencias' ? <RHLicenciasForm at = { at } empleado = { empleado } /> : null
+                            key === 'licencias' ? <RHLicenciasForm at = { at } empleado = { empleado } adminView={false}/> : null
                         }
                     </Tab.Pane>
                     <Tab.Pane eventKey="equipos">
                         {
-                            key === 'equipos' ? <RHEquiposForm at = { at } empleado = { empleado } /> : null
+                            key === 'equipos' ? <RHEquiposForm at = { at } empleado = { empleado } adminView={false}/> : null
                         }
                     </Tab.Pane>
                 </Tab.Content>

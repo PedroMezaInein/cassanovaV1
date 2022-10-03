@@ -150,7 +150,12 @@ class RHLicenciasForm extends Component {
                     <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
                         {
                             activeHistorial ?
-                                <><span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Shield-protected.svg')} /></span><div className="font-weight-bolder">AGREGAR LICENCIA</div></>
+                                <>
+                                    <span className="svg-icon">
+                                        <SVG src={toAbsoluteUrl('/images/svg/Shield-protected.svg')} />
+                                    </span>
+                                    <div className="font-weight-bolder">AGREGAR LICENCIA</div>
+                                </>
                                 : <><span className="svg-icon"><SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} /></span><div className="font-weight-bolder">HISTORIAL DE LICENCIAS</div></>
                         }
                     </button>

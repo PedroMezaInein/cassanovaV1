@@ -1319,7 +1319,12 @@ class Empleados extends Component {
                 <Modal size="xl" title="Licencias y equipos" show={modal.licencias} handleClose={this.handleCloseLicencias} >
                     {
                         modal.licencias ?
-                            <LicenciasEquiposForm at={access_token} empleado = { empleado }/>
+                            <LicenciasEquiposForm 
+                            at={access_token} 
+                            empleado = { empleado }
+                            esColaborador={true}
+                            adminView={true}
+                            />
                         : <></>
                     }
                 </Modal>

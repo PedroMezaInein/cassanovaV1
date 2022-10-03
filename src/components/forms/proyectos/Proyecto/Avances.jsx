@@ -28,6 +28,7 @@ class Avances extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
             semana: '',
+            trabajadores: '' ,
             actividades_realizadas:'',
             avances: [
                 {
@@ -354,6 +355,7 @@ class Avances extends Component {
         const { at, proyecto, refresh } = this.props
         let data = {}
         data.semana = form.semana
+        data.trabajadores = form.trabajadores
         data.actividades = form.actividades_realizadas
         data.fechaInicio = form.fechaInicio
         data.fechaFin = form.fechaFin
@@ -389,6 +391,7 @@ class Avances extends Component {
         })
         let data = {}
         data.semana = form.semana
+        data.trabajadores = form.trabajadores
         data.actividades = form.actividades_realizadas
         data.fechaInicio = form.fechaInicio
         data.fechaFin = form.fechaFin

@@ -76,9 +76,9 @@ class InputGray extends Component {
                     e.target.selectionEnd = selectionEnd
                 }
             }
+
             if(type == 'date' && value == ""){
                 return 
-
             }
             this.setState({...this.state, valor: e.target.value})
             return e
@@ -102,10 +102,12 @@ class InputGray extends Component {
                         :''
                     }
                     
+
                     <Form.Control placeholder = { withplaceholder ? placeholder :'' } style = { customstyle }
                         className = {`form-control text-dark-50 font-weight-bold text-justify ${customclass} ${inputValido ? 'is-valid sin_icono' : `is-invalid ${iconvalid?'':'sin_icono'}`}`}
                         onChange = { (e) => { e.preventDefault();this.validarInput(e); onChange(toInputUppercase(e)) }}
-                        value = { swal === true ? valor : value } {...props} />
+                        value = { swal === true ? valor : value } {...props}/>
+
                 </div>
                 {
                     iconvalid? '': <span className={`${inputValido ? 'form-text text-danger hidden' :'form-text text-danger is-invalid'}`}>{messageinc}</span>

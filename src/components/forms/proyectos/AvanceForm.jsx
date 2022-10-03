@@ -96,8 +96,8 @@ class AvanceForm extends Component {
                                                 />
                                             </div>
                                             <div className="align-self-center col">
-                                                <div className="form-group row form-group-marginless justify-content-end">
-                                                    <div className="col-md-12">
+                                                <div className="form-group row form-group-marginless justify-content-start">
+                                                    <div className="col-sm-6">
                                                         <InputNumberGray
                                                             withtaglabel={1}
                                                             withtextlabel={1}
@@ -114,7 +114,25 @@ class AvanceForm extends Component {
                                                             type="text"
                                                         />
                                                     </div>
+                                                    <div className="col-sm-6">
+                                                        <InputNumberGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withformgroup={0}
+                                                            withicon={1}
+                                                            requirevalidation={1}
+                                                            placeholder="NÚMERO DE TRABAJADORES"
+                                                            value={form.trabajadores}
+                                                            name="trabajadores"
+                                                            onChange={onChange}
+                                                            iconclass="people"
+                                                            messageinc="Ingresa el número de trabajadores."
+                                                            type="text"
+                                                        />
+                                                    </div>
                                                 </div>
+                                                
                                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                                 <div className="row form-group-marginless">
                                                     <div className="col-md-12">
