@@ -81,7 +81,6 @@ class InputGray extends Component {
                 return 
             }
             this.setState({...this.state, valor: e.target.value})
-            console.log(e.target.value)
             return e
         }
         
