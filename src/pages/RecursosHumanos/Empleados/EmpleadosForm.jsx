@@ -45,7 +45,7 @@ class EmpleadosForm extends Component {
             banco: '',
             cuenta: '',
             clabe: '',
-            fechaInicio: new Date(),
+            fechaInicio: '',
             fechaFin: new Date(),
             fecha_alta_imss: '',
             numero_alta_imss: '',
@@ -68,6 +68,7 @@ class EmpleadosForm extends Component {
             estatus_imss: 'Activo',
             // puesto: '',
             vacaciones_disponibles: 0,
+            checador: "0",
             
             // estacionamiento: 0.0,
             // gimnacio: 0.0,
