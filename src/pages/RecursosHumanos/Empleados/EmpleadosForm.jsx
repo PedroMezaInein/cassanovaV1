@@ -69,7 +69,6 @@ class EmpleadosForm extends Component {
             // puesto: '',
             vacaciones_disponibles: 0,
             checador: "0",
-            
             // estacionamiento: 0.0,
             // gimnacio: 0.0,
             // estudios: 0.0,
@@ -202,6 +201,8 @@ class EmpleadosForm extends Component {
                         form.rcv = empleado.rcv
                         form.infonavit = empleado.infonavit
                         form.isn = empleado.isn
+                        form.checador = empleado.checador
+
                         this.setState({
                             ...this.state,
                             form,

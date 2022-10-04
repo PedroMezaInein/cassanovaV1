@@ -294,6 +294,11 @@ class EmpleadosForm extends Component {
                                                 value={form.tipo_empleado}
                                             />
                                         </div>
+                                        <div className="col-md-2">
+                                            <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
+                                                name="checador" type="text" value={form.checador} placeholder="Numero asignado checador" iconclass="fas fa-hospital-user" patterns={NSS} messageinc="Incorrecto. Ej. 01234567891" typeformat="###########"
+                                            />
+                                        </div>
                                     </div>
                                     <div className="mx-0 row border-rh-info ribbon ribbon-top" style={{ width: "100%" }}>
                                         <div className="ribbon-target bg-light-primary text-primary font-weight-bolder ribbon-rh shadow-none">
