@@ -244,7 +244,7 @@ class RHLicenciasForm extends Component {
                         <Form id='form-licencias' onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-licencias') }}>
                             <Row className="form-group mx-0 form-group-marginless">
                                 <div className="col-md-6">
-                                    <ReactSelectSearchGray requirevalidation={1} placeholder='SELECCIONA LA LICENCIA'
+                                    <ReactSelectSearchGray requirevalidation={1}    placeholder='SELECCIONA LA LICENCIA'
                                         defaultvalue={form.licencia} iconclass='las la-shield-alt icon-xl'
                                         options={options.licencias} onChange={(value) => { this.updateSelect(value, 'licencia') }}
                                         messageinc="Incorrecto. Selecciona la licencia." />

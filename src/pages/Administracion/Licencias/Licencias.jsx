@@ -12,8 +12,11 @@ import { apiDelete, apiPostFormResponseBlob, catchErrors } from '../../../functi
 import { deleteAlert, doneAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import RHEquiposForm from '../../../components/forms/recursoshumanos/RHEquiposForm'
 import AddLicenciaForm from '../../../components/forms/administracion/Licencias/AddLicenciaForm'
+import EdithLicenciaForm from '../../../components/forms/administracion/Licencias/EdithLicenciaForm'
+import EdithEquipoForm from '../../../components/forms/administracion/Licencias/EdithEquipoForm'
 import LicenciasForm from '../../../components/forms/administracion/Licencias/LicenciasForm'
 import { DropdownButton, Dropdown } from 'react-bootstrap'
+import { getWeekYearWithOptions } from 'date-fns/fp'
 class Licencias extends Component {
 
     state = {
@@ -23,6 +26,10 @@ class Licencias extends Component {
         title: 'Nueva licencia',
         licencia: false,
         equipo: false,
+        edithLicencia: false,
+        edithEquipo: false,
+        selectLicencia: {},
+        selectEquipo: {},
         key:'licencias'
     }
 
@@ -33,6 +40,17 @@ class Licencias extends Component {
             (response) => {
                 const { filtersLicencia } = this.state
                 doneAlert(`Licencia eliminada con éxito`, () => { this.reloadTableLicencias(filtersLicencia) })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    deleteEquipo = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        apiDelete(`v1/administracion/equipos/${id}`, access_token).then(
+            (response) => {
+                const { filtersEquipos } = this.state
+                doneAlert(`Equipo eliminado con éxito`, () => { this.reloadTableEquipos(filtersEquipos) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
@@ -72,14 +90,17 @@ class Licencias extends Component {
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
 
-                    {/* <Dropdown.Item className="text-hover-success dropdown-success" 
+                    <Dropdown.Item className="text-hover-success dropdown-success" 
                         onClick={(e) => {
-                             e.preventDefault(); 
-                            this.openModal(element, 'edit') 
+                            const {modal} = this.state
+                            e.preventDefault();
+                            modal.selectLicencia = element
+                            this.setState({ ...this.state, modal })
+                            this.openModalEdithLicencia(element) 
                         }}  
                     >
                         {setNaviIcon('las la-pen icon-lg', 'editar')}
-                    </Dropdown.Item>  */}
+                    </Dropdown.Item> 
 
                     <Dropdown.Item className="text-hover-danger dropdown-danger" 
                         onClick = { (e) => { 
@@ -104,27 +125,29 @@ class Licencias extends Component {
             <div className="w-100 d-flex justify-content-center">
                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
 
-                    {/* <Dropdown.Item className="text-hover-success dropdown-success" 
+                    <Dropdown.Item className="text-hover-success dropdown-success" 
                         onClick={(e) => {
-                             e.preventDefault(); 
-                            this.openModal(element, 'edit') 
+                            e.preventDefault();
+                            const {modal} = this.state 
+                            modal.selectEquipo = element
+                            this.setState({ ...this.state, modal })
+                            this.openModalEdithEquipo(element)
                         }}  
                     >
                         {setNaviIcon('las la-pen icon-lg', 'editar')}
-                    </Dropdown.Item>  */}
+                    </Dropdown.Item> 
 
-                   {/*  <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
                         onClick = { (e) => { 
-                        e.preventDefault(); 
-                        alert('eliminar')
+                        e.preventDefault();
                         deleteAlert(
-                            `Eliminarás la licencia`,
+                            `Eliminarás El equipo`,
                             `¿Deseas continuar?`,
-                            () => { this.deleteLicencia(element.id) }
+                            () => { this.deleteEquipo(element.id) }
                         )
                     } }>
                         {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
-                    </Dropdown.Item> */}
+                    </Dropdown.Item>
 
                 </DropdownButton>
             </div>
@@ -155,6 +178,18 @@ class Licencias extends Component {
         this.setState({...this.state, modal})
     }
 
+    openModalEdithLicencia = () => {
+        const {modal} = this.state
+        modal.edithLicencia = true
+        this.setState({...this.state, modal})
+    }
+
+    openModalEdithEquipo = () => {
+        const {modal} = this.state
+        modal.edithEquipo = true
+        this.setState({...this.state, modal})
+    }
+
     openModalEquipo = () => {
         const {modal} = this.state
         modal.equipo = true
@@ -170,6 +205,17 @@ class Licencias extends Component {
     handleCloseEquipos = () => {
         const {modal} = this.state
         modal.equipo = false
+        this.setState({...this.state, modal})
+    }
+
+    handleCloseEdithLicencias = () => {
+        const {modal} = this.state
+        modal.edithLicencia = false
+        this.setState({...this.state, modal})
+    }
+    handleCloseEdithEquipo= () => {
+        const {modal} = this.state
+        modal.edithEquipo = false
         this.setState({...this.state, modal})
     }
 
@@ -229,7 +275,7 @@ class Licencias extends Component {
         let aux = []
         equipos.forEach((equipo) => {
             aux.push({
-                actions: this.setActionsEquipos(equipos),
+                actions: this.setActionsEquipos(equipo),
                 colaborador: setTextTableCenter(equipo.colaborador?equipo.colaborador.nombre:'Sin colaborador'),
                 equipo:setTextTableCenter(equipo.equipo),
                 modelo: setTextTableCenter(equipo.modelo),
@@ -364,6 +410,20 @@ class Licencias extends Component {
                     {
                         modal.equipo?
                         <RHEquiposForm adminView={true} authUser={access_token}/>
+                        :<></>
+                    }
+                </Modal>
+                <Modal size= 'xl' show={modal.edithLicencia} handleClose={this.handleCloseEdithLicencias} title='Editar licencia'>
+                    {
+                        modal.edithLicencia?
+                        <EdithLicenciaForm licencia={modal.selectLicencia}/>
+                        :<></>
+                    }
+                </Modal>
+                <Modal size= 'xl' show={modal.edithEquipo} handleClose={this.handleCloseEdithEquipo} title='Editar equipo'>
+                    {
+                        modal.edithEquipo?
+                        <EdithEquipoForm props={modal.selectEquipo}/>
                         :<></>
                     }
                 </Modal>

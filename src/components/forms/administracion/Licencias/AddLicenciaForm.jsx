@@ -1,8 +1,11 @@
 import React from 'react'
 import { useState } from 'react'
 import {  useSelector } from "react-redux";
+
 import $ from 'jquery'
 import swal from 'sweetalert2'
+
+import{ printResponseErrorAlert } from './../../../../functions/alert'
 import { apiPostForm } from '../../../../functions/api'
 import './../../../../styles/_modal_form.scss'
 
@@ -30,7 +33,7 @@ export default function AddLicenciaForm() {
       errors.nombre = 'El nombre es requerido'
       validacionError = true
     }
-    if (licencia.duracion > 0) {
+    if (Number(licencia.duracion) > 0 || licencia.duracion === '' ) {
       errors.duracion = 'La duración debe ser mayor a 0'
       validacionError = true
     }
@@ -42,9 +45,7 @@ export default function AddLicenciaForm() {
     return validacionError
   }
 
-
   const handleChange = (e) => {
-    
     setLicencia({
       ...licencia,
       [e.target.name]: e.target.value
@@ -79,29 +80,26 @@ export default function AddLicenciaForm() {
     if (validateForm()) {
         try {
           apiPostForm('v1/administracion/licencias', licencia, authUser)
-          reset()
-          reloadTableLicencias({})
+          .then(()=>{
+            reset()
+            reloadTableLicencias({})
+            setErrores({})
+            swal.fire({
+            icon: 'success',
+            title: 'Licencia agregada',
+            showConfirmButton: false,
+            timer: 1500
+            })
+          })
+          .catch((error) => {
+            //printResponseErrorAlert(error)
+          })
+          
         } catch (error) {
-          console.log(error);
+          printResponseErrorAlert(error)
         }          
-        
-      swal.fire({
-        icon: 'success',
-        title: 'Licencia agregada',
-        showConfirmButton: false,
-        timer: 1500
-      })
-    } else {
-      swal.fire({
-        icon: 'error',
-        title: 'Error al agregar licencia',
-        showConfirmButton: false,
-        timer: 1500
-      })
     }
   }
-
-  
 
   const reloadTableLicencias = (filter) => {
     $(`#licencias`).DataTable().search(JSON.stringify(filter)).draw();
@@ -116,7 +114,6 @@ export default function AddLicenciaForm() {
     })
   }
 
-
   return (
     <div className="mt-5">
       <div>
@@ -124,22 +121,26 @@ export default function AddLicenciaForm() {
 
           <div className = 'form-container'>
             <div>
-              <input placeholder="Tipo de licencia" type="text" name="tipo" onChange={e => handleChange(e)} value={licencia.tipo} />
-              {/* {errores.tipo && <span>{errores.tipo}</span>} */}
+              <label>Tipo de licencia</label>
+              <input title="" placeholder="Tipo de licencia" type="text" name="tipo" onChange={e => handleChange(e)} value={licencia.tipo} />
+              {errores.tipo && <span>{errores.tipo}</span>}
             </div>
 
             <div>
+              <label>Nombre de licencia</label>
               <input placeholder="Nombre de licencia" type="text" name="nombre" onChange={e => handleChange(e)} value={licencia.nombre} />
-              {/* {errores.nombre && <span>{errores.nombre}</span>} */}
+              {errores.nombre && <span>{errores.nombre}</span>}
             </div>
 
             <div>
-              <input placeholder="Duración de licencia" type="number" name="duracion" onChange={e => handleChange(e)} value={licencia.duracion} />
-              {/* {errores.duracion && <span>{errores.duracion}</span>} */}
+              <label>Duración de licencia</label>
+              <input title="Meses que dura la licencia"  placeholder="Duración de licencia" type="number" name="duracion" onChange={e => handleChange(e)} value={licencia.duracion} />
+              {errores.duracion && <span>{errores.duracion}</span>}
             </div>
 
             <div>
-              <input placeholder="Cantidad de licencias" type="number" value={licencia.cantidad} />
+              <label>Cantidad de licencias</label>
+              <input title="Este campo se llena en automatico"  placeholder="Cantidad de licencias" type="number" value={licencia.cantidad} />
               {/* {errores.cantidad && <span>{errores.cantidad}</span>} */}
             </div>
 
@@ -148,7 +149,7 @@ export default function AddLicenciaForm() {
           <div className = "input-code">
               <input placeholder="Código de licencia" type="text" name="codigo" onChange={e => handleChange(e)} value={licencia.codigo} />
 
-              <button type="button" className="btn" onClick={e => handleEnter(e)}> + Agregar codigo</button>
+              <button type="button" className="btn" onClick={e => handleEnter(e)}>+ Agregar codigo</button>
           </div>
 
           
