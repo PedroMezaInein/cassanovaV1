@@ -14,6 +14,8 @@ import { PartidaCard } from '../../components/cards'
 import { Update } from '../../components/Lottie'
 import { InputGray } from '../../components/form-components'
 import { printSwalHeader } from '../../functions/printers'
+import { EdithSubpartida } from '../../components/cards/Catalogos/EdithSubpartida'
+import MiModal from 'react-bootstrap/Modal'
 import $ from "jquery";
 class Partidas extends Component {
 
@@ -29,9 +31,11 @@ class Partidas extends Component {
             form: false,
             delete: false,
             see: false,
+            subpartida: false,
         },
         title: 'Nueva partida',
-        partida: ''
+        partida: '',
+        subpartida: ''
     }
 
     componentDidMount() {   
@@ -120,7 +124,7 @@ class Partidas extends Component {
                 actions: this.setActions(partida),
                 clave: renderToString(setTextTableCenter(partida.id)),
                 partida: setTextTableReactDom(partida.nombre, this.doubleClick, partida, 'partida', 'text-center'),
-                subpartidas: setTagLabelReactDom(partida, partida.subpartidas, 'subpartidas', this.deleteElementAxios, ''),
+                subpartidas: setTagLabelReactDom(partida,  partida.subpartidas, 'subpartidas', this.deleteElementAxios, '', this.doubleClickSubPartida),
                 id: partida.id
             })
             return false
@@ -166,6 +170,16 @@ class Partidas extends Component {
             () => { this.patchPartida(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
+    }
+
+    doubleClickSubPartida = (elemento) => {
+        const { modal } = this.state
+        modal.subpartida =true
+        this.setState({
+            ...this.state,
+            modal,
+            subpartida: elemento
+        })
     }
     patchPartida = async( data,tipo ) => {
         const { access_token } = this.props.authUser
@@ -324,6 +338,15 @@ class Partidas extends Component {
         })
     }
 
+    handleCloseSubpartida = () => {
+        const { modal } = this.state
+        modal.subpartida =false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -446,7 +469,7 @@ class Partidas extends Component {
     }
 
     render() {
-        const { form, modal, title, formeditado, partida} = this.state
+        const { form, modal, title, formeditado, partida, subpartida} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTableServerRender 
@@ -483,6 +506,17 @@ class Partidas extends Component {
                 <Modal title="Partida" show = { modal.see } handleClose = { this.handleCloseSee } >
                     <PartidaCard partida={partida}/>
                 </Modal>
+                <MiModal show = { modal.subpartida } onHide = { this.handleCloseSubpartida } centered ={true} >
+                  
+                    <MiModal.Body>
+                    
+                        {
+                            modal.subpartida?
+                            <EdithSubpartida subpartida={subpartida} closeSubpartida={this.handleCloseSubpartida}/>
+                            :<></>
+                        }
+                    </MiModal.Body>
+                </MiModal>
             </Layout>
         )
     }
