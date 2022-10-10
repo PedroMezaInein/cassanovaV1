@@ -307,7 +307,7 @@ export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, dat
     )
 }
 
-export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style){
+export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style, doubliClick){
     return (
         <div className={`${style} ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'tr-hover text-center-webkit':'tr-hover w-max-content'}`}>
             {
@@ -349,14 +349,15 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style){
                             break
                     }
                     return(
-                        <div key = { index } className={`d-table ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'mb-1 ' : 'mb-2'}`}>
-                            <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
-                                onClick = { (e) => { 
-                                    questionAlert(
-                                        '¿ESTÁS SEGURO?', 
-                                        `${textAlert}`,
-                                        () => deleteElement(data, element, tipo)
-                                    ) } } tipo={tipo} />
+                        <div key = { index } className={`d-table ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'mb-1 ' : 'mb-2'}`}> 
+                            <SingleTagify edithSubpartida={doubliClick} element = { element } color = { index % 2 ? 'success' : 'primary' } 
+                                    onClick = { (e) => {
+                                        questionAlert(
+                                            '¿ESTÁS SEGURO?', 
+                                            `${textAlert}`,
+                                            () => deleteElement(data, element, tipo)
+                                        )}} tipo={tipo}  
+                            />
                         </div>
                     )
                 })
