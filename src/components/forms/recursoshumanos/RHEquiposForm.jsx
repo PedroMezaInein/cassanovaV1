@@ -8,6 +8,8 @@ import { toAbsoluteUrl } from '../../../functions/routers'
 import { apiDelete, apiGet, apiPostForm, catchErrors, apiOptions } from '../../../functions/api'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
 
+import '../../../styles/_modal_form.scss'
+
 class RHLicenciasForm extends Component {
 
     state = {
@@ -19,7 +21,8 @@ class RHLicenciasForm extends Component {
                     modelo: '',
                     marca: '',
                     serie: '',
-                    descripcion: ''
+                    descripcion: '',
+                    empleado_id: ''
                 }
             ],
             equipo: '',
@@ -27,6 +30,7 @@ class RHLicenciasForm extends Component {
         equipos: [],
         options: {
             equipos: [{ value: 'alfa', label: 'alfa  1 5' }, { value: 'beta', label: 'beta' }],
+            empleados: '',
         },
         activeHistorial: true,
     }
@@ -51,6 +55,13 @@ class RHLicenciasForm extends Component {
     
     componentDidMount = () => {
         this.getEquipos()
+        this.getUsers()
+    }
+
+    handleChangeEmpleado = (e) => {
+        const { form } = this.state
+        form.empleado_id = e.value
+        this.setState({ form })
     }
     
 
@@ -75,7 +86,8 @@ class RHLicenciasForm extends Component {
     getOptions = async() => {
         waitAlert()
         const { at } = this.props
-        apiGet(`v2/rh/empleados/equipos/222`, at).then( //falta url de equipos generales y no de usuario
+        let id = this.state.form.equipos[0].empleado_id
+        apiGet(`v2/rh/empleados/equipos/${id}`, at).then( //falta url de equipos generales y no de usuario
             (response) => {
                 //debugger
                 if(response.data){
@@ -105,7 +117,8 @@ class RHLicenciasForm extends Component {
         waitAlert()
         const { at, empleado, authUser } = this.props
         const { form } = this.state
-        apiPostForm(`v2/rh/empleados/equipos/222`, form, authUser).then(
+        let id = this.state.form.equipos[0].empleado_id
+        apiPostForm(`v2/rh/empleados/equipos/${id}`, form, authUser).then(
             (response) => {
                 this.setState({
                     ...this.state,
@@ -146,6 +159,7 @@ class RHLicenciasForm extends Component {
         const { form } = this.state
         form.equipos[key][name] = value
         this.setState({ ...this.state, form })
+        console.log(form.equipos[0].empleado_id)
     }
     
     onChange = e => {
@@ -223,6 +237,21 @@ class RHLicenciasForm extends Component {
         this.setState({ ...this.state, form })
         
     }
+
+    getUsers = () => {
+        let aut = this.props.authUser
+        apiGet('user/users/options', aut)
+        .then(response => {
+            console.log(response.data.empleados)
+            this.setState({
+                ...this.state,
+                 options: {
+                    ...this.state.options,  
+                    empleados: response.data.empleados
+                }}
+            )
+        })
+    } 
  
     
     render() {
@@ -235,7 +264,7 @@ class RHLicenciasForm extends Component {
 
         return (
             <div>
-                {!adminView ?
+                {/* !adminView */ false ?
                     <div className="d-flex justify-content-end">
                         <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
                             {
@@ -353,7 +382,7 @@ class RHLicenciasForm extends Component {
                                                                 customclass="px-2"
                                                             />
                                                         </Col>
-                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                        <Col md="2" className="mt-4 mt-lg-0">
                                                             <InputGray
                                                                 requirevalidation={1}
                                                                 iconvalid={1}
@@ -369,7 +398,7 @@ class RHLicenciasForm extends Component {
                                                                 customclass="px-2"
                                                             />
                                                         </Col>
-                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                        <Col md="2" className="mt-4 mt-lg-0">
                                                             <InputGray
                                                                 requirevalidation={1}
                                                                 iconvalid={1}
@@ -385,7 +414,7 @@ class RHLicenciasForm extends Component {
                                                                 customclass="px-2"
                                                             />
                                                         </Col>
-                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                        <Col md="2" className="mt-4 mt-lg-0">
                                                             <InputGray
                                                                 requirevalidation={1}
                                                                 iconvalid={1}
@@ -400,6 +429,23 @@ class RHLicenciasForm extends Component {
                                                                 onChange={e => this.onChangeEquipos(key, e, 'serie')}
                                                                 customclass="px-2"
                                                             />
+                                                        </Col>
+                                                        <Col md="3" className="mt-4 mt-lg-0 ">
+                                                            <div className="form-container">
+                                                                <select name = 'empleado_id' value={form.empleado_id} selected onChange={ e =>this.onChangeEquipos(key, e, 'empleado_id')}>
+                                                                <option hidden>Elige un colaborador</option>
+                                                                {
+                                                                    options.empleados !== '' ?
+                                                                    options.empleados.map((empleado, key) => {
+                                                                        return (
+                                                                            <option value={empleado.id} key={key}>{empleado.nombre}</option>
+                                                                        )
+                                                                    })
+                                                                    : null
+                                                                }
+                                                                </select>
+                                                            </div>
+                                                            
                                                         </Col>
                                                         <Col md="12" className="mt-4">
                                                             <InputGray
@@ -418,6 +464,7 @@ class RHLicenciasForm extends Component {
                                                                 rows="2"
                                                             />
                                                         </Col>
+                                                        
                                                     </Row>
                                                 </div>
                                             </div>
@@ -435,7 +482,7 @@ class RHLicenciasForm extends Component {
                         <Button icon='' className="btn btn-primary" text="ENVIAR"
                             onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos'); reloadTableEquipos({}) }} />
                     </div>
-                </Form>              
+                    </Form>              
                     :
                     <Form id='form-equipos' onSubmit={(e)=>this.submitAsignEquipo(e)}>
                         <Row className="form-group mx-0 form-group-marginless">

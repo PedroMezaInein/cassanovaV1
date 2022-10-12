@@ -1323,7 +1323,7 @@ class Empleados extends Component {
                             at={access_token} 
                             empleado = { empleado }
                             esColaborador={true}
-                            adminView={true}
+                            adminView={false}
                             />
                         : <></>
                     }

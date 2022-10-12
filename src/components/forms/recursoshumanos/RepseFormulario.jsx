@@ -336,8 +336,8 @@ class RepseFormulario extends Component{
                     data.append('adjuntos[]', element)
                 }
             })
-            let fecha = form.fecha;
-            let result = fecha.toISOString();    
+             let fecha = form.fecha;
+            let result = fecha.toISOString();   
             data.append('fecha_alta', result)
             axios.post(`${URL_DEV}repse`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
