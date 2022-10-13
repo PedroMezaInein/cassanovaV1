@@ -8,6 +8,7 @@
     width: 25%;
     display: flex;
     justify-content: center;
+    flex-direction: column;
 }
 
 .form-container div input{
@@ -20,8 +21,30 @@
     text-transform: uppercase; 
 }
 
+.form-container div span{
+    color: red;
+}
+
 .form-container div input:focus{
     outline: none;
+}
+
+.text-container-textarea{
+    margin: 1rem 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.text-container-textarea textarea{
+    border: none;
+    background-color: #EEF0F8;
+    
+    height: 80px;
+    font-weight: 500;
+    opacity: .5;
+    text-transform: uppercase; 
 }
 
 .input-code{
@@ -80,4 +103,8 @@
     cursor: pointer;
     color: red;
     font-weight: 600;
+}
+
+.line{
+    margin: 0 -22px;
 }

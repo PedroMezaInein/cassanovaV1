@@ -31,6 +31,22 @@ class RHLicenciasForm extends Component {
         activeHistorial: true,
     }
 
+    submitAsignEquipo = async (e) => {
+        e.preventDefault()
+        const { form } = this.state
+        let formulario = {
+            id: form.equipo.data.id,
+            equipo: form.equipo.data.equipo,
+            marca: form.equipo.data.marca,
+            modelo: form.equipo.data.modelo,
+            serie: form.equipo.data.serie,
+            descripcion: form.equipo.data.descripcion,
+            empleado_id: form.equipo.data.empleado_id
+
+        }
+        console.log(form.equipo)
+    }
+
     
     
     componentDidMount = () => {
@@ -70,7 +86,8 @@ class RHLicenciasForm extends Component {
                         aux.push({
                             name: elemento.serie,
                             label: `${elemento.equipo} || ${elemento.marca} || ${elemento.modelo}` ,
-                            value: elemento.id.toString()
+                            value: elemento.id.toString(),
+                            data: elemento
                         })
                     })
                     
@@ -311,8 +328,8 @@ class RHLicenciasForm extends Component {
                             {
                                 form.equipos.map((equipo, key) => {
                                     return (
-                                        <div>
-                                            <div className="d-flex w-100" key={key}>
+                                        <div key={key}>
+                                            <div className="d-flex w-100" >
                                                 <div className="w-auto align-self-center">
                                                     {/* <Button icon='' onClick={() => { this.deleteRowEquipo(key) }}
                                                         className="btn btn-icon btn-xs p-4 btn-bg-white btn-icon-danger btn-hover-danger"
@@ -420,7 +437,7 @@ class RHLicenciasForm extends Component {
                     </div>
                 </Form>              
                     :
-                    <Form id='form-equipos' >
+                    <Form id='form-equipos' onSubmit={(e)=>this.submitAsignEquipo(e)}>
                         <Row className="form-group mx-0 form-group-marginless">
                             <div className="col-md-6">
                                 <ReactSelectSearchGray
@@ -433,8 +450,25 @@ class RHLicenciasForm extends Component {
                                 messageinc="Incorrecto. Selecciona el equipo."
                                 />
                             </div>
-                            
+                            {
+                                form.equipo? 
+                                <div className="col-md-6">
+                                    <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1}
+                                        withformgroup={1} requirevalidation={0} name='Numero de serie'
+                                        placeholder={`Numero de serie`} value={form.equipo.name} iconclass='las la-key icon-xl text-danger'
+                                        letterCase={false} disabled={true} customdiv='mb-0 bg-input-disable-success' customclass="disable-success"
+                                    />
+                                </div>
+                                :<></>
+                            }
                         </Row>
+                        {
+                            form.equipo?
+                            <div className="d-flex justify-content-end border-top mt-3 pt-3 mx-4">
+                                <button className="btn btn-info font-weight-bold text-uppercase" type='submit'>Asignar Equipo</button>
+                            </div>
+                            : <></>
+                        }
                     </Form>
                 }
             </div>
