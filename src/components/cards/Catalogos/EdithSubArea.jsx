@@ -8,7 +8,7 @@ import { apiPutForm } from '../../../functions/api'
 import sweetalert from 'sweetalert2'
 import $ from 'jquery'
 
-function EdithSubArea ( {subarea, closeSubArea} ){
+function EdithSubArea ( {subarea, closeSubArea, tabla} ){
     const authUser = useSelector(state => state.authUser.access_token)
     const [subArea, setSubArea] = useState(subarea)
     const handleChange =  (e) => {
@@ -19,15 +19,15 @@ function EdithSubArea ( {subarea, closeSubArea} ){
         } )
     }
 
-     const reloadTableSub = () => {
-         $(`#kt_datatable_partidas`).DataTable().ajax.reload()
-        }
+     const reloadTableSub = (value) => {
+        $(`#kt_datatable_${value}`).DataTable().ajax.reload();
+     }
 
     const handleSubmit = async (e) => { 
         e.preventDefault()
         let nombre = {
-            subarea:subArea.nombre,
-            subarea_id:subArea.id
+            subpartida:subArea.nombre,
+            subpartida_id:subArea.id
         }
         
         try {
@@ -42,15 +42,16 @@ function EdithSubArea ( {subarea, closeSubArea} ){
             })
             closeSubArea()
 
-            apiPutForm(`v2/catalogos/areas/subareas/${subArea.id}`, nombre, authUser)
+            apiPutForm(`v2/catalogos/partidas/subarea/${subArea.id}`, nombre, authUser)
             .then(res => {
+                reloadTableSub(tabla)
                 sweetalert.fire({
                     icon: 'success',
                     title: 'Subarea actualizada',
                     showConfirmButton: false,
                     timer: 1500
                 })
-                reloadTableSub()
+                
             })
             
         } catch (error) {

@@ -578,7 +578,7 @@ class Areas extends Component {
                 <MiModal show = { subArea } onHide = { this.handleCloseSubArea } centered ={true} >
                   
                     <MiModal.Body>
-                        <EdithSubArea subarea={selectedSubArea} closeSubArea={this.handleCloseSubArea}/>
+                        <EdithSubArea subarea={selectedSubArea} closeSubArea={this.handleCloseSubArea} tabla={key}/>
                         
                     </MiModal.Body>
                 </MiModal>

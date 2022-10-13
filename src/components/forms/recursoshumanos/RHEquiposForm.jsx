@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { Row, Form, Col } from 'react-bootstrap'
 import { Button, InputGray, ReactSelectSearchGray } from '../../form-components'
 import { toAbsoluteUrl } from '../../../functions/routers'
-import { apiDelete, apiGet, apiPostForm, catchErrors, apiOptions } from '../../../functions/api'
+import { apiDelete, apiGet, apiPostForm, catchErrors, apiOptions, apiPutForm } from '../../../functions/api'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
 
 import '../../../styles/_modal_form.scss'
@@ -22,7 +22,7 @@ class RHLicenciasForm extends Component {
                     marca: '',
                     serie: '',
                     descripcion: '',
-                    empleado_id: ''
+                    empleado_id: this.props.adminView === "rh" ? this.props.empleado.id : ''
                 }
             ],
             equipo: '',
@@ -45,7 +45,7 @@ class RHLicenciasForm extends Component {
             modelo: form.equipo.data.modelo,
             serie: form.equipo.data.serie,
             descripcion: form.equipo.data.descripcion,
-            empleado_id: form.equipo.data.empleado_id
+            empleado_id: this.props.adminView === "rh"? this.props.empleado.id:form.equipo.data.empleado_id
 
         }
         console.log(form.equipo)
@@ -83,7 +83,7 @@ class RHLicenciasForm extends Component {
     }
 
     //api no responde con los equipos para el select
-    getOptions = async() => {
+    /* getOptions = async() => {
         waitAlert()
         const { at } = this.props
         let id = this.state.form.equipos[0].empleado_id
@@ -111,14 +111,17 @@ class RHLicenciasForm extends Component {
                 Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) } )
-    }
+    } */
     
     onSubmit = async () => {
         waitAlert()
-        const { at, empleado, authUser } = this.props
+        let aut = this.props.authUser
+        const { at, empleado, authUser, adminView } = this.props
         const { form } = this.state
         let id = this.state.form.equipos[0].empleado_id
-        apiPostForm(`v2/rh/empleados/equipos/${id}`, form, authUser).then(
+        console.log(form)
+        adminView === "admin"? 
+        apiPostForm(`v2/rh/empleados/equipos/${id}`, form, aut).then(
             (response) => {
                 this.setState({
                     ...this.state,
@@ -127,6 +130,17 @@ class RHLicenciasForm extends Component {
                 doneAlert(`Equipo registrado con éxito`,  () => { this.getEquipos() })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
+        :
+        apiPostForm(`v2/rh/empleados/equipos/${empleado.id}`, form, at).then(
+            (response) => {
+                this.setState({
+                    ...this.state,
+                    activeHistorial: true
+                })
+                doneAlert(`Equipo registrado con éxito`,  () => { this.getEquipos() })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+
         this.resetForm()
     }
     
@@ -147,7 +161,7 @@ class RHLicenciasForm extends Component {
             activeHistorial: !activeHistorial
         })
         if(activeHistorial){
-            this.getOptions()
+            this.getUsers()
         } else{
             this.getEquipos()
             
@@ -159,7 +173,7 @@ class RHLicenciasForm extends Component {
         const { form } = this.state
         form.equipos[key][name] = value
         this.setState({ ...this.state, form })
-        console.log(form.equipos[0].empleado_id)
+        console.log(form)
     }
     
     onChange = e => {
@@ -256,15 +270,14 @@ class RHLicenciasForm extends Component {
     
     render() {
         const { form, activeHistorial, equipos, options } = this.state
-        const {adminView, authUser, updateSelect} = this.props
-
+        const {adminView, authUser, updateSelect, empleado, at} = this.props
         const reloadTableEquipos = (filter) => {
             $(`#equipos`).DataTable().search(JSON.stringify(filter)).draw();
         }
 
         return (
             <div>
-                {/* !adminView */ true ?
+                { adminView === "rh" ?
                     <div className="d-flex justify-content-end">
                         <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
                             {
@@ -287,7 +300,7 @@ class RHLicenciasForm extends Component {
                     </div>:null
                 }
                 {
-                    !adminView && activeHistorial ?
+                    adminView === "rh" && activeHistorial ?
                         <div className="table-responsive">
                             <table className="table w-100 table-vertical-center table-hover text-center">
                                 <thead>
@@ -348,11 +361,11 @@ class RHLicenciasForm extends Component {
                                 </tbody>
                             </table>
                         </div>
-                    : adminView ? 
+                    : adminView === "rh" ? 
                     <Form id="form-equipos" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos') }}>
                     <div className="mb-8">
-                        <Button className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" 
-                            icon='' onClick={this.addRowEquipo} text='AGREGAR EQUIPO' only_icon="flaticon2-plus icon-13px mr-2 px-0 text-success" />
+                        {/* <Button className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" 
+                            icon='' onClick={this.addRowEquipo} text='AGREGAR EQUIPO' only_icon="flaticon2-plus icon-13px mr-2 px-0 text-success" /> */}
                         <div className="mt-5">
                             {
                                 form.equipos.map((equipo, key) => {
@@ -433,15 +446,15 @@ class RHLicenciasForm extends Component {
                                                         <Col md="3" className="mt-4 mt-lg-0 ">
                                                             <div className="form-container">
                                                                 <select name = 'empleado_id' value={form.empleado_id} selected onChange={ e =>this.onChangeEquipos(key, e, 'empleado_id')}>
-                                                                <option hidden>Elige un colaborador</option>
+                                                                {adminView === "admin" ?<option hidden>elige a un colaborador</option>: null}
                                                                 {
-                                                                    options.empleados !== '' ?
+                                                                    options.empleados !== '' && adminView === "admin"?
                                                                     options.empleados.map((empleado, key) => {
                                                                         return (
                                                                             <option value={empleado.id} key={key}>{empleado.nombre}</option>
                                                                         )
                                                                     })
-                                                                    : null
+                                                                    : <option value={empleado.id} key={key}>{empleado.nombre}</option>
                                                                 }
                                                                 </select>
                                                             </div>
