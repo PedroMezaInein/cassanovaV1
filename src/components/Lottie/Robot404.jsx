@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import * as animationData from '../../assets/animate/robot-404.json'
+/* import * as animationData from '../../assets/animate/robot-404.json' */
+import * as animationData from '../../assets/animate/404Halloween.json'
 import Lottie from 'react-lottie';
 
 class Robot404 extends Component {

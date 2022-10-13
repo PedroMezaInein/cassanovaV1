@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import * as animationData from '../../assets/animate/update.json'
+/* import * as animationData from '../../assets/animate/update.json' */
+import * as animationHalloween from '../../assets/animate/halloween.json'
 import Lottie from 'react-lottie';
 
 class Update extends Component{
@@ -7,7 +8,7 @@ class Update extends Component{
         const defaultOptions = {
             loop: true,
             autoplay: true, 
-            animationData: animationData.default,
+            animationData: animationHalloween.default,
             rendererSettings: {
                 preserveAspectRatio: 'xMidYMid slice'
             }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 class SingleTagify extends Component{
     render(){
-        const { element, color, onClick, tipo, edithSubpartida } = this.props
+        const { element, color, onClick, tipo, edithSubpartida, doubleClickSubArea } = this.props
         return(
             <div className="tagify align-items-center border-0 d-inline-block">
                 <div className = {`d-flex align-items-center tagify__tag tagify__tag--${color} tagify__tag__newtable px-3px border-radius-3px m-0`}>
@@ -15,7 +15,9 @@ class SingleTagify extends Component{
                                         'IM':
                                     element.nombre === undefined ? 
                                         element.name : tipo === 'subpartidas'?
-                                    <div style={{cursor: "pointer"}} onClick = {e =>  edithSubpartida(element) }>{element.nombre} </div>: element.nombre
+                                    <div style={{cursor: "pointer"}} onClick = {e =>  edithSubpartida(element) }>{element.nombre} </div>
+                                    : tipo === 'subareas' ?
+                                    <div style={{cursor: "pointer"}} onClick = {e =>  doubleClickSubArea(element) }>{element.nombre}</div>:element.nombre
                                 }
                             </span>
                         </div>

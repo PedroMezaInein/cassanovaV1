@@ -366,15 +366,15 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style, 
     )
 }
 
-export function setTagLabelAreaReactDom (data, arreglo, tipo, deleteElement){
+export function setTagLabelAreaReactDom (data, arreglo, tipo, deleteElement, doubleClickSubArea){
     return (
         <div className="tr-hover w-max-content">
             {
                 arreglo.map((element, index) => {
                     return(
                         <div key = { index } className="d-table mb-2">
-                            <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
-                                onClick = { (e) => {  deleteElement(data, element, tipo) } }/>
+                            <SingleTagify doubleClickSubArea={doubleClickSubArea} element = { element } color = { index % 2 ? 'success' : 'primary' } 
+                                onClick = { (e) => {  deleteElement(data, element, tipo) } } tipo={tipo}/>
                         </div>
                     )
                 })
