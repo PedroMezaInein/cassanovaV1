@@ -409,7 +409,7 @@ class Licencias extends Component {
                 <Modal size= 'xl' show={modal.equipo} handleClose={this.handleCloseEquipos} title='Equipos'>
                     {
                         modal.equipo?
-                        <RHEquiposForm adminView={true} authUser={access_token}/>
+                        <RHEquiposForm adminView="admin" authUser={access_token}/>
                         :<></>
                     }
                 </Modal>

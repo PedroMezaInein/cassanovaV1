@@ -108,3 +108,17 @@
 .line{
     margin: 0 -22px;
 }
+
+.form-container select{
+    border: none;
+    background-color: #EEF0F8;
+    width: 90%;
+    height: 40px;
+    font-weight: 500;
+    opacity: .5;
+    text-transform: uppercase; 
+}
+
+.form-container select:focus{
+    outline: none;
+}

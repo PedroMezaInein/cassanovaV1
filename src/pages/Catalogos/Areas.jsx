@@ -18,6 +18,8 @@ import Echo from 'laravel-echo';
 import { setSingleHeader } from '../../functions/routers'
 import $ from "jquery";
 import { renderToString } from 'react-dom/server'
+import MiModal from 'react-bootstrap/Modal'
+import { EdithSubArea } from '../../components/cards/Catalogos/EdithSubArea'
 
 class Areas extends Component {
 
@@ -29,6 +31,8 @@ class Areas extends Component {
             subareasEditable: []
         },
         formeditado:0,
+        subArea: false,
+        selectedSubArea: '',
         modal: false,
         modalDelete: false,
         modalSee: false,
@@ -106,7 +110,7 @@ class Areas extends Component {
             aux.push({
                 actions: this.setActions(area),
                 area: setTextTableReactDom(area.nombre, this.doubleClick, area, 'nombre', 'text-center'),
-                subareas: setTagLabelAreaReactDom(area, area.subareas, 'subareas', this.openModalDeleteSubarea),
+                subareas: setTagLabelAreaReactDom(area, area.subareas, 'subareas', this.openModalDeleteSubarea, this.doubleClickSubArea),
                 partida: renderToString(setTextTable(area.partida ? area.partida.nombre : '')),
                 id: area.id
             })
@@ -511,8 +515,24 @@ class Areas extends Component {
             this.updateAreaAxios()
     }
 
+    handleCloseSubArea = () => {
+        this.setState({
+            ...this.state,
+            subArea:false
+        })
+    }
+
+    doubleClickSubArea = (element) => {
+        console.log(element)
+        this.setState({
+            ...this.state,
+            subArea:true,
+            selectedSubArea:element
+        })
+    }
+
     render() {
-        const { form, modal, title, formeditado, key, modalSee, area, options } = this.state
+        const { form, modal, title, formeditado, key, modalSee, area, options, subArea, selectedSubArea } = this.state
         const { access_token } = this.props.authUser
         const tabs = [ 'ventas', 'egresos', 'ingresos']
         return (
@@ -554,6 +574,14 @@ class Areas extends Component {
                 <Modal title={key === 'egresos' ?'Egreso' : key === 'compras' ? 'Compra' : key === 'ventas' ? 'Venta/Ingreso' :''} show = { modalSee } handleClose = { this.handleCloseSee } >
                     <AreaCard area={area}/>
                 </Modal>
+
+                <MiModal show = { subArea } onHide = { this.handleCloseSubArea } centered ={true} >
+                  
+                    <MiModal.Body>
+                        <EdithSubArea subarea={selectedSubArea} closeSubArea={this.handleCloseSubArea} tabla={key}/>
+                        
+                    </MiModal.Body>
+                </MiModal>
             </Layout>
         )
     }

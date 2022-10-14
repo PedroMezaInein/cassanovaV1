@@ -43,7 +43,7 @@ class LicenciasEquiposForm extends Component {
                     </Tab.Pane>
                     <Tab.Pane eventKey="equipos">
                         {
-                            key === 'equipos' ? <RHEquiposForm at = { at } empleado = { empleado } adminView={false}/> : null
+                            key === 'equipos' ? <RHEquiposForm at = { at } empleado = { empleado } adminView="rh"/> : null
                         }
                     </Tab.Pane>
                 </Tab.Content>

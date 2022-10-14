@@ -5,8 +5,10 @@ import Swal from 'sweetalert2';
 import { Row, Form, Col } from 'react-bootstrap'
 import { Button, InputGray, ReactSelectSearchGray } from '../../form-components'
 import { toAbsoluteUrl } from '../../../functions/routers'
-import { apiDelete, apiGet, apiPostForm, catchErrors, apiOptions } from '../../../functions/api'
+import { apiDelete, apiGet, apiPostForm, catchErrors, apiOptions, apiPutForm } from '../../../functions/api'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
+
+import '../../../styles/_modal_form.scss'
 
 class RHLicenciasForm extends Component {
 
@@ -19,7 +21,8 @@ class RHLicenciasForm extends Component {
                     modelo: '',
                     marca: '',
                     serie: '',
-                    descripcion: ''
+                    descripcion: '',
+                    empleado_id: this.props.adminView === "rh" ? this.props.empleado.id : ''
                 }
             ],
             equipo: '',
@@ -27,6 +30,7 @@ class RHLicenciasForm extends Component {
         equipos: [],
         options: {
             equipos: [{ value: 'alfa', label: 'alfa  1 5' }, { value: 'beta', label: 'beta' }],
+            empleados: '',
         },
         activeHistorial: true,
     }
@@ -41,7 +45,7 @@ class RHLicenciasForm extends Component {
             modelo: form.equipo.data.modelo,
             serie: form.equipo.data.serie,
             descripcion: form.equipo.data.descripcion,
-            empleado_id: form.equipo.data.empleado_id
+            empleado_id: this.props.adminView === "rh"? this.props.empleado.id:form.equipo.data.empleado_id
 
         }
         console.log(form.equipo)
@@ -51,6 +55,13 @@ class RHLicenciasForm extends Component {
     
     componentDidMount = () => {
         this.getEquipos()
+        this.getUsers()
+    }
+
+    handleChangeEmpleado = (e) => {
+        const { form } = this.state
+        form.empleado_id = e.value
+        this.setState({ form })
     }
     
 
@@ -72,10 +83,11 @@ class RHLicenciasForm extends Component {
     }
 
     //api no responde con los equipos para el select
-    getOptions = async() => {
+    /* getOptions = async() => {
         waitAlert()
         const { at } = this.props
-        apiGet(`v2/rh/empleados/equipos/222`, at).then( //falta url de equipos generales y no de usuario
+        let id = this.state.form.equipos[0].empleado_id
+        apiGet(`v2/rh/empleados/equipos/${id}`, at).then( //falta url de equipos generales y no de usuario
             (response) => {
                 //debugger
                 if(response.data){
@@ -99,13 +111,17 @@ class RHLicenciasForm extends Component {
                 Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) } )
-    }
+    } */
     
     onSubmit = async () => {
         waitAlert()
-        const { at, empleado, authUser } = this.props
+        let aut = this.props.authUser
+        const { at, empleado, authUser, adminView } = this.props
         const { form } = this.state
-        apiPostForm(`v2/rh/empleados/equipos/222`, form, authUser).then(
+        let id = this.state.form.equipos[0].empleado_id
+        console.log(form)
+        adminView === "admin"? 
+        apiPostForm(`v2/rh/empleados/equipos/${id}`, form, aut).then(
             (response) => {
                 this.setState({
                     ...this.state,
@@ -114,6 +130,17 @@ class RHLicenciasForm extends Component {
                 doneAlert(`Equipo registrado con éxito`,  () => { this.getEquipos() })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
+        :
+        apiPostForm(`v2/rh/empleados/equipos/${empleado.id}`, form, at).then(
+            (response) => {
+                this.setState({
+                    ...this.state,
+                    activeHistorial: true
+                })
+                doneAlert(`Equipo registrado con éxito`,  () => { this.getEquipos() })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+
         this.resetForm()
     }
     
@@ -134,7 +161,7 @@ class RHLicenciasForm extends Component {
             activeHistorial: !activeHistorial
         })
         if(activeHistorial){
-            this.getOptions()
+            this.getUsers()
         } else{
             this.getEquipos()
             
@@ -146,6 +173,7 @@ class RHLicenciasForm extends Component {
         const { form } = this.state
         form.equipos[key][name] = value
         this.setState({ ...this.state, form })
+        console.log(form)
     }
     
     onChange = e => {
@@ -223,19 +251,33 @@ class RHLicenciasForm extends Component {
         this.setState({ ...this.state, form })
         
     }
+    
+    getUsers = () => {
+        let aut = this.props.authUser
+        apiGet('user/users/options', aut)
+        .then(response => {
+            console.log(response.data.empleados)
+            this.setState({
+                ...this.state,
+                 options: {
+                    ...this.state.options,  
+                    empleados: response.data.empleados
+                }}
+            )
+        })
+    } 
  
     
     render() {
         const { form, activeHistorial, equipos, options } = this.state
-        const {adminView, authUser, updateSelect} = this.props
-
+        const {adminView, authUser, updateSelect, empleado, at} = this.props
         const reloadTableEquipos = (filter) => {
             $(`#equipos`).DataTable().search(JSON.stringify(filter)).draw();
         }
 
         return (
             <div>
-                {!adminView ?
+                { adminView === "rh" ?
                     <div className="d-flex justify-content-end">
                         <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => { this.activeBtn() }} >
                             {
@@ -251,14 +293,14 @@ class RHLicenciasForm extends Component {
                                         <span className="svg-icon">
                                             <SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} />
                                         </span>
-                                        <div className="font-weight-bolder">HISTORIAL DE EQUIPOS</div>
+                                        <div className="font-weight-bolder">EQUIPOS ASIGNADOS</div>
                                     </div>
                             }
                         </button>
                     </div>:null
                 }
                 {
-                    !adminView && activeHistorial ?
+                    adminView === "rh" && activeHistorial ?
                         <div className="table-responsive">
                             <table className="table w-100 table-vertical-center table-hover text-center">
                                 <thead>
@@ -319,7 +361,7 @@ class RHLicenciasForm extends Component {
                                 </tbody>
                             </table>
                         </div>
-                    : adminView ? 
+                    : adminView === "rh" ? 
                     <Form id="form-equipos" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos') }}>
                     <div className="mb-8">
                         {/* <Button className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" 
@@ -353,7 +395,7 @@ class RHLicenciasForm extends Component {
                                                                 customclass="px-2"
                                                             />
                                                         </Col>
-                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                        <Col md="2" className="mt-4 mt-lg-0">
                                                             <InputGray
                                                                 requirevalidation={1}
                                                                 iconvalid={1}
@@ -369,7 +411,7 @@ class RHLicenciasForm extends Component {
                                                                 customclass="px-2"
                                                             />
                                                         </Col>
-                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                        <Col md="2" className="mt-4 mt-lg-0">
                                                             <InputGray
                                                                 requirevalidation={1}
                                                                 iconvalid={1}
@@ -385,7 +427,7 @@ class RHLicenciasForm extends Component {
                                                                 customclass="px-2"
                                                             />
                                                         </Col>
-                                                        <Col md="3" className="mt-4 mt-lg-0">
+                                                        <Col md="2" className="mt-4 mt-lg-0">
                                                             <InputGray
                                                                 requirevalidation={1}
                                                                 iconvalid={1}
@@ -400,6 +442,23 @@ class RHLicenciasForm extends Component {
                                                                 onChange={e => this.onChangeEquipos(key, e, 'serie')}
                                                                 customclass="px-2"
                                                             />
+                                                        </Col>
+                                                        <Col md="3" className="mt-4 mt-lg-0 ">
+                                                            <div className="form-container">
+                                                                <select name = 'empleado_id' value={form.empleado_id} selected onChange={ e =>this.onChangeEquipos(key, e, 'empleado_id')}>
+                                                                {adminView === "admin" ?<option hidden>elige a un colaborador</option>: null}
+                                                                {
+                                                                    options.empleados !== '' && adminView === "admin"?
+                                                                    options.empleados.map((empleado, key) => {
+                                                                        return (
+                                                                            <option value={empleado.id} key={key}>{empleado.nombre}</option>
+                                                                        )
+                                                                    })
+                                                                    : <option value={empleado.id} key={key}>{empleado.nombre}</option>
+                                                                }
+                                                                </select>
+                                                            </div>
+                                                            
                                                         </Col>
                                                         <Col md="12" className="mt-4">
                                                             <InputGray
@@ -418,6 +477,7 @@ class RHLicenciasForm extends Component {
                                                                 rows="2"
                                                             />
                                                         </Col>
+                                                        
                                                     </Row>
                                                 </div>
                                             </div>
@@ -435,41 +495,144 @@ class RHLicenciasForm extends Component {
                         <Button icon='' className="btn btn-primary" text="ENVIAR"
                             onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos'); reloadTableEquipos({}) }} />
                     </div>
-                </Form>              
+                    </Form>              
                     :
-                    <Form id='form-equipos' onSubmit={(e)=>this.submitAsignEquipo(e)}>
-                        <Row className="form-group mx-0 form-group-marginless">
-                            <div className="col-md-6">
-                                <ReactSelectSearchGray
-                                requirevalidation={1} 
-                                placeholder='SELECCIONA EL EQUIPO'
-                                defaultvalue={form.equipo} //valor si no se selecciona nada
-                                options={options.equipos} // lista de opciones
-                                iconclass='las la-laptop icon-xl'
-                                onChange={(value) => { this.updateSelect(value, 'equipo') }}
-                                messageinc="Incorrecto. Selecciona el equipo."
-                                />
-                            </div>
+                    <Form id="form-equipos" onSubmit={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos') }}>
+                    <div className="mb-8">
+                        {/* <Button className="btn btn-sm btn-bg-light btn-icon-success btn-hover-light-success text-success font-weight-bolder font-size-13px" 
+                            icon='' onClick={this.addRowEquipo} text='AGREGAR EQUIPO' only_icon="flaticon2-plus icon-13px mr-2 px-0 text-success" /> */}
+                        <div className="mt-5">
                             {
-                                form.equipo? 
-                                <div className="col-md-6">
-                                    <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1}
-                                        withformgroup={1} requirevalidation={0} name='Numero de serie'
-                                        placeholder={`Numero de serie`} value={form.equipo.name} iconclass='las la-key icon-xl text-danger'
-                                        letterCase={false} disabled={true} customdiv='mb-0 bg-input-disable-success' customclass="disable-success"
-                                    />
-                                </div>
-                                :<></>
+                                form.equipos.map((equipo, key) => {
+                                    return (
+                                        <div key={key}>
+                                            <div className="d-flex w-100" >
+                                                <div className="w-auto align-self-center">
+                                                    {/* <Button icon='' onClick={() => { this.deleteRowEquipo(key) }}
+                                                        className="btn btn-icon btn-xs p-4 btn-bg-white btn-icon-danger btn-hover-danger"
+                                                        only_icon="las la-trash text-danger icon-xl" /> */}
+                                                </div>
+                                                <div className="w-100">
+                                                    <Row className="mx-0 form-group-marginless">
+                                                        <Col md="3">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                iconvalid={1}
+                                                                placeholder='EQUIPO'
+                                                                value={form['equipos'][key]['equipo']}
+                                                                withtaglabel={0}
+                                                                name='equipo'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'equipo')}
+                                                                customclass="px-2"
+                                                            />
+                                                        </Col>
+                                                        <Col md="2" className="mt-4 mt-lg-0">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                iconvalid={1}
+                                                                placeholder='MODELO'
+                                                                value={form['equipos'][key]['modelo']}
+                                                                withtaglabel={0}
+                                                                name='modelo'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'modelo')}
+                                                                customclass="px-2"
+                                                            />
+                                                        </Col>
+                                                        <Col md="2" className="mt-4 mt-lg-0">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                iconvalid={1}
+                                                                placeholder='MARCA'
+                                                                value={form['equipos'][key]['marca']}
+                                                                withtaglabel={0}
+                                                                name='marca'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'marca')}
+                                                                customclass="px-2"
+                                                            />
+                                                        </Col>
+                                                        <Col md="2" className="mt-4 mt-lg-0">
+                                                            <InputGray
+                                                                requirevalidation={1}
+                                                                iconvalid={1}
+                                                                placeholder='SERIE'
+                                                                value={form['equipos'][key]['serie']}
+                                                                withtaglabel={0}
+                                                                name='serie'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'serie')}
+                                                                customclass="px-2"
+                                                            />
+                                                        </Col>
+                                                        <Col md="3" className="mt-4 mt-lg-0 ">
+                                                            <div className="form-container">
+                                                                <select name = 'empleado_id' value={form.empleado_id} selected onChange={ e =>this.onChangeEquipos(key, e, 'empleado_id')}>
+                                                                <option hidden>Elige un colaborador</option>
+                                                                {
+                                                                    options.empleados !== '' ?
+                                                                    options.empleados.map((empleado, key) => {
+                                                                        return (
+                                                                            <option value={empleado.id} key={key}>{empleado.nombre}</option>
+                                                                        )
+                                                                    })
+                                                                    : null
+                                                                }
+                                                                </select>
+                                                            </div>
+                                                            
+                                                        </Col>
+                                                        <Col md="12" className="mt-4">
+                                                            <InputGray
+                                                                requirevalidation={0}
+                                                                placeholder='DESCRIPCIÓN'
+                                                                value={form['equipos'][key]['descripcion']}
+                                                                withtaglabel={0}
+                                                                name='descripcion'
+                                                                withtextlabel={0}
+                                                                withplaceholder={1}
+                                                                withicon={0}
+                                                                iconclass='las la-clipboard-list'
+                                                                onChange={e => this.onChangeEquipos(key, e, 'descripcion')}
+                                                                customclass="px-2"
+                                                                as="textarea"
+                                                                rows="2"
+                                                            />
+                                                        </Col>
+                                                        
+                                                    </Row>
+                                                </div>
+                                            </div>
+                                            {
+                                                form.equipos.length === 1 || key === form.equipos.length - 1 ? <></>
+                                                    : <div className="separator separator-solid my-3 w-100"></div>
+                                            }
+                                        </div>
+                                    )
+                                })
                             }
-                        </Row>
-                        {
-                            form.equipo?
-                            <div className="d-flex justify-content-end border-top mt-3 pt-3 mx-4">
-                                <button className="btn btn-info font-weight-bold text-uppercase" type='submit'>Asignar Equipo</button>
-                            </div>
-                            : <></>
-                        }
+                        </div>
+                    </div>
+                    <div className="card-footer pt-3 pb-0 px-0 text-right">
+                        <Button icon='' className="btn btn-primary" text="ENVIAR"
+                            onClick={(e) => { e.preventDefault(); validateAlert(this.onSubmit, e, 'form-equipos'); reloadTableEquipos({}) }} />
+                    </div>
                     </Form>
+                    
+                    
                 }
             </div>
         )

@@ -1,12 +1,12 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {  useSelector } from "react-redux";
 
 import $ from 'jquery'
 import swal from 'sweetalert2'
 
 import{ printResponseErrorAlert } from './../../../../functions/alert'
-import { apiPutForm } from '../../../../functions/api';
+import { apiPutForm, apiGet } from '../../../../functions/api';
 
 import './../../../../styles/_modal_form.scss'
 
@@ -22,8 +22,9 @@ export default function EdithEquipoForm({props}){
         descripcion: descripcion,
         empleado_id: empleado_id
     })
-
+    const [empleado, setEmpleado] = useState(props.colaborador.nombre)
     const [errores, setErrores] = useState({})
+    const [usuarios, setUsuarios] = useState()
 
     const validateForm = () => {
         let validacionError = true
@@ -52,11 +53,27 @@ export default function EdithEquipoForm({props}){
         return validacionError
     }
 
+    useEffect(() => {
+        getUsers()
+    }, [])
+
+    const getUsers = () => {
+        try {
+            apiGet('user/users/options', authUser)
+            .then(response => {
+                setUsuarios(response.data.empleados)
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    } 
+
     const handleChange = (e) => {
         setEquipoForm({
             ...equipoForm,
             [e.target.name]: e.target.value
         })
+        console.log(e.target.value)
     }
 
     const reloadTableEquipos = (filter) => {
@@ -115,6 +132,22 @@ export default function EdithEquipoForm({props}){
                         <label>Numero de serie</label>
                         <input type="text" name="serie" value={equipoForm.serie} onChange={e => handleChange(e)}/>
                         {errores.serie && <p>{errores.serie}</p>}
+                    </div>
+                    <div>
+                        <label>Colaborador</label>
+                        <select name = 'empleado_id'  onChange = {e => handleChange(e)}>
+                            <option hidden>{empleado}</option>
+                            {
+                                usuarios ?
+                                usuarios.map((usuario, index) => {
+                                    return( 
+                                        <option key={index} value={usuario.id}>{usuario.nombre}</option>  
+                                    )
+                                }) : null
+                            }  
+                        </select>
+                        
+                        
                     </div>
 
                 </div>
