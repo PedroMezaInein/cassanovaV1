@@ -492,7 +492,7 @@ class Empleados extends Component {
                         fechaInicio: setDateTableReactDom(colaborador.fecha_inicio, this.doubleClick, colaborador, 'fecha', 'text-center'),
                         cuenta: renderToString(setArrayTable(
                             [
-                                { 'name': 'Banco', 'text': colaborador.banco ? colaborador.banco : 'Sin definir' },
+                                { 'name': 'Banco', 'text': colaborador.banco_nombre ? colaborador.banco_nombre : 'Sin definir' },
                                 { 'name': 'No. Cuenta', 'text': colaborador.cuenta ? colaborador.cuenta : 'Sin definir' },
                                 { 'name': 'Clabe', 'text': colaborador.clabe ? colaborador.clabe : 'Sin definir' },
                             ], '180px'
