@@ -131,6 +131,23 @@ class AvanceForm extends Component {
                                                             type="text"
                                                         />
                                                     </div>
+                                                    <div className="col-sm-6">
+                                                        <InputNumberGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withformgroup={0}
+                                                            withicon={1}
+                                                            requirevalidation={0}
+                                                            placeholder="TRABAJADORES SEMANA PASADA"
+                                                            value={form.trabajadores_anterior}
+                                                            name="trabajadores_anterior"
+                                                            onChange={onChange}
+                                                            iconclass="people"
+                                                            messageinc="Ingresa el número de trabajadores de la semana anterior."
+                                                            type="text"
+                                                        />
+                                                    </div>
                                                 </div>
                                                 
                                                 <div className="separator separator-dashed mt-1 mb-2"></div>
