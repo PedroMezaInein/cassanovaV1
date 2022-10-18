@@ -28,7 +28,7 @@ class Avances extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
             semana: '',
-            trabajadores: '',
+            trabajadores: 0,
             trabajadores_anterior: 0,
             actividades_realizadas:'',
             avances: [

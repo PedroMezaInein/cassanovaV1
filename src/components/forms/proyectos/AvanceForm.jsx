@@ -121,7 +121,7 @@ class AvanceForm extends Component {
                                                             withplaceholder={1}
                                                             withformgroup={0}
                                                             withicon={1}
-                                                            requirevalidation={1}
+                                                            requirevalidation={0}
                                                             placeholder="NÚMERO DE TRABAJADORES"
                                                             value={form.trabajadores}
                                                             name="trabajadores"
