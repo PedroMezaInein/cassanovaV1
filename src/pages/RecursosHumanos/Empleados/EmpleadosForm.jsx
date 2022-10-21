@@ -49,6 +49,7 @@ class EmpleadosForm extends Component {
             fechaFin: new Date(),
             fecha_alta_imss: '',
             numero_alta_imss: '',
+            numero_repse: '',
             numero_baja_imss: '',
             fecha_baja_imss:' ',           
             empresa: '',
@@ -106,7 +107,8 @@ class EmpleadosForm extends Component {
             organigrama: [],
             puestos:[],
             estado_civil: [],
-            responsable: []
+            responsable: [],
+            numero_repse: [],
         }
     }
     componentDidMount() {
@@ -243,8 +245,9 @@ class EmpleadosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                console.log(response)
                 Swal.close()
-                const { empresas, departamentos,bancos,organigrama,puestos,estado_civil,empleados } = response.data
+                const { empresas, departamentos,bancos,organigrama,puestos,estado_civil,empleados,repse } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['departamentos'] = setOptions(departamentos, 'nombre', 'id')
@@ -253,6 +256,7 @@ class EmpleadosForm extends Component {
                 options['puestos'] = setOptions(puestos, 'nombre_puesto', 'id')
                 options['estado_civil'] = setOptions(estado_civil,'nombre_ec', 'id')
                 options['responsable'] = setOptions(empleados,'nombre', 'id')
+                options['numero_repse'] = setOptions(repse,'name', 'id')
             
                 this.setState({
                     ...this.state,
@@ -395,10 +399,12 @@ class EmpleadosForm extends Component {
         return form;
     }
     onChange = (e) => {
+        console.log(e)
         if(e){
             let { name, value } = e.target
             let { form } = this.state
             form[name] = value
+            
             this.setState({
                 ...this.state,
                 form
