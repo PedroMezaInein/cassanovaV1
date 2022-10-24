@@ -19,6 +19,10 @@ import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie'
 import {  setOptions } from '../../functions/setters'
 import { Button } from '../../components/form-components'
+
+import CreateSalaJuntas from './../RecursosHumanos/Reuniones/SalaJuntas/CreateSalaJuntas'
+import EnrollUser from './../RecursosHumanos/Reuniones/Cursos/EnrollUser'
+
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
 class Calendario extends Component {
@@ -38,7 +42,9 @@ class Calendario extends Component {
             modal_permisos: false,
             modal_incapacidad: false,
             modal_ver_permiso:false,
-            modal_ver_incapacidad:false,
+            modal_ver_incapacidad: false,
+            modal_solicitar_sala: false,
+            modal_inscripcion_curso: false,
         },
         permisosM:[],
         incapacidadesM:[],
@@ -190,6 +196,42 @@ class Calendario extends Component {
         })
     }
 
+    openModalSalaJuntas = () => {
+        const { modal } = this.state
+        modal.solicitar_sala = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+    
+    openModalEnrollUser = () => {
+        const { modal } = this.state
+        modal.modal_inscripcion_curso = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalSalaJuntas = () => {
+        const { modal } = this.state
+        modal.solicitar_sala = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalEnrollUser = () => {
+        const { modal } = this.state
+        modal.modal_inscripcion_curso = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
     clearModals = () => {
         const { form } = this.state
         form.fechaInicio= new Date()
@@ -268,6 +310,12 @@ class Calendario extends Component {
         formEvento.correos = []
         modal.form_event = false
         this.setState({ ...this.state, modal, formEvento })
+    }
+
+    handleCloseModalJuntas = () => {
+        const { modal } = this.state
+        modal.solicitar_sala = false
+        this.setState({ ...this.state, modal })
     }
 
     clearForm = () => {
@@ -1378,6 +1426,21 @@ class Calendario extends Component {
                         <div className="d-flex">
                             <div className="card-toolbar" id="dropdown-calendario">
                                 {
+                                    <DropdownButton 
+                                        title={
+                                        <i className="flaticon2-checking p-0"></i>
+                                        
+                                        }
+                                        id={`dropdown-button-drop-left`}
+                                        drop={'left'}
+                                    >
+                                        <Dropdown.Item onClick={this.openModalEnrollUser}>Solicitar Curso</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalSalaJuntas}>Reservar Sala de Juntas</Dropdown.Item>
+                                    </DropdownButton>
+                                }
+                            </div>
+                            <div className="card-toolbar" id="dropdown-calendario">
+                                {
                                     disponibles > 0 ?
                                         <DropdownButton
                                             title={
@@ -1665,6 +1728,17 @@ class Calendario extends Component {
                         onSubmit={this.onSubmitFormEvent} deleteEvent={this.deleteEvent}
                         tagInputChange={(e) => this.tagInputChange(e)} evento={evento} />
                 </Modal>
+
+
+                <Modal size="lg" title="Reservar sala de Juntas" show={modal.solicitar_sala} handleClose={this.closeModalSalaJuntas}>
+                    <CreateSalaJuntas />
+                </Modal>
+
+                <Modal size="lg" title={title} show={modal.modal_inscripcion_curso} handleClose={this.closeModalEnrollUser}>
+                    <EnrollUser />
+                </Modal>
+
+
             </Layout>
 
         );

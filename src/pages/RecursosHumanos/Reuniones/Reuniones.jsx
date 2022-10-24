@@ -20,18 +20,15 @@ export default function Reuniones() {
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
-                {/* <div className=''> */}
-                    <h1>Reuniones</h1>
-                    <Tabs defaultActiveKey="reuniones">
+                    {/* <Tabs defaultActiveKey="reuniones">
                         <Tab eventKey="cursos" title="Cursos">
                             <Cursos/>
                         </Tab>
                         <Tab eventKey="sala-juntas" title="Sala de Juntas">
                             <SalaJuntas />
                         </Tab>
-                    </Tabs>
-                {/* </div> */}
-
+                    </Tabs> */}
+                <SalaJuntas />
             </Layout>
         </>
     )

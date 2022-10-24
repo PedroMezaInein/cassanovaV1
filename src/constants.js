@@ -696,6 +696,12 @@ export const EMPLEADOS_COLUMNS = [
     { Header: 'Días de vacaciones disponibles', accessor: 'vacaciones_tomadas', customRender: true }
 ]
 
+export const REUNIONES_COLUMNS = [
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+]
+
 export const EMPLEADOS_COLUMNS_OBRA = [
     { Header: 'Opciones', accessor: 'actions_obra' },
     { Header: 'Nombre', accessor: 'nombre_obra' },

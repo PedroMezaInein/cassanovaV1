@@ -188,7 +188,6 @@ class Prestaciones extends Component {
                             <PrestacionesForm title = { title } at = { access_token } refresh = { this.refresh } prestacion={prestacion} options = { options }/> 
                         : <></>
                     }
-                    
                 </Modal>
                 <Modal size = 'lg' show = { modal.egreso } handleClose = { this.handleClose } title = 'EGRESOS' bgHeader="border-0">
                     {

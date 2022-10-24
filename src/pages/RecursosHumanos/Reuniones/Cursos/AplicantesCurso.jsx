@@ -14,9 +14,9 @@ export default function AplicantesCurso() {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Nombre</td>
-                        <td>Apellido</td>
-                        <td>Correo</td>
+                        <td>Claudio</td>
+                        <td>Herrera</td>
+                        <td>claudio@inein.mx</td>
                         <td>
                             <button className='btn btn-success'>Aceptar</button>
                             <button className='btn btn-danger'>Rechazar</button>
