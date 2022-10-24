@@ -34,7 +34,7 @@ class EmpleadosForm extends Component {
 
     updateRepse = value => {
         const { onChange } = this.props
-        onChange({ target: { value: value, name: 'numero_repse' } })
+        onChange({ target: { value: value, name: 'id_patronal' } })
     }
 
     updateEstadoCivil = value => {
@@ -394,8 +394,8 @@ class EmpleadosForm extends Component {
                                     </div> */}
 
                                     <div className="col-md-2">
-                                        <SelectSearchGray withtaglabel={1} withtextlabel={1}  formeditado={formeditado} options={options.numero_repse} onChange={this.updateRepse}
-                                            name="numero_repse" value={form.numero_repse} placeholder="Numero repse" iconclass={"fas fa-hospital-user"} messageinc="Incorrecto. Ej. 01234567891"
+                                        <SelectSearchGray withtaglabel={1} withtextlabel={1}  formeditado={formeditado} options={options.registro_patronal} onChange={this.updateRepse}
+                                            name="id_patronal" value={form.id_patronal} placeholder="Registro Patronal" iconclass={"fas fa-hospital-user"} 
                                         />
                                     </div>
 
