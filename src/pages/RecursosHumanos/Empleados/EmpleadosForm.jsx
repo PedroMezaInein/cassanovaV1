@@ -133,6 +133,7 @@ class EmpleadosForm extends Component {
                     if (state.empleado) {
                         const { form, options} = this.state
                         const { empleado } = state
+                        console.log(empleado)
                         console.log('estaa aquii')
 
                         console.log(empleado)
@@ -207,7 +208,7 @@ class EmpleadosForm extends Component {
                         form.infonavit = empleado.infonavit
                         form.isn = empleado.isn
                         form.checador = empleado.checador
-                        form.id_patronal = empleado.id_repse === null ? '' : empleado.id_repse.toString()
+                        form.id_patronal = empleado.id_patronal === null ? '' : empleado.id_patronal.toString()
 
                         this.setState({
                             ...this.state,
