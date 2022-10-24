@@ -32,6 +32,11 @@ class EmpleadosForm extends Component {
         onChange({ target: { value: value, name: 'banco' } })
     }
 
+    updateRepse = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'id_patronal' } })
+    }
+
     updateEstadoCivil = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'estado_civil' } })
@@ -371,6 +376,40 @@ class EmpleadosForm extends Component {
                                             name="numero_alta_imss" type="text" value={form.numero_alta_imss} placeholder="FOLIO DE ALTA IMSS" iconclass={"fas fa-hospital-user"} patterns={NSS} messageinc="Incorrecto. Ej. 01234567891" typeformat="###########"
                                         />
                                     </div>
+
+
+
+
+
+
+
+
+
+
+
+                                    {/* <div className="col-md-2">
+                                        <SelectSearchGray withtaglabel={1} withtextlabel={1} customdiv="mb-0" formeditado={formeditado} options={options.bancos} placeholder="Selecciona el banco"
+                                            name="banco" value={form.banco} onChange={this.updateBanco} iconclass={"far fa-building"} messageinc="Incorrecto. Selecciona el banco"
+                                        />
+                                    </div> */}
+
+                                    <div className="col-md-2">
+                                        <SelectSearchGray withtaglabel={1} withtextlabel={1}  formeditado={formeditado} options={options.registro_patronal} onChange={this.updateRepse}
+                                            name="id_patronal" value={form.id_patronal} placeholder="Registro Patronal" iconclass={"fas fa-hospital-user"} 
+                                        />
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
                                     <div className="col-md-2">
                                         <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} onChange={onChange} formeditado={formeditado} name="fecha_baja_imss"
                                             type="date" value={form.fecha_baja_imss} placeholder="Fecha baja imss" iconclass="fas fa-user" messageinc="Incorrecto. Ingresa la fecha de baja imss." />

@@ -49,6 +49,7 @@ class EmpleadosForm extends Component {
             fechaFin: new Date(),
             fecha_alta_imss: '',
             numero_alta_imss: '',
+            id_patronal: '',
             numero_baja_imss: '',
             fecha_baja_imss:' ',           
             empresa: '',
@@ -106,7 +107,8 @@ class EmpleadosForm extends Component {
             organigrama: [],
             puestos:[],
             estado_civil: [],
-            responsable: []
+            responsable: [],
+            registro_patronal: [],
         }
     }
     componentDidMount() {
@@ -131,6 +133,10 @@ class EmpleadosForm extends Component {
                     if (state.empleado) {
                         const { form, options} = this.state
                         const { empleado } = state
+                        console.log(empleado)
+                        console.log('estaa aquii')
+
+                        console.log(empleado)
 
                         form.nombre = empleado.nombre
                         form.curp = empleado.curp
@@ -202,6 +208,7 @@ class EmpleadosForm extends Component {
                         form.infonavit = empleado.infonavit
                         form.isn = empleado.isn
                         form.checador = empleado.checador
+                        form.id_patronal = empleado.id_patronal === null ? '' : empleado.id_patronal.toString()
 
                         this.setState({
                             ...this.state,
@@ -244,7 +251,7 @@ class EmpleadosForm extends Component {
         await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, departamentos,bancos,organigrama,puestos,estado_civil,empleados } = response.data
+                const { empresas, departamentos,bancos,organigrama,puestos,estado_civil,empleados,patronal } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['departamentos'] = setOptions(departamentos, 'nombre', 'id')
@@ -253,6 +260,7 @@ class EmpleadosForm extends Component {
                 options['puestos'] = setOptions(puestos, 'nombre_puesto', 'id')
                 options['estado_civil'] = setOptions(estado_civil,'nombre_ec', 'id')
                 options['responsable'] = setOptions(empleados,'nombre', 'id')
+                options['registro_patronal'] = setOptions(patronal,'name_patronal', 'id')
             
                 this.setState({
                     ...this.state,
@@ -399,6 +407,7 @@ class EmpleadosForm extends Component {
             let { name, value } = e.target
             let { form } = this.state
             form[name] = value
+            
             this.setState({
                 ...this.state,
                 form

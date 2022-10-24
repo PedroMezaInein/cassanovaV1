@@ -171,10 +171,21 @@ class Prestaciones extends Component {
         const { authUser: {access_token}, history } = this.props
         const { modal, filters, title, prestacion, options } = this.state
         return(
-            <Layout active = 'rh' { ...this.props } >
-                <NewTable tableName = 'prestaciones' subtitle = 'Listado de prestaciones' title = 'Prestaciones' abrirModal = { true }
-                    accessToken = { access_token } columns = { PRESTACIONES_RH_COLUMNS } setter = { this.setTable } onClick = { this.openModal }
-                    urlRender = {`${URL_DEV}v1/rh/prestaciones`}  filterClick = { this.openModalFiltros }/>
+            <Layout active='rh' {...this.props} >
+                
+                <NewTable
+                    tableName='prestaciones'
+                    subtitle='Listado de prestaciones'
+                    title='Prestaciones'
+                    abrirModal={true}
+                    accessToken={access_token}
+                    columns={PRESTACIONES_RH_COLUMNS}
+                    setter={this.setTable}
+                    addClick={this.openModal}
+                    urlRender={`${URL_DEV}v1/rh/prestaciones`}
+                    filterClick={this.openModalFiltros}
+                />
+                
                 <Modal size = 'lg' show = { modal.filtros } handleClose = { this.handleClose } title = 'Filtros'>
                     {   
                         modal.filtros ? 
