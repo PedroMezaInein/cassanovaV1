@@ -18,6 +18,8 @@ export default function SalaJuntas() {
     const [modal, setModal] = useState({
         create: false,
         edith: false,
+        aplicantes: false,
+        edithInfo: false,
     });
         
 
@@ -34,8 +36,20 @@ export default function SalaJuntas() {
     const handleCloseEdith = () => {
         setModal({ ...modal, edith: false })
     };
+    
+    const handleShowAplicant = () => setModal({ ...modal, aplicantes: true });
 
-    const handleShowEdith = () => setModal({ ...modal, edith: true });
+    const handleCloseAplicant = () => {
+        setModal({ ...modal, aplicantes: false })
+    };
+
+    const handleShowEdith = (reserva) => {
+        setModal({
+            ...modal,
+            edithInfo: reserva,
+            edith: true
+        })
+    }
 
     const getInfoSalas = () => {
         try {
@@ -76,7 +90,11 @@ export default function SalaJuntas() {
                             {reservas.map((reserva) => (
                                 <tr key={reserva.id}>
                                     <td>
-                                        <button className='btn btn-primary' onClick={handleShowEdith}>Editar</button>
+                                        <button className='btn btn-primary' onClick={e => handleShowEdith(reserva)}>Editar</button>
+                                        {reserva.typo === "curso" ? 
+                                            <button className='btn btn-primary' onClick={handleShowAplicant}>Asistentes</button> 
+                                        :null    
+                                        }
                                     </td>
                                     <td>{reserva.fecha}</td>
                                     <td>{reserva.typo}</td>
@@ -109,7 +127,16 @@ export default function SalaJuntas() {
                     <Modal.Title>Editar reserva</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AplicantesCurso />
+                    <CreateSalaJuntas reservaEdith={modal.edithInfo} admin={true} getInfo={getInfoSalas} closeModal={handleCloseCreate} />
+                </Modal.Body>
+            </Modal>
+
+            <Modal size="lg" show={modal.aplicantes} onHide={handleCloseAplicant} centered={true}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Aplicantes</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <AplicantesCurso rh={true} closeModal={handleCloseAplicant} />
                 </Modal.Body>
             </Modal>
 

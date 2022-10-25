@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 
 import {useEffect} from 'react';
 
-import { apiGet } from '../../../../functions/api'
+import { apiPostForm, apiGet } from '../../../../functions/api'
 
 import Swal from 'sweetalert2';
 
 
-export default function EnrollUser() {
+export default function EnrollUser({close}) {
     const userAuth = useSelector((state) => state.authUser);
     const [cursos, setCursos] = useState(false);
     const [form, setForm] = useState({
@@ -51,21 +51,23 @@ export default function EnrollUser() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(form)
-        console.log(validateForm())
         
         if (validateForm()) {
             try {
-                Swal.fire({
-                    title: 'Felicidades!',
-                    text: 'Te has inscrito al curso correctamente',
-                    icon: 'success',
-                    confirmButtonText: 'Ok',
-                });
+                apiPostForm('salas/solicita', form, userAuth.access_token)
+                .then((response) => {
+                    close()
+                    Swal.fire({
+                        title: 'Felicidades!',
+                        text: 'Tu postulación ha sido enviada',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    })
+                    resetForm();
+                })
             } catch (error) {
                 
             }
-            resetForm();
         } else {
             Swal.fire({
                 icon: 'error',
@@ -75,8 +77,12 @@ export default function EnrollUser() {
         }
     };
 
-
-    console.log(cursos)
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value,
+        });
+    };
 
     return (
         <div>
@@ -87,10 +93,10 @@ export default function EnrollUser() {
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleFormControlSelect1">Nombre del curso</label>
-                    <select className="form-control" id="exampleFormControlSelect1">
+                    <select name="curso_id" className="form-control" id="exampleFormControlSelect1" onChange={handleChange}>
                         <option hidden>Selecciona un curso</option>
-                        {cursos ? cursos.map((curso) => { 
-                            return <option value={curso.id}>{curso.name}</option>
+                        {cursos ? cursos.map((item) => { 
+                            return <option key={item.id} value={item.id} >{item.nombre}</option>
                         } ) : null}
                     </select>
                 </div>

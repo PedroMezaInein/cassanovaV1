@@ -1735,7 +1735,7 @@ class Calendario extends Component {
                 </Modal>
 
                 <Modal size="lg" title={title} show={modal.modal_inscripcion_curso} handleClose={this.closeModalEnrollUser}>
-                    <EnrollUser />
+                    <EnrollUser close={this.closeModalEnrollUser} />
                 </Modal>
 
 

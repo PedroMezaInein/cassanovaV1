@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from "react"
 import { useSelector } from "react-redux";
-import { apiPostForm, apiGet } from '../../../../functions/api';
+import { apiPostForm, apiGet, apiPutForm } from '../../../../functions/api';
 import Swal from 'sweetalert2'
 import '../../../../styles/_salaJuntas.scss'
 
-export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
+export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEdith }) {
     const userAuth = useSelector((state) => state.authUser);
     const [errores, setErrores] = useState({})
     const [reservas, setReservas] = useState({})
+    const [ rangoHora, setRangoHora ] = useState()
     const [form, setForm] = useState({
         user_id: userAuth.user.empleado_id,
         fecha: '',
@@ -17,6 +18,7 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
         duracion: '',
         tipo: '',
         nombre: '',
+        id: '',
     });
 
     let horas = [
@@ -43,8 +45,72 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
     useEffect(() => {
 
         getInfoSalas()
+        if (reservaEdith) {
+            console.log(reservaEdith)
+            setForm({
+                user_id: userAuth.user.empleado_id,
+                fecha: reservaEdith.fecha,
+                hora: reservaEdith.hora.slice(0, 5),
+                sala: reservaEdith.sala,
+                asunto: reservaEdith.asunto,
+                duracion: reservaEdith.duracion,
+                tipo: reservaEdith.typo,
+                nombre: reservaEdith.nombre,
+                id: reservaEdith.id,
+            })
+        }
 
     }, [])
+
+    useEffect(() => {
+        if (form.duracion !== '' && form.hora !== '') {
+            rangoHoras()
+        }
+    }, [form.hora, form.duracion])
+
+    const rangoHoras = () => {
+        let rango_horas =[]
+        if (form.hora !== '' && form.duracion !== '') {
+            let hora_inicio = form.hora.slice(0, 5)
+            let duracion = form.duracion
+            
+            switch (duracion) {
+            case "0.5":
+                horas.map((hora) => {
+                    if (hora.hora === hora_inicio) {
+                        rango_horas.push(hora)
+                    }
+                })
+                break;
+            case "1":
+                horas.map((item, index) => {
+                    if (item.hora === hora_inicio) {
+                        rango_horas.push(item)
+                        rango_horas.push(horas[index + 1])
+                    }
+                })
+                break;
+            case "2":
+                horas.map((item, index) => {
+                    if (item.hora === hora_inicio) {
+                        rango_horas.push(item)
+                        rango_horas.push(horas[index + 1])
+                        rango_horas.push(horas[index + 2])
+                        rango_horas.push(horas[index + 3])
+                    }
+                })  
+                break;
+            default:
+
+                break;
+        }
+
+        
+        }
+        setRangoHora({
+            rango_horas
+        })
+    }
 
     const getInfoSalas = () => {
         try {
@@ -97,27 +163,29 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
         }
     }
 
-    const validateReserva = () => { 
+    const validateReserva = () => {
         let error = false
-        
-        reservas.map((reserva) => {
 
-            if (reserva.fecha === form.fecha && reserva.sala === form.sala && reserva.rango_horas.find((hora) => {
-                if(hora.hora === form.hora) {
-                    return true
-                }
-            }))
-            {
-                
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: `La ${reserva.sala} ya esta reservada para esa hora ${reserva.rango_horas[0].hora} - ${reserva.rango_horas[reserva.rango_horas.length - 1].hora}`,
+        reservas.map((reserva) => { 
+            if(reserva.fecha === form.fecha && reserva.sala === form.sala) {
+                reserva.rango_horas.map((hora) => {
+                    rangoHora.rango_horas.map((hora2) => { 
+                        if(hora.hora === hora2.hora && form.id !== reserva.id) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `La ${reserva.sala} ya esta reservada para esa hora ${reserva.rango_horas[0].hora} - ${reserva.rango_horas[reserva.rango_horas.length - 1].hora}`,
+                            })
+                            error = true
+                        }
+                    })
                 })
-                error=true
             }
+            
         })
+
         return error
+
     }
     //salas/solicita
     const handleChange = (e) => {
@@ -127,7 +195,10 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
         })
     };
 
-    const handleSubmit = (e) => {
+    console.log(rangoHora)
+    console.log(form)
+
+    async function handleSubmit (e) {
         let confirmacion = false
         e.preventDefault()
 
@@ -148,6 +219,31 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
                         }
                         if(confirmacion){
                             try {
+                                reservaEdith ?
+                                apiPutForm('salas', form, userAuth.access_token)
+                                    .then((response) => {
+                                    closeModal()
+                                    console.log(response)
+                                    Swal.fire({
+                                        title: 'Reserva Modificada',
+                                        text: 'La reserva se ha editado correctamente',
+                                        icon: 'success',
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                    })
+                                    resetForm()
+                                    getInfoSalas()
+                                    getInfo()
+                                }).catch((error) => {
+                                    Swal.fire({
+                                    title: 'Error',
+                                    text: 'Ha ocurrido un error al editar la reserva',
+                                    icon: 'error',
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    })
+                                })
+                                :
                                 apiPostForm('salas', form, userAuth.access_token)
                                     .then((response) => {
                                     closeModal()
@@ -170,7 +266,7 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
                                     showConfirmButton: false,
                                     timer: 2000,
                                     })
-                                })
+                                })    
                                 
                             } catch (error) {
                                 Swal.fire({
@@ -231,7 +327,6 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
                 validacionError = false;
             }
         }
-        
         setErrores(errors);
         return validacionError;
     };
@@ -249,8 +344,6 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
         });
         setErrores({})
     };
-
-    console.log(reservas)
     
     return (
         <>
@@ -263,7 +356,7 @@ export default function CreateSalaJuntas({admin, getInfo, closeModal}) {
                     {admin ?
                         <div className={`${errores.tipo ? "error":"validate"}`}>
                         <label>Tipo de reunion</label>
-                        <select name="tipo" onChange={handleChange}>
+                        <select name="tipo" onChange={handleChange} value={form.tipo}>
                             <option value="" hidden>Seleccione el tipo</option>
                             <option value="reunion">Reunion</option>
                             <option value="curso">Curso</option>
