@@ -90,7 +90,7 @@ class NominaAdmin extends Component {
         })
     }
 
-    openModalAdjuntos = nomina => {
+    openModal = nomina => {
         const { modal, data } = this.state
         modal.adjuntos = true
         data.adjuntos = nomina.adjuntos

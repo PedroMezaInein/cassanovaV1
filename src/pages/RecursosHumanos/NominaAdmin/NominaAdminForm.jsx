@@ -27,11 +27,13 @@ class NominaAdminForm extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
             cuentaImss: '',
+            cuentaextraImss: '',
             cuentaRestante: '',
             cuentaExtras: '',
             nominasAdmin: [{
                 usuario: '',
                 nominImss: '',
+                extraImss: '',
                 restanteNomina: '',
                 extras: ''
             }],
@@ -133,11 +135,12 @@ class NominaAdminForm extends Component {
                 })
 
                 if (aux.length) { form.nominasAdmin = aux } 
-                else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', restanteNomina: '', extras: '' }] }
 
                 if(nomina.egresos){
                     if(nomina.egresos.length){
                         if(nomina.cuentaImss){ form.cuentaImss = nomina.cuentaImss.id.toString() }
+                        if(nomina.cuentaextraImss){ form.cuentaextraImss = nomina.cuentaextraImss.id.toString() }
                         if(nomina.cuentaRestante){ form.cuentaRestante = nomina.cuentaRestante.id.toString() }
                         if(nomina.cuentaExtras){ form.cuentaExtras = nomina.cuentaExtras.id.toString() }
                     }
@@ -173,6 +176,7 @@ class NominaAdminForm extends Component {
                         aux.push({
                             'usuario': element.id.toString(),
                             'nominImss': element.nomina_imss,
+                            'extraImss': 0.0,
                             'restanteNomina': element.nomina_extras,
                             'extras': 0.0
                         })
@@ -247,6 +251,7 @@ class NominaAdminForm extends Component {
                         {
                             usuario: element.empleado ? element.empleado.id.toString() : '',
                             nominImss: element.nomina_imss,
+                            extraImss: element.restante,
                             restanteNomina: element.restante_nomina,
                             extras: element.extras,
                             id: element.id
@@ -281,6 +286,7 @@ class NominaAdminForm extends Component {
                             {
                                 usuario: element.empleado ? element.empleado.id.toString() : '',
                                 nominImss: element.nomina_imss,
+                                extraImss: element.extra_imss,
                                 restanteNomina: element.restante_nomina,
                                 extras: element.extras,
                                 id: element.id
@@ -288,7 +294,7 @@ class NominaAdminForm extends Component {
                         )
                     })
                     if (aux.length) { form.nominasAdmin = aux } 
-                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', restanteNomina: '', extras: '' }] }
                     options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
                     window.history.replaceState(nom, 'nomina')
                     this.setState({...this.state, nomina: nom, options, form })
@@ -305,7 +311,7 @@ class NominaAdminForm extends Component {
                     aux.push(element)
             })
             if (aux.length) { form.nominasAdmin = aux } 
-            else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+            else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', restanteNomina: '', extras: '' }] }
             options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
             this.setState({...this.state, form, options})
         }
@@ -386,7 +392,7 @@ class NominaAdminForm extends Component {
             data.usuarios.map( (empleado) => {
                 if(value.toString() === empleado.id.toString()){
                     form['nominasAdmin'][key].nominImss = empleado.nomina_imss
-                    form['nominasAdmin'][key].restanteImss = 0.0
+                    form['nominasAdmin'][key].extraImss = 50
                     form['nominasAdmin'][key].restanteNomina = empleado.nomina_extras
                     form['nominasAdmin'][key].extras = 0.0
                 }

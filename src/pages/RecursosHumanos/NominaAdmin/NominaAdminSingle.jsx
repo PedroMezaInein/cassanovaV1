@@ -73,6 +73,7 @@ class NominaAdminSingle extends Component {
                     idEmpleado: renderToString(setTextTableCenter(nomina.empleado ? nomina.empleado.id : '')),
                     empleado: renderToString(setTextTableCenter(nomina.empleado ? nomina.empleado.nombre : '')),
                     nominaIMSS: renderToString(setMoneyTable(nomina.nomina_imss ? nomina.nomina_imss: 0.0)),
+                    extraImss: renderToString(setMoneyTable(nomina.extra_imss ? nomina.extra_imss : 0.0)),
                     extras: renderToString(setMoneyTable(nomina.restante_nomina ? nomina.restante_nomina : 0.0)),
                     viaticos: renderToString(setMoneyTable(nomina.extras ? nomina.extras : 0.0)),
                     total: renderToString(setMoneyTable(nomina.extras + nomina.restante_nomina + nomina.nomina_imss)),
