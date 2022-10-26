@@ -22,12 +22,23 @@ class NominaAdminForm extends Component {
     getTotal(key) {
         const { form } = this.props
         let nominImss = form.nominasAdmin[key].nominImss === undefined ? 0 : form.nominasAdmin[key].nominImss
+        let nominRestanteImss = form.nominasAdmin[key].nominRestanteImss === undefined ? 0 : form.nominasAdmin[key].nominRestanteImss
         let restanteNomina = form.nominasAdmin[key].restanteNomina === undefined ? 0 : form.nominasAdmin[key].restanteNomina
         let extras = form.nominasAdmin[key].extras === undefined ? 0 : form.nominasAdmin[key].extras
-        return parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
+        return parseFloat(nominImss) + parseFloat(nominRestanteImss) + parseFloat(restanteNomina) + parseFloat(extras)
     }
 
     getTotalNominaImss(key) {
+        const { form } = this.props
+        var suma = 0
+        form.nominasAdmin.forEach(element => {
+            let aux = element[key] === undefined ? 0 : element[key]
+            suma = suma + parseFloat(aux)
+        })
+        return suma
+    }
+
+    getTotalrestanteImss(key) {
         const { form } = this.props
         var suma = 0
         form.nominasAdmin.forEach(element => {
@@ -61,15 +72,17 @@ class NominaAdminForm extends Component {
         const { form } = this.props
 
         let sumaNomImss = 0;
+        let sumarestanteImss = 0;
         let sumaRestanteNomina = 0;
         let sumaExtras = 0;
 
         form.nominasAdmin.forEach(element => {
             sumaNomImss += element.nominImss === undefined ? 0 : parseFloat(element.nominImss);
+            sumarestanteImss += element.nominRestanteImss === undefined ? 0 : parseFloat(element.nominRestanteImss);
             sumaRestanteNomina += element.restanteNomina === undefined ? 0 : parseFloat(element.restanteNomina);
             sumaExtras += element.extras === undefined ? 0 : parseFloat(element.extras);
         });
-        return sumaNomImss + sumaRestanteNomina + sumaExtras
+        return sumaNomImss + sumarestanteImss + sumaRestanteNomina + sumaExtras
     }
 
     updateCuenta = (value, name) => {
@@ -217,6 +230,7 @@ class NominaAdminForm extends Component {
                                         <th className='border-bottom-0'></th>
                                         <th rowSpan="3"><div className="mt-2 pb-3">COLABORADOR</div></th>
                                         <th className="pb-0 border-bottom-0 text-center">Nómina IMSS</th>
+                                        <th className="pb-0 border-bottom-0 text-center">Adicional Imss</th>
                                         <th className="pb-0 border-bottom-0 text-center">Restante Nómina</th>
                                         <th className="pb-0 border-bottom-0 text-center">Extras</th>
                                         <th className="pb-0 border-bottom-0 text-center">Total</th>
@@ -236,6 +250,32 @@ class NominaAdminForm extends Component {
                                                 </th>
                                                 : <th className="border-bottom-0"></th>
                                         }
+
+
+
+
+
+
+                                        {
+                                            this.getTotalrestanteImss("restanteImss") > 0 ?
+                                                <th className="py-2 border-bottom-0">
+                                                    <div className="py-1 my-0 font-weight-bolder">
+                                                        <SelectSearchGray formeditado={formeditado} options={options.cuentas} name="cuentarestanteImss"
+                                                            placeholder="SELECCIONA LA CUENTA" value={form.cuentarestanteImss} messageinc="SELECCIONA LA CUENTA"
+                                                            onChange={(value) => { this.updateCuenta(value, 'cuentarestanteImss') }} withtaglabel={0} withtextlabel={0}
+                                                            withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1} />
+                                                    </div>
+                                                </th>
+                                                : <th className="border-bottom-0"></th>
+                                        }
+
+
+
+
+
+
+
+
                                         {
                                             this.getTotalExtra("restanteNomina") > 0 ?
                                                 <th className="py-2 border-bottom-0">
@@ -265,6 +305,7 @@ class NominaAdminForm extends Component {
                                     <tr>
                                         <th className=''></th>
                                         <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
+                                        <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalrestanteImss("nominRestanteImss"))}</div></th>
                                         <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
                                         <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
                                         <th className="pt-2"><div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center">{setMoneyTableForNominas(this.getTotales())}</div></th>
@@ -292,6 +333,25 @@ class NominaAdminForm extends Component {
                                                             value={nominaAdmin.nominImss} onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
                                                             prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
                                                     </td>
+
+
+
+
+
+                                                   
+                                                    <td>
+                                                        <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
+                                                            withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
+                                                            requirevalidation={1} formeditado={1} name="restanteImss" thousandseparator={true}
+                                                            value={nominaAdmin.restanteImss} onChange={e => onChangeNominasAdmin(key, e, 'restanteImss')}
+                                                            prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
+                                                    </td>
+
+
+
+
+
+
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
                                                             withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}

@@ -386,6 +386,7 @@ class NominaAdminForm extends Component {
             data.usuarios.map( (empleado) => {
                 if(value.toString() === empleado.id.toString()){
                     form['nominasAdmin'][key].nominImss = empleado.nomina_imss
+                    form['nominasAdmin'][key].restanteImss = 0.0
                     form['nominasAdmin'][key].restanteNomina = empleado.nomina_extras
                     form['nominasAdmin'][key].extras = 0.0
                 }

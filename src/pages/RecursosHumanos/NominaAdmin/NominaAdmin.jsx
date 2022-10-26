@@ -33,6 +33,7 @@ class NominaAdmin extends Component {
             nominasAdmin:[{
                 usuario: '',
                 nominImss: '',
+                extraImss: '',
                 restanteNomina: '',
                 extras: ''
             }],
