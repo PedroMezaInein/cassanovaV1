@@ -6,20 +6,30 @@ import CreateSalaJuntas from "../SalaJuntas/CreateSalaJuntas"
 
 import AplicantesCurso from './../Cursos/AplicantesCurso'
 
-import { apiGet } from '../../../../functions/api'
+import { apiGet, apiDelete } from '../../../../functions/api'
 
 import Modal from 'react-bootstrap/Modal'
+import Swal from 'sweetalert2';
 
 import '../../../../styles/_salaJuntas.scss'
 
 export default function SalaJuntas() {
     const userAuth = useSelector((state) => state.authUser);
     const [reservas, setReservas] = useState([])
+    const [newReserva, setNewReserva] = useState(false)
+    const [oldReserva, setOldReserva] = useState(false)
+    const [viewReserva, setViewReserva] = useState({
+        show: true,
+    })
     const [modal, setModal] = useState({
         create: false,
         edith: false,
         aplicantes: false,
         edithInfo: false,
+        menu: false,
+    });
+    const [show, setShow] = useState({
+        show: false,
     });
         
 
@@ -55,22 +65,107 @@ export default function SalaJuntas() {
         try {
             apiGet('salas', userAuth.access_token)
                 .then((response) => {
-                    setReservas(response.data.Sala)
+                    oldReservas(response.data.Sala)
                 })
         }catch (error) {
         }
     }
 
+    const menuShow = (e) => {
+        if (show.menu) {
+            setShow({
+                show: false,
+            })
+        }
+        else {
+            setShow({
+                show: true,
+            })
+        }
+    }
 
+    const oldReservas = (data) => { 
+        let separator='-'
+        let newDate = new Date()
+        let date = newDate.getDate();
+        let month = newDate.getMonth() + 1;
+        let year = newDate.getFullYear();
+        let fechaHoy = `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
+        let reservasOld = []
+        let reservasNew = []
+        data.map((reserva) => {
+            if (reserva.fecha < fechaHoy) {
+                reservasOld.push(reserva)
+            } else {
+                reservasNew.push(reserva)
+            }
+        })
+        setNewReserva(reservasNew)
+        setReservas(reservasNew)
+        setOldReserva(reservasOld)
+        setViewReserva({
+            show: true,
+        })
+    }
+
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: '¿Estas seguro de eliminar esta reserva?',
+            text: "No podras revertir esta accion!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    apiDelete(`salas/${id}`, userAuth.access_token)
+                    .then((response) => {
+                        getInfoSalas()
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Algo salio mal!',
+                            timer: 2000,
+                        })
+                    })
+                    
+                } catch (error) {
+                    
+                }
+            }
+        })
+    }
+
+    const viewReservas = () => {
+        if(viewReserva.show){
+            setViewReserva({
+                show: false,
+            })
+            setReservas(oldReserva)
+        } else {
+            setViewReserva({
+                show: true,
+            })
+            setReservas(newReserva)
+        }
+    }
 
     return (
         <>
             
             <div className='container-juntas'>
-                    <h1>Sala de Juntas</h1>
+                <h1>Sala de Juntas</h1>
+                <div className='opciones'>
                     <button className='btn-reservar' onClick={handleShowCreate}><span>+</span>Reservar</button>
-                    {/* <button className='btn btn-primary' onClick={handleShowEdith}>Editar</button> */}
+                    <button className='btn-reservar' onClick={viewReservas}>{viewReserva.show ? 'Ver reservas antiguas' : 'Ver reservas nuevas'}</button>
+                </div>
+                
                     <div>
+                    {reservas[0] ? <div className="subtitle">{`${viewReserva.show ? "PrÓximas Reservaciones": "Reservaciones antiguas"}` }</div>:null}
                     {reservas[0] ? (
                             <table className='table table-striped'>
                             <thead>
@@ -82,19 +177,24 @@ export default function SalaJuntas() {
                                     <th>Sala</th>
                                     <th>Asunto</th>
                                     <th>Duración</th>
-                                    {/* <th>Solicitante</th> */}
-                                    
                                 </tr>
                             </thead>
+                            <br />
                             <tbody>
                             {reservas.map((reserva) => (
                                 <tr key={reserva.id}>
-                                    <td>
-                                        <button className='btn btn-primary' onClick={e => handleShowEdith(reserva)}>Editar</button>
-                                        {reserva.typo === "curso" ? 
-                                            <button className='btn btn-primary' onClick={handleShowAplicant}>Asistentes</button> 
-                                        :null    
-                                        }
+                                    <td className="align">
+                                        <div className="btn-group">
+                                            <button className="btn-acciones dropdown-toggle align" onClick={e => menuShow(reserva.id)} type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                            <div className={`dropdown-menu`}>
+                                                <a className='dropdown-item' onClick={e => handleShowEdith(reserva)} >Editar</a>
+                                                <a className='dropdown-item' onClick={e => handleDelete(reserva.id)}>Eliminar</a>
+                                                {reserva.typo === "curso" ? 
+                                                    <a className='dropdown-item' onClick={handleShowAplicant}>Asistentes</a> 
+                                                :null    
+                                                }
+                                            </div>   
+                                        </div>
                                     </td>
                                     <td>{reserva.fecha}</td>
                                     <td>{reserva.typo}</td>
@@ -102,7 +202,6 @@ export default function SalaJuntas() {
                                     <td>{reserva.sala}</td>
                                     <td>{reserva.asunto}</td>
                                     <td>{ reserva.duracion === "0.5"? "30 minutos": `${reserva.duracion} horas`}</td>
-                                    {/* <td>{reserva.id_usuario}</td> */}
                                     
                                 </tr>
                             ))}
@@ -110,7 +209,8 @@ export default function SalaJuntas() {
                         </table>
                     ) : <div>Sin Salas reservadas</div>
                     }
-                    </div>
+                </div>
+                
                 </div>
             <Modal size="lg"  show={modal.create} onHide={handleCloseCreate} centered={true}>
                 <Modal.Header closeButton>

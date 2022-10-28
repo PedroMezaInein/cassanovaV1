@@ -11,9 +11,10 @@ import Swal from 'sweetalert2';
 export default function EnrollUser({close}) {
     const userAuth = useSelector((state) => state.authUser);
     const [cursos, setCursos] = useState(false);
+    const [curso, setCurso] = useState(false);
     const [form, setForm] = useState({
         user_id: userAuth.user.empleado_id,
-        curso_id: 0,
+        id_sala: 0,
     });
 
     useEffect(() => { 
@@ -22,13 +23,13 @@ export default function EnrollUser({close}) {
 
 
     const validateForm = () => {
-        return form.curso_id.length > 0;
+        return form.id_sala !== 0;
     };
 
     const resetForm = () => {
         setForm({
             user_id: userAuth.user.empleado_id,
-            curso_id: 0,
+            id_sala: 0,
         });
     };
 
@@ -58,8 +59,8 @@ export default function EnrollUser({close}) {
                 .then((response) => {
                     close()
                     Swal.fire({
-                        title: 'Felicidades!',
-                        text: 'Tu postulación ha sido enviada',
+                        title: 'Gracias por postularte ' + userAuth.user.name,
+                        text: 'Tu postulación ha sido enviada y será revisada por el responsable de tu área',
                         icon: 'success',
                         confirmButtonText: 'Aceptar'
                     })
@@ -80,27 +81,46 @@ export default function EnrollUser({close}) {
     const handleChange = (e) => {
         setForm({
             ...form,
-            [e.target.name]: e.target.value,
+            [e.target.name]: cursos[e.target.value].id,
         });
+        setCurso(cursos[e.target.value])
     };
+    console.log(form)
 
     return (
         <div>
             <form>
-                <div>
-                    <label>Solicitante</label>
-                    <input disabled type="text" name="name" value={userAuth.user.name } />
-                </div>
                 <div className="form-group">
-                    <label htmlFor="exampleFormControlSelect1">Nombre del curso</label>
-                    <select name="curso_id" className="form-control" id="exampleFormControlSelect1" onChange={handleChange}>
+                    <label>Curso</label>
+                    <select name="id_sala" className="form-control" id="exampleFormControlSelect1" onChange={handleChange}>
                         <option hidden>Selecciona un curso</option>
-                        {cursos ? cursos.map((item) => { 
-                            return <option key={item.id} value={item.id} >{item.nombre}</option>
+                        {cursos ? cursos.map((item, index) => { 
+                            return <option key={item.id} value={index}>{item.nombre}</option>
                         } ) : null}
                     </select>
                 </div>
+                {curso ?
+                <>
+                <div className="form-group">
+                    <label>Fecha</label>
+                    <input className="form-control" disabled type="text" name="fecha_inicio" value={curso.fecha} />
+                </div>
+                <div className="form-group">
+                    <label>Hora</label>
+                    <input className="form-control" disabled type="text" name="hora_inicio" value={curso.hora} />
+                </div>
+                <div className="form-group">
+                    <label>Duracion</label>
+                    <input className="form-control" disabled type="text" name="duracion" value={curso.duracion + " Hora(s)"} />
+                </div>
+                <div className="form-group">
+                    <label>Descripción del curso</label>
+                    <input className="form-control" disabled type="text" name="descripcion" value={curso.asunto} />
+                </div>
+                </>
+                : null}
             </form>
+            
             <button className="btn btn-primary" onClick={handleSubmit}>Inscribirme</button>
         </div>
     )

@@ -4,7 +4,7 @@ import { apiPostForm, apiGet, apiPutForm } from '../../../../functions/api';
 import Swal from 'sweetalert2'
 import '../../../../styles/_salaJuntas.scss'
 
-export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEdith }) {
+export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEdith=false }) {
     const userAuth = useSelector((state) => state.authUser);
     const [errores, setErrores] = useState({})
     const [reservas, setReservas] = useState({})
@@ -16,7 +16,7 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
         sala: '',
         asunto: '',
         duracion: '',
-        tipo: '',
+        tipo: 'reunion',
         nombre: '',
         id: '',
     });
@@ -195,9 +195,6 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
         })
     };
 
-    console.log(rangoHora)
-    console.log(form)
-
     async function handleSubmit (e) {
         let confirmacion = false
         e.preventDefault()
@@ -205,13 +202,13 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
         if (validateForm()) {
             if (!validateReserva()) {
                 Swal.fire({
-                    title: '¿Deseas reservar la sala?',
-                    text: "¡No podrás revertir esto!",
+                    title: reservaEdith? '¿Editar la reserva?': '¿Estas seguro de realizar la reserva?',
+                    text: reservaEdith? 'Se editara la reserva': 'Se realizara la reserva',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: '¡Sí, reservar!'
+                    confirmButtonText: reservaEdith? 'Editar': 'Reservar'
                     }).then(result => {
                         console.log(result)
                         if (result.isConfirmed) {
@@ -220,7 +217,7 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                         if(confirmacion){
                             try {
                                 reservaEdith ?
-                                apiPutForm('salas', form, userAuth.access_token)
+                                apiPutForm(`salas/${reservaEdith.id}`, form, userAuth.access_token)
                                     .then((response) => {
                                     closeModal()
                                     console.log(response)
@@ -231,7 +228,6 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                                         showConfirmButton: false,
                                         timer: 2000,
                                     })
-                                    resetForm()
                                     getInfoSalas()
                                     getInfo()
                                 }).catch((error) => {
@@ -363,12 +359,7 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                         </select>
                         </div>
                         :
-                        <div className={`${errores.tipo ? "error":"validate"}`}>
-                        <label>Tipo</label>
-                        <select name="tipo" onChange={handleChange} disabled>
-                            <option value="reunion" select>Reunion</option>
-                        </select>
-                        </div>
+                        null
                     }
                     
                     <div className={`${errores.fecha ? "error":"validate"}`}>
@@ -425,7 +416,7 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                 </div>
 
                 <div className="btn-reservar-sala">
-                    <button type="submit" onClick={(e) => handleSubmit(e)}>Reservar sala</button>
+                    <button type="submit" onClick={(e) => handleSubmit(e)}>{reservaEdith?"Editar Reserva": "Reservar sala" }</button>
                 </div>
 
             </div>
