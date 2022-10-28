@@ -521,6 +521,23 @@ export function validateAlert(success, e, name) {
     }
 }
 
+export function validateAlert2(success, e, name, tipo) {
+    var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid");
+    if (elementsInvalid.length === 0) {
+        success(e, tipo)
+    } else {
+        Swal.fire({
+            title: '¡LO SENTIMOS!',
+            text: 'Llena todos los campos requeridos',
+            icon: 'warning',
+            customClass: {
+                actions: 'd-none'
+            },
+            timer: 2500,
+        })
+    }
+}
+
 export function messageAlert(text) {
     MySwal.fire({
         title: text,

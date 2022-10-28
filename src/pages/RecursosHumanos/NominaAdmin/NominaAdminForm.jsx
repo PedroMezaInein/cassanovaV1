@@ -192,7 +192,7 @@ class NominaAdminForm extends Component {
         })
     }
 
-    async addNominaAdminAxios() {
+    async addNominaAdminAxios(e, tipo) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -224,6 +224,7 @@ class NominaAdminForm extends Component {
                 data.append('adjuntos[]', element)
             }
         })
+        data.append('tipo', tipo)
         await axios.post(`${URL_DEV}v2/rh/nomina-administrativa`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 const { history } = this.props
@@ -376,13 +377,13 @@ class NominaAdminForm extends Component {
         this.setState({ ...this.state, form })
     }
     
-    onSubmit = e => {
+    onSubmit = (e, tipo) => {
         e.preventDefault()
         const { title } = this.state
         if (title === 'Editar nómina administrativa')
             this.updateNominaAdminAxios()
         else
-            this.addNominaAdminAxios()
+            this.addNominaAdminAxios(e, tipo)
     }
 
     onChangeNominasAdmin = (key, e, name) => {
@@ -458,7 +459,7 @@ class NominaAdminForm extends Component {
         const { options, title, form, formeditado, data, action } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
-                <NominaAdminFormulario title = { title } formeditado = { formeditado } className = "px-3" options = { options } form = { form }
+                <NominaAdminFormulario auth={this.props.authUser} title = { title } formeditado = { formeditado } className = "px-3" options = { options } form = { form }
                     addRowNominaAdmin = { this.addRowNominaAdmin } deleteRowNominaAdmin = { this.deleteRowNominaAdmin } 
                     onChangeNominasAdmin = { this.onChangeNominasAdmin } onChange = { this.onChange } clearFiles = { this.clearFiles } 
                     onSubmit = { this.onSubmit } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange } 

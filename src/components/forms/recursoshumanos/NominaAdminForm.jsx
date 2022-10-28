@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button, SelectSearchGray, InputMoneyGray, FileInput } from '../../form-components'
-import { validateAlert } from '../../../functions/alert'
+import { validateAlert, validateAlert2 } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
 import 'perfect-scrollbar-react/dist/style.min.css';
@@ -152,14 +152,20 @@ class NominaAdminForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'quincena' } })
     }
+    handleSubmit = (e, tipo) => {
+        e.preventDefault();
+        const { onSubmit } = this.props
+        console.log(tipo)
+        validateAlert2(onSubmit, e, 'form-nominaadmin', tipo)
+    }
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, form, onSubmit, formeditado, title, action, clearFiles, onChangeAdjunto } = this.props
+        const {auth, options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, form, onSubmit, formeditado, title, action, clearFiles, onChangeAdjunto } = this.props
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
-                    (e) => {
+                    (e, tipo) => {
                         e.preventDefault();
-                        validateAlert(onSubmit, e, 'form-nominaadmin')
+                        validateAlert(onSubmit(e,tipo), e, 'form-nominaadmin')
                     }
                 }
             >
@@ -242,9 +248,9 @@ class NominaAdminForm extends Component {
                                                 <th className="py-2 border-bottom-0">
                                                     <div className="py-1 my-0 font-weight-bolder">
                                                         <SelectSearchGray formeditado={formeditado} options={options.cuentas} name="cuentaImss"
-                                                            placeholder="SELECCIONA LA CUENTA" value={form.cuentaImss} messageinc="SELECCIONA LA CUENTA"
+                                                            placeholder="SELECCIONA LA CUENTA" value={form.cuentaImss} messageinc={auth.user.tipo.tipo === "Administrador"?  undefined :"SELECCIONA LA CUENTA"}
                                                             onChange={(value) => { this.updateCuenta(value, 'cuentaImss') }} withtaglabel={0} withtextlabel={0}
-                                                            withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}
+                                                            withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={auth.user.tipo.tipo === "Administrador"?  1 : 0}
                                                         />
                                                     </div>
                                                 </th>
@@ -384,14 +390,16 @@ class NominaAdminForm extends Component {
                         </div>
                     </Card.Body>
                     {
-                        form.periodo !== '' && form.empresa !== '' ? <Card.Footer>
-                            <div className="row">
+                        auth.user.tipo.tipo === 'Administrador' &&
+                            form.periodo !== '' && form.empresa !== '' ?
+                        <Card.Footer>
+                            <div className="row"> 
                                 <div className="col-lg-12 text-right">
-                                    <Button icon='' text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
-                                </div>
+                                    <button type="submit" value="enviar" className="btn btn-success mr-2" onClick={e=>this.handleSubmit(e, "enviar")} >Enviar</button>
+                                    <button type="submit" className="btn btn-primary mr-2" onClick={e=>this.handleSubmit(e, "guardar")}>Guardar</button>   
+                                </div>    
                             </div>
                         </Card.Footer> : ''
-
                     }
                 </Card>
             </Form>
