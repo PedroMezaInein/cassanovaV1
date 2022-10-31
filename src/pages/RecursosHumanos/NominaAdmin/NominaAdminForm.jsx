@@ -26,6 +26,7 @@ class NominaAdminForm extends Component {
             empresas: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
+            fecha:'',
             cuentaImss: '',
             cuentaextraImss: '',
             cuentaRestante: '',

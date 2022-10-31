@@ -521,21 +521,26 @@ export function validateAlert(success, e, name) {
     }
 }
 
-export function validateAlert2(success, e, name, tipo) {
+export function validateAlert2(success, e, name, tipo, enviar) {
     var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid");
-    if (elementsInvalid.length === 0) {
+    if (enviar) { 
+        if (elementsInvalid.length === 0) {
         success(e, tipo)
+        } else {
+            Swal.fire({
+                title: '¡LO SENTIMOS!',
+                text: 'Llena todos los campos requeridos',
+                icon: 'warning',
+                customClass: {
+                    actions: 'd-none'
+                },
+                timer: 2500,
+            })
+        }
     } else {
-        Swal.fire({
-            title: '¡LO SENTIMOS!',
-            text: 'Llena todos los campos requeridos',
-            icon: 'warning',
-            customClass: {
-                actions: 'd-none'
-            },
-            timer: 2500,
-        })
+        success(e, tipo)
     }
+    
 }
 
 export function messageAlert(text) {

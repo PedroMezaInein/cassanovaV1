@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Button, SelectSearchGray, InputMoneyGray, FileInput } from '../../form-components'
+import { Button, SelectSearchGray, InputMoneyGray, FileInput, InputGray, datePickerMulti } from '../../form-components'
 import { validateAlert, validateAlert2 } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
@@ -152,11 +152,15 @@ class NominaAdminForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'quincena' } })
     }
-    handleSubmit = (e, tipo) => {
+    updateFecha= value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'fecha' } })
+    }
+    handleSubmit = (e, tipo, enviar) => {
         e.preventDefault();
         const { onSubmit } = this.props
         console.log(tipo)
-        validateAlert2(onSubmit, e, 'form-nominaadmin', tipo)
+        validateAlert2(onSubmit, e, 'form-nominaadmin', tipo, enviar)
     }
     render() {
         const {auth, options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, form, onSubmit, formeditado, title, action, clearFiles, onChangeAdjunto } = this.props
@@ -197,6 +201,9 @@ class NominaAdminForm extends Component {
                                     <SelectSearchGray withtaglabel={1} withtextlabel={1} name='año' options={this.getAños()}
                                         placeholder='SELECCIONA EL AÑO' value={form.año} onChange={this.updateAño}
                                         iconclass="fas fa-calendar-day" messageinc="Selecciona el año." withicon={1} customdiv="mb-0"/>
+                                </div>
+                                <div className="col-md-3">
+                                    <datePickerMulti />
                                 </div>
                             </div>
                             <div className="separator separator-dashed mt-10 mb-2"></div>
@@ -243,24 +250,20 @@ class NominaAdminForm extends Component {
                                     </tr>
                                     <tr>
                                         <th className='border-bottom-0'></th>
+
                                         {
                                             this.getTotalNominaImss("nominImss") > 0 ?
                                                 <th className="py-2 border-bottom-0">
                                                     <div className="py-1 my-0 font-weight-bolder">
                                                         <SelectSearchGray formeditado={formeditado} options={options.cuentas} name="cuentaImss"
-                                                            placeholder="SELECCIONA LA CUENTA" value={form.cuentaImss} messageinc={auth.user.tipo.tipo === "Administrador"?  undefined :"SELECCIONA LA CUENTA"}
+                                                            placeholder="SELECCIONA LA CUENTA" value={form.cuentaImss} messageinc="SELECCIONA LA CUENTA"
                                                             onChange={(value) => { this.updateCuenta(value, 'cuentaImss') }} withtaglabel={0} withtextlabel={0}
-                                                            withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={auth.user.tipo.tipo === "Administrador"?  1 : 0}
+                                                            withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1}
                                                         />
                                                     </div>
                                                 </th>
                                                 : <th className="border-bottom-0"></th>
                                         }
-
-
-
-
-
 
                                         {
                                             this.getTotalextraImss("extraImss") > 0 ?
@@ -275,13 +278,6 @@ class NominaAdminForm extends Component {
                                                 : <th className="border-bottom-0"></th>
                                         }
 
-
-
-
-
-
-
-
                                         {
                                             this.getTotalExtra("restanteNomina") > 0 ?
                                                 <th className="py-2 border-bottom-0">
@@ -294,6 +290,7 @@ class NominaAdminForm extends Component {
                                                 </th>
                                                 : <th className="border-bottom-0"></th>
                                         }
+
                                         {
                                             this.getTotalExtra("extras") > 0 ?
                                                 <th className="py-2 border-bottom-0">
@@ -390,16 +387,15 @@ class NominaAdminForm extends Component {
                         </div>
                     </Card.Body>
                     {
-                        auth.user.tipo.tipo === 'Administrador' &&
-                            form.periodo !== '' && form.empresa !== '' ?
-                        <Card.Footer>
-                            <div className="row"> 
-                                <div className="col-lg-12 text-right">
-                                    <button type="submit" value="enviar" className="btn btn-success mr-2" onClick={e=>this.handleSubmit(e, "enviar")} >Enviar</button>
-                                    <button type="submit" className="btn btn-primary mr-2" onClick={e=>this.handleSubmit(e, "guardar")}>Guardar</button>   
-                                </div>    
-                            </div>
-                        </Card.Footer> : ''
+                        form.periodo !== '' && form.empresa !== '' ?
+                            <Card.Footer>
+                                <div className="row"> 
+                                    <div className="col-lg-12 text-right">
+                                        <button type="submit" value="enviar" className="btn btn-success mr-2" onClick={e=>this.handleSubmit(e, "enviar", true)} >Enviar</button>
+                                        <button type="submit" className="btn btn-primary mr-2" onClick={e=>this.handleSubmit(e, "guardar", false)}>Guardar</button>   
+                                    </div>    
+                                </div>
+                            </Card.Footer> : ''
                     }
                 </Card>
             </Form>
