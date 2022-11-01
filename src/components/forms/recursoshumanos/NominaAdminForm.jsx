@@ -5,6 +5,8 @@ import { validateAlert, validateAlert2 } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
 import 'perfect-scrollbar-react/dist/style.min.css';
+import '../../../styles/_nominaAdmin.scss'
+
 class NominaAdminForm extends Component {
     state = {
         formeditado: 0
@@ -152,9 +154,9 @@ class NominaAdminForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'quincena' } })
     }
-    updateFecha= value => {
+    updateFecha= e => {
         const { onChange } = this.props
-        onChange({ target: { value: value, name: 'fecha' } })
+        onChange({ target: { value: e.target.value, name: 'fecha' } })
     }
     handleSubmit = (e, tipo, enviar) => {
         e.preventDefault();
@@ -202,8 +204,9 @@ class NominaAdminForm extends Component {
                                         placeholder='SELECCIONA EL AÑO' value={form.año} onChange={this.updateAño}
                                         iconclass="fas fa-calendar-day" messageinc="Selecciona el año." withicon={1} customdiv="mb-0"/>
                                 </div>
-                                <div className="col-md-3">
-                                    <datePickerMulti />
+                                <div className="col-md-3 form-fecha">
+                                    <label className="label-custom">FECHA</label>
+                                    <input type="date" className={`form-control ${form.fecha === ''? 'is-invalid': ""}`} name="fecha" value={form.fecha} onChange={this.updateFecha} />
                                 </div>
                             </div>
                             <div className="separator separator-dashed mt-10 mb-2"></div>
@@ -392,7 +395,7 @@ class NominaAdminForm extends Component {
                                 <div className="row"> 
                                     <div className="col-lg-12 text-right">
                                         <button type="submit" value="enviar" className="btn btn-success mr-2" onClick={e=>this.handleSubmit(e, "enviar", true)} >Enviar</button>
-                                        <button type="submit" className="btn btn-primary mr-2" onClick={e=>this.handleSubmit(e, "guardar", false)}>Guardar</button>   
+                                        <button type="submit" className="btn btn-primary mr-2" onClick={e => this.handleSubmit(e, "guardar", false)}>Guardar</button>   
                                     </div>    
                                 </div>
                             </Card.Footer> : ''
