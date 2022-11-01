@@ -114,6 +114,7 @@ class NominaAdminForm extends Component {
             (response) => {
                 Swal.close()
                 const { nomina } = response.data
+                console.log(nomina)
                 const { form, options } = this.state
 
                 form.periodo = nomina.periodo
@@ -127,6 +128,7 @@ class NominaAdminForm extends Component {
                         {
                             usuario: nom.empleado ? nom.empleado.id.toString() : '',
                             nominImss: nom.nomina_imss,
+                            extraImss: nom.extra_imss,
                             restanteNomina: nom.restante_nomina,
                             extras: nom.extras,
                             id: nom.id
@@ -259,7 +261,7 @@ class NominaAdminForm extends Component {
                     )
                 })
                 if (aux.length) { form.nominasAdmin = aux } 
-                else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', estanteNomina: '', extras: '' }] }
                 options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
                 window.history.replaceState(nom, 'nomina')
                 this.setState({...this.state, nomina: nom, options, form })
@@ -392,7 +394,7 @@ class NominaAdminForm extends Component {
             data.usuarios.map( (empleado) => {
                 if(value.toString() === empleado.id.toString()){
                     form['nominasAdmin'][key].nominImss = empleado.nomina_imss
-                    form['nominasAdmin'][key].extraImss = 50
+                    form['nominasAdmin'][key].extraImss = 0.0
                     form['nominasAdmin'][key].restanteNomina = empleado.nomina_extras
                     form['nominasAdmin'][key].extras = 0.0
                 }
