@@ -26,12 +26,15 @@ class NominaAdminForm extends Component {
             empresas: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
+            fecha:'',
             cuentaImss: '',
+            cuentaextraImss: '',
             cuentaRestante: '',
             cuentaExtras: '',
             nominasAdmin: [{
                 usuario: '',
                 nominImss: '',
+                extraImss: '',
                 restanteNomina: '',
                 extras: ''
             }],
@@ -112,6 +115,7 @@ class NominaAdminForm extends Component {
             (response) => {
                 Swal.close()
                 const { nomina } = response.data
+                console.log(nomina)
                 const { form, options } = this.state
 
                 form.periodo = nomina.periodo
@@ -125,6 +129,7 @@ class NominaAdminForm extends Component {
                         {
                             usuario: nom.empleado ? nom.empleado.id.toString() : '',
                             nominImss: nom.nomina_imss,
+                            extraImss: nom.extra_imss,
                             restanteNomina: nom.restante_nomina,
                             extras: nom.extras,
                             id: nom.id
@@ -133,11 +138,12 @@ class NominaAdminForm extends Component {
                 })
 
                 if (aux.length) { form.nominasAdmin = aux } 
-                else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', restanteNomina: '', extras: '' }] }
 
                 if(nomina.egresos){
                     if(nomina.egresos.length){
                         if(nomina.cuentaImss){ form.cuentaImss = nomina.cuentaImss.id.toString() }
+                        if(nomina.cuentaextraImss){ form.cuentaextraImss = nomina.cuentaextraImss.id.toString() }
                         if(nomina.cuentaRestante){ form.cuentaRestante = nomina.cuentaRestante.id.toString() }
                         if(nomina.cuentaExtras){ form.cuentaExtras = nomina.cuentaExtras.id.toString() }
                     }
@@ -173,6 +179,7 @@ class NominaAdminForm extends Component {
                         aux.push({
                             'usuario': element.id.toString(),
                             'nominImss': element.nomina_imss,
+                            'extraImss': 0.0,
                             'restanteNomina': element.nomina_extras,
                             'extras': 0.0
                         })
@@ -188,7 +195,7 @@ class NominaAdminForm extends Component {
         })
     }
 
-    async addNominaAdminAxios() {
+    async addNominaAdminAxios(e, tipo) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -220,8 +227,10 @@ class NominaAdminForm extends Component {
                 data.append('adjuntos[]', element)
             }
         })
+        data.append('tipo', tipo)
         await axios.post(`${URL_DEV}v2/rh/nomina-administrativa`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
+                debugger
                 const { history } = this.props
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
                 history.push({ pathname: '/rh/nomina-admin' });
@@ -247,6 +256,7 @@ class NominaAdminForm extends Component {
                         {
                             usuario: element.empleado ? element.empleado.id.toString() : '',
                             nominImss: element.nomina_imss,
+                            extraImss: element.restante,
                             restanteNomina: element.restante_nomina,
                             extras: element.extras,
                             id: element.id
@@ -254,7 +264,7 @@ class NominaAdminForm extends Component {
                     )
                 })
                 if (aux.length) { form.nominasAdmin = aux } 
-                else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', estanteNomina: '', extras: '' }] }
                 options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
                 window.history.replaceState(nom, 'nomina')
                 this.setState({...this.state, nomina: nom, options, form })
@@ -281,6 +291,7 @@ class NominaAdminForm extends Component {
                             {
                                 usuario: element.empleado ? element.empleado.id.toString() : '',
                                 nominImss: element.nomina_imss,
+                                extraImss: element.extra_imss,
                                 restanteNomina: element.restante_nomina,
                                 extras: element.extras,
                                 id: element.id
@@ -288,7 +299,7 @@ class NominaAdminForm extends Component {
                         )
                     })
                     if (aux.length) { form.nominasAdmin = aux } 
-                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+                    else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', restanteNomina: '', extras: '' }] }
                     options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
                     window.history.replaceState(nom, 'nomina')
                     this.setState({...this.state, nomina: nom, options, form })
@@ -305,7 +316,7 @@ class NominaAdminForm extends Component {
                     aux.push(element)
             })
             if (aux.length) { form.nominasAdmin = aux } 
-            else { form.nominasAdmin = [{ usuario: '', nominImss: '', restanteNomina: '', extras: '' }] }
+            else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', restanteNomina: '', extras: '' }] }
             options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
             this.setState({...this.state, form, options})
         }
@@ -370,13 +381,13 @@ class NominaAdminForm extends Component {
         this.setState({ ...this.state, form })
     }
     
-    onSubmit = e => {
+    onSubmit = (e, tipo) => {
         e.preventDefault()
         const { title } = this.state
         if (title === 'Editar nómina administrativa')
             this.updateNominaAdminAxios()
         else
-            this.addNominaAdminAxios()
+            this.addNominaAdminAxios(e, tipo)
     }
 
     onChangeNominasAdmin = (key, e, name) => {
@@ -386,6 +397,7 @@ class NominaAdminForm extends Component {
             data.usuarios.map( (empleado) => {
                 if(value.toString() === empleado.id.toString()){
                     form['nominasAdmin'][key].nominImss = empleado.nomina_imss
+                    form['nominasAdmin'][key].extraImss = 0.0
                     form['nominasAdmin'][key].restanteNomina = empleado.nomina_extras
                     form['nominasAdmin'][key].extras = 0.0
                 }
@@ -451,7 +463,7 @@ class NominaAdminForm extends Component {
         const { options, title, form, formeditado, data, action } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
-                <NominaAdminFormulario title = { title } formeditado = { formeditado } className = "px-3" options = { options } form = { form }
+                <NominaAdminFormulario auth={this.props.authUser} title = { title } formeditado = { formeditado } className = "px-3" options = { options } form = { form }
                     addRowNominaAdmin = { this.addRowNominaAdmin } deleteRowNominaAdmin = { this.deleteRowNominaAdmin } 
                     onChangeNominasAdmin = { this.onChangeNominasAdmin } onChange = { this.onChange } clearFiles = { this.clearFiles } 
                     onSubmit = { this.onSubmit } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange } 
