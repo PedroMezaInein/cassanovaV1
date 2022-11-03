@@ -8,11 +8,8 @@ import { URL_DEV } from './constants';
 import { logout, login } from './redux/reducers/auth_user'
 import { errorAlert } from './functions/alert';
 
-/* import SalaJuntas from './pages/RecursosHumanos/SalaJuntas/SalaJuntas';
-import Cursos from './pages/RecursosHumanos/Cursos/Cursos'; */
-import Reuniones from './pages/RecursosHumanos/Reuniones/Reuniones';
-
 const Login = React.lazy(() => import('./pages/Login') )
+
 const Home = React.lazy(() => import('./pages/Home') )
 
 // const TeEscuchamos = React.lazy(() => import('./pages/TeEscuchamos/TeEscuchamos') )
@@ -515,10 +512,7 @@ class App extends Component{
                     <Route path = "/rh/impresos/:action" exact component ={ ContratosRhForm } />
 
                     <Route path = "/rh/modulo" exact component ={ Modulo } />
-                    <Route path="/rh/modulo/:action" exact component={RepseForm} />
-                    {/* <Route path="/rh/sala-juntas" exact component={SalaJuntas} />
-                    <Route path="/rh/cursos" exact component={Cursos} /> */}
-                    <Route path="/rh/reuniones" exact component={Reuniones} />
+                    <Route path = "/rh/modulo/:action" exact component ={ RepseForm } />
 
                     {/* ANCHOR Routes for calidad */}
 
