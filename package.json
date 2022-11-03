@@ -23,6 +23,7 @@
       "@react-pdf/renderer": "^1.6.13",
       "@reduxjs/toolkit": "^1.5.0",
       "@sideway/address": "^4.1.1",
+      "@syncfusion/ej2-react-schedule": "^20.3.50",
       "@syncfusion/ej2-react-treegrid": "^19.1.63",
       "@szhsin/react-menu": "^1.10.0",
       "@tanem/svg-injector": "8.0.35",
