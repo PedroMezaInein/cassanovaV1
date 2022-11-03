@@ -1,0 +1,80 @@
+.close-modal {
+    position: absolute;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: red;
+    font-weight: 450;
+}
+
+.container-cursos {
+    background-color: white;
+    padding: 2rem;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.modal-crear {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    width: 120px;
+    height: 2.5rem;
+    border-radius: 5px;
+    color: green;
+    font-weight: 600;
+}
+
+.modal-crear:hover {
+    background-color: green;
+    color: white;
+}
+
+.curso__aplicantes{
+    border: none;
+    background-color: rgba(128, 0, 128, 0.503);
+    color: white;
+    height: 3rem;
+    border-radius: 5px;
+    font-weight: 600;
+    margin-right: .5rem;
+}
+
+.curso__aplicantes:hover{
+    background-color: purple;
+    color: white;
+}
+.curso__editar{
+    border: none;
+    background-color: rgba(0, 0, 255, 0.503);
+    color: white;
+    height: 3rem;
+    border-radius: 5px;
+    font-weight: 600;
+    margin-right: .5rem;
+}
+
+.curso__editar:hover{
+    background-color: blue;
+    color: white;
+}
+.curso__eliminar{
+    border: none;
+    // background-color: rgba(245, 77, 62, 0.6);
+    background-color: rgba(255, 0, 0, 0.503);
+    color: white;
+    height: 3rem;
+    border-radius: 5px;
+    font-weight: 600;
+    margin-right: .5rem;
+}
+
+.curso__eliminar:hover{
+    background-color: red;
+    color: white;
+}

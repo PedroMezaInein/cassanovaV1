@@ -19,6 +19,11 @@ import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie'
 import {  setOptions } from '../../functions/setters'
 import { Button } from '../../components/form-components'
+
+import CreateSalaJuntas from './../RecursosHumanos/Reuniones/SalaJuntas/CreateSalaJuntas'
+import EnrollUser from './../RecursosHumanos/Reuniones/Cursos/EnrollUser'
+import Aplicantes from './../RecursosHumanos/Reuniones/Cursos/AplicantesCurso'
+
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
 class Calendario extends Component {
@@ -38,7 +43,10 @@ class Calendario extends Component {
             modal_permisos: false,
             modal_incapacidad: false,
             modal_ver_permiso:false,
-            modal_ver_incapacidad:false,
+            modal_ver_incapacidad: false,
+            modal_solicitar_sala: false,
+            modal_inscripcion_curso: false,
+            modal_aplicantes: false,
         },
         permisosM:[],
         incapacidadesM:[],
@@ -101,6 +109,7 @@ class Calendario extends Component {
             empleados: [],
             lider: []
         },
+        enrollUser:[],
     };
 
     componentDidMount() {
@@ -120,6 +129,7 @@ class Calendario extends Component {
         }
         this.addIncapacidadAxiosAdmin()
         this.setOptionsModal()
+        this.getEnrollUser()
         // this.getIncapacidadModal()
     }
 
@@ -132,6 +142,12 @@ class Calendario extends Component {
             }
         }
         this.setState({ ...this.state, form })
+    }
+
+    getEnrollUser = async () => { 
+        const { access_token } = this.props.authUser
+        const { data } = await axios.get(`${URL_DEV}salas/autoriza`, { headers: { Authorization: `Bearer ${access_token}` } })
+        this.setState({ ...this.state, enrollUser: data })
     }
 
     getEventAxios = async (id) => {
@@ -184,6 +200,60 @@ class Calendario extends Component {
     openModalSolicitarPermiso = () => {
         const { modal } = this.state
         modal.modal_permisos = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    openModalSalaJuntas = () => {
+        const { modal } = this.state
+        modal.solicitar_sala = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+    
+    openModalEnrollUser = () => {
+        const { modal } = this.state
+        modal.modal_inscripcion_curso = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    openModalAplicantes = () => {
+        const { modal } = this.state
+        modal.modal_aplicantes = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalSalaJuntas = () => {
+        const { modal } = this.state
+        modal.solicitar_sala = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalEnrollUser = () => {
+        const { modal } = this.state
+        modal.modal_inscripcion_curso = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalAplicantes = () => {
+        const { modal } = this.state
+        modal.modal_aplicantes = false
         this.setState({
             ...this.state,
             modal,
@@ -268,6 +338,12 @@ class Calendario extends Component {
         formEvento.correos = []
         modal.form_event = false
         this.setState({ ...this.state, modal, formEvento })
+    }
+
+    handleCloseModalJuntas = () => {
+        const { modal } = this.state
+        modal.solicitar_sala = false
+        this.setState({ ...this.state, modal })
     }
 
     clearForm = () => {
@@ -1348,7 +1424,7 @@ class Calendario extends Component {
     }
 
     render() {
-        const {permisosM,incapacidadesM, events, options,form, title,  formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento } = this.state
+        const { permisosM, incapacidadesM, events, options, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento, enrollUser } = this.state
         return (
             <Layout {...this.props}>
                 {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
@@ -1376,6 +1452,23 @@ class Calendario extends Component {
                                 </Nav> */}
                         </div>
                         <div className="d-flex">
+                            <div className="card-toolbar" id="dropdown-calendario">
+                                {
+                                    <DropdownButton 
+                                        title={
+                                        <i className="flaticon-network"></i>
+                                        
+                                        }
+                                        id={`dropdown-button-drop-left`}
+                                        drop={'left'}
+                                    >
+                                        {enrollUser.aprovacion && enrollUser.aprovacion[1] !== null && enrollUser.aprovacion[1].length !== 0 ?
+                                        <Dropdown.Item onClick={this.openModalAplicantes}>Aprovar cursos</Dropdown.Item> : null}
+                                        <Dropdown.Item onClick={this.openModalSalaJuntas}>Reservar Sala de Juntas</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalEnrollUser}>Solicitar Curso</Dropdown.Item>
+                                    </DropdownButton>
+                                }
+                            </div>
                             <div className="card-toolbar" id="dropdown-calendario">
                                 {
                                     disponibles > 0 ?
@@ -1665,6 +1758,19 @@ class Calendario extends Component {
                         onSubmit={this.onSubmitFormEvent} deleteEvent={this.deleteEvent}
                         tagInputChange={(e) => this.tagInputChange(e)} evento={evento} />
                 </Modal>
+
+                <Modal size="lg" title="Reservar sala de Juntas" show={modal.solicitar_sala} handleClose={this.closeModalSalaJuntas}>
+                    <CreateSalaJuntas />
+                </Modal>
+
+                <Modal size="lg" title="Inscribirse a un curso" show={modal.modal_inscripcion_curso} handleClose={this.closeModalEnrollUser}>
+                    <EnrollUser close={this.closeModalEnrollUser} />
+                </Modal>
+
+                <Modal size="xl" title="AprovaciÓn de cursos" show={modal.modal_aplicantes} handleClose={this.closeModalAplicantes}>
+                    <Aplicantes data={enrollUser} getEnrollUsers={this.getEnrollUser} />
+                </Modal>
+
             </Layout>
 
         );
