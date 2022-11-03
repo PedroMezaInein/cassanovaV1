@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
 import { apiPostForm, apiGet, apiPutForm } from '../../../../functions/api'
+import '../../../../styles/_salaJuntas.scss'
 
 export default function AplicantesCurso(props) {
     const userAuth = useSelector((state) => state.authUser);
-    const { closeModal, rh, data, getEnrollUsers } = props;
+    const { closeModal, rh, data, getEnrollUsers, aplicantes } = props;
     const [curso, setCurso] = useState()
 
     useEffect(() => {
@@ -91,9 +92,9 @@ export default function AplicantesCurso(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {data && data.aprovacion[0].map((aplicante, index) => { 
+                    {data && data.aprovacion[1].map((aplicante, index) => { 
                         return (
-                            <tr key={index}>
+                            <tr className='table-reservas' key={index}>
                                 <td>{aplicante.user.name}</td>
                                 <td>{curso && curso.map((item) => {
                                     if (item.id === aplicante.id_salas) {
@@ -107,13 +108,27 @@ export default function AplicantesCurso(props) {
                                             <div>Ya {aplicante.aprovacion === "aprobado" ? " aprobaste" : " rechazaste"} la postulaciÓn</div>
                                         </td>
                                     :
-                                    <td>
-                                        <button className='btn btn-danger' onClick={e=>{handleAprobar(e, aplicante, false)}}>Declinar</button>    
-                                        <button className='btn btn-success' onClick={e=>{handleAprobar(e, aplicante, true)}}>Aprovar</button>
+                                    <td className='btn-aprobacion'>
+                                        <button className='btn-danger' onClick={e=>{handleAprobar(e, aplicante, false)}}>Declinar</button>    
+                                        <button className='btn-success' onClick={e=>{handleAprobar(e, aplicante, true)}}>Aprovar</button>
                                     </td>
                                 }
                             </tr>
                         )
+                    })}
+                    {aplicantes && aplicantes.Sala.map((aplicante, index) => {
+                        return (
+                            <tr className='table-reservas' key={index}>
+                                <td>{`${aplicante.nombre} ${aplicante.apellido_paterno} ${aplicante.apellido_materno}`}</td>
+                                <td>{curso && curso.map((item) => {
+                                    if (item.id === aplicante.id_salas) {
+                                        return item.nombre
+                                    }
+                                })}</td>
+                                <td>{aplicante.aprovacion === null? "Pendiente": aplicante.aprovacion}</td>
+                            </tr>
+                        )
+
                     })}
                 </tbody>
             </table>

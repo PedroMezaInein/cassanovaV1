@@ -18,6 +18,7 @@ export default function SalaJuntas() {
     const [reservas, setReservas] = useState([])
     const [newReserva, setNewReserva] = useState(false)
     const [oldReserva, setOldReserva] = useState(false)
+    const [aplicantes, setAplicantes] = useState(false)
     const [viewReserva, setViewReserva] = useState({
         show: true,
     })
@@ -37,6 +38,17 @@ export default function SalaJuntas() {
         getInfoSalas()
     }, [])
 
+    const getAplicantes = (id) => {
+        try {
+            apiGet(`salas/user/${id}`, userAuth.access_token)
+                .then((response) => { 
+                    setAplicantes(response.data)
+                })
+        } catch (error) {
+            
+        }
+     }
+
     const handleCloseCreate = () => {
         setModal({ ...modal, create: false })
     }; 
@@ -47,7 +59,10 @@ export default function SalaJuntas() {
         setModal({ ...modal, edith: false })
     };
     
-    const handleShowAplicant = () => setModal({ ...modal, aplicantes: true });
+    const handleShowAplicant = (id) => {
+        setModal({ ...modal, aplicantes: true })
+        getAplicantes(id)
+    };
 
     const handleCloseAplicant = () => {
         setModal({ ...modal, aplicantes: false })
@@ -161,7 +176,7 @@ export default function SalaJuntas() {
                 <h1>Sala de Juntas</h1>
                 <div className='opciones'>
                     <button className='btn-reservar' onClick={handleShowCreate}><span>+</span>Reservar</button>
-                    <button className='btn-reservar' onClick={viewReservas}>{viewReserva.show ? 'Ver reservas antiguas' : 'Ver reservas nuevas'}</button>
+                    <button className='btn-historial' onClick={viewReservas}>{viewReserva.show ? 'Ver reservas antiguas' : 'Ver reservas nuevas'}</button>
                 </div>
                 
                     <div>
@@ -182,7 +197,8 @@ export default function SalaJuntas() {
                             <br />
                             <tbody>
                             {reservas.map((reserva) => (
-                                <tr key={reserva.id}>
+                                <tr className='table-reservas' key={reserva.id}>
+                                    
                                     <td className="align">
                                         <div className="btn-group">
                                             <button className="btn-acciones dropdown-toggle align" onClick={e => menuShow(reserva.id)} type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
@@ -190,7 +206,7 @@ export default function SalaJuntas() {
                                                 <a className='dropdown-item' onClick={e => handleShowEdith(reserva)} >Editar</a>
                                                 <a className='dropdown-item' onClick={e => handleDelete(reserva.id)}>Eliminar</a>
                                                 {reserva.typo === "curso" ? 
-                                                    <a className='dropdown-item' onClick={handleShowAplicant}>Asistentes</a> 
+                                                    <a className='dropdown-item' onClick={() => handleShowAplicant(reserva.id) }>Asistentes</a> 
                                                 :null    
                                                 }
                                             </div>   
@@ -212,9 +228,9 @@ export default function SalaJuntas() {
                 </div>
                 
                 </div>
-            <Modal size="lg"  show={modal.create} onHide={handleCloseCreate} centered={true}>
+            <Modal size="sm"  show={modal.create} onHide={handleCloseCreate} centered={true}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Reservar sala</Modal.Title>
+                    <Modal.Title className='title'>Reservar sala</Modal.Title>
                     <div className="close-modal" onClick={handleCloseCreate}>X</div>
                 </Modal.Header>
                 <Modal.Body>
@@ -222,9 +238,10 @@ export default function SalaJuntas() {
                 </Modal.Body>
             </Modal>
 
-            <Modal size="lg" show={modal.edith} onHide={handleCloseEdith} centered={true}>
+            <Modal size="sm" show={modal.edith} onHide={handleCloseEdith} centered={true}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Editar reserva</Modal.Title>
+                    <Modal.Title className='title'>Editar reserva</Modal.Title>
+                    <div className="close-modal" onClick={handleCloseEdith}>X</div>
                 </Modal.Header>
                 <Modal.Body>
                     <CreateSalaJuntas reservaEdith={modal.edithInfo} admin={true} getInfo={getInfoSalas} closeModal={handleCloseCreate} />
@@ -234,9 +251,10 @@ export default function SalaJuntas() {
             <Modal size="lg" show={modal.aplicantes} onHide={handleCloseAplicant} centered={true}>
                 <Modal.Header closeButton>
                     <Modal.Title>Aplicantes</Modal.Title>
+                    <div className="close-modal" onClick={handleCloseAplicant}>X</div>
                 </Modal.Header>
                 <Modal.Body>
-                    <AplicantesCurso rh={true} closeModal={handleCloseAplicant} />
+                    <AplicantesCurso rh={true} closeModal={handleCloseAplicant} aplicantes={aplicantes} />
                 </Modal.Body>
             </Modal>
 

@@ -350,13 +350,13 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                 </div>
                 <form>
                     {admin ?
-                        <div className={`${errores.tipo ? "error":"validate"}`}>
-                        <label>Tipo de reunion</label>
-                        <select name="tipo" onChange={handleChange} value={form.tipo}>
-                            <option value="" hidden>Seleccione el tipo</option>
-                            <option value="reunion">Reunion</option>
-                            <option value="curso">Curso</option>
-                        </select>
+                        <div className={`${errores.tipo ? "error":"validate"} `}>
+                            <label>Tipo de reunion</label>
+                            <select name="tipo" onChange={handleChange} value={form.tipo}>
+                                <option value="" hidden>Seleccione el tipo</option>
+                                <option value="reunion">Reunion</option>
+                                <option value="curso">Curso</option>
+                            </select>
                         </div>
                         :
                         null

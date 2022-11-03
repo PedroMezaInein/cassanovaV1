@@ -52,20 +52,42 @@ export default function EnrollUser({close}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         if (validateForm()) {
             try {
-                apiPostForm('salas/solicita', form, userAuth.access_token)
-                .then((response) => {
-                    close()
-                    Swal.fire({
-                        title: 'Gracias por postularte ' + userAuth.user.name,
-                        text: 'Tu postulación ha sido enviada y será revisada por el responsable de tu área',
-                        icon: 'success',
-                        confirmButtonText: 'Aceptar'
-                    })
-                    resetForm();
-                })
+                Swal.fire({
+                    title: 'Validando disponibilidad',
+                    text: 'Espere un momento por favor',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    onOpen: () => { 
+                        apiPostForm('salas/solicita', form, userAuth.access_token)
+                            .then((response) => {
+                                if (response.data.message === "Curso ya esta reservado con éxito.") {
+                                    Swal.fire({
+                                        title: 'Curso ya esta reservado',
+                                        text: 'El curso ya esta reservado',
+                                        icon: 'warning',
+                                        timer: 2000
+                                    })
+                                } else { 
+                                    close()
+                                    Swal.fire({
+                                        title: 'Gracias por postularte ' + userAuth.user.name,
+                                        text: 'Tu postulación ha sido enviada y será revisada por el responsable de tu área',
+                                        icon: 'success',
+                                        confirmButtonText: 'Aceptar'
+                                    })
+                                    resetForm();
+                                }
+                            })
+                    },
+                    
+
+
+                });
+
             } catch (error) {
                 
             }

@@ -1425,7 +1425,6 @@ class Calendario extends Component {
 
     render() {
         const { permisosM, incapacidadesM, events, options, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento, enrollUser } = this.state
-        console.log(enrollUser)
         return (
             <Layout {...this.props}>
                 {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
@@ -1463,7 +1462,7 @@ class Calendario extends Component {
                                         id={`dropdown-button-drop-left`}
                                         drop={'left'}
                                     >
-                                        {enrollUser.aprovacion && enrollUser.aprovacion[0] !== null && enrollUser.aprovacion[0].length !== 0 ?
+                                        {enrollUser.aprovacion && enrollUser.aprovacion[1] !== null && enrollUser.aprovacion[1].length !== 0 ?
                                         <Dropdown.Item onClick={this.openModalAplicantes}>Aprovar cursos</Dropdown.Item> : null}
                                         <Dropdown.Item onClick={this.openModalSalaJuntas}>Reservar Sala de Juntas</Dropdown.Item>
                                         <Dropdown.Item onClick={this.openModalEnrollUser}>Solicitar Curso</Dropdown.Item>

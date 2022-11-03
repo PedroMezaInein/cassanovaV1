@@ -12,8 +12,9 @@
 .solicitante{
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    // justify-content: flex-start;
     align-items: flex-start;
+    margin-left: 1rem;
 }
 
 .container-juntas{
@@ -27,8 +28,25 @@
 .opciones{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
+
+}
+
+.btn-historial{
+    height: 3.5rem;
+    width: 120px;
+    border: none;
+    border-radius: 5px;
+    color: #2171c1;
+    font-weight: bold;
+    margin-left: 1rem;
+}
+
+.btn-historial:hover{
+    background-color: #2171c1;
+    color: white;
+    font-weight: normal;
 }
 
 .subtitle{
@@ -61,6 +79,7 @@
     display: flex;
     flex-direction: column;
     margin: 1rem;
+    width: 100%;
 }
 
 .modal-juntas form div input{
@@ -84,7 +103,7 @@
     justify-content: center;
     border:none;
     width: 120px;
-    height: 2.5rem;
+    height: 3.5rem;
     border-radius: 5px;
     color: green;
     font-weight: 600;
@@ -155,4 +174,30 @@
 
 .align div a{
     cursor: pointer;
+}
+
+.table-reservas td{
+    text-align: center;
+}
+
+.form-select{
+    background-color: #f0f0f0;
+    border: none;
+    width: 10%;
+}
+
+.form-select:active{
+    border: none;
+}
+
+.title{
+    margin-left: 1rem;
+}
+
+.btn-aprobacion button{
+    border: none;
+    margin-left: 1rem;
+    height: 2.5rem;
+    width: 25%;
+    border-radius: 5px;
 }
