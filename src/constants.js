@@ -27,7 +27,7 @@ export const MAIN_FRONT = process.env.NODE_ENV === 'production' ? 'https://inein
 export const LEADS_FRONT = process.env.NODE_ENV === 'production' ? 'https://leads.inein.com.mx' : 'http://localhost:3001'
 // export const MI_PROYECTO_FRONT = process.env.NODE_ENV === 'production' ? 'https://mi-proyecto.inein.com.mx' : 'http://localhost:3000'
 
-export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1","#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C"];
+export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1", "#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C", "black"];
 
 //Expresiones Regulares
 
@@ -694,6 +694,12 @@ export const EMPLEADOS_COLUMNS = [
     { Header: 'Cuenta de Depósito', accessor: 'cuenta' },
     { Header: 'Contacto de Emergencia', accessor: 'nombre_emergencia', customRender: true },
     { Header: 'Días de vacaciones disponibles', accessor: 'vacaciones_tomadas', customRender: true }
+]
+
+export const REUNIONES_COLUMNS = [
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
 ]
 
 export const EMPLEADOS_COLUMNS_OBRA = [
