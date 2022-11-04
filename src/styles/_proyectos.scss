@@ -1,0 +1,29 @@
+.agregar-colaborador{
+    margin-top: 1rem;
+}
+
+.colaboradores{
+    display: flex;
+    flex-wrap: wrap;
+    color: #2171c1;
+    background-color: #E1F0FF;
+    justify-content:space-between;
+    padding: 1rem;
+    font-weight: 650;
+    margin-top: 1rem;
+    border-radius: 4px;
+}
+
+.colaboradores div{
+    margin-left: 1rem;
+}
+
+.colaboradores div span{
+    color: red;
+    font-weight: 500;
+}
+
+.colaboradores div span:hover {
+    font-weight: 650;
+    cursor: pointer;
+}

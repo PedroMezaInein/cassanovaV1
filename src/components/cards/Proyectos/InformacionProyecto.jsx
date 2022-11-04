@@ -6,12 +6,16 @@ import TimelineComments from '../../forms/TimelineComments'
 import { setEmpresaLogo, setMoneyText } from '../../../functions/setters'
 import { LEADS_FRONT } from "../../../constants";
 import { apiPostForm } from '../../../functions/api'
+
+import '../../../styles/_proyectos.scss'
+
 export default class InformacionProyecto extends Component {
 
     state = {
         colaboradores: [],
         formulario: {
-            user_id:'',
+            user_id: '',
+            proyecto_id: '',
         },
     }
 
@@ -23,33 +27,19 @@ export default class InformacionProyecto extends Component {
         return false
     }
 
-
     handleChangeAdd = (e) => {
         const { value } = e.target
-        const { usuarios, at } = this.props
+        const { usuarios, at, proyecto } = this.props
         const { formulario, colaboradores } = this.state
         usuarios.empleados.map((usuario) => {
-            if (usuario.id === parseInt(value) && colaboradores[0]) {
-                colaboradores.map((item) => {
-                    
-                    if (parseInt(value) !== item.id && parseInt(value) !== usuario.id) {
-                        console.log('si')
-                        formulario.user_id = usuario.id
-                        this.setState({ formulario, colaboradores: [...this.state.colaboradores, usuario] })
-                    } else {
-                        debugger
-                        console.log('no')
-                    }
-                })
-            } else {
-                if (usuario.id === parseInt(value)) {
-                    formulario.user_id = usuario.id
-                    this.setState({ formulario, colaboradores: [...this.state.colaboradores, usuario] })  
-                }
+            if (usuario.id == parseInt(value)) {
+                formulario.user_id = usuario.id
+                formulario.proyecto_id = proyecto.id
+                colaboradores.push(usuario)
+                this.setState({ colaboradores, formulario })
             }
         })
-            
-
+        
         try {
             //apiPostForm('', formulario, at)
         } catch (error) { 
@@ -61,7 +51,6 @@ export default class InformacionProyecto extends Component {
     render() {
         const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at, usuarios } = this.props
         const { colaboradores, formulario } = this.state
-        console.log(colaboradores, formulario)
         return (
             <div className="col-md-12 mt-4">
                 {
@@ -102,7 +91,7 @@ export default class InformacionProyecto extends Component {
                         <Tab.Content>
                                 <Tab.Pane eventKey='tab_informacion_general'>
                                 {
-                                    <div>
+                                    <div className='agregar-colaborador'>
                                         <label className="font-weight-bolder">Agregar Colaborador</label>
                                             <select className="form-control" name="colaborador" onChange = {e => this.handleChangeAdd(e)}>
                                                 <option hidden value="">Seleccionar</option>
@@ -117,13 +106,14 @@ export default class InformacionProyecto extends Component {
                                     }
                                 {
                                     colaboradores.length > 0 ?
-                                    colaboradores.map((empleado, index) => {
-                                        return <div key={index}>{ `${empleado.nombre} ${empleado.apellido_paterno !== null?empleado.apellido_paterno:''} ${empleado.apellido_materno !== null? empleado.apellido_materno:''}`}</div>
-                                    })   
-                                    
+                                    <div className='colaboradores'>
+                                        {colaboradores.map((empleado, index) => {
+                                            return <div key={index}>{ `${empleado.nombre} ${empleado.apellido_paterno !== null?empleado.apellido_paterno:''} ${empleado.apellido_materno !== null? empleado.apellido_materno:''}`} <span>X</span></div>
+                                        }) } 
+                                    </div>
                                     :<></>
                                 }
-                                {
+                                {/* {
                                     urls &&
                                     <div className="mt-5">
                                         <div className="d-flex justify-content-center">
@@ -387,7 +377,7 @@ export default class InformacionProyecto extends Component {
                                             }
                                         </tbody>
                                     </table>
-                                </div>
+                                </div> */}
                             </Tab.Pane>
                             {
                                 form ?
