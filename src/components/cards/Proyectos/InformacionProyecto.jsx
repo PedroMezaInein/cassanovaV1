@@ -5,7 +5,15 @@ import ComentarioForm from '../../forms/ComentarioForm'
 import TimelineComments from '../../forms/TimelineComments'
 import { setEmpresaLogo, setMoneyText } from '../../../functions/setters'
 import { LEADS_FRONT } from "../../../constants";
+import { apiPostForm } from '../../../functions/api'
 export default class InformacionProyecto extends Component {
+
+    state = {
+        colaboradores: [],
+        formulario: {
+            user_id:'',
+        },
+    }
 
     hasComentarios = (proyecto) => {
         if(proyecto)
@@ -15,8 +23,45 @@ export default class InformacionProyecto extends Component {
         return false
     }
 
+
+    handleChangeAdd = (e) => {
+        const { value } = e.target
+        const { usuarios, at } = this.props
+        const { formulario, colaboradores } = this.state
+        usuarios.empleados.map((usuario) => {
+            if (usuario.id === parseInt(value) && colaboradores[0]) {
+                colaboradores.map((item) => {
+                    
+                    if (parseInt(value) !== item.id && parseInt(value) !== usuario.id) {
+                        console.log('si')
+                        formulario.user_id = usuario.id
+                        this.setState({ formulario, colaboradores: [...this.state.colaboradores, usuario] })
+                    } else {
+                        debugger
+                        console.log('no')
+                    }
+                })
+            } else {
+                if (usuario.id === parseInt(value)) {
+                    formulario.user_id = usuario.id
+                    this.setState({ formulario, colaboradores: [...this.state.colaboradores, usuario] })  
+                }
+            }
+        })
+            
+
+        try {
+            //apiPostForm('', formulario, at)
+        } catch (error) { 
+
+        }
+        
+    }
+
     render() {
-        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at } = this.props
+        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at, usuarios } = this.props
+        const { colaboradores, formulario } = this.state
+        console.log(colaboradores, formulario)
         return (
             <div className="col-md-12 mt-4">
                 {
@@ -42,7 +87,7 @@ export default class InformacionProyecto extends Component {
                                         </Nav.Link>
                                     </Nav.Item>
                                 :''
-                            }
+                                }
                             {
                                 this.hasComentarios(proyecto) ?
                                     <Nav.Item className="nav-item">
@@ -55,7 +100,29 @@ export default class InformacionProyecto extends Component {
                             }
                         </Nav>
                         <Tab.Content>
-                            <Tab.Pane eventKey='tab_informacion_general'>
+                                <Tab.Pane eventKey='tab_informacion_general'>
+                                {
+                                    <div>
+                                        <label className="font-weight-bolder">Agregar Colaborador</label>
+                                            <select className="form-control" name="colaborador" onChange = {e => this.handleChangeAdd(e)}>
+                                                <option hidden value="">Seleccionar</option>
+                                                {
+                                                    usuarios.empleados.map((empleado, index) => {
+                                                        return <option key={index}  value={empleado.id}>{ `${empleado.nombre} ${empleado.apellido_paterno !== null?empleado.apellido_paterno:''} ${empleado.apellido_materno !== null? empleado.apellido_materno:''}`}</option>
+                                                    })
+                                                }
+                                            </select>
+                                                
+                                    </div>
+                                    }
+                                {
+                                    colaboradores.length > 0 ?
+                                    colaboradores.map((empleado, index) => {
+                                        return <div key={index}>{ `${empleado.nombre} ${empleado.apellido_paterno !== null?empleado.apellido_paterno:''} ${empleado.apellido_materno !== null? empleado.apellido_materno:''}`}</div>
+                                    })   
+                                    
+                                    :<></>
+                                }
                                 {
                                     urls &&
                                     <div className="mt-5">

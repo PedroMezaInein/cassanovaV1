@@ -40,7 +40,8 @@ class CalendarioProyectos extends Component {
             },
             comentario: ''
         },
-        tipo: ''
+        tipo: '',
+        usuarios: [],
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -58,6 +59,17 @@ class CalendarioProyectos extends Component {
                 this.openModal({id: id, tab: 'comentario'})
             }
         }
+        this.getUsers()
+    }
+    getUsers() {
+        const { access_token } = this.props.authUser
+        axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } })
+        .then(response => { 
+            this.setState({
+                ...this.state,
+                usuarios: response.data
+            })
+        })
     }
     onDragEnd = async (result) => {
         if(!result.destination){ return ; }
@@ -428,7 +440,7 @@ class CalendarioProyectos extends Component {
     }
     
     render() {
-        const { mes, año, fase, proyectos, dias, modal, proyecto, form, tipo } = this.state
+        const { mes, año, fase, proyectos, dias, modal, proyecto, form, tipo, usuarios } = this.state
         return (
             <Layout active='proyectos' {... this.props}>
                 <Card className='card-custom'>
@@ -456,7 +468,7 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className="d-flex justify-content-center">
+                        {/* <div className="d-flex justify-content-center">
                             {
                                 fase === '1' || fase === 'todas' ?
                                     <span className="label-fase" style={{backgroundColor:'#A16793'}}> FASE 1 </span>
@@ -472,7 +484,7 @@ class CalendarioProyectos extends Component {
                                     <span className="label-fase" style={{backgroundColor:'#E88F6B'}}> FASE 3 </span>
                                 : ''
                             }
-                        </div>
+                        </div> */}
                         <div className='d-flex justify-content-between mt-8'>
                             <div className=''>
                                 <h2 className="font-weight-bolder text-dark">{`${mes} ${año}`}</h2>
@@ -580,8 +592,8 @@ class CalendarioProyectos extends Component {
                         : <span>-</span>
                     :''
                 } handleClose = { this.handleClose } >
-                    <InformacionProyecto proyecto = { proyecto } printDates = { this.printDates } addComentario = { this.addComentarioAxios } form = { form } 
-                        onChange = { this.onChange } handleChange = { this.handleChangeComentario } tipo = { tipo } urls = { true } at = { this.props.authUser.access_token}/>
+                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario={this.addComentarioAxios} form={form}
+                        onChange={this.onChange} handleChange={this.handleChangeComentario} tipo={tipo} urls={true} at={this.props.authUser.access_token} usuarios={usuarios} />
                 </Modal>
             </Layout>       
         )
