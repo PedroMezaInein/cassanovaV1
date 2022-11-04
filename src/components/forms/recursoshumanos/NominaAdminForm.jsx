@@ -161,7 +161,6 @@ class NominaAdminForm extends Component {
     handleSubmit = (e, tipo, enviar) => {
         e.preventDefault();
         const { onSubmit } = this.props
-        console.log(tipo)
         validateAlert2(onSubmit, e, 'form-nominaadmin', tipo, enviar)
     }
     render() {

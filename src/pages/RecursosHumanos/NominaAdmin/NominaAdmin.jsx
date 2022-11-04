@@ -456,6 +456,7 @@ class NominaAdmin extends Component {
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
+
                 <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaAdminAxios() }} />
 
                 <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
