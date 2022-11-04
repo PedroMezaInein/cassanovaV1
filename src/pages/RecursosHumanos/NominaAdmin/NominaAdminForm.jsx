@@ -47,7 +47,8 @@ class NominaAdminForm extends Component {
                     placeholder: 'Ingresa los adjuntos',
                     files: []
                 }
-            }
+            },
+            tipo:''
         },
         options: {
             usuarios: [],
@@ -241,10 +242,11 @@ class NominaAdminForm extends Component {
         })
     }
 
-    async updateNominaAdminAxios() {
+    async updateNominaAdminAxios(e, tipo) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, nomina } = this.state
+        form.tipo = tipo
         await axios.put(`${URL_DEV}v2/rh/nomina-administrativa/${nomina.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { nom } = response.data
@@ -385,7 +387,7 @@ class NominaAdminForm extends Component {
         e.preventDefault()
         const { title } = this.state
         if (title === 'Editar nómina administrativa')
-            this.updateNominaAdminAxios()
+            this.updateNominaAdminAxios(e, tipo)
         else
             this.addNominaAdminAxios(e, tipo)
     }
