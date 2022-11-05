@@ -165,6 +165,7 @@ class NominaAdminForm extends Component {
     }
     render() {
         const {auth, options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, form, onSubmit, formeditado, title, action, clearFiles, onChangeAdjunto } = this.props
+        console.log(form)
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -319,6 +320,7 @@ class NominaAdminForm extends Component {
                                 <tbody>
                                     {
                                         form.nominasAdmin.map((nominaAdmin, key) => {
+                                            console.log( nominaAdmin.usuario)
                                             return (
                                                 <tr key={key}>
                                                     <td className='text-center' style={{ minWidth: "60px" }}>
@@ -339,11 +341,6 @@ class NominaAdminForm extends Component {
                                                             prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
                                                     </td>
 
-
-
-
-
-                                                   
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
                                                             withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
@@ -351,11 +348,6 @@ class NominaAdminForm extends Component {
                                                             value={nominaAdmin.extraImss} onChange={e => onChangeNominasAdmin(key, e, 'extraImss')}
                                                             prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
                                                     </td>
-
-
-
-
-
 
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}

@@ -86,8 +86,10 @@ class NominaAdminSingle extends Component {
     }
 
     setTotales = nomina => {
+        console.log(nomina)
         return {
                 totalNominaImss: renderToString(setMoneyTableForNominas(nomina.totalNominaImss)),
+                totalExtrasImss: renderToString(setMoneyTableForNominas(nomina.totalExtrasImss)),
                 totalRestanteNomina: renderToString(setMoneyTableForNominas(nomina.totalRestanteNomina)),
                 totalExtras: renderToString(setMoneyTableForNominas(nomina.totalExtras)),
                 total: renderToString(setMoneyTableForNominas(nomina.totalExtras + nomina.totalRestanteNomina + nomina.totalNominaImss)),

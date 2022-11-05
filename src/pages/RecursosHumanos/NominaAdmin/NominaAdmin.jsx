@@ -340,7 +340,9 @@ class NominaAdmin extends Component {
 
     setNominaAdmin = nominas => {
         let aux = []
-        nominas.map( (nomina) => {
+        
+        nominas.map((nomina) => {
+            console.log(nomina)
             aux.push(
                 {
                     actions: this.setActions(nomina),
@@ -350,7 +352,7 @@ class NominaAdmin extends Component {
                     totalNominaIMSS: renderToString(setMoneyTable(nomina.totalNominaImss)),
                     restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
                     extras: renderToString(setMoneyTable(nomina.totalExtras)),
-                    granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
+                    granTotal: renderToString(setMoneyTable(nomina.granTotal )),
                     id: nomina.id
                 }
             )

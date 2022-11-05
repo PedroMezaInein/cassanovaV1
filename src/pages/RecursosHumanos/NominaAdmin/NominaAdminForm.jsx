@@ -116,13 +116,13 @@ class NominaAdminForm extends Component {
             (response) => {
                 Swal.close()
                 const { nomina } = response.data
-                console.log(nomina)
                 const { form, options } = this.state
 
                 form.periodo = nomina.periodo
                 form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
                 form.fechaInicio = new Date(moment(nomina.fecha_inicio))
                 form.fechaFin = nomina.fecha_fin ? new Date(moment(nomina.fecha_fin)) : ''
+                form.fecha = nomina.fecha ? nomina.fecha : ''
 
                 let aux = []
                 nomina.nominas_administrativas.forEach((nom, key) => {
@@ -231,7 +231,6 @@ class NominaAdminForm extends Component {
         data.append('tipo', tipo)
         await axios.post(`${URL_DEV}v2/rh/nomina-administrativa`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
-                debugger
                 const { history } = this.props
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
                 history.push({ pathname: '/rh/nomina-admin' });
