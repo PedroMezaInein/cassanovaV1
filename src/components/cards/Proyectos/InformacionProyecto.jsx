@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
 import $ from 'jquery'
 
 import '../../../styles/_proyectos.scss'
-const constMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 export default class InformacionProyecto extends Component {
 
     state = {
@@ -19,6 +19,9 @@ export default class InformacionProyecto extends Component {
             id_usuario: '',
             id_proyecto: '',
         },
+        año: new Date().getFullYear(),
+        fase: 'todas',
+        mes: meses[new Date().getMonth()],
     }
 
     componentDidMount() {
@@ -121,7 +124,8 @@ export default class InformacionProyecto extends Component {
     }
 
     handleChangeColor = (value) => { 
-        const { at, proyecto } = this.props
+        const { at, proyecto, reload } = this.props
+        const { mes, año, fase } = this.state
         try {
             Swal.fire({
                 title: 'Actualizando Estado del proyecto',
@@ -133,14 +137,17 @@ export default class InformacionProyecto extends Component {
                 timer: 2000
             })
             apiPutForm(`v2/proyectos/calendario-proyectos/color/${proyecto.id}`, { color: value }, at)
-                .then((response) => {
+            .then((response) => {
+                reload(mes, año, fase)
             })
-            .catch((error) => {
+                .catch((error) => {
+                console.log(error)
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Ocurrió un error al actualizar el color',
                 })
+
             })
         } catch (error) { 
 
@@ -150,7 +157,7 @@ export default class InformacionProyecto extends Component {
 
 
     render() {
-        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at, usuarios, color, close } = this.props
+        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at, usuarios, color, close, reload } = this.props
         const { colaboradores, formulario } = this.state
         console.log(proyecto)
         return (

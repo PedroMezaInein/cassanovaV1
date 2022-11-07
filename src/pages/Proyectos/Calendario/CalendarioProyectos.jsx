@@ -615,7 +615,7 @@ class CalendarioProyectos extends Component {
                     :''
                 } handleClose = { this.handleClose } >
                     <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario={this.addComentarioAxios} form={form}
-                        onChange={this.onChange} handleChange={this.handleChangeComentario} tipo={tipo} urls={true} at={this.props.authUser.access_token} usuarios={usuarios} color={proyecto.color} close={this.handleClose} />
+                        onChange={this.onChange} handleChange={this.handleChangeComentario} tipo={tipo} urls={true} at={this.props.authUser.access_token} usuarios={usuarios} color={proyecto.color} reload={this.getContentCalendarAxios} />
                 </Modal>
             </Layout>       
         )
