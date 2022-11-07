@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 import NewTableServerRender from '../../../../components/tables/NewTableServerRender'
 import CreateSalaJuntas from "../SalaJuntas/CreateSalaJuntas"
+import{waitAlert} from '../../../../functions/alert';
 
 import AplicantesCurso from './../Cursos/AplicantesCurso'
 
@@ -78,6 +79,7 @@ export default function SalaJuntas() {
 
     const getInfoSalas = () => {
         try {
+            waitAlert()
             apiGet('salas', userAuth.access_token)
                 .then((response) => {
                     oldReservas(response.data.Sala)

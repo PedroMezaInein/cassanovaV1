@@ -98,7 +98,7 @@ class CalendarioProyectos extends Component {
                 proyectos.forEach((proyecto) => {
                     let esigual = false
                     let colorexistente = ''
-                    if(proyecto.fase1){
+                    /* if(proyecto.fase1){
                         Object.assign(proyecto, { color:'#A16793'});
                     }else if(proyecto.fase2){
                         Object.assign(proyecto, { color:'#308EA8'});
@@ -107,8 +107,11 @@ class CalendarioProyectos extends Component {
                     }
                     else{
                         Object.assign(proyecto, { color: '#ABB2B9'});
+                    } */
+                    if (proyecto.color == null) {
+                        Object.assign(proyecto, { color: 'green'})
                     }
-                    colorProyecto.forEach(color => {
+                    /* colorProyecto.forEach(color => {
                         if (color.id === proyecto.id ) {
                             esigual=true
                             if(proyecto.fase1){
@@ -123,7 +126,7 @@ class CalendarioProyectos extends Component {
                         }
                     });
                     if(!esigual){ colorProyecto.push({ id: proyecto.id, color: proyecto.color })
-                    }else{ Object.assign(proyecto, { color: colorexistente }); }
+                    }else{ Object.assign(proyecto, { color: colorexistente }); } */
                 })
                 
                 let dias = this.diasEnUnMes(mes, año)
@@ -217,12 +220,22 @@ class CalendarioProyectos extends Component {
         }
         this.getContentCalendarAxios(newMonth, newYear, newFase)
     }
-    showtd(proyecto, colspan, border) {
+    showtd(proyecto, colspan, border, estado) {
+       /*  if(proyecto.fase1){
+            estado='#A16793'
+        }else if(proyecto.fase2){
+            estado='#308EA8'
+        }else if(proyecto.fase3){
+            estado='#E88F6B'
+        }
+        else {
+            estado='#ABB2B9'
+        } */
         return (
             <OverlayTrigger rootClose overlay={
                 <Tooltip className="tool-calendar">
                     <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4" style={{ backgroundColor: proyecto.color }}>
-                        {proyecto.nombre}
+                        <div style={{color:`${proyecto.color == "yellow" ? "black" : "black"}`}}>{proyecto.nombre}</div>
                     </div>
                     <div className="tool-horario py-3 text-center">
                         {this.printDates(proyecto)}
@@ -240,7 +253,14 @@ class CalendarioProyectos extends Component {
                 <td className="text-center position-relative p-0 text-hover" colSpan={colspan} onClick = { (e) => { e.preventDefault(); this.openModal(proyecto) }}>
                     <div className={`text-truncate w-100 position-absolute text-white px-1 top-26 font-size-13px ${border}`} style={{ backgroundColor: proyecto.color, borderColor: proyecto.color }}>
                         {proyecto.nombre}
-                    </div>
+                    </div >
+                    {/* <div className="text-truncate w-100 position-absolute text-white px-0 top-100 font-size-13px" colSpan={colspan}style={{
+                        backgroundColor: `${proyecto.color}`,
+                        fontSize: "8.5px",
+                        marginTop: "5px",
+                        height: "15px",
+                    }}>
+                    </div> */}
                 </td>
             </OverlayTrigger>
         )
@@ -271,7 +291,7 @@ class CalendarioProyectos extends Component {
                 </span>
             )
     }
-    printTd = (proyecto, index, diaActual, fechaInicio, fechaFin) => {
+    printTd = (proyecto, index, diaActual, fechaInicio, fechaFin, estado) => {
         const { mes, año } = this.state
         fechaInicio.startOf('day')
         fechaFin.startOf('day')
@@ -290,14 +310,14 @@ class CalendarioProyectos extends Component {
 
                     let duracionDia1HastaFechaFin = fechaFin.diff(fecha, 'days') + 1
                     if (duracionDia1HastaFechaFin < diasMesActual) {
-                        this.showtd(proyecto, duracionDia1HastaFechaFin)
+                        this.showtd(proyecto, duracionDia1HastaFechaFin, "", estado)
                         return (
-                            this.showtd(proyecto, duracionDia1HastaFechaFin, 'border-radius-right')
+                            this.showtd(proyecto, duracionDia1HastaFechaFin, 'border-radius-right', estado)
                         )
                     }
                     else {
                         return (
-                            this.showtd(proyecto, diasMesActual)
+                            this.showtd(proyecto, diasMesActual, '', estado)
                         )
                     }
                 }
@@ -312,12 +332,12 @@ class CalendarioProyectos extends Component {
                 if (diasHastaFinMes > duracionDiaInicioHastaFechaFin) {
 
                     return (
-                        this.showtd(proyecto, duracionDiaInicioHastaFechaFin, 'border-radius-4px')
+                        this.showtd(proyecto, duracionDiaInicioHastaFechaFin, 'border-radius-4px', estado)
                     )
                 }
                 else {
                     return (
-                        this.showtd(proyecto, diasHastaFinMes, 'border-radius-left')
+                        this.showtd(proyecto, diasHastaFinMes, 'border-radius-left', estado)
                     )
                 }
             }
@@ -545,22 +565,24 @@ class CalendarioProyectos extends Component {
                                                                                 <td className="text-center font-weight-bolder white-space-nowrap py-8px">
                                                                                     <span className="d-block font-size-13px"> { proyecto.nombre } </span>
                                                                                     <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
-                                                                                        color: `${proyecto.estatus.letra}`,
+                                                                                        color: `${proyecto.color == "yellow" ? "black" : "black"}`,
                                                                                         backgroundColor: `${proyecto.estatus.fondo}`,
                                                                                         fontSize: "8.5px", }} >
                                                                                         {proyecto.estatus.estatus}
                                                                                     </span>
                                                                                 </td>
+                                                                                
                                                                                 {
                                                                                     [...Array(dias)].map((element, diaActual) => {
                                                                                         return(
                                                                                             <RenderTd key = {`${proyecto.id}-${diaActual}`} >
-                                                                                                {this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}
+                                                                                                {this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin, proyecto.color)}
                                                                                             </RenderTd>
                                                                                         )
                                                                                     })
                                                                                 }
-                                                                            </tr>
+                                                                                
+                                                                            </tr>       
                                                                         )}
                                                                     </Draggable>
                                                                 )
@@ -581,7 +603,7 @@ class CalendarioProyectos extends Component {
                             <>
                                 {proyecto.nombre}
                                 <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
-                                    color: `${proyecto.estatus.letra}`,
+                                    color: `${proyecto.color == "yellow" ? "black" : "white"}`,
                                     backgroundColor: `${proyecto.estatus.fondo}`,
                                     fontSize: "75%",
                                     marginLeft:'10px'
@@ -593,7 +615,7 @@ class CalendarioProyectos extends Component {
                     :''
                 } handleClose = { this.handleClose } >
                     <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario={this.addComentarioAxios} form={form}
-                        onChange={this.onChange} handleChange={this.handleChangeComentario} tipo={tipo} urls={true} at={this.props.authUser.access_token} usuarios={usuarios} />
+                        onChange={this.onChange} handleChange={this.handleChangeComentario} tipo={tipo} urls={true} at={this.props.authUser.access_token} usuarios={usuarios} color={proyecto.color} close={this.handleClose} />
                 </Modal>
             </Layout>       
         )

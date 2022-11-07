@@ -347,10 +347,6 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
     return (
         <>
             <div className='modal-juntas'>
-                <div className="solicitante">
-                    <label>Solicitante</label>
-                    <input disabled type="text" value={userAuth.user.name} />
-                </div>
                 <form>
                     {admin ?
                         <div className={`${errores.tipo ? "error":"validate"} `}>
