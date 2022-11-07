@@ -5,7 +5,28 @@ import ComentarioForm from '../../forms/ComentarioForm'
 import TimelineComments from '../../forms/TimelineComments'
 import { setEmpresaLogo, setMoneyText } from '../../../functions/setters'
 import { LEADS_FRONT } from "../../../constants";
+import { apiPostForm, apiGet, apiDelete, apiPutForm } from '../../../functions/api'
+import Swal from 'sweetalert2'
+import $ from 'jquery'
+
+import '../../../styles/_proyectos.scss'
+const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 export default class InformacionProyecto extends Component {
+
+    state = {
+        colaboradores: [],
+        formulario: {
+            id_usuario: '',
+            id_proyecto: '',
+        },
+        año: new Date().getFullYear(),
+        fase: 'todas',
+        mes: meses[new Date().getMonth()],
+    }
+
+    componentDidMount() {
+        this.handleGetUsers()
+    }
 
     hasComentarios = (proyecto) => {
         if(proyecto)
@@ -15,8 +36,130 @@ export default class InformacionProyecto extends Component {
         return false
     }
 
+    handleChangeAdd = (e) => {
+        const { value } = e.target
+        const { usuarios, at, proyecto } = this.props
+        const { formulario } = this.state
+        usuarios.empleados.map((usuario) => {
+            if (usuario.id == parseInt(value)) {
+                formulario.id_usuario = usuario.id
+                formulario.id_proyecto = proyecto.id
+            }
+        })
+        
+        try {
+            Swal.fire({
+                title: 'Agregando colaborador',
+                text: 'Espere un momento...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                },
+                timer: 2000
+            })
+            apiPostForm('v2/proyectos/calendario-proyectos/users/create', formulario, at).then((response) => {
+                this.handleGetUsers()
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocurrió un error al agregar el colaborador',
+                })
+            })
+        } catch (error) { 
+
+        }
+        
+    }
+
+    handleGetUsers = () => {
+        const { at, proyecto, usuarios } = this.props
+        const { colaboradores } = this.state
+        apiGet(`v2/proyectos/calendario-proyectos/users/${proyecto.id}`, at).then((response) => {
+            let aux = []
+            response.data.User.map((user) => {
+                usuarios.empleados.find((usuario) => { 
+                    if (usuario.id == user.id_usuario) {
+                        usuario.id_delete = user.id
+                        aux.push(usuario)
+                    }
+                })
+            })
+            this.setState({ colaboradores: aux })
+        })
+        .catch((error) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Ocurrió un error al obtener los colaboradores',
+            })
+        })
+    }
+
+    handleDeleteUser = (e, id) => { 
+        e.preventDefault()
+        const { at, proyecto } = this.props
+        Swal.fire({
+            title: 'Eliminando colaborador',
+            text: "Espera un momento...",
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+            timer: 2000,
+        })
+
+        apiDelete(`v2/proyectos/calendario-proyectos/users/${id}`, at)
+        .then((response) => {
+            this.handleGetUsers()
+        })
+        .catch((error) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Ocurrió un error al eliminar el colaborador',
+            })
+        })
+    }
+
+    handleChangeColor = (value) => { 
+        const { at, proyecto, reload } = this.props
+        const { mes, año, fase } = this.state
+        try {
+            Swal.fire({
+                title: 'Actualizando Estado del proyecto',
+                text: 'Espere un momento...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                },
+                timer: 2000
+            })
+            apiPutForm(`v2/proyectos/calendario-proyectos/color/${proyecto.id}`, { color: value }, at)
+            .then((response) => {
+                reload(mes, año, fase)
+            })
+                .catch((error) => {
+                console.log(error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocurrió un error al actualizar el color',
+                })
+
+            })
+        } catch (error) { 
+
+        }
+
+    }
+
+
     render() {
-        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at } = this.props
+        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at, usuarios, color, close, reload } = this.props
+        const { colaboradores, formulario } = this.state
+        console.log(proyecto)
         return (
             <div className="col-md-12 mt-4">
                 {
@@ -42,7 +185,7 @@ export default class InformacionProyecto extends Component {
                                         </Nav.Link>
                                     </Nav.Item>
                                 :''
-                            }
+                                }
                             {
                                 this.hasComentarios(proyecto) ?
                                     <Nav.Item className="nav-item">
@@ -55,7 +198,41 @@ export default class InformacionProyecto extends Component {
                             }
                         </Nav>
                         <Tab.Content>
-                            <Tab.Pane eventKey='tab_informacion_general'>
+                                <Tab.Pane eventKey='tab_informacion_general'>
+                                    <div>
+                                        <div>
+                                            Estado del proyecto
+                                        </div>
+
+                                        <div>
+                                            <label className={`btn ${color === 'green'  || color== null? 'btn-success' : 'btn-outline-success'} btn-sm`} onClick={()=>this.handleChangeColor('green')}>A TIEMPO</label>
+                                            <label className={`btn ${color === 'orange' ? 'btn-warning' : 'btn-outline-warning'} btn-sm`} onClick={()=>this.handleChangeColor('orange')}>CON RETRAZO</label>
+                                            <label className={`btn ${color === 'red' ? 'btn-danger' : 'btn-outline-danger'} btn-sm`} onClick={()=>this.handleChangeColor('red')}>ATRAZADO</label>
+                                        </div>
+                                    </div>    
+                                {
+                                    <div className='agregar-colaborador'>
+                                        <label className="font-weight-bolder">Agregar Colaborador</label>
+                                            <select className="form-control" name="colaborador" onChange = {e => this.handleChangeAdd(e)}>
+                                                <option hidden value="">Seleccionar</option>
+                                                {
+                                                    usuarios.empleados.map((empleado, index) => {
+                                                        return <option key={index}  value={empleado.id}>{ `${empleado.nombre} ${empleado.apellido_paterno !== null?empleado.apellido_paterno:''} ${empleado.apellido_materno !== null? empleado.apellido_materno:''}`}</option>
+                                                    })
+                                                }
+                                            </select>
+                                                
+                                    </div>
+                                }
+                                {
+                                    colaboradores.length > 0 ?
+                                    <div className='colaboradores'>
+                                        {colaboradores.map((empleado, index) => {
+                                            return <div key={index}>{ `${empleado.nombre} ${empleado.apellido_paterno !== null?empleado.apellido_paterno:''} ${empleado.apellido_materno !== null? empleado.apellido_materno:''}`} <span onClick={e=>this.handleDeleteUser(e , empleado.id_delete)}>X</span></div>
+                                        }) } 
+                                    </div>
+                                    :<></>
+                                }
                                 {
                                     urls &&
                                     <div className="mt-5">
@@ -79,16 +256,16 @@ export default class InformacionProyecto extends Component {
                                         <thead>
                                             <tr>
                                                 <th colSpan="3" className="text-center pt-0">
-                                                    {
+                                                    {/* {
                                                         setEmpresaLogo(proyecto) !== '' ?
                                                             <img alt='' width="170" src={setEmpresaLogo(proyecto)} />
                                                             : ''
-                                                    }
+                                                    } */}
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
+                                            {/* {
                                                 proyecto.contacto &&
                                                     <tr className="border-top-2px">
                                                         <td className="text-center w-5">
@@ -159,7 +336,7 @@ export default class InformacionProyecto extends Component {
                                                             }
                                                         </td>
                                                     </tr>
-                                            }
+                                            } */}
                                             <tr>
                                                 <td className="text-center">
                                                     <i className="las la-calendar icon-2x text-dark-50"></i>
@@ -169,7 +346,7 @@ export default class InformacionProyecto extends Component {
                                                     {printDates(proyecto.fecha_inicio, proyecto.fecha_fin)}
                                                 </td>
                                             </tr>
-                                            {
+                                            {/* {
                                                 proyecto.tipo_proyecto &&
                                                     <tr>
                                                         <td className="text-center">
@@ -317,7 +494,7 @@ export default class InformacionProyecto extends Component {
                                                             <span>{proyecto.descripcion}</span>
                                                         </td>
                                                     </tr>
-                                            }
+                                            } */}
                                         </tbody>
                                     </table>
                                 </div>

@@ -4,7 +4,7 @@ import { apiPostForm, apiGet, apiPutForm } from '../../../../functions/api';
 import Swal from 'sweetalert2'
 import '../../../../styles/_salaJuntas.scss'
 
-export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEdith=false }) {
+export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEdith=false , rh}) {
     const userAuth = useSelector((state) => state.authUser);
     const [errores, setErrores] = useState({})
     const [reservas, setReservas] = useState({})
@@ -253,8 +253,11 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                                     })
                                     resetForm()
                                     getInfoSalas()
-                                    getInfo()
+                                    if (rh) {
+                                        getInfo()
+                                    }
                                 }).catch((error) => {
+                                    console.log(error)
                                     Swal.fire({
                                     title: 'Error',
                                     text: 'Ha ocurrido un error al reservar la sala',
@@ -344,10 +347,6 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
     return (
         <>
             <div className='modal-juntas'>
-                <div className="solicitante">
-                    <label>Solicitante</label>
-                    <input disabled type="text" value={userAuth.user.name} />
-                </div>
                 <form>
                     {admin ?
                         <div className={`${errores.tipo ? "error":"validate"} `}>

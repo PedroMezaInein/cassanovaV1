@@ -1759,8 +1759,8 @@ class Calendario extends Component {
                         tagInputChange={(e) => this.tagInputChange(e)} evento={evento} />
                 </Modal>
 
-                <Modal size="lg" title="Reservar sala de Juntas" show={modal.solicitar_sala} handleClose={this.closeModalSalaJuntas}>
-                    <CreateSalaJuntas />
+                <Modal size="sm" title="Reservar sala de Juntas" show={modal.solicitar_sala} handleClose={this.closeModalSalaJuntas}>
+                    <CreateSalaJuntas closeModal={this.closeModalSalaJuntas} rh={ false} />
                 </Modal>
 
                 <Modal size="lg" title="Inscribirse a un curso" show={modal.modal_inscripcion_curso} handleClose={this.closeModalEnrollUser}>

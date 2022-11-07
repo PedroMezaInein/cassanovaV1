@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 import NewTableServerRender from '../../../../components/tables/NewTableServerRender'
 import CreateSalaJuntas from "../SalaJuntas/CreateSalaJuntas"
+import{waitAlert} from '../../../../functions/alert';
 
 import AplicantesCurso from './../Cursos/AplicantesCurso'
 
@@ -78,6 +79,7 @@ export default function SalaJuntas() {
 
     const getInfoSalas = () => {
         try {
+            waitAlert()
             apiGet('salas', userAuth.access_token)
                 .then((response) => {
                     oldReservas(response.data.Sala)
@@ -105,11 +107,14 @@ export default function SalaJuntas() {
         let date = newDate.getDate();
         let month = newDate.getMonth() + 1;
         let year = newDate.getFullYear();
-        let fechaHoy = `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
+        let fechaHoy = `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date < 10 ? `0${date}` : `${date}`}`
         let reservasOld = []
         let reservasNew = []
         data.map((reserva) => {
-            if (reserva.fecha < fechaHoy) {
+            let date1 = new Date(reserva.fecha)
+            let date2 = new Date(fechaHoy)
+            console.log(date1, date2)
+            if ((date1.getTime() < date2.getTime()) && (date1.getTime() !== date2.getTime())) {
                 reservasOld.push(reserva)
             } else {
                 reservasNew.push(reserva)
@@ -234,7 +239,7 @@ export default function SalaJuntas() {
                     <div className="close-modal" onClick={handleCloseCreate}>X</div>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreateSalaJuntas admin={true} getInfo={getInfoSalas} closeModal={handleCloseCreate} />
+                    <CreateSalaJuntas admin={true} getInfo={getInfoSalas} closeModal={handleCloseCreate} rh={true} />
                 </Modal.Body>
             </Modal>
 
