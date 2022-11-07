@@ -104,7 +104,7 @@ class NominaAdminForm extends Component {
             array.push(element)
         })
         if (aux)
-            array.push({ 'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString() })
+            array.push({ 'label': aux.nombre, 'name': `${aux.nombre} ${aux.apellido_paterno ? aux.apellido_paterno: ''} ${aux.apellido_materno? aux.apellido_materno:''}`, 'value': aux.id.toString() })
         return array
     }
     getMeses = () => {
@@ -165,7 +165,6 @@ class NominaAdminForm extends Component {
     }
     render() {
         const {auth, options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, form, onSubmit, formeditado, title, action, clearFiles, onChangeAdjunto } = this.props
-        console.log(form)
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -320,7 +319,6 @@ class NominaAdminForm extends Component {
                                 <tbody>
                                     {
                                         form.nominasAdmin.map((nominaAdmin, key) => {
-                                            console.log( nominaAdmin.usuario)
                                             return (
                                                 <tr key={key}>
                                                     <td className='text-center' style={{ minWidth: "60px" }}>

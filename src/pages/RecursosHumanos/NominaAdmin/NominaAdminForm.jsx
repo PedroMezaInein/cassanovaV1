@@ -252,7 +252,8 @@ class NominaAdminForm extends Component {
                 const { options } = this.state
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
                 let aux = []
-                nom.nominas_administrativas.forEach((element, key) => {
+                if (nom) {
+                    nom.nominas_administrativas.forEach((element, key) => {
                     aux.push(
                         {
                             usuario: element.empleado ? element.empleado.id.toString() : '',
@@ -264,11 +265,14 @@ class NominaAdminForm extends Component {
                         }
                     )
                 })
+                }
                 if (aux.length) { form.nominasAdmin = aux } 
                 else { form.nominasAdmin = [{ usuario: '', nominImss: '', extraImss: '', estanteNomina: '', extras: '' }] }
                 options.usuarios = this.updateOptionsUsuarios(form.nominasAdmin)
-                window.history.replaceState(nom, 'nomina')
-                this.setState({...this.state, nomina: nom, options, form })
+                this.setState({ ...this.state, nomina: nom, options, form })
+                const { history } = this.props
+                
+                history.push({ pathname: '/rh/nomina-admin' });
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

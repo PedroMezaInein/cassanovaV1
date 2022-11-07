@@ -340,9 +340,7 @@ class NominaAdmin extends Component {
 
     setNominaAdmin = nominas => {
         let aux = []
-        
         nominas.map((nomina) => {
-            console.log(nomina)
             aux.push(
                 {
                     actions: this.setActions(nomina),
