@@ -206,7 +206,7 @@ export default class InformacionProyecto extends Component {
 
                                         <div>
                                             <label className={`btn ${color === 'green'  || color== null? 'btn-success' : 'btn-outline-success'} btn-sm`} onClick={()=>this.handleChangeColor('green')}>A TIEMPO</label>
-                                            <label className={`btn ${color === 'yellow' ? 'btn-warning' : 'btn-outline-warning'} btn-sm`} onClick={()=>this.handleChangeColor('orange')}>CON RETRAZO</label>
+                                            <label className={`btn ${color === 'orange' ? 'btn-warning' : 'btn-outline-warning'} btn-sm`} onClick={()=>this.handleChangeColor('orange')}>CON RETRAZO</label>
                                             <label className={`btn ${color === 'red' ? 'btn-danger' : 'btn-outline-danger'} btn-sm`} onClick={()=>this.handleChangeColor('red')}>ATRAZADO</label>
                                         </div>
                                     </div>    
