@@ -14,7 +14,8 @@ import Swal from 'sweetalert2'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { setSingleHeader } from '../../../functions/routers'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-
+let aux = 'todas'
+ 
 class CalendarioProyectos extends Component {
     state = {
         mes: meses[new Date().getMonth()],
@@ -42,6 +43,7 @@ class CalendarioProyectos extends Component {
         },
         tipo: '',
         usuarios: [],
+        fase_actual: 'todas'
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -60,6 +62,19 @@ class CalendarioProyectos extends Component {
             }
         }
         this.getUsers()
+
+        setInterval(() => {
+            this.updateFase(aux)
+            if (aux === 'todas') {
+                aux = 1
+            }else if (aux === 1) {
+                aux = 2
+            } else if (aux === 2) {
+                aux = 3
+            } else if (aux === 3) {
+                aux = 'todas'
+            }
+        }, 600000);
     }
     getUsers() {
         const { access_token } = this.props.authUser
@@ -165,6 +180,7 @@ class CalendarioProyectos extends Component {
         })
         this.getContentCalendarAxios(mes, año, value)
     }
+    
     isActiveBackButton = () => {
         const { mes, año } = this.state
         let actualMonth = meses.indexOf(mes)
@@ -459,6 +475,7 @@ class CalendarioProyectos extends Component {
         return form
     }
     
+    
     render() {
         const { mes, año, fase, proyectos, dias, modal, proyecto, form, tipo, usuarios } = this.state
         return (
@@ -471,20 +488,20 @@ class CalendarioProyectos extends Component {
                             </h3>
                         </div>
                         <div className="card-toolbar row mx-0 row-paddingless d-flex justify-content-end ">
-                            <div className="col-md-4 mr-4">
+                            <div className="col-md-8 mr-4">
                                 {/* <Single textlabel={false} placeholder = 'Selecciona el mes' defaultvalue = { mes } iconclass='las la-tools icon-xl'
                                     options={getMeses()}  onChange={this.updateMes}  /> */}
                                 <SelectSearchGray name = 'fase' options = { getFases() } value = { fase } customdiv = 'mb-0' onChange = { this.updateFase } 
                                     iconclass = "fas fa-calendar-day" messageinc = "Incorrecto. Selecciona la fase." requirevalidation = { 1 } withicon = { 1 }/>
                             </div>
-                            <div className="col-md-4 mr-4">
+                            {/* <div className="col-md-4 mr-4">
                                 <SelectSearchGray name = 'mes' options = { getMeses() } value = { mes } customdiv = 'mb-0' onChange = { this.updateMes } 
                                     iconclass = "fas fa-calendar-day" messageinc = "Incorrecto. Selecciona el mes." requirevalidation = { 1 } withicon = { 1 } />
                             </div>
                             <div className="col-md-3">
                                 <SelectSearchGray name = 'año' options = { getAños() } customdiv = 'mb-0' value = { año } onChange = { this.updateAño }
                                     iconclass = "fas fa-calendar-day" withicon = { 1 } />
-                            </div>
+                            </div> */}
                         </div>
                     </Card.Header>
                     <Card.Body>
