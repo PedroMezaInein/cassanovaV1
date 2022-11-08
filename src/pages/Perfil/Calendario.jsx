@@ -626,7 +626,7 @@ class Calendario extends Component {
         let comentarioA = form.descripcion
         data.append('descripcion', comentarioA)
         // let horaEntradaA = Math.floor((form.hora_entrada * 10000) + minutoEntradaA);
-            await axios.post(URL_DEV + 'permiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            await axios.post(URL_DEV + 'pesrmiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Permiso enviado con éxito')
                 this.handleClosePermisos()
@@ -1456,13 +1456,13 @@ class Calendario extends Component {
                                 {
                                     <DropdownButton 
                                         title={
-                                        <i className="flaticon-network"></i>
+                                        <i className="flatico3n-network"></i>
                                         
                                         }
                                         id={`dropdown-button-drop-left`}
                                         drop={'left'}
                                     >
-                                        {enrollUser.aprovacion && enrollUser.aprovacion[1] !== null && enrollUser.aprovacion[1].length !== 0 ?
+                                        {enrollUser.aprovacion && enrollUser.aprovacion[0] !== null && enrollUser.aprovacion[0].length !== 0 ?
                                         <Dropdown.Item onClick={this.openModalAplicantes}>Aprovar cursos</Dropdown.Item> : null}
                                         <Dropdown.Item onClick={this.openModalSalaJuntas}>Reservar Sala de Juntas</Dropdown.Item>
                                         <Dropdown.Item onClick={this.openModalEnrollUser}>Solicitar Curso</Dropdown.Item>

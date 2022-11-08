@@ -64,7 +64,7 @@ class CalendarioProyectos extends Component {
         this.getUsers()
 
         setInterval(() => {
-            this.updateFase(aux)
+            this.getContentCalendarAxios(mes, año, aux)
             if (aux === 'todas') {
                 aux = 1
             }else if (aux === 1) {
