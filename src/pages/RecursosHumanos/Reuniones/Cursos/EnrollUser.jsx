@@ -107,7 +107,6 @@ export default function EnrollUser({close}) {
         });
         setCurso(cursos[e.target.value])
     };
-    console.log(form)
 
     return (
         <div>

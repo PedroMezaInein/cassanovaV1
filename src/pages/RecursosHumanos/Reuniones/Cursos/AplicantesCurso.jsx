@@ -9,6 +9,7 @@ import '../../../../styles/_salaJuntas.scss'
 export default function AplicantesCurso(props) {
     const userAuth = useSelector((state) => state.authUser);
     const { closeModal, rh, data, getEnrollUsers, aplicantes } = props;
+    console.log(data)
     const [curso, setCurso] = useState()
 
     useEffect(() => {
@@ -92,30 +93,36 @@ export default function AplicantesCurso(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {data && data.aprovacion[1].map((aplicante, index) => { 
+                    {data && data.aprovacion && data.aprovacion.map((item1) => { 
                         return (
-                            <tr className='table-reservas' key={index}>
-                                <td>{aplicante.user.name}</td>
-                                <td>{curso && curso.map((item) => {
-                                    if (item.id === aplicante.id_salas) {
-                                        return item.nombre
-                                    }
-                                })}</td>
-                                <td>{aplicante.aprovacion === null? "Pendiente": aplicante.aprovacion}</td>
-                                {rh ? null :
-                                    aplicante.aprovacion !== null ?
-                                        <td>
-                                            <div>Ya {aplicante.aprovacion === "aprobado" ? " aprobaste" : " rechazaste"} la postulaciÓn</div>
+                            item1.map((aplicante, index) => { 
+                            return (
+                                <tr className='table-reservas' key={index}>
+                                    <td>{aplicante.user.name}</td>
+                                    <td>{curso && curso.map((item) => {
+                                        if (item.id === aplicante.id_salas) {
+                                            return item.nombre
+                                        }
+                                    })}</td>
+                                    <td>{aplicante.aprovacion === null? "Pendiente": aplicante.aprovacion}</td>
+                                    {rh ? null :
+                                        aplicante.aprovacion !== null ?
+                                            <td>
+                                                <div>Ya {aplicante.aprovacion === "aprobado" ? " aprobaste" : " rechazaste"} la postulaciÓn</div>
+                                            </td>
+                                        :
+                                        <td className='btn-aprobacion'>
+                                            <button className='btn-danger' onClick={e=>{handleAprobar(e, aplicante, false)}}>Declinar</button>    
+                                            <button className='btn-success' onClick={e=>{handleAprobar(e, aplicante, true)}}>Aprovar</button>
                                         </td>
-                                    :
-                                    <td className='btn-aprobacion'>
-                                        <button className='btn-danger' onClick={e=>{handleAprobar(e, aplicante, false)}}>Declinar</button>    
-                                        <button className='btn-success' onClick={e=>{handleAprobar(e, aplicante, true)}}>Aprovar</button>
-                                    </td>
-                                }
-                            </tr>
+                                    }
+                                </tr>
+                            )
+                        })
                         )
-                    })}
+                        
+                    }
+                    )}
                     {aplicantes && aplicantes.Sala.map((aplicante, index) => {
                         return (
                             <tr className='table-reservas' key={index}>
