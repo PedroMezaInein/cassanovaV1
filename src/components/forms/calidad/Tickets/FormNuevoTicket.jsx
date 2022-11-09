@@ -15,37 +15,54 @@ export default class FormNuevoTicket extends Component {
         return (
             <>
                 <Form id="form-nuevo-ticket"
-                    onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-nuevo-ticket') } } >
-                    <div className="form-group row form-group-marginless pt-4 justify-content-md-center">
-                        <div className="col-md-4">
+                    onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-nuevo-ticket') }} >
+                    <div className="row">
+                        <div className="col-12 col-md-1">
+                            <InputGray
+                                withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0} withformgroup={0}
+                                placeholder="Ticket"
+                                label="Ticket"
+                                name="numero_ticket"
+                                value={form.numero_ticket}
+                                onChange={onChange}
+                                required />
+                        </div>
+                        <div className="col-12 col-md-1">
+                            <InputGray
+                                withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0} withformgroup={0}
+                                placeholder="Clave"
+                                label="Clave"
+                                name="clave"
+                                value={form.clave}
+                                onChange={onChange}
+                                 />
+                        </div>
+                    </div>  
+                    <div className="form-group row form-group-marginless pt-4 justify-content-md-left">
+                        <div className="col-md-3">
                             <SelectSearchGray requirevalidation = { 1 } withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 }
                                 options = { options.proyectos } placeholder = 'SELECCIONA EL PROYECTO' name = 'proyecto'
                                 value = { form.proyecto } onChange = { (value) =>  { this.updateSelect(value, 'proyecto') } } 
                                 iconclass = 'las la-swatchbook icon-2x' messageinc = "Incorrecto. Selecciona el proyecto" />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <SelectSearchGray requirevalidation = { 1 } withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 }
                                 options = { options.tiposTrabajo } placeholder = "SELECCIONA EL TIPO DE TRABAJO" name = "tipo_trabajo"
                                 value = { form.tipo_trabajo } onChange = { (value) =>  { this.updateSelect(value, 'tipo_trabajo') } }  
                                 iconclass = "las la-tools icon-xl" messageinc = "Incorrecto. Selecciona el tipo de trabajo" />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
                                 requirevalidation = { 1 } placeholder = "NOMBRE DEL SOLICITANTE" value = { form.solicito } name = "solicito" 
                                 onChange = { onChange } messageinc="Incorrecto. Ingresa el nombre del solicitante." />
                         </div>
-                    </div>
-                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                    <div className="form-group row form-group-marginless">
-                        <div className="col-md-12">
+                        <div className="col-md-5 justify-content-md-right">
                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
                                 requirevalidation = { 1 } as = "textarea" placeholder = "ÁREA DE TRABAJO " rows = "2" 
                                 value = { form.solicitado } name = "solicitado" onChange = { onChange } 
                                 messageinc="Incorrecto. Ingresa la área de trabajo." />
                         </div>
-                    </div>
-                    <div className="form-group row form-group-marginless">
-                        <div className="col-md-12">
+                        <div className="col-md-5">
                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } withformgroup = { 0 }
                                 requirevalidation = { 1 } as = "textarea" placeholder = "DESCRIPCIÓN DEL PROBLEMA" rows = "2" 
                                 value = { form.descripcion } name = "descripcion" onChange = { onChange } 

@@ -14,6 +14,8 @@ import S3 from 'react-aws-s3';
 class AddTicket extends Component {
     state = {
         form: {
+            numero_ticket: '0',
+            clave: '0',
             proyecto: '',
             solicito: '',
             tipo_trabajo: '',
@@ -56,6 +58,7 @@ class AddTicket extends Component {
     onSubmit = async() => {
         waitAlert()
         let { form } = this.state
+        console.log(form)
         const { access_token } = this.props.authUser
         await axios.post(`${URL_DEV}v3/calidad/tickets`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
