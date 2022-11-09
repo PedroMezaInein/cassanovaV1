@@ -1456,7 +1456,7 @@ class Calendario extends Component {
                                 {
                                     <DropdownButton 
                                         title={
-                                        <i className="flatico3n-network"></i>
+                                        <i className="flaticon-network"></i>
                                         
                                         }
                                         id={`dropdown-button-drop-left`}
