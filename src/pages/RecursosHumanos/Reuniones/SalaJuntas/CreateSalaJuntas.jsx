@@ -21,26 +21,48 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
         id: '',
     });
 
-    let horas = [
-        { id: 1, hora: '09:00' },
-        { id: 2, hora: '09:30' },
-        { id: 3, hora: '10:00' },
-        { id: 4, hora: '10:30' },
-        { id: 5, hora: '11:00' },
-        { id: 6, hora: '11:30' },
-        { id: 7, hora: '12:00' },
-        { id: 8, hora: '12:30' },
-        { id: 9, hora: '13:00' },
-        { id: 10, hora: '13:30' },
-        { id: 11, hora: '14:00' },
-        { id: 12, hora: '14:30' },
-        { id: 13, hora: '15:00' },
-        { id: 14, hora: '15:30' },
-        { id: 15, hora: '16:00' },
-        { id: 16, hora: '16:30' },
-        { id: 17, hora: '17:00' },
-        { id: 18, hora: '17:30' },
+    const horas = [
+        { id: 1, hora: '09:00', disabled: false },
+            { id: 2, hora: '09:30', disabled: false },
+            { id: 3, hora: '10:00', disabled: false },
+            { id: 4, hora: '10:30', disabled: false },
+            { id: 5, hora: '11:00', disabled: false },
+            { id: 6, hora: '11:30', disabled: false },
+            { id: 7, hora: '12:00', disabled: false },
+            { id: 8, hora: '12:30', disabled: false },
+            { id: 9, hora: '13:00', disabled: false },
+            { id: 10, hora: '13:30', disabled: false },
+            { id: 11, hora: '14:00', disabled: false },
+            { id: 12, hora: '14:30', disabled: false },
+            { id: 13, hora: '15:00', disabled: false },
+            { id: 14, hora: '15:30', disabled: false },
+            { id: 15, hora: '16:00', disabled: false },
+            { id: 16, hora: '16:30', disabled: false },
+            { id: 17, hora: '17:00', disabled: false },
+        { id: 18, hora: '17:30', disabled: false },
     ]
+
+    const [horasDisponibles, setHorasDisponibles] = useState(
+       [{ id: 1, hora: '09:00', disabled: false },
+        { id: 2, hora: '09:30', disabled: false },
+        { id: 3, hora: '10:00', disabled: false },
+        { id: 4, hora: '10:30', disabled: false },
+        { id: 5, hora: '11:00', disabled: false },
+        { id: 6, hora: '11:30', disabled: false },
+        { id: 7, hora: '12:00', disabled: false },
+        { id: 8, hora: '12:30', disabled: false },
+        { id: 9, hora: '13:00', disabled: false },
+        { id: 10, hora: '13:30', disabled: false },
+        { id: 11, hora: '14:00', disabled: false },
+        { id: 12, hora: '14:30', disabled: false },
+        { id: 13, hora: '15:00', disabled: false },
+        { id: 14, hora: '15:30', disabled: false },
+        { id: 15, hora: '16:00', disabled: false },
+        { id: 16, hora: '16:30', disabled: false },
+        { id: 17, hora: '17:00', disabled: false },
+        { id: 18, hora: '17:30', disabled: false }, ]
+    )
+
 
     useEffect(() => {
 
@@ -68,6 +90,10 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
         }
     }, [form.hora, form.duracion])
 
+    useEffect(() => { 
+        horarioDisponible()
+    }, [form.fecha, form.sala])
+
     const rangoHoras = () => {
         let rango_horas =[]
         if (form.hora !== '' && form.duracion !== '') {
@@ -76,27 +102,27 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
             
             switch (duracion) {
             case "0.5":
-                horas.map((hora) => {
+                horasDisponibles.map((hora) => {
                     if (hora.hora === hora_inicio) {
                         rango_horas.push(hora)
                     }
                 })
                 break;
             case "1":
-                horas.map((item, index) => {
+                    horasDisponibles.map((item, index) => {
                     if (item.hora === hora_inicio) {
                         rango_horas.push(item)
-                        rango_horas.push(horas[index + 1])
+                        rango_horas.push(horasDisponibles[index + 1])
                     }
                 })
                 break;
             case "2":
-                horas.map((item, index) => {
+                    horasDisponibles.map((item, index) => {
                     if (item.hora === hora_inicio) {
                         rango_horas.push(item)
-                        rango_horas.push(horas[index + 1])
-                        rango_horas.push(horas[index + 2])
-                        rango_horas.push(horas[index + 3])
+                        rango_horas.push(horasDisponibles[index + 1])
+                        rango_horas.push(horasDisponibles[index + 2])
+                        rango_horas.push(horasDisponibles[index + 3])
                     }
                 })  
                 break;
@@ -123,27 +149,27 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                         let rango_horas =[]
                         switch (duracion) {
                             case "0.5":
-                                horas.map((hora) => {
+                                horasDisponibles.map((hora) => {
                                     if (hora.hora === hora_inicio) {
                                         rango_horas.push(hora)
                                     }
                                 })
                                 break;
                             case "1":
-                                horas.map((item, index) => {
+                                horasDisponibles.map((item, index) => {
                                     if (item.hora === hora_inicio) {
                                         rango_horas.push(item)
-                                        rango_horas.push(horas[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 1])
                                     }
                                 })
                                 break;
                             case "2":
-                                horas.map((item, index) => {
+                                horasDisponibles.map((item, index) => {
                                     if (item.hora === hora_inicio) {
                                         rango_horas.push(item)
-                                        rango_horas.push(horas[index + 1])
-                                        rango_horas.push(horas[index + 2])
-                                        rango_horas.push(horas[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
                                     }
                                 })  
                                 break;
@@ -343,6 +369,25 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
         });
         setErrores({})
     };
+
+    const horarioDisponible = async () => { 
+        let aux = []
+        let disabledHora = horas
+        if (form.fecha !== '' && form.sala !=='') {
+            reservas.map((reserva) => { 
+                if (reserva.fecha === form.fecha && reserva.sala === form.sala) {
+                    aux.push(...reserva.rango_horas)
+                }
+            })
+            if (aux.length > 0) {
+                aux.map((hora) => { 
+                    disabledHora[hora.id-1].disabled = true
+                })
+            }
+            await setHorasDisponibles(disabledHora)
+        }
+        
+    }
     
     return (
         <>
@@ -366,27 +411,7 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                         <input name="fecha" type="date" value={form.fecha} onChange={(e) => handleChange(e)} />
                     </div>
 
-                    <div className={`${errores.hora ? "error":"validate"}`}>
-                        <label>Hora</label>
-                        <select name="hora" value={form.hora} onChange={(e) => handleChange(e)}>
-                            <option hidden>Seleccione una hora</option>
-                            {horas.map((hora) => (
-                                <option key={hora.id} value={hora.hora}>{hora.hora}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className={`${errores.duracion ? "error":"validate"}`}>
-                        <label>Duración</label>
-                        <select name="duracion" value={form.duracion} onChange={(e) => handleChange(e)}>
-                            <option hidden>Seleccione la duracion</option>
-                            <option value="0.5">30 minutos</option>
-                            <option value="1">1 hora</option>
-                            <option value="2">2 horas</option>
-                        </select>
-                    </div>
-
-                    <div className={`${errores.sala ? "error":"validate"}`}>
+                    <div className={`${errores.sala ? "error" : "validate"}`}>
                         <label>Sala</label>
                         <select name="sala" value={form.sala} onChange={(e) => handleChange(e)}>
                             <option hidden>Seleccione una sala</option>
@@ -399,6 +424,33 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                         {form.sala === "Sala 3" ? <span>Grupos de 1 o mas</span> : null} */}
 
                     </div>
+
+                    {
+                        <div className={`${errores.hora? "error" : "validate"}`}>
+                            <label>Hora</label>
+                            <select name="hora" value={form.hora} onChange={(e) => handleChange(e)} disabled={form.fecha !== '' && form.sala !== '' ? null : true}>
+                                <option hidden>Seleccione una hora</option>
+                                {horasDisponibles.map((hora) => {
+                                    return (
+                                        <option key={hora.id} value={hora.hora} disabled={hora.disabled ? true : null} className={hora.disabled ? 'error' : null}>{hora.hora}</option>
+                                    )
+                                }
+                                )}
+                            </select>
+                        </div>
+                    }
+
+                    <div className={`${errores.duracion ? "error":"validate"}`}>
+                        <label>Duración</label>
+                        <select name="duracion" value={form.duracion} onChange={(e) => handleChange(e)}>
+                            <option hidden>Seleccione la duracion</option>
+                            <option value="0.5">30 minutos</option>
+                            <option value="1">1 hora</option>
+                            <option value="2">2 horas</option>
+                        </select>
+                    </div>
+
+                    
 
                     {form.tipo === "curso" && (
                         <div className={`${errores.nombre ? "error":"validate"}`}>

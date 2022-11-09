@@ -1474,7 +1474,7 @@ class Calendario extends Component {
                                     disponibles > 0 ?
                                         <DropdownButton
                                             title={
-                                                <i className="ki ki-menu p-0"></i>
+                                                <i className="fas fa-umbrella-beach p-0"></i>
                                             }
                                             id={`dropdown-button-drop-left`}
                                             drop={'left'}
