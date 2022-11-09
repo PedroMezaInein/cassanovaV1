@@ -626,7 +626,7 @@ class Calendario extends Component {
         let comentarioA = form.descripcion
         data.append('descripcion', comentarioA)
         // let horaEntradaA = Math.floor((form.hora_entrada * 10000) + minutoEntradaA);
-            await axios.post(URL_DEV + 'pesrmiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            await axios.post(URL_DEV + 'permiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Permiso enviado con éxito')
                 this.handleClosePermisos()
