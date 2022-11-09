@@ -11,6 +11,7 @@ import { errorAlert } from './functions/alert';
 /* import SalaJuntas from './pages/RecursosHumanos/SalaJuntas/SalaJuntas';
 import Cursos from './pages/RecursosHumanos/Cursos/Cursos'; */
 import Reuniones from './pages/RecursosHumanos/Reuniones/Reuniones';
+import NominaPrestaciones from './pages/RecursosHumanos/NominaPrestaciones/NominaPrestaciones';
 
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
@@ -489,7 +490,9 @@ class App extends Component{
 
                     <Route path = "/rh/nomina-admin" exact component ={ NominaAdmin } />
                     <Route path = "/rh/nomina-admin/:action" exact component ={ NominaAdminForm } />
-                    <Route path = "/rh/nomina-admin/single/:id" exact component ={ NominaAdminSingle } />
+                    <Route path="/rh/nomina-admin/single/:id" exact component={NominaAdminSingle} />
+                    <Route path="/rh/nomina-prestaciones" exact component={NominaPrestaciones} />
+                        
                     <Route path = "/rh/checador" exact component ={ Checador } />
                     <Route path = "/rh/prestaciones" exact component ={ Prestaciones } />
                     
