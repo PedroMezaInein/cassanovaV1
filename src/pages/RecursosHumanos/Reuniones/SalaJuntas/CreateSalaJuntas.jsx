@@ -109,15 +109,24 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                 })
                 break;
             case "1":
-                    horasDisponibles.map((item, index) => {
+                horasDisponibles.map((item, index) => {
                     if (item.hora === hora_inicio) {
                         rango_horas.push(item)
                         rango_horas.push(horasDisponibles[index + 1])
                     }
                 })
+                    break;
+            case "1.5":
+                horasDisponibles.map((item, index) => {
+                    if (item.hora === hora_inicio) {
+                        rango_horas.push(item)
+                        rango_horas.push(horasDisponibles[index + 1])
+                        rango_horas.push(horasDisponibles[index + 2])
+                    }
+                })
                 break;
             case "2":
-                    horasDisponibles.map((item, index) => {
+                horasDisponibles.map((item, index) => {
                     if (item.hora === hora_inicio) {
                         rango_horas.push(item)
                         rango_horas.push(horasDisponibles[index + 1])
@@ -125,7 +134,123 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                         rango_horas.push(horasDisponibles[index + 3])
                     }
                 })  
-                break;
+                    break;
+                case "2.5":
+                    horasDisponibles.map((item, index) => {
+                        if (item.hora === hora_inicio) {
+                            rango_horas.push(item)
+                            rango_horas.push(horasDisponibles[index + 1])
+                            rango_horas.push(horasDisponibles[index + 2])
+                            rango_horas.push(horasDisponibles[index + 3])
+                            rango_horas.push(horasDisponibles[index + 4])
+                        }
+                    })
+                    break;
+                case "3":
+                    horasDisponibles.map((item, index) => {
+                        if (item.hora === hora_inicio) {
+                            rango_horas.push(item)
+                            rango_horas.push(horasDisponibles[index + 1])
+                            rango_horas.push(horasDisponibles[index + 2])
+                            rango_horas.push(horasDisponibles[index + 3])
+                            rango_horas.push(horasDisponibles[index + 4])
+                            rango_horas.push(horasDisponibles[index + 5])
+                        }
+                    })
+                    break;
+                case "3.5":
+                    horasDisponibles.map((item, index) => {
+                        if (item.hora === hora_inicio) {
+                            rango_horas.push(item)
+                            rango_horas.push(horasDisponibles[index + 1])
+                            rango_horas.push(horasDisponibles[index + 2])
+                            rango_horas.push(horasDisponibles[index + 3])
+                            rango_horas.push(horasDisponibles[index + 4])
+                            rango_horas.push(horasDisponibles[index + 5])
+                            rango_horas.push(horasDisponibles[index + 6])
+                        }
+                    })
+                    break;
+                case "4":
+                    horasDisponibles.map((item, index) => {
+                        if (item.hora === hora_inicio) {
+                            rango_horas.push(item)
+                            rango_horas.push(horasDisponibles[index + 1])
+                            rango_horas.push(horasDisponibles[index + 2])
+                            rango_horas.push(horasDisponibles[index + 3])
+                            rango_horas.push(horasDisponibles[index + 4])
+                            rango_horas.push(horasDisponibles[index + 5])
+                            rango_horas.push(horasDisponibles[index + 6])
+                            rango_horas.push(horasDisponibles[index + 7])
+                        }
+                    })
+                    break;
+                case "4.5":
+                    horasDisponibles.map((item, index) => {
+                        if (item.hora === hora_inicio) {
+                            rango_horas.push(item)
+                            rango_horas.push(horasDisponibles[index + 1])
+                            rango_horas.push(horasDisponibles[index + 2])
+                            rango_horas.push(horasDisponibles[index + 3])
+                            rango_horas.push(horasDisponibles[index + 4])
+                            rango_horas.push(horasDisponibles[index + 5])
+                            rango_horas.push(horasDisponibles[index + 6])
+                            rango_horas.push(horasDisponibles[index + 7])
+                            rango_horas.push(horasDisponibles[index + 8])
+                        }
+                    })
+                    break;
+                case "5":
+                    horasDisponibles.map((item, index) => {
+                        if (item.hora === hora_inicio) {
+                            rango_horas.push(item)
+                            rango_horas.push(horasDisponibles[index + 1])
+                            rango_horas.push(horasDisponibles[index + 2])
+                            rango_horas.push(horasDisponibles[index + 3])
+                            rango_horas.push(horasDisponibles[index + 4])
+                            rango_horas.push(horasDisponibles[index + 5])
+                            rango_horas.push(horasDisponibles[index + 6])
+                            rango_horas.push(horasDisponibles[index + 7])
+                            rango_horas.push(horasDisponibles[index + 8])
+                            rango_horas.push(horasDisponibles[index + 9])
+                        }
+                    })
+                    break;
+                case "5.5":
+                    horasDisponibles.map((item, index) => {
+                        if (item.hora === hora_inicio) {
+                            rango_horas.push(item)
+                            rango_horas.push(horasDisponibles[index + 1])
+                            rango_horas.push(horasDisponibles[index + 2])
+                            rango_horas.push(horasDisponibles[index + 3])
+                            rango_horas.push(horasDisponibles[index + 4])
+                            rango_horas.push(horasDisponibles[index + 5])
+                            rango_horas.push(horasDisponibles[index + 6])
+                            rango_horas.push(horasDisponibles[index + 7])
+                            rango_horas.push(horasDisponibles[index + 8])
+                            rango_horas.push(horasDisponibles[index + 9])
+                            rango_horas.push(horasDisponibles[index + 10])
+                        }
+                    })
+                    break;
+                case "6":
+                    horasDisponibles.map((item, index) => {
+                        if (item.hora === hora_inicio) {
+                            rango_horas.push(item)
+                            rango_horas.push(horasDisponibles[index + 1])
+                            rango_horas.push(horasDisponibles[index + 2])
+                            rango_horas.push(horasDisponibles[index + 3])
+                            rango_horas.push(horasDisponibles[index + 4])
+                            rango_horas.push(horasDisponibles[index + 5])
+                            rango_horas.push(horasDisponibles[index + 6])
+                            rango_horas.push(horasDisponibles[index + 7])
+                            rango_horas.push(horasDisponibles[index + 8])
+                            rango_horas.push(horasDisponibles[index + 9])
+                            rango_horas.push(horasDisponibles[index + 10])
+                            rango_horas.push(horasDisponibles[index + 11])
+                        }
+                    })
+                    break;
             default:
 
                 break;
@@ -163,6 +288,15 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                                     }
                                 })
                                 break;
+                            case "1.5":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                    }
+                                })
+                                break;
                             case "2":
                                 horasDisponibles.map((item, index) => {
                                     if (item.hora === hora_inicio) {
@@ -172,6 +306,122 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                                         rango_horas.push(horasDisponibles[index + 3])
                                     }
                                 })  
+                                break;
+                            case "2.5":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 4])
+                                    }
+                                })
+                                break;
+                            case "3":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 4])
+                                        rango_horas.push(horasDisponibles[index + 5])
+                                    }
+                                })
+                                break;
+                            case "3.5":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 4])
+                                        rango_horas.push(horasDisponibles[index + 5])
+                                        rango_horas.push(horasDisponibles[index + 6])
+                                    }
+                                })
+                                break;
+                            case "4":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 4])
+                                        rango_horas.push(horasDisponibles[index + 5])
+                                        rango_horas.push(horasDisponibles[index + 6])
+                                        rango_horas.push(horasDisponibles[index + 7])
+                                    }
+                                })
+                                break;
+                            case "4.5":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 4])
+                                        rango_horas.push(horasDisponibles[index + 5])
+                                        rango_horas.push(horasDisponibles[index + 6])
+                                        rango_horas.push(horasDisponibles[index + 7])
+                                        rango_horas.push(horasDisponibles[index + 8])
+                                    }
+                                })
+                                break;
+                            case "5":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 4])
+                                        rango_horas.push(horasDisponibles[index + 5])
+                                        rango_horas.push(horasDisponibles[index + 6])
+                                        rango_horas.push(horasDisponibles[index + 7])
+                                        rango_horas.push(horasDisponibles[index + 8])
+                                        rango_horas.push(horasDisponibles[index + 9])
+                                    }
+                                })
+                                break;
+                            case "5.5":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 4])
+                                        rango_horas.push(horasDisponibles[index + 5])
+                                        rango_horas.push(horasDisponibles[index + 6])
+                                        rango_horas.push(horasDisponibles[index + 7])
+                                        rango_horas.push(horasDisponibles[index + 8])
+                                        rango_horas.push(horasDisponibles[index + 9])
+                                        rango_horas.push(horasDisponibles[index + 10])
+                                    }
+                                })
+                                break;
+                            case "6":
+                                horasDisponibles.map((item, index) => {
+                                    if (item.hora === hora_inicio) {
+                                        rango_horas.push(item)
+                                        rango_horas.push(horasDisponibles[index + 1])
+                                        rango_horas.push(horasDisponibles[index + 2])
+                                        rango_horas.push(horasDisponibles[index + 3])
+                                        rango_horas.push(horasDisponibles[index + 4])
+                                        rango_horas.push(horasDisponibles[index + 5])
+                                        rango_horas.push(horasDisponibles[index + 6])
+                                        rango_horas.push(horasDisponibles[index + 7])
+                                        rango_horas.push(horasDisponibles[index + 8])
+                                        rango_horas.push(horasDisponibles[index + 9])
+                                        rango_horas.push(horasDisponibles[index + 10])
+                                        rango_horas.push(horasDisponibles[index + 11])
+                                    }
+                                })
                                 break;
                             default:
 
@@ -446,7 +696,16 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                             <option hidden>Seleccione la duracion</option>
                             <option value="0.5">30 minutos</option>
                             <option value="1">1 hora</option>
+                            <option value="1.5">1.5 horas</option>
                             <option value="2">2 horas</option>
+                            <option value="2.5">2.5 horas</option>
+                            <option value="3">3 horas</option>
+                            <option value="3.5">3.5 horas</option>
+                            <option value="4">4 horas</option>
+                            <option value="4.5">4.5 horas</option>
+                            <option value="5">5 horas</option>
+                            <option value="5.5">5.5 horas</option>
+                            <option value="6">6 horas</option>
                         </select>
                     </div>
 
