@@ -20,22 +20,22 @@ export default function NominaPrestaciones() {
         { nombre: 'Hora', identificador: 'hora', sort: true, filtroSort: true },
     ]
 
-    const createAcciones = (id) => {
+    const createAcciones = () => {
         let aux = [
             {
                 nombre: 'Editar',
                 icono: 'fas fa-edit',
                 color: 'btn btn-warning',
-                funcion: () => {
-                    console.log('Editar', id)
+                funcion: (item) => {
+                    console.log('Editar', item.id)
                 }
             },
             {
                 nombre: 'Eliminar',
                 icono: 'fas fa-trash',
                 color: 'btn btn-danger',
-                funcion: () => {
-                    console.log('Eliminar', id)
+                funcion: (item) => {
+                    console.log('Eliminar', item.id)
                 }
             }
         ]

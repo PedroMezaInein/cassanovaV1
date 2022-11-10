@@ -137,27 +137,35 @@ export default function TablaGeneral(props) {
                                         filterData.map((item, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    {acciones ?
-                                                        <td>
-                                                            <div className="btn-group">
-                                                                <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                                    <i className="fas fa-cog"></i>
-                                                                </button>
-                                                                <div className="dropdown-menu" role="menu">
-                                                                    {acciones.map((accion, index) => {
-                                                                        return (
-                                                                            <i className={accion.icono} key={index} onClick={() => accion.funcion(item)}></i>
-                                                                        )
-                                                                    })}
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        : null
-                                                    }
+                                                    
                                                     {columnas.map((columna, index) => {
-                                                        return (
-                                                            <td key={index}>{item[columna.identificador]}</td>
-                                                        )
+                                                        if (acciones && columna.identificador === 'acciones') {
+                                                            return (
+                                                                <td key={index}>
+                                                                    
+                                                                    <div className="">
+                                                                        <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                            <i className="fas fa-cog"></i>
+                                                                        </button>
+                                                                        <div className="dropdown-menu" role="menu">
+                                                                            
+                                                                            {acciones.map((accion, index) => {
+                                                                                return (
+                                                                                    <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}>
+                                                                                        <span className="ml-2">{accion.nombre}</span>
+                                                                                    </i>
+                                                                                )
+                                                                            })}
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            )
+                                                            
+                                                        } else {
+                                                            return (
+                                                                <td key={index}>{item[columna.identificador]}</td>
+                                                            )
+                                                        }
                                                     })}
                                                     
                                                 </tr>
