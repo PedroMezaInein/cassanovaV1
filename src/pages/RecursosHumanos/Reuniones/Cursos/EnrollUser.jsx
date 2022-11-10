@@ -109,7 +109,9 @@ export default function EnrollUser({close}) {
     };
 
     return (
-        <div>
+        <>
+            {cursos[0] ?
+           <div>
             <form>
                 <div className="form-group">
                     <label>Curso</label>
@@ -132,7 +134,7 @@ export default function EnrollUser({close}) {
                 </div>
                 <div className="form-group">
                     <label>Duracion</label>
-                    <input className="form-control" disabled type="text" name="duracion" value={curso.duracion + " Hora(s)"} />
+                    <input className="form-control" disabled type="text" name="duracion" value={`${curso.duracion == '0.5'? '30 minutos': curso.duracion == '1'? '1 Hora': `${curso.duracion} Horas`}`} />
                 </div>
                 <div className="form-group">
                     <label>Descripción del curso</label>
@@ -143,6 +145,10 @@ export default function EnrollUser({close}) {
             </form>
             
             <button className="btn btn-primary" onClick={handleSubmit}>Inscribirme</button>
-        </div>
+                </div>  
+            :<span> Sin cursos disponibles</span>        
+        }
+        </>
+       
     )
 }
