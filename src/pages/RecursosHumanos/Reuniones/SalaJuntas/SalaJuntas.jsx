@@ -249,7 +249,7 @@ export default function SalaJuntas() {
                     <div className="close-modal" onClick={handleCloseEdith}>X</div>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreateSalaJuntas reservaEdith={modal.edithInfo} admin={true} getInfo={getInfoSalas} closeModal={handleCloseCreate} />
+                    <CreateSalaJuntas reservaEdith={modal.edithInfo} admin={true} getInfo={getInfoSalas} closeModal={handleCloseCreate} edith={ true} />
                 </Modal.Body>
             </Modal>
 

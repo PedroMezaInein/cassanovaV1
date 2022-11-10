@@ -4,7 +4,7 @@ import { apiPostForm, apiGet, apiPutForm } from '../../../../functions/api';
 import Swal from 'sweetalert2'
 import '../../../../styles/_salaJuntas.scss'
 
-export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEdith=false , rh}) {
+export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEdith = false, rh, edith }) {
     const userAuth = useSelector((state) => state.authUser);
     const [errores, setErrores] = useState({})
     const [reservas, setReservas] = useState({})
@@ -92,7 +92,7 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
 
     useEffect(() => { 
         horarioDisponible()
-    }, [form.fecha, form.sala])
+    }, [form.fecha, form.sala, reservas])
 
     const rangoHoras = () => {
         let rango_horas =[]
@@ -623,18 +623,20 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
     const horarioDisponible = async () => { 
         let aux = []
         let disabledHora = horas
-        if (form.fecha !== '' && form.sala !=='') {
-            reservas.map((reserva) => { 
-                if (reserva.fecha === form.fecha && reserva.sala === form.sala) {
-                    aux.push(...reserva.rango_horas)
-                }
-            })
-            if (aux.length > 0) {
-                aux.map((hora) => { 
-                    disabledHora[hora.id-1].disabled = true
+        if (reservas.length > 0) {
+            if (form.fecha !== '' && form.sala !== '') {
+                reservas.map((reserva) => {
+                    if (reserva.fecha === form.fecha && reserva.sala === form.sala) {
+                        aux.push(...reserva.rango_horas)
+                    }
                 })
+                if (aux.length > 0) {
+                    aux.map((hora) => {
+                        disabledHora[hora.id - 1].disabled = true
+                    })
+                }
+                await setHorasDisponibles(disabledHora)
             }
-            await setHorasDisponibles(disabledHora)
         }
         
     }
@@ -682,7 +684,7 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                                 <option hidden>Seleccione una hora</option>
                                 {horasDisponibles.map((hora) => {
                                     return (
-                                        <option key={hora.id} value={hora.hora} disabled={hora.disabled ? true : null} className={hora.disabled ? 'error' : null}>{hora.hora}</option>
+                                        <option key={hora.id} value={hora.hora} disabled={hora.disabled && !edith ? true : null} className={hora.disabled ? 'error' : null}>{hora.hora}</option>
                                     )
                                 }
                                 )}
