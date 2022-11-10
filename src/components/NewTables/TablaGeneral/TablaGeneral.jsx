@@ -10,6 +10,7 @@ export default function TablaGeneral(props) {
     const [data, setData] = useState(false);
     const [filterData, setFilterData] = useState(false);
     const [filter, setFilter] = useState(false);
+    const [paginas, setPaginas] = useState(false);
 
     useEffect(() => {
         getData();
@@ -81,30 +82,25 @@ export default function TablaGeneral(props) {
             return item[identificador].toLowerCase().includes(value.toLowerCase())
         })
         setFilterData(dataFilter)
-        if (filter[identificador] === '') {
-            setFilterData(data)
+    }
+
+    const paginado = (numPaginado) => {
+        let dataPaginado = [...filterData];
+        let dataPaginadoFinal = [];
+        let numPaginas = Math.ceil(dataPaginado.length / numPaginado);
+        for (let i = 0; i < numPaginas; i++) {
+            dataPaginadoFinal.push(dataPaginado.splice(0, numPaginado))
         }
+        setPaginas(dataPaginadoFinal)
     }
-
-    const resetFilter = () => {
-        let obj = {}
-        columnas.forEach((item) => {
-            obj[item.identificador] = ''
-        })
-        setFilter(obj)
-    }
-    console.log(filter)
-
 
     return (
-
         <>
             <div className="row">
                 <div className="col-12">
                     <div className="card">
                         <div className="card-header">
                             <h3 className="card-title">{titulo}</h3>
-                            <h6 className="card-subtitle text-muted">{subtitulo}</h6>
                         </div>
                         <div className="card-body table-responsive p-0">
                             <table className="table table-hover text-nowrap">
@@ -123,30 +119,52 @@ export default function TablaGeneral(props) {
                                                                 <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
                                                             </div>
                                                         </div>
-                                                        : null}
+                                                        : null
+                                                    }
                                                     {columna.filtroSort ?
                                                         <div className="input-group input-group-sm">
                                                             <input type="text" className="form-control" onChange={(e) => filterString(columna.identificador, e.target.value)} value={filter[columna.identificador]} placeholder={`Buscar por ${columna.nombre}` } />
                                                         </div>
-                                                        : null}
+                                                        : null
+                                                    }
                                                 </th>
                                             )
                                         })}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filterData[0] ? filterData.map((item, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                {columnas.map((columna, index) => {
-                                                    return (
-                                                        <td key={index}>{item[columna.identificador]}</td>
-                                                    )
-                                                })}
-                                            </tr>
-                                        )   
-                                    })
-                                    : <tr><td colSpan={columnas.length}>No hay datos</td></tr>}
+                                    {filterData ?
+                                        filterData.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    {acciones ?
+                                                        <td>
+                                                            <div className="btn-group">
+                                                                <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                    <i className="fas fa-cog"></i>
+                                                                </button>
+                                                                <div className="dropdown-menu" role="menu">
+                                                                    {acciones.map((accion, index) => {
+                                                                        return (
+                                                                            <i className={accion.icono} key={index} onClick={() => accion.funcion(item)}></i>
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        : null
+                                                    }
+                                                    {columnas.map((columna, index) => {
+                                                        return (
+                                                            <td key={index}>{item[columna.identificador]}</td>
+                                                        )
+                                                    })}
+                                                    
+                                                </tr>
+                                            )
+                                        })
+                                        : null
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -154,6 +172,5 @@ export default function TablaGeneral(props) {
                 </div>
             </div>
         </>
-
     );
 }

@@ -13,17 +13,41 @@ export default function NominaPrestaciones() {
     }
 
     const columnas = [
+        { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Sala', identificador: 'sala', sort: true, filtroSort: true },
         { nombre: 'Tipo', identificador: 'typo', sort: true, filtroSort: true },
         { nombre: 'Fecha', identificador: 'fecha', sort: true },
         { nombre: 'Hora', identificador: 'hora', sort: true, filtroSort: true },
     ]
 
+    const createAcciones = (id) => {
+        let aux = [
+            {
+                nombre: 'Editar',
+                icono: 'fas fa-edit',
+                color: 'btn btn-warning',
+                funcion: () => {
+                    console.log('Editar', id)
+                }
+            },
+            {
+                nombre: 'Eliminar',
+                icono: 'fas fa-trash',
+                color: 'btn btn-danger',
+                funcion: () => {
+                    console.log('Eliminar', id)
+                }
+            }
+        ]
+        return aux
+    }
+
+
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
                 <Tabla
-                    titulo="ejemplo" columnas={columnas} url="salas" subtitulo="subtitulo"
+                    titulo="ejemplo" columnas={columnas} url="salas" subtitulo="subtitulo" acciones={createAcciones()} numPaginado={10}
                 />
             </Layout>
         </>
