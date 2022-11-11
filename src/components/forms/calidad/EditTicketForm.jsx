@@ -66,7 +66,7 @@ class EditTicketForm extends Component {
                                             withicon={1}
                                         />
                                     </div>
-                                    <div className="col-md-6 text-center px-0">
+                                    <div className="col-md-6 text-center px-0 mt-3">
                                         <div className="calendar-tickets">
                                             <label className="text-center font-weight-bold text-dark-60 margin-top-">Fecha Autorizada</label>
                                             <CalendarDay value={form.fechaAutorizada} date={form.fechaAutorizada}

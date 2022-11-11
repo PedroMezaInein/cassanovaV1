@@ -47,6 +47,7 @@ class TicketDetails extends Component {
             areas: [],
             subareas: [],
             nom_cliente: [],
+            cliente_id: '',
             estatus_final:[
                 {
                     id: 1, estatus: "Aceptado"
@@ -257,6 +258,7 @@ class TicketDetails extends Component {
                 formularios.nom_cliente = ticket.nom_cliente
                 options.nom_cliente = res
                 options.equipos = aux
+                options.cliente_id = ticket.proyecto.cliente_id
 
                 data.mantenimientos = ticket.mantenimientos
                 formularios.ticket = this.setForm(ticket)
