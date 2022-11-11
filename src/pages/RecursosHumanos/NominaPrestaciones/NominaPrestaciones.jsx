@@ -47,7 +47,7 @@ export default function NominaPrestaciones() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
                 <Tabla
-                    titulo="ejemplo" columnas={columnas} url="salas" subtitulo="subtitulo" acciones={createAcciones()} numPaginado={10}
+                    titulo="ejemplo" columnas={columnas} url="salas" subtitulo="subtitulo" acciones={createAcciones()} numPaginado={4}
                 />
             </Layout>
         </>

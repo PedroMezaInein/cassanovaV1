@@ -11,6 +11,7 @@ export default function TablaGeneral(props) {
     const [filterData, setFilterData] = useState(false);
     const [filter, setFilter] = useState(false);
     const [paginas, setPaginas] = useState(false);
+    const [paginaActual, setPaginaActual] = useState(0);
 
     useEffect(() => {
         getData();
@@ -21,20 +22,28 @@ export default function TablaGeneral(props) {
             })
             return obj
         })
+        
     }, [])
+    useEffect(() => {
+        if (filterData) {
+            paginado(numPaginado)
+        }
+    }, [filterData])
 
     const getData = () => {
+
         Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
+            title: 'Cargando datos',
+            html: 'Espere un momento por favor',
+            timerProgressBar: true,
+            didOpen: () => {
                 Swal.showLoading()
             },
-        });
+        })
+
         try {
             axios(`${URL_DEV}${url}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
             .then(res => {
-                console.log(res.data)
                 setData(res.data.Sala)
                 setFilterData(res.data.Sala)
                 Swal.close();
@@ -94,6 +103,41 @@ export default function TablaGeneral(props) {
         setPaginas(dataPaginadoFinal)
     }
 
+    const handleSetPagina = (num) => {
+        setPaginaActual(num)
+    }
+
+    const handleNextPagina = () => {
+        if (paginaActual+1 < paginas.length && paginas.length > 1) {
+            setPaginaActual(paginaActual + 1)
+        }
+    }
+
+    const handlePrevPagina = () => {
+        if (paginaActual > 1 && paginas.length > 1) {
+            setPaginaActual(paginaActual - 1)
+        }
+    }
+
+    const reloadTable = () => {
+        resetFilter();
+        getData();
+        setPaginaActual(0);
+    }
+
+    const resetFilter = () => {
+        setFilterData(data)
+        setFilter(() => {
+            let obj = {}
+            columnas.forEach((item) => {
+                obj[item.identificador] = ''
+            })
+            return obj
+        })
+    }
+
+    console.log(paginas)
+
     return (
         <>
             <div className="row">
@@ -101,40 +145,51 @@ export default function TablaGeneral(props) {
                     <div className="card">
                         <div className="card-header">
                             <h3 className="card-title">{titulo}</h3>
+                            <button type="button" className="btn btn-tool" onClick={reloadTable}>
+                                <i className="fas fa-sync-alt"></i>
+                            </button>
                         </div>
+
+
                         <div className="card-body table-responsive p-0">
                             <table className="table table-hover text-nowrap">
                                 <thead>
                                     <tr>
                                         {columnas.map((columna, index) => {
                                             return (
-                                                <th key={index}>{columna.nombre}
-                                                    {columna.sort ?
-                                                        <div className="btn-group">
-                                                            <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                                <i className="fas fa-sort"></i>
-                                                            </button>
-                                                            <div className="dropdown-menu" role="menu">
-                                                                <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
-                                                                <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
+                                                <th key={index} className="">
+                                                    <div className="justify-content-center d-flex">
+                                                        <span>{columna.nombre}</span>
+                                                    </div>
+                                                    <div className="btn-group">
+                                                        {columna.filtroSort ?
+                                                            <div className="input-group input-group-sm">
+                                                                <input type="text" className="form-control" onChange={(e) => filterString(columna.identificador, e.target.value)} value={filter[columna.identificador]} placeholder={`Buscar por ${columna.nombre}`} />
                                                             </div>
-                                                        </div>
-                                                        : null
-                                                    }
-                                                    {columna.filtroSort ?
-                                                        <div className="input-group input-group-sm">
-                                                            <input type="text" className="form-control" onChange={(e) => filterString(columna.identificador, e.target.value)} value={filter[columna.identificador]} placeholder={`Buscar por ${columna.nombre}` } />
-                                                        </div>
-                                                        : null
-                                                    }
+                                                            : null
+                                                        }
+                                                        {columna.sort ?
+                                                            <div className="btn-group">
+                                                                <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                    <i className="fas fa-sort"></i>
+                                                                </button>
+                                                                <div className="dropdown-menu" role="menu">
+                                                                    <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
+                                                                    <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
+                                                                </div>
+                                                            </div>
+                                                            : null
+                                                        }
+                                                    </div>
+                                                    
                                                 </th>
                                             )
                                         })}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filterData ?
-                                        filterData.map((item, index) => {
+                                    {paginas && paginas[0]  ?
+                                        paginas[paginaActual].map((item, index) => {
                                             return (
                                                 <tr key={index}>
                                                     
@@ -175,6 +230,33 @@ export default function TablaGeneral(props) {
                                     }
                                 </tbody>
                             </table>
+                            {/* <div className="card-footer clearfix">
+                                <ul className="pagination pagination-sm m-0 float-right">
+                                    {paginas ?
+                                        paginas.map((item, index) => {
+                                            return (
+                                                <li className={`page-item ${paginaActual == index ? 'active' : ''}`} key={index}><a className="page-link" href="#" onClick={() => handleSetPagina(index)}>{index + 1}</a></li>
+                                            )
+                                        })
+                                        : null
+                                    }
+                                </ul>
+                            </div>  */}
+                            <div className="card-footer clearfix">
+                                <ul className="pagination pagination-sm m-0 float-right">
+                                    <li className="page-item"><a className="page-link" href="#" onClick={() => handlePrevPagina()}>&laquo;</a></li>
+                                    {paginas ?
+                                        paginas.map((item, index) => {
+                                            return (
+                                                <li className={`page-item ${paginaActual == index ? 'active' : ''}`} key={index}><a className="page-link" href="#" onClick={() => handleSetPagina(index)}>{index + 1}</a></li>
+                                            )
+                                        })
+                                        : null
+                                    }
+                                    <li className="page-item"><a className="page-link" href="#" onClick={() => handleNextPagina()}>&raquo;</a></li>
+                                </ul>
+                            </div>    
+                                
                         </div>
                     </div>
                 </div>
