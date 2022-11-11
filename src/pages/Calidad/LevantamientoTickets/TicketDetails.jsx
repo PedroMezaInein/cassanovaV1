@@ -67,7 +67,8 @@ class TicketDetails extends Component {
                 descripcion_solucion:'',
                 motivo: '',
                 costo: 0.0,
-                tipo_trabajo:'',
+                tipo_trabajo: '',
+                num_compra: 0,
                 adjuntos: {
                     reporte_problema_reportado: {
                         value: '',

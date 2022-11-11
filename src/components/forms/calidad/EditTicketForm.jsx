@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
-import { CalendarDay,  Button,SelectSearchGray } from '../../form-components'
+import { CalendarDay, Button, SelectSearchGray, InputGray } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 class EditTicketForm extends Component {
     isMantenimiento = () => {
@@ -34,42 +34,47 @@ class EditTicketForm extends Component {
                         <div className="col-md-12">
                             
                         <Form id= 'fechas' onSubmit = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'fechas') } }{...props} >
-                            <Row className="mx-0">
-                                <Col md="6" className="align-self-center px-0 d-flex justify-content-center">
-                                    <div>
-                                        <div className="col-md-12 text-center px-0" style={{ height: '1px' }}>
-                                            <label className="text-center font-weight-bold text-dark-60">Fecha Autorizada</label>
-                                        </div>
-                                        <div className="col-md-6 text-center px-0">
-                                            <div className="calendar-tickets">
-                                                <CalendarDay value = { form.fechaAutorizada } date = { form.fechaAutorizada }
-                                                    onChange = { onChange } name = 'fechaAutorizada' withformgroup = { 0 }
-                                                    requirevalidation = { 0 } />
-                                            </div>
-                                        </div>                                        
+                                <div>
+                                    <div className="col-md-12">
+                                        <SelectSearchGray
+                                            formeditado={formeditado}
+                                            options={options.nom_cliente}
+                                            placeholder="SELECCIONA EL CLIENTE"
+                                            name="nom_cliente"
+                                            value={form.nom_cliente}
+                                            onChange={this.updateSelect}
+                                            iconclass="las la-swatchbook icon-2x"
+                                            customdiv="mb-0"
+                                            iconvalid={1}
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withicon={1}
+                                        />
                                     </div>
-                                </Col>  
-                                <Col md="6" className="align-self-center px-0 d-flex justify-content-center">
-                                    <div>
-                                        <div className="col-md-12">
-                                            <SelectSearchGray
-                                                formeditado={formeditado}
-                                                options={options.nom_cliente}
-                                                placeholder="SELECCIONA EL CLIENTE"
-                                                name="nom_cliente"
-                                                value={form.nom_cliente}
-                                                onChange={this.updateSelect}
-                                                iconclass="las la-swatchbook icon-2x"
-                                                customdiv="mb-0"
-                                                iconvalid={1}
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withicon={1}
-                                            />                                           
+                                    <div className="col-md-12">
+                                        <InputGray
+                                            formeditado={formeditado}
+                                            placeholder="No. de Compra"
+                                            name="num_compra"
+                                            value={form.num_compra}
+                                            onChange={onChange}
+                                            iconclass="las la-shopping-cart icon-2x"
+                                            customdiv="mb-0"
+                                            iconvalid={1}
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withicon={1}
+                                        />
+                                    </div>
+                                    <div className="col-md-6 text-center px-0">
+                                        <div className="calendar-tickets">
+                                            <label className="text-center font-weight-bold text-dark-60 margin-top-">Fecha Autorizada</label>
+                                            <CalendarDay value={form.fechaAutorizada} date={form.fechaAutorizada}
+                                                onChange={onChange} name='fechaAutorizada' withformgroup={0}
+                                                requirevalidation={0} />
                                         </div>
                                     </div>
-                                </Col>                                
-                            </Row>
+                                </div>
                             <div className="border-top mt-3 pt-3">
                                 <div className="row">
                                     <div className="col-lg-6 text-left">
