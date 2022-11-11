@@ -678,7 +678,7 @@ class TicketView extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="fechas">
                                         <Row className="mx-0">
-                                            <Col lg="6" className="px-0">
+                                            <Col lg="3" className="px-0 pr-lg-3">
                                                 <Card className="card-custom gutter-b card-stretch">
                                                     <Card.Header className="border-0 pt-8 pt-md-0">
                                                         <Card.Title className="m-0">
