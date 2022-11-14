@@ -445,7 +445,7 @@ class NominaAdmin extends Component {
                     actions={{
                         'edit': { function: this.changeEditPage },
                         'delete': {function: this.openModalDelete},
-                        'adjuntos': { function: this.openModalAdjuntos },
+                        'adjuntos': { function: this.openModal },
                         'show': { function: this.changeSinglePage}
                     }}
                     accessToken = { this.props.authUser.access_token }
