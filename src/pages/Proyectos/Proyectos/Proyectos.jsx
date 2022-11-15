@@ -403,7 +403,8 @@ class Proyectos extends Component {
     }
 
     render() {
-        const tabs = ['all', 'fase1', 'fase2', 'fase3']
+        /* const tabs = ['all', 'fase1', 'fase2', 'fase3'] */
+        const tabs = ['all']
         const { activeTab, modal, filtrado } = this.state
         const { access_token } = this.props.authUser
         return (

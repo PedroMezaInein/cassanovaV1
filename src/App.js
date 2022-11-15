@@ -100,7 +100,9 @@ const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/Proveed
 const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos') )
 const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
-const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto') )
+//** */
+const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/DetailProyect'))
+//** */
 
 const Compras = React.lazy(() => import('./pages/Proyectos/Compras/Compras') )
 const ComprasForm = React.lazy(() => import('./pages/Proyectos/Compras/ComprasForm') )
