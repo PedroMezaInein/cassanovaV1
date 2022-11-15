@@ -197,6 +197,7 @@ export default function SalaJuntas() {
                                     <th>Sala</th>
                                     <th>Asunto</th>
                                     <th>Duración</th>
+                                    <th>Solicitante</th>
                                 </tr>
                             </thead>
                             <br />
@@ -223,7 +224,7 @@ export default function SalaJuntas() {
                                     <td>{reserva.sala}</td>
                                     <td>{reserva.asunto}</td>
                                     <td>{ reserva.duracion === "0.5"? "30 minutos": `${reserva.duracion} horas`}</td>
-                                    
+                                    <td>{reserva.usersalas.name}</td>
                                 </tr>
                             ))}
                             </tbody>
