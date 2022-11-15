@@ -477,10 +477,11 @@ class Empleados extends Component {
         let aux = []
         if (colaboradores)
             colaboradores.map((colaborador) => {
+                console.log(colaborador)
                 aux.push(
                     {
                         actions: this.setActions(colaborador),
-                        nombre: setTextTableReactDom(colaborador.nombre, this.doubleClick, colaborador, 'nombre', 'text-center'),
+                        nombre: setTextTableReactDom(`${colaborador.nombre} ${colaborador.apellido_paterno} ${colaborador.apellido_materno}`, this.doubleClick, colaborador, 'nombre', 'text-center'),
                         empresa: setTextTableReactDom(colaborador.empresa ? colaborador.empresa.name : '', this.doubleClick, colaborador, 'empresa', 'text-center '),
                         departamento: colaborador.departamentos.length === 0 ? setTextTableCenter("Sin definir") 
                         : setTagLabelReactDom(colaborador, colaborador.departamentos, 'departamento_empleado', this.deleteElementAxios, ''),

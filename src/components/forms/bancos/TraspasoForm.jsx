@@ -18,7 +18,7 @@ class TraspasoForm extends Component {
         onChange({ target: { value: date, name: 'fecha' } })
     }
     render() {
-        const { title, options, form, onChange, onChangeAdjunto, deleteAdjunto, requirevalidation, onSubmit, formeditado, handleChange, deleteFile, ...props } = this.props
+        const { title, options, form, onChange, onChangeAdjunto, deleteAdjunto, requirevalidation, onSubmit, formeditado, handleChange, deleteFile, enviando, ...props } = this.props
         return (
             <Form id="form-transpasos" onSubmit = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-transpasos') } } {...props} >
                 <div className="form-group row form-group-marginless">
@@ -57,8 +57,11 @@ class TraspasoForm extends Component {
                 <div className="card-footer py-3 pr-1">
                     <div className="row mx-0">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-                            <Button icon = '' className = "mx-auto" onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-transpasos') } }
-                                text = "ENVIAR" />
+                            {enviando &&
+                                <Button icon='' className="mx-auto" onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-transpasos') }}
+                                    text="ENVIAR"
+                                />
+                            }
                         </div>
                     </div>
                 </div>
