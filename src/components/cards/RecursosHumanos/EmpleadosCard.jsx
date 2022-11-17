@@ -42,7 +42,7 @@ export default class EmpleadosCard extends Component {
                                                     <div className="col-7">
                                                         {
                                                             empleado.nombre ?
-                                                                <span>{empleado.nombre}</span>
+                                                                <span>{`${empleado.nombre} ${empleado.apellido_paterno} ${empleado.apellido_materno}`}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
