@@ -12,13 +12,6 @@
     padding-bottom: -1rem;
 }
 
-.HeaderContainer div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-}
-
 .HeaderContainer div div{
     display: flex;
     flex-direction: column;
@@ -26,18 +19,63 @@
 }
 
 .TagTitle {
-    background-color: rgb(49, 86, 148);
+    display: flex;
+    justify-content: center;
+    margin-left: 15%;
+    width: 70%;
+    background-color: #1982c4;
     border-radius: 5px;
-    padding: 2px 5px;
     color: white;
 }
 
 .headerSubTitle{
-    background-color: rgb(139,162,197);
+    display: flex;
+    justify-content: center;
+    margin-left: 10%;
+    width: 80%;
+    background-color: #5bc0be;
     border-radius: 5px;
     color: white;
     padding: 2px 5px;
-    margin-bottom: 1rem;
+    
+}
+
+.alertColor{
+    display: flex;
+    justify-content: center;
+    margin-left: 10%;
+    width: 80%;
+    background-color: #f0ad4e;
+    border-radius: 5px;
+    color: white;
+    padding: 2px 5px;
+}
+
+.costosColor{
+    display: flex;
+    justify-content: center;
+    margin-left: 10%;
+    width: 80%;
+    background-color: #e2711d;
+    border-radius: 5px;
+    color: white;
+    padding: 2px 5px;
+}
+
+.infoColor{
+    display: flex;
+    justify-content: center;
+    margin-left: 10%;
+    width: 80%;
+    background-color: #1982c4;
+    border-radius: 5px;
+    color: white;
+    padding: 2px 5px;
+}
+
+.alignContent{
+    display: flex;
+    justify-content: center;
 }
 
 .parent {

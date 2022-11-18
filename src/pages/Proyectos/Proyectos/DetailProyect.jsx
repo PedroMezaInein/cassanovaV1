@@ -12,6 +12,8 @@ import { setSingleHeader } from '../../../functions/routers'
 import { setFase, setLabelTable, ordenamiento, setOptions, setNaviIcon } from '../../../functions/setters'
 import { EditProyectoForm, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto } from '../../../components/forms'
 
+import EditProyect from './EditProyect'
+
 import '../../../styles/_detailProyect.scss'
 
 
@@ -64,7 +66,7 @@ export default function DetailProyect() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='proyectos'>
                 {proyecto &&
-                    <div className="mt-n4 ml-n12 mr-n12">
+                    <div className="mt-n4 ml-n8 mr-n8">
                         <div className="col-12">
                             <Card>
                                 <Card.Body>
@@ -103,7 +105,7 @@ export default function DetailProyect() {
                                                 <span className="TagTitle">
                                                     Contacto
                                                 </span>
-                                                <span className="mt-2">
+                                                <span className="mt-2 alignContent">
                                                         {proyecto.contacto}
                                                 </span>    
                                                 {/* <span>
@@ -118,7 +120,7 @@ export default function DetailProyect() {
                                                 <span className="TagTitle">
                                                     Empresa    
                                                 </span>
-                                                <span className="mt-2">
+                                                <span className="mt-2 alignContent">
                                                     {proyecto.empresa.name}
                                                 </span>    
                                             </div>
@@ -129,7 +131,7 @@ export default function DetailProyect() {
                                                 <span className="TagTitle">
                                                     Área
                                                 </span>
-                                                <span className="text-lowercase mt-2">
+                                                <span className="text-lowercase mt-2 alignContent">
                                                         {proyecto.m2}&nbsp; m²
                                                 </span>
                                             </div>
@@ -140,7 +142,7 @@ export default function DetailProyect() {
                                                 <span className="TagTitle">
                                                     Tipo de Proyecto
                                                 </span>
-                                                <span className="mt-2">
+                                                <span className="mt-2 alignContent">
                                                     {proyecto.tipo_proyecto.tipo}
                                                 </span>
                                             </div>
@@ -167,12 +169,12 @@ export default function DetailProyect() {
                                                 </span>
                                             </div>
                                         </div>  */}
-                                        <div className="col-2">
+                                        <div className="col-3">
                                             <div>
                                                 <span className="TagTitle">
                                                     Cliente
                                                 </span>
-                                                <span className="mt-2">
+                                                <span className="mt-2 alignContent">
                                                     {proyecto.clientes.map((cliente, index) => (
                                                         <span key={index}>
                                                             {cliente.empresa}
@@ -231,7 +233,7 @@ export default function DetailProyect() {
                                 <span className="headerSubTitle mb-5">
                                     Tipo de Proyecto
                                 </span>
-                                <span className="d-flex flex-colum">
+                                    <span className="alignContent">
                                     {proyecto.tipo_proyecto.tipo}
                                 </span>
                             </div>
@@ -240,7 +242,7 @@ export default function DetailProyect() {
                         <div className="div5">
                             <div>
                                 <span className="">Estado del proyecto </span>
-                                <span className="badge badge-pill column" style={{ backgroundColor: proyecto.estatus.fondo, color: proyecto.estatus.letra }}>
+                                    <span className="badge badge-pill column" style={{ backgroundColor: proyecto.estatus.fondo, color: proyecto.estatus.letra }}>
                                     {proyecto.estatus.estatus}
                                 </span>
                             </div>
@@ -251,44 +253,44 @@ export default function DetailProyect() {
                                 <span className="headerSubTitle mb-5">
                                     Empresa
                                 </span>
-                                <span className="d-flex flex-column">
+                                    <span className="alignContent">
                                     {proyecto.empresa.name}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <div>
+                                <span className="mb-5 alertColor">
+                                    Área
+                                </span>
+                                    <span className="text-lowercase  alignContent">
+                                    {proyecto.m2}&nbsp; m²
                                 </span>
                             </div>
                         </div>
                         <div className="div3">
                             <div>
                                 <span className="headerSubTitle mb-5">
-                                    Área
-                                </span>
-                                    <span className="text-lowercase d-flex flex-column">
-                                    {proyecto.m2}&nbsp; m²
-                                </span>
-                            </div>
-                        </div>
-                        <div className="div4">
-                            <div>
-                                <span className="headerSubTitle mb-5">
                                     Sucursal
                                 </span>
-                                <span className="d-flex flex-column">
+                                    <span className="alignContent">
                                     {proyecto.sucursa ? `${proyecto.sucursal}`: 'No hay sucursal'}
                                 </span>
                             </div>
                         </div>     
                         <div className="div9">
                             <div className="">
-                                <span className="headerSubTitle mb-5">
+                                <span className="infoColor mb-5">
                                     Contacto
                                 </span>
-                                <div className="d-flex flex-column">
-                                    <span className="">
+                                    <div className="d-flex flex-column ">
+                                        <span className="alignContent">
                                     {proyecto.contacto}
                                     </span>
-                                    <span>
+                                        <span className='alignContent'>
                                         {proyecto.numero_contacto}
                                     </span>
-                                    <span className='text-lowercase'>
+                                        <span className='text-lowercase alignContent'>
                                         {proyecto.contactos[0] ? `${proyecto.contactos[0].correo}`:''}
                                     </span>    
                                 </div>
@@ -300,33 +302,33 @@ export default function DetailProyect() {
                                 <span className="headerSubTitle mb-5">
                                     Periodo del proyecto
                                 </span>
-                                <span className="d-flex flex-column">
+                                    <span className="alignContent">
                                     {proyecto.fecha_inicio.slice(0, 10)} - {proyecto.fecha_fin.slice(0, 10)}
                                 </span>
                             </div>
                         </div> 
                             
-                        <div className="div7">
+                        <div className="div8">
                             <div>
-                                <span className="headerSubTitle mb-5">
+                                    <span className="mb-5 costosColor">
                                     Costos
                                 </span>
                                     <div className="d-flex flex-column">
-                                    <span className="">
+                                        <span className="alignContent">
                                     Costo(con iva): &nbsp; ${proyecto.costo}
                                     </span>
-                                    <span className="">
+                                        <span className="alignContent">
                                         Total pagado: &nbsp; ${proyecto.totalVentas}
                                     </span>    
                                 </div>
                             </div>
                         </div>
-                        <div className="div8">
+                        <div className="div7">
                             <div>
                                 <span className="headerSubTitle mb-5">
                                     Cliente
                                 </span>
-                                    <span className="d-flex flex-column">
+                                    <span className="alignContent">
                                     {proyecto.clientes.map((cliente, index) => (
                                         <span key={index}>
                                             ●{cliente.empresa}
@@ -337,21 +339,21 @@ export default function DetailProyect() {
                         </div> 
                         <div className="div10">
                             <div>
-                                <span className="headerSubTitle mb-5">
+                                <span className="infoColor mb-5">
                                     Ubicación
                                 </span>
-                                    <span className="d-flex flex-column">
+                                    <span className="alignContent">
                                     {proyecto.estado}, {proyecto.ciudad}, {proyecto.colonia},{proyecto.calle}, {proyecto.cp}
                                 </span>
                             </div>
                         </div>    
                         <div className="div11 d-flex justify-content-center mt-10">
                             <div>
-                                <span className="headerSubTitle mb-5">
+                                <span className="infoColor mb-5">
                                     Descripción    
                                 </span>
-                                    <span className="d-flex flex-column">
-                                        {proyecto.descripcion !== null ? `${proyecto.descripcion}`: 'No hay descripción'}
+                                <span className="alignContent">
+                                    {proyecto.descripcion !== null ? `${proyecto.descripcion}`: 'No hay descripción'}
                                 </span>    
                             </div>
                         </div> 
@@ -359,7 +361,7 @@ export default function DetailProyect() {
                 </Modal>
                 <Modal size="lg" show={modal.edit_proyect} title='Editar proyecto' handleClose={() => setModal({ ...modal, edit_proyect: false })}>
                     <div>
-                        Editar proyecto
+                        <EditProyect proyecto={proyecto} />
                     </div>
                 </Modal>
 
