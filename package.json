@@ -4,6 +4,7 @@
    "private": true,
    "dependencies": {
       "@date-io/core": "^1.3.6",
+      "@date-io/date-fns": "^1.3.13",
       "@formatjs/intl-pluralrules": "1.3.5",
       "@fortawesome/fontawesome-free": "^5.15.2",
       "@fortawesome/fontawesome-svg-core": "^1.2.34",
@@ -18,6 +19,9 @@
       "@fullcalendar/react": "^5.3.1",
       "@fullcalendar/timegrid": "^5.5.1",
       "@manaflair/redux-batch": "1.0.0",
+      "@material-ui/core": "^4.12.4",
+      "@material-ui/icons": "^4.11.3",
+      "@material-ui/pickers": "^3.3.10",
       "@pathofdev/react-tag-input": "^1.0.7",
       "@popperjs/core": "^2.7.0",
       "@react-pdf/renderer": "^1.6.13",

@@ -28,8 +28,18 @@ class TraspasosForm extends Component {
         options: {
             cuentas: []
         },
-        
+        enviando: true, 
     }
+
+    hanldeSend = () => {
+        const { enviando } = this.state
+        if (!enviando) {
+            this.setState({ enviando: true })
+        } else {
+            this.setState({ enviando: false })
+        }
+    }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -127,6 +137,7 @@ class TraspasosForm extends Component {
     }
     onSubmit = e => {
         e.preventDefault()
+        this.hanldeSend()
         const { origen, destino } = this.state.form
         const { title } = this.state
         if (origen === destino) {
@@ -199,9 +210,11 @@ class TraspasosForm extends Component {
                     pathname: '/bancos/traspasos'
                 });
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                this.hanldeSend()
             },
             (error) => {
                 printResponseErrorAlert(error)
+                this.hanldeSend()
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -242,6 +255,7 @@ class TraspasosForm extends Component {
                     pathname: '/bancos/traspasos'
                 });
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                this.hanldeSend()
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -275,7 +289,7 @@ class TraspasosForm extends Component {
         })
     }
     render() {
-        const { title, options, form } = this.state
+        const { title, options, form, enviando } = this.state
         return (
             <Layout active='bancos' {...this.props}>
                 <Card>
@@ -294,6 +308,7 @@ class TraspasosForm extends Component {
                             handleChange={this.handleChange}
                             deleteFile={this.deleteFile}
                             onSubmit={this.onSubmit}
+                            enviando={enviando}
                         />
                     </Card.Body>
                 </Card>

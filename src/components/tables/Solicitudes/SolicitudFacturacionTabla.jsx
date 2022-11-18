@@ -49,13 +49,14 @@ export default class SolicitudFacturacionTabla extends Component{
 
     openModal = e => {
         const { form, modal } = this.state
-        const { ticket } = this.props
+        const { ticket, options } = this.props
+        form.cliente_solicitud_f = `${options.cliente_id}`
         form.estatus_factura = '1'
         form.rfc_receptor = ''
         form.razon_social_receptor = ''
-        form.forma_pago = ''
-        form.metodo_pago = ''
-        form.tipo_pago = ''
+        form.forma_pago =  options.formasPago[2].value
+        form.metodo_pago = '1'
+        form.tipo_pago = '4'
         if(ticket)
             if(ticket.presupuesto_preeliminar)
                 form.monto = ticket.presupuesto_preeliminar.totalPresupuesto
@@ -526,7 +527,8 @@ export default class SolicitudFacturacionTabla extends Component{
                         </div>
                     </Card.Body>
                 </Card>
-                <Modal size = 'xl' show = { modal.factura } title = 'Nueva solicitud de factura' handleClose = { this.handleClose } >
+                <Modal size='xl' show={modal.factura} title='Nueva solicitud de factura' handleClose={this.handleClose} >
+                    
                     <Form onSubmit={(e) => { e.preventDefault(); this.onSubmit(form) }}>
                         <Row className="form-group mx-0 form-group-marginless mt-5">
                             <Col md="4">

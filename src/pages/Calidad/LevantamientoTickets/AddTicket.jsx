@@ -14,6 +14,9 @@ import S3 from 'react-aws-s3';
 class AddTicket extends Component {
     state = {
         form: {
+            externo: false,
+            numero_ticket: '0',
+            clave: '0',
             proyecto: '',
             solicito: '',
             tipo_trabajo: '',

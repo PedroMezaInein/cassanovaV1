@@ -67,11 +67,11 @@ class NominaAdminSingle extends Component {
 
     setNominasAdministrativas = nominas => {
         let aux = []
-        nominas.map( (nomina) => {
+        nominas.map((nomina) => {
             aux.push(
                 {
                     idEmpleado: renderToString(setTextTableCenter(nomina.empleado ? nomina.empleado.id : '')),
-                    empleado: renderToString(setTextTableCenter(nomina.empleado ? nomina.empleado.nombre : '')),
+                    empleado: renderToString(setTextTableCenter(nomina.empleado ? `${nomina.empleado.nombre} ${nomina.empleado.apellido_paterno} ${nomina.empleado.apellido_materno}` : '')),
                     nominaIMSS: renderToString(setMoneyTable(nomina.nomina_imss ? nomina.nomina_imss: 0.0)),
                     extraImss: renderToString(setMoneyTable(nomina.extra_imss ? nomina.extra_imss : 0.0)),
                     extras: renderToString(setMoneyTable(nomina.restante_nomina ? nomina.restante_nomina : 0.0)),
