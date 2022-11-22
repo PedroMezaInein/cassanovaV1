@@ -232,21 +232,69 @@ export default function TablaGeneral(props) {
                                                             return (
                                                                 <td key={index} className='CellContent CellActions' >
                                                                     
-                                                                    <div className="">
+                                                                    {/* <div className="btn-group">
                                                                         <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                                             <i className="fas fa-cog"></i>
                                                                         </button>
-                                                                        <div className="dropdown-menu" role="menu">
+                                                                        <div id='opciones-menu' className="dropdown-menu" role="menu">
                                                                             
                                                                             {acciones.map((accion, index) => {
                                                                                 return (
                                                                                     <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}>
                                                                                         <span className="ml-2">{accion.nombre}</span>
                                                                                     </i>
+
+
+                                                                                    <ul className='menu-opciones'>
+                                                                                        <li>  
+                                                                                            <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}>
+                                                                                                <span className="ml-2">{accion.nombre}</span>
+                                                                                            </i> 
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                   
+                                                                                )
+                                                                            })}
+                                                                        </div> 
+                                                                    </div>*/}
+
+
+
+
+                                                                 
+                                                                    <div className="dropdown">
+                                                                        <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                            <i className="fas fa-cog"></i>
+                                                                        </button>
+                                                                        <div id='opciones-menu' className="dropdown-menu" role="menu">
+
+
+                                                
+                                                                            
+                                                                            {acciones.map((accion, index) => {
+                                                                                return (
+                                                                                    <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}><br></br>
+                                                                                        <span className="ml-2">{accion.nombre}</span>
+                                                                                    </i>
+
+
+                                                                                    // <ul className='menu-opciones'>
+                                                                                    //     <li>  
+                                                                                    //         <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}>
+                                                                                    //             <span className="ml-2">{accion.nombre}</span>
+                                                                                    //         </i> 
+                                                                                    //     </li>
+                                                                                    // </ul>
+                                                                                   
                                                                                 )
                                                                             })}
                                                                         </div>
                                                                     </div>
+
+
+
+
+
                                                                 </td>
                                                             )
                                                             
