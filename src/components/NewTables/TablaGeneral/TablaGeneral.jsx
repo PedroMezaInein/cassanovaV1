@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
+
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { URL_DEV } from '../../../constants'
 import Swal from 'sweetalert2'
+import TextField from '@material-ui/core/TextField';
+
+import { URL_DEV } from '../../../constants'
+
+import '../../../styles/_TablaGeneral.scss'
 
 export default function TablaGeneral(props) {
-    const { titulo, subtitulo, columnas, url, numPaginado, acciones } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData } = props;
     const auth = useSelector(state => state.authUser)
     const [data, setData] = useState(false);
     const [filterData, setFilterData] = useState(false);
@@ -26,7 +31,7 @@ export default function TablaGeneral(props) {
     }, [])
     useEffect(() => {
         if (filterData) {
-            paginado(numPaginado)
+            paginado(numItemsPagina)
         }
     }, [filterData])
 
@@ -43,9 +48,15 @@ export default function TablaGeneral(props) {
 
         try {
             axios(`${URL_DEV}${url}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
-            .then(res => {
-                setData(res.data.Sala)
-                setFilterData(res.data.Sala)
+                .then(res => {
+                if (ProccessData !== undefined) {
+                    setData(ProccessData(res.data))
+                    setFilterData(ProccessData(res.data))   
+                } else {
+                    setData(res.data)
+                    setFilterData(res.data)
+                }
+            
                 Swal.close();
             })
         } catch (error) {
@@ -81,7 +92,8 @@ export default function TablaGeneral(props) {
         setFilterData(dataSort)
     }
 
-    const filterString = (identificador, value) => {
+    const filterString = async (identificador, value) => {
+        await setPaginaActual(0)
         setFilter({
             ...filter,
             [identificador]: value
@@ -93,12 +105,12 @@ export default function TablaGeneral(props) {
         setFilterData(dataFilter)
     }
 
-    const paginado = (numPaginado) => {
+    const paginado = (num) => {
         let dataPaginado = [...filterData];
         let dataPaginadoFinal = [];
-        let numPaginas = Math.ceil(dataPaginado.length / numPaginado);
+        let numPaginas = Math.ceil(dataPaginado.length / num);
         for (let i = 0; i < numPaginas; i++) {
-            dataPaginadoFinal.push(dataPaginado.splice(0, numPaginado))
+            dataPaginadoFinal.push(dataPaginado.splice(0, num))
         }
         setPaginas(dataPaginadoFinal)
     }
@@ -136,50 +148,72 @@ export default function TablaGeneral(props) {
         })
     }
 
-    console.log(paginas)
-
     return (
-        <>
+        <div className='containerTable'>
             <div className="row">
                 <div className="col-12">
                     <div className="card">
-                        <div className="card-header">
-                            <h3 className="card-title">{titulo}</h3>
-                            <button type="button" className="btn btn-tool" onClick={reloadTable}>
-                                <i className="fas fa-sync-alt"></i>
+                        <div className="headerTable">
+                            <h3 className="TitleTable">{titulo}<span className="SubtitleTable"> {subtitulo}</span></h3>
+                            <button type="button" className="btn btn-tool " onClick={reloadTable}>
+                                <i className="fas fa-sync-alt reloadTable"></i>
                             </button>
                         </div>
 
 
                         <div className="card-body table-responsive p-0">
                             <table className="table table-hover text-nowrap">
-                                <thead>
+                                <thead className="containerTitleColumn">
                                     <tr>
                                         {columnas.map((columna, index) => {
                                             return (
-                                                <th key={index} className="">
-                                                    <div className="justify-content-center d-flex">
-                                                        <span>{columna.nombre}</span>
+                                                <th key={index} className='MinCell'>
+                                                    <div className="TitleColumn">
+                                                        <span>
+                                                            {
+                                                                columna.stringSearch ? "" :
+                                                                    <>
+                                                                        <div>
+                                                                            {columna.nombre}    
+                                                                        </div>
+                                                                        
+                                                                        {columna.sort ?
+                                                                            <div className="btn-group">
+                                                                                <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                                    <i className="fas fa-sort"></i>
+                                                                                </button>
+                                                                                <div className="dropdown-menu" role="menu">
+                                                                                    <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
+                                                                                    <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
+                                                                                </div>
+                                                                            </div>
+                                                                            : null
+                                                                        }   
+                                                                    </>
+                                                                    
+                                                            }
+                                                        </span>
                                                     </div>
-                                                    <div className="btn-group">
-                                                        {columna.filtroSort ?
-                                                            <div className="input-group input-group-sm">
-                                                                <input type="text" className="form-control" onChange={(e) => filterString(columna.identificador, e.target.value)} value={filter[columna.identificador]} placeholder={`Buscar por ${columna.nombre}`} />
-                                                            </div>
+                                                    <div className="TitleColumn">
+                                                        {columna.stringSearch ?
+                                                            <>
+                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={`Buscar por ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />   
+                                                                {columna.sort ?
+                                                                    <div className="">
+                                                                        <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                            <i className="fas fa-sort"></i>
+                                                                        </button>
+                                                                        <div className="dropdown-menu" role="menu">
+                                                                            <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
+                                                                            <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    : null
+                                                                }
+                                                            </>
                                                             : null
                                                         }
-                                                        {columna.sort ?
-                                                            <div className="btn-group">
-                                                                <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                                    <i className="fas fa-sort"></i>
-                                                                </button>
-                                                                <div className="dropdown-menu" role="menu">
-                                                                    <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
-                                                                    <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
-                                                                </div>
-                                                            </div>
-                                                            : null
-                                                        }
+                                                        
                                                     </div>
                                                     
                                                 </th>
@@ -196,7 +230,7 @@ export default function TablaGeneral(props) {
                                                     {columnas.map((columna, index) => {
                                                         if (acciones && columna.identificador === 'acciones') {
                                                             return (
-                                                                <td key={index}>
+                                                                <td key={index} className='CellContent CellActions' >
                                                                     
                                                                     <div className="">
                                                                         <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -218,7 +252,7 @@ export default function TablaGeneral(props) {
                                                             
                                                         } else {
                                                             return (
-                                                                <td key={index}>{item[columna.identificador]}</td>
+                                                                <td key={index} className='CellContent'>{item[columna.identificador]}</td>
                                                             )
                                                         }
                                                     })}
@@ -229,20 +263,8 @@ export default function TablaGeneral(props) {
                                         : null
                                     }
                                 </tbody>
-                            </table>
-                            {/* <div className="card-footer clearfix">
-                                <ul className="pagination pagination-sm m-0 float-right">
-                                    {paginas ?
-                                        paginas.map((item, index) => {
-                                            return (
-                                                <li className={`page-item ${paginaActual == index ? 'active' : ''}`} key={index}><a className="page-link" href="#" onClick={() => handleSetPagina(index)}>{index + 1}</a></li>
-                                            )
-                                        })
-                                        : null
-                                    }
-                                </ul>
-                            </div>  */}
-                            <div className="card-footer clearfix">
+                            </table> 
+                            <div className="pb-10">
                                 <ul className="pagination pagination-sm m-0 float-right">
                                     <li className="page-item"><a className="page-link" href="#" onClick={() => handlePrevPagina()}>&laquo;</a></li>
                                     {paginas ?
@@ -261,6 +283,6 @@ export default function TablaGeneral(props) {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
