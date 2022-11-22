@@ -224,7 +224,7 @@ export default function DetailProyect() {
                     </Tab.Content>
                     
                 </Tab.Container>
-                <Modal size="md" show={modal.info} title='Información del proyecto' handleClose={() => setModal({ ...modal, info: false })}>
+                <Modal size="lg" show={modal.info} title='Información del proyecto' handleClose={() => setModal({ ...modal, info: false })}>
                     {proyecto &&
                         <div className="parent mt-5">
 
