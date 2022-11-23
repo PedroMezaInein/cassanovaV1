@@ -26,7 +26,7 @@ export default function NominaPrestaciones() {
             {
                 nombre: 'Editar',
                 icono: 'fas fa-edit',
-                color: 'btn btn-info',
+                color: 'blueButton ',
                 funcion: (item) => {
                     Swal.fire({
                         title: 'Editar',
@@ -45,7 +45,7 @@ export default function NominaPrestaciones() {
             {
                 nombre: 'Eliminar',
                 icono: 'fas fa-trash',
-                color: 'btn btn-danger',
+                color: 'redButton',
                 funcion: (item) => {
                     Swal.fire({
                         title: 'Eliminar',

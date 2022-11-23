@@ -179,7 +179,7 @@ export default function TablaGeneral(props) {
 
                                                                         {columna.sort ?
                                                                             <div className="btn-group">
-                                                                                <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                                <button type="button" className="btn btn-default btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                                                     <i className="fas fa-sort"></i>
                                                                                 </button>
                                                                                 <div className="dropdown-menu" role="menu">
@@ -200,7 +200,7 @@ export default function TablaGeneral(props) {
                                                                 <TextField size='small' className="InputSearch" id="outlined-basic" label={`Buscar por ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
                                                                 {columna.sort ?
                                                                     <div className="">
-                                                                        <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                        <button type="button" className="btn btn-default btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                                             <i className="fas fa-sort"></i>
                                                                         </button>
                                                                         <div className="dropdown-menu" role="menu">
@@ -232,17 +232,20 @@ export default function TablaGeneral(props) {
                                                             return (
                                                                 <td key={index} className='CellContent CellActions' >
 
-                                                                    <div className="btn-group">
+                                                                    <div className="btn-group dropright">
                                                                         <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                                             <i className="fas fa-cog"></i>
                                                                         </button>
-                                                                        <div id='opciones-menu' className="dropdown-menu" role="menu">
+                                                                        <div className="dropdown-menu" role="menu">
                                                                             
                                                                             {acciones.map((accion, index) => {
                                                                                 return (
-                                                                                    <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}>
-                                                                                        <span className="ml-2">{accion.nombre}</span>
-                                                                                    </i>
+                                                                                    <div className={`${accion.color} Button-action`}>
+                                                                                        <i className={` ${accion.icono} text-light`} key={index} onClick={() => accion.funcion(item)}>
+                                                                                            <span className="ml-2">{accion.nombre}</span>
+                                                                                        </i>    
+                                                                                    </div>
+                                                                                    
                                                                                 )
                                                                             })}
                                                                         </div> 

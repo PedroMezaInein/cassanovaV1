@@ -33,7 +33,7 @@
 }
 
 .reloadTable{
-    color: green;
+    color: rgb(0, 168, 0);
 }
 
 .containerTitleColumn{
@@ -94,7 +94,7 @@ td, th{
 }
 
 .MinCell{
-    background-color:rgba(177, 207, 240, 0.35);
+    background-color:white;
 }
 
 .MinCell:nth-child(1){
@@ -105,11 +105,47 @@ td, th{
     list-style: none;
 }
 
-.dropdown-menu{
-    display: flex;
-    flex-direction: column;
+.action-item-color{
+    background-color: #7c9fc469;
+
 }
 
-.dropdown-menu {
-    
+.Button-action{
+    padding: 5px;
+    margin-bottom: 2px;
 }
+
+.redButton{
+    background-color: #fd7369;
+    border-radius: 5px;
+    color: white;
+}
+
+.redButton:hover{
+    cursor: pointer;
+    background-color: #ffada7;
+}
+
+.blueButton{
+    background-color: #73c0ff;
+    border-radius: 5px;
+    color: white;
+}
+
+.blueButton:hover {
+    cursor: pointer;
+    background-color: #a9d8ff;
+}
+
+.greenButton{
+    background-color: #22d41c;
+    border-radius: 5px;
+    color: white;
+}
+
+.greenButton:hover {
+    cursor: pointer;
+    background-color: #87f784;
+}
+
+
