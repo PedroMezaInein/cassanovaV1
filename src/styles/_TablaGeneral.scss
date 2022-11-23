@@ -64,8 +64,8 @@
 
 .CellActions{
     width: 50px;
-
 }
+
 table{
     table-layout: fixed;
     width: 100%;
@@ -105,7 +105,11 @@ td, th{
     list-style: none;
 }
 
-// .dropdown-menu{
-//     display: flex!important;
-//     flex-direction: column!important;
-// }
+.dropdown-menu{
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-menu {
+    
+}

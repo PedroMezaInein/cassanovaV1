@@ -27,7 +27,7 @@ export default function TablaGeneral(props) {
             })
             return obj
         })
-        
+
     }, [])
     useEffect(() => {
         if (filterData) {
@@ -49,16 +49,16 @@ export default function TablaGeneral(props) {
         try {
             axios(`${URL_DEV}${url}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
                 .then(res => {
-                if (ProccessData !== undefined) {
-                    setData(ProccessData(res.data))
-                    setFilterData(ProccessData(res.data))   
-                } else {
-                    setData(res.data)
-                    setFilterData(res.data)
-                }
-            
-                Swal.close();
-            })
+                    if (ProccessData !== undefined) {
+                        setData(ProccessData(res.data))
+                        setFilterData(ProccessData(res.data))
+                    } else {
+                        setData(res.data)
+                        setFilterData(res.data)
+                    }
+
+                    Swal.close();
+                })
         } catch (error) {
             console.log(error)
         }
@@ -120,7 +120,7 @@ export default function TablaGeneral(props) {
     }
 
     const handleNextPagina = () => {
-        if (paginaActual+1 < paginas.length && paginas.length > 1) {
+        if (paginaActual + 1 < paginas.length && paginas.length > 1) {
             setPaginaActual(paginaActual + 1)
         }
     }
@@ -174,9 +174,9 @@ export default function TablaGeneral(props) {
                                                                 columna.stringSearch ? "" :
                                                                     <>
                                                                         <div>
-                                                                            {columna.nombre}    
+                                                                            {columna.nombre}
                                                                         </div>
-                                                                        
+
                                                                         {columna.sort ?
                                                                             <div className="btn-group">
                                                                                 <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -188,16 +188,16 @@ export default function TablaGeneral(props) {
                                                                                 </div>
                                                                             </div>
                                                                             : null
-                                                                        }   
+                                                                        }
                                                                     </>
-                                                                    
+
                                                             }
                                                         </span>
                                                     </div>
                                                     <div className="TitleColumn">
                                                         {columna.stringSearch ?
                                                             <>
-                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={`Buscar por ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />   
+                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={`Buscar por ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
                                                                 {columna.sort ?
                                                                     <div className="">
                                                                         <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -213,26 +213,26 @@ export default function TablaGeneral(props) {
                                                             </>
                                                             : null
                                                         }
-                                                        
+
                                                     </div>
-                                                    
+
                                                 </th>
                                             )
                                         })}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {paginas && paginas[0]  ?
+                                    {paginas && paginas[0] ?
                                         paginas[paginaActual].map((item, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    
+
                                                     {columnas.map((columna, index) => {
                                                         if (acciones && columna.identificador === 'acciones') {
                                                             return (
                                                                 <td key={index} className='CellContent CellActions' >
-                                                                    
-                                                                    {/* <div className="btn-group">
+
+                                                                    <div className="btn-group">
                                                                         <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                                             <i className="fas fa-cog"></i>
                                                                         </button>
@@ -243,75 +243,27 @@ export default function TablaGeneral(props) {
                                                                                     <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}>
                                                                                         <span className="ml-2">{accion.nombre}</span>
                                                                                     </i>
-
-
-                                                                                    <ul className='menu-opciones'>
-                                                                                        <li>  
-                                                                                            <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}>
-                                                                                                <span className="ml-2">{accion.nombre}</span>
-                                                                                            </i> 
-                                                                                        </li>
-                                                                                    </ul>
-                                                                                   
                                                                                 )
                                                                             })}
                                                                         </div> 
-                                                                    </div>*/}
-
-
-
-
-                                                                 
-                                                                    <div className="dropdown">
-                                                                        <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                                            <i className="fas fa-cog"></i>
-                                                                        </button>
-                                                                        <div id='opciones-menu' className="dropdown-menu" role="menu">
-
-
-                                                
-                                                                            
-                                                                            {acciones.map((accion, index) => {
-                                                                                return (
-                                                                                    <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}><br></br>
-                                                                                        <span className="ml-2">{accion.nombre}</span>
-                                                                                    </i>
-
-
-                                                                                    // <ul className='menu-opciones'>
-                                                                                    //     <li>  
-                                                                                    //         <i className={`${accion.icono} ${accion.color}`} key={index} onClick={() => accion.funcion(item)}>
-                                                                                    //             <span className="ml-2">{accion.nombre}</span>
-                                                                                    //         </i> 
-                                                                                    //     </li>
-                                                                                    // </ul>
-                                                                                   
-                                                                                )
-                                                                            })}
-                                                                        </div>
                                                                     </div>
-
-
-
-
-
                                                                 </td>
                                                             )
-                                                            
+
                                                         } else {
                                                             return (
                                                                 <td key={index} className='CellContent'>{item[columna.identificador]}</td>
                                                             )
                                                         }
                                                     })}
-                                                    
+
                                                 </tr>
                                             )
                                         })
                                         : null
                                     }
                                 </tbody>
-                            </table> 
+                            </table>
                             <div className="pb-10">
                                 <ul className="pagination pagination-sm m-0 float-right">
                                     <li className="page-item"><a className="page-link" href="#" onClick={() => handlePrevPagina()}>&laquo;</a></li>
@@ -325,8 +277,8 @@ export default function TablaGeneral(props) {
                                     }
                                     <li className="page-item"><a className="page-link" href="#" onClick={() => handleNextPagina()}>&raquo;</a></li>
                                 </ul>
-                            </div>    
-                                
+                            </div>
+
                         </div>
                     </div>
                 </div>
