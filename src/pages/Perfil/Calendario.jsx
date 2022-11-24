@@ -62,6 +62,8 @@ class Calendario extends Component {
             descripcion: '',
             tipo: '',
             empleado: this.props.authUser.user.empleado_id,
+            date_entrada: new Date('2022-01-01T09:00:00'),
+            date_salida: new Date('2022-01-01T18:00:00'),
             hora_salida: 0,
             hora_entrada: 0,
             minuto_entrada: 0,
@@ -395,6 +397,31 @@ class Calendario extends Component {
         this.setState({ ...this.state, form })
     }
 
+    onChangeMessage = (value, tipo) => { 
+        console.log(value)
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({ ...this.state, form })
+    }
+
+    onChangeHora = (value, tipo) => { 
+        console.log(value.getHours())
+        console.log(value.getMinutes())
+        const { form } = this.state
+        if (tipo === 'hora_entrada') { 
+            form.date_entrada = value
+            form.hora_entrada = value.getHours()
+            form.minuto_entrada = value.getMinutes()
+            this.setState({ ...this.state, form })
+        }
+        if (tipo === 'hora_salida') {
+            form.date_salida = value
+            form.hora_salida = value.getHours()
+            form.minuto_salida = value.getMinutes()
+            this.setState({ ...this.state, form })
+        }
+    }
+
     onChangeEvento = e => {
         const { name, value } = e.target
         const { formEvento } = this.state
@@ -610,8 +637,6 @@ class Calendario extends Component {
         // let empleadoA = form.empleado
         data.append('empleado', this.props.authUser.user.empleado_id)
         data.append('empleado_id', this.props.authUser.user.empleado_id)
-        let liderA = form.lider
-        data.append('lider', liderA)
         // data.append('lider_id', liderA)
         data.append('tipo_permiso', 'permiso')
         let minutoSalidaA = Math.floor(form.minuto_salida );
@@ -1500,7 +1525,7 @@ class Calendario extends Component {
                                     </DropdownButton>
                                 }
                             </div>
-                            <div className="card-toolbar" id="dropdown-calendario">
+                            {/* <div className="card-toolbar" id="dropdown-calendario">
                                 {
                                     <DropdownButton 
                                         title={
@@ -1514,7 +1539,7 @@ class Calendario extends Component {
                                         <Dropdown.Item onClick={this.openModalTablaIncapacidad}>Estatus de incapacidad</Dropdown.Item>
                                     </DropdownButton>
                                 }
-                            </div>
+                            </div> */}
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -1586,6 +1611,8 @@ class Calendario extends Component {
                         empleadoId={form.idEmpleado}
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin();this.getPermisosModal() }}
                         tipoDeFormulario='permiso'
+                        onChangeHora={this.onChangeHora}
+                        onChangeMessage={this.onChangeMessage}
                     />
                 </Modal>                        
                 <Modal size={"lg"} title='solicitud de incapacidad' show={modal.modal_incapacidad} handleClose={this.handleClosePermisos}>
