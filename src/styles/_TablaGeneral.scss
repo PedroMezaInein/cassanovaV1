@@ -1,5 +1,6 @@
 .containerTable{
     margin: -1rem -1.4rem;
+    border-radius: 20px;
 }
 
 .headerTable{
@@ -37,7 +38,7 @@
 }
 
 .containerTitleColumn{
-    background-color: #7c9fc469;
+    background-color: #c6d4e1;
     text-align: center;
     font-weight: bold;
     color: #000;
@@ -47,6 +48,7 @@
 .TitleColumn {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .CellContent{
@@ -69,16 +71,41 @@
 table{
     table-layout: fixed;
     width: 100%;
+    border-radius: 5px;
+    font-family: poppins;
 }
 
 td, th{
-    width: 50px;
     word-wrap: break-word;
 }
 
 .InputSearch{
     background-color: white;
 }
+
+.SortButton{
+    border: none;
+    font-size: small;
+    background-color: transparent;
+}
+
+.SettingButton{
+    border: none;
+    font-size: small;
+    background-color: transparent;
+    color: #1976d2;
+    border-radius: 5px;
+}
+
+.SettingButton:hover{
+    background-color: #1976d2;
+    color: white;
+}
+
+.SortButton:hover{
+    color: #1976d2;
+}
+
 
 .MuiFormControl-root{
     height: 2.2rem;
@@ -91,10 +118,6 @@ td, th{
 
 .MuiOutlinedInput-inputMarginDense {
     color: #6F95C0!important;
-}
-
-.MinCell{
-    background-color:white;
 }
 
 .MinCell:nth-child(1){

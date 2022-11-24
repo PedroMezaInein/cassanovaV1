@@ -6,7 +6,8 @@ import Swal from 'sweetalert2'
 import TextField from '@material-ui/core/TextField';
 
 import { URL_DEV } from '../../../constants'
-
+import SortIcon from '@material-ui/icons/Sort';
+import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
 import '../../../styles/_TablaGeneral.scss'
 
 export default function TablaGeneral(props) {
@@ -154,22 +155,28 @@ export default function TablaGeneral(props) {
                 <div className="col-12">
                     <div className="card">
                         <div className="headerTable">
-                            <h3 className="TitleTable">{titulo}<span className="SubtitleTable"> {subtitulo}</span></h3>
-                            <button type="button" className="btn btn-tool " onClick={reloadTable}>
-                                <i className="fas fa-sync-alt reloadTable"></i>
-                            </button>
+                            <h3 className="TitleTable">
+                                <span>
+                                    {titulo}
+                                    <button type="button" className="btn btn-tool " onClick={reloadTable}>
+                                        <i className="fas fa-sync-alt reloadTable"></i>
+                                    </button>
+                                </span>
+                                <span className="SubtitleTable"> {subtitulo}</span>
+                            </h3>
+                            
                         </div>
 
 
-                        <div className="card-body table-responsive p-0">
+                        <div className="card-body table-responsive mt-n6 p-n4">
                             <table className="table table-hover text-nowrap">
-                                <thead className="containerTitleColumn">
+                                <thead className="containerTitleColumn ">
                                     <tr>
                                         {columnas.map((columna, index) => {
                                             return (
                                                 <th key={index} className='MinCell'>
                                                     <div className="TitleColumn">
-                                                        <span>
+                                                        
                                                             {
                                                                 columna.stringSearch ? "" :
                                                                     <>
@@ -178,9 +185,9 @@ export default function TablaGeneral(props) {
                                                                         </div>
 
                                                                         {columna.sort ?
-                                                                            <div className="btn-group">
-                                                                                <button type="button" className="btn btn-default btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                                                    <i className="fas fa-sort"></i>
+                                                                            <div className="">
+                                                                                <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">
+                                                                                    <SortIcon />
                                                                                 </button>
                                                                                 <div className="dropdown-menu" role="menu">
                                                                                     <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
@@ -192,7 +199,7 @@ export default function TablaGeneral(props) {
                                                                     </>
 
                                                             }
-                                                        </span>
+                                                        
                                                     </div>
                                                     <div className="TitleColumn">
                                                         {columna.stringSearch ?
@@ -200,8 +207,8 @@ export default function TablaGeneral(props) {
                                                                 <TextField size='small' className="InputSearch" id="outlined-basic" label={`Buscar por ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
                                                                 {columna.sort ?
                                                                     <div className="">
-                                                                        <button type="button" className="btn btn-default btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                                            <i className="fas fa-sort"></i>
+                                                                        <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">
+                                                                            <SortIcon />
                                                                         </button>
                                                                         <div className="dropdown-menu" role="menu">
                                                                             <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
@@ -232,9 +239,9 @@ export default function TablaGeneral(props) {
                                                             return (
                                                                 <td key={index} className='CellContent CellActions' >
 
-                                                                    <div className="btn-group dropright">
-                                                                        <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                                            <i className="fas fa-cog"></i>
+                                                                    <div className="">
+                                                                        <button type="button" className="SettingButton" data-toggle="dropdown" aria-expanded="false">
+                                                                            <SettingsSharpIcon />
                                                                         </button>
                                                                         <div className="dropdown-menu" role="menu">
                                                                             

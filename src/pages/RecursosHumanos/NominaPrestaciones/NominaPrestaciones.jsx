@@ -16,7 +16,7 @@ export default function NominaPrestaciones() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Sala', identificador: 'sala', sort: true, stringSearch: true },
-        { nombre: 'Tipo', identificador: 'typo', sort: true, stringSearch: true },
+        { nombre: 'Tipo', identificador: 'typo', sort: false, stringSearch: true },
         { nombre: 'Fecha', identificador: 'fecha', sort: true, stringSearch: true },
         { nombre: 'Hora', identificador: 'hora', sort: true, stringSearch: false },
     ]
@@ -83,7 +83,7 @@ export default function NominaPrestaciones() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
                 <Tabla
-                    titulo="Nomina Prestaciones" columnas={columnas} url="salas" subtitulo="subtitulo" acciones={createAcciones()} numItemsPagina={5} ProccessData={ProccessData}
+                    titulo="Nomina Prestaciones" columnas={columnas} url="salas"  acciones={createAcciones()} numItemsPagina={3} ProccessData={ProccessData}
                 />
             </Layout>
         </>
