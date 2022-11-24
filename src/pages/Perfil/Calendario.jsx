@@ -395,6 +395,13 @@ class Calendario extends Component {
         this.setState({ ...this.state, form })
     }
 
+    onChangeHora = (value, tipo) => { 
+        console.log(value, tipo)
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({ ...this.state, form })
+    }
+
     onChangeEvento = e => {
         const { name, value } = e.target
         const { formEvento } = this.state
@@ -617,11 +624,11 @@ class Calendario extends Component {
         let minutoSalidaA = Math.floor(form.minuto_salida );
         // let horaSalidaA = Math.floor((form.hora_salida * 10000) + minutoSalidaA);
         let horaSalidaA = Math.floor((form.hora_salida));
-        data.append('hora_salida', horaSalidaA)
+        data.append('hora_salida', new Date(horaSalidaA))
         data.append('minuto_salida', minutoSalidaA)
         let minutoEntradaA = Math.floor(form.minuto_entrada );
         let horaEntradaA = Math.floor((form.hora_entrada ) );
-        data.append('hora_entrada', horaEntradaA)
+        data.append('hora_entrada', new Date(horaEntradaA))
         data.append('minuto_entrada', minutoEntradaA)
         let comentarioA = form.descripcion
         data.append('descripcion', comentarioA)
@@ -1500,7 +1507,7 @@ class Calendario extends Component {
                                     </DropdownButton>
                                 }
                             </div>
-                            <div className="card-toolbar" id="dropdown-calendario">
+                            {/* <div className="card-toolbar" id="dropdown-calendario">
                                 {
                                     <DropdownButton 
                                         title={
@@ -1514,7 +1521,7 @@ class Calendario extends Component {
                                         <Dropdown.Item onClick={this.openModalTablaIncapacidad}>Estatus de incapacidad</Dropdown.Item>
                                     </DropdownButton>
                                 }
-                            </div>
+                            </div> */}
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -1586,6 +1593,7 @@ class Calendario extends Component {
                         empleadoId={form.idEmpleado}
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin();this.getPermisosModal() }}
                         tipoDeFormulario='permiso'
+                        onChangeHora={this.onChangeHora}
                     />
                 </Modal>                        
                 <Modal size={"lg"} title='solicitud de incapacidad' show={modal.modal_incapacidad} handleClose={this.handleClosePermisos}>
