@@ -4,10 +4,10 @@ import { Form } from 'react-bootstrap'
 import { Button, SelectSearch, RangeCalendar, InputGray, FileInput, SelectHorario } from '../../form-components'
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardTimePicker, } from '@material-ui/pickers';
+import TextField from '@material-ui/core/TextField';
+
+
 class AgregarPermisosForm extends Component {
     state={
         auxName: ''
@@ -36,7 +36,7 @@ class AgregarPermisosForm extends Component {
         // console.log(form)
     }
     render() {
-        const { onSubmit, tipoDeFormulario, onChange, deleteAdjunto, form, onChangeAdjunto, formeditado, options, disabledDates, onChangeHora } = this.props
+        const { onSubmit, tipoDeFormulario, onChange, deleteAdjunto, form, onChangeAdjunto, formeditado, options, disabledDates, onChangeHora, onChangeMessage } = this.props
         return (
             <Form id="form-add-permisos"
             onSubmit={
@@ -190,7 +190,7 @@ class AgregarPermisosForm extends Component {
                                     onChange={onChange}
                                     placeholder="EMPLEADO"
                                     iconclass="far fa-user icon-lg text-dark-50" messageinc="Incorrecto. ingresa el tipo de permiso"
-                                />
+                                        />
                             </div>
                  
                             {/* <div className="col-md-12">
@@ -231,7 +231,7 @@ class AgregarPermisosForm extends Component {
                                                 <Grid container justifyContent="space-around">
                                                     <KeyboardTimePicker
                                                         id="hora_entrada"
-                                                        value={form.hora_entrada}
+                                                        value={form.date_entrada}
                                                         onChange={e => onChangeHora(e, 'hora_entrada')}
                                                         KeyboardButtonProps={{
                                                             'aria-label': 'change time',
@@ -249,36 +249,35 @@ class AgregarPermisosForm extends Component {
                                         onChange={onChange}
                                         minuto={{ value: form.minuto_salida, name: 'minuto_salida' }}
                                         hora={{ value: form.hora_salida, name: 'hora_salida' }} allhours={true} width='w-60' /> */}
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                <Grid container justifyContent="space-around">
-                                                    <KeyboardTimePicker
-                                                        id="hora_salida"
-                                                        value={form.hora_salida}
-                                                        onChange={e => onChangeHora(e, 'hora_salida')}
-                                                        KeyboardButtonProps={{
-                                                            'aria-label': 'change time',
-                                                        }}
-                                                    />
-                                                </Grid>
-                                            </MuiPickersUtilsProvider>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <Grid container justifyContent="space-around">
+                                            <KeyboardTimePicker
+                                                id="hora_salida"
+                                                value={form.date_salida}
+                                                onChange={e => onChangeHora(e, 'hora_salida')}
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change time',
+                                                }}
+                                            />
+                                        </Grid>
+                                    </MuiPickersUtilsProvider>
                                 </div>
-                             
                             </div>  
                          <div className="col-md-12">
-                                <InputGray 
-                                    as='textarea'
-                                    withtaglabel={1}
-                                    withicon={1}
-                                    requirevalidation={1}
-                                    withtextlabel={1} withplaceholder={1}
-                                    name="descripcion"
-                                    formeditado={formeditado}
-                                    value={form.descripcion}
-                                    onChange={onChange}
-                                    placeholder="DESCRIPCIÓN DEL PERMISO"
-                                    iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Ingresa la descripción del permiso"
-                                />
-                            </div>   
+                            <InputGray 
+                                as='textarea'
+                                withtaglabel={1}
+                                withicon={1}
+                                requirevalidation={1}
+                                withtextlabel={1} withplaceholder={1}
+                                name="descripcion"
+                                formeditado={formeditado}
+                                value={form.descripcion}
+                                onChange={onChange}
+                                placeholder="DESCRIPCIÓN DEL PERMISO"
+                                iconclass="far fa-file-alt icon-lg text-dark-50" messageinc="Ingresa la descripción del permiso"
+                            />        
+                        </div>   
                          {/* <div className="col-md-12 ">
                          <InputGray withtaglabel={1} withtextlabel={1} withzplaceholder={1} requirevalidation={0} as='textarea' rows='1'
                                     withformgroup={0} name='descripcion' placeholder='DESCRIPCIÓN' value={form.descripcion}

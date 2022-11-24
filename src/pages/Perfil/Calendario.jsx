@@ -62,6 +62,8 @@ class Calendario extends Component {
             descripcion: '',
             tipo: '',
             empleado: this.props.authUser.user.empleado_id,
+            date_entrada: new Date('2022-01-01T09:00:00'),
+            date_salida: new Date('2022-01-01T18:00:00'),
             hora_salida: 0,
             hora_entrada: 0,
             minuto_entrada: 0,
@@ -395,11 +397,29 @@ class Calendario extends Component {
         this.setState({ ...this.state, form })
     }
 
-    onChangeHora = (value, tipo) => { 
-        console.log(value, tipo)
+    onChangeMessage = (value, tipo) => { 
+        console.log(value)
         const { form } = this.state
         form[tipo] = value
         this.setState({ ...this.state, form })
+    }
+
+    onChangeHora = (value, tipo) => { 
+        console.log(value.getHours())
+        console.log(value.getMinutes())
+        const { form } = this.state
+        if (tipo === 'hora_entrada') { 
+            form.date_entrada = value
+            form.hora_entrada = value.getHours()
+            form.minuto_entrada = value.getMinutes()
+            this.setState({ ...this.state, form })
+        }
+        if (tipo === 'hora_salida') {
+            form.date_salida = value
+            form.hora_salida = value.getHours()
+            form.minuto_salida = value.getMinutes()
+            this.setState({ ...this.state, form })
+        }
     }
 
     onChangeEvento = e => {
@@ -617,18 +637,16 @@ class Calendario extends Component {
         // let empleadoA = form.empleado
         data.append('empleado', this.props.authUser.user.empleado_id)
         data.append('empleado_id', this.props.authUser.user.empleado_id)
-        let liderA = form.lider
-        data.append('lider', liderA)
         // data.append('lider_id', liderA)
         data.append('tipo_permiso', 'permiso')
         let minutoSalidaA = Math.floor(form.minuto_salida );
         // let horaSalidaA = Math.floor((form.hora_salida * 10000) + minutoSalidaA);
         let horaSalidaA = Math.floor((form.hora_salida));
-        data.append('hora_salida', new Date(horaSalidaA))
+        data.append('hora_salida', horaSalidaA)
         data.append('minuto_salida', minutoSalidaA)
         let minutoEntradaA = Math.floor(form.minuto_entrada );
         let horaEntradaA = Math.floor((form.hora_entrada ) );
-        data.append('hora_entrada', new Date(horaEntradaA))
+        data.append('hora_entrada', horaEntradaA)
         data.append('minuto_entrada', minutoEntradaA)
         let comentarioA = form.descripcion
         data.append('descripcion', comentarioA)
@@ -1594,6 +1612,7 @@ class Calendario extends Component {
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addPermisoAxiosAdmin();this.getPermisosModal() }}
                         tipoDeFormulario='permiso'
                         onChangeHora={this.onChangeHora}
+                        onChangeMessage={this.onChangeMessage}
                     />
                 </Modal>                        
                 <Modal size={"lg"} title='solicitud de incapacidad' show={modal.modal_incapacidad} handleClose={this.handleClosePermisos}>
