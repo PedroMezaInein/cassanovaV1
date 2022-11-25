@@ -42,6 +42,7 @@ class AsideMenuList extends Component{
             case 'Directorio':
             case 'Comunicacion Interna':
             case 'Encuesta graficas':
+            case 'Autorizar solicitudes':
   
                 return `${LEADS_FRONT}${url}?tag=${access_token}`               
             default:
@@ -65,7 +66,8 @@ class AsideMenuList extends Component{
                                     </span>
                                     {
                                         modulo.url ? 
-                                            modulo.url === '/mi-proyecto' || modulo.url === '/te-escuchamos' || modulo.url === '/comunicados' || modulo.url === '/reporte' ? 
+                                            modulo.url === '/mi-proyecto' || modulo.url === '/te-escuchamos' || modulo.url === '/comunicados' || modulo.url === '/reporte' ||
+                                            modulo.url === '/vacaciones-permisos'  ? 
                                             <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
                                             : 
                                             ''
