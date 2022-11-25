@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 import {useSelector} from 'react-redux';
-import { MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import { useMinimalSelectStyles } from '@mui-treasury/styles/select/minimal';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DateFnsUtils from '@date-io/date-fns';
 import Swal from 'sweetalert2'
 import { es } from 'date-fns/locale'
@@ -19,18 +18,24 @@ export default function EditProyect(props) {
     const {proyecto} = props;
     const user = useSelector(state => state.authUser);
 
-    const minimalSelectClasses = useMinimalSelectStyles();
 
     const [form, setForm] = useState({
         fecha_inicio: proyecto.fecha_inicio,
         fecha_fin: proyecto.fecha_fin,
         empresa: proyecto.empresa.id,
+        tipo: proyecto.tipo_proyecto_id,
+        sucursal: proyecto.sucursal,
+        ciudad: proyecto.ciudad,
+        ubicacion: proyecto.ubicacion,
+        m2: proyecto.m2,
+        costo: proyecto.costo,
+        descripcion: proyecto.descripcion,
     })
 
     const [opciones, setOpciones] = useState(false)
 
     useEffect(() => {
-        getOptionsAxios();
+        getOptionsEmpresas();
     }, [])
 
     const handleChangeFechaInicio = (date) => {
@@ -47,14 +52,7 @@ export default function EditProyect(props) {
         })
     };
 
-    const iconComponent = (props) => {
-        return (
-            <ExpandMoreIcon className={props.className + " " + minimalSelectClasses.icon} />
-        )
-    };
-
-    
-    const getOptionsAxios = async () => {
+    const getOptionsEmpresas = async () => {
         Swal.fire({
             title: 'Cargando...',
             allowOutsideClick: false,
@@ -93,6 +91,15 @@ export default function EditProyect(props) {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['estatus'] = setOptions(estatus, 'estatus', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+
+                if (proyecto.empresa) {
+                    options.empresas.forEach(empresa => {
+                        if (proyecto.empresa.name === empresa.name) {
+                            options.tipos = setOptions(empresa.tipos, 'tipo', 'id')
+                        }
+                    });
+                }
+
                 Swal.close()
                 setOpciones(options)
             },
@@ -105,21 +112,10 @@ export default function EditProyect(props) {
         })
     }
 
-    const menuProps = {
-            classes: {
-                paper: minimalSelectClasses.paper,
-                list: minimalSelectClasses.list
-            },
-            anchorOrigin: {
-                vertical: "bottom",
-                horizontal: "left"
-            },
-            transformOrigin: {
-                vertical: "top",
-                horizontal: "left"
-            },
-            getContentAnchorEl: null
-        };
+    const getOptionsTipo = async () => { 
+
+    }
+
     return (
         <>
             
@@ -164,10 +160,6 @@ export default function EditProyect(props) {
                     opciones ?
                     <div>
                         <Select
-                            disableUnderline
-                            classes={{ root: minimalSelectClasses.select }}
-                            MenuProps={menuProps}
-                            IconComponent={iconComponent}
                             value={form.empresa}
                             >
                             <MenuItem value={0} disabled>Selecciona una Empresa</MenuItem>
@@ -175,9 +167,66 @@ export default function EditProyect(props) {
                                 return (<MenuItem key={index} value={item.value}>{item.name}</MenuItem>)
                             })}
 
-                        </Select>
+                            </Select>
+                            <Select
+                                value={form.tipo}
+                            >
+                                <MenuItem value={0} disabled>Selecciona un Tipo</MenuItem>
+                                {opciones.tipos.map((item, index) => {
+                                    return (<MenuItem key={index} value={item.value}>{item.name}</MenuItem>)
+                                })}
+
+                            </Select>
                     </div>:null
                 }
+
+                <TextField
+                    name="sucursal"
+                    value={form.sucursal}
+                    label="Sucursal"
+                />
+                <TextField
+                    name="ciudad"
+                    value={form.ciudad}
+                    label="Ciudad"
+                />
+                <TextField
+                    name="ubicacion"
+                    value={form.ubicacion}
+                    label="Ubicación"
+                />
+                <TextField
+                    name="m2"
+                    value={form.m2}
+                    label="Metros Cuadrados"
+                />
+                <TextField
+                    name="costo"
+                    value={form.costo}
+                    label="Costo con IVA"
+                />
+                <TextField
+                    name="descripcion"
+                    value={form.descripcion}
+                    label="Descripción"
+                    rows={4}
+                    multiline
+                />
+                <TextField
+                    name="Nombre del contacto"
+                    value={form.costo}
+                    label="Costo con IVA"
+                />
+                <TextField
+                    name="Telefono del contacto"
+                    value={form.costo}
+                    label="Costo con IVA"
+                />
+                <TextField
+                    name="Correo del contacto"
+                    value={form.costo}
+                    label="Costo con IVA"
+                />
                 
                 
             </form>
