@@ -26,7 +26,7 @@ class EditTicketForm extends Component {
         onChange({ target: { name: 'cliente', value: value } })
     }
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ticket, at, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, onChangeTicketMonto, options, handleChange, deleteFile, generateEmail, estatus, ticket, at, ...props } = this.props
         return (
             <div>
                 {
@@ -59,6 +59,21 @@ class EditTicketForm extends Component {
                                             value={form.num_compra}
                                             onChange={onChange}
                                             iconclass="las la-shopping-cart icon-2x"
+                                            customdiv="mb-0"
+                                            iconvalid={1}
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withicon={1}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <InputGray
+                                            formeditado={formeditado}
+                                            placeholder="Monto (con IVA)"
+                                            name="orden_monto"
+                                            value={form.orden_monto}
+                                            onChange={onChangeTicketMonto}
+                                            iconclass="las la-coins icon-2x"
                                             customdiv="mb-0"
                                             iconvalid={1}
                                             withtaglabel={1}

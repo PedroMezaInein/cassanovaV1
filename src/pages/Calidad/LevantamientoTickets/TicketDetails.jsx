@@ -70,6 +70,7 @@ class TicketDetails extends Component {
                 costo: 0.0,
                 tipo_trabajo: '',
                 num_compra: 0,
+                orden_monto: 0,
                 adjuntos: {
                     reporte_problema_reportado: {
                         value: '',
@@ -115,11 +116,13 @@ class TicketDetails extends Component {
                 adjuntoEvidencia: '',
                 motivo_rechazo:'',
                 correos_reporte: [],
-                ordenCompra:''
+                ordenCompra: '',
+                orden_monto: 0.0,
             },
             orden_compra:{
                 adjunto: '',
-                numero_orden:''
+                numero_orden: '',
+                orden_monto: 0.0,
             },
             mantenimientos:{
                 costo: 0.0,
@@ -169,6 +172,7 @@ class TicketDetails extends Component {
     componentDidMount() {
         const { location: { state } } = this.props
         const { history } = this.props
+        console.log(this.props)
         this.getOptionsAxios()
         if (state) {
             if (state.calidad) {
@@ -177,7 +181,18 @@ class TicketDetails extends Component {
                     this.setNavTabs(calidad.estatus.estatus)
                     if (calidad.estatus.estatus === 'En espera') this.changeEstatusAxios({ id: calidad.id })
                     else { this.getOneTicketAxios(calidad.id) }
-                }else { this.getOneTicketAxios(calidad.id) }
+                } else { this.getOneTicketAxios(calidad.id) }
+                if (calidad.orden_monto) {
+                    this.setState({
+                        ...this.state,
+                        formularios: {
+                            ticket: {
+                                ...this.state.formularios.ticket,
+                                orden_monto: calidad.orden_monto
+                            }
+                        }
+                    })
+                } 
             } else history.push('/calidad/tickets')
         } else history.push('/calidad/tickets')
     }
@@ -945,6 +960,13 @@ class TicketDetails extends Component {
                                                 swal={true} placeholder='NÚMERO DE ORDEN DE COMPRA'
                                             />
                                         </div>
+                                        <div className="col-md-12 text-justify">
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1}
+                                                requirevalidation={0} value={formularios.orden_compra.orden_monto} name={'orden_monto'}
+                                                onChange={(e) => { this.onChangeSwal(e.target.value, 'orden_monto', 'presupuesto_generado') }}
+                                                swal={true} placeholder='Monto (con IVA)'
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -1348,6 +1370,26 @@ class TicketDetails extends Component {
         formularios.ticket[name] = value
         this.setState({ ...this.state, formularios, activeDate })
     }
+
+    onChangeTicketMonto = (e) => { 
+        const { value } = e.target
+        this.setState({
+            ...this.state,
+            formularios: {
+                ...this.state.formularios,
+                ticket: {
+                    ...this.state.formularios.ticket,
+                    orden_monto: value,
+                    orden_compra: {
+                        ...this.state.formularios.ticket.orden_compra,
+                        orden_monto: value
+                    }
+                }
+            }
+
+        })
+    }
+
     onSubmitTicketProceso = e => {
         e.preventDefault();
         const { adjuntos } = this.state.formularios.ticket
@@ -1752,6 +1794,7 @@ class TicketDetails extends Component {
             data.append('file', formularios.orden_compra.adjunto)
             data.append('adjunto', presupuestoId)
             data.append('orden', formularios.orden_compra.numero_orden)
+            data.append('orden_monto', formularios.orden_compra.orden_monto)
             await axios.post(`${URL_DEV}v2/presupuesto/presupuestos/${presupuesto.id}/orden-compra?_method=PUT`, data, 
                 { headers: setSingleHeader(access_token) }).then(
                 (response) => {
@@ -1967,7 +2010,7 @@ class TicketDetails extends Component {
                     onClick = { this.onClick }  onChange = { this.onChangeSwal }  setData = { this.setData }  setOptions = { this.setOptions }
                     onSubmit = { this.onSubmit }  openModalConceptos={this.openModalConceptos}  deleteFile = { this.deleteFile }  
                     openModalSolicitud = {this.openModalSolicitud}  handleCloseSolicitud={this.handleCloseSolicitud} deleteSolicitud={this.deleteSolicitud}
-                    onSubmitSVenta={this.onSubmitSVenta}  onChangeTicketProceso={this.onChangeTicketProceso}  onSubmitTicketProceso={this.onSubmitTicketProceso} 
+                    onSubmitSVenta={this.onSubmitSVenta} onChangeTicketProceso={this.onChangeTicketProceso} onChangeTicketMonto={this.onChangeTicketMonto} onSubmitTicketProceso={this.onSubmitTicketProceso} 
                     handleChangeTicketProceso={this.handleChangeTicketProceso}  generateEmailTicketProceso={this.generateEmailTicketProceso}   generateSolicitud={this.generateSolicitud} 
                     controlledNav={this.controlledNav}  openAlertChangeStatusP={this.openAlertChangeStatusP}  onChangeConceptos = { this.onChangeConceptos } 
                     checkButtonConceptos = { this.checkButtonConceptos }  controlledTab={this.controlledTab} onSubmitConcept = { this.onSubmitConcept } 
@@ -2063,6 +2106,13 @@ class TicketDetails extends Component {
                                                 requirevalidation={0} value={formularios.orden_compra.numero_orden} name={'numero_orden'}
                                                 onChange={(e) => { this.onChangeSwal(e.target.value, 'numero_orden', 'orden_compra') }}
                                                 swal={true} placeholder='NÚMERO DE ORDEN DE COMPRA'
+                                            />
+                                        </div>
+                                        <div className="col-md-12 text-justify">
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} 
+                                                requirevalidation={0} value={formularios.orden_compra.orden_monto} name={'orden_monto'}
+                                                onChange={(e) => { this.onChangeSwal(e.target.value, 'orden_monto', 'orden_compra') }}
+                                                swal={true} placeholder='Monto (con IVA)' 
                                             />
                                         </div>
                                     </div>
