@@ -1,0 +1,81 @@
+.proyect-Titulo {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    color: black;
+    font-size: large;
+}
+
+.container-Date{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100vh;
+}
+
+.container-Info-Proyecto{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100vh;
+}
+
+.container-Direccion{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100vh;
+}
+
+.container-Fases{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100vh;
+}
+
+.container-Cliente{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vh;
+    margin: 0 15%;
+        width: 100vh;
+        gap: 15px;
+}
+
+
+.container-Contacto-Cliente{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 15%;
+    width: 100vh;
+    gap: 15px;
+}
+
+.input-tag{
+    min-width: 100%;
+}
+
+.container-Descripcion{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100vh;
+}
+
+.proyect-accordion{
+    background-color: #eee;
+}
+
+.proyect-accordion:hover{
+    background-color: #f5f5f5;
+
+}

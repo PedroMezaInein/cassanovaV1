@@ -493,7 +493,7 @@ class App extends Component{
                     <Route path = "/rh/nomina-admin" exact component ={ NominaAdmin } />
                     <Route path = "/rh/nomina-admin/:action" exact component ={ NominaAdminForm } />
                     <Route path="/rh/nomina-admin/single/:id" exact component={NominaAdminSingle} />
-                    {/* <Route path="/rh/nomina-prestaciones" exact component={NominaPrestaciones} /> */}
+                    <Route path="/rh/nomina-prestaciones" exact component={NominaPrestaciones} />
                         
                     <Route path = "/rh/checador" exact component ={ Checador } />
                     <Route path = "/rh/prestaciones" exact component ={ Prestaciones } />
