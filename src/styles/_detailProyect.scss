@@ -129,3 +129,14 @@
 .div11 {
     grid-area: 6 / 1 / 7 / 3;
 }
+
+.tabs-container{
+    display: flex;
+    justify-content: center;
+    background-color: #1982c4;
+    border-radius: 5px;
+    color: white;
+    margin-right: 15%;
+    margin-left: 3%;
+    margin-top: 0.5rem;
+}

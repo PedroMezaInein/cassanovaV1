@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Swal from 'sweetalert2'
-import { Card, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
+import { Card, DropdownButton, Dropdown } from 'react-bootstrap'
 
 import Layout from '../../../components/layout/layout'
 import { Modal } from '../../../components/singles'
@@ -12,20 +12,57 @@ import { setSingleHeader } from '../../../functions/routers'
 import { setFase, setLabelTable, ordenamiento, setOptions, setNaviIcon } from '../../../functions/setters'
 import { EditProyectoForm, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto } from '../../../components/forms'
 
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import SwipeableViews from 'react-swipeable-views';
+
+import PropTypes from 'prop-types';
+
 import EditProyect from './EditProyect'
+import NuevaFase from './NuevaFase'
+
+import Fase1 from './Fases/Fase1'
+import Fase2 from './Fases/Fase2'
+import Fase3 from './Fases/Fase3'
 
 import '../../../styles/_detailProyect.scss'
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`full-width-tabpanel-${index}`}
+            aria-labelledby={`full-width-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <div>{ children }</div>
+
+                
+            )}
+        </div>
+    );
+}
+
+
 
 
 export default function DetailProyect() {
     const userAuth = useSelector((state) => state.authUser);
-    const [activeTab, setActiveTab] = useState('fase1');
     const [proyecto, setProyecto] = useState();
     const [modal, setModal] = useState({
         edit_proyect: false,
         hire_phase: false,
         info: false,
     });
+    const [value, setValue] = useState(0);
 
     let navs = [
         { eventKey: 'fase1', name: 'Fase 1' },
@@ -42,11 +79,7 @@ export default function DetailProyect() {
     let prop = {
         pathname: '/proyectos/proyectos/single/',
     }
-    
-    const handleTab = (e, eventKey) => { 
-        e.preventDefault()
-        setActiveTab(eventKey)
-    }
+
 
     const getOneProyecto = (id) => {
         waitAlert()
@@ -61,6 +94,17 @@ export default function DetailProyect() {
             Swal.close()
         })
     }
+
+    
+    
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    const handleChangeIndex = (index) => {
+        setValue(index);
+    };
 
     return (
         <>
@@ -191,39 +235,32 @@ export default function DetailProyect() {
                     </div>
                 }   
 
-
-                <Tab.Container activeKey={activeTab}>
-                    <div className="d-flex col-12">
-                        {
-                            navs.map((nav, key) => {
-                                return (
-                                    <div className="col-2" key={key}>
-                                        <Nav.Item>
-                                            <Nav.Link eventKey={nav.eventKey} onClick={(e) => handleTab(e, nav.eventKey)}>
-                                                
-                                                <span className="">{nav.name}</span>
-                                            </Nav.Link>
-                                        </Nav.Item>    
-                                    </div>
-                                    
-                                )
-                            })
-                        }    
-                    </div>
-                    
-                    <Tab.Content>
-                        <Tab.Pane eventKey="fase1">
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vitae amet praesentium quis, voluptatum ad error explicabo quia reprehenderit esse ducimus eveniet ipsa voluptatem libero! Unde esse eveniet dolorem animi sint!
-                        </Tab.Pane>
-                        <Tab.Pane eventKey="fase2">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur fugiat harum, dolorum eveniet recusandae facilis possimus, ab, sit dolor unde numquam quasi. Aperiam possimus ipsum itaque rem nemo. Provident, laborum.
-                        </Tab.Pane>
-                        <Tab.Pane eventKey="fase3">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut non cumque debitis dolorum optio consequatur quam dolor. Minima, tempora nam reiciendis, cupiditate eligendi quasi sunt obcaecati, explicabo possimus corporis vitae!
-                        </Tab.Pane>
-                    </Tab.Content>
-                    
-                </Tab.Container>
+                <div className=" ml-n4 mr-n4">
+                    <Tabs
+                        className='tabs-container'
+                        color='primary'
+                        value={value}
+                        onChange={handleChange}
+                        indicatorColor="secondary"
+                        textColor="white"
+                        variant="fullWidth"
+                        aria-label="full width tabs example"
+                    >
+                        <Tab label="Fase 1" />
+                        <Tab label="Fase 2" />
+                        <Tab label="Fase 3" />
+                    </Tabs>
+                    <TabPanel value={value} index={0}>
+                        <Fase1 />
+                    </TabPanel>
+                    <TabPanel value={value} index={1} >
+                        <Fase2 />
+                    </TabPanel>
+                    <TabPanel value={value} index={2} >
+                        <Fase3 />
+                    </TabPanel>
+                </div>
+                
                 <Modal size="lg" show={modal.info} title='Información del proyecto' handleClose={() => setModal({ ...modal, info: false })}>
                     {proyecto &&
                         <div className="parent mt-5">
@@ -303,7 +340,7 @@ export default function DetailProyect() {
                                     Periodo del proyecto
                                 </span>
                                     <span className="alignContent">
-                                    {proyecto.fecha_inicio.slice(0, 10)} - {proyecto.fecha_fin.slice(0, 10)}
+                                        {proyecto.fecha_inicio ? proyecto.fecha_inicio.slice(0, 10) : 'Sin fecha de inicio'} - {proyecto.fecha_fin ? proyecto.fecha_fin.slice(0, 10) : 'Sin fecha de termino'}
                                 </span>
                             </div>
                         </div> 
@@ -366,9 +403,7 @@ export default function DetailProyect() {
                 </Modal>
 
                 <Modal size="lg" show={modal.hire_phase} title='Contratar Fase' handleClose={() => setModal({ ...modal, hire_phase: false })}>
-                    <div>
-                        Contratar fases
-                    </div>
+                    <NuevaFase proyecto={proyecto} />
                 </Modal>
             </Layout>
         </>

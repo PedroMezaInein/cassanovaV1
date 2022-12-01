@@ -27,6 +27,7 @@ import Divider from '@material-ui/core/Divider';
 
 import { URL_DEV } from '../../../constants'
 import { ordenamiento, setOptions } from '../../../functions/setters'
+import { setSingleHeader } from "../../../functions/routers"
 
 import '../../../styles/_editProyect.scss'
 
@@ -37,11 +38,11 @@ export default function EditProyect(props) {
     const [form, setForm] = useState({
         fechaInicio: proyecto.fecha_inicio,
         fechaFin: proyecto.fecha_fin,
-        empresa: proyecto.empresa.id,
+        empresa: { name: proyecto.empresa.name, label: proyecto.empresa.name, value: parseInt(proyecto.empresa.id) },
         tipo: proyecto.tipo_proyecto_id,
         sucursal: proyecto.sucursal,
         ciudad: proyecto.ciudad,
-        ubicacion: proyecto.ubicacion,
+        ubicacion: proyecto.ubicacion ? proyecto.ubicacion : '',
         m2: proyecto.m2,
         costo: proyecto.costo,
         descripcion: proyecto.descripcion,
@@ -53,12 +54,13 @@ export default function EditProyect(props) {
         correos: proyecto.contactos.map(contacto => contacto.correo),
         clientes: proyecto.clientes,
         cliente: proyecto.cliente,
+        fases:[]
     })
 
-    const fases = [
-        { value: 'fase1', name: 'Fase 1' },
-        { value: 'fase2', name: 'Fase 2' },
-        { value: 'fase3', name: 'Fase 3' },
+    const arrayFases = [
+        { value: 'fase1', name: 'Fase 1', label: 'Fase 1' },
+        { value: 'fase2', name: 'Fase 2', label: 'Fase 2' },
+        { value: 'fase3', name: 'Fase 3', label: 'Fase 3' },
     ]
 
     const [opciones, setOpciones] = useState(false)
@@ -153,9 +155,11 @@ export default function EditProyect(props) {
         form.fase1 = 0
         form.fase2 = 0
         form.fase3 = 0
+        let nuevaFase = arrayFases.filter(fase => fase.value === e.target.name)
         setForm({
             ...form,
-            [e.target.name]: e.target.checked ? 1 : 0
+            [e.target.name]: e.target.checked ? 1 : 0,
+            fases: nuevaFase
         })
     }
 
@@ -173,7 +177,22 @@ export default function EditProyect(props) {
         })
     }
 
-    const handleCahngeEmpresa = (e, valor) => { }
+    const handleCahngeEmpresa = (e) => {
+        e.preventDefault()
+        
+        let nuevaEmpresa = opciones.empresas.filter(empresa => empresa.value == e.target.value)
+        console.log(nuevaEmpresa)
+        
+        setForm({
+            ...form,
+            empresa: {
+                name: nuevaEmpresa[0].name,
+                label: nuevaEmpresa[0].name,
+                value: parseInt(e.target.value)
+            }
+        })
+    }
+
 
     const handleSave = (e) => {
         e.preventDefault();
@@ -189,14 +208,83 @@ export default function EditProyect(props) {
                 Swal.showLoading()
             },
         })
+        let tipo_proyecto = opciones.tipos.filter(tipo => tipo.value == form.tipo)
+        let nueva_fase
+        if (form.fase1) {
+            nueva_fase = arrayFases.filter(fase => fase.value === 'fase1')
+        } else if (form.fase2 ) {
+            nueva_fase = arrayFases.filter(fase => fase.value === 'fase2')
+        } else if (form.fase3 ) {
+            nueva_fase = arrayFases.filter(fase => fase.value === 'fase3')
+        }
+        let new_clientes = form.clientes.map(cliente => {
+            return {
+                name: cliente.empresa,
+                value: `${cliente.id}`,
+                label: cliente.empresa,
+            }
+        })
+            
+        let newForm = {
+            nombre: proyecto.nombre,
+            fechaInicio: form.fechaInicio,
+            fechaFin: form.fechaFin,
+            empresa: form.empresa,
+            tipoProyecto: {
+                name: tipo_proyecto[0].name,
+                label: tipo_proyecto[0].name,
+                value: `${form.tipo}`
+            },
+            fases: nueva_fase,
+            m2: form.m2,
+            ubicacion: form.ubicacion,
+            ciudad: form.ciudad,
+            sucursal: form.sucursal,
+            costo: form.costo,
+            ubicacion_cliente: form.ubicacion,
+            cliente_principal: {
+                name: form.cliente.nombre,
+                label: form.cliente.nombre,
+                value: `${form.cliente.id}`
+            },
+            clientes: new_clientes,
+            descripcion: form.descripcion,
+            numeroContacto: form.numero_contacto,
+            contacto: form.contacto,
+            correos: form.correos,
+
+        }
+        console.log(newForm)
+        
 
         try {
-            console.log(form)
+            axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}`, newForm, { headers: setSingleHeader(user.access_token) })
+                .then((response) => {
+                    console.log(response)
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Guardado',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                })
+                .catch((error) => {
+                    console.log(error)
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                })
         } catch (error) {
 
         }
     }
 
+    console.log(opciones)
 
     return (
         <>
@@ -272,11 +360,13 @@ export default function EditProyect(props) {
                                         <div>
                                             <InputLabel id="label-select-Empresa">Empresa</InputLabel>
                                             <Select
-                                                value={proyecto.empresa.id}
+                                                value={form.empresa.value ? form.empresa.value : 0}
                                                 labelId="label-select-Empresa"
+                                                onChange={handleCahngeEmpresa}
                                             >
+                                                <MenuItem value={0}></MenuItem>
                                                 {opciones.empresas.map((item, index) => {
-                                                    return (<MenuItem key={index + 1} value={item.value}>{item.name}</MenuItem>)
+                                                    return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
                                                 })}
 
                                             </Select>
@@ -286,11 +376,13 @@ export default function EditProyect(props) {
                                             <InputLabel id="label-select-Tipo">Tipo de Proyecto</InputLabel>
                                             <Select
                                                 value={form.tipo}
+                                                name='tipo'
                                                 labelId="label-select-Tipo"
+                                                onChange={handleChange}
                                             >
                                                 <MenuItem value={0} disabled>Selecciona un Tipo</MenuItem>
                                                 {opciones.tipos.map((item, index) => {
-                                                    return (<MenuItem key={index} value={item.value}>{item.name}</MenuItem>)
+                                                    return (<MenuItem key={index} value={item.value} name='tipo'>{item.name}</MenuItem>)
                                                 })}
 
                                             </Select>    
