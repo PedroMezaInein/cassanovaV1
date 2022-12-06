@@ -24,7 +24,7 @@ export default function BotonAcciones({ modal, setModal }) {
                             {setNaviIcon('las la-handshake icon-xl', 'CONTRATAR FASES')}
                         </Dropdown.Item>
 
-                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, invoice: true })}>
+                        <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => setModal({ ...modal, invoice: true })}>
                             {setNaviIcon('las la-handshake icon-xl', 'SOLICITAR FACTURA')}
                         </Dropdown.Item>
 
@@ -32,7 +32,7 @@ export default function BotonAcciones({ modal, setModal }) {
                             {setNaviIcon('las la-handshake icon-xl', 'VENTA')}
                         </Dropdown.Item>
 
-                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, purchase: true })}>
+                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => setModal({ ...modal, purchase: true })}>
                             {setNaviIcon('las la-handshake icon-xl', 'COMPRA')}
                         </Dropdown.Item>
 

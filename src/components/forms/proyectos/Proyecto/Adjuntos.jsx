@@ -473,12 +473,15 @@ class Adjuntos extends Component {
 
     handleChange = async (files, item) => {
         waitAlert()
+        console.log(item)
         const { proyecto } = this.state
         let filePath = `proyecto/${proyecto.id}/${item}/${Math.floor(Date.now() / 1000)}-`
         let aux = []
         files.forEach((file) => {
             aux.push(file)
         })
+        console.log(files)
+        console.log(aux)
         if (aux.length) {
             const { at } = this.props
             await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(at) }).then(
@@ -496,6 +499,7 @@ class Adjuntos extends Component {
                                 }).catch(err => reject(err))
                         })
                     })
+                    console.log(auxPromises)
                     Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, item, proyecto) }).catch(err => console.error(err))
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
@@ -509,7 +513,7 @@ class Adjuntos extends Component {
         let parametros = { tipo: tipo }
         waitAlert()
         try {
-            await axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/s3`, { archivos: arreglo },
+            await axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/s3`, { archivos: arreglo.archivos },
                 {
                     params: parametros,
                     headers: setSingleHeader(at)
