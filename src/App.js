@@ -98,7 +98,9 @@ const CalendarioPagos = React.lazy( () => import('./pages/Administracion/Calenda
 const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
 const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
 
-const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos') )
+
+/** */
+const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosTable') )
 const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
 //** */
