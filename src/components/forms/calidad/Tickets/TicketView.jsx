@@ -398,7 +398,7 @@ class TicketView extends Component {
             handleChangeTicketProceso, generateEmailTicketProceso,generateSolicitud, controlledNav, openAlertChangeStatusP, onChangeConceptos, checkButtonConceptos, 
             controlledTab, onSubmitConcept, handleCloseConceptos, openModalReporte, onChangeSolicitudCompra, submitSolicitudesCompras, addRows, save, recover,
             addSolicitudFacturaAxios, addVenta, deleteSolicitudFactura, checkFactura, getSolicitudes, defaultNavTabs, historialPresupuestos, openModalOrdenCompra,
-            refresh
+            refresh, onChangeTicketMonto
         } = this.props
 
         const { checked } = this.state
@@ -454,7 +454,7 @@ class TicketView extends Component {
                                                         <div className="mr-3">
                                                             <div className="font-weight-bold my-2 text-dark-65 font-size-lg d-flex align-items-center mr-3">
                                                                 <i className="la la-calendar-check icon-lg text-info mr-1" />
-                                                                {data.garantia ? dayDMY(data.garantia) : 'sin fecha de termimo'} ->  { data.vigencia}
+                                                                {data.garantia ? dayDMY(data.garantia) : 'sin fecha de termimo'} -{'>'}  { data.vigencia}
                                                             </div>
                                                         </div>
                                                      </div>
@@ -599,7 +599,7 @@ class TicketView extends Component {
                                                         <span className="nav-icon">
                                                              <i className="las la-ticket-alt icon-lg mr-2"></i>
                                                         </span>
-                                                        <span className="nav-text font-weight-bolder">Editar fechas</span>
+                                                        <span className="nav-text font-weight-bolder">Editar información</span>
                                                     </Nav.Link>
                                                 </Nav.Item>
                                                 
@@ -689,7 +689,7 @@ class TicketView extends Component {
                                                         <EditTicketForm form={formulario.ticket} options={options} onChange={onChangeTicketProceso}
                                                             formeditado={1} handleChange={handleChangeTicketProceso} onSubmit={onSubmitTicketProceso}
                                                             generateEmail={generateEmailTicketProceso} estatus={data.estatus_ticket.estatus}
-                                                            deleteFile={deleteFile} ticket={data} at={at}
+                                                            deleteFile={deleteFile} ticket={data} at={at} onChangeTicketMonto={onChangeTicketMonto}
                                                         />
                                                     </Card.Body>
                                                 </Card>

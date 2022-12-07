@@ -149,6 +149,44 @@ class AvanceForm extends Component {
                                                         />
                                                     </div>
                                                 </div>
+
+                                                <div className="form-group row form-group-marginless justify-content-start">
+                                                    
+                                                    <div className="col-sm-6">
+                                                        <InputNumberGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withformgroup={0}
+                                                            withicon={1}
+                                                            requirevalidation={0}
+                                                            placeholder="% DE OBRA PROGRAMADO"
+                                                            value={form.programado}
+                                                            name="programado"
+                                                            onChange={onChange}
+                                                            iconclass="people"
+                                                            messageinc="Ingresa el % de obra programado."
+                                                            type="text"
+                                                        />
+                                                    </div>
+                                                    <div className="col-sm-6">
+                                                        <InputNumberGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withformgroup={0}
+                                                            withicon={1}
+                                                            requirevalidation={0}
+                                                            placeholder="% DE OBRA EJECUTADO"
+                                                            value={form.ejecutado}
+                                                            name="ejecutado"
+                                                            onChange={onChange}
+                                                            iconclass="people"
+                                                            messageinc="Ingresa el % de obra ejecutado."
+                                                            type="text"
+                                                        />
+                                                    </div>
+                                                </div>
                                                 
                                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                                 <div className="row form-group-marginless">

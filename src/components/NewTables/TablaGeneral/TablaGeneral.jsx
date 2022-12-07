@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import TextField from '@material-ui/core/TextField';
+import {Dropdown} from 'react-bootstrap'
 
 import { URL_DEV } from '../../../constants'
 import SortIcon from '@material-ui/icons/Sort';
@@ -11,7 +12,46 @@ import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
 import '../../../styles/_TablaGeneral.scss'
 
 export default function TablaGeneral(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones } = props;
+    //para implementar la tabla puedes utilizar los siguientes props
+
+    //titulo: titulo de la tabla
+    //subtitulo: subtitulo de la tabla
+    //columnas: array de objetos con la siguiente estructura
+    //          {nombre: 'nombre de la columna', identificador: 'identificador de la columna', sort: true/false, stringSearch: true/false}
+    //el identificador de la columna debe ser igual al nombre de la propiedad del objeto que se va a mostrar en la tabla
+    //Por defecto, para mostrar las acciones, se debe agregar una columna con el identificador 'acciones'
+    //url: url de la api con la que se va a consumir la tabla y que por defecto regresa los datos dentro de un array llamado data
+    //numItemsPagina: numero de items que se van a mostrar por pagina
+    //acciones: array de objetos con la siguiente estructura
+    //          {nombre: 'nombre del boton', icono: 'icono del boton', color: 'nombre de la clase del color del boton greenButton/blueButton/redButton', funcion: funcion que se va a ejecutar al dar click}
+   
+    //ProccessData: funcion que se va a ejecutar para procesar los datos que se van a mostrar en la tabla cuando la url no regrese por defecto un array llamado data o quieras procesar los datos de otra manera
+    //por defecto ProcessData recibe un parametro que es la respuesta de la api y debe regresar un array con los datos que se van a mostrar en la tabla
+    //Un ejemplo de como se puede utilizar ProccessData es el siguiente
+    //ProccessData = (data) => {
+    //    let newData = []
+    //    data.forEach(element => {
+    //        newData.push({
+    //            id: element.id,
+    //            nombre: element.nombre,
+    //            apellido: element.apellido,
+    //            email: element.email,
+    //            telefono: element.telefono,
+    //            acciones: element.acciones
+    //        })
+    //    });
+    //    return newData
+    //}
+   
+    //opciones: array de objetos con la siguiente estructura
+    //          {nombre: 'nombre de la opcion', funcion: funcion que se va a ejecutar al dar click}
+
+    //ejemplo de uso
+    // <Tabla titulo='Titulo de la tabla' subtitulo='Subtitulo de la tabla' columnas={columnas} url={url} numItemsPagina={numItemsPagina} acciones={acciones} ProccessData={ProccessData} opciones={opciones} />
+
+    //Los campos obligatorios son titulo, columnas y url
+
     const auth = useSelector(state => state.authUser)
     const [data, setData] = useState(false);
     const [filterData, setFilterData] = useState(false);
@@ -29,7 +69,8 @@ export default function TablaGeneral(props) {
             return obj
         })
 
-    }, [])
+    }, []) 
+
     useEffect(() => {
         if (filterData) {
             paginado(numItemsPagina)
@@ -164,9 +205,28 @@ export default function TablaGeneral(props) {
                                 </span>
                                 <span className="SubtitleTable"> {subtitulo}</span>
                             </h3>
+
+                            <div>
+                                { opciones &&
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            Opciones
+                                        </Dropdown.Toggle>
+
+                                        <Dropdown.Menu>
+                                            {opciones.map((item, index) => {
+                                                return(
+                                                    <Dropdown.Item key={index} onClick={item.funcion}>
+                                                        {item.nombre}
+                                                    </Dropdown.Item>
+                                                )
+                                            })}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                }
+                            </div>
                             
                         </div>
-
 
                         <div className="card-body table-responsive mt-n6 p-n4">
                             <table className="table table-hover text-nowrap">
@@ -247,8 +307,8 @@ export default function TablaGeneral(props) {
                                                                             
                                                                             {acciones.map((accion, index) => {
                                                                                 return (
-                                                                                    <div className={`${accion.color} Button-action`}>
-                                                                                        <i className={` ${accion.icono} text-light`} key={index} onClick={() => accion.funcion(item)}>
+                                                                                    <div className={`${accion.color} Button-action`} key={index} >
+                                                                                        <i className={` ${accion.icono} text-light`} onClick={() => accion.funcion(item)}>
                                                                                             <span className="ml-2">{accion.nombre}</span>
                                                                                         </i>    
                                                                                     </div>

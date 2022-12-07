@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useState, useSelector } from 'react-redux';
 
 import Swal from 'sweetalert2';
+import { Card, Nav, Tab, Dropdown, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
@@ -15,10 +16,7 @@ export default function NominaPrestaciones() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
-        { nombre: 'Sala', identificador: 'sala', sort: true, stringSearch: true },
-        { nombre: 'Tipo', identificador: 'typo', sort: false, stringSearch: true },
-        { nombre: 'Fecha', identificador: 'fecha', sort: true, stringSearch: true },
-        { nombre: 'Hora', identificador: 'hora', sort: true, stringSearch: false },
+        { nombre: 'Empresa', identificador: 'empresa', sort: true, stringSearch: true },
     ]
 
     const createAcciones = () => {
@@ -67,23 +65,46 @@ export default function NominaPrestaciones() {
 
     const ProccessData = (data) => { 
         let aux = []
-        data.Sala.forEach((item) => {
-            aux.push({
-                id: item.id,
-                sala: item.sala,
-                typo: item.typo,
-                fecha: item.fecha,
-                hora: item.hora,
-            })
+        console.log(data);
+        data.data.forEach((item) => {
+            if (item.proyectos.length > 0) { 
+                aux.push({
+                    id: item.id,
+                    empresa: item.proyectos[0].simpleName,
+                    proyecto: item.proyectos
+                })
+            }
         })
+        console.log(aux);
         return aux
     }
+
+    const opciones = [
+        {
+            nombre: 'Nuevo',
+            funcion: () => {
+                Swal.fire({
+                    title: 'Nuevo',
+                    text: '¿Desea crear un nuevo registro?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si',
+                    cancelButtonText: 'No',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        console.log('Nuevo');
+                    }
+                });
+            }
+        }
+    ]
+
 
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
                 <Tabla
-                    titulo="Nomina Prestaciones" columnas={columnas} url="salas"  acciones={createAcciones()} numItemsPagina={3} ProccessData={ProccessData}
+                    titulo="Proyectos" columnas={columnas} url="proyectos/project" opciones={opciones}  acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
                 />
             </Layout>
         </>
