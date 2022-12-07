@@ -29,6 +29,8 @@ class Avances extends Component {
             fechaFin: new Date(),
             semana: '',
             trabajadores: 0,
+            programado: '0',
+            ejecutado: '0',
             trabajadores_anterior: 0,
             actividades_realizadas:'',
             avances: [
@@ -358,6 +360,8 @@ class Avances extends Component {
         data.semana = form.semana
         data.trabajadores = form.trabajadores
         data.trabajadores_anterior = form.trabajadores_anterior
+        data.programado = form.programado
+        data.ejecutado = form.ejecutado
         data.actividades = form.actividades_realizadas
         data.fechaInicio = form.fechaInicio
         data.fechaFin = form.fechaFin
@@ -395,6 +399,8 @@ class Avances extends Component {
         data.semana = form.semana
         data.trabajadores = form.trabajadores
         data.trabajadores_anterior = form.trabajadores_anterior
+        data.programado = form.programado
+        data.ejecutado = form.ejecutado
         data.actividades = form.actividades_realizadas
         data.fechaInicio = form.fechaInicio
         data.fechaFin = form.fechaFin
