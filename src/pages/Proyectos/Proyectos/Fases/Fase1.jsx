@@ -10,7 +10,8 @@ import BotonAdjuntos from './BotonAdjuntos';
 
 import Modales from './utils/Modales';
 
-export default function Fase1() {
+export default function Fase1(props) {
+    const {fase} = props;
     const [modal, setModal] = useState({
         edit_phase: false,
         add_agreement: false,
@@ -30,7 +31,7 @@ export default function Fase1() {
             <div className='container-fase'>
                 <div>
                     <div>
-                        <span>Avance de la fase</span>
+                        <span>Avance de la fase {fase.simpleName}</span>
                         <ProgressBar avance={54} />
                     </div>
                     <BotonAdjuntos modal={modal} setModal={setModal} />
@@ -50,7 +51,7 @@ export default function Fase1() {
                 </div>
             </div>
 
-            <Modales modal={modal} setModal={setModal} />
+            <Modales modal={modal} setModal={setModal} proyecto={fase} />
 
         </>
         

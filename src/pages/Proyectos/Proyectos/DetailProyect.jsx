@@ -62,7 +62,22 @@ export default function DetailProyect() {
         hire_phase: false,
         info: false,
     });
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(false);
+    const [dataFases, setDataFases] = useState(false)
+    const [fases, setFases] = useState({
+        fase1: {
+            activeTab: false,
+            data: false,
+        },
+        fase2: {
+            activeTab: false,
+            data: false,
+        },
+        fase3: {
+            activeTab: false,
+            data: false,
+        },
+    })
 
     let navs = [
         { eventKey: 'fase1', name: 'Fase 1' },
@@ -74,7 +89,45 @@ export default function DetailProyect() {
         let actualUrl = window.location.href
         actualUrl = actualUrl.split('/')
         getOneProyecto(actualUrl[actualUrl.length - 1])
-    },[])
+    }, [])
+    
+    useEffect(() => {
+        if (dataFases) {
+            
+            let auxFases = {
+                fase1: {
+                    activeTab: false,
+                    data: false,
+                },
+                fase2: {
+                    activeTab: false,
+                    data: false,
+                },
+                fase3: {
+                    activeTab: false,
+                    data: false,
+                },
+            }
+            dataFases.map((fase) => {
+                if (fase.fase1 === 1) {
+                    auxFases.fase1.activeTab = true
+                    auxFases.fase1.data = fase
+                }
+                if (fase.fase2 === 1) {
+                    auxFases.fase2.activeTab = true
+                    auxFases.fase2.data = fase
+                }
+                if (fase.fase3 === 1) {
+                    auxFases.fase3.activeTab = true
+                    auxFases.fase3.data = fase
+                }
+
+            })
+            setFases(auxFases)
+        }
+    }, [dataFases])
+
+    console.log(dataFases)
 
     let prop = {
         pathname: '/proyectos/proyectos/single/',
@@ -83,10 +136,11 @@ export default function DetailProyect() {
 
     const getOneProyecto = (id) => {
         waitAlert()
-        axios.get(`${URL_DEV}v3/proyectos/proyectos/${id}`, { headers: setSingleHeader(userAuth.access_token) })
+        axios.get(`${URL_DEV}proyectos/project/${id}`, { headers: setSingleHeader(userAuth.access_token) })
         .then((response) => { 
-            console.log(response.data)
-            setProyecto(response.data.proyecto)
+            console.log(response.data.data[0])
+            setDataFases(response.data.data[0].proyectos)
+            setProyecto(response.data.data[0].proyectos[response.data.data[0].proyectos.length - 1])
             Swal.close()
         })
         .catch((error) => {
@@ -95,15 +149,8 @@ export default function DetailProyect() {
         })
     }
 
-    
-    
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
-    };
-
-    const handleChangeIndex = (index) => {
-        setValue(index);
     };
 
     return (
@@ -123,23 +170,25 @@ export default function DetailProyect() {
                                                 {proyecto.estatus.estatus}
                                             </span></span>
                                         </div>
-
-                                        <div className="card-toolbar">
-                                            <div className="card-toolbar toolbar-dropdown">
-                                                <DropdownButton menualign="right"
-                                                    title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
-                                                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => setModal({ ...modal, info: true })}>
-                                                        {setNaviIcon('las la-clipboard-list icon-xl', 'INFORMACIÓN')}
-                                                    </Dropdown.Item>
-                                                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => setModal({ ...modal, edit_proyect: true })}>
-                                                        {setNaviIcon('las la-pencil-alt icon-xl', 'EDITAR PROYECTO')}
-                                                    </Dropdown.Item>
-                                                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, hire_phase: true })}>
-                                                        {setNaviIcon('las la-handshake icon-xl', 'CONTRATAR FASES')}
-                                                    </Dropdown.Item>
-                                                </DropdownButton>
-                                            </div>
-                                        </div>
+                                        { fases &&
+                                            <div className="card-toolbar">
+                                                <div className="card-toolbar toolbar-dropdown">
+                                                    <DropdownButton menualign="right"
+                                                        title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
+                                                        <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => setModal({ ...modal, info: true })}>
+                                                            {setNaviIcon('las la-clipboard-list icon-xl', 'INFORMACIÓN')}
+                                                        </Dropdown.Item>
+                                                        {/* <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => setModal({ ...modal, edit_proyect: true })}>
+                                                            {setNaviIcon('las la-pencil-alt icon-xl', 'EDITAR PROYECTO')}
+                                                        </Dropdown.Item> */}
+                                                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, hire_phase: true })}>
+                                                            {setNaviIcon('las la-handshake icon-xl', 'CONTRATAR FASES')}
+                                                        </Dropdown.Item>
+                                                    </DropdownButton>
+                                                </div>
+                                            </div>   
+                                        }
+                                        
                                     </div>
                                     <hr />
                                     <div className="row HeaderContainer">
@@ -238,26 +287,24 @@ export default function DetailProyect() {
                 <div className=" ml-n4 mr-n4">
                     <Tabs
                         className='tabs-container'
-                        color='primary'
+                        color='secondary'
                         value={value}
                         onChange={handleChange}
                         indicatorColor="secondary"
-                        textColor="white"
                         variant="fullWidth"
-                        aria-label="full width tabs example"
                     >
-                        <Tab label="Fase 1" />
-                        <Tab label="Fase 2" />
-                        <Tab label="Fase 3" />
+                        {fases.fase1.activeTab && <Tab label="Fase 1" disabled={fases.fase1.activeTab ? false : true} />}
+                        {fases.fase2.activeTab && <Tab label="Fase 2" disabled={fases.fase2.activeTab ? false : true} />}
+                        {fases.fase3.activeTab && <Tab label="Fase 3" disabled={fases.fase3.activeTab ? false : true} />}
                     </Tabs>
-                    <TabPanel value={value} index={0}>
-                        <Fase1 />
+                    <TabPanel value={value} index={0} >
+                        <Fase1 fase={fases.fase1.data} />
                     </TabPanel>
                     <TabPanel value={value} index={1} >
-                        <Fase2 />
+                        <Fase2 fase={fases.fase2.data} />
                     </TabPanel>
                     <TabPanel value={value} index={2} >
-                        <Fase3 />
+                        <Fase3 fase={fases.fase3.data} />
                     </TabPanel>
                 </div>
                 
@@ -403,7 +450,7 @@ export default function DetailProyect() {
                 </Modal>
 
                 <Modal size="lg" show={modal.hire_phase} title='Contratar Fase' handleClose={() => setModal({ ...modal, hire_phase: false })}>
-                    <NuevaFase proyecto={proyecto} />
+                    <NuevaFase proyecto={proyecto} fases={fases} />
                 </Modal>
             </Layout>
         </>

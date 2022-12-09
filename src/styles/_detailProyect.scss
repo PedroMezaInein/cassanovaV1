@@ -133,10 +133,12 @@
 .tabs-container{
     display: flex;
     justify-content: center;
-    background-color: #1982c4;
+    background-color: #5bc0be;
     border-radius: 5px;
-    color: white;
+    max-width: fit-content;
     margin-right: 15%;
     margin-left: 3%;
     margin-top: 0.5rem;
+    color: white;
+    width: fit-content;
 }

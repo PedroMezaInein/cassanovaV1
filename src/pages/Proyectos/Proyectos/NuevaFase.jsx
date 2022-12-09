@@ -21,8 +21,9 @@ import { setSingleHeader } from "../../../functions/routers"
 
 
 export default function NuevaFase(props) {
-    const { proyecto } = props
+    const { proyecto, fases } = props
     const user = useSelector(state => state.authUser);
+    const [fase, setFase] = useState(fases)
 
     const [form, setForm] = useState({
         fechaInicio: new Date(),
@@ -49,13 +50,16 @@ export default function NuevaFase(props) {
     }
 
     const handleChangeFase = (e) => {
-        console.log(e.target)
-        let nuevaFase = arrayFases.filter(fase => fase.value === e.target.name)
-
+        setFase({
+            ...fase,
+            [e.target.name]: {
+                ...fase[e.target.name],
+                activeTab: e.target.checked
+            }
+        })
         setForm({
             ...form,
-            [e.target.name]: e.target.checked ? 1 : 0,
-            fases: nuevaFase
+            [e.target.name]: e.target.checked ? 1 : 0
         })
     }
 
@@ -87,15 +91,15 @@ export default function NuevaFase(props) {
             if (result.isConfirmed) {
                 let newFases =[]
 
-                arrayFases.map(fase => {
+                /* arrayFases.map(fase => {
                     if (Object.keys(form).includes(fase.value) && form[fase.value] === true) {
                         console.log(fase)
                         newFases.push(fase)
                     }
-                })
+                }) */
                 
-                console.log(newFases)
-                /* if (form.fases.length > 0) { 
+                
+                /* if (form.fases.length > 0) {
                     newFases = form.fases
                 } else {
                     newFases = arrayFases.map(fase => {
@@ -104,6 +108,18 @@ export default function NuevaFase(props) {
                         }
                     })
                 } */
+                if (fase.fase1.activeTab) {
+                    newFases = []
+                    newFases.push(arrayFases[0])
+                }
+                if (fase.fase2.activeTab) {
+                    newFases=[]
+                    newFases.push(arrayFases[1])
+                }
+                if (fase.fase3.activeTab) {
+                    newFases=[]
+                    newFases.push(arrayFases[2])
+                }
                 let newForm = {
                     fechaFin: form.fechaFin,
                     fechaInicio: form.fechaInicio,
@@ -140,6 +156,8 @@ export default function NuevaFase(props) {
             }
         })
     }
+
+    console.log(form)
 
     return (
         <div>

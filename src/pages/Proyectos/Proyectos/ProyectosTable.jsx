@@ -11,7 +11,7 @@ import { URL_DEV } from '../../../constants'
 
 export default function ProyectosTable() { 
     const userAuth = useSelector((state) => state.authUser);
-    const [opciones, setOpciones] = useState(false)
+    const[opciones, setOpciones] = useState(false)
     let prop = {
         pathname: '/proyectos/proyectos/',
     }
@@ -23,14 +23,13 @@ export default function ProyectosTable() {
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Nombre', identificador: 'nombre', sort: true, stringSearch: true },
         { nombre: 'T. Proyecto', identificador: 'tipoProyecto', sort: true, stringSearch: true },
-        { nombre: 'Cliente', identificador: 'cliente', sort: true, stringSearch: true },
+        /* { nombre: 'Cliente', identificador: 'cliente', sort: true, stringSearch: true }, */
         { nombre: 'Dirección', identificador: 'direccion', sort: true, stringSearch: true },
-        { nombre: 'Contacto', identificador: 'contacto', sort: true, stringSearch: true },
+        { nombre: 'Contacto', identificador: 'contacto', sort: false, stringSearch: true },
         { nombre: 'Empresa', identificador: 'empresa', sort: true, stringSearch: true },
-        { nombre: 'F. Inicio', identificador: 'fechaInicio', sort: true, stringSearch: true },
-        { nombre: 'F. Fin', identificador: 'fechaFin', sort: true, stringSearch: true },
+        /* { nombre: 'F. Inicio', identificador: 'fechaInicio', sort: true, stringSearch: true },
+        { nombre: 'F. Fin', identificador: 'fechaFin', sort: true, stringSearch: true }, */
         { nombre: 'Descripción', identificador: 'descripcion', sort: true, stringSearch: true },
-
     ]
 
     const createAcciones = () => {
@@ -40,18 +39,7 @@ export default function ProyectosTable() {
                 icono: 'fas fa-eye',
                 color: 'blueButton ',
                 funcion: (item) => {
-                    Swal.fire({
-                        title: 'Ver Proyecto',
-                        text: '¿Desea ver el proyecto?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Si',
-                        cancelButtonText: 'No',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            console.log(item);
-                        }
-                    });
+                    window.location.href = `/proyectos/proyectos/single/${item.id}`
                 }
             },
             {
@@ -117,20 +105,16 @@ export default function ProyectosTable() {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['estatus'] = setOptions(estatus, 'estatus', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-
-                options.empresas.forEach(empresa => {
-                    options.tipos = setOptions(empresa.tipos, 'tipo', 'id')
+                let aux2 = []
+                empresas.map(empresa => {
+                    if (empresa.tipos.length > 0) {
+                       aux2 = aux2.concat(empresa.tipos)
+                    }
+                    
                 });
-                /* if (proyecto.empresa) {
-                    options.empresas.forEach(empresa => {
-                        if (proyecto.empresa.name === empresa.name) {
-                            options.tipos = setOptions(empresa.tipos, 'tipo', 'id')
-                        }
-                    });
-                } */
-
-                Swal.close()
+                options.tipos = setOptions(aux2, 'tipo', 'id')
                 setOpciones(options)
+                Swal.close()
             },
             (error) => {
 
@@ -140,17 +124,23 @@ export default function ProyectosTable() {
 
         })
     }
-    console.log(opciones);
-
+    
     const ProccessData = (data) => {
         let aux = []
         console.log(data);
         data.data.forEach((item) => {
             if (item.proyectos.length > 0) {
+                let tipoAux = opciones.tipos.find(tipo => parseInt(tipo.value) === item.proyectos[0].tipo_proyecto_id)
+                
                 aux.push({
                     id: item.id,
                     nombre: item.proyectos[0].simpleName,
-                    
+                    tipoProyecto: tipoAux && tipoAux.name ? tipoAux.name : 'Sin tipo',
+                    /* cliente: item.id, */
+                    empresa: item.empresa,
+                    direccion: item.proyectos[0].sucursal ? item.proyectos[0].sucursal : 'Sin dirección',
+                    contacto: item.nombre ? item.nombre : 'Sin contacto',
+                    descripcion: item.proyectos[0].descripcion ? item.proyectos[0].descripcion : 'Sin descripción',
                 })
             }
         })
@@ -200,9 +190,11 @@ export default function ProyectosTable() {
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='proyectos' >
-                <Tabla
+                { opciones &&
+                    <Tabla
                     titulo="Proyectos" columnas={columnas} url="proyectos/project" opciones={opcionesbtn} acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
-                />
+                    />
+                }
             </Layout>
         </>
     )
