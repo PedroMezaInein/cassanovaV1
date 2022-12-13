@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { AreasForm } from '../../components/forms'
-import { URL_DEV, AREAS_COLUMNS, AREAS_COMPRAS_COLUMNS, PUSHER_OBJECT } from '../../constants'
+import { URL_DEV, AREAS_COLUMNS, AREAS_COMPRAS_COLUMNS, AREAS_EGRESOS_COLUMNS, PUSHER_OBJECT } from '../../constants'
 import { Modal } from '../../components/singles'
 import axios from 'axios'
 import Swal from 'sweetalert2'
@@ -20,6 +20,9 @@ import $ from "jquery";
 import { renderToString } from 'react-dom/server'
 import MiModal from 'react-bootstrap/Modal'
 import { EdithSubArea } from '../../components/cards/Catalogos/EdithSubArea'
+
+import TablaGeneral from '../../components/NewTables/TablaGeneral/TablaGeneral'
+import { intersectRanges } from '@fullcalendar/core'
 
 class Areas extends Component {
 
@@ -40,7 +43,17 @@ class Areas extends Component {
         area: '',
         tipo: 'compras',
         key: 'compras',
-        options: { areas: [], subareas: [], partidas: []}
+        options: { areas: [], subareas: [], partidas: []},
+        tabShow:'nombre'
+    }
+
+    handleChangeTab(e) {
+        const {tabShow} = this.state
+        tabShow = e
+        this.setState({
+            ...this.state,
+            tabShow:tabShow
+        })
     }
     
     componentDidMount() {
@@ -531,15 +544,118 @@ class Areas extends Component {
         })
     }
 
+    proccessData(e){
+        // Imprime todo el objeto a ocupar 
+        /* console.log('uno') */
+        console.log(e)
+
+        let aux = []
+        for(let key in e.area){
+
+
+            for(let area in e.area[key]){
+
+                let auxPartidas = []
+
+                for(let i in e.area[key][area]){
+
+                    for(let idpartida in e.area[key][area][i]){
+
+                        for(let partida in e.area[key][area][i][idpartida]){
+                            // Imprime el nombre de cada partida
+                            let auxSubpartida = []
+                            
+                            auxSubpartida.push({
+                                id: e.area[key][area][i][idpartida][partida].id,
+                                nombre: e.area[key][area][i][idpartida][partida].nombre,
+                            })
+
+                            auxPartidas.push({
+                                id:idpartida,
+                                nombre:partida,
+                                subpartidas:auxSubpartida
+                            })
+
+                        }
+                    }
+                }
+
+                let areas = {
+                    nombreArea: area,
+                    id_area: key,
+                    partidas:auxPartidas,
+                }
+                
+                aux.push(areas)
+            }
+        }
+        console.log(aux)
+        let dataTable = []
+
+        aux.map(item =>{
+            let subpartidaaux =[] 
+            item.partidas[0].subpartidas.map(subpartida=>{
+                subpartidaaux.push(<div>{subpartida.nombre}</div>)
+            })
+            let estesi = subpartidaaux.map((subpartida)=>{
+                return(subpartida)
+            })
+            
+
+            let newdataaux = {
+                id_area: item.id,
+                nombreArea:<div value={item.id} >{item.nombreArea}</div>,
+                id_: item.id,
+                partidas:item.partidas[0].nombre,
+                subpartidas:estesi
+            }
+            dataTable.push(newdataaux)
+        })
+        return dataTable
+    }
+
     render() {
         const { form, modal, title, formeditado, key, modalSee, area, options, subArea, selectedSubArea } = this.state
         const { access_token } = this.props.authUser
+        /* const {processData} = this.props */
         const tabs = [ 'ventas', 'egresos', 'ingresos']
         return (
             <Layout active = 'catalogos'  {...this.props}>
 
-                <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
+                <Tabs defaultActiveKey={'compras'} mountOnEnter={true} unmountOnExit={true}>
+                    {/* <Tab eventKey="compras" title="Compras">
+                        <TablaGeneral
+                            titulo="" 
+                            columnas={ AREAS_COMPRAS_COLUMNS }
+                            url={ `${URL_DEV}areas/compras` }  
+                            numItemsPagina={3} 
+                            // ProccessData={this.proccessData}
+                            >
+                        </TablaGeneral>
+                    </Tab> */}
                     <Tab eventKey = { 'compras' } title = { 'compras' }>
+                        <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
+                            subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
+                            onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
+                            urlRender = { `${URL_DEV}areas/compras` } idTable = {`kt_datatable_compras`} 
+                            cardTable = {`card_table_compras`} cardTableHeader = {`card_table_header_compras`} 
+                            cardBody = {`card_body_compras`} isTab = { true }
+                            actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
+                    </Tab>
+
+                    <Tab eventKey="egresos" title="Egresos">
+                        <TablaGeneral
+                            titulo="" 
+                            columnas={AREAS_EGRESOS_COLUMNS}
+                            url={`areas`}  
+                            numItemsPagina={3} 
+                            ProccessData={this.proccessData}
+                            >
+                        </TablaGeneral>
+                    </Tab>
+                </Tabs>
+
+                    {/* <Tab eventKey = { 'compras' } title = { 'compras' }>
                         <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
                             subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
                             onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
@@ -562,8 +678,8 @@ class Areas extends Component {
                                 </Tab>
                             )
                         })
-                    }
-                </Tabs>
+                    } */}
+                {/* </Tabs> */}
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
                     <AreasForm area = {area} form = { form } onChange = { this.onChange } addSubarea = { this.addSubarea } editSubarea = { this.editSubarea } 

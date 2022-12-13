@@ -264,7 +264,7 @@ export default function TablaGeneral(props) {
                                                     <div className="TitleColumn">
                                                         {columna.stringSearch ?
                                                             <>
-                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={`Buscar por ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
+                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={`${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
                                                                 {columna.sort ?
                                                                     <div className="">
                                                                         <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">

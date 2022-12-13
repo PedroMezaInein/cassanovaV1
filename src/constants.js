@@ -239,6 +239,14 @@ export const AREAS_COLUMNS = [
     { Header: 'Sub áreas', accessor: 'subareas', customRender: true }
 ]
 
+export const AREAS_EGRESOS_COLUMNS = [
+    { nombre: 'opciones', identificador: 'opciones', sort: true, stringSearch: true },
+    { nombre: 'Área', identificador: 'nombreArea', sort: true, stringSearch: true },
+    { nombre: 'Partidas', identificador: 'partidas', sort: true, stringSearch: true },
+    { nombre: 'Sub partidas', identificador: 'subpartidas', sort: true, stringSearch: true },
+    { nombre: 'Sub áreas', identificador: 'subareas', sort: true, stringSearch: true },
+]
+
 export const AREAS_COMPRAS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Área', accessor: 'area', customRender: true },
