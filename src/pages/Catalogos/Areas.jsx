@@ -23,6 +23,7 @@ import { EdithSubArea } from '../../components/cards/Catalogos/EdithSubArea'
 
 import TablaGeneral from '../../components/NewTables/TablaGeneral/TablaGeneral'
 import { intersectRanges } from '@fullcalendar/core'
+import { ModalEditar } from '../../components/forms/catalogos/modales-egresos/ModalEditar'
 
 class Areas extends Component {
 
@@ -44,8 +45,72 @@ class Areas extends Component {
         tipo: 'compras',
         key: 'compras',
         options: { areas: [], subareas: [], partidas: []},
-        tabShow:'nombre'
+        tabShow:'nombre',
+        modalesEgresos:{
+            editar:{
+                show: false,
+                data:false
+            },
+            eliminar:{
+                show: false,
+                data: false
+            }
+        }
     }
+
+    handleOpenEditarModalEgresos = (item) =>{
+        this.setState({
+            ...this.state,
+            modalesEgresos: {
+                ...this.state.modalesEgresos,
+                editar:{
+                    show: true,
+                    data:item.data
+                }
+            }
+        })
+    }
+
+    handleOpenEliminarModalEgresos = (item) =>{
+        this.setState({
+            ...this.state,
+            modalesEgresos: {
+                ...this.state.modalesEgresos,
+                eliminar:{
+                    show: true,
+                    data:item.data
+                }
+            }
+        })
+    }
+
+
+    handleCloseEditarModalEgresos = () => {
+        this.setState({
+            ...this.state,
+            modalesEgresos: {
+                ...this.state.modalesEgresos,
+                editar:{
+                    show: false,
+                    data:false
+                }
+            }
+        })
+    }
+
+    handleCloseEliminarModalEgresos = () => {
+        this.setState({
+            ...this.state,
+            modalesEgresos: {
+                ...this.state.modalesEgresos,
+                eliminar:{
+                    show: false,
+                    data:false
+                }
+            }
+        })
+    }
+
 
     handleChangeTab(e) {
         const {tabShow} = this.state
@@ -509,9 +574,10 @@ class Areas extends Component {
         form.subareas = []
         form.subareasEditable = []
         form.subarea = ''
-        if(area.partida)
+        if(area.partida){
             form.partida = area.partida.id.toString()
-        this.setState({ ...this.state, modal: true, title: `Editar área`, area: area, form, tipo: key, formeditado:1 })
+            this.setState({ ...this.state, modal: true, title: `Editar área`, area: area, form, tipo: key, formeditado:1 })
+        }
     }
 
     openModalSee = area => { this.setState({ ...this.state, modalSee: true, area: area }) }
@@ -544,6 +610,44 @@ class Areas extends Component {
         })
     }
 
+    doubleClickSubPartidas = (element) => {
+        this.setState({
+            ...this.state,
+            subArea:true,
+            selectedSubArea:element
+        })
+    }
+
+    handleChangeArea = (e) => {
+        console.log(e)
+    }
+
+    setActionsAreas = () => {
+        
+        let aux = [
+            {
+                nombre: 'Editar',
+                icono: 'fas fa-edit',
+                color: 'blueButton ',
+                funcion: (item) => {
+                    this.handleOpenEditarModalEgresos(item)
+                }
+            },
+            {
+                nombre: 'Eliminar',
+                icono: 'fas fa-trash',
+                color: 'redButton',
+                funcion: (item) => {
+                    this.handleOpenEliminarModalEgresos(item)
+                }
+            }
+        ]
+        return aux
+        
+    }
+
+    
+    
     proccessData(e){
         // Imprime todo el objeto a ocupar 
         /* console.log('uno') */
@@ -593,6 +697,7 @@ class Areas extends Component {
         let dataTable = []
 
         aux.map(item =>{
+            console.log(item)
             let subpartidaaux =[] 
             item.partidas[0].subpartidas.map(subpartida=>{
                 subpartidaaux.push(<div>{subpartida.nombre}</div>)
@@ -603,14 +708,15 @@ class Areas extends Component {
             
 
             let newdataaux = {
-                id_area: item.id,
                 nombreArea:<div value={item.id} >{item.nombreArea}</div>,
-                id_: item.id,
                 partidas:item.partidas[0].nombre,
-                subpartidas:estesi
+                subpartidas:estesi,
+                data: item
             }
             dataTable.push(newdataaux)
+
         })
+        console.log(dataTable)
         return dataTable
     }
 
@@ -618,21 +724,12 @@ class Areas extends Component {
         const { form, modal, title, formeditado, key, modalSee, area, options, subArea, selectedSubArea } = this.state
         const { access_token } = this.props.authUser
         /* const {processData} = this.props */
-        const tabs = [ 'ventas', 'egresos', 'ingresos']
+        const tabs = [ 'ventas', 'ingresos']
         return (
             <Layout active = 'catalogos'  {...this.props}>
 
                 <Tabs defaultActiveKey={'compras'} mountOnEnter={true} unmountOnExit={true}>
-                    {/* <Tab eventKey="compras" title="Compras">
-                        <TablaGeneral
-                            titulo="" 
-                            columnas={ AREAS_COMPRAS_COLUMNS }
-                            url={ `${URL_DEV}areas/compras` }  
-                            numItemsPagina={3} 
-                            // ProccessData={this.proccessData}
-                            >
-                        </TablaGeneral>
-                    </Tab> */}
+                
                     <Tab eventKey = { 'compras' } title = { 'compras' }>
                         <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
                             subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
@@ -653,17 +750,17 @@ class Areas extends Component {
                             >
                         </TablaGeneral>
                     </Tab>
-                </Tabs>
 
-                    {/* <Tab eventKey = { 'compras' } title = { 'compras' }>
-                        <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
-                            subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
-                            onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
-                            urlRender = { `${URL_DEV}areas/compras` } idTable = {`kt_datatable_compras`} 
-                            cardTable = {`card_table_compras`} cardTableHeader = {`card_table_header_compras`} 
-                            cardBody = {`card_body_compras`} isTab = { true }
-                            actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
-                    </Tab>
+                    {/* <Tab  eventKey = { 'egresos' } title = { 'egresos' }>
+                        <TablaGeneral 
+                        titulo="Egresos"
+                        url="api/areas/" 
+                        columnas={AREAS_EGRESOS_COLUMNS}
+                        opciones={this.setActionsAreas}
+                        ProccessData={this.proccessData}
+                        />
+                    </Tab> */}
+                   
                     {
                         tabs.map((elemento) => {
                             return(
@@ -678,14 +775,25 @@ class Areas extends Component {
                                 </Tab>
                             )
                         })
-                    } */}
-                {/* </Tabs> */}
+                    } 
+                </Tabs>
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
                     <AreasForm area = {area} form = { form } onChange = { this.onChange } addSubarea = { this.addSubarea } editSubarea = { this.editSubarea } 
                         deleteSubarea = { this.openModalDeleteSubarea } title = { title } onSubmit = { this.onSubmit } formeditado = { formeditado } 
                         tipo = { key } options = { options } />
                 </Modal>
+
+                <Modal size="lg" title={"Modal editar de Sulem"} show={this.state.modalesEgresos.editar.show} handleClose={this.handleCloseEditarModalEgresos}>
+                    <h3>editar sulem</h3>
+                    {/* {this.state.modalesEgresos.editar.data.id_area}
+                    {this.state.modalesEgresos.editar.data.nombreArea} */}
+                    <ModalEditar data={this.state.modalesEgresos.editar.data}/>
+                </Modal> 
+
+                <Modal size="lg" title={"Modal eliminar de Sulem"} show={this.state.modalesEgresos.eliminar.show} handleClose={this.handleCloseEliminarModalEgresos}>
+                    <div>eliminar sulem</div>
+                </Modal> 
 
                 <Modal title={key === 'egresos' ?'Egreso' : key === 'compras' ? 'Compra' : key === 'ventas' ? 'Venta/Ingreso' :''} show = { modalSee } handleClose = { this.handleCloseSee } >
                     <AreaCard area={area}/>
@@ -695,7 +803,6 @@ class Areas extends Component {
                   
                     <MiModal.Body>
                         <EdithSubArea subarea={selectedSubArea} closeSubArea={this.handleCloseSubArea} tabla={key}/>
-                        
                     </MiModal.Body>
                 </MiModal>
             </Layout>

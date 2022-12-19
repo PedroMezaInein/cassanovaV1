@@ -240,11 +240,10 @@ export const AREAS_COLUMNS = [
 ]
 
 export const AREAS_EGRESOS_COLUMNS = [
-    { nombre: 'opciones', identificador: 'opciones', sort: true, stringSearch: true },
+    { nombre: 'Acciones', identificador: 'acciones', sort: true, stringSearch: true },
     { nombre: 'Área', identificador: 'nombreArea', sort: true, stringSearch: true },
     { nombre: 'Partidas', identificador: 'partidas', sort: true, stringSearch: true },
     { nombre: 'Sub partidas', identificador: 'subpartidas', sort: true, stringSearch: true },
-    { nombre: 'Sub áreas', identificador: 'subareas', sort: true, stringSearch: true },
 ]
 
 export const AREAS_COMPRAS_COLUMNS = [
