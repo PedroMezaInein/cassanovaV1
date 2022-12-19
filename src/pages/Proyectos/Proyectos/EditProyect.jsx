@@ -32,10 +32,11 @@ import { setSingleHeader } from "../../../functions/routers"
 import '../../../styles/_editProyect.scss'
 
 export default function EditProyect(props) { 
-    const {proyecto} = props;
+    const {proyecto, reload} = props;
     const user = useSelector(state => state.authUser);
-
+    console.log(proyecto)
     const [form, setForm] = useState({
+        nombre:proyecto.nombre,
         fechaInicio: proyecto.fecha_inicio,
         fechaFin: proyecto.fecha_fin,
         empresa: { name: proyecto.empresa.name, label: proyecto.empresa.name, value: parseInt(proyecto.empresa.id) },
@@ -53,7 +54,7 @@ export default function EditProyect(props) {
         numero_contacto: proyecto.numero_contacto,
         correos: proyecto.contactos.map(contacto => contacto.correo),
         clientes: proyecto.clientes,
-        cliente: proyecto.cliente,
+        cliente_id: proyecto.cliente_id,
         fases:[]
     })
 
@@ -193,6 +194,8 @@ export default function EditProyect(props) {
         })
     }
 
+    console.log(form)
+
 
     const handleSave = (e) => {
         e.preventDefault();
@@ -224,6 +227,9 @@ export default function EditProyect(props) {
                 label: cliente.empresa,
             }
         })
+
+        let cliente = opciones.clientes.filter(cliente => cliente.value == form.cliente_id)
+        console.log(cliente)
             
         let newForm = {
             nombre: proyecto.nombre,
@@ -243,9 +249,9 @@ export default function EditProyect(props) {
             costo: form.costo,
             ubicacion_cliente: form.ubicacion,
             cliente_principal: {
-                name: form.cliente.nombre,
-                label: form.cliente.nombre,
-                value: `${form.cliente.id}`
+                name: cliente[0].name,
+                label: cliente[0].label,
+                value: cliente[0].value
             },
             clientes: new_clientes,
             descripcion: form.descripcion,
@@ -254,7 +260,6 @@ export default function EditProyect(props) {
             correos: form.correos,
 
         }
-        console.log(newForm)
         
 
         try {
@@ -262,29 +267,23 @@ export default function EditProyect(props) {
                 .then((response) => {
                     console.log(response)
                     Swal.close()
-                    Swal.fire({
-                        title: 'Guardado',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
+                    reload()
                 })
                 .catch((error) => {
                     console.log(error)
                     Swal.close()
                     Swal.fire({
-                        title: 'Error',
-                        icon: 'error',
-                        showConfirmButton: false,
-                        timer: 1500
+                        icon: 'warning',
+                        title: `${error.response.data.message}`,
+                        showConfirmButton: true,
+                        timer: 3000,
+                        timerProgressBar: true,
                     })
                 })
         } catch (error) {
 
         }
     }
-
-    console.log(opciones)
 
     return (
         <>
@@ -414,8 +413,8 @@ export default function EditProyect(props) {
                     <AccordionDetails>
                         <div className='container-Direccion'>
                             <TextField
-                                name="sucursal"
-                                value={form.sucursal}
+                                name="nombre"
+                                value={form.nombre}
                                 label="Sucursal"
                                 onChange={handleChange}
                             />
@@ -428,9 +427,10 @@ export default function EditProyect(props) {
                             />
                             <Divider orientation="vertical" flexItem />
                             <TextField
-                                name="ubicacion"
-                                value={form.ubicacion}
+                                name="sucursal"
+                                value={form.sucursal}
                                 label="Ubicación"
+                                multiline
                                 onChange={handleChange}
                             />    
                         </div>    
@@ -443,14 +443,14 @@ export default function EditProyect(props) {
                         aria-controls="panel4a-content"
                         id="panel4a-header"
                     >
-                        <Typography className='proyect-Subtitulo'>Fases del Proyecto</Typography>
+                        <Typography className='proyect-Subtitulo'>Fase </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <div className='container-Fases'>
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={form.fase1}
+                                        checked={form.fase1 && !form.fase2 && !form.fase3}
                                         name="fase1"
                                         color="primary"
                                     />
@@ -462,7 +462,7 @@ export default function EditProyect(props) {
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={form.fase2}
+                                        checked={form.fase2 &&  !form.fase3}
                                         name="fase2"
                                         color="primary"
                                     />
@@ -522,8 +522,10 @@ export default function EditProyect(props) {
                                     <div>
                                         <InputLabel id="label-select-Cliente_principal">Cliente principal</InputLabel>
                                         <Select
-                                            value={0}
+                                            value={form.cliente_id}
                                             labelId="label-select-Cliente_principal"
+                                            name='cliente_id'
+                                            onChange={handleChange}
                                         >
                                             <MenuItem value={0} disabled>{form.cliente ? form.cliente.nombre : 'Selecciona un cliente principal'}</MenuItem>
                                             {opciones.clientes.map((item, index) => {

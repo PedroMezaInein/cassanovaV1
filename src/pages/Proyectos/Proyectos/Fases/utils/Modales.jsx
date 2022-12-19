@@ -4,11 +4,11 @@ import { Modal } from '../../../../../components/singles'
 import ProgramaNecesidades from './ProgramaNecesidades';
 import EditProyect from '../../EditProyect'
 
-export default function Modales({ modal, setModal, proyecto }) {
+export default function Modales({ modal, setModal, proyecto, reload }) {
     return (
         <>
             <Modal size="lg" show={modal.edit_phase} title='Editar Fase' handleClose={() => setModal({ ...modal, edit_phase: false })}>
-                <EditProyect proyecto={proyecto} />
+                <EditProyect proyecto={proyecto} reload={reload} />
             </Modal>
 
             <Modal size="lg" show={modal.add_agreement} title='Minuta de Acuerdo' handleClose={() => setModal({ ...modal, add_agreement: false })}>

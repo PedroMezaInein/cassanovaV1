@@ -64,20 +64,7 @@ export default function DetailProyect() {
     });
     const [value, setValue] = useState(false);
     const [dataFases, setDataFases] = useState(false)
-    const [fases, setFases] = useState({
-        fase1: {
-            activeTab: false,
-            data: false,
-        },
-        fase2: {
-            activeTab: false,
-            data: false,
-        },
-        fase3: {
-            activeTab: false,
-            data: false,
-        },
-    })
+    const [fases, setFases] = useState(false)
 
     let navs = [
         { eventKey: 'fase1', name: 'Fase 1' },
@@ -127,18 +114,30 @@ export default function DetailProyect() {
         }
     }, [dataFases])
 
-    console.log(dataFases)
+    console.log(fases)
 
     let prop = {
         pathname: '/proyectos/proyectos/single/',
     }
 
+    const reload = () => {
+        let actualUrl = window.location.href
+        actualUrl = actualUrl.split('/')
+        getOneProyecto(actualUrl[actualUrl.length - 1])
+        Swal.fire({
+            icon: 'success',
+            title: '¡Listo!',
+            text: 'Se ha actualizado el proyecto',
+            showConfirmButton: false,
+            timer: 1500
+        })
 
+    }
     const getOneProyecto = (id) => {
         waitAlert()
         axios.get(`${URL_DEV}proyectos/project/${id}`, { headers: setSingleHeader(userAuth.access_token) })
         .then((response) => { 
-            console.log(response.data.data[0])
+            console.log(response.data)
             setDataFases(response.data.data[0].proyectos)
             setProyecto(response.data.data[0].proyectos[response.data.data[0].proyectos.length - 1])
             Swal.close()
@@ -150,14 +149,18 @@ export default function DetailProyect() {
     }
 
     const handleChange = (event, newValue) => {
+        console.log(newValue)
         setValue(newValue);
     };
 
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='proyectos'>
-                {proyecto &&
-                    <div className="mt-n4 ml-n8 mr-n8">
+                {proyecto && fases &&
+                    <>
+                    
+                    
+                     <div className="mt-n4 ml-n8 mr-n8">
                         <div className="col-12">
                             <Card>
                                 <Card.Body>
@@ -165,11 +168,11 @@ export default function DetailProyect() {
                                         <h3>
                                             {proyecto.simpleName}    
                                         </h3>
-                                        <div>
+                                        {/* <div>
                                             <span >Estado del proyecto: <span className="badge badge-pill" style={{ backgroundColor: proyecto.estatus.fondo, color: proyecto.estatus.letra }}>
                                                 {proyecto.estatus.estatus}
                                             </span></span>
-                                        </div>
+                                        </div> */}
                                         { fases &&
                                             <div className="card-toolbar">
                                                 <div className="card-toolbar toolbar-dropdown">
@@ -219,7 +222,7 @@ export default function DetailProyect() {
                                             </div>
                                         </div>
 
-                                         <div className="col-2">
+                                         {/* <div className="col-2">
                                             <div>
                                                 <span className="TagTitle">
                                                     Área
@@ -228,7 +231,7 @@ export default function DetailProyect() {
                                                         {proyecto.m2}&nbsp; m²
                                                 </span>
                                             </div>
-                                        </div> 
+                                        </div>  */}
 
                                         <div className="col-2">
                                             <div>
@@ -241,28 +244,7 @@ export default function DetailProyect() {
                                             </div>
                                         </div> 
                                             
-                                        {/* <div className="col-3">
-                                            <div>
-                                                    <span className="badge badge-pill badge-primary">
-                                                    Descripción    
-                                                </span>
-                                                <span className="mt-2">
-                                                    {proyecto.descripcion}
-                                                </span>    
-                                            </div>
-                                        </div>  */}
-                                            
-                                        {/* <div className="col-2 mb-n4">
-                                            <div>
-                                                <span className="badge badge-pill badge-primary">
-                                                    Ubicación
-                                                </span>
-                                                <span className="mt-2">
-                                                    {proyecto.estado}, {proyecto.ciudad}, {proyecto.colonia},{proyecto.calle}, {proyecto.cp}
-                                                </span>
-                                            </div>
-                                        </div>  */}
-                                        <div className="col-3">
+                                        <div className="col-5">
                                             <div>
                                                 <span className="TagTitle">
                                                     Cliente
@@ -282,31 +264,34 @@ export default function DetailProyect() {
                             </Card>
                         </div>
                     </div>
-                }   
+                
 
-                <div className=" ml-n4 mr-n4">
-                    <Tabs
-                        className='tabs-container'
-                        color='secondary'
-                        value={value}
-                        onChange={handleChange}
-                        indicatorColor="secondary"
-                        variant="fullWidth"
-                    >
-                        {fases.fase1.activeTab && <Tab label="Fase 1" disabled={fases.fase1.activeTab ? false : true} />}
-                        {fases.fase2.activeTab && <Tab label="Fase 2" disabled={fases.fase2.activeTab ? false : true} />}
-                        {fases.fase3.activeTab && <Tab label="Fase 3" disabled={fases.fase3.activeTab ? false : true} />}
-                    </Tabs>
-                    <TabPanel value={value} index={0} >
-                        <Fase1 fase={fases.fase1.data} />
-                    </TabPanel>
-                    <TabPanel value={value} index={1} >
-                        <Fase2 fase={fases.fase2.data} />
-                    </TabPanel>
-                    <TabPanel value={value} index={2} >
-                        <Fase3 fase={fases.fase3.data} />
-                    </TabPanel>
-                </div>
+                
+                    <div className=" ml-n4 mr-n4">
+                        <Tabs
+                            className='tabs-container'
+                            color='secondary'
+                            value={value}
+                            onChange={handleChange}
+                            indicatorColor="secondary"
+                            variant="fullWidth"
+                        >
+                            {<Tab label="Fase 1" disabled={fases.fase1.activeTab ? false : true} />}
+                            {<Tab label="Fase 2" disabled={fases.fase2.activeTab ? false : true} />}
+                            {<Tab label="Fase 3" disabled={fases.fase3.activeTab ? false : true} />}
+                        </Tabs>
+
+                        <TabPanel value={value} index={0} >
+                            <Fase1 fase={fases.fase1.data} reload={reload} />
+                        </TabPanel>
+                        <TabPanel value={value} index={1} >
+                            <Fase2 fase={fases.fase2.data} reload={reload} />
+                        </TabPanel>
+                        <TabPanel value={value} index={2} >
+                            <Fase3 fase={fases.fase3.data} reload={reload} />
+                        </TabPanel>
+                    </div>
+                
                 
                 <Modal size="lg" show={modal.info} title='Información del proyecto' handleClose={() => setModal({ ...modal, info: false })}>
                     {proyecto &&
@@ -445,13 +430,17 @@ export default function DetailProyect() {
                 </Modal>
                 <Modal size="lg" show={modal.edit_proyect} title='Editar proyecto' handleClose={() => setModal({ ...modal, edit_proyect: false })}>
                     <div>
-                        <EditProyect proyecto={proyecto} />
+                        <EditProyect proyecto={proyecto} reload={reload} />
                     </div>
                 </Modal>
 
                 <Modal size="lg" show={modal.hire_phase} title='Contratar Fase' handleClose={() => setModal({ ...modal, hire_phase: false })}>
                     <NuevaFase proyecto={proyecto} fases={fases} />
-                </Modal>
+                    </Modal>
+            </>
+                }
+                   
+            
             </Layout>
         </>
     )
