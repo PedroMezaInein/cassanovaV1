@@ -12,8 +12,7 @@ import { errorAlert } from './functions/alert';
 import Cursos from './pages/RecursosHumanos/Cursos/Cursos'; */
 import Reuniones from './pages/RecursosHumanos/Reuniones/Reuniones';
 import NominaPrestaciones from './pages/RecursosHumanos/NominaPrestaciones/NominaPrestaciones';
-import { Requisiciones } from './pages/Administracion/Requisiciones/Requisiciones'
-
+import {Requisiciones} from './pages/Administracion/Requisiciones/Requisiciones'
 
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
