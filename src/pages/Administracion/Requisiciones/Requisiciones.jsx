@@ -118,8 +118,8 @@ function Requisiciones () {
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
                 <Tabla
                     titulo="Requisicion" 
-                    columnas={AREAS_EGRESOS_COLUMNS}
-                    url={`areas`}
+                    columnas={columnas}
+                    url={`requisiciones`}  
                     numItemsPagina={3}
                     ProccessData={proccessData}
                     opciones={[{nombre:'Agregar', funcion:()=>{handleOpen('crear')}}]}
