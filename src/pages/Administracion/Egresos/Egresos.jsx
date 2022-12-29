@@ -807,7 +807,7 @@ class Egresos extends Component {
         return (
             <Layout active='administracion'  {...this.props}>
                 <Tabs id="tabsUsuarios" defaultActiveKey="administrador" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
-                    <Tab eventKey="gastos" title="Gastos">
+                    {/* <Tab eventKey="gastos" title="Gastos">
                         <NewTable
                             tableName='egresos'
                             subtitle='Listado de gastos'
@@ -823,7 +823,7 @@ class Egresos extends Component {
                             exportar_boton={true}
                             onClickExport = { () => { this.exportEgresosAxios() } }
                         />
-                    </Tab>
+                    </Tab> */}
                     <Tab eventKey="solicitud_gastos" title="Solicitud de Gasto">
                         <SolicitudEgreso />
                     </Tab>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Swal from 'sweetalert2'
 
 import { Modal } from '../../../components/singles'
@@ -9,6 +9,8 @@ import Convertir from './Modales/Convertir'
 import Editar from './Modales/Editar'
 import Adjuntos from './Modales/Adjuntos'
 import Ver from './Modales/Ver'
+
+import useOptionsArea from '../../../hooks/useOptionsArea'
 
 
 export default function SolicitudEgreso() {
@@ -35,6 +37,8 @@ export default function SolicitudEgreso() {
         },
     })
 
+    useOptionsArea()
+
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
@@ -45,6 +49,7 @@ export default function SolicitudEgreso() {
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
         { nombre: 'Monto solicitado', identificador: 'monto', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
+        { nombre: 'Aprobacion', identificador: 'aprobacion', sort: false, stringSearch: false },
         
     ]
 
@@ -64,57 +69,41 @@ export default function SolicitudEgreso() {
     ]
 
     let ProccessData = (data) => {
-        let aux = [
-            {
-                solicitante: 'Juan Perez',
-                fecha: '2020-10-10',
-                departamento: 'Proyectos',
-                tipoEgreso: 'Gasto',
-                descripcion: 'Compra de materiales',
-                tipoPago: 'Efectivo',
-                monto: '$ 1000.00',
-                status: 'Pendiente',
-                estatus: <span className="pendiente" style={{ backgroundColor: 'gray', color: 'white' }}>Pendiente</span>,
-            },
-            {
-                solicitante: 'Susana Lopez',
-                fecha: '2020-08-10',
-                departamento: 'Calidad',
-                tipoEgreso: 'Gasto',
-                descripcion: 'Compra de pintura por vicio de calidad',
-                tipoPago: 'Transferencia',
-                monto: '$ 2500.00',
-                status: 'Pendiente',
-                estatus: <span className="pendiente" style={{ backgroundColor: 'gray', color: 'white' }}>Pendiente</span>,
-            },
-            {
-                solicitante: 'Diego Martinez',
-                fecha: '2020-09-10',
-                departamento: 'Marketing',
-                tipoEgreso: 'Gasto',
-                descripcion: 'Anuncio en RRSSdfghhdfhdhdfhdfhdh lorem lorem waijndlkawndlkanwldinalindlianwdlnalidnlianlkdnwqa',
-                tipoPago: 'Efectivo',
-                monto: '$ 500.00',
-                status: 'Pre-autorizado',
-                estatus: <span className="pre-autorizado" style={{ backgroundColor: 'yellow', color: 'black' }}>Pre-autorizado</span>,
-            },
-            {
-                solicitante: 'Maria Garcia',
-                fecha: '2020-10-10',
-                departamento: 'Ventas',
-                tipoEgreso: 'Gasto',
-                descripcion: 'Cena de negocios',
-                tipoPago: 'Efectivo',
-                monto: '$ 1000.00',
-                status: 'Autorizado',
-                estatus: <span className="autorizado" style={{ backgroundColor: 'green', color: 'white' }}>Autorizado</span>,
-            },
+        console.log(data)
+        let aux = []
+        console.log(data)
+        data.Requisiciones.map((item, index) => {
+            aux.push({
+                id: item.id,
+                acciones: createAcciones(),
+                solicitante: item.solicitante.name,
+                solicitante_id: item.solicitante.id,
+                fecha: item.fecha,
+                departamento: item.departamento.nombre,
+                departamento_id: item.departamento.id,
+                tipoEgreso: item.gasto.nombre,
+                tipoEgreso_id: item.gasto.id,
+                descripcion: item.descripcion,
+                monto: item.monto_pago,
+                estatus: item.estatus === 5 ? 'Pendiente' : item.estatus === null ? 'Pendiente' : 'Aprobado',
+                aprobacion: createtagaprobaciones(item)
+            })
+        })
 
-        ] 
-        
-        console.log(aux)
         return aux
 
+    }
+
+    let createtagaprobaciones = (item) => {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {item.auto1 === 1 ? <span style={{ color: 'green' }}>Aprobado</span> : item.auto1 === 0 ? <span style={{ color: 'red' }}>Rechazado</span> : <span style={{ color: 'orange' }}>Pendiente</span>}
+                <br />
+                {item.auto2 === 1 ? <span style={{ color: 'green' }}>Aprobado</span> : item.auto2 === 0 ? <span style={{ color: 'red' }}>Rechazado</span> : <span style={{ color: 'orange' }}>Pendiente</span>}
+                <br />
+                {item.auto3 === 1 ? <span style={{ color: 'green' }}>Aprobado</span> : item.auto3 === 0 ? <span style={{ color: 'red' }}>Rechazado</span> : <span style={{ color: 'orange' }}>Pendiente</span>}
+            </div>
+        )
     }
 
     const createAcciones = () => {
@@ -189,9 +178,12 @@ export default function SolicitudEgreso() {
         })
     }
 
+   
+    
+
     return (
         <>
-            <TablaGeneral titulo='Solicitud de Egreso' columnas={columnas} url='salas' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} />
+            <TablaGeneral titulo='Solicitud de Egreso' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} />
 
             <Modal size="lg" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
                 <Convertir data={modal.convertir.data} />

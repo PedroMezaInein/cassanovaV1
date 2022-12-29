@@ -1,4 +1,5 @@
 import React from 'react'
+import {useSelector} from 'react-redux'
 
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Convertir(props) { 
     const { data } = props
+    const opciones = useSelector(state => state.opciones.areas)
     const classes = useStyles();
     return (
         <>
