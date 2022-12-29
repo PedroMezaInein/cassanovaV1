@@ -322,7 +322,7 @@ export default function TablaGeneral(props) {
 
                                                         } else {
                                                             return (
-                                                                <td key={index} className='CellContent'>{item[columna.identificador]}</td>
+                                                                <td key={index} className='CellContent'><div className='contenido'>{item[columna.identificador]}</div></td>
                                                             )
                                                         }
                                                     })}

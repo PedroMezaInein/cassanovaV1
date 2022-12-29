@@ -63,6 +63,14 @@
     max-height: fit-content;
     text-align: center;
     width: 50px;
+    align-items: center;
+}
+
+.contenido{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
 .CellActions{
