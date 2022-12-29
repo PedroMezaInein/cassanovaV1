@@ -1,5 +1,5 @@
 .nuevaRequisicion{
-    height: 12rem;
+    height: 13rem;
 }
 
 .nuevaRequisicion_bloque1{
@@ -10,4 +10,19 @@
 
 .nuevaRequisicion_comentario{
     margin-top:3rem;
+}
+
+.boton{
+    display: flex;
+    margin-left: 90%;
+    margin-top: 3rem;
+}
+
+.nuevaRequisicion_boton{
+    height: 2.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #B3A16C;
+    // background-color: #c6d4e1;
+    color: white;
 }

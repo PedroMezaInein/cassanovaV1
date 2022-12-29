@@ -1000,3 +1000,12 @@ export const ADJ_TRASPASO_COLUMNS = [
     { Header: 'Opciones', accessor: 'actions' },
     { Header: 'ARCHIVOS', accessor: 'adjunto' }
 ]
+
+export const REQUISICIONES = [
+    { nombre: 'Opciones', identificador: 'opciones', sort: true, stringSearch: true},
+    { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: true},
+    { nombre: 'Fecha', identificador: 'fecha', sort: true, stringSearch: true},
+    { nombre: 'Departamento', identificador: 'departamento', sort: true, stringSearch: true},
+    { nombre: 'Tipo de egreso', identificador: 'tipo_gasto', sort: true, stringSearch: true},
+    { nombre: 'Descripcion', identificador: 'descripcion', sort: true, stringSearch: true},
+]

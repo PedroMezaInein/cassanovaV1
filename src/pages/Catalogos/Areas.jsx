@@ -650,22 +650,33 @@ class Areas extends Component {
     
     proccessData(e){
         // Imprime todo el objeto a ocupar 
-        /* console.log('uno') */
+        console.log('uno')
         console.log(e)
 
         let aux = []
         for(let key in e.area){
-
+            // Imprime el id del area
+        console.log('dos')
+        console.log(key)
 
             for(let area in e.area[key]){
+                // Imprime el area
+        console.log('tres')
+        console.log(area)
 
                 let auxPartidas = []
 
                 for(let i in e.area[key][area]){
+                    console.log('cuatro')
+                    console.log(i)
 
                     for(let idpartida in e.area[key][area][i]){
-
+                        console.log('cinco')
+                        console.log(idpartida)
+                        
                         for(let partida in e.area[key][area][i][idpartida]){
+                            console.log('seis')
+                            console.log(partida)
                             // Imprime el nombre de cada partida
                             let auxSubpartida = []
                             
@@ -673,13 +684,12 @@ class Areas extends Component {
                                 id: e.area[key][area][i][idpartida][partida].id,
                                 nombre: e.area[key][area][i][idpartida][partida].nombre,
                             })
-
+            
                             auxPartidas.push({
                                 id:idpartida,
                                 nombre:partida,
                                 subpartidas:auxSubpartida
                             })
-
                         }
                     }
                 }
@@ -689,7 +699,6 @@ class Areas extends Component {
                     id_area: key,
                     partidas:auxPartidas,
                 }
-                
                 aux.push(areas)
             }
         }
