@@ -3,16 +3,13 @@ import { useSelector } from "react-redux";
 import Swal from 'sweetalert2'
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
-import axios from 'axios'
+import MenuItem from '@material-ui/core/MenuItem';
 import { apiPostForm } from '../../../functions/api'
 
 import nuevaRequisicion from '../../../styles/_nuevaRequisicion.scss'
-import { isClassExpression } from "typescript";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -24,14 +21,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function NativeSelects({at}) {
+export default function NativeSelects() {
     const user = useSelector(state=> state.authUser)
+    const departamentos = useSelector(state => state.opciones.areas)
+    const gastos = useSelector(state => state.opciones.areas)
     console.log(user)
     const [state, setState] = useState({
         solicitante: user.user.id,
         fecha:new Date().toISOString().split('T')[0],
         departamento: '',
-        tipo_gasto: '',
+        tipo_gasto: '', //partida
         descripcion: '',
     });
     
@@ -84,7 +83,14 @@ export default function NativeSelects({at}) {
         if(true){
             Swal.fire('Requisicion creada con éxito', '', 'success')
             console.log(state)
-            apiPostForm('requisicion', state, user.access_token).then((data)=>{
+            let newForm = {
+                id_solicitante: state.solicitante,
+                id_departamento: state.departamento,
+                id_gasto: state.tipo_gasto,
+                descripcion:state.descripcion,
+                fecha: state.fecha
+            }
+            apiPostForm('requisicion', newForm, user.access_token).then((data)=>{
                 if (data.isConfirmed) {
                     // console.log(e)
                     let form = {
@@ -110,6 +116,15 @@ export default function NativeSelects({at}) {
             Swal.fire('Faltan campos', '', 'info')
         }
     }
+
+    const handleChangeDepartamento = (e) => {
+        console.log(e)
+        setState({
+            ...state,
+            [e.target.name]: e.target.value,
+            tipo_gasto: null,
+        })
+    }
     
     return (
         <div className='nuevaRequisicion'>
@@ -126,46 +141,44 @@ export default function NativeSelects({at}) {
                         disabled
                     />
                 </div>
-                <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="age-native-simple">Departamento</InputLabel>
-                    <Select
-                        native
-                        value={state.departamento}
-                        onChange={handleChange}
-                        inputProps={{
-                        name: 'departamento',
-                        id: 'age-native-simple',
-                        }}
-                    >
-                    <option aria-label="None" value="" />
-                    <option value={82}>TI</option>
-                    <option value={81}>Compras</option>
-                    <option value={77}>Proyectos</option>
-                    <option value={86}>RH</option>
-                    <option value={87}>Mercadotecnia</option>
-                    </Select>
-                </FormControl>
-                {errores && errores.departamento && <span>{errores.departamento}</span>}
+                
+                <div>
+                    {departamentos.length > 0 ?
+                        <>
+                            <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
+                            <Select
+                                value={state.departamento}
+                                name="departamento"
+                                onChange={handleChangeDepartamento}
+                            >
+                                {departamentos.map((item, index) => (
+                                    <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                ))}
 
-                <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="age-native-simple">Tipo de egreso</InputLabel>
-                    <Select
-                        native
-                        value={state.tipo_gasto}
-                        onChange={handleChange}
-                        inputProps={{
-                        name: 'tipo_gasto',
-                        id: 'age-native-simple',
-                        }}
-                    >
-                    <option aria-label="None" value="" />
-                    <option value={10}>A</option>
-                    <option value={20}>B</option>
-                    <option value={30}>C</option>
-                    <option value={25}>D</option>
-                    <option value={12}>E</option>
-                    </Select>
-                </FormControl>
+                            </Select>
+                        </>
+                        : null
+                    }
+                </div>
+                {/* {errores && errores.departamento && <span>{errores.departamento}</span>} */}
+
+                <div>
+                    {departamentos.length > 0 && state.departamento !== ''?
+                        <>
+                            <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
+                            <Select
+                                value={state.tipo_gasto}
+                                name="tipo_gasto"
+                                onChange={handleChange}
+                            >
+                                {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
+                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                ))}
+                            </Select>
+                        </>
+                        : null
+                    }
+                </div>
 
                 <FormControl className={classes.formControl}>
                     <form className={classes.container} noValidate>

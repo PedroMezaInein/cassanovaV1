@@ -6,9 +6,7 @@ import { REQUISICIONES } from '../../../constants'
 import { Modal } from '../../../components/singles'
 import NuevaRequisicion from 
 '../../../components/forms/administracion/NuevaRequisicion'
-
-
-
+import useOptionsArea from '../../../hooks/useOptionsArea'
 
 function Requisiciones () {
 
@@ -16,6 +14,8 @@ function Requisiciones () {
     const [modal, setModal] = useState({
         crear:false
     })
+
+    useOptionsArea()
 
     let prop = {
         pathname: '/administracion/requisicion',
