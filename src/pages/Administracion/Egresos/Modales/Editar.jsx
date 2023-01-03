@@ -31,12 +31,11 @@ export default function Editar(props) {
     const [form, setForm] = useState({
         fecha: data.fecha,
         departamento: data.departamento_id,
-        tipoGasto: data.tipoGasto,
-        tipoSubgasto: data.tipoSubgasto,
-        tipoPago: data.tipoPago,
+        tipoGasto: data.tipoEgreso_id,
+        tipoSubgasto: data.tipoSubEgreso_id,
+        tipoPago: data.tipoPago_id,
         monto: data.monto,
         descripcion: data.descripcion,
-        estado: data.estado,
         id: data.id
     })
     console.log(data)
@@ -54,6 +53,13 @@ export default function Editar(props) {
     }
 
     const getOptions = () => {
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            }
+        })
 
         apiOptions(`v2/proyectos/compras`, auth.access_token).then(
             (response) => {
@@ -70,6 +76,7 @@ export default function Editar(props) {
                 aux.formasPago = setOptions(formasPago, 'nombre', 'id')
                 aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
                 setOpciones(aux)
+                Swal.close()
             }, (error) => { }
         ).catch((error) => {})
     }
@@ -85,31 +92,67 @@ export default function Editar(props) {
 
     const handleSave = () => {
         console.log(form)
-        try {
-            let newForm = {
-                id_departamento: form.departamento,
-                id_gasto: form.tipoGasto,
-                descripcion: form.descripcion,
-                id_subarea: form.tipoSubgasto,
-                id_pago: form.tipoPago,
-                id_solicitante: data.solicitante_id,
-                monto_pagado: form.monto,
-            }
+        if (validateForm()) {
+            try {
+                let newForm = {
+                    id_departamento: form.departamento,
+                    id_gasto: form.tipoGasto,
+                    descripcion: form.descripcion,
+                    id_subarea: form.tipoSubgasto,
+                    id_pago: form.tipoPago,
+                    id_solicitante: data.solicitante_id,
+                    monto_pagado: form.monto,
+                }
 
-            apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
-                (response) => {
-                    console.log(response)
-                }, (error) => { }
-            ).catch((error) => {})
-        } catch (error) {
-            console.log(error)
+                apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
+                    (response) => {
+                        console.log(response)
+                    }, (error) => { }
+                ).catch((error) => { })
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Todos los campos son obligatorios',
+            })
         }
     }
 
-    console.log(opciones)
+    const validateForm = () => {
+        let valid = true
+        if (form.fecha === '' || form.fecha === null) {
+            valid = false
+        }
+        if (form.departamento === '' || form.departamento === null) {
+            valid = false
+        }
+        if (form.tipoGasto === '' || form.tipoGasto === null) {
+            valid = false
+        }
+        if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
+            valid = false
+        }
+        if (form.tipoPago === '' || form.tipoPago === null) {
+            valid = false
+        }
+        if (form.monto === '' || form.monto === null) {
+            valid = false
+        }
+        if (form.descripcion === '' || form.descripcion === null) {
+            valid = false
+        }
+        return valid
+
+    }
+
+    console.log(form)
     return (
         <>
             <div className={Style.container}>
+
                 <div>
                     <TextField
                         label="Fecha de solicitud"
@@ -122,6 +165,7 @@ export default function Editar(props) {
                         }}
                     />
                 </div>
+
                 <div>
                     {departamentos.length > 0 ?
                         <>
@@ -141,6 +185,7 @@ export default function Editar(props) {
                     }
                     
                 </div>
+                
                 <div>
                     {departamentos.length > 0 ?
                         <>
