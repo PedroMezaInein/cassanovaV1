@@ -21,21 +21,6 @@ function Requisiciones () {
         pathname: '/administracion/requisicion',
     }
 
-    // const proccessData = (e) => {
-    //     console.log(e)
-    //     let aux = [
-    //         {
-    //             opciones: 'grweah',
-    //             solicitante: 'victor Jesus cervamtes',
-    //             fecha: '12/12/2022',
-    //             departamento: 'TI',
-    //             tipo_gasto: 'vfhjv',
-    //             descripcion: 'vvndjwkabvl64vf654v f6540 b 04b65g.0 4n6540 4n30g4n g54b 34g 5nrg4grnbndjwkabvl64vf654v f6540 b 04b65g.0 4n6540 4n30g4n g54b 34g 5nrgvndjwkabvl64vf654v f6540 b 04b65g.0 4n6540 4n30g4n g54b 34g 5nrg4grnb4grnb'
-    //         }
-    //     ]
-    //     return aux
-    // }
-
     const proccessData = (datos) => {
         console.log('prueba')
         console.log(datos)
@@ -47,7 +32,7 @@ function Requisiciones () {
                     solicitante: result.solicitante.name,
                     fecha: result.fecha,
                     departamento: result.departamento.nombre,
-                    tipo_gasto: result.gasto.nombre,
+                    tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
                     descripcion: result.descripcion
                 }
             )
@@ -76,10 +61,9 @@ function Requisiciones () {
                     titulo="Requisicion" 
                     columnas={REQUISICIONES}
                     url={'requisicion'}  
-                    numItemsPagina={3}
+                    numItemsPagina={10}
                     ProccessData={proccessData}
                     opciones={[{nombre:'Agregar', funcion:()=>{handleOpen('crear')}}]}
-                    // numItemsPagina={3} 
                     >
                     </Tabla>
             </Layout>

@@ -32,11 +32,20 @@ export default function NativeSelects() {
         departamento: '',
         tipo_gasto: '', //partida
         descripcion: '',
+        solicitud: '',
     });
     
     const [errores, setErrores] = useState()
 
     const classes = useStyles();
+
+    const handleFile = (e) => {
+        console.log(e.target.files)
+        setState({
+            ...state,
+            solicitud: e.target.files[0]
+        })
+    }
 
     const handleChange = (event) => {
         // name son los diferentes tipos de atributos (departamento, fecha...)
@@ -63,11 +72,6 @@ export default function NativeSelects() {
     }));
 
     const comentario = inputComentario();
-    // const [value, setValue] = useState('Controlled');
-
-    // const handleChangeComentario = (event) => {
-    //     setValue(event.target.value);
-    // };
 
     const validacion= ()=> {
         let error = {}
@@ -82,7 +86,9 @@ export default function NativeSelects() {
         /* if(Object.keys(validacion()).length ===0){ */
         if(true){
             Swal.fire('Requisicion creada con éxito', '', 'success')
-            console.log(state)
+
+            let dataForm = new FormData()
+
             let newForm = {
                 id_solicitante: state.solicitante,
                 id_departamento: state.departamento,
@@ -90,7 +96,26 @@ export default function NativeSelects() {
                 descripcion:state.descripcion,
                 fecha: state.fecha
             }
-            apiPostForm('requisicion', newForm, user.access_token).then((data)=>{
+
+            let aux = Object.keys(newForm)
+
+            aux.forEach((element) => {
+                switch (element) {               
+                    case 'adjuntos':
+                        break;
+                    default:
+                        dataForm.append(element, newForm[element])
+                        break
+                }
+                
+            })
+
+            dataForm.append(`files_name_requisicion[]`, 'requisicion01')
+            dataForm.append(`files_requisicion[]`, state.solicitud)
+            dataForm.append('adjuntos[]', "requisicion")
+
+            
+            apiPostForm('requisicion', dataForm, user.access_token).then((data)=>{
                 if (data.isConfirmed) {
                     // console.log(e)
                     let form = {
@@ -217,6 +242,11 @@ export default function NativeSelects() {
                     />
                 </FormControl> 
             </div>
+
+            <div>
+                <input type='file' onChange={handleFile}></input>
+            </div>
+
             <div className='boton'>
                 <button onClick={enviar} className='nuevaRequisicion_boton'>Agregar</button>
             </div>
