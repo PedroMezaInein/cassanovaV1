@@ -1002,7 +1002,7 @@ export const ADJ_TRASPASO_COLUMNS = [
 ]
 
 export const REQUISICIONES = [
-    { nombre: 'Opciones', identificador: 'opciones', sort: true, stringSearch: true},
+    { nombre: 'Acciones', identificador: 'acciones', sort: true, stringSearch: true},
     { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: true},
     { nombre: 'Fecha', identificador: 'fecha', sort: true, stringSearch: true},
     { nombre: 'Departamento', identificador: 'departamento', sort: true, stringSearch: true},
