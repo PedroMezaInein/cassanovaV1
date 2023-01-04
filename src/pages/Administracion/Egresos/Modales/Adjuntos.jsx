@@ -11,7 +11,8 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 
-import { apiPutForm, apiGet } from '../../../../functions/api'
+import { apiPutForm, apiGet, apiPostForm } from '../../../../functions/api'
+import CarruselAdjuntos from './CarruselAdjuntos'
 
 
 import './../../../../styles/_adjuntosRequisicion.scss'
@@ -68,11 +69,9 @@ export default function Adjuntos(props) {
     const [form, setForm] = useState({
         comunicado: ''
     })
-    console.log('props', props)
-
-    
     const [activeTab, setActiveTab] = useState('comunicado')
     const [validated, setValidated] = useState(false)
+    const [adjuntos, setAdjuntos] = useState()
     useEffect(() => {
         Swal.fire({
             title: 'Cargando...',
@@ -94,6 +93,7 @@ export default function Adjuntos(props) {
                 .then(res => {
                     Swal.close()
                     console.log('res', res.data.data)
+                    setAdjuntos(res.data.data.adjuntos)
                 })
         } catch (error) {
             Swal.close()
@@ -123,7 +123,7 @@ export default function Adjuntos(props) {
     const handleFile = (e) => {
         setForm({
             ...form,
-            [e.target.name]: e.target.files[0]
+            [activeTab]: [e.target.files[0]]
         })
     }
 
@@ -139,13 +139,21 @@ export default function Adjuntos(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        
+        
 
         if (true) {
-
+            Swal.fire({
+                title: 'Subiendo archivo...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
             let data = new FormData();
             let aux = Object.keys(form)
 
-            aux.forEach((element) => {
+            /* aux.forEach((element) => {
                 switch (element) {
                     case 'adjuntos':
                         break;
@@ -153,16 +161,27 @@ export default function Adjuntos(props) {
                         data.append(element, form[element])
                         break
                 }
-            })
+            }) */
 
-            data.append(`files_name_requisicion[]`, 'comunicado')
-            data.append(`files_requisicion[]`, form.comunicado)
-            data.append('adjuntos[]', "comunicado")
+            data.append(`files_name_requisicion[]`, form.comunicado[0].name)
+            data.append(`files_requisicion[]`, form.comunicado[0])
+            data.append('adjuntos[]', "requisicion")
+            data.append('tipo', activeTab)
             console.log('data', data)
+            
 
             try {
-                apiPutForm(`requisicion/${props.data.id}/archivos/s3`, data, authUser)
+                apiPostForm(`requisicion/${props.data.id}/archivos/s3`, data, authUser)
                     .then(res => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Adjunto guardado',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        getAdjuntos()
+
                         console.log('res', res)
                         if (res.status === 200) {
                             Swal.fire({
@@ -173,7 +192,22 @@ export default function Adjuntos(props) {
                             })
                         }
                     })
+                    .catch(err => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Algo salio mal!',
+                        })
+                        console.log('err', err)
+                    })
             } catch (error) {
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Algo salio mal!',
+                })
                 console.log('error', error)
             }
         } 
@@ -208,7 +242,7 @@ export default function Adjuntos(props) {
                                 <label htmlFor="file">Selecciona el Comunicado</label>
                                 <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
                                 <div>
-                                    {form.comunicado.name ? <div className="file-name">{form.comunicado.name}</div> : 'No hay archivo seleccionado'}
+                                    {form[activeTab][0] ? <div>{form[activeTab][0].name}</div> : 'No hay archivo seleccionado'}
                                 </div>
 
                             </div>
@@ -216,6 +250,36 @@ export default function Adjuntos(props) {
                                 <button onClick={handleSubmit}>Subir</button>
                             </div>
                         </div>
+
+                        {/* <div>
+                            {
+                                adjuntos ?
+                                    adjuntos.map((item, index) => {
+                                        return (
+                                            <div key={index} className="comunicado">
+                                                <div className="date">
+                                                    <div>{item.date}</div>
+                                                </div>
+                                                <object
+                                                    data={item.url}
+                                                    type="application/pdf"
+                                                >
+                                                </object>
+                                                <div className="btn-comunicado">
+                                                    <a href={`${item.url}`} target="_blank" ><button >Ver adjunto</button></a>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                    : null
+                            }
+                        </div> */}
+                        {
+                            adjuntos ?
+                                <CarruselAdjuntos adjuntos={adjuntos} />  
+                            : null    
+                        }
+                        
 
                     </div>
                 </TabPanel>
