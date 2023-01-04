@@ -124,7 +124,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 2rem;
+    width: 100%;
 }
 
 .file input {
@@ -152,4 +152,12 @@
     display: flex;
     justify-content: center;
     border-radius: 5px;
+}
+
+.test{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
 }

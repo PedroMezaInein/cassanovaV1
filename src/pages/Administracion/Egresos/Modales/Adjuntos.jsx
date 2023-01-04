@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import Swal from 'sweetalert2'
@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 
-import { apiPutForm } from '../../../../functions/api'
+import { apiPutForm, apiGet } from '../../../../functions/api'
 
 
 import './../../../../styles/_adjuntosRequisicion.scss'
@@ -69,13 +69,44 @@ export default function Adjuntos(props) {
         comunicado: ''
     })
     console.log('props', props)
+
     
     const [activeTab, setActiveTab] = useState('comunicado')
     const [validated, setValidated] = useState(false)
+    useEffect(() => {
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        })
+        getAdjuntos()
+    }, [])
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const getAdjuntos = () => {
+        try {
+            apiGet(`requisicion/adjuntos/${props.data.id}`, authUser)
+                .then(res => {
+                    Swal.close()
+                    console.log('res', res.data.data)
+                })
+        } catch (error) {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Algo salio mal!',
+            })
+
+            console.log('error', error)
+        }
+    }
+
 
     /* const handleTab = (e) => {
         console.log('tab', e)
@@ -172,12 +203,20 @@ export default function Adjuntos(props) {
                 <TabPanel value={value} index={0}>
                     <div>
                         <div>
-                            <label>Comunicado</label>
-                            <input type="file" className="form-control-file" name="comunicado" onChange={handleFile} />
+                            <div className="send-comunicado file">
+
+                                <label htmlFor="file">Selecciona el Comunicado</label>
+                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <div>
+                                    {form.comunicado.name ? <div className="file-name">{form.comunicado.name}</div> : 'No hay archivo seleccionado'}
+                                </div>
+
+                            </div>
+                            <div className="btn-subir">
+                                <button onClick={handleSubmit}>Subir</button>
+                            </div>
                         </div>
-                        <div>
-                            <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Guardar</button>
-                        </div>
+
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
