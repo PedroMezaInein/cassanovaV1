@@ -63,15 +63,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Adjuntos(props) {
+    const { data, nuevaRequisicion } = props
+    console.log('data', data)
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const [form, setForm] = useState({
-        comunicado: ''
+        Ficha_tecnica: '',
+        Solicitud: '',
+        Cotizaciones: '',
+        Orden_compra: '',
+        Comprobante_pago: '',
+        Factura: '',
     })
-    const [activeTab, setActiveTab] = useState('comunicado')
-    const [validated, setValidated] = useState(false)
-    const [adjuntos, setAdjuntos] = useState()
+    const [activeTab, setActiveTab] = useState('Ficha_tecnica')
+    const [adjuntos, setAdjuntos] = useState(false)
     useEffect(() => {
         Swal.fire({
             title: 'Cargando...',
@@ -84,6 +90,7 @@ export default function Adjuntos(props) {
     }, [])
 
     const handleChange = (event, newValue) => {
+        console.log('newvalue', event) 
         setValue(newValue);
     };
 
@@ -91,10 +98,43 @@ export default function Adjuntos(props) {
         try {
             apiGet(`requisicion/adjuntos/${props.data.id}`, authUser)
                 .then(res => {
+                    let adjunAux = res.data.data.adjuntos
                     Swal.close()
-                    console.log('res', res.data.data)
-                    setAdjuntos(res.data.data.adjuntos)
+                    let aux = {
+                        Ficha_tecnica: [],
+                        Solicitud: [],
+                        Cotizaciones: [],
+                        Orden_compra: [],
+                        Comprobante_pago: [],
+                        Factura: [],
+                    }
+                    adjunAux.forEach((element) => {
+                        switch (element.pivot.nombre) {
+                            case 'Ficha_tecnica':
+                                aux.Ficha_tecnica.push(element)
+                                break;
+                            case 'Solicitud':
+                                aux.Solicitud.push(element)
+                                break;
+                            case 'Cotizaciones':
+                                aux.Cotizaciones.push(element)
+                                break;
+                            case 'Orden_compra':
+                                aux.Orden_compra.push(element)
+                                break;
+                            case 'Comprobante_pago':
+                                aux.Comprobante_pago.push(element)
+                                break;
+                            case 'Factura':
+                                aux.Factura.push(element)
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                    setAdjuntos(aux)
                 })
+            
         } catch (error) {
             Swal.close()
             Swal.fire({
@@ -107,18 +147,10 @@ export default function Adjuntos(props) {
         }
     }
 
-
-    /* const handleTab = (e) => {
+    const handleTab = (e) => {
         console.log('tab', e)
         setActiveTab(e)
     }
-
-    const hanldelChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: [...e.target.name, e.target.value]
-        })
-    } */
 
     const handleFile = (e) => {
         setForm({
@@ -128,12 +160,11 @@ export default function Adjuntos(props) {
     }
 
     const validate = () => {
-        let error = false
-
-
-
-        setValidated(error)
-        return error
+        if (activeTab && form[activeTab] !== '') {
+            return true
+        } else {
+            return false
+        }
     }
 
 
@@ -142,7 +173,7 @@ export default function Adjuntos(props) {
         
         
 
-        if (true) {
+        if (validate()) {
             Swal.fire({
                 title: 'Subiendo archivo...',
                 allowOutsideClick: false,
@@ -163,11 +194,10 @@ export default function Adjuntos(props) {
                 }
             }) */
 
-            data.append(`files_name_requisicion[]`, form.comunicado[0].name)
-            data.append(`files_requisicion[]`, form.comunicado[0])
+            data.append(`files_name_requisicion[]`, form[activeTab][0].name)
+            data.append(`files_requisicion[]`, form[activeTab][0])
             data.append('adjuntos[]', "requisicion")
             data.append('tipo', activeTab)
-            console.log('data', data)
             
 
             try {
@@ -210,14 +240,20 @@ export default function Adjuntos(props) {
                 })
                 console.log('error', error)
             }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Debe seleccionar un archivo',
+                showConfirmButton: false,
+                timer: 1500
+            })
         } 
     }
 
-    console.log('form', form)
+    console.log('adjuntos', adjuntos)
 
     return (
         <>
-            
             <div className={classes.root}>
                 <Tabs
                     orientation="vertical"
@@ -227,13 +263,20 @@ export default function Adjuntos(props) {
                     aria-label="Vertical tabs example"
                     className={classes.tabs}
                 >
-                    <Tab label="Comunicado" {...a11yProps(0)} />
-                    <Tab label="Solicitud" {...a11yProps(1)} />
-                    <Tab label="Cotizaciones" {...a11yProps(2)} />
-                    <Tab label="Orden de compra" {...a11yProps(3)} />
-                    <Tab label="Comprobante de pago" {...a11yProps(4)} />
-                    <Tab label="Factura" {...a11yProps(5)} />
+                    <Tab label="Comunicado" {...a11yProps(0)} name="ficha_tecnica" onClick={() => handleTab('ficha_tecnica')} />
+                    {
+                        nuevaRequisicion ? null : 
+                            <>
+                                <Tab label="Solicitud" {...a11yProps(1)} name="solicitud" onClick={() => handleTab('Solicitud')} />
+                                <Tab label="Cotizaciones" {...a11yProps(2)} name="cotizaciones" onClick={() => handleTab('Cotizaciones')} />
+                                <Tab label="Orden de compra" {...a11yProps(3)} name="orden_compra" onClick={() => handleTab('Orden_compra')} />
+                                <Tab label="Comprobante de pago" {...a11yProps(4)} name="comprobante_pago" onClick={() => handleTab('Comprobante_pago')} />
+                                <Tab label="Factura" {...a11yProps(5)} name="factura" onClick={() => handleTab('Factura')} />    
+                            </>
+                    }
+                    
                 </Tabs>
+
                 <TabPanel value={value} index={0}>
                     <div>
                         <div>
@@ -242,7 +285,7 @@ export default function Adjuntos(props) {
                                 <label htmlFor="file">Selecciona el Comunicado</label>
                                 <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
                                 <div>
-                                    {form[activeTab][0] ? <div>{form[activeTab][0].name}</div> : 'No hay archivo seleccionado'}
+                                    {form.Ficha_tecnica && form.Ficha_tecnica.length > 0 ? <p>{form.Ficha_tecnica[0].name}</p> : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -250,77 +293,151 @@ export default function Adjuntos(props) {
                                 <button onClick={handleSubmit}>Subir</button>
                             </div>
                         </div>
-
-                        {/* <div>
-                            {
-                                adjuntos ?
-                                    adjuntos.map((item, index) => {
-                                        return (
-                                            <div key={index} className="comunicado">
-                                                <div className="date">
-                                                    <div>{item.date}</div>
-                                                </div>
-                                                <object
-                                                    data={item.url}
-                                                    type="application/pdf"
-                                                >
-                                                </object>
-                                                <div className="btn-comunicado">
-                                                    <a href={`${item.url}`} target="_blank" ><button >Ver adjunto</button></a>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                    : null
-                            }
-                        </div> */}
                         {
-                            adjuntos ?
-                                <CarruselAdjuntos adjuntos={adjuntos} />  
-                            : null    
+                            adjuntos  && adjuntos.Ficha_tecnica && adjuntos.Ficha_tecnica.length > 0 ?
+                                <CarruselAdjuntos data={adjuntos.Ficha_tecnica} id={data.id} getAdjuntos={getAdjuntos} />
+                                :
+                                <div className="no-adjuntos">
+                                    <p>No hay archivos adjuntos</p>
+                                </div>
                         }
                         
 
                     </div>
                 </TabPanel>
+
                 <TabPanel value={value} index={1}>
                     <div>
                         <div>
-                            <label>Solicitud</label>
-                            <input type="file" className="form-control-file" name="solicitud" />
+                            <div className="send-comunicado file">
+
+                                <label htmlFor="file">Selecciona la solicitud</label>
+                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <div>
+                                    {form.Solicitud && form.Solicitud.length > 0 ? <p>{form.Solicitud[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                </div>
+
+                            </div>
+                            <div className="btn-subir">
+                                <button onClick={handleSubmit}>Subir</button>
+                            </div>
                         </div>
+                        {
+                            adjuntos  && adjuntos.Solicitud && adjuntos.Solicitud.length > 0 ?
+                                <CarruselAdjuntos data={adjuntos.Solicitud} id={data.id} getAdjuntos={getAdjuntos} />
+                                :
+                                <div className="no-adjuntos">
+                                    <p>No hay archivos adjuntos</p>
+                                </div>
+                        }
                     </div>
                 </TabPanel>
+
                 <TabPanel value={value} index={2}>
                     <div>
                         <div>
-                            <label>Cotizaciones</label>
-                            <input type="file" className="form-control-file" name="cotizaciones" />
+                            <div className="send-comunicado file">
+
+                                <label htmlFor="file">Selecciona la cotizacion</label>
+                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <div>
+                                    {form.Cotizaciones && form.Cotizaciones.length > 0 ? <p>{form.Cotizaciones[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                </div>
+
+                            </div>
+                            <div className="btn-subir">
+                                <button onClick={handleSubmit}>Subir</button>
+                            </div>
                         </div>
+                        {
+                            adjuntos  && adjuntos.Cotizaciones && adjuntos.Cotizaciones.length > 0 ?
+                                <CarruselAdjuntos data={adjuntos.Cotizaciones} id={data.id} getAdjuntos={getAdjuntos} />
+                                :
+                                <div className="no-adjuntos">
+                                    <p>No hay archivos adjuntos</p>
+                                </div>
+                        }
                     </div>
                 </TabPanel>
+
                 <TabPanel value={value} index={3}>
                     <div>
                         <div>
-                            <label>Orden de compra</label>
-                            <input type="file" className="form-control-file" name="orden_compra" />
+                            <div className="send-comunicado file">
+
+                                <label htmlFor="file">Selecciona la Orden de Compra</label>
+                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <div>
+                                    {form.Orden_compra && form.Orden_compra.length > 0 ? <p>{form.Orden_compra[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                </div>
+
+                            </div>
+                            <div className="btn-subir">
+                                <button onClick={handleSubmit}>Subir</button>
+                            </div>
                         </div>
+                        {
+                            adjuntos  && adjuntos.Orden_compra && adjuntos.Orden_compra.length > 0 ?
+                                <CarruselAdjuntos data={adjuntos.Orden_compra} id={data.id} getAdjuntos={getAdjuntos} />
+                                :
+                                <div className="no-adjuntos">
+                                    <p>No hay archivos adjuntos</p>
+                                </div>
+                        }
                     </div>
                 </TabPanel>
+
                 <TabPanel value={value} index={4}>
                     <div>
                         <div>
-                            <label>Comprobante de pago</label>
-                            <input type="file" className="form-control-file" name="comprobante_pago" />
+                            <div className="send-comunicado file">
+
+                                <label htmlFor="file">Selecciona el Comprobante de pago</label>
+                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <div>
+                                    {form.Comprobante_pago && form.Comprobante_pago.length > 0 ? <p>{form.Comprobante_pago[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                </div>
+
+                            </div>
+                            <div className="btn-subir">
+                                <button onClick={handleSubmit}>Subir</button>
+                            </div>
                         </div>
+                        {
+                            adjuntos  && adjuntos.Comprobante_pago && adjuntos.Comprobante_pago.length > 0 ?
+                                <CarruselAdjuntos data={adjuntos.Comprobante_pago} id={data.id} getAdjuntos={getAdjuntos} />
+                                :
+                                <div className="no-adjuntos">
+                                    <p>No hay archivos adjuntos</p>
+                                </div>
+                        }
                     </div>
                 </TabPanel>
+
                 <TabPanel value={value} index={5}>
                     <div>
                         <div>
-                            <label>Factura</label>
-                            <input type="file" className="form-control-file" name="factura" />
+                            <div className="send-comunicado file">
+
+                                <label htmlFor="file">Selecciona la Factura</label>
+                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <div>
+                                    {form.Factura && form.Factura.length > 0 ? <p>{form.Factura[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                </div>
+
+                            </div>
+                            <div className="btn-subir">
+                                <button onClick={handleSubmit}>Subir</button>
+                            </div>
                         </div>
+                        {
+                            adjuntos  && adjuntos.Factura && adjuntos.Factura.length > 0 ?
+                                <CarruselAdjuntos data={adjuntos.Factura} id={data.id} getAdjuntos={getAdjuntos} />
+                                :
+                                <div className="no-adjuntos">
+                                    <p>No hay archivos adjuntos</p> 
+                                </div>
+                        }
                     </div>
                 </TabPanel>
             </div>

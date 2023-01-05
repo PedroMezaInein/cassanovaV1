@@ -1,43 +1,17 @@
 import React from 'react'
+import {useSelector} from 'react-redux'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
+import Swal from 'sweetalert2'
+
+import {apiDelete} from '../../../../functions/api'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
-
-const tutorialSteps = [
-    {
-        label: 'San Francisco – Oakland Bay Bridge, United States',
-        imgPath:
-            'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bird',
-        imgPath:
-            'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bali, Indonesia',
-        imgPath:
-            'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80',
-    },
-    {
-        label: 'NeONBRAND Digital Marketing, Las Vegas, United States',
-        imgPath:
-            'https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Goč, Serbia',
-        imgPath:
-            'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-];
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,10 +36,12 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function CarruselAdjuntos(props) {
-    const { adjuntos } = props;
+    const { data, id, getAdjuntos} = props;
+    let adjuntos = data
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
+    const auth = useSelector(state => state.authUser.access_token)
     const maxSteps = adjuntos.length;
 
     const handleNext = () => {
@@ -79,6 +55,54 @@ export default function CarruselAdjuntos(props) {
     const handleStepChange = (step) => {
         setActiveStep(step);
     };
+    const handleDelete = (index) => {
+        console.log('idadjunto', index)
+        console.log('idRequisicion', id)
+        Swal.fire({
+            title: '¿Estas seguro de eliminar este adjunto?',
+            text: "No podras revertir esta accion!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Eliminando...',
+                    text: 'Espere un momento por favor',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading();
+                    }
+                })
+                apiDelete(`requisicion/${id}/adjuntos/${index}`, auth)
+                    .then(res => {
+                        getAdjuntos()
+                        Swal.close()
+                        Swal.fire({
+                            title: 'Eliminado!',
+                            text: 'El adjunto ha sido eliminado',
+                            icon: 'success',
+                            timer: 1500,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        })
+                    })
+                    .catch(err => {
+                        Swal.close()
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Ha ocurrido un error al eliminar el adjunto',
+                            icon: 'error',
+                            timer: 1500,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        })
+                    })
+            }
+        })
+    }
 
     return (
         <div className={classes.root}>
@@ -119,8 +143,7 @@ export default function CarruselAdjuntos(props) {
                         <br />
                         <div className="text-center">
                             <a href={item.url} target="_blank" rel="noopener noreferrer"><button className="btn btn-success">Ver</button></a>
-                            <button className="btn btn-primary">Descargar</button>
-                            <button className="btn btn-danger">Eliminar</button>    
+                            <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Eliminar</button>
                         </div>
                         
                     </div>
