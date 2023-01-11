@@ -212,7 +212,7 @@ export default function NativeSelects() {
                         : null
                     }
                 </div>
-                {errores && errores.departamento && <span className='error_departamento'>{errores.departamento}</span>}
+                {errores && errores.departamento && state.departamento === '' &&<span className='error_departamento'>{errores.departamento}</span>}
 
 
                 {/* GASTO */}
@@ -233,7 +233,7 @@ export default function NativeSelects() {
                         : null
                     }
                 </div>
-                {errores && errores.tipo_gasto && <span className='error_gasto'>{errores.tipo_gasto}</span>}
+                {errores && errores.tipo_gasto && state.departamento !== '' && (state.tipo_gasto === '' || state.tipo_gasto === null) && <span className='error_gasto'>{errores.tipo_gasto}</span>}
 
 
                 {/* FECHA */}
@@ -279,7 +279,7 @@ export default function NativeSelects() {
                     />
                 </FormControl> 
             </div>
-            {errores && errores.descripcion && <span className='error_descripcion'>{errores.descripcion}</span>}
+            {errores && errores.descripcion && state.descripcion === '' && <span className='error_descripcion'>{errores.descripcion}</span>}
 
 
             {/* ADJUNTOS */}
@@ -287,8 +287,11 @@ export default function NativeSelects() {
                 <p id='adjuntos'>Agregar archivos
                     <input className='nuevaRequisicion_adjunto_input' type='file' onChange={handleFile}></input>
                 </p>
+                <div>
+                    {state.solicitud.name ? <div className='adjunto_nombre'>{state.solicitud.name}</div> : null}
+                </div>
             </div>  
-            {errores && errores.solicitud && <span className='error_adjunto'>{errores.solicitud}</span>}
+            {errores && errores.solicitud && !state.solicitud.name && <span className='error_adjunto'>{errores.solicitud}</span>}
 
 
             {/* ENVIAR */}
