@@ -14,17 +14,16 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Swal from 'sweetalert2'
 
 import Style from './AprobarSolicitud.module.css'
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = makeStyles((theme) => ({
     textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: 200,
+        width: '75%',
     },
 }));
 
 export default function Editar(props) {
-    const { data } = props
+    const { data, reload } = props
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState(false)
     const auth = useSelector(state => state.authUser)
@@ -34,9 +33,14 @@ export default function Editar(props) {
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
         tipoPago: data.tipoPago_id,
-        monto: data.monto,
+        monto: data.monto_solicitado,
+        monto_pagado: data.monto,
         descripcion: data.descripcion,
-        id: data.id
+        id: data.id,
+        auto1: data.auto1 ? data.auto1 : false,
+        auto2: data.auto2 ? data.auto2 : false,
+        auto3: data.auto3 ? data.auto3 : false,
+        id_estatus: data.id_estatus,
     })
     console.log(data)
     const classes = useStyles();
@@ -91,26 +95,58 @@ export default function Editar(props) {
     }
 
     const handleSave = () => {
-        console.log(form)
+        Swal.fire({
+            title: 'Guardando...',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            }
+        })
         if (validateForm()) {
             try {
                 let newForm = {
                     id_departamento: form.departamento,
-                    id_gasto: form.tipoGasto,
-                    descripcion: form.descripcion,
-                    id_subarea: form.tipoSubgasto,
-                    id_pago: form.tipoPago,
-                    id_solicitante: data.solicitante_id,
-                    monto_pagado: form.monto,
+                            id_gasto: form.tipoGasto,
+                            descripcion: form.descripcion,
+                            id_subarea: form.tipoSubgasto,
+                            id_pago: form.tipoPago,
+                            id_solicitante: data.solicitante_id,
+                            monto_pagado: form.monto_pagado,
+                            cantidad: form.monto,
+                            autorizacion_1: form.auto1 ? form.auto1.id : null,
+                            autorizacion_2: auth.user.id,
+                            orden_compra: data.orden_compra,
+                            fecha_pago: data.fecha_pago,
+                            id_cuenta: data.cuenta? data.cuenta.id : null,
+                            id_estatus: form.id_estatus
                 }
 
                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                     (response) => {
-                        console.log(response)
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Guardado',
+                            text: 'Se ha guardado correctamente',
+                            timer: 2000,
+                            timerProgressBar: true,
+                        })
                     }, (error) => { }
-                ).catch((error) => { })
+                ).catch((error) => {
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error',
+                    })
+                })
             } catch (error) {
-                console.log(error)
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error',
+                })
             }
         } else {
             Swal.fire({
@@ -148,7 +184,16 @@ export default function Editar(props) {
 
     }
 
-    console.log(form)
+    const handleAprueba = (e) => {
+        console.log(e.target.name)
+        if (e.target.name === 'auto1') {
+            setForm({
+                ...form,
+                auto1: !form.auto1
+            })
+        }
+    }
+
     return (
         <>
             <div className={Style.container}>
@@ -167,6 +212,20 @@ export default function Editar(props) {
                 </div>
 
                 <div>
+                    <TextField
+                        name='monto'
+                        label="Monto solicitado"
+                        type="number"
+                        defaultValue={form.monto}
+                        onChange={handleChange}
+                        className={classes.textField}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </div>
+
+                <div>
                     {departamentos.length > 0 ?
                         <>
                             <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
@@ -174,6 +233,7 @@ export default function Editar(props) {
                                 value={form.departamento}
                                 name="departamento"
                                 onChange={handleChangeDepartamento}
+                                className={classes.textField}
                             >
                                 {departamentos.map((item, index) => (
                                     <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -183,9 +243,9 @@ export default function Editar(props) {
                         </>
                         : null
                     }
-                    
+
                 </div>
-                
+
                 <div>
                     {departamentos.length > 0 ?
                         <>
@@ -194,6 +254,7 @@ export default function Editar(props) {
                                 value={form.tipoGasto}
                                 name="tipoGasto"
                                 onChange={handleChange}
+                                className={classes.textField}
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -213,56 +274,70 @@ export default function Editar(props) {
                                 name="tipoSubgasto"
                                 onChange={handleChange}
                                 value={form.tipoSubgasto}
+                                className={classes.textField}
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.find(item => item.id == form.tipoGasto).subpartidas.map((item, index) => (
                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                 ))}
 
-                            </Select>    
+                            </Select>
                         </>
                         : null
 
                     }
-                    
+
                 </div>
 
                 <div>
                     {
                         opciones ?
                             <>
-                            <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
-                            <Select
-                                name="tipoPago"
-                                value={form.tipoPago}
-                                onChange={handleChange}
+                                <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
+                                <Select
+                                    name="tipoPago"
+                                    value={form.tipoPago}
+                                    onChange={handleChange}
+                                    className={classes.textField}
                                 >
                                     {opciones.tiposPagos.map((item, index) => (
-                                    <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                ))}
+                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    ))}
 
-                            </Select>    
+                                </Select>
                             </>
                             : null
                     }
-                    
+
                 </div>
+                
                 <div>
-                    <TextField
-                        name='monto'
-                        label="Monto solicitado"
-                        type="number"
-                        defaultValue={form.monto}
+                    <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
+                    <Select
+                        name="id_estatus"
+                        value={form.id_estatus}
                         onChange={handleChange}
                         className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                    >
+                        <MenuItem value={9}>Pendiente</MenuItem>
+                        <MenuItem value={7}>Aprobado</MenuItem>
+                        <MenuItem value={8}>Cancelado</MenuItem>
+                    </Select>
                 </div>
 
                 <div>
+                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
+                    <Checkbox
+                        checked={form.auto1}
+                        onChange={handleAprueba}
+                        name="auto1"
+                        color="primary"
+                        style={{ marginLeft: '20%' }}
+                    />
+                </div>
+
+                <div className={Style.btnAprobar}>
                     <button onClick={handleSave}>Guardar</button>
-                    </div>
+                </div>
 
             </div>
         </>

@@ -46,6 +46,7 @@ export default function TablaGeneral(props) {
    
     //opciones: array de objetos con la siguiente estructura
     //          {nombre: 'nombre de la opcion', funcion: funcion que se va a ejecutar al dar click}
+    //recargar: Regresa una funcion que se puede utilizar para recargar la tabla
 
     //ejemplo de uso
     // <Tabla titulo='Titulo de la tabla' subtitulo='Subtitulo de la tabla' columnas={columnas} url={url} numItemsPagina={numItemsPagina} acciones={acciones} ProccessData={ProccessData} opciones={opciones} />
@@ -189,7 +190,7 @@ export default function TablaGeneral(props) {
             return obj
         })
     }
-
+    
     return (
         <div className='containerTable'>
             <div className="row">

@@ -9,28 +9,23 @@ import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import Swal from 'sweetalert2'
 
-import {apiDelete} from '../../../../functions/api'
+import { apiDelete } from '../../../../functions/api'
+import styles from './CarruselAdjuntos.module.css'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 400,
+        maxWidth: 550,
         flexGrow: 1,
+        height: 350,
     },
-    header: {
+    adjuntos: {
+        width: 550,
+        height: 250,
         display: 'flex',
+        justifyContent: 'center',
         alignItems: 'center',
-        height: 50,
-        paddingLeft: theme.spacing(4),
-        backgroundColor: theme.palette.background.default,
-    },
-    img: {
-        height: 255,
-        display: 'block',
-        maxWidth: 400,
-        overflow: 'hidden',
-        width: '100%',
     },
 }));
 
@@ -106,8 +101,6 @@ export default function CarruselAdjuntos(props) {
 
     return (
         <div className={classes.root}>
-
-            
             <MobileStepper
                 steps={maxSteps}
                 position="static"
@@ -115,14 +108,14 @@ export default function CarruselAdjuntos(props) {
                 activeStep={activeStep}
                 nextButton={
                     <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
-                        Next
+                        Siguiente
                         {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                     </Button>
                 }
                 backButton={
                     <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
                         {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                        Back
+                        Anterior
                     </Button>
                 }
             />
@@ -132,17 +125,18 @@ export default function CarruselAdjuntos(props) {
                 onChangeIndex={handleStepChange}
                 enableMouseEvents
                 autoplay={false}
+                
             >
                 {adjuntos.map((item, index) => (
-                    <div key={index}>
-                        
+                    <div key={index} >
                         <object
                             data={item.url}
+                            className={classes.adjuntos}
                         >
                         </object>
                         <br />
                         <div className="text-center">
-                            <a href={item.url} target="_blank" rel="noopener noreferrer"><button className="btn btn-success">Ver</button></a>
+                            <a href={item.url} target="_blank" ><button className="btn btn-success">Ver</button></a>
                             <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Eliminar</button>
                         </div>
                         
