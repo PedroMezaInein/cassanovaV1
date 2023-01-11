@@ -12,7 +12,9 @@ import { errorAlert } from './functions/alert';
 import Cursos from './pages/RecursosHumanos/Cursos/Cursos'; */
 import Reuniones from './pages/RecursosHumanos/Reuniones/Reuniones';
 import NominaPrestaciones from './pages/RecursosHumanos/NominaPrestaciones/NominaPrestaciones';
-import {Requisiciones} from './pages/Administracion/Requisiciones/Requisiciones'
+import { Requisiciones } from './pages/Administracion/Requisiciones/Requisiciones'
+import RequisicionCompras from './pages/Administracion/RequisicionCompras/RequisicionCompras'
+import RequisicionContabilidad from './pages/Administracion/RequisicionContabilidad/RequisicionContabilidad'
 
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
@@ -226,7 +228,7 @@ const NotificacionesCorreos = React.lazy(() => import('./pages/Plataforma/Notifi
 const Etiquetas = React.lazy( () => import('./pages/Catalogos/Etiquetas') )
 
 const Modulo = React.lazy(() => import('./pages/RecursosHumanos/Modulos/Modulos') )
-const RepseForm = React.lazy(() => import('./pages/RecursosHumanos/Modulos/RepseForm') )
+const RepseForm = React.lazy(() => import('./pages/RecursosHumanos/Modulos/RepseForm'))
 
 class App extends Component{
 
@@ -418,7 +420,9 @@ class App extends Component{
                     <Route path = "/administracion/licencias-equipos" exact component ={ Licencias } />
 
                     <Route path = "/administracion/calendario-pagos" exact component = { CalendarioPagos } />
-                    <Route path = "/administracion/requisicion" exact component = { Requisiciones } />
+                    <Route path="/administracion/requisicion" exact component={Requisiciones} />
+                    <Route path="/administracion/requisicion-compras" exact component={RequisicionCompras} />
+                    <Route path="/administracion/requisicion-contabilidad" exact component={RequisicionContabilidad} />
 
                     {/*  ANCHOR Routes for bancos */}
 

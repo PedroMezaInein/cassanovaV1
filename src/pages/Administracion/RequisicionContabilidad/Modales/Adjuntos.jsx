@@ -24,8 +24,6 @@ function TabPanel(props) {
         <div
             role="tabpanel"
             hidden={value !== index}
-            id={`vertical-tabpanel-${index}`}
-            aria-labelledby={`vertical-tab-${index}`}
             {...other}
         >
             {value === index && (
@@ -55,10 +53,12 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
         display: 'flex',
-        height: 500,
+        height: 550,
+        width: '100%',
     },
     tabs: {
         borderRight: `1px solid ${theme.palette.divider}`,
+        
     },
 }));
 
@@ -257,30 +257,25 @@ export default function Adjuntos(props) {
             <div className={classes.root}>
                 <Tabs
                     orientation="vertical"
-                    variant="scrollable"
+                    variant="fullWidth"
+
                     value={value}
                     onChange={handleChange}
                     aria-label="Vertical tabs example"
                     className={classes.tabs}
                 >
                     <Tab label="Comunicado" {...a11yProps(0)} name="ficha_tecnica" onClick={() => handleTab('ficha_tecnica')} />
-                    {
-                        nuevaRequisicion ? null : 
-                            <>
-                                <Tab label="Solicitud" {...a11yProps(1)} name="solicitud" onClick={() => handleTab('Solicitud')} />
-                                <Tab label="Cotizaciones" {...a11yProps(2)} name="cotizaciones" onClick={() => handleTab('Cotizaciones')} />
-                                <Tab label="Orden de compra" {...a11yProps(3)} name="orden_compra" onClick={() => handleTab('Orden_compra')} />
-                                <Tab label="Comprobante de pago" {...a11yProps(4)} name="comprobante_pago" onClick={() => handleTab('Comprobante_pago')} />
-                                <Tab label="Factura" {...a11yProps(5)} name="factura" onClick={() => handleTab('Factura')} />    
-                            </>
-                    }
-                    
+                    {nuevaRequisicion ? null : <Tab label="Solicitud" {...a11yProps(1)} name="solicitud" onClick={() => handleTab('Solicitud')} />}
+                    {nuevaRequisicion ? null : <Tab label="Cotizaciones" {...a11yProps(2)} name="cotizaciones" onClick={() => handleTab('Cotizaciones')} />}
+                    {nuevaRequisicion ? null : <Tab label="Orden de compra" {...a11yProps(3)} name="orden_compra" onClick={() => handleTab('Orden_compra')} />}
+                    {nuevaRequisicion ? null : <Tab label="Comprobante de pago" {...a11yProps(4)} name="comprobante_pago" onClick={() => handleTab('Comprobante_pago')} />}
+                    {nuevaRequisicion ? null : <Tab label="Factura" {...a11yProps(5)} name="factura" onClick={() => handleTab('Factura')} />} 
                 </Tabs>
 
                 <TabPanel value={value} index={0}>
                     <div>
                         <div>
-                            <div className="send-comunicado file">
+                            <div className="file">
 
                                 <label htmlFor="file">Selecciona el Comunicado</label>
                                 <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
@@ -297,7 +292,7 @@ export default function Adjuntos(props) {
                             adjuntos  && adjuntos.Ficha_tecnica && adjuntos.Ficha_tecnica.length > 0 ?
                                 <CarruselAdjuntos data={adjuntos.Ficha_tecnica} id={data.id} getAdjuntos={getAdjuntos} />
                                 :
-                                <div className="no-adjuntos">
+                                <div className="">
                                     <p>No hay archivos adjuntos</p>
                                 </div>
                         }
@@ -307,7 +302,7 @@ export default function Adjuntos(props) {
                 </TabPanel>
 
                 <TabPanel value={value} index={1}>
-                    <div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <div>
                             <div className="send-comunicado file">
 
@@ -323,7 +318,7 @@ export default function Adjuntos(props) {
                             </div>
                         </div>
                         {
-                            adjuntos  && adjuntos.Solicitud && adjuntos.Solicitud.length > 0 ?
+                            adjuntos && adjuntos.Solicitud && adjuntos.Solicitud.length > 0 ?
                                 <CarruselAdjuntos data={adjuntos.Solicitud} id={data.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="no-adjuntos">
@@ -350,7 +345,7 @@ export default function Adjuntos(props) {
                             </div>
                         </div>
                         {
-                            adjuntos  && adjuntos.Cotizaciones && adjuntos.Cotizaciones.length > 0 ?
+                            adjuntos && adjuntos.Cotizaciones && adjuntos.Cotizaciones.length > 0 ?
                                 <CarruselAdjuntos data={adjuntos.Cotizaciones} id={data.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="no-adjuntos">
@@ -377,7 +372,7 @@ export default function Adjuntos(props) {
                             </div>
                         </div>
                         {
-                            adjuntos  && adjuntos.Orden_compra && adjuntos.Orden_compra.length > 0 ?
+                            adjuntos && adjuntos.Orden_compra && adjuntos.Orden_compra.length > 0 ?
                                 <CarruselAdjuntos data={adjuntos.Orden_compra} id={data.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="no-adjuntos">
@@ -404,7 +399,7 @@ export default function Adjuntos(props) {
                             </div>
                         </div>
                         {
-                            adjuntos  && adjuntos.Comprobante_pago && adjuntos.Comprobante_pago.length > 0 ?
+                            adjuntos && adjuntos.Comprobante_pago && adjuntos.Comprobante_pago.length > 0 ?
                                 <CarruselAdjuntos data={adjuntos.Comprobante_pago} id={data.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="no-adjuntos">
@@ -431,11 +426,11 @@ export default function Adjuntos(props) {
                             </div>
                         </div>
                         {
-                            adjuntos  && adjuntos.Factura && adjuntos.Factura.length > 0 ?
+                            adjuntos && adjuntos.Factura && adjuntos.Factura.length > 0 ?
                                 <CarruselAdjuntos data={adjuntos.Factura} id={data.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="no-adjuntos">
-                                    <p>No hay archivos adjuntos</p> 
+                                    <p>No hay archivos adjuntos</p>
                                 </div>
                         }
                     </div>
