@@ -1,11 +1,14 @@
 import React, {useState} from 'react'
 import { useSelector } from 'react-redux';
+
 import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { REQUISICIONES } from '../../../constants'
 import { Modal } from '../../../components/singles'
+import Adjuntos from '../../Administracion/Egresos/Modales/Adjuntos'
 import NuevaRequisicion from '../../../components/forms/administracion/NuevaRequisicion'
 import {EditarRequisicion} from '../../../components/forms/administracion/EditarRequisicion'
+
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import Swal from 'sweetalert2'
 
@@ -13,6 +16,11 @@ function Requisiciones () {
 
     const userAuth = useSelector((state) => state.authUser);
     const [modal, setModal] = useState({
+
+        crear: {
+            show: false,
+            data: false
+        },
 
         editar: {
             show: false,
@@ -41,30 +49,24 @@ function Requisiciones () {
                     acciones: acciones(),
                     solicitante: result.solicitante.name,
                     fecha: result.fecha,
-                    departamento: result.departamento.nombre,
+                    departamento: result.departamento ?  result.departamento.nombre : '',
                     tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
-                    descripcion: result.descripcion
+                    descripcion: result.descripcion,
+                    id:result.id,
+                    data:result
                 }
             )
         })
         return aux
     }
-
-    let handleClose = (nombre_modal)=>{
-        setModal({
-            ...modal,
-            crear: false,
-            editar: false
-        })
-    }
-
+    
     const handleOpen = [
         {
             nombre: 'Nueva Requisicion',
             funcion: (item) => { 
                 setModal({
                     ...modal,
-                    editar: {
+                    crear: {
                         show: true,
                         data: item
                     }
@@ -72,6 +74,16 @@ function Requisiciones () {
             }
         },
     ]
+
+    let handleClose = (tipo) => () => {
+        setModal({
+            ...modal,
+            [tipo]: {
+                show: false,
+                data: false
+            }
+        })
+    }
 
     let acciones = () => {
         let aux = [
@@ -84,7 +96,7 @@ function Requisiciones () {
                         ...modal,
                         editar: {
                             show: true,
-                            data: item
+                            data: item.data
                         }
                     })
                 
@@ -105,31 +117,6 @@ function Requisiciones () {
                     })
                 }
             }, 
-            
-                // nombre: 'Editar',
-                // icono: 'fas fa-edit',
-                // color: 'blueButton ',
-                // funcion: (item) => {
-                //     Swal.fire({
-                //         title: 'Editar',
-                //         text: '¿Desea editar el registro?',
-                //         icon: 'question',
-                //         showCancelButton: true,
-                //         confirmButtonText: 'Si',
-                //         cancelButtonText: 'No',
-                //     }).then((result) => {
-                //         if (result.isConfirmed) {
-                //             setModal({
-                //                 ...modal,
-                //                 editar: {
-                //                     show: true,
-                //                     data: item
-                //                 }
-                //             })
-                //         }
-                //     });
-                // }
-            
         ]
         return aux
     }
@@ -141,19 +128,23 @@ function Requisiciones () {
                     titulo="Requisicion" 
                     columnas={REQUISICIONES}
                     url={'requisicion'}  
-                    numItemsPagina={10}
+                    numItemsPagina={12}
                     ProccessData={proccessData}
                     opciones={handleOpen}
                     acciones={acciones()}
                     >
-                    </Tabla>
+                </Tabla>
             </Layout>
-            <Modal size="lg" title={"Nueva requisicion"} show={modal.crear} handleClose={handleClose}>
+            <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
                 <NuevaRequisicion />
             </Modal>
 
-            <Modal size="lg" title={"Editar requisicion"} show={modal.editar} handleClose={handleClose}>
+            <Modal size="lg" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
                 <EditarRequisicion data={modal.editar.data}/>
+            </Modal>
+
+            <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
+                <Adjuntos data={modal.adjuntos.data}/>
             </Modal>
             
         </>

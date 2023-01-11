@@ -9,7 +9,8 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { apiPostForm } from '../../../functions/api'
 
-import nuevaRequisicion from '../../../styles/_nuevaRequisicion.scss'
+import '../../../styles/_nuevaRequisicion.scss'
+import '../../../styles/_editarRequisicion.scss'
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -73,18 +74,32 @@ export default function NativeSelects() {
 
     const comentario = inputComentario();
 
-    const validacion= ()=> {
+    const validateForm = () => {
+        let validar = true
         let error = {}
         if(state.departamento === ''){
-            error.departamento = 'No has seleccionado un departamento'
+            error.departamento = "Seleccione un departamento"
+            validar = false
+        }
+        if(state.tipo_gasto === ''){
+            error.tipo_gasto = "Seleccione el tipo de gasto"
+            validar = false
+        }
+        if(state.descripcion === ''){
+            error.descripcion = "Escriba una descripcion"
+            validar = false
+        }
+        if(state.solicitud === ''){
+            error.solicitud = "Agregue un adjunto"
+            validar = false
         }
         setErrores(error)
-        return error
+        return validar
     }
 
     const enviar = () =>{
-        /* if(Object.keys(validacion()).length ===0){ */
-        if(true){
+        // if(Object.keys(validacion()).length ===0){
+        if(validateForm()){
             Swal.fire('Requisicion creada con éxito', '', 'success')
 
             let dataForm = new FormData()
@@ -94,7 +109,8 @@ export default function NativeSelects() {
                 id_departamento: state.departamento,
                 id_gasto: state.tipo_gasto,
                 descripcion:state.descripcion,
-                fecha: state.fecha
+                fecha: state.fecha,
+                solicitud: state.solicitud
             }
 
             let aux = Object.keys(newForm)
@@ -106,8 +122,7 @@ export default function NativeSelects() {
                     default:
                         dataForm.append(element, newForm[element])
                         break
-                }
-                
+                }  
             })
 
             dataForm.append(`files_name_requisicion[]`, 'requisicion01')
@@ -124,21 +139,30 @@ export default function NativeSelects() {
                         departamento: '',
                         tipo_gasto: '',
                         descripcion: '',
+                        solicitud:''
                     }
                     
                     console.log('form')
                     console.log(form)
-                    Swal.fire('Se aceptó el permiso', '', 'success') 
                 }
-                else if (data.isDenied) {
-                  Swal.fire('Changes are not saved', '', 'info')
-                }
-            })
-            .catch((err)=>{
 
+                else if (data.isDenied) {
+                    Swal.fire('Faltan campos', '', 'info')
+                }
             })
-        } else{
-            Swal.fire('Faltan campos', '', 'info')
+
+            .catch((error)=>{
+                
+            })
+        }// 
+        else{
+            Swal.fire({
+                title: 'Error',
+                text: 'Favor de llenar todos los campos',
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 2000,
+            })
         }
     }
 
@@ -154,8 +178,10 @@ export default function NativeSelects() {
     return (
         <div className='nuevaRequisicion'>
             <div className='nuevaRequisicion_bloque1'>
+
+                {/* SOLICITANTE */}
                 <div>
-                <TextField className={classes.formControl}
+                    <TextField className='nuevaRequisicion_solicitante'
                         label="Solicitante"
                         type="text"
                         defaultValue={user.user.name}
@@ -167,7 +193,8 @@ export default function NativeSelects() {
                     />
                 </div>
                 
-                <div>
+                {/* DEPARTAMENTO */}
+                <div className="nuevaRequisicion_departamento">
                     {departamentos.length > 0 ?
                         <>
                             <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
@@ -185,9 +212,11 @@ export default function NativeSelects() {
                         : null
                     }
                 </div>
-                {/* {errores && errores.departamento && <span>{errores.departamento}</span>} */}
+                {errores && errores.departamento && <span className='error_departamento'>{errores.departamento}</span>}
 
-                <div>
+
+                {/* GASTO */}
+                <div className="nuevaRequisicion_gasto">  
                     {departamentos.length > 0 && state.departamento !== ''?
                         <>
                             <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
@@ -204,32 +233,40 @@ export default function NativeSelects() {
                         : null
                     }
                 </div>
+                {errores && errores.tipo_gasto && <span className='error_gasto'>{errores.tipo_gasto}</span>}
 
-                <FormControl className={classes.formControl}>
-                    <form className={classes.container} noValidate>
-                        <TextField
-                            id="fecha"
-                            label="Fecha"
-                            type="date"
-                            name='fecha'
-                            onChange={handleChange}
-                            defaultValue={state.fecha}
-                            className={classes.textField}
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                        />
-                    </form>
-                </FormControl>
+
+                {/* FECHA */}
+                <div>
+                    <FormControl>
+                        <form>
+                            <TextField
+                                id="fecha"
+                                label="Fecha"
+                                type="date"
+                                name='fecha'
+                                onChange={handleChange}
+                                defaultValue={state.fecha}
+                                className={classes.textField}
+                                InputLabelProps={{
+                                shrink: true,
+                                }}
+                            />
+                        </form>
+                    </FormControl>
+                </div>
+
             </div>
 
+            {/* DESCRIPCION */}
             <div className='nuevaRequisicion_comentario'>
-               <FormControl className={comentario.root}>
+               <FormControl className='comentario'>
+
                     <TextField 
                         // id="standard-full-width"
                         label="Descripcion"
                         style={{ margin: 8 }}
-                        placeholder="Deja un comentario"
+                        placeholder="Deja una descripción"
                         // helperText="Full width!"
                         // fullWidth
                         onChange={handleChange}
@@ -242,13 +279,22 @@ export default function NativeSelects() {
                     />
                 </FormControl> 
             </div>
+            {errores && errores.descripcion && <span className='error_descripcion'>{errores.descripcion}</span>}
 
-            <div>
-                <input type='file' onChange={handleFile}></input>
-            </div>
 
-            <div className='boton'>
-                <button onClick={enviar} className='nuevaRequisicion_boton'>Agregar</button>
+            {/* ADJUNTOS */}
+            <div className='nuevaRequisicion_adjunto'>
+                <p id='adjuntos'>Agregar archivos
+                    <input className='nuevaRequisicion_adjunto_input' type='file' onChange={handleFile}></input>
+                </p>
+            </div>  
+            {errores && errores.solicitud && <span className='error_adjunto'>{errores.solicitud}</span>}
+
+
+            {/* ENVIAR */}
+            <div className='nuevaRequisicion_enviar'>
+                <button className='nuevaRequisicion_boton' onClick={enviar}>Agregar
+                </button>  
             </div>
 
         </div>

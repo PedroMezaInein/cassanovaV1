@@ -256,7 +256,7 @@ export default function TablaGeneral(props) {
                                                                             </div>
                                                                             : null
                                                                         }
-                                                                    </>
+                                                                    </> 
 
                                                             }
                                                         
@@ -307,8 +307,8 @@ export default function TablaGeneral(props) {
                                                                             
                                                                             {acciones.map((accion, index) => {
                                                                                 return (
-                                                                                    <div className={`${accion.color} Button-action`} key={index} >
-                                                                                        <i className={` ${accion.icono} text-light`} onClick={() => accion.funcion(item)}>
+                                                                                    <div className={`${accion.color} Button-action`}  onClick={() => accion.funcion(item)} key={index} >
+                                                                                        <i className={` ${accion.icono} text-light`}>
                                                                                             <span className="ml-2 h6">{accion.nombre}</span>
                                                                                         </i>    
                                                                                     </div>
