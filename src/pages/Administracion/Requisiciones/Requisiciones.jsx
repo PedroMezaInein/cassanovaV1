@@ -5,7 +5,7 @@ import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { REQUISICIONES } from '../../../constants'
 import { Modal } from '../../../components/singles'
-import Adjuntos from '../../Administracion/Egresos/Modales/Adjuntos'
+import Adjuntos from '../../Administracion/RequisicionCompras/Modales/Adjuntos'
 import NuevaRequisicion from '../../../components/forms/administracion/NuevaRequisicion'
 import {EditarRequisicion} from '../../../components/forms/administracion/EditarRequisicion'
 
@@ -140,11 +140,11 @@ function Requisiciones () {
             </Modal>
 
             <Modal size="lg" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                <EditarRequisicion data={modal.editar.data}/>
+                <EditarRequisicion data={modal.editar.data} />
             </Modal>
 
             <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
-                <Adjuntos data={modal.adjuntos.data}/>
+                <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={true}/>
             </Modal>
             
         </>
