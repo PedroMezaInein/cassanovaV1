@@ -235,7 +235,7 @@ export default function TablaGeneral(props) {
                                     <tr >
                                         {columnas.map((columna, index) => {
                                             return (
-                                                <th key={index} className=' mw-25'>
+                                                <th key={index} className='mt-25'>
                                                     <div className="TitleColumn">
                                                         
                                                             {
