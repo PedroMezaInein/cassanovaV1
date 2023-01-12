@@ -27,7 +27,6 @@ function EditarRequisicion (props) {
         descripcion: data.descripcion ? data.descripcion : 'no definido',
         tipoSubgasto: data.tipoSubEgreso_id,
         tipoPago: data.tipoPago_id,
-        monto: data.monto_pago,
         id: data.id
     })
 
@@ -84,7 +83,8 @@ function EditarRequisicion (props) {
                     id_subarea: form.tipoSubgasto,
                     id_pago: form.tipoPago,
                     id_solicitante: data.solicitante.id,
-                    monto_pagado: form.monto,
+                    // estatus: data.estatus.estatus,
+                    // monto_pagado: form.monto,
                 }
                 apiPutForm(`requisicion/${data.id}`, newForm, user.access_token).then((response)=>{
                     Swal.fire('Se editó la requisición', '', 'success')  

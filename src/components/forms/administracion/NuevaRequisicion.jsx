@@ -12,20 +12,10 @@ import { apiPostForm } from '../../../functions/api'
 import '../../../styles/_nuevaRequisicion.scss'
 import '../../../styles/_editarRequisicion.scss'
 
-const useStyles = makeStyles((theme) => ({
-    formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-    },
-    selectEmpty: {
-    marginTop: theme.spacing(2),
-    },
-}));
-
 export default function NativeSelects() {
     const user = useSelector(state=> state.authUser)
     const departamentos = useSelector(state => state.opciones.areas)
-    const gastos = useSelector(state => state.opciones.areas)
+    // const gastos = useSelector(state => state.opciones.areas)
     console.log(user)
     const [state, setState] = useState({
         solicitante: user.user.id,
@@ -37,8 +27,6 @@ export default function NativeSelects() {
     });
     
     const [errores, setErrores] = useState()
-
-    const classes = useStyles();
 
     const handleFile = (e) => {
         console.log(e.target.files)
@@ -61,18 +49,18 @@ export default function NativeSelects() {
 
     console.log(state)
 
-    const inputComentario = makeStyles((theme) => ({
-        root: {
-            display: 'flex',
-            flexWrap: 'wrap',
-          },
-          textField: {
-            marginLeft: theme.spacing(1),
-            marginRight: theme.spacing(1),
-          },
-    }));
+    // const inputComentario = makeStyles((theme) => ({
+    //     root: {
+    //         display: 'flex',
+    //         flexWrap: 'wrap',
+    //       },
+    //       textField: {
+    //         marginLeft: theme.spacing(1),
+    //         marginRight: theme.spacing(1),
+    //       },
+    // }));
 
-    const comentario = inputComentario();
+    // const comentario = inputComentario();
 
     const validateForm = () => {
         let validar = true
@@ -89,10 +77,10 @@ export default function NativeSelects() {
             error.descripcion = "Escriba una descripcion"
             validar = false
         }
-        if(state.solicitud === ''){
-            error.solicitud = "Agregue un adjunto"
-            validar = false
-        }
+        // if(state.solicitud === ''){
+        //     error.solicitud = "Agregue un adjunto"
+        //     validar = false
+        // }
         setErrores(error)
         return validar
     }
@@ -247,7 +235,6 @@ export default function NativeSelects() {
                                 name='fecha'
                                 onChange={handleChange}
                                 defaultValue={state.fecha}
-                                className={classes.textField}
                                 InputLabelProps={{
                                 shrink: true,
                                 }}
@@ -291,7 +278,7 @@ export default function NativeSelects() {
                     {state.solicitud.name ? <div className='adjunto_nombre'>{state.solicitud.name}</div> : null}
                 </div>
             </div>  
-            {errores && errores.solicitud && !state.solicitud.name && <span className='error_adjunto'>{errores.solicitud}</span>}
+            {/* {errores && errores.solicitud && !state.solicitud.name && <span className='error_adjunto'>{errores.solicitud}</span>} */}
 
 
             {/* ENVIAR */}

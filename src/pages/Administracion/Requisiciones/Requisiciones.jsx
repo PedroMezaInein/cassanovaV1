@@ -52,6 +52,7 @@ function Requisiciones () {
                     departamento: result.departamento ?  result.departamento.nombre : '',
                     tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
                     descripcion: result.descripcion,
+                    estatus: result.estatus.estatus,
                     id:result.id,
                     data:result
                 }
