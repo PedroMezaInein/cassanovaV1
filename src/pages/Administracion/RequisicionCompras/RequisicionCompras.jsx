@@ -183,7 +183,7 @@ export default function RequisicionCompras() {
         return aux
     }
 
-    let handleClose = (tipo) => () => {
+    const handleClose = (tipo) => () => {
         setModal({
             ...modal,
             [tipo]: {
@@ -205,12 +205,12 @@ export default function RequisicionCompras() {
                 </>
             </Layout>
             
-            <Modal size="md" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
-                <Convertir data={modal.convertir.data} />
+            <Modal size="lg" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
+                <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} />
             </Modal>
 
-            <Modal size="md" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                <Editar data={modal.editar.data} />
+            <Modal size="lg" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
+                <Editar data={modal.editar.data} handleClose={handleClose('editar')} />
             </Modal>
 
             <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>

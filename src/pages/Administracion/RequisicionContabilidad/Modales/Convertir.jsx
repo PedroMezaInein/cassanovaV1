@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiOptions, apiPutForm, apiPostForm } from '../../../../functions/api'
+import { apiOptions, apiPutForm } from '../../../../functions/api'
 
 import { setOptions } from '../../../../functions/setters'
 
@@ -11,7 +11,6 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
 
 import Swal from 'sweetalert2'
 
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Convertir(props) {
-    const { data, reload } = props
+    const { data, handleClose, reload } = props
     console.log(props)
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState(false)
@@ -114,6 +113,13 @@ export default function Convertir(props) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     if (validateForm()) {
+                        Swal.fire({
+                            title: 'Aprobando...',
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                Swal.showLoading()
+                            }
+                        })
                         let newForm = {
                             id_departamento: form.departamento,
                             id_gasto: form.tipoGasto,
@@ -132,6 +138,11 @@ export default function Convertir(props) {
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
+                                handleClose('convertir')
+                                if (reload) {
+                                    reload.reload()
+                                }
+                                reload()
                                 Swal.close()
                                 Swal.fire({
                                     icon: 'success',
@@ -229,7 +240,6 @@ export default function Convertir(props) {
 
                 <div>
                     <TextField
-                        id="fecha_pago"
                         label="Fecha de Pago"
                         type="date"
                         name='fecha_pago'

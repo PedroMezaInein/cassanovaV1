@@ -12,7 +12,7 @@ import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
 import '../../../styles/_TablaGeneral.scss'
 
 export default function TablaGeneral(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla
@@ -69,6 +69,11 @@ export default function TablaGeneral(props) {
             })
             return obj
         })
+        if (reload !== undefined) {
+            reload({
+                reload: getData
+            })
+        }
 
     }, []) 
 
@@ -106,6 +111,8 @@ export default function TablaGeneral(props) {
             console.log(error)
         }
     }
+    //send reload function to parent
+
 
     const sortData = (identificador) => {
         let dataSort = [...data];

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Editar(props) {
-    const { data, reload } = props
+    const { data, handleClose } = props
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState(false)
     const auth = useSelector(state => state.authUser)
@@ -104,6 +104,13 @@ export default function Editar(props) {
         })
         if (validateForm()) {
             try {
+                Swal.fire({
+                    title: 'Guardando...',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
                 let newForm = {
                     id_departamento: form.departamento,
                             id_gasto: form.tipoGasto,
@@ -123,6 +130,7 @@ export default function Editar(props) {
 
                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                     (response) => {
+                        handleClose('editar')
                         Swal.close()
                         Swal.fire({
                             icon: 'success',
