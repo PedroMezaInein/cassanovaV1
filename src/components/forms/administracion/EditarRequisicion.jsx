@@ -7,7 +7,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 
 
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2'
 
 function EditarRequisicion (props) {
 
-    const { data } = props
+    const { data, handleClose } = props
     console.log(data)
     const departamentos = useSelector(state => state.opciones.areas)
     const user = useSelector(state => state.authUser)
@@ -27,6 +27,7 @@ function EditarRequisicion (props) {
         descripcion: data.descripcion ? data.descripcion : 'no definido',
         tipoSubgasto: data.tipoSubEgreso_id,
         tipoPago: data.tipoPago_id,
+        // estatus: data.estatus ? data.estatus.estatus : 'no difinido',
         id: data.id
     })
 
@@ -55,14 +56,7 @@ function EditarRequisicion (props) {
     const validateForm = () => {
         let validar = true
         let error = {}
-        // if(form.departamento === ''){
-        //     error.departamento = "Seleccione un departamento"
-        //     validar = false
-        // }
-        // if(form.tipo_gasto === ''){
-        //     error.tipo_gasto = "Seleccione el tipo de gasto"
-        //     validar = false
-        // }
+       
         if(form.descripcion === ''){
             error.descripcion = "Escriba una descripcion"
             validar = false
@@ -74,27 +68,47 @@ function EditarRequisicion (props) {
     const handleSave = () => {
         if(validateForm()){
 
-            try {
-                let newForm = {
-                    id_departamento: form.departamento,
-                    id_gasto: form.tipo_gasto,
-                    descripcion:form.descripcion,
-                    fecha: form.fecha,
-                    id_subarea: form.tipoSubgasto,
-                    id_pago: form.tipoPago,
-                    id_solicitante: data.solicitante.id,
-                    // estatus: data.estatus.estatus,
-                    // monto_pagado: form.monto,
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
                 }
-                apiPutForm(`requisicion/${data.id}`, newForm, user.access_token).then((response)=>{
-                    Swal.fire('Se editó la requisición', '', 'success')  
-                })
-            }   
-            
-            catch (error) {
-                console.log(error)
+            }) 
+    
+            let newForm = {
+                id_departamento: form.departamento,
+                id_gasto: form.tipo_gasto,
+                descripcion:form.descripcion,
+                fecha: form.fecha,
+                id_subarea: form.tipoSubgasto,
+                id_pago: form.tipoPago,
+                id_solicitante: data.solicitante.id,
+                // estatus: data.estatus.estatus,
             }
-        } 
+
+            apiPutForm(`requisicion/${data.id}`, newForm, user.access_token)
+            .then((response)=>{
+                Swal.close()
+                Swal.fire({
+                    icon: 'success',
+                    tittle: 'Editar requisición',
+                    text: 'Se ha editado correctamente',
+                    timer: 2000,
+                    timerProgressBar: true,
+                })
+                handleClose()
+            }) 
+
+            .catch((error)=>{  
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error',
+                })
+            })
+        }
         
         else {
             Swal.fire({

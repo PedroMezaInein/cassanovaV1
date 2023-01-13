@@ -12,7 +12,7 @@ import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
 import '../../../styles/_TablaGeneral.scss'
 
 export default function TablaGeneral(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla

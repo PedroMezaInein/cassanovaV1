@@ -12,10 +12,10 @@ import { apiPostForm } from '../../../functions/api'
 import '../../../styles/_nuevaRequisicion.scss'
 import '../../../styles/_editarRequisicion.scss'
 
-export default function NativeSelects() {
+export default function NativeSelects(props) {
+    const {handleClose} = props
     const user = useSelector(state=> state.authUser)
     const departamentos = useSelector(state => state.opciones.areas)
-    // const gastos = useSelector(state => state.opciones.areas)
     console.log(user)
     const [state, setState] = useState({
         solicitante: user.user.id,
@@ -49,19 +49,6 @@ export default function NativeSelects() {
 
     console.log(state)
 
-    // const inputComentario = makeStyles((theme) => ({
-    //     root: {
-    //         display: 'flex',
-    //         flexWrap: 'wrap',
-    //       },
-    //       textField: {
-    //         marginLeft: theme.spacing(1),
-    //         marginRight: theme.spacing(1),
-    //       },
-    // }));
-
-    // const comentario = inputComentario();
-
     const validateForm = () => {
         let validar = true
         let error = {}
@@ -77,10 +64,7 @@ export default function NativeSelects() {
             error.descripcion = "Escriba una descripcion"
             validar = false
         }
-        // if(state.solicitud === ''){
-        //     error.solicitud = "Agregue un adjunto"
-        //     validar = false
-        // }
+        
         setErrores(error)
         return validar
     }
@@ -88,7 +72,14 @@ export default function NativeSelects() {
     const enviar = () =>{
         // if(Object.keys(validacion()).length ===0){
         if(validateForm()){
-            Swal.fire('Requisicion creada con éxito', '', 'success')
+
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            }) 
 
             let dataForm = new FormData()
 
@@ -118,9 +109,19 @@ export default function NativeSelects() {
             dataForm.append('adjuntos[]', "requisicion")
 
             
-            apiPostForm('requisicion', dataForm, user.access_token).then((data)=>{
+            apiPostForm('requisicion', dataForm, user.access_token)
+            .then((data)=>{
+                Swal.close()
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Nueva Requisicion',
+                    text: 'Se ha creado correctamente',
+                    timer: 2000,
+                    timerProgressBar: true,
+                })
+                handleClose()
                 if (data.isConfirmed) {
-                    // console.log(e)
+                    
                     let form = {
                         solicitante: user.user.id,
                         fecha: '',
@@ -138,9 +139,13 @@ export default function NativeSelects() {
                     Swal.fire('Faltan campos', '', 'info')
                 }
             })
-
-            .catch((error)=>{
-                
+            .catch((error)=>{  
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error',
+                })
             })
         }// 
         else{
@@ -173,7 +178,6 @@ export default function NativeSelects() {
                         label="Solicitante"
                         type="text"
                         defaultValue={user.user.name}
-                        // className={classes.textField}
                         InputLabelProps={{
                         shrink: true,
                         }}
@@ -250,12 +254,9 @@ export default function NativeSelects() {
                <FormControl className='comentario'>
 
                     <TextField 
-                        // id="standard-full-width"
                         label="Descripcion"
                         style={{ margin: 8 }}
                         placeholder="Deja una descripción"
-                        // helperText="Full width!"
-                        // fullWidth
                         onChange={handleChange}
                         margin="normal"
                         name='descripcion'

@@ -10,7 +10,6 @@ import NuevaRequisicion from '../../../components/forms/administracion/NuevaRequ
 import {EditarRequisicion} from '../../../components/forms/administracion/EditarRequisicion'
 
 import useOptionsArea from '../../../hooks/useOptionsArea'
-import Swal from 'sweetalert2'
 
 function Requisiciones () {
 
@@ -52,7 +51,7 @@ function Requisiciones () {
                     departamento: result.departamento ?  result.departamento.nombre : '',
                     tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
                     descripcion: result.descripcion,
-                    estatus: result.estatus.estatus,
+                    estatus: result.estatus ? result.estatus.estatus : 'pendiente sulem' ,
                     id:result.id,
                     data:result
                 }
@@ -75,6 +74,7 @@ function Requisiciones () {
             }
         },
     ]
+
 
     let handleClose = (tipo) => () => {
         setModal({
@@ -136,12 +136,13 @@ function Requisiciones () {
                     >
                 </Tabla>
             </Layout>
+
             <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
-                <NuevaRequisicion />
+                <NuevaRequisicion handleClose={handleClose('crear')}/>
             </Modal>
 
             <Modal size="lg" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                <EditarRequisicion data={modal.editar.data} />
+                <EditarRequisicion data={modal.editar.data} handleClose={handleClose('editar')}/>
             </Modal>
 
             <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
