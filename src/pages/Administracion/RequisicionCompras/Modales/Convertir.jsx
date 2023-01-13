@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Convertir(props) { 
-    const { data, reload } = props
+    const { data, handleClose} = props
     console.log(props)
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState(false)
@@ -44,6 +44,7 @@ export default function Convertir(props) {
         id_estatus: data.id_estatus,
         checked: data.auto1 ? true : false,
     })
+    const [errores, setErrores] = useState({})
 
     const classes = useStyles();
 
@@ -96,6 +97,41 @@ export default function Convertir(props) {
         })
     }
 
+    const validateForm = () => {
+        let valid = true
+        let errores = []
+        if (!form.departamento === '') {
+            valid = false
+            errores.departamento = 'Selecciona un departamento'
+        }
+        if (!form.tipoGasto === '') {
+            valid = false
+            errores.tipoGasto = 'Selecciona un tipo de gasto'
+        }
+        if (!form.tipoSubgasto === '') {
+            valid = false
+            errores.tipoSubgasto = 'Selecciona un tipo de subgasto'
+        }
+        if (!form.tipoPago === '') {
+            valid = false
+            errores.tipoPago = 'Selecciona un tipo de pago'
+        }
+        if (!form.monto === '') {
+            valid = false
+            errores.monto = 'Ingresa un monto'
+        }
+        if (!form.monto_pagado === '') {
+            valid = false
+            errores.monto_pagado = 'Ingresa un monto pagado'
+        }
+        if (!form.descripcion === '') {
+            valid = false
+            errores.descripcion = 'Ingresa una descripción'
+        }
+        setErrores(errores)
+        return valid
+    }
+
     const aprobar = () => {
         if (form.auto1) {
             Swal.fire({
@@ -110,6 +146,14 @@ export default function Convertir(props) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     if (validateForm()) {
+                        Swal.fire({
+                            title: 'Aprobando...',
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                Swal.showLoading()
+                            }
+                        })
+
                         let newForm = {
                             id_departamento: form.departamento,
                             id_gasto: form.tipoGasto,
@@ -128,6 +172,7 @@ export default function Convertir(props) {
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
+                                handleClose('convertir')
                                 Swal.close()
                                 Swal.fire({
                                     icon: 'success',
@@ -168,33 +213,6 @@ export default function Convertir(props) {
                 
     }
 
-    const validateForm = () => {
-        let valid = true
-        if (form.fecha === '' || form.fecha === null) {
-            valid = false
-        }
-        if (form.departamento === '' || form.departamento === null) {
-            valid = false
-        }
-        if (form.tipoGasto === '' || form.tipoGasto === null) {
-            valid = false
-        }
-        if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
-            valid = false
-        }
-        if (form.tipoPago === '' || form.tipoPago === null) {
-            valid = false
-        }
-        if (form.monto === '' || form.monto === null) {
-            valid = false
-        }
-        if (form.descripcion === '' || form.descripcion === null) {
-            valid = false
-        }
-        return valid
-
-    }
-
     const handleAprueba = (e) => {
         console.log(e.target.name)
         if (e.target.name === 'auto1') {
@@ -205,7 +223,6 @@ export default function Convertir(props) {
             })
         }
     }
-
 
     return (
         <>

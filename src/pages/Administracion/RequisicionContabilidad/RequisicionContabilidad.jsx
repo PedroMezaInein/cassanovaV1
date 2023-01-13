@@ -40,6 +40,7 @@ export default function RequisicionContabilidad() {
             data: false
         },
     })
+    const [reloadTable, setReloadTable] = useState()
 
     useOptionsArea()
 
@@ -212,20 +213,22 @@ export default function RequisicionContabilidad() {
         pathname: '/administracion/requisicion-contabilidad',
     }
 
+    console.log(reloadTable)
+
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
                 <>
-                    <TablaGeneral titulo='Gasto' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} />
+                    <TablaGeneral titulo='Gasto' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
                 </>
             </Layout>
 
-            <Modal size="md" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
-                <Convertir data={modal.convertir.data} />
+            <Modal size="lg" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
+                <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable}/>
             </Modal>
 
-            <Modal size="md" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                <Editar data={modal.editar.data} />
+            <Modal size="lg" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
+                <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} />
             </Modal>
 
             <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
@@ -236,7 +239,7 @@ export default function RequisicionContabilidad() {
                 <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={false} />
             </Modal>
 
-            <Modal size="md" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
+            <Modal size="lg" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
                 <Ver data={modal.ver.data} />
             </Modal>
 

@@ -69,6 +69,11 @@ export default function TablaGeneral(props) {
             })
             return obj
         })
+        if (reload !== undefined) {
+            reload({
+                reload: getData
+            })
+        }
 
     }, []) 
 
@@ -106,6 +111,8 @@ export default function TablaGeneral(props) {
             console.log(error)
         }
     }
+    //send reload function to parent
+
 
     const sortData = (identificador) => {
         let dataSort = [...data];

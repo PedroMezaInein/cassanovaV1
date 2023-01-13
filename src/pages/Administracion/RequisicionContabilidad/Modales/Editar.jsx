@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Editar(props) {
-    const { data } = props
+    const { data, handleClose, reload } = props
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState(false)
     const auth = useSelector(state => state.authUser)
@@ -108,6 +108,13 @@ export default function Editar(props) {
         })
         if (validateForm()) {
             try {
+                Swal.fire({
+                    title: 'Guardando...',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
                 let newForm = {
                     id_departamento: form.departamento,
                     id_gasto: form.tipoGasto,
@@ -117,7 +124,7 @@ export default function Editar(props) {
                     id_solicitante: data.solicitante_id,
                     monto_pagado: form.monto,
                     cantidad: form.monto_solicitado,
-                    autorizacion_1: form.auto1 ? form.auto1.id : null,
+                    autorizacion_1: form.auto1 ? form.auto1.id: null,
                     autorizacion_2: auth.user.id,
                     orden_compra: form.orden_compra,
                     fecha_pago: form.fecha_pago,
@@ -126,12 +133,16 @@ export default function Editar(props) {
                 }
 
                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
-                        Swal.close()
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Guardado',
-                            text: 'Se ha guardado correctamente',
-                        })
+                    handleClose('editar')
+                    if (reload) {
+                        reload.reload()
+                    }
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Guardado',
+                        text: 'Se ha guardado correctamente',
+                    })
                     }
                 ).catch((error) => { 
                     Swal.close()
@@ -140,6 +151,7 @@ export default function Editar(props) {
                         title: 'Oops...',
                         text: 'Ha ocurrido un error',
                     })
+                    console.log(error)
                 })
             } catch (error) {
                 console.log(error)
@@ -235,6 +247,21 @@ export default function Editar(props) {
                         onChange={handleChange}
                     />
                 </div>
+
+                <div>
+                    <TextField
+                        name='monto'
+                        label="Monto De pago"
+                        type="number"
+                        defaultValue={form.monto}
+                        onChange={handleChange}
+                        className={classes.textField}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </div>
+
                 <div>
                     {departamentos.length > 0 ?
                         <>
@@ -319,19 +346,7 @@ export default function Editar(props) {
                     }
                     
                 </div>
-                <div>
-                    <TextField
-                        name='monto'
-                        label="Monto De pago"
-                        type="number"
-                        defaultValue={form.monto}
-                        onChange={handleChange}
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </div>
+                
 
                 <div>
                     {
@@ -339,7 +354,7 @@ export default function Editar(props) {
                             <>
                                 <InputLabel id="demo-simple-select-label">Cuenta de Salida</InputLabel>
                                 <Select
-                                    name="cuenta"
+                                    name="id_cuenta"
                                     value={form.id_cuenta}
                                     onChange={handleChange}
                                     className={classes.textField}
