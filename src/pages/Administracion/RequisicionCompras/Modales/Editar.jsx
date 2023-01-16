@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Editar(props) {
-    const { data, handleClose } = props
+    const { data, handleClose, reload } = props
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState(false)
     const auth = useSelector(state => state.authUser)
@@ -41,8 +41,11 @@ export default function Editar(props) {
         auto2: data.auto2 ? data.auto2 : false,
         auto3: data.auto3 ? data.auto3 : false,
         id_estatus: data.id_estatus,
+        checked: data.auto1 ? true : false,
+        proveedor: data.proveedor,
+        fecha_entrega: data.fecha_entrega,
     })
-    console.log(data)
+    const [estatusCompras, setEstatusCompras] = useState(false)
     const classes = useStyles();
 
     useEffect(() => {
@@ -69,16 +72,17 @@ export default function Editar(props) {
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 let aux = {}
-                /* aux.empresas = setOptions(empresas, 'name', 'id')
+                /* aux.empresas = setOptions(empresas, 'name', 'id') */
                 aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
-                aux.areas = setOptions(areas, 'nombre', 'id')
+                /* aux.areas = setOptions(areas, 'nombre', 'id')
                 aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
                 aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
-                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
-                aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
-                aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
+                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id') */
+                /* aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id') */
+                /* aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
                 aux.formasPago = setOptions(formasPago, 'nombre', 'id')
                 aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
+                setEstatusCompras(estatusCompras)
                 setOpciones(aux)
                 Swal.close()
             }, (error) => { }
@@ -113,24 +117,29 @@ export default function Editar(props) {
                 })
                 let newForm = {
                     id_departamento: form.departamento,
-                            id_gasto: form.tipoGasto,
-                            descripcion: form.descripcion,
-                            id_subarea: form.tipoSubgasto,
-                            id_pago: form.tipoPago,
-                            id_solicitante: data.solicitante_id,
-                            monto_pagado: form.monto_pagado,
-                            cantidad: form.monto,
-                            autorizacion_1: form.auto1 ? form.auto1.id : null,
-                            autorizacion_2: auth.user.id,
-                            orden_compra: data.orden_compra,
-                            fecha_pago: data.fecha_pago,
-                            id_cuenta: data.cuenta? data.cuenta.id : null,
-                            id_estatus: form.id_estatus
+                    id_gasto: form.tipoGasto,
+                    descripcion: form.descripcion,
+                    id_subarea: form.tipoSubgasto,
+                    id_pago: form.tipoPago,
+                    id_solicitante: data.solicitante_id,
+                    monto_pagado: form.monto_pagado,
+                    cantidad: form.monto,
+                    autorizacion_1: form.auto1 ? auth.user.id : null,
+                    autorizacion_2: form.auto2 ? form.auto2.id : null,
+                    orden_compra: data.orden_compra,
+                    fecha_pago: data.fecha_pago,
+                    id_cuenta: data.cuenta? data.cuenta.id : null,
+                    id_estatus: form.id_estatus,
+                    id_proveedor: form.proveedor,
+                    fecha_entrega: form.fecha_entrega,
                 }
 
                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                     (response) => {
                         handleClose('editar')
+                        if (reload) {
+                            reload.reload()
+                        }
                         Swal.close()
                         Swal.fire({
                             icon: 'success',
@@ -202,6 +211,8 @@ export default function Editar(props) {
         }
     }
 
+    console.log(estatusCompras)
+
     return (
         <>
             <div className={Style.container}>
@@ -212,6 +223,20 @@ export default function Editar(props) {
                         type="date"
                         name='fecha'
                         defaultValue={form.fecha}
+                        className={classes.textField}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </div>
+
+                <div>
+                    <TextField
+                        name='fecha_entrega'
+                        label="Fecha de entrega"
+                        type="date"
+                        defaultValue={form.fecha_entrega}
+                        onChange={handleChange}
                         className={classes.textField}
                         InputLabelProps={{
                             shrink: true,
@@ -319,17 +344,48 @@ export default function Editar(props) {
                 </div>
                 
                 <div>
-                    <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
-                    <Select
-                        name="id_estatus"
-                        value={form.id_estatus}
-                        onChange={handleChange}
-                        className={classes.textField}
-                    >
-                        <MenuItem value={9}>Pendiente</MenuItem>
-                        <MenuItem value={7}>Aprobado</MenuItem>
-                        <MenuItem value={8}>Cancelado</MenuItem>
-                    </Select>
+                    {
+                        estatusCompras ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Estatus de entrega</InputLabel>
+                                <Select
+                                    name="id_estatus"
+                                    value={form.id_estatus}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {estatusCompras.map((item, index) => {
+                                        if (item.nivel === 1) {
+                                            return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
+                                        }
+                                    })}
+                                </Select>
+                            </>
+                            : null
+                    }
+                    
+                </div>
+
+                <div>
+                    {
+                        opciones ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
+                                <Select
+                                    name="proveedor"
+                                    value={form.proveedor}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {opciones.proveedores.map((item, index) => (
+                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    ))}
+
+                                </Select>
+                            </>
+                            : null
+                    }
+
                 </div>
 
                 <div>
@@ -341,6 +397,20 @@ export default function Editar(props) {
                         color="primary"
                         style={{ marginLeft: '20%' }}
                     />
+                </div>
+
+                <div>
+                    <TextField
+                        name='descripcion'
+                        label="Descripción"
+                        type="text"
+                        defaultValue={form.descripcion}
+                        onChange={handleChange}
+                        className={classes.textField}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />  
                 </div>
 
                 <div className={Style.btnAprobar}>

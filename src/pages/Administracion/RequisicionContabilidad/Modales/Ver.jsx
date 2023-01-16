@@ -64,17 +64,28 @@ export default function Adjuntos(props) {
                 </div>
 
                 <div>
-                    <span>Estatus</span>
+                    <span>Estatus de compra</span>
                     <p>
                         {
-                            data.id_estatus === 7 ?
-                                <p className="text-success">Aprobado</p>
-                                : data.id_estatus === 8 ?
-                                    <p className="text-danger">Cancelado</p>
-                                    : <p className="text-warning">Pendiente</p>
+                            data.compra ? data.compra.estatus: 'estatus Pendiente'
                         }
                     </p>
+                </div>
 
+                <div>
+                    <span>Estatus de facturación</span>
+                    <p>
+                        {
+                            data.conta ? data.conta.estatus : 'estatus Pendiente'
+                        }
+                    </p>
+                </div>
+
+                <div ClassName={style.div9}>
+                    <span>
+                        Descripción:
+                    </span>
+                    <p>{`${data.descripcion}`}</p>
                 </div>
 
                 <div>
@@ -89,13 +100,7 @@ export default function Adjuntos(props) {
                         {`Contabilidad: ${data.auto2 && data.auto2.name ? data.auto2.name : 'Pendiente'}`}
                     </p>
                 </div>
-
-                <div ClassName={style.div9}>
-                    <span>
-                        Descripción:
-                    </span>
-                    <p>{`${data.descripcion}`}</p>
-                </div>
+                
             </div>
 
         </>

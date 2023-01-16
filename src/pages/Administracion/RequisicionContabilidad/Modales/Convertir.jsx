@@ -45,8 +45,11 @@ export default function Convertir(props) {
         auto2: data.auto2 ? data.auto2 : false,
         auto3: data.auto3 ? data.auto3 : false,
         id_estatus: data.id_estatus,
+        proveedor: data.proveedor,
+        estatus_compra: data.estatus_compra,
+        estatus_conta: data.estatus_conta,
     })
-
+    const [estatusCompras, setEstatusCompras] = useState(false)
     const classes = useStyles();
 
     useEffect(() => {
@@ -73,9 +76,9 @@ export default function Convertir(props) {
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
                 let aux = {}
-                /* aux.empresas = setOptions(empresas, 'name', 'id')
+                /* aux.empresas = setOptions(empresas, 'name', 'id') */
                 aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
-                aux.areas = setOptions(areas, 'nombre', 'id')
+                /* aux.areas = setOptions(areas, 'nombre', 'id')
                 aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
                 aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
                 /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
@@ -84,6 +87,7 @@ export default function Convertir(props) {
                 aux.formasPago = setOptions(formasPago, 'nombre', 'id')
                 aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
                 aux.cuentas = setOptions(cuentas, 'nombre', 'id')
+                setEstatusCompras(estatusCompras)
                 setOpciones(aux)
                 Swal.close()
             }, (error) => { }
@@ -130,11 +134,14 @@ export default function Convertir(props) {
                             monto_pagado: form.monto,
                             cantidad: form.monto_solicitado,
                             autorizacion_1: form.auto1 ? form.auto1.id: null,
-                            autorizacion_2: auth.user.id,
+                            autorizacion_2: form.auto2 ? auth.user.id : null,
                             orden_compra: form.orden_compra,
                             fecha_pago: form.fecha_pago,
                             id_cuenta: form.id_cuenta,
-                            id_estatus: form.id_estatus
+                            id_estatus: form.id_estatus,
+                            id_proveedor: form.proveedor,
+                            id_estatus_compra: form.estatus_compra,
+                            id_estatus_conta: form.estatus_conta,
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
@@ -265,7 +272,7 @@ export default function Convertir(props) {
                 <div>
                     <TextField
                         name='monto'
-                        label="Monto solicitado"
+                        label="Monto De pago"
                         type="number"
                         defaultValue={form.monto}
                         onChange={handleChange}
@@ -383,17 +390,71 @@ export default function Convertir(props) {
                 </div>
 
                 <div>
-                    <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
-                    <Select
-                        name="id_estatus"
-                        value={form.id_estatus}
-                        onChange={handleChange}
-                        className={classes.textField}
-                    >
-                        <MenuItem value={9}>Pendiente</MenuItem>
-                        <MenuItem value={7}>Aprobado</MenuItem>
-                        <MenuItem value={8}>Cancelado</MenuItem>
-                    </Select>
+                    {
+                        estatusCompras ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Estatus de pago</InputLabel>
+                                <Select
+                                    name="estatus_compra"
+                                    value={form.estatus_compra}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {estatusCompras.map((item, index) => {
+                                        if (item.nivel === 2) {
+                                            return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
+                                        }
+                                    })}
+                                </Select>
+                            </>
+                            : null
+                    }
+
+                </div>
+
+                <div>
+                    {
+                        estatusCompras ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Estatus de facturación</InputLabel>
+                                <Select
+                                    name="estatus_conta"
+                                    value={form.estatus_conta}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {estatusCompras.map((item, index) => {
+                                        if (item.nivel === 3) {
+                                            return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
+                                        }
+                                    })}
+                                </Select>
+                            </>
+                            : null
+                    }
+
+                </div>
+
+                <div>
+                    {
+                        opciones ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
+                                <Select
+                                    name="proveedor"
+                                    value={form.proveedor}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {opciones.proveedores.map((item, index) => (
+                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    ))}
+
+                                </Select>
+                            </>
+                            : null
+                    }
+
                 </div>
 
                 <div>
@@ -404,6 +465,20 @@ export default function Convertir(props) {
                         name="auto2"
                         color="primary"
                         style={{ marginLeft: '20%' }}
+                    />
+                </div>
+
+                <div>
+                    <TextField
+                        name='descripcion'
+                        label="Descripción"
+                        type="text"
+                        defaultValue={form.descripcion}
+                        onChange={handleChange}
+                        className={classes.textField}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                     />
                 </div>
 

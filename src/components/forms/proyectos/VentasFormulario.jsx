@@ -375,6 +375,7 @@ class VentasFormulario extends Component {
         const { at } = this.props
         apiOptions(`v2/proyectos/ventas`, at).then(
             (response) => {
+                debugger
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, clientes, formasPago, 
                     metodosPago, estatusFacturas, tickets } = response.data
                 const { options, data } = this.state
@@ -391,6 +392,7 @@ class VentasFormulario extends Component {
                 data.clientes = clientes
                 data.empresas = empresas
                 this.setState({ ...this.state, options, data })
+                console.lof('options', options)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch( (error) => { catchErrors(error) })
     }

@@ -102,13 +102,14 @@ export default function RequisicionContabilidad() {
                 orden_compra: item.orden_compra,
                 fecha_pago: item.fecha_pago,
                 cuenta: item.cuenta,
-                id_estatus: item.estatus ? item.estatus.id : null
-                /* estatus_admin: item.estatus_admin ? item.estatus_admin.nombre : 'Pendiente',
-                estatus_compra: item.estatus_compra ? item.estatus_compra.nombre : 'Pendiente',
-                estatus_conta: item.estatus_conta ? item.estatus_conta.nombre : 'Pendiente',
-                id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null,
-                id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
-                id_estatus_conta: item.id_estatus_conta ? item.id_estatus_conta : null, */
+                id_estatus: item.estatus ? item.estatus.id : null,
+                proveedor: item.id_proveedor ? item.id_proveedor : null,
+                /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
+                estatus_compra: item.estatus_compra ? item.estatus_compra.id : null,
+                estatus_conta: item.estatus_conta ? item.estatus_conta.id : null,
+                /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
+                compra: item.estatus_compra ? item.estatus_compra : null,
+                conta: item.estatus_conta ? item.estatus_conta : null,
             })
         })
 
@@ -120,13 +121,13 @@ export default function RequisicionContabilidad() {
         return (
             <>
                 {
-                    item.auto2 ?
+                    item.auto2  && item.auto1 ?
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <label style={{ color: 'green', weight: '700' }}>aprueba Contabilidad</label>
                         </div>
                         : item.auto1 ?
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <label style={{ color: 'green', weight: '700' }}>aprueba Contabilidad</label>
+                                <label style={{ color: 'orange', weight: '700' }}>aprueba Compras</label>
                             </div>
                             : <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <label style={{ color: 'orange', weight: '700' }}>Pendiente</label>
@@ -223,11 +224,11 @@ export default function RequisicionContabilidad() {
                 </>
             </Layout>
 
-            <Modal size="lg" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
+            <Modal size="xl" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
                 <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable}/>
             </Modal>
 
-            <Modal size="lg" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
+            <Modal size="xl" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
                 <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} />
             </Modal>
 
@@ -239,7 +240,7 @@ export default function RequisicionContabilidad() {
                 <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={false} />
             </Modal>
 
-            <Modal size="lg" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
+            <Modal size="xl" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
                 <Ver data={modal.ver.data} />
             </Modal>
 

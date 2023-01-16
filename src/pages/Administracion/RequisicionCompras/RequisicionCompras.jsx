@@ -12,6 +12,8 @@ import Adjuntos from './Modales/Adjuntos'
 import Ver from './Modales/Ver'
 import Crear from './../../../components/forms/administracion/NuevaRequisicion'
 
+import { apiGet } from '../../../functions/api'
+
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
 import Layout from '../../../components/layout/layout'
@@ -40,6 +42,8 @@ export default function RequisicionCompras() {
             data: false
         },
     })
+    const [reloadTable, setReloadTable] = useState()
+    const [data, setData] = useState()
 
     useOptionsArea()
 
@@ -100,13 +104,15 @@ export default function RequisicionCompras() {
                 orden_compra: item.orden_compra,
                 fecha_pago: item.fecha_pago,
                 cuenta: item.cuenta,
-                id_estatus: item.estatus ?  item.estatus.id : null
-                /* estatus_admin: item.estatus_admin ? item.estatus_admin.nombre : 'Pendiente',
-                estatus_compra: item.estatus_compra ? item.estatus_compra.nombre : 'Pendiente',
-                estatus_conta: item.estatus_conta ? item.estatus_conta.nombre : 'Pendiente',
-                id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null,
+                id_estatus: item.estatus ? item.estatus.id : null,
+                proveedor: item.id_proveedor ? item.id_proveedor : null,
+                /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
+                estatus_compra: item.estatus_compra ? item.estatus_compra : null,
+                estatus_conta: item.estatus_conta ? item.estatus_conta : null,
+                /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
                 id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
-                id_estatus_conta: item.id_estatus_conta ? item.id_estatus_conta : null, */
+                id_estatus_conta: item.id_estatus_conta ? item.id_estatus_conta : null,
+                fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
             })
         })
         return aux
@@ -201,16 +207,16 @@ export default function RequisicionCompras() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
                 <>
-                    <TablaGeneral titulo='Solicitudes de Gasto' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} />
+                    <TablaGeneral titulo='Solicitudes de Gasto' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
                 </>
             </Layout>
             
-            <Modal size="lg" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
-                <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} />
+            <Modal size="xl" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
+                <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable} />
             </Modal>
 
-            <Modal size="lg" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                <Editar data={modal.editar.data} handleClose={handleClose('editar')} />
+            <Modal size="xl" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
+                <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} />
             </Modal>
 
             <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
@@ -221,7 +227,7 @@ export default function RequisicionCompras() {
                 <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={false} />
             </Modal>
             
-            <Modal size="md" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
+            <Modal size="xl" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
                 <Ver data={modal.ver.data} />
             </Modal>
 
