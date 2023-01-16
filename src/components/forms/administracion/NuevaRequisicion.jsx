@@ -13,7 +13,7 @@ import '../../../styles/_nuevaRequisicion.scss'
 import '../../../styles/_editarRequisicion.scss'
 
 export default function NativeSelects(props) {
-    const {handleClose} = props
+    const {handleClose, reload} = props
     const user = useSelector(state=> state.authUser)
     const departamentos = useSelector(state => state.opciones.areas)
     console.log(user)
@@ -116,10 +116,14 @@ export default function NativeSelects(props) {
                     icon: 'success',
                     title: 'Nueva Requisicion',
                     text: 'Se ha creado correctamente',
-                    timer: 2000,
+                    timer: 5000,
                     timerProgressBar: true,
                 })
                 handleClose()
+                if(reload){
+                    reload.reload()
+                }
+               
                 if (data.isConfirmed) {
                     
                     let form = {
@@ -133,6 +137,7 @@ export default function NativeSelects(props) {
                     
                     console.log('form')
                     console.log(form)
+
                 }
 
                 else if (data.isDenied) {

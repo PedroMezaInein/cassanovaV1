@@ -98,9 +98,13 @@
     color: white;
 }
 
-.SortButton:hover{
-    color: #1976d2;
+.SortButton{
+    color: white;
 }
+
+// .SortButton:hover{
+//     color: #1976d2;
+// }
 
 .MinCell:nth-child(1){
     width: 30px;

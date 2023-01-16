@@ -14,6 +14,7 @@ import useOptionsArea from '../../../hooks/useOptionsArea'
 function Requisiciones () {
 
     const userAuth = useSelector((state) => state.authUser);
+    const [reloadTable, setReloadTable] = useState()
     const [modal, setModal] = useState({
 
         crear: {
@@ -33,6 +34,7 @@ function Requisiciones () {
 
     })
 
+
     useOptionsArea()
 
     let prop = {
@@ -51,7 +53,8 @@ function Requisiciones () {
                     departamento: result.departamento ?  result.departamento.nombre : '',
                     tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
                     descripcion: result.descripcion,
-                    estatus: result.estatus ? result.estatus.estatus : 'pendiente sulem' ,
+                    estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
+                    tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
                     id:result.id,
                     data:result
                 }
@@ -133,16 +136,17 @@ function Requisiciones () {
                     ProccessData={proccessData}
                     opciones={handleOpen}
                     acciones={acciones()}
+                    reload={setReloadTable}
                     >
                 </Tabla>
             </Layout>
 
             <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
-                <NuevaRequisicion handleClose={handleClose('crear')}/>
+                <NuevaRequisicion handleClose={handleClose('crear')} reload={reloadTable}/>
             </Modal>
 
             <Modal size="lg" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                <EditarRequisicion data={modal.editar.data} handleClose={handleClose('editar')}/>
+                <EditarRequisicion data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable}/>
             </Modal>
 
             <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>

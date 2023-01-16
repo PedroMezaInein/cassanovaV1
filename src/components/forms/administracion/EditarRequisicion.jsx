@@ -15,7 +15,7 @@ import Swal from 'sweetalert2'
 
 function EditarRequisicion (props) {
 
-    const { data, handleClose } = props
+    const { data, handleClose, reload } = props
     console.log(data)
     const departamentos = useSelector(state => state.opciones.areas)
     const user = useSelector(state => state.authUser)
@@ -98,6 +98,9 @@ function EditarRequisicion (props) {
                     timerProgressBar: true,
                 })
                 handleClose()
+                if(reload){
+                    reload.reload()
+                }
             }) 
 
             .catch((error)=>{  
