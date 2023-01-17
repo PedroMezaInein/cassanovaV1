@@ -229,12 +229,12 @@ export default function TablaGeneral(props) {
                         </div>
 
                         <div className="card-body table-responsive mt-n6 p-n4">
-                            <table className="table table-hover text-nowrap">
+                            <table className="table">
                                 <thead className="containerTitleColumn ">
-                                    <tr>
+                                    <tr >
                                         {columnas.map((columna, index) => {
                                             return (
-                                                <th key={index} className='MinCell'>
+                                                <th key={index} className=' mw-25'>
                                                     <div className="TitleColumn">
                                                         
                                                             {
@@ -264,7 +264,7 @@ export default function TablaGeneral(props) {
                                                     <div className="TitleColumn">
                                                         {columna.stringSearch ?
                                                             <>
-                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={`${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
+                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={` ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
                                                                 {columna.sort ?
                                                                     <div className="">
                                                                         <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">
@@ -309,7 +309,7 @@ export default function TablaGeneral(props) {
                                                                                 return (
                                                                                     <div className={`${accion.color} Button-action`} key={index} >
                                                                                         <i className={` ${accion.icono} text-light`} onClick={() => accion.funcion(item)}>
-                                                                                            <span className="ml-2">{accion.nombre}</span>
+                                                                                            <span className="ml-2 h6">{accion.nombre}</span>
                                                                                         </i>    
                                                                                     </div>
                                                                                     

@@ -742,7 +742,8 @@ class Areas extends Component {
 
                     <Tab eventKey="egresos" title="Egresos">
                         <TablaGeneral
-                            titulo="" 
+                            titulo="Áreas" 
+                            subtitulo= "Listado de Áreas"
                             columnas={AREAS_EGRESOS_COLUMNS}
                             url={`areas`}  
                             numItemsPagina={3} 

@@ -212,6 +212,44 @@ class Facturacion extends Component {
         })
     }
 
+    handleDeleteCompra = (factura) => {
+        const { access_token } = this.props.authUser
+        console.log(factura)
+        console.log(this.state.key)
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí, bórralo!'
+        }).then((result) => {
+            if (result.value) {
+                waitAlert()
+                axios.delete(URL_DEV + 'facturas/' + factura.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+                    (response) => {
+                        Swal.fire({
+                            title: '¡Eliminado!',
+                            text: 'El registro ha sido eliminado correctamente.',
+                            icon: 'success',
+                            timer: 2000
+                        })
+                        if(this.state.key === 'compras'){
+                            this.getComprasAxios()
+                        } else {
+                            this.getVentasAxios()
+                        }
+                    }, (error) => {
+                        printResponseErrorAlert(error)
+                }
+                ).catch((error) => {
+                    catchErrors(error)
+                })
+            }
+        })
+    }
+
     setActions = factura => {
         const { history } = this.props
         return (
@@ -228,6 +266,9 @@ class Facturacion extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.cancelarFactura(factura) }}>
                         {setNaviIcon('flaticon-circle', 'Cancelar')}
+                    </Dropdown.Item>
+                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.handleDeleteCompra(factura) }}>
+                        {setNaviIcon('flaticon-delete-1', 'Eliminar')}
                     </Dropdown.Item>
                     
                 </DropdownButton>
@@ -1157,6 +1198,7 @@ class Facturacion extends Component {
                 <Modal size='xl' show={modalFiltersVentas} handleClose={this.handleCloseFiltroVenta} title='Filtros'>
                     <FiltersVentas at={access_token} sendFilters={this.sendFilters} filters={filters}  options={options}   setOptions={this.setOptionsArray} />
                 </Modal>
+
             </Layout>
         )
     }
