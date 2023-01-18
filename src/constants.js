@@ -239,8 +239,8 @@ export const AREAS_COLUMNS = [
     { Header: 'Sub áreas', accessor: 'subareas', customRender: true }
 ]
 
-export const AREAS_EGRESOS_COLUMNS = [
-    { nombre: 'Acciones', identificador: 'acciones', sort: true, stringSearch: true },
+export const AREAS_GASTOS_COLUMNS = [
+    { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false},
     { nombre: 'Área', identificador: 'nombreArea', sort: true, stringSearch: true },
     { nombre: 'Partidas', identificador: 'partidas', sort: true, stringSearch: true },
     { nombre: 'Sub partidas', identificador: 'subpartidas', sort: true, stringSearch: true },

@@ -1,5 +1,4 @@
 .containerTable{
-    margin: -1rem -1.4rem;
     border-radius: 20px;
 }
 
@@ -18,7 +17,7 @@
     flex-direction: column;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #000;
+    color: #315694;
     margin: 0;
     padding: 0;
     margin-bottom: 1rem;
@@ -37,13 +36,11 @@
     color: rgb(0, 168, 0);
 }
 
-
-
 .containerTitleColumn{
-    background-color: #c6d4e1;
+    background-color: #CBBA8E; //aqui
     text-align: center;
     font-weight: bold;
-    color: #000;
+    color: white; //aqui
     height: 50px;
 }
 
@@ -64,22 +61,19 @@
     max-height: fit-content;
     text-align: center;
     width: 50px;
+    align-items: center;
+}
+
+.contenido{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
 .CellActions{
     width: 50px;
 }
-
-/* table{
-    table-layout: fixed;
-    width: 100%;
-    border-radius: 5px;
-    font-family: poppins;
-}
-
-td, th{
-    word-wrap: break-word;
-} */
 
 .InputSearch{
     background-color: white;
@@ -104,24 +98,17 @@ td, th{
     color: white;
 }
 
-.SortButton:hover{
-    color: #1976d2;
+.SortButton{
+    color: white;
 }
 
+// .SortButton:hover{
+//     color: #1976d2;
+// }
 
-/* .MuiFormControl-root{
-    height: 2.2rem;
-    border-radius: 4px;
-}
-
-.MuiOutlinedInput-root{
-    height: 2.2rem;
-}
-
-.MuiOutlinedInput-inputMarginDense {
-    color: #6F95C0!important;
-} */
-
+.MinCell:nth-child(1){
+    width: 30px;
+} 
 
 .menu-opciones{
     list-style: none;
@@ -169,5 +156,3 @@ td, th{
     cursor: pointer;
     background-color: #87f784;
 }
-
-
