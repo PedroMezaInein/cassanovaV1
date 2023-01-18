@@ -28,32 +28,32 @@ const useOptionsArea = () => {
         let e = opciones
         console.log(e)
         let aux = []
-        for (let key in e.area) {
-            for (let area in e.area[key]) {
+        for(let key in e.area){
+            for(let area in e.area[key]){
                 let auxPartidas = []
-                for (let i in e.area[key][area]) {
-                    for (let idpartida in e.area[key][area][i]) {
-                        for (let partida in e.area[key][area][i][idpartida]) {
+                    for(let idpartida in e.area[key][area]){
+                        for(let partida in e.area[key][area][idpartida]){
+                            // Imprime el nombre de cada partida
+                            console.log(e.area[key][area][idpartida][partida])
                             let auxSubpartida = []
-
-                            auxSubpartida.push({
-                                id: e.area[key][area][i][idpartida][partida].id,
-                                nombre: e.area[key][area][i][idpartida][partida].nombre,
+                            e.area[key][area][idpartida][partida].forEach(elemento =>{
+                                auxSubpartida.push({
+                                    id: elemento.id,
+                                    nombre: elemento.nombre,
+                                })
                             })
                             auxPartidas.push({
-                                id: idpartida,
-                                nombre: partida,
-                                subpartidas: auxSubpartida
+                                id:idpartida,
+                                nombre:partida,
+                                subpartidas:auxSubpartida
                             })
                         }
                     }
-                }
                 let areas = {
                     nombreArea: area,
                     id_area: key,
-                    partidas: auxPartidas,
+                    partidas:auxPartidas,
                 }
-
                 aux.push(areas)
             }
         }
