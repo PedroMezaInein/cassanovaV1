@@ -48,8 +48,8 @@ export default function Editar(props) {
         estatus_compra: data.estatus_compra,
         estatus_conta: data.estatus_conta,
     })
-    console.log(data)
-    const [estatusCompras, setEstatusCompras] = useState(false)
+
+    const [estatusCompras, setEstatusCompras] = useState()
     const classes = useStyles();
 
     useEffect(() => {
@@ -200,8 +200,6 @@ export default function Editar(props) {
 
     }
 
-    console.log(form)
-
     const handleAprueba = (e) => {
         console.log(e.target.name)
         if (e.target.name === 'auto2') {
@@ -211,6 +209,7 @@ export default function Editar(props) {
             })
         }
     }
+
     return (
         <>
             <div className={Style.container}>
@@ -279,6 +278,7 @@ export default function Editar(props) {
                                 name="departamento"
                                 onChange={handleChangeDepartamento}
                                 className={classes.textField}
+                                disabled
                             >
                                 {departamentos.map((item, index) => (
                                     <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -433,6 +433,7 @@ export default function Editar(props) {
                                     value={form.proveedor}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    disabled
                                 >
                                     {opciones.proveedores.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>

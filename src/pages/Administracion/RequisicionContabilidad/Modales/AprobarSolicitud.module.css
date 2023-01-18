@@ -52,3 +52,34 @@
 .div8 {
     grid-area: 2 / 4 / 3 / 5;
 }
+
+.nuevaRequisicion_adjunto {
+    position: relative;
+    top: 1rem;
+    left: 7%;
+    padding: 8px;
+    width: 150px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid #B3A16C;
+}
+
+.nuevaRequisicion_adjunto_input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.adjunto_nombre {
+    margin-top: 1rem;
+    width: 500px;
+    color: #6F95C0;
+    font-size: small;
+    margin-left: -.5rem;
+    font-weight: bold;
+}

@@ -244,7 +244,7 @@ export default function Convertir(props) {
                         name='fecha'
                         defaultValue={form.fecha}
                         className={classes.textField}
-                        disabled
+                        
                     />
                 </div>
 
@@ -281,7 +281,7 @@ export default function Convertir(props) {
                                 value={form.departamento}
                                 name="departamento"
                                 onChange={handleChangeDepartamento}
-                                disabled
+                                
                                 className={classes.textField}
                             >
                                 {departamentos.map((item, index) => (
@@ -303,7 +303,7 @@ export default function Convertir(props) {
                                 value={form.tipoGasto}
                                 name="tipoGasto"
                                 onChange={handleChange}
-                                disabled
+                                
                                 className={classes.textField}
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
