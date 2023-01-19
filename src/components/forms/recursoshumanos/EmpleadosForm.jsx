@@ -177,12 +177,12 @@ class EmpleadosForm extends Component {
                                                 type="text" value={form.nombre} placeholder="NOMBRE DEL COLABORADOR" iconclass="fas fa-user" messageinc="Incorrecto. Ingresa el nombre." />
                                         </div>
                                         <div className="col-md-2">
-                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} onChange={onChange} formeditado={formeditado} name="ap_materno"
-                                                type="text" value={form.ap_materno} placeholder="APELLIDO MATERNO" iconclass="fas fa-user" messageinc="Incorrecto. Ingresa el nombre." />
-                                        </div>
-                                        <div className="col-md-2">
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} onChange={onChange} formeditado={formeditado} name="ap_paterno"
                                                 type="text" value={form.ap_paterno} placeholder="APELLIDO PATERNO" iconclass="fas fa-user" messageinc="Incorrecto. Ingresa el nombre." />
+                                        </div>
+                                        <div className="col-md-2">
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} onChange={onChange} formeditado={formeditado} name="ap_materno"
+                                                type="text" value={form.ap_materno} placeholder="APELLIDO MATERNO" iconclass="fas fa-user" messageinc="Incorrecto. Ingresa el nombre." />
                                         </div>
                                         <div className="col-md-2">
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange} name="curp"
