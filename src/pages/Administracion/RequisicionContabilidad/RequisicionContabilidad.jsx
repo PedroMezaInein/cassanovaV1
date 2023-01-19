@@ -54,6 +54,8 @@ export default function RequisicionContabilidad() {
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
         { nombre: 'Monto pagado', identificador: 'monto', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
+        { nombre: 'Facturación', identificador: 'estatus_conta', sort: false, stringSearch: false },
+        { nombre: 'Cuentas', identificador: 'afectacion_cuentas', sort: false, stringSearch: false },
         { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
 
     ]
@@ -105,14 +107,15 @@ export default function RequisicionContabilidad() {
                 id_estatus: item.estatus ? item.estatus.id : null,
                 proveedor: item.id_proveedor ? item.id_proveedor : null,
                 /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
-                estatus_compra: item.estatus_compra ? item.estatus_compra.id : null,
-                estatus_conta: item.estatus_conta ? item.estatus_conta.id : null,
+                estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
+                estatus_conta: item.estatus_conta ? item.estatus_conta.estatus : 'pendiente',
                 /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
                 compra: item.estatus_compra ? item.estatus_compra : null,
                 conta: item.estatus_conta ? item.estatus_conta : null,
+                afectacion_cuentas: item.afectacion_cuentas ? "Cuentas afectadas" : "sin afectación",
             })
         })
-
+        aux = aux.reverse()
         return aux
 
     }

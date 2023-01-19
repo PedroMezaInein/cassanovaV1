@@ -146,6 +146,7 @@ export default function Convertir(props) {
                             id_proveedor: form.proveedor,
                             id_estatus_compra: form.estatus_compra,
                             id_estatus_conta: form.estatus_conta,
+                            afectar_cuentas: form.afectarCuentas,
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
@@ -441,6 +442,7 @@ export default function Convertir(props) {
                                     value={form.id_cuenta}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    disabled
                                 >
                                     {opciones.cuentas.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>

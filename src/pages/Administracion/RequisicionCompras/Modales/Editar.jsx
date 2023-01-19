@@ -37,6 +37,7 @@ export default function Editar(props) {
         monto_pagado: data.monto,
         descripcion: data.descripcion,
         id: data.id,
+        id_cuenta: data.cuenta ? data.cuenta.id : null,
         auto1: data.auto1 ? data.auto1 : false,
         auto2: data.auto2 ? data.auto2 : false,
         auto3: data.auto3 ? data.auto3 : false,
@@ -44,6 +45,8 @@ export default function Editar(props) {
         checked: data.auto1 ? true : false,
         proveedor: data.proveedor,
         fecha_entrega: data.fecha_entrega,
+        empresa: "",
+
     })
     const [estatusCompras, setEstatusCompras] = useState(false)
     const classes = useStyles();
@@ -70,9 +73,9 @@ export default function Editar(props) {
 
         apiOptions(`v2/proyectos/compras`, auth.access_token).then(
             (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas } = response.data
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
                 let aux = {}
-                /* aux.empresas = setOptions(empresas, 'name', 'id') */
+                aux.empresas = setOptions(empresas, 'name', 'id')
                 aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
                 /* aux.areas = setOptions(areas, 'nombre', 'id')
                 aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
@@ -82,6 +85,7 @@ export default function Editar(props) {
                 /* aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
                 aux.formasPago = setOptions(formasPago, 'nombre', 'id')
                 aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
+                aux.cuentas = setOptions(cuentas, 'nombre', 'id')
                 setEstatusCompras(estatusCompras)
                 setOpciones(aux)
                 Swal.close()
@@ -128,7 +132,7 @@ export default function Editar(props) {
                     autorizacion_2: form.auto2 ? form.auto2.id : null,
                     orden_compra: data.orden_compra,
                     fecha_pago: data.fecha_pago,
-                    id_cuenta: data.cuenta? data.cuenta.id : null,
+                    id_cuenta: form.id_cuenta,
                     id_estatus: form.id_estatus,
                     id_proveedor: form.proveedor,
                     fecha_entrega: form.fecha_entrega,
@@ -211,7 +215,7 @@ export default function Editar(props) {
         }
     }
 
-    console.log(estatusCompras)
+    console.log(opciones)
 
     return (
         <>
@@ -397,6 +401,64 @@ export default function Editar(props) {
                         color="primary"
                         style={{ marginLeft: '20%' }}
                     />
+                </div>
+                
+                <div>
+                    {
+                        opciones ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Empresa</InputLabel>
+                                <Select
+                                    name="empresa"
+                                    value={form.empresa}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {opciones.empresas.map((item, index) => (
+                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    ))}
+                                </Select>
+
+                            </>
+                            : null
+                    }
+                </div>
+
+                <div>
+                    {
+                        opciones && form.empresa !== "" ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Cuenta de salida</InputLabel>
+                                <Select
+                                    name="id_cuenta"
+                                    value={form.id_cuenta}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
+                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                    ))}
+                                </Select>
+                            </>
+                            : opciones ? 
+                                <>
+                                    <InputLabel id="demo-simple-select-label">Cuenta de Salida</InputLabel>
+                                    <Select
+                                        name="id_cuenta"
+                                        value={form.id_cuenta}
+                                        onChange={handleChange}
+                                        className={classes.textField}
+                                    >
+                                        {opciones.cuentas.map((item, index) => {
+                                            if (item.value == form.id_cuenta) {
+                                                return <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                            }
+                                        })}
+
+                                    </Select>
+                                </>
+                                : null
+                    }
                 </div>
 
                 <div>

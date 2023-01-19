@@ -365,6 +365,7 @@ export default function Editar(props) {
                                     value={form.id_cuenta}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    disabled
                                 >
                                     {opciones.cuentas.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
