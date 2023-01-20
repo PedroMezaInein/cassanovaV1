@@ -375,6 +375,7 @@ class TicketView extends Component {
         }
         return false
     }
+    
     colCardTicketProceso = () => {
         const { data } = this.props
         let col = 0

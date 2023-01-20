@@ -3,6 +3,7 @@ import React from 'react';
 import { Modal } from '../../../../../components/singles'
 import ProgramaNecesidades from './ProgramaNecesidades';
 import EditProyect from '../../EditProyect'
+import SolicitarFactura from './SolicitarFactura'
 
 export default function Modales({ modal, setModal, proyecto, reload }) {
     return (
@@ -18,6 +19,7 @@ export default function Modales({ modal, setModal, proyecto, reload }) {
             </Modal>
 
             <Modal size="lg" show={modal.invoice} title='Facturar Fase' handleClose={() => setModal({ ...modal, invoice: false })}>
+                <SolicitarFactura proyecto={proyecto} />
             </Modal>
 
             <Modal size="lg" show={modal.sale} title='Venta' handleClose={() => setModal({ ...modal, sale: false })}>

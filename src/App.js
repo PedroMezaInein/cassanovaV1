@@ -100,11 +100,15 @@ const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/Proveed
 
 
 /** */
-const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos') )
+const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosTable')) //nuevo
+/* const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos')) //anterior */
+
+
 const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
 //** */
-const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto'))
+const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/DetailProyect')) //nuevo
+/* const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto')) //anterior */
 //** */
 
 const Compras = React.lazy(() => import('./pages/Proyectos/Compras/Compras') )
