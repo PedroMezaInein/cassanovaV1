@@ -133,6 +133,7 @@ function EditarRequisicion (props) {
                                 value={form.departamento}
                                 name="departamento"
                                 onChange={handleChangeDepartamento}
+                                disabled
                             >
                                 {departamentos.map((item, index) => (
                                     <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -154,6 +155,7 @@ function EditarRequisicion (props) {
                                 value={form.tipo_gasto}
                                 name="tipo_gasto"
                                 onChange={handleChange}
+                                disabled
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -178,6 +180,7 @@ function EditarRequisicion (props) {
                                 InputLabelProps={{
                                 shrink: true,
                                 }}
+                                disabled
                             />
                         </form>
                     </FormControl>
