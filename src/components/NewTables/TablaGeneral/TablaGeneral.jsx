@@ -12,7 +12,7 @@ import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
 import '../../../styles/_TablaGeneral.scss'
 
 export default function TablaGeneral(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla
@@ -46,6 +46,7 @@ export default function TablaGeneral(props) {
    
     //opciones: array de objetos con la siguiente estructura
     //          {nombre: 'nombre de la opcion', funcion: funcion que se va a ejecutar al dar click}
+    //recargar: Regresa una funcion que se puede utilizar para recargar la tabla
 
     //ejemplo de uso
     // <Tabla titulo='Titulo de la tabla' subtitulo='Subtitulo de la tabla' columnas={columnas} url={url} numItemsPagina={numItemsPagina} acciones={acciones} ProccessData={ProccessData} opciones={opciones} />
@@ -68,6 +69,11 @@ export default function TablaGeneral(props) {
             })
             return obj
         })
+        if (reload !== undefined) {
+            reload({
+                reload: getData
+            })
+        }
 
     }, []) 
 
@@ -105,6 +111,8 @@ export default function TablaGeneral(props) {
             console.log(error)
         }
     }
+    //send reload function to parent
+
 
     const sortData = (identificador) => {
         let dataSort = [...data];
@@ -189,7 +197,7 @@ export default function TablaGeneral(props) {
             return obj
         })
     }
-
+    
     return (
         <div className='containerTable'>
             <div className="row">
@@ -234,7 +242,7 @@ export default function TablaGeneral(props) {
                                     <tr >
                                         {columnas.map((columna, index) => {
                                             return (
-                                                <th key={index} className=' mw-25'>
+                                                <th key={index} className='mt-25'>
                                                     <div className="TitleColumn">
                                                         
                                                             {
@@ -256,7 +264,7 @@ export default function TablaGeneral(props) {
                                                                             </div>
                                                                             : null
                                                                         }
-                                                                    </>
+                                                                    </> 
 
                                                             }
                                                         
@@ -307,8 +315,8 @@ export default function TablaGeneral(props) {
                                                                             
                                                                             {acciones.map((accion, index) => {
                                                                                 return (
-                                                                                    <div className={`${accion.color} Button-action`} key={index} >
-                                                                                        <i className={` ${accion.icono} text-light`} onClick={() => accion.funcion(item)}>
+                                                                                    <div className={`${accion.color} Button-action`}  onClick={() => accion.funcion(item)} key={index} >
+                                                                                        <i className={` ${accion.icono} text-light`}>
                                                                                             <span className="ml-2 h6">{accion.nombre}</span>
                                                                                         </i>    
                                                                                     </div>
@@ -322,7 +330,7 @@ export default function TablaGeneral(props) {
 
                                                         } else {
                                                             return (
-                                                                <td key={index} className='CellContent'>{item[columna.identificador]}</td>
+                                                                <td key={index} className='CellContent'><div className='contenido'>{item[columna.identificador]}</div></td>
                                                             )
                                                         }
                                                     })}

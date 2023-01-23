@@ -99,6 +99,7 @@ class ComprasFormulario extends Component {
                 item = options.empresas.find((elemento) => {
                     return elemento.value === value
                 })
+                console.log(item)
                 if(item){
                     form.cuenta = ''
                     options.cuentas = setOptions(item.cuentas, 'nombre', 'id')
@@ -732,6 +733,7 @@ class ComprasFormulario extends Component {
     
     render() {
         const { formeditado, form, options } = this.state
+        console.log(form)
         const { type } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">

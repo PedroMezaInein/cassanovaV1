@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 export const GET_USER = 'GET_USER';
+export const GET_OPTIONS = 'GET_OPTIONS';
+export const SAVE_OPTIONS = 'SAVE_OPTIONS';
 
 
 export function getUser(id) {
@@ -14,5 +16,14 @@ export function getUser(id) {
         } catch (error) {
             console.log(error)
         }
+    }
+}
+
+export function SaveOptionsAreas(areas) {
+    return async function (dispatch) {
+        return dispatch({
+            type: SAVE_OPTIONS,
+            payload: areas
+        })
     }
 }
