@@ -23,8 +23,9 @@ import { EdithSubArea } from '../../components/cards/Catalogos/EdithSubArea'
 
 import TablaGeneral from '../../components/NewTables/TablaGeneral/TablaGeneral'
 import { intersectRanges } from '@fullcalendar/core'
-import {ModalEditar} from '../../components/forms/catalogos/modales-egresos/ModalEditar'
-import ModalAgregar from '../../components/forms/catalogos/modales-egresos/ModalAgregar'
+import {ModalEditar} from '../../components/forms/catalogos/Areas/Modales-Gastos/ModalEditar'
+import ModalAgregar from '../../components/forms/catalogos/Areas/Modales-Gastos/ModalAgregar'
+import useOptionsArea from '../../hooks/useOptionsArea'
 
 class Areas extends Component {
 
@@ -62,6 +63,8 @@ class Areas extends Component {
             }
         }
     }
+
+    useOptionsArea = () => {}
 
     handleOpenEditarModalEgresos = (item) =>{
         this.setState({
@@ -696,14 +699,19 @@ class Areas extends Component {
     
     proccessData(e){
         // Imprime todo el objeto a ocupar 
-        /* console.log('uno') */
+        console.log('uno')
         console.log(e)
 
         let aux = []
         for(let key in e.area){
-
+            // Imprime el id del area
+        console.log('dos')
+        console.log(key)
 
             for(let area in e.area[key]){
+                // Imprime el area
+        console.log('tres')
+        console.log(area)
 
                 let auxPartidas = []
 
@@ -727,7 +735,6 @@ class Areas extends Component {
                                 nombre:partida,
                                 subpartidas:auxSubpartida
                             })
-
                         }
                     }
                 let areas = {
@@ -735,8 +742,8 @@ class Areas extends Component {
                     id_area: key,
                     partidas:auxPartidas,
                 }
-                
                 aux.push(areas)
+                console.log(areas.partidas)
             }
         }
         console.log(aux)
@@ -839,11 +846,10 @@ class Areas extends Component {
 
 
 
-                <Modal size="lg" title={"Modal editar de Sulem"} show={modalesGastos.crear.show} handleClose={() => this.handleCloseGastos ('crear')}>
-                    <h3>crae sulem</h3>
+                <Modal size="lg" title={"Nueva área"} show={modalesGastos.crear.show} handleClose={() => this.handleCloseGastos ('crear')}>
                     {/* {this.state.modalesGastos.editar.data.id_area}
                     {this.state.modalesGastos.editar.data.nombreArea} */}
-                    <ModalAgregar />
+                  <ModalAgregar />
                 </Modal> 
 
                 <Modal size="lg" title={"Modal editar de Sulem"} show={this.state.modalesGastos.editar.show} handleClose={this.handleCloseEditarModalEgresos}>

@@ -1,0 +1,46 @@
+.container-adjuntos {
+    max-height: 600px;
+    max-width: 600px;
+}
+
+.body-adjuntos{
+    max-height: 500px;
+    max-width: 500px;
+}
+
+.file input {
+    display: none;
+}
+
+.file label {
+    border: none;
+    background-color: #315694;
+    color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.file label:hover {
+    background-color: #E5E5E5;
+}
+
+.file-name {
+    color: #2171c1;
+    font-weight: bold;
+    background-color: #e1f0ff;
+    width: 150px;
+    padding: 0.3rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.btn-subir button {
+    border: none;
+    background-color: #315694;
+    color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}

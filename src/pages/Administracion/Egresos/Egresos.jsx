@@ -18,7 +18,9 @@ import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors, apiPostFormResp
 import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert } from '../../../functions/alert'
 import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, 
-    setTextTableReactDom, setNaviIcon } from '../../../functions/setters'
+    setTextTableReactDom, setNaviIcon
+} from '../../../functions/setters'
+
 class Egresos extends Component {
     state = {
         modal: {
@@ -77,7 +79,8 @@ class Egresos extends Component {
             estatusCompras: [],
             allCuentas: []
         },
-        filters: {}
+        filters: {},
+        key: 'gastos'
     }
 
     componentDidMount() {
@@ -789,15 +792,21 @@ class Egresos extends Component {
         });
         return form
     }
+    controlledTab = value => {
+        this.setState({
+            ...this.state,
+            key: value
+        })
+    }
     render() {
-        const { form, options, egreso, modal, filters } = this.state
+        const { form, options, egreso, modal, filters, key } = this.state
         const { access_token } = this.props.authUser
         return (
             <Layout active='administracion'  {...this.props}>
                 <NewTable
                     tableName='egresos'
-                    subtitle='Listado de egresos'
-                    title='Egresos'
+                    subtitle='Listado de gastos'
+                    title='Gastos'
                     mostrar_boton={true}
                     abrir_modal={false}
                     accessToken={access_token}
@@ -807,8 +816,9 @@ class Egresos extends Component {
                     urlRender={`${URL_DEV}v3/administracion/egreso`}
                     filterClick={this.openModalFiltros}
                     exportar_boton={true}
-                    onClickExport = { () => { this.exportEgresosAxios() } }
+                    onClickExport={() => { this.exportEgresosAxios() }}
                 />
+                
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose} >
                     <FacturasFormTable at = { access_token } tipo_factura='egresos' id={egreso.id} dato={egreso} reloadTable = {this.reloadTableFacturas}/>
                 </Modal>
