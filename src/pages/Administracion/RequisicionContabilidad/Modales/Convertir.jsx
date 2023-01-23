@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiOptions, apiPutForm } from '../../../../functions/api'
+import { apiOptions, apiPutForm, apiPostForm } from '../../../../functions/api'
 
 import { setOptions } from '../../../../functions/setters'
 
@@ -48,8 +48,12 @@ export default function Convertir(props) {
         proveedor: data.proveedor,
         estatus_compra: data.estatus_compra,
         estatus_conta: data.estatus_conta,
+        afectarCuentas: false
     })
     const [estatusCompras, setEstatusCompras] = useState(false)
+    const [file, setFile] = useState({
+        factura: ''
+    })
     const classes = useStyles();
 
     useEffect(() => {
@@ -142,6 +146,7 @@ export default function Convertir(props) {
                             id_proveedor: form.proveedor,
                             id_estatus_compra: form.estatus_compra,
                             id_estatus_conta: form.estatus_conta,
+                            afectar_cuentas: form.afectarCuentas,
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
@@ -149,15 +154,50 @@ export default function Convertir(props) {
                                 if (reload) {
                                     reload.reload()
                                 }
-                                reload()
                                 Swal.close()
                                 Swal.fire({
-                                    icon: 'success',
-                                    title: 'Guardado',
-                                    text: 'Se ha guardado correctamente',
-                                    timer: 2000,
-                                    timerProgressBar: true,
+                                    title: 'Subiendo factura..',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading()
+                                    }
                                 })
+                                if (file.factura && file.factura !== '') {
+                                    console.log('si archivo')
+                                    let archivo = new FormData();
+                                    archivo.append(`files_name_requisicion[]`, file.factura.name)
+                                    archivo.append(`files_requisicion[]`, file.factura)
+                                    archivo.append('adjuntos[]', "requisicion")
+                                    archivo.append('tipo', 'Factura')
+                                    try {
+                                        apiPostForm(`requisicion/${props.data.id}/archivos/s3`, archivo, auth.access_token)
+                                            .then(res => {
+                                                Swal.close()
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Guardado',
+                                                    text: 'Se ha guardado correctamente',
+                                                    timer: 2000,
+                                                    timerProgressBar: true,
+                                                })
+                                            })
+                                            .catch(err => {
+                                                Swal.close()
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'El registro fue actualizado pero no fue posible subir la factura',
+                                                    text: 'Algo salio mal!',
+                                                })
+                                            })
+                                    } catch (error) {
+                                        Swal.close()
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Oops...',
+                                            text: 'Algo salio mal!',
+                                        })
+                                    }
+                                }
                             }, (error) => { }
                         ).catch((error) => {
                             Swal.close()
@@ -189,8 +229,6 @@ export default function Convertir(props) {
 
 
     }
-
-
 
     const validateForm = () => {
         let valid = true
@@ -229,7 +267,34 @@ export default function Convertir(props) {
         }
     }
 
-    console.log(form)
+    const handleCuentas = (e) => {
+        Swal.fire({
+            title: '¿Desea afectar cuentas?',
+            text: "Si acepta, se afectaran las cuentas de la requisición y no podrá modificarlas",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'red',
+            cancelButtonColor: 'gray',
+            confirmButtonText: 'AFECTAR CUENTAS',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setForm({
+                    ...form,
+                    afectarCuentas: !form.afectarCuentas
+                })
+            }
+        })
+    }
+
+    const handleFile = (e) => {
+        console.log(e.target.files)
+        setFile({
+            ...file,
+            factura: e.target.files[0]
+        })
+    }
+
     return (
         <>
             <div className={Style.container}>
@@ -241,7 +306,7 @@ export default function Convertir(props) {
                         name='fecha'
                         defaultValue={form.fecha}
                         className={classes.textField}
-                        disabled
+                        
                     />
                 </div>
 
@@ -310,7 +375,7 @@ export default function Convertir(props) {
                                 value={form.tipoGasto}
                                 name="tipoGasto"
                                 onChange={handleChange}
-                                disabled
+                                
                                 className={classes.textField}
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
@@ -377,6 +442,7 @@ export default function Convertir(props) {
                                     value={form.id_cuenta}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    disabled
                                 >
                                     {opciones.cuentas.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -445,6 +511,7 @@ export default function Convertir(props) {
                                     value={form.proveedor}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    disabled
                                 >
                                     {opciones.proveedores.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -454,7 +521,6 @@ export default function Convertir(props) {
                             </>
                             : null
                     }
-
                 </div>
 
                 <div>
@@ -465,6 +531,18 @@ export default function Convertir(props) {
                         name="auto2"
                         color="primary"
                         style={{ marginLeft: '20%' }}
+                    />
+                </div>
+
+                <div>
+                    <InputLabel id="demo-simple-select-label">AFECTAR CUENTAS</InputLabel>
+                    <Checkbox
+                        checked={form.afectarCuentas}
+                        onChange={handleCuentas}
+                        name="afectarCuentas"
+                        color="secondary"
+                        style={{ marginLeft: '15%' }}
+                        disabled={form.afectarCuentas}
                     />
                 </div>
 
@@ -481,6 +559,15 @@ export default function Convertir(props) {
                         }}
                     />
                 </div>
+
+                <div className={Style.nuevaRequisicion_adjunto}>
+                    <p id='adjuntos'>Agregar factura
+                        <input className={Style.nuevaRequisicion_adjunto_input} type='file' onChange={handleFile}></input>
+                    </p>
+                    <div>
+                        { file.factura && file.factura.name ? <div className={Style.adjunto_nombre}>{file.factura.name}</div> : null}
+                    </div>
+                </div> 
 
                 <div className={Style.btnAprobar}>
                     <button onClick={aprobar}>Convertir</button>

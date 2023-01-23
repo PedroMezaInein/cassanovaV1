@@ -57,8 +57,8 @@ export default function RequisicionCompras() {
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
         { nombre: 'Monto solicitado', identificador: 'monto_solicitado', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
+        { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
         { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
-
     ]
 
     const opciones = [
@@ -107,14 +107,15 @@ export default function RequisicionCompras() {
                 id_estatus: item.estatus ? item.estatus.id : null,
                 proveedor: item.id_proveedor ? item.id_proveedor : null,
                 /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
-                estatus_compra: item.estatus_compra ? item.estatus_compra : null,
-                estatus_conta: item.estatus_conta ? item.estatus_conta : null,
+                estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
+                estatus_conta: item.estatus_conta ? item.estatus_conta.estatus : 'pendiente',
                 /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
                 id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
                 id_estatus_conta: item.id_estatus_conta ? item.id_estatus_conta : null,
                 fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
             })
         })
+        aux = aux.reverse()
         return aux
 
     }
