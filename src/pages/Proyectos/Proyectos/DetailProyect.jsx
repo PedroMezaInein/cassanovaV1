@@ -140,7 +140,7 @@ export default function DetailProyect() {
                 Swal.showLoading()
             }
         })
-        axios.get(URL_DEV + 'calidad/options', { headers: setSingleHeader(userAuth.access_token) })
+        axios.get(URL_DEV + 'v2/proyectos/compras', { headers: setSingleHeader(userAuth.access_token) })
             .then(response => {
                 
                 const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos, proveedores, unidades, tiposPago, areasCompras, areasVentas, empresas } = response.data
