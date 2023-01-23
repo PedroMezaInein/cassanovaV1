@@ -5,7 +5,7 @@ import ProgramaNecesidades from './ProgramaNecesidades';
 import EditProyect from '../../EditProyect'
 import SolicitarFactura from './SolicitarFactura'
 
-export default function Modales({ modal, setModal, proyecto, reload }) {
+export default function Modales({ modal, setModal, proyecto, reload, opciones }) {
     return (
         <>
             <Modal size="lg" show={modal.edit_phase} title='Editar Fase' handleClose={() => setModal({ ...modal, edit_phase: false })}>
@@ -19,7 +19,7 @@ export default function Modales({ modal, setModal, proyecto, reload }) {
             </Modal>
 
             <Modal size="lg" show={modal.invoice} title='Facturar Fase' handleClose={() => setModal({ ...modal, invoice: false })}>
-                <SolicitarFactura proyecto={proyecto} />
+                <SolicitarFactura proyecto={proyecto} opciones={opciones} />
             </Modal>
 
             <Modal size="lg" show={modal.sale} title='Venta' handleClose={() => setModal({ ...modal, sale: false })}>

@@ -234,13 +234,13 @@ export default function DetailProyect() {
                             </Tabs>
 
                             <TabPanel value={value} index={0} >
-                                <Fase1 fase={fases.fase1.data} reload={reload} />
+                                <Fase1 fase={fases.fase1.data} reload={reload} opciones={opciones} />
                             </TabPanel>
                             <TabPanel value={value} index={1} >
-                                <Fase2 fase={fases.fase2.data} reload={reload} />
+                                <Fase2 fase={fases.fase2.data} reload={reload} opciones={opciones} />
                             </TabPanel>
                             <TabPanel value={value} index={2} >
-                                <Fase3 fase={fases.fase3.data} reload={reload} />
+                                <Fase3 fase={fases.fase3.data} reload={reload} opciones={opciones} />
                             </TabPanel>
                         </div>
                     

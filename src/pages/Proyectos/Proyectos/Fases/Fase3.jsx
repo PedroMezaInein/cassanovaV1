@@ -12,7 +12,7 @@ import BotonAdjuntos from './BotonAdjuntos';
 import Modales from './utils/Modales';
 
 export default function Fase3(props) {
-    const { fase, reload } = props;
+    const { fase, reload, opciones } = props;
     const [modal, setModal] = useState({
         edit_phase: false,
         add_agreement: false,
@@ -165,7 +165,7 @@ export default function Fase3(props) {
                 </div>
             </div>
 
-            <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} />
+            <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} />
 
         </>
 

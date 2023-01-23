@@ -14,10 +14,12 @@ import Grid from '@material-ui/core/Grid';
 
 export default function SolicitarFactura(props) {
     const user = useSelector((state) => state.authUser);
-    const {proyecto} = props;
+    const {proyecto, opciones} = props;
     const [form, setForm] = useState({
         clientes: proyecto.clientes ? proyecto.clientes : [],
     })
+
+    console.log(opciones)
 
     useEffect(() => {
         
