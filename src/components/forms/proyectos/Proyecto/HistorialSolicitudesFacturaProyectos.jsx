@@ -182,7 +182,7 @@ class HistorialSolicitudesFacturaProyectos extends Component {
                         </tbody>
                     </table>
                 </div>
-                <Modal size='xl' show={modal.factura} title='Nueva solicitud de factura' handleClose={this.handleClose} >
+                <Modal size='xl' show={modal.factura} title='1' handleClose={this.handleClose} >
                     {
                         modal.factura ?
                             <FormSolicitudFactura options={options} presupuesto={presupuesto} at={at} refresh={this.refresh} pdf_solicitud={pdf_solicitud} proyecto={proyecto} handleClose={this.handleClose} />
