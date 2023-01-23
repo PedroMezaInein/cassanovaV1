@@ -239,6 +239,13 @@ export const AREAS_COLUMNS = [
     { Header: 'Sub áreas', accessor: 'subareas', customRender: true }
 ]
 
+export const AREAS_EGRESOS_COLUMNS = [
+    { nombre: 'Acciones', identificador: 'acciones', sort: true, stringSearch: true },
+    { nombre: 'Área', identificador: 'nombreArea', sort: true, stringSearch: true },
+    { nombre: 'Partidas', identificador: 'partidas', sort: true, stringSearch: true },
+    { nombre: 'Sub partidas', identificador: 'subpartidas', sort: true, stringSearch: true },
+]
+
 export const AREAS_COMPRAS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Área', accessor: 'area', customRender: true },
@@ -992,4 +999,15 @@ export const CLAVES = [
 export const ADJ_TRASPASO_COLUMNS = [
     { Header: 'Opciones', accessor: 'actions' },
     { Header: 'ARCHIVOS', accessor: 'adjunto' }
+]
+
+export const REQUISICIONES = [
+    { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false},
+    { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: false},
+    { nombre: 'Departamento', identificador: 'departamento', sort: true, stringSearch: false},
+    { nombre: 'Gasto', identificador: 'tipo_gasto', sort: true, stringSearch: false},
+    { nombre: 'Fecha', identificador: 'fecha', sort: true, stringSearch: false},
+    { nombre: 'Descripcion', identificador: 'descripcion', sort: true, stringSearch: false},
+    { nombre: 'Estatus', identificador: 'estatus', sort: true, stringSearch: false},
+    { nombre: 'Tiempo estimado', identificador: 'tiempo_estimado', sort: true, stringSearch: false},
 ]
