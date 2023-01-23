@@ -751,27 +751,47 @@ class Areas extends Component {
 
         aux.map(item =>{
             console.log(item)
-            let subpartidaaux =[] 
-            item.partidas[0].subpartidas.map(subpartida=>{
-                subpartidaaux.push(<div>{subpartida.nombre}</div>)
-            })
-            let estesi = subpartidaaux.map((subpartida)=>{
-                return(subpartida)
-            })
             
+            item.partidas.forEach((partidaitem, index)=>{
+                let subpartidaaux =[] 
 
-            let newdataaux = {
-                nombreArea:<div value={item.id} >{item.nombreArea}</div>,
-                partidas:item.partidas[0].nombre,
-                subpartidas:estesi,
-                data: item
-            }
-            dataTable.push(newdataaux)
+                partidaitem.subpartidas.map(subpartida=>{
+                    subpartidaaux.push(<div>{subpartida.nombre}</div>)
+                })
+
+                let estesi = subpartidaaux.map((subpartida)=>{
+                    return(subpartida)
+                })
+                
+                let newdataaux = {
+                    nombreArea:item.nombreArea,
+                    partidas:item.partidas[index].nombre,
+                    subpartidas:<div >{estesi}</div>,
+                    data: item
+                } 
+                dataTable.push(newdataaux) 
+
+            })
 
         })
         console.log(dataTable)
         return dataTable
     }
+
+    // proccessData(e){
+    //     // Imprime todo el objeto a ocupar 
+    //     console.log('uno')
+    //     console.log(e)
+
+    //     let aux = []
+    //     for(let key in e.area){
+    //         console.log(key)
+    //         for(let area in e.area[key]){
+    //             console.log(area)
+    //             // area.forEach(let idpartida in e.area[key][area])
+    //         }
+    //     }
+    // }
 
     render() {
         const { form, modal, title, formeditado, key, modalSee, area, options, subArea, selectedSubArea, modalesGastos} = this.state
@@ -800,7 +820,7 @@ class Areas extends Component {
                             columnas={AREAS_GASTOS_COLUMNS}
                             url={`areas`}  
                             opciones={this.handleOpen}
-                            numItemsPagina={3} 
+                            numItemsPagina={13} 
                             ProccessData={this.proccessData}
                             >
                         </TablaGeneral>
