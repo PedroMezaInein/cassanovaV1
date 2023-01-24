@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { apiOptions } from '../../../functions/api'
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import { Card, DropdownButton, Dropdown } from 'react-bootstrap'
@@ -140,20 +142,22 @@ export default function DetailProyect() {
                 Swal.showLoading()
             }
         })
-        axios.get(URL_DEV + 'v2/proyectos/compras', { headers: setSingleHeader(userAuth.access_token) })
+        apiOptions('v2/proyectos/compras', userAuth.access_token)
             .then(response => {
                 
-                const { empleados, estatus, tiposTrabajo, proyectos, partidas, conceptos, proveedores, unidades, tiposPago, areasCompras, areasVentas, empresas } = response.data
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago,
+                    metodosPago, estatusFacturas } = response.data
                 let options = {}
-                options.empleados = setOptions(empleados, 'nombre', 'id')
-                /* options.estatus = this.setOptionsEstatus(estatus, 'estatus', 'id') */
-                options.tiposTrabajo = setOptions(tiposTrabajo, 'nombre', 'id')
-                options.proyectos = setOptions(proyectos, 'nombre', 'id')
-                options.partidas = setOptions(partidas, "nombre", "id")
-                options.proveedores = setOptions(proveedores, "razon_social", "id")
-                options.unidades = setOptions(unidades, 'nombre', 'id')
-                options.tiposPagos = setSelectOptions(tiposPago, 'tipo')
                 options.empresas = setOptions(empresas, 'name', 'id')
+                options.proveedores = setOptions(proveedores, 'razon_social', 'id')
+                options.areas = setOptions(areas, 'nombre', 'id')
+                options.proyectos = setOptions(proyectos, 'nombre', 'id')
+                options.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
+                options.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
+                options.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
+                options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
+                options.formasPago = setOptions(formasPago, 'nombre', 'id')
+                options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
                 setOpciones(options)
                 Swal.close()
             })

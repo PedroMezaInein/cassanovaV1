@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux';
 
 import DateFnsUtils from '@date-io/date-fns';
 import Swal from 'sweetalert2'
+import { apiPostForm } from '../../../../../functions/api'
 import { es } from 'date-fns/locale'
 import axios from 'axios';
 import { URL_DEV } from '../../../../../constants'
@@ -10,6 +11,7 @@ import { ordenamiento, setOptions } from '../../../../../functions/setters'
 import { setSingleHeader } from "../../../../../functions/routers"
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -21,6 +23,11 @@ export default function SolicitarFactura(props) {
     const [form, setForm] = useState({
         cliente_id: proyecto.cliente_id,
         clientes: proyecto.clientes ? proyecto.clientes : [],
+        formaPago_id: 3,
+        metodoPago_id: 1,
+        tipoPago_id: 4,
+        estatusFactura_id: 1,
+        monto: 0,
     })
 
     console.log(opciones)
@@ -34,6 +41,31 @@ export default function SolicitarFactura(props) {
         setForm({
             ...form,
             [name]: value
+        })
+    }
+
+    const handleSubmit = (e) => { 
+        Swal.fire({
+            title: '¿Estás seguro de solicitar la factura?',
+            text: "¡No podrás revertir esta acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, solicitar factura'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    '¡Factura solicitada!',
+                    'La factura se ha solicitado correctamente.',
+                    'success'
+                )
+                try {
+                    apiPostForm('facturas', form, user.access_token)
+                } catch (error) {
+
+                }
+            }
         })
     }
 
@@ -57,9 +89,80 @@ export default function SolicitarFactura(props) {
                 </div>
 
                 <div>
+                    <InputLabel id="label-select-Tipo">Forma de pago</InputLabel>
+                    <Select
+                        value={form.formaPago_id}
+                        name='formaPago_id'
+                        labelId="label-select-Tipo"
+                        onChange={handleChange}
+                    >
+                        {opciones.formasPago.map((item, index) => {
+                            return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
+                        })}
 
+                    </Select>
+                </div>
+
+                <div>
+                    <InputLabel id="label-select-Tipo">Forma de pago</InputLabel>
+                    <Select
+                        value={form.metodoPago_id}
+                        name='metodoPago_id'
+                        labelId="label-select-Tipo"
+                        onChange={handleChange}
+                    >
+                        {opciones.metodosPago.map((item, index) => {
+                            return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
+                        })}
+
+                    </Select>
+                </div>
+
+                <div>
+                    <InputLabel id="label-select-Tipo">Tipo de pago</InputLabel>
+                    <Select
+                        value={form.tipoPago_id}
+                        name='tipoPago_id'
+                        labelId="label-select-Tipo"
+                        onChange={handleChange}
+                    >
+                        {opciones.tiposPagos.map((item, index) => {
+                            return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
+                        })}
+
+                    </Select>
+                </div>
+
+                <div>
+                    <InputLabel id="label-select-Tipo">Estatus de factura</InputLabel>
+                    <Select
+                        value={form.estatusFactura_id}
+                        name='estatusFactura_id'
+                        labelId="label-select-Tipo"
+                        onChange={handleChange}
+                    >
+                        {opciones.estatusFacturas.map((item, index) => {
+                            return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
+                        })}
+
+                    </Select>
+                </div>
+
+                <div>
+                    <TextField
+                        name="monto"
+                        value={form.costo}
+                        label="Monto con IVA"
+                        color='primary'
+                        onChange={handleChange}
+                        type='number'
+                        placeholder='$0.00'
+                    />
                 </div>
                 
+            </div>
+            <div>
+                <button onClick={handleSubmit}>Solicitar factura</button>
             </div>
         </div>
     )
