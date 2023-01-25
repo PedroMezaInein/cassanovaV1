@@ -1,15 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux'
-import { MultiSelect } from "react-multi-select-component";
 
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
 import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
 
 import { apiPostForm } from '../../../../../functions/api'
 
@@ -27,7 +26,7 @@ export default function ModalAgregar (props) {
         arraySubPartidas: []
     })
 
-    const [selected, setSelected] = useState([]);
+    
 
     const [errores, setErrores] = useState()
 
@@ -36,7 +35,8 @@ export default function ModalAgregar (props) {
             ...form,
             [event.target.name]: event.target.value,
             partida: null,
-            subPartida: null
+            subPartida: null,
+            arraySubPartidas: []
         })
     }
 
@@ -44,20 +44,52 @@ export default function ModalAgregar (props) {
         let name = event.target.name
         setForm({
             ...form,
-            [name]: event.target.value
+            [name]: event.target.value,
+            arraySubPartidas: []
         })
     }
 
-    const handleChangeSub = (event) => {
-        let name = event.target.name
+    const handleChangeSub = (e) => {
+        if(form.arraySubPartidas.length > 0 ){
+            if(form.arraySubPartidas.find((item => item.id === e.target.value))){
 
+            } else {
+                setForm({
+                    ...form,
+                    arraySubPartidas:[
+                        ...form.arraySubPartidas,
+                        {
+                            id: e.target.value,
+                        }
+                    ]
+                })
+            }
+           
+        } else {
+            setForm({
+                ...form,
+                arraySubPartidas:[
+                    ...form.arraySubPartidas,
+                    {
+                        id: e.target.value,
+                    }
+                ]
+            })
+        }
     }
 
-    const options = [
-        { label: "uvas jajaja lol 🍇", value: "grapes" },
-        { label: "Mango 🥭", value: "mango" },
-        { label: "Strawberry 🍓", value: "strawberry", disabled: true },
-      ];
+    console.log(form.arraySubPartidas)
+
+    const handleDelete = (e) => {
+        const indiceSub = form.arraySubPartidas.findIndex(sub => sub.id === e) //extraigo el indice se la subpartida que quiero eliminar
+        const newSub = [...form.arraySubPartidas] // creo una copia de arraySubPartidas
+        
+        newSub.splice(indiceSub,1) // elimino la subpartida indicando el indice en donde se encontraba
+        setForm({
+            ...form,
+            arraySubPartidas: newSub
+        })
+    }
 
     const validateForm = () => {
         let validar = true
@@ -134,9 +166,37 @@ export default function ModalAgregar (props) {
                 })
             })
         }
-
         
     }
+     //de aqui son nuevas funciones handlechange
+
+     const handleChange=(e)=>{
+        setForm({
+            ...form,
+            [e.target.name]:e.target.value
+        })
+     }
+    const handleEnter=(e)=>{
+        if(e.key==='Enter' ){
+            setForm({
+                ...form,
+                arraySubPartidas: [...form.arraySubPartidas, {nombre:form.subPartida}],
+                subPartida:''
+            })
+        }
+    }
+
+    const handleDeleteSub= (e) =>{
+        const indiceSub = form.arraySubPartidas.findIndex(sub => sub.nombre === e)
+        const newSub = [...form.arraySubPartidas]
+        newSub.splice(indiceSub,1) // elimino la subpartida indicando el indice en donde se encontraba
+        setForm({
+            ...form,
+            arraySubPartidas: newSub
+        })
+    }
+
+
 
     return (
         <>
@@ -162,7 +222,7 @@ export default function ModalAgregar (props) {
         {errores && errores.area && form.area === '' &&<span className='error_area'>{errores.area}</span>}
 
         {/* PARTIDA */}
-        <div className="">  
+        {/* <div className="">  
             {departamentos.length > 0 && form.area !== ''?
                 <>
                     <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
@@ -179,33 +239,57 @@ export default function ModalAgregar (props) {
                 : null
             }
         </div>
-        {errores && errores.partida && form.area !== '' && (form.partida === '' || form.partida === null) && <span className=''>{errores.partida}</span>}
+        {errores && errores.partida && form.area !== '' && (form.partida === '' || form.partida === null) && <span className=''>{errores.partida}</span>} */}
         
 
         {/* SUBPARTIDA */}
-        <div className="">  
+        {/* <div className="">  
             {departamentos.length > 0 && form.partida ?
                 <>
                     <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
-                    {/* <Select
+                    <Select
                         value={form.subPartida}
                         name="subPartida"
-                        onChange={handleChange}
+                        onChange={handleChangeSub}
                     >
-                        {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
-                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                        {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id ==                         form.partida).subpartidas.map((item, index) => (
+                            <MenuItem key={index} value={item.id} >{item.nombre}</MenuItem>
                         ))}
-                    </Select> */}
-                    <MultiSelect
-                       options={options}
-                       value={selected}
-                       onChange={setSelected}
-                       labelledBy='Select'
-                    />
+                    </Select> 
                 </>
                 : null
             }
-        </div>
+        </div> */}
+        {/* <div>
+            {
+                form.arraySubPartidas.length > 0 && departamentos.length > 0 && form.partida ?
+                <>
+                    {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id ==                         form.partida).subpartidas.map((item, index) => (
+                        form.arraySubPartidas.map((sub,index)=>{
+                            if(sub.id === item.id){
+                                return <div key={index} value={item.id} >{item.nombre}<span onClick={(e)=>{handleDelete(sub.id)}} >X</span></div>
+                            }
+                        })
+                    ))}
+                </>
+
+                
+
+                :null
+            }
+        </div> */}
+        <div className="">  
+            {departamentos.length > 0 && form.partida ?
+                <>
+
+                        {/* {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
+                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                        ))} */}
+
+                </>
+                : null
+            }
+        </div> 
         {errores && errores.subPartida && form.partida !== '' && form.partida !== null && (form.subPartida === '' || form.subPartida === null) &&<span>{errores.subPartida}</span>}
 
         <div>
@@ -221,10 +305,32 @@ export default function ModalAgregar (props) {
         </div>
 
         <div>
-            <button className="" onClick={enviar}>
-                Agregar
-            </button>
+            <label>Partida</label>
+            <input name='partida' type='text' value={form.partida} onChange={handleChange}></input>
         </div>
+
+        <div>
+            <label>Subpartida</label>
+            <input name='subPartida' type='text' value={form.subPartida} onKeyPress={handleEnter}  onChange={handleChange}></input>
+        </div>
+
+        <div>
+            {
+                form.arraySubPartidas.length > 0 && form.partida && form.partida !== '' ?
+                <>
+                    {form.arraySubPartidas.map(subpartida=>{
+                        return <div><span onClick={(e)=>handleDeleteSub(subpartida.nombre)}>X</span>{subpartida.nombre}</div>
+                    })}
+                </>
+                :null
+            }
+        </div>
+
+        {/* <div>
+            <input  type='text' onClick={()=>console.log('ajhbajkdhakjwd')}>
+                Agregar
+            </input>
+        </div> */}
         </>
     )
 }

@@ -119,10 +119,6 @@ class Areas extends Component {
         })
     }
 
-    handleChangeArea = (e) => {
-        console.log(e)
-    }
-
     setActionsAreas = () => {
         
         let aux = [
@@ -163,19 +159,6 @@ class Areas extends Component {
             }
         },
     ]
-
-    // handleOpenEditarModalEgresos = (item) =>{
-    //     this.setState({
-    //         ...this.state,
-    //         modalesGastos: {
-    //             ...this.state.modalesGastos,
-    //             editar:{
-    //                 show: true,
-    //                 data:item.data
-    //             }
-    //         }
-    //     })
-    // }
 
     handleCloseGastos = (tipo) => {
         this.setState({
@@ -778,21 +761,6 @@ class Areas extends Component {
         return dataTable
     }
 
-    // proccessData(e){
-    //     // Imprime todo el objeto a ocupar 
-    //     console.log('uno')
-    //     console.log(e)
-
-    //     let aux = []
-    //     for(let key in e.area){
-    //         console.log(key)
-    //         for(let area in e.area[key]){
-    //             console.log(area)
-    //             // area.forEach(let idpartida in e.area[key][area])
-    //         }
-    //     }
-    // }
-
     render() {
         const { form, modal, title, formeditado, key, modalSee, area, options, subArea, selectedSubArea, modalesGastos} = this.state
         const { access_token } = this.props.authUser
@@ -801,9 +769,9 @@ class Areas extends Component {
         return (
             <Layout active = 'catalogos'  {...this.props}>
 
-                <Tabs defaultActiveKey={'gastos'} mountOnEnter={true} unmountOnExit={true}>
+                <Tabs defaultActiveKey={'compras'} mountOnEnter={true} unmountOnExit={true}>
                 
-                    {/* <Tab eventKey = { 'compras' } title = { 'compras' }>
+                    <Tab eventKey = { 'compras' } title = { 'compras' }>
                         <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
                             subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
                             onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
@@ -811,7 +779,7 @@ class Areas extends Component {
                             cardTable = {`card_table_compras`} cardTableHeader = {`card_table_header_compras`} 
                             cardBody = {`card_body_compras`} isTab = { true }
                             actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
-                    </Tab> */}
+                    </Tab>
 
                     <Tab eventKey="gastos" title="gastos">
                         <TablaGeneral
@@ -820,7 +788,7 @@ class Areas extends Component {
                             columnas={AREAS_GASTOS_COLUMNS}
                             url={`areas`}  
                             opciones={this.handleOpen}
-                            numItemsPagina={13} 
+                            numItemsPagina={10} 
                             ProccessData={this.proccessData}
                             >
                         </TablaGeneral>
@@ -866,11 +834,9 @@ class Areas extends Component {
 
 
 
-                <Modal size="lg" title={"Nueva área"} show={modalesGastos.crear.show} handleClose={() => this.handleCloseGastos ('crear')}>
-                    {/* {this.state.modalesGastos.editar.data.id_area}
-                    {this.state.modalesGastos.editar.data.nombreArea} */}
+                {/* <Modal size="lg" title={"Nueva área"} show={modalesGastos.crear.show} handleClose={() => this.handleCloseGastos ('crear')}>
                   <ModalAgregar />
-                </Modal> 
+                </Modal>  */}
 
                 <Modal size="lg" title={"Modal editar de Sulem"} show={this.state.modalesGastos.editar.show} handleClose={this.handleCloseEditarModalEgresos}>
                     <h3>editar sulem</h3>
