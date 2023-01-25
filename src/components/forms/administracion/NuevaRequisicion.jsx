@@ -225,6 +225,7 @@ export default function NativeSelects(props) {
                                 {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                 ))}
+
                             </Select>
                         </>
                         : null

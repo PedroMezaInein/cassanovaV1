@@ -37,11 +37,18 @@
 }
 
 .containerTitleColumn{
-    background-color: #CBBA8E; //aqui
+    background-color: rgba(22, 147, 165, 0.5); //aqui
     text-align: center;
     font-weight: bold;
     color: white; //aqui
     height: 50px;
+}
+
+#dropdown-basic{
+    width: 100px;
+    height: 34px;
+    background: #F26C4F;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);    
 }
 
 .TitleColumn {
@@ -156,5 +163,3 @@
     cursor: pointer;
     background-color: #87f784;
 }
-
-
