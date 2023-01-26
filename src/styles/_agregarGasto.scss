@@ -1,3 +1,59 @@
-.area{
-    background-color: red;
+.agregar{
+    padding: 0 10% 0;
+}
+
+.agregar_area{
+    position: absolute;
+}
+
+.agregar_partida{
+    position: absolute;
+    top: 0;
+    left: 70%;
+}
+
+.agregar_partida input{
+    width: 85%;
+}
+
+.agregar_subpartida{
+    margin-top: 3rem;
+    // margin-left: 25%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.subpartidas{
+    margin-top: 1rem;
+    width: 100%;
+    height: 5rem;
+    margin-bottom: 1rem!important;
+}
+
+.sub_eliminar{
+    background-color: rgba(156, 196, 228, 0.25);
+    padding: 0 .5rem;
+    margin-bottom: 1rem;
+}
+
+.eliminar_sub{
+    background-color: rgba(156, 196, 228, 0.25);
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+}
+
+.boton{
+    display: flex;
+    justify-content: end;
+    top: 1rem;
+}
+
+.boton button{
+    width: 7rem;
+    height: 2.5rem;
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+
 }

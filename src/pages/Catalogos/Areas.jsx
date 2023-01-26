@@ -23,8 +23,8 @@ import { EdithSubArea } from '../../components/cards/Catalogos/EdithSubArea'
 
 import TablaGeneral from '../../components/NewTables/TablaGeneral/TablaGeneral'
 import { intersectRanges } from '@fullcalendar/core'
-import {ModalEditar} from '../../components/forms/catalogos/Areas/Modales-Gastos/ModalEditar'
 import ModalAgregar from '../../components/forms/catalogos/Areas/Modales-Gastos/ModalAgregar'
+import {ModalEditarSub} from '../../components/forms/catalogos/Areas/Modales-Gastos/ModalEditarSub'
 import useOptionsArea from '../../hooks/useOptionsArea'
 
 class Areas extends Component {
@@ -53,7 +53,11 @@ class Areas extends Component {
                 show:false,
                 data:false
             },
-            editar:{
+            editarPartida:{
+                show: false,
+                data:false
+            },
+            editarSubPartida:{
                 show: false,
                 data:false
             },
@@ -64,60 +68,46 @@ class Areas extends Component {
         }
     }
 
+    handleOpenEditarModalGastos = (tipo, data) =>{
+        this.setState({
+            ...this.state,
+            modalesGastos: {
+                ...this.state.modalesGastos,
+                [tipo]:{
+                    show: true,
+                    data:data
+                }
+            }
+        })
+    }
+
     useOptionsArea = () => {}
 
-    handleOpenEditarModalEgresos = (item) =>{
-        this.setState({
-            ...this.state,
-            modalesGastos: {
-                ...this.state.modalesGastos,
-                editar:{
-                    show: true,
-                    data:item.data
-                }
-            }
-        })
-    }
+    // handleOpenEliminarModalEgresos = (item) =>{
+    //     this.setState({
+    //         ...this.state,
+    //         modalesGastos: {
+    //             ...this.state.modalesGastos,
+    //             eliminar:{
+    //                 show: true,
+    //                 data:item.data
+    //             }
+    //         }
+    //     })
+    // }
 
-    handleOpenEliminarModalEgresos = (item) =>{
-        this.setState({
-            ...this.state,
-            modalesGastos: {
-                ...this.state.modalesGastos,
-                eliminar:{
-                    show: true,
-                    data:item.data
-                }
-            }
-        })
-    }
-
-
-    handleCloseEditarModalEgresos = () => {
-        this.setState({
-            ...this.state,
-            modalesGastos: {
-                ...this.state.modalesGastos,
-                editar:{
-                    show: false,
-                    data:false
-                }
-            }
-        })
-    }
-
-    handleCloseEliminarModalEgresos = () => {
-        this.setState({
-            ...this.state,
-            modalesGastos: {
-                ...this.state.modalesGastos,
-                eliminar:{
-                    show: false,
-                    data:false
-                }
-            }
-        })
-    }
+    // handleCloseEliminarModalEgresos = () => {
+    //     this.setState({
+    //         ...this.state,
+    //         modalesGastos: {
+    //             ...this.state.modalesGastos,
+    //             eliminar:{
+    //                 show: false,
+    //                 data:false
+    //             }
+    //         }
+    //     })
+    // }
 
     setActionsAreas = () => {
         
@@ -167,11 +157,14 @@ class Areas extends Component {
                 ...this.state.modalesGastos,
                 [tipo]:{
                     show: false,
-                    // data:item.data
                 }
             }
         })
     }
+
+    // handleOpenModal = () => {
+    //     alert('Doble click')
+    // }
 
     handleChangeTab(e) {
         const {tabShow} = this.state
@@ -681,20 +674,15 @@ class Areas extends Component {
 
     
     proccessData(e){
-        // Imprime todo el objeto a ocupar 
-        console.log('uno')
-        console.log(e)
-
+        console.log(this)
         let aux = []
         for(let key in e.area){
             // Imprime el id del area
-        console.log('dos')
-        console.log(key)
+        
 
             for(let area in e.area[key]){
                 // Imprime el area
-        console.log('tres')
-        console.log(area)
+        
 
                 let auxPartidas = []
 
@@ -702,7 +690,6 @@ class Areas extends Component {
 
                         for(let partida in e.area[key][area][idpartida]){
                             // Imprime el nombre de cada partida
-                            console.log(e.area[key][area][idpartida][partida])
                             let auxSubpartida = []
 
                             e.area[key][area][idpartida][partida].forEach(elemento =>{
@@ -726,20 +713,17 @@ class Areas extends Component {
                     partidas:auxPartidas,
                 }
                 aux.push(areas)
-                console.log(areas.partidas)
             }
         }
-        console.log(aux)
         let dataTable = []
 
         aux.map(item =>{
-            console.log(item)
             
             item.partidas.forEach((partidaitem, index)=>{
                 let subpartidaaux =[] 
 
                 partidaitem.subpartidas.map(subpartida=>{
-                    subpartidaaux.push(<div>{subpartida.nombre}</div>)
+                    subpartidaaux.push(<div id='esteno' >{subpartida.nombre}</div>)// es cada subpartida
                 })
 
                 let estesi = subpartidaaux.map((subpartida)=>{
@@ -749,15 +733,13 @@ class Areas extends Component {
                 let newdataaux = {
                     nombreArea:item.nombreArea,
                     partidas:item.partidas[index].nombre,
-                    subpartidas:<div >{estesi}</div>,
-                    data: item
+                    subpartidas:<div >{estesi}</div>, //este es el contenedor de las subpartidas
                 } 
                 dataTable.push(newdataaux) 
 
             })
 
         })
-        console.log(dataTable)
         return dataTable
     }
 
@@ -769,7 +751,7 @@ class Areas extends Component {
         return (
             <Layout active = 'catalogos'  {...this.props}>
 
-                <Tabs defaultActiveKey={'compras'} mountOnEnter={true} unmountOnExit={true}>
+                <Tabs defaultActiveKey={'gastos'} mountOnEnter={true} unmountOnExit={true}>
                 
                     <Tab eventKey = { 'compras' } title = { 'compras' }>
                         <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
@@ -834,19 +816,12 @@ class Areas extends Component {
 
 
 
-                {/* <Modal size="lg" title={"Nueva área"} show={modalesGastos.crear.show} handleClose={() => this.handleCloseGastos ('crear')}>
+                <Modal size="lg" title={"Nueva área"} show={modalesGastos.crear.show} handleClose={() => this.handleCloseGastos ('crear')}>
                   <ModalAgregar />
-                </Modal>  */}
-
-                <Modal size="lg" title={"Modal editar de Sulem"} show={this.state.modalesGastos.editar.show} handleClose={this.handleCloseEditarModalEgresos}>
-                    <h3>editar sulem</h3>
-                    {/* {this.state.modalesGastos.editar.data.id_area}
-                    {this.state.modalesGastos.editar.data.nombreArea} */}
-                    <ModalEditar data={this.state.modalesGastos.editar.data}/>
                 </Modal> 
 
-                <Modal size="lg" title={"Modal eliminar de Sulem"} show={this.state.modalesGastos.eliminar.show} handleClose={this.handleCloseEliminarModalEgresos}>
-                    <div>eliminar sulem</div>
+                <Modal size="lg" title={"Editar Sub partida"} show={modalesGastos.editarSubPartida.show} handleClose={() => this.handleCloseGastos ('editar')}>
+                  <ModalEditarSub data={modalesGastos.editarSubPartida.data}/>
                 </Modal> 
 
 
