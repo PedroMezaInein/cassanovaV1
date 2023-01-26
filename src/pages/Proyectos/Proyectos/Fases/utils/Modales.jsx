@@ -4,6 +4,8 @@ import { Modal } from '../../../../../components/singles'
 import ProgramaNecesidades from './ProgramaNecesidades';
 import EditProyect from '../../EditProyect'
 import SolicitarFactura from './SolicitarFactura'
+import Compra from './Compra'
+import Venta from './Venta'
 
 export default function Modales({ modal, setModal, proyecto, reload, opciones }) {
     return (
@@ -22,10 +24,12 @@ export default function Modales({ modal, setModal, proyecto, reload, opciones })
                 <SolicitarFactura proyecto={proyecto} opciones={opciones} />
             </Modal>
 
-            <Modal size="lg" show={modal.sale} title='Venta' handleClose={() => setModal({ ...modal, sale: false })}>
+            <Modal size="lg" show={modal.sale} title='Nueva solicitud de venta' handleClose={() => setModal({ ...modal, sale: false })}>
+                <Venta proyecto={proyecto} opciones={opciones} />
             </Modal>
 
-            <Modal size="lg" show={modal.purchase} title='Compra' handleClose={() => setModal({ ...modal, purchase: false })}>
+            <Modal size="lg" show={modal.purchase} title='Nueva solicitud de compra' handleClose={() => setModal({ ...modal, purchase: false })}>
+                <Compra proyecto={proyecto} opciones={opciones} />
             </Modal>
 
             <Modal size="lg" show={modal.end_proyect} title='Finalizar Proyecto' handleClose={() => setModal({ ...modal, end_proyect: false })}>

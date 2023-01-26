@@ -48,7 +48,8 @@ class SolicitudVentaForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, children, clearFiles, onSubmit, formeditado, setOptions,handleChange, ...props } = this.props
+        const { title, options, form, onChange, children, clearFiles, onSubmit, formeditado, setOptions, handleChange, ...props } = this.props
+        console.log(options)
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">

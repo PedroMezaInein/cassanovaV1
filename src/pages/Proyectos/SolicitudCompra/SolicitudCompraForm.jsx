@@ -345,6 +345,7 @@ class SolicitudCompraForm extends Component {
     }
     render() {
         const { form, title, options, remision, formeditado } = this.state
+        console.log(options)
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">

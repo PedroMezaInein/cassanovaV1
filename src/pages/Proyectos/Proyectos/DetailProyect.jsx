@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { apiOptions } from '../../../functions/api'
+import { apiOptions, apiGet } from '../../../functions/api'
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import { Card, DropdownButton, Dropdown } from 'react-bootstrap'
@@ -118,6 +118,12 @@ export default function DetailProyect() {
         }
     }, [dataFases])
 
+    useEffect(() => { 
+        if (opciones && !opciones.areasVentas) {
+            getOpcionesVenta()
+        }
+    }, [opciones])
+
     const setSelectOptions = (arreglo, name) => {
         let aux = []
         arreglo.map((element) => {
@@ -143,28 +149,52 @@ export default function DetailProyect() {
             }
         })
         apiOptions('v2/proyectos/compras', userAuth.access_token)
-            .then(response => {
-                
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago,
-                    metodosPago, estatusFacturas } = response.data
-                let options = {}
-                options.empresas = setOptions(empresas, 'name', 'id')
-                options.proveedores = setOptions(proveedores, 'razon_social', 'id')
-                options.areas = setOptions(areas, 'nombre', 'id')
-                options.proyectos = setOptions(proyectos, 'nombre', 'id')
-                options.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
-                options.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
-                options.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
-                options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
-                options.formasPago = setOptions(formasPago, 'nombre', 'id')
-                options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
-                setOpciones(options)
-                Swal.close()
+        .then(response => {
+        
+            const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago,
+                metodosPago, estatusFacturas } = response.data
+            let options = {}
+            options.empresas = setOptions(empresas, 'name', 'id')
+            options.proveedores = setOptions(proveedores, 'razon_social', 'id')
+            options.areas = setOptions(areas, 'nombre', 'id')
+            options.proyectos = setOptions(proyectos, 'nombre', 'id')
+            options.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
+            options.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
+            options.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
+            options.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
+            options.formasPago = setOptions(formasPago, 'nombre', 'id')
+            options.metodosPago = setOptions(metodosPago, 'nombre', 'id')
+            setOpciones(options)
+            Swal.close()
+        })
+        .catch(error => {
+            Swal.close()
+            console.log(error)
+        })
+    }
+
+    const getOpcionesVenta = () => { 
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        })
+        apiGet('solicitud-venta/options', userAuth.access_token)
+        .then(response => {
+            const { areas } = response.data
+            let areasVentas = setOptions(areas, 'nombre', 'id')
+            setOpciones({
+                ...opciones,
+                areasVentas
             })
-            .catch(error => {
-                Swal.close()
-                console.log(error)
-            })
+            Swal.close()
+        })
+        .catch(error => {
+            Swal.close()
+            console.log(error)
+        })
     }
 
     let prop = {
@@ -194,6 +224,7 @@ export default function DetailProyect() {
             setProyecto(response.data.data[0].proyectos[response.data.data[0].proyectos.length - 1])
             Swal.close()
             getOpciones()
+            
         })
         .catch((error) => {
             console.log(error)

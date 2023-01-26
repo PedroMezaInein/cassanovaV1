@@ -194,9 +194,6 @@ export default function EditProyect(props) {
         })
     }
 
-    console.log(form)
-
-
     const handleSave = (e) => {
         e.preventDefault();
         Swal.fire({
