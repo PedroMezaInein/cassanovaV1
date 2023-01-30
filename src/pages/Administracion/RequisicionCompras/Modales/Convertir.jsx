@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Swal from 'sweetalert2'
 
@@ -23,10 +24,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Convertir(props) { 
-    const { data, handleClose, reload} = props
+    const { data, handleClose, reload, opciones, estatusCompras } = props
     console.log(props)
     const departamentos = useSelector(state => state.opciones.areas)
-    const [opciones, setOpciones] = useState(false)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
         fecha: data.fecha,
@@ -48,51 +48,15 @@ export default function Convertir(props) {
         fecha_entrega: data.fecha_entrega,
         empresa: "",
     })
-    const [estatusCompras, setEstatusCompras] = useState(false)
     const [errores, setErrores] = useState({})
 
     const classes = useStyles();
-
-    useEffect(() => {
-        getOptions()
-    }, [])
 
     const handleChange = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
         })
-    }
-
-    const getOptions = () => {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            }
-        })
-
-        apiOptions(`v2/proyectos/compras`, auth.access_token).then(
-            (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
-                let aux = {}
-                aux.empresas = setOptions(empresas, 'name', 'id')
-                aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
-                /* aux.areas = setOptions(areas, 'nombre', 'id')
-                aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
-                aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
-                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
-                aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
-                aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
-                aux.formasPago = setOptions(formasPago, 'nombre', 'id')
-                aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
-                aux.cuentas = setOptions(cuentas, 'nombre', 'id')
-                setEstatusCompras(estatusCompras)
-                setOpciones(aux)
-                Swal.close()
-            }, (error) => { }
-        ).catch((error) => { })
     }
 
     const handleChangeDepartamento = (e) => {
@@ -169,7 +133,7 @@ export default function Convertir(props) {
                             id_pago: form.tipoPago,
                             id_solicitante: data.solicitante_id,
                             monto_pagado: form.monto_pagado,
-                            cantidad: form.monto,
+                            cantidad: parseInt(form.monto),
                             autorizacion_1: form.auto1 && form.auto1.id ? form.auto1.id : form.auto1,
                             autorizacion_2: form.auto2 ? form.auto2.id : null,
                             orden_compra: data.orden_compra,
@@ -236,6 +200,13 @@ export default function Convertir(props) {
         }
     }
 
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: e
+        })
+    }
+
     return (
         <>
             <div className={Style.container}>
@@ -266,13 +237,13 @@ export default function Convertir(props) {
                 </div>
 
                 <div>
-                    <TextField
-                        name='monto'
-                        label="Monto solicitado"
-                        type="number"
-                        defaultValue={form.monto}
-                        onChange={handleChange}
-                        className={classes.textField}
+                    <CurrencyTextField
+                        label="monto"
+                        variant="standard"
+                        value={form.monto}
+                        currencySymbol="$"
+                        outputFormat="string"
+                        onChange={(event, value) => handleMoney(value)}
                     />
                 </div>
 
@@ -408,18 +379,7 @@ export default function Convertir(props) {
 
                 </div>
 
-                <div>
-                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
-                    <Checkbox
-                        checked={form.checked}
-                        onChange={handleAprueba}
-                        name="auto1"
-                        color="primary"
-                        style={{marginLeft: '20%'}}
-                    />
-                </div>
-
-                <div>
+{/*                 <div>
                     {
                         opciones ?
                             <>
@@ -475,7 +435,7 @@ export default function Convertir(props) {
                                 </>
                                 : null
                     }
-                </div>
+                </div> */}
 
                 <div>
                     <TextField
@@ -488,6 +448,17 @@ export default function Convertir(props) {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                    />
+                </div>
+
+                <div>
+                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
+                    <Checkbox
+                        checked={form.checked}
+                        onChange={handleAprueba}
+                        name="auto1"
+                        color="primary"
+                        style={{marginLeft: '20%'}}
                     />
                 </div>
 
