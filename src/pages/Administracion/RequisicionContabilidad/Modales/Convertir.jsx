@@ -23,10 +23,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Convertir(props) {
-    const { data, handleClose, reload } = props
-    console.log(props)
+    const { data, handleClose, reload, opciones, estatusCompras } = props
     const departamentos = useSelector(state => state.opciones.areas)
-    const [opciones, setOpciones] = useState(false)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
         fecha: data.fecha,
@@ -48,54 +46,20 @@ export default function Convertir(props) {
         proveedor: data.proveedor,
         estatus_compra: data.estatus_compra,
         estatus_conta: data.estatus_conta,
-        afectarCuentas: false
+        afectarCuentas: false,
+        compra: data.compra,
+        conta: data.conta,
     })
-    const [estatusCompras, setEstatusCompras] = useState(false)
     const [file, setFile] = useState({
         factura: ''
     })
     const classes = useStyles();
-
-    useEffect(() => {
-        getOptions()
-    }, [])
 
     const handleChange = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
         })
-    }
-
-    const getOptions = () => {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            }
-        })
-
-        apiOptions(`v2/proyectos/compras`, auth.access_token).then(
-            (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
-                let aux = {}
-                /* aux.empresas = setOptions(empresas, 'name', 'id') */
-                aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
-                /* aux.areas = setOptions(areas, 'nombre', 'id')
-                aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
-                aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
-                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
-                aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
-                aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
-                aux.formasPago = setOptions(formasPago, 'nombre', 'id')
-                aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
-                aux.cuentas = setOptions(cuentas, 'nombre', 'id')
-                setEstatusCompras(estatusCompras)
-                setOpciones(aux)
-                Swal.close()
-            }, (error) => { }
-        ).catch((error) => { })
     }
 
     const handleChangeDepartamento = (e) => {
@@ -144,8 +108,8 @@ export default function Convertir(props) {
                             id_cuenta: form.id_cuenta,
                             id_estatus: form.id_estatus,
                             id_proveedor: form.proveedor,
-                            id_estatus_compra: form.estatus_compra,
-                            id_estatus_conta: form.estatus_conta,
+                            id_estatus_compra: form.compra,
+                            id_estatus_conta: form.conta,
                             afectar_cuentas: form.afectarCuentas,
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
@@ -461,8 +425,8 @@ export default function Convertir(props) {
                             <>
                                 <InputLabel id="demo-simple-select-label">Estatus de pago</InputLabel>
                                 <Select
-                                    name="estatus_compra"
-                                    value={form.estatus_compra}
+                                    name="compra"
+                                    value={form.compra}
                                     onChange={handleChange}
                                     className={classes.textField}
                                 >
@@ -484,8 +448,8 @@ export default function Convertir(props) {
                             <>
                                 <InputLabel id="demo-simple-select-label">Estatus de facturación</InputLabel>
                                 <Select
-                                    name="estatus_conta"
-                                    value={form.estatus_conta}
+                                    name="conta"
+                                    value={form.conta}
                                     onChange={handleChange}
                                     className={classes.textField}
                                 >

@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Swal from 'sweetalert2'
 
@@ -23,9 +24,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Editar(props) {
-    const { data, handleClose, reload } = props
+    const { data, handleClose, reload, opciones, estatusCompras } = props
     const departamentos = useSelector(state => state.opciones.areas)
-    const [opciones, setOpciones] = useState(false)
+    
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
         fecha: data.fecha,
@@ -33,7 +34,7 @@ export default function Editar(props) {
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
         tipoPago: data.tipoPago_id,
-        monto: data.monto,
+        monto: data.monto ? data.monto : 0,
         descripcion: data.descripcion,
         id: data.id,
         orden_compra: data.orden_compra,
@@ -47,51 +48,19 @@ export default function Editar(props) {
         proveedor: data.proveedor,
         estatus_compra: data.estatus_compra,
         estatus_conta: data.estatus_conta,
+        compra: data.compra,
+        conta: data.conta,
     })
+    console.log(data)
 
-    const [estatusCompras, setEstatusCompras] = useState()
+
     const classes = useStyles();
-
-    useEffect(() => {
-        getOptions()
-    }, [])
 
     const handleChange = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
         })
-    }
-
-    const getOptions = () => {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            }
-        })
-
-        apiOptions(`v2/proyectos/compras`, auth.access_token).then(
-            (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
-                let aux = {}
-                /* aux.empresas = setOptions(empresas, 'name', 'id') */
-                aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
-                /* aux.areas = setOptions(areas, 'nombre', 'id')
-                aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
-                aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
-                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id')
-                aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id')
-                aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
-                aux.formasPago = setOptions(formasPago, 'nombre', 'id')
-                aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
-                aux.cuentas = setOptions(cuentas, 'nombre', 'id')
-                setEstatusCompras(estatusCompras)
-                setOpciones(aux)
-                Swal.close()
-            }, (error) => { }
-        ).catch((error) => {})
     }
 
     const handleChangeDepartamento = (e) => {
@@ -136,8 +105,8 @@ export default function Editar(props) {
                     id_cuenta: form.id_cuenta,
                     id_estatus: form.id_estatus,
                     id_proveedor: form.proveedor,
-                    id_estatus_compra: form.estatus_compra,
-                    id_estatus_conta: form.estatus_conta,
+                    id_estatus_compra: form.compra,
+                    id_estatus_conta: form.conta,
                 }
 
                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
@@ -210,6 +179,13 @@ export default function Editar(props) {
         }
     }
 
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: parseFloat(e)
+        })
+    }
+
     return (
         <>
             <div className={Style.container}>
@@ -256,17 +232,16 @@ export default function Editar(props) {
                 </div>
 
                 <div>
-                    <TextField
-                        name='monto'
-                        label="Monto De pago"
-                        type="number"
-                        defaultValue={form.monto}
-                        onChange={handleChange}
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
+
+                    <CurrencyTextField
+                        label="monto"
+                        variant="standard"
+                        value={form.monto}
+                        currencySymbol="$"
+                        outputFormat="string"
+                        onChange={(event, value) => handleMoney(value)}
                     />
+                    
                 </div>
 
                 <div>
@@ -384,8 +359,8 @@ export default function Editar(props) {
                             <>
                                 <InputLabel id="demo-simple-select-label">Estatus de pago</InputLabel>
                                 <Select
-                                    name="estatus_compra"
-                                    value={form.estatus_compra}
+                                    name="compra"
+                                    value={form.compra}
                                     onChange={handleChange}
                                     className={classes.textField}
                                 >
@@ -407,8 +382,8 @@ export default function Editar(props) {
                             <>
                                 <InputLabel id="demo-simple-select-label">Estatus de facturación</InputLabel>
                                 <Select
-                                    name="estatus_conta"
-                                    value={form.estatus_conta}
+                                    name="conta"
+                                    value={form.conta}
                                     onChange={handleChange}
                                     className={classes.textField}
                                 >

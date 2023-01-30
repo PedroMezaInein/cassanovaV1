@@ -12,6 +12,9 @@ import Adjuntos from './Modales/Adjuntos'
 import Ver from './Modales/Ver'
 import Crear from './../../../components/forms/administracion/NuevaRequisicion'
 
+import { apiOptions } from '../../../functions/api'
+import { setOptions } from '../../../functions/setters'
+
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
 import Layout from '../../../components/layout/layout'
@@ -41,6 +44,12 @@ export default function RequisicionContabilidad() {
         },
     })
     const [reloadTable, setReloadTable] = useState()
+        const [opcionesApi, setOpcionesApi] = useState(false)
+    const [estatusCompras, setEstatusCompras] = useState(false)
+
+    useEffect(() => {
+        getOpciones()
+    }, [])
 
     useOptionsArea()
 
@@ -52,7 +61,7 @@ export default function RequisicionContabilidad() {
         { nombre: 'Tipo de Egreso', identificador: 'tipoEgreso', sort: false, stringSearch: false },
         { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false },
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
-        { nombre: 'Monto pagado', identificador: 'monto', sort: false, stringSearch: false },
+        { nombre: 'Monto pagado', identificador: 'monto_view', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
         { nombre: 'Facturación', identificador: 'estatus_conta', sort: false, stringSearch: false },
         { nombre: 'Cuentas', identificador: 'afectacion_cuentas', sort: false, stringSearch: false },
@@ -74,6 +83,11 @@ export default function RequisicionContabilidad() {
             }
         },
     ]
+
+    //funcion para convertir numero a moneda con dos decimales y separador de miles
+    const formatNumber = (num) => {
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+    }
 
     let ProccessData = (data) => {
         console.log(data)
@@ -97,6 +111,7 @@ export default function RequisicionContabilidad() {
                 tipoPago_id: item.pago ? item.pago.id : null,
                 monto_solicitado: item.cantidad,
                 monto: item.monto_pago,
+                monto_view: formatNumber(item.monto_pago),
                 estatus: item.estatus ? item.estatus.estatus : 'Pendiente',
                 aprobacion: createtagaprobaciones(item),
                 auto1: item.auto1,
@@ -110,8 +125,8 @@ export default function RequisicionContabilidad() {
                 estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
                 estatus_conta: item.estatus_conta ? item.estatus_conta.estatus : 'pendiente',
                 /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
-                compra: item.estatus_compra ? item.estatus_compra : null,
-                conta: item.estatus_conta ? item.estatus_conta : null,
+                compra: item.estatus_compra ? item.estatus_compra.id : null,
+                conta: item.estatus_conta ? item.estatus_conta.id : null,
                 afectacion_cuentas: item.afectacion_cuentas ? "Cuentas afectadas" : "sin afectación",
             })
         })
@@ -217,7 +232,36 @@ export default function RequisicionContabilidad() {
         pathname: '/administracion/requisicion-contabilidad',
     }
 
-    console.log(reloadTable)
+    const getOpciones = () => { 
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            }
+        })
+
+        apiOptions(`v2/proyectos/compras`, userAuth.access_token).then(
+            (response) => {
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
+                let aux = {}
+                aux.empresas = setOptions(empresas, 'name', 'id')
+                aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
+                /* aux.areas = setOptions(areas, 'nombre', 'id')
+                aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
+                aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
+                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id') */
+                /* aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id') */
+                /* aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
+                aux.formasPago = setOptions(formasPago, 'nombre', 'id')
+                aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
+                aux.cuentas = setOptions(cuentas, 'nombre', 'id')
+                setEstatusCompras(estatusCompras)
+                setOpcionesApi(aux)
+                Swal.close()
+            }, (error) => { }
+        ).catch((error) => { })
+    }
 
     return (
         <>
@@ -227,25 +271,34 @@ export default function RequisicionContabilidad() {
                 </>
             </Layout>
 
-            <Modal size="xl" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
-                <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable}/>
-            </Modal>
+            {
+                estatusCompras && opcionesApi ?
+                <>
+                <Modal size="xl" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
+                    <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
+                </Modal>
 
-            <Modal size="xl" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} />
-            </Modal>
+                <Modal size="xl" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
+                            <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
+                </Modal>
 
-            <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
-                <Crear />
-            </Modal>
+                <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
+                    <Crear />
+                </Modal>
 
-            <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
-                <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={false} />
-            </Modal>
+                <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
+                    <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={false} />
+                </Modal>
 
-            <Modal size="xl" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
-                <Ver data={modal.ver.data} />
-            </Modal>
+                <Modal size="xl" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
+                    <Ver data={modal.ver.data} />
+                </Modal>
+                </>
+                : null
+
+            }
+
+           
 
         </>
     )

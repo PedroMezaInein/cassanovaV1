@@ -1,9 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiOptions, apiPutForm, apiPostForm } from '../../../../functions/api'
-
-import { setOptions } from '../../../../functions/setters'
+import {apiPutForm} from '../../../../functions/api'
 
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -23,9 +21,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Editar(props) {
-    const { data, handleClose, reload } = props
+    const { data, handleClose, reload, opciones, estatusCompras } = props
     const departamentos = useSelector(state => state.opciones.areas)
-    const [opciones, setOpciones] = useState(false)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
         fecha: data.fecha,
@@ -48,49 +45,14 @@ export default function Editar(props) {
         empresa: "",
 
     })
-    const [estatusCompras, setEstatusCompras] = useState(false)
-    const classes = useStyles();
 
-    useEffect(() => {
-        getOptions()
-    }, [])
+    const classes = useStyles();
 
     const handleChange = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
         })
-    }
-
-    const getOptions = () => {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            }
-        })
-
-        apiOptions(`v2/proyectos/compras`, auth.access_token).then(
-            (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
-                let aux = {}
-                aux.empresas = setOptions(empresas, 'name', 'id')
-                aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
-                /* aux.areas = setOptions(areas, 'nombre', 'id')
-                aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
-                aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
-                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id') */
-                /* aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id') */
-                /* aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
-                aux.formasPago = setOptions(formasPago, 'nombre', 'id')
-                aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
-                aux.cuentas = setOptions(cuentas, 'nombre', 'id')
-                setEstatusCompras(estatusCompras)
-                setOpciones(aux)
-                Swal.close()
-            }, (error) => { }
-        ).catch((error) => {})
     }
 
     const handleChangeDepartamento = (e) => {
