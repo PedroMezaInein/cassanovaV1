@@ -37,7 +37,7 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
         return false
     }
 
-    const handleChangeAdd = (e) => {
+    const handleChangeAdd = (e) => { //handleChangeSub
         const { value } = e.target
         usuarios.empleados.map((usuario) => {
             if (usuario.id == parseInt(value)) {

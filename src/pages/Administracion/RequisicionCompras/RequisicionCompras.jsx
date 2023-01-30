@@ -12,7 +12,8 @@ import Adjuntos from './Modales/Adjuntos'
 import Ver from './Modales/Ver'
 import Crear from './../../../components/forms/administracion/NuevaRequisicion'
 
-import { apiGet } from '../../../functions/api'
+import { apiOptions } from '../../../functions/api'
+import { setOptions } from '../../../functions/setters'
 
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
@@ -43,9 +44,14 @@ export default function RequisicionCompras() {
         },
     })
     const [reloadTable, setReloadTable] = useState()
-    const [data, setData] = useState()
+    const [opcionesApi, setOpcionesApi] = useState(false)
+    const [estatusCompras, setEstatusCompras] = useState(false)
 
-    useOptionsArea()
+    useEffect(() => {
+        getOpciones()
+    }, [])
+
+    useOptionsArea() 
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
@@ -55,7 +61,7 @@ export default function RequisicionCompras() {
         { nombre: 'Tipo de Egreso', identificador: 'tipoEgreso', sort: false, stringSearch: false },
         { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false },
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
-        { nombre: 'Monto solicitado', identificador: 'monto_solicitado', sort: false, stringSearch: false },
+        { nombre: 'Monto solicitado', identificador: 'monto_view', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
         { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
         { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
@@ -75,6 +81,10 @@ export default function RequisicionCompras() {
             }
         },
     ]
+
+    const formatNumber = (num) => {
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+    }
 
     let ProccessData = (data) => {
         console.log(data)
@@ -97,6 +107,7 @@ export default function RequisicionCompras() {
                 tipoPago_id: item.pago ? item.pago.id : null,
                 monto_solicitado: item.cantidad,
                 monto: item.monto_pago,
+                monto_view: `$${item.cantidad.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
                 estatus: item.estatus ? item.estatus.estatus : 'Pendiente',
                 aprobacion: createtagaprobaciones(item),
                 auto1: item.auto1,
@@ -204,6 +215,37 @@ export default function RequisicionCompras() {
         pathname: '/administracion/requisicion-compras',
     }
 
+    const getOpciones = () => { 
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            }
+        })
+
+        apiOptions(`v2/proyectos/compras`, userAuth.access_token).then(
+            (response) => {
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
+                let aux = {}
+                aux.empresas = setOptions(empresas, 'name', 'id')
+                aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
+                /* aux.areas = setOptions(areas, 'nombre', 'id')
+                aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
+                aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
+                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id') */
+                /* aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id') */
+                /* aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
+                aux.formasPago = setOptions(formasPago, 'nombre', 'id')
+                aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
+                aux.cuentas = setOptions(cuentas, 'nombre', 'id')
+                setEstatusCompras(estatusCompras)
+                setOpcionesApi(aux)
+                Swal.close()
+            }, (error) => { }
+        ).catch((error) => { })
+    }
+
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
@@ -211,26 +253,33 @@ export default function RequisicionCompras() {
                     <TablaGeneral titulo='Solicitudes de Gasto' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
                 </>
             </Layout>
+            {
+                estatusCompras && opcionesApi ?
+                    <>
+                        <Modal size="xl" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
+                            <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
+                        </Modal>
+
+                        <Modal size="xl" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
+                            <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
+                        </Modal>
+
+                        <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
+                            <Crear handleClose={handleClose('crear')} reload={reloadTable} />
+                        </Modal>
+
+                        <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
+                            <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={false} />
+                        </Modal>
+
+                        <Modal size="md" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
+                            <Ver data={modal.ver.data} opciones={opcionesApi} estatusCompras={estatusCompras} />
+                        </Modal>
+                    </>
+                    : null
+            }
             
-            <Modal size="xl" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
-                <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable} />
-            </Modal>
-
-            <Modal size="xl" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} />
-            </Modal>
-
-            <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
-                <Crear />
-            </Modal>
-
-            <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
-                <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={false} />
-            </Modal>
             
-            <Modal size="xl" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
-                <Ver data={modal.ver.data} />
-            </Modal>
 
         </>
     )

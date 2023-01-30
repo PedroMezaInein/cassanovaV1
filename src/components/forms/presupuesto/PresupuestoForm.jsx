@@ -5,8 +5,14 @@ import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 class PresupuestoForm extends Component {
     state = {
-        showForm:false
+        showForm: false,
+        partidas: [],
     }
+
+    componentDidMount() { 
+        this.filterPartidas()
+    }
+
     updateProyecto = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'proyecto' } })
@@ -100,9 +106,24 @@ class PresupuestoForm extends Component {
         })
         return clave
     }
+
+    filterPartidas = () => { 
+        const { options } = this.props
+        let aux = []
+        options.partidas.forEach((partida) => {
+            if (partida.subpartidas.length > 0) {
+                aux.push(partida)
+            }    
+        })
+        this.setState({
+            ...this.state,
+            partidas: aux
+        })
+    }
+
     render() {
         const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad, showFormProyecto } = this.props
-        const { showForm } = this.state
+        const { showForm, partidas } = this.state
         let options_conceptos  = {}
         data.partidas.forEach((partida) => {
             partida.subpartidas.forEach((subpartida) => {
@@ -144,7 +165,7 @@ class PresupuestoForm extends Component {
                                             <div className="card-toolbar">
                                                 <SelectSearchGray
                                                     formeditado={formeditado}
-                                                    options={options.partidas}
+                                                    options={partidas}
                                                     placeholder="SELECCIONA LA PARTIDA"
                                                     name="partida"
                                                     value={form.partida}

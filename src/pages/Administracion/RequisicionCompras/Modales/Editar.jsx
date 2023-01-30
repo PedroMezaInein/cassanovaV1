@@ -1,15 +1,14 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiOptions, apiPutForm, apiPostForm } from '../../../../functions/api'
-
-import { setOptions } from '../../../../functions/setters'
+import {apiPutForm} from '../../../../functions/api'
 
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Swal from 'sweetalert2'
 
@@ -23,9 +22,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Editar(props) {
-    const { data, handleClose, reload } = props
+    const { data, handleClose, reload, opciones, estatusCompras } = props
     const departamentos = useSelector(state => state.opciones.areas)
-    const [opciones, setOpciones] = useState(false)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
         fecha: data.fecha,
@@ -48,49 +46,14 @@ export default function Editar(props) {
         empresa: "",
 
     })
-    const [estatusCompras, setEstatusCompras] = useState(false)
-    const classes = useStyles();
 
-    useEffect(() => {
-        getOptions()
-    }, [])
+    const classes = useStyles();
 
     const handleChange = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
         })
-    }
-
-    const getOptions = () => {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            }
-        })
-
-        apiOptions(`v2/proyectos/compras`, auth.access_token).then(
-            (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago, metodosPago, estatusFacturas, cuentas } = response.data
-                let aux = {}
-                aux.empresas = setOptions(empresas, 'name', 'id')
-                aux.proveedores = setOptions(proveedores, 'razon_social', 'id')
-                /* aux.areas = setOptions(areas, 'nombre', 'id')
-                aux.proyectos = setOptions(proyectos, 'nombre', 'id') */
-                aux.tiposPagos = setOptions(tiposPagos, 'tipo', 'id')
-                /* aux.tiposImpuestos = setOptions(tiposImpuestos, 'tipo', 'id') */
-                /* aux.estatusCompras = setOptions(estatusCompras, 'estatus', 'id') */
-                /* aux.estatusFacturas = setOptions(estatusFacturas, 'estatus', 'id')
-                aux.formasPago = setOptions(formasPago, 'nombre', 'id')
-                aux.metodosPago = setOptions(metodosPago, 'nombre', 'id') */
-                aux.cuentas = setOptions(cuentas, 'nombre', 'id')
-                setEstatusCompras(estatusCompras)
-                setOpciones(aux)
-                Swal.close()
-            }, (error) => { }
-        ).catch((error) => {})
     }
 
     const handleChangeDepartamento = (e) => {
@@ -127,7 +90,7 @@ export default function Editar(props) {
                     id_pago: form.tipoPago,
                     id_solicitante: data.solicitante_id,
                     monto_pagado: form.monto_pagado,
-                    cantidad: form.monto,
+                    cantidad: parseInt(form.monto),
                     autorizacion_1: form.auto1 ? auth.user.id : null,
                     autorizacion_2: form.auto2 ? form.auto2.id : null,
                     orden_compra: data.orden_compra,
@@ -215,7 +178,13 @@ export default function Editar(props) {
         }
     }
 
-    console.log(opciones)
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: e
+        })
+    }
+
 
     return (
         <>
@@ -249,16 +218,13 @@ export default function Editar(props) {
                 </div>
 
                 <div>
-                    <TextField
-                        name='monto'
-                        label="Monto solicitado"
-                        type="number"
-                        defaultValue={form.monto}
-                        onChange={handleChange}
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
+                    <CurrencyTextField
+                        label="monto"
+                        variant="standard"
+                        value={form.monto}
+                        currencySymbol="$"
+                        outputFormat="string"
+                        onChange={(event, value) => handleMoney(value)}
                     />
                 </div>
 
@@ -392,18 +358,9 @@ export default function Editar(props) {
 
                 </div>
 
-                <div>
-                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
-                    <Checkbox
-                        checked={form.auto1}
-                        onChange={handleAprueba}
-                        name="auto1"
-                        color="primary"
-                        style={{ marginLeft: '20%' }}
-                    />
-                </div>
+
                 
-                <div>
+                {/* <div>
                     {
                         opciones ?
                             <>
@@ -459,7 +416,7 @@ export default function Editar(props) {
                                 </>
                                 : null
                     }
-                </div>
+                </div> */}
 
                 <div>
                     <TextField
@@ -473,6 +430,17 @@ export default function Editar(props) {
                             shrink: true,
                         }}
                     />  
+                </div>
+
+                <div>
+                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
+                    <Checkbox
+                        checked={form.auto1}
+                        onChange={handleAprueba}
+                        name="auto1"
+                        color="primary"
+                        style={{ marginLeft: '20%' }}
+                    />
                 </div>
 
                 <div className={Style.btnAprobar}>

@@ -8,6 +8,14 @@ import { setMoneyTableSinSmall } from '../../../functions/setters'
 
 class AgregarConcepto extends Component {
 
+    state = {
+        partidas: [],
+    }
+
+    componentDidMount() {
+        this.filterPartidas()
+    }
+
     updatePartida = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'partida' } })
@@ -48,8 +56,22 @@ class AgregarConcepto extends Component {
         })
     }
 
+    filterPartidas = () => { 
+        const { options } = this.props
+        let aux = []
+        options.partidas.forEach((partida) => {
+            if (partida.subpartidas.length > 0) {
+                aux.push(partida)
+            }
+        })
+        this.setState({
+            partidas: aux
+        })
+    }
+
     render() {
         const { options, form, onChange, onSubmit, formeditado, checkButtonConceptos, activeKey, onSelect } = this.props
+        const { partidas } = this.state
         return (
             <Form id="form-presupuesto"
                 onSubmit={
@@ -120,7 +142,7 @@ class AgregarConcepto extends Component {
                                     withtextlabel={1}
                                     withicon={1}
                                     customdiv = "mb-0"
-                                    options={options.partidas}
+                                    options={partidas}
                                     placeholder="SELECCIONA LA PARTIDA"
                                     name="partida"
                                     value={form.partida}
