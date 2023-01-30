@@ -26,6 +26,9 @@ export default function Fase3(props) {
         plan_measurements: false,
         contract: false,
         proof_payment: false,
+        budget: false,
+        advance: false,
+        construction_notes: false,
     });
 
     const columnas = [

@@ -170,7 +170,8 @@ export default function Compra(props) {
                 fecha: form.fecha,
                 tipoPago: form.tipoPago_id,
                 cuenta: '',
-                adjuntos: form.adjuntos
+                adjuntos: form.adjuntos,
+                factura: form.factura? 'Con Factura' : ''
             }
 
             let aux = Object.keys(newform)
@@ -261,7 +262,7 @@ export default function Compra(props) {
     return (
         <>
             {/* solicitar compra */}
-            <Accordion defaultExpanded>
+            <Accordion >
 
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -352,7 +353,7 @@ export default function Compra(props) {
             </Accordion>
 
             {/* Área y fecha */}
-            <Accordion defaultExpanded>
+            <Accordion >
 
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -445,7 +446,7 @@ export default function Compra(props) {
             </Accordion>
 
             {/* Presupuesto */}
-            <Accordion defaultExpanded>
+            <Accordion >
 
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -483,8 +484,9 @@ export default function Compra(props) {
                 <div className="col-md-4">
                     <button
                         onClick={addSolicitudCompraAxios}
+                        className={Style.sendButton}
                     >
-                        Guardar
+                        solicitar
                     </button>
                 </div>
             </div>

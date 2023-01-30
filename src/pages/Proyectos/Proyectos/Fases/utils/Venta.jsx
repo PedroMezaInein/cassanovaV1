@@ -50,7 +50,6 @@ export default function Venta(props) {
     })
 
     const [errors, setErrors] = useState({})
-    console.log(opciones)
 
     const handleChange = (e) => {
         setForm({
@@ -118,6 +117,7 @@ export default function Venta(props) {
             }
             return false
         })
+        console.log(error)
         setErrors(error)
         return valid
     }
@@ -144,7 +144,9 @@ export default function Venta(props) {
         })
     }
 
-    const addSolicitudCompraAxios = () => {
+    console.log(errors)
+
+    const handleSend = () => {
 
         if (validateForm()) {
             Swal.fire({
@@ -167,7 +169,8 @@ export default function Venta(props) {
                 fecha: form.fecha,
                 tipoPago: form.tipoPago_id,
                 cuenta: '',
-                adjuntos: form.adjuntos
+                adjuntos: form.adjuntos,
+                factura: form.factura ? 'Con Factura' : ''
             }
 
             let aux = Object.keys(newform)
@@ -252,10 +255,11 @@ export default function Venta(props) {
             })
         }
     }
+
     return (
         <>
             {/* solicitar venta */}
-            <Accordion defaultExpanded>
+            <Accordion >
 
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -331,7 +335,7 @@ export default function Venta(props) {
             </Accordion>
 
             {/* Área y fecha */}
-            <Accordion defaultExpanded>
+            <Accordion >
 
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -424,7 +428,7 @@ export default function Venta(props) {
             </Accordion>
 
             {/* Adjunto */}
-            <Accordion defaultExpanded>
+            <Accordion >
 
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -461,10 +465,10 @@ export default function Venta(props) {
             <div className="row justify-content-end">
                 <div className="col-md-4">
                     <button
-                        onClick={addSolicitudCompraAxios} 
+                        onClick={handleSend} 
                         className={Style.sendButton}
                     >
-                        Guardar
+                        Solicitar
                     </button>
                 </div>
             </div>

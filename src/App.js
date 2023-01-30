@@ -103,15 +103,15 @@ const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/Proveed
 
 
 /** */
-const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosTable')) //nuevo
-/* const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos')) //anterior */
+const ProyectosNuevo = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosTable')) //nuevo
+const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos')) //anterior
 
 
 const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
 //** */
-const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/DetailProyect')) //nuevo
-/* const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto')) //anterior */
+const SingleProyectoNuevo = React.lazy(() => import('./pages/Proyectos/Proyectos/DetailProyect')) //nuevo
+const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto')) //anterior
 //** */
 
 const Compras = React.lazy(() => import('./pages/Proyectos/Compras/Compras') )
@@ -361,9 +361,11 @@ class App extends Component{
                     {/*  ANCHOR Routes for proyectos */}
 
                     <Route path = "/proyectos/proyectos" exact component = { Proyectos } />
+                    <Route path="/proyectos/proyectos/nuevo" exact component={ProyectosNuevo } />
                     
                     <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
                     <Route path = "/proyectos/proyectos/single/:id" exact component ={ SingleProyecto } />
+                        <Route path="/proyectos/proyectos/nuevo/:id" exact component={SingleProyectoNuevo } />
                     
                     {/* <Route path = "/proyectos/ventas" exact component ={ Ventas } /> */}
                     {/* <Route path = "/proyectos/compras" exact component ={ Compras } /> */}

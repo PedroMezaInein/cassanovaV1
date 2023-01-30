@@ -16,13 +16,13 @@ export default function BotonAcciones({ modal, setModal }) {
                             {setNaviIcon('las la-clipboard-list icon-xl', 'EDITAR FASE')}
                         </Dropdown.Item>
 
-                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => setModal({ ...modal, add_agreement: true })}>
+                        {/* <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => setModal({ ...modal, add_agreement: true })}>
                             {setNaviIcon('las la-pencil-alt icon-xl', 'AGREGAR MINUTA DE ACUERDO')}
-                        </Dropdown.Item>
+                        </Dropdown.Item> */}
 
-                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, hire_phase: true })}>
+                        {/* <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, hire_phase: true })}>
                             {setNaviIcon('las la-handshake icon-xl', 'CONTRATAR FASES')}
-                        </Dropdown.Item>
+                        </Dropdown.Item> */}
 
                         <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => setModal({ ...modal, invoice: true })}>
                             {setNaviIcon('las la-handshake icon-xl', 'SOLICITAR FACTURA')}
@@ -34,6 +34,18 @@ export default function BotonAcciones({ modal, setModal }) {
 
                         <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => setModal({ ...modal, purchase: true })}>
                             {setNaviIcon('las la-handshake icon-xl', 'COMPRA')}
+                        </Dropdown.Item>
+
+                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, budget: true })}>
+                            {setNaviIcon('las la-handshake icon-xl', 'PRESUPUESTO')}
+                        </Dropdown.Item>
+                        
+                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, advance: true })}>
+                            {setNaviIcon('las la-handshake icon-xl', 'AVANCES')}
+                        </Dropdown.Item>
+
+                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, construction_notes: true, })}>
+                            {setNaviIcon('las la-handshake icon-xl', 'NOTAS DE OBRA')}
                         </Dropdown.Item>
 
                         <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, end_proyect: true })}>

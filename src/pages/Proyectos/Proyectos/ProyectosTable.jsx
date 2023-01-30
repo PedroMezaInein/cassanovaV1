@@ -39,7 +39,7 @@ export default function ProyectosTable() {
                 icono: 'fas fa-eye',
                 color: 'blueButton ',
                 funcion: (item) => {
-                    window.location.href = `/proyectos/proyectos/single/${item.id}`
+                    window.location.href = `/proyectos/proyectos/nuevo/${item.id}`
                 }
             },
             {

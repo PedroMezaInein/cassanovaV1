@@ -6,6 +6,9 @@ import EditProyect from '../../EditProyect'
 import SolicitarFactura from './SolicitarFactura'
 import Compra from './Compra'
 import Venta from './Venta'
+import Presupuesto from './Presupuesto'
+import Avances from './Avances'
+import NotasObra from './NotasObra'
 
 export default function Modales({ modal, setModal, proyecto, reload, opciones }) {
     return (
@@ -14,11 +17,11 @@ export default function Modales({ modal, setModal, proyecto, reload, opciones })
                 <EditProyect proyecto={proyecto} reload={reload} />
             </Modal>
 
-            <Modal size="lg" show={modal.add_agreement} title='Minuta de Acuerdo' handleClose={() => setModal({ ...modal, add_agreement: false })}>
-            </Modal>
+            {/* <Modal size="lg" show={modal.add_agreement} title='Minuta de Acuerdo' handleClose={() => setModal({ ...modal, add_agreement: false })}>
+            </Modal> */}
 
-            <Modal size="lg" show={modal.hire_phase} title='Contratar Fase' handleClose={() => setModal({ ...modal, hire_phase: false })}>
-            </Modal>
+            {/* <Modal size="lg" show={modal.hire_phase} title='Contratar Fase' handleClose={() => setModal({ ...modal, hire_phase: false })}>
+            </Modal> */}
 
             <Modal size="lg" show={modal.invoice} title='Facturar Fase' handleClose={() => setModal({ ...modal, invoice: false })}>
                 <SolicitarFactura proyecto={proyecto} opciones={opciones} />
@@ -33,6 +36,18 @@ export default function Modales({ modal, setModal, proyecto, reload, opciones })
             </Modal>
 
             <Modal size="lg" show={modal.end_proyect} title='Finalizar Proyecto' handleClose={() => setModal({ ...modal, end_proyect: false })}>
+            </Modal>
+
+            <Modal size="lg" show={modal.construction_notes} title='Notas de Obra' handleClose={() => setModal({ ...modal, construction_notes: false })}>
+                <NotasObra proyecto={proyecto} activo={modal.construction_notes} />
+            </Modal>
+
+            <Modal size="xl" show={modal.budget} title='Presupuesto' handleClose={() => setModal({ ...modal, budget: false })}>
+                <Presupuesto proyecto={proyecto} activo={modal.budget} reload={reload} />
+            </Modal>
+
+            <Modal size="xl" show={modal.advance} title='Avances' handleClose={() => setModal({ ...modal, advance: false })}>
+                <Avances proyecto={proyecto} activo={modal.advance} reload={reload} />
             </Modal>
 
             
