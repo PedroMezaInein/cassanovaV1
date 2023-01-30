@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Swal from 'sweetalert2'
 
@@ -49,6 +50,7 @@ export default function Convertir(props) {
         afectarCuentas: false,
         compra: data.compra,
         conta: data.conta,
+        empresa: "",
     })
     const [file, setFile] = useState({
         factura: ''
@@ -99,7 +101,7 @@ export default function Convertir(props) {
                             id_subarea: form.tipoSubgasto,
                             id_pago: form.tipoPago,
                             id_solicitante: data.solicitante_id,
-                            monto_pagado: form.monto,
+                            monto_pagado: parseFloat(form.monto),
                             cantidad: form.monto_solicitado,
                             autorizacion_1: form.auto1 ? form.auto1.id: null,
                             autorizacion_2: form.auto2 ? auth.user.id : null,
@@ -259,6 +261,13 @@ export default function Convertir(props) {
         })
     }
 
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: e
+        })
+    }
+
     return (
         <>
             <div className={Style.container}>
@@ -299,13 +308,13 @@ export default function Convertir(props) {
                 </div>
 
                 <div>
-                    <TextField
-                        name='monto'
-                        label="Monto De pago"
-                        type="number"
-                        defaultValue={form.monto}
-                        onChange={handleChange}
-                        className={classes.textField}
+                    <CurrencyTextField
+                        label="monto"
+                        variant="standard"
+                        value={form.monto}
+                        currencySymbol="$"
+                        outputFormat="string"
+                        onChange={(event, value) => handleMoney(value)}
                     />
                 </div>
 
@@ -400,23 +409,58 @@ export default function Convertir(props) {
                     {
                         opciones ?
                             <>
-                                <InputLabel id="demo-simple-select-label">Cuenta de Salida</InputLabel>
+                                <InputLabel id="demo-simple-select-label">Empresa</InputLabel>
+                                <Select
+                                    name="empresa"
+                                    value={form.empresa}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {opciones.empresas.map((item, index) => (
+                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    ))}
+                                </Select>
+
+                            </>
+                            : null
+                    }
+                </div>
+
+                <div>
+                    {
+                        opciones && form.empresa !== "" ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Cuenta de salida</InputLabel>
                                 <Select
                                     name="id_cuenta"
                                     value={form.id_cuenta}
                                     onChange={handleChange}
                                     className={classes.textField}
-                                    disabled
                                 >
-                                    {opciones.cuentas.map((item, index) => (
-                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
+                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                     ))}
-
                                 </Select>
                             </>
-                            : null
-                    }
+                            : opciones ?
+                                <>
+                                    <InputLabel id="demo-simple-select-label">Cuenta de Salida</InputLabel>
+                                    <Select
+                                        name="id_cuenta"
+                                        value={form.id_cuenta}
+                                        onChange={handleChange}
+                                        className={classes.textField}
+                                    >
+                                        {opciones.cuentas.map((item, index) => {
+                                            if (item.value == form.id_cuenta) {
+                                                return <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                            }
+                                        })}
 
+                                    </Select>
+                                </>
+                                : null
+                    }
                 </div>
 
                 <div>
@@ -488,29 +532,6 @@ export default function Convertir(props) {
                 </div>
 
                 <div>
-                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
-                    <Checkbox
-                        checked={form.auto2}
-                        onChange={handleAprueba}
-                        name="auto2"
-                        color="primary"
-                        style={{ marginLeft: '20%' }}
-                    />
-                </div>
-
-                <div>
-                    <InputLabel id="demo-simple-select-label">AFECTAR CUENTAS</InputLabel>
-                    <Checkbox
-                        checked={form.afectarCuentas}
-                        onChange={handleCuentas}
-                        name="afectarCuentas"
-                        color="secondary"
-                        style={{ marginLeft: '15%' }}
-                        disabled={form.afectarCuentas}
-                    />
-                </div>
-
-                <div>
                     <TextField
                         name='descripcion'
                         label="Descripción"
@@ -521,6 +542,29 @@ export default function Convertir(props) {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                    />
+                </div>
+
+                <div>
+                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
+                    <Checkbox
+                        checked={form.auto2}
+                        onChange={handleAprueba}
+                        name="auto2"
+                        color="primary"
+                        style={{ marginLeft: '20%' }}
+                    />
+                </div>
+                
+                <div>
+                    <InputLabel id="demo-simple-select-label">AFECTAR CUENTAS</InputLabel>
+                    <Checkbox
+                        checked={form.afectarCuentas}
+                        onChange={handleCuentas}
+                        name="afectarCuentas"
+                        color="secondary"
+                        style={{ marginLeft: '15%' }}
+                        disabled={form.afectarCuentas}
                     />
                 </div>
 

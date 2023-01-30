@@ -8,6 +8,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Swal from 'sweetalert2'
 
@@ -89,7 +90,7 @@ export default function Editar(props) {
                     id_pago: form.tipoPago,
                     id_solicitante: data.solicitante_id,
                     monto_pagado: form.monto_pagado,
-                    cantidad: form.monto,
+                    cantidad: parseInt(form.monto),
                     autorizacion_1: form.auto1 ? auth.user.id : null,
                     autorizacion_2: form.auto2 ? form.auto2.id : null,
                     orden_compra: data.orden_compra,
@@ -177,7 +178,13 @@ export default function Editar(props) {
         }
     }
 
-    console.log(opciones)
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: e
+        })
+    }
+
 
     return (
         <>
@@ -211,16 +218,13 @@ export default function Editar(props) {
                 </div>
 
                 <div>
-                    <TextField
-                        name='monto'
-                        label="Monto solicitado"
-                        type="number"
-                        defaultValue={form.monto}
-                        onChange={handleChange}
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
+                    <CurrencyTextField
+                        label="monto"
+                        variant="standard"
+                        value={form.monto}
+                        currencySymbol="$"
+                        outputFormat="string"
+                        onChange={(event, value) => handleMoney(value)}
                     />
                 </div>
 
@@ -354,18 +358,9 @@ export default function Editar(props) {
 
                 </div>
 
-                <div>
-                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
-                    <Checkbox
-                        checked={form.auto1}
-                        onChange={handleAprueba}
-                        name="auto1"
-                        color="primary"
-                        style={{ marginLeft: '20%' }}
-                    />
-                </div>
+
                 
-                <div>
+                {/* <div>
                     {
                         opciones ?
                             <>
@@ -421,7 +416,7 @@ export default function Editar(props) {
                                 </>
                                 : null
                     }
-                </div>
+                </div> */}
 
                 <div>
                     <TextField
@@ -435,6 +430,17 @@ export default function Editar(props) {
                             shrink: true,
                         }}
                     />  
+                </div>
+
+                <div>
+                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
+                    <Checkbox
+                        checked={form.auto1}
+                        onChange={handleAprueba}
+                        name="auto1"
+                        color="primary"
+                        style={{ marginLeft: '20%' }}
+                    />
                 </div>
 
                 <div className={Style.btnAprobar}>

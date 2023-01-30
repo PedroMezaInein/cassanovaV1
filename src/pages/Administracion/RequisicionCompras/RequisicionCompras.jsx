@@ -61,7 +61,7 @@ export default function RequisicionCompras() {
         { nombre: 'Tipo de Egreso', identificador: 'tipoEgreso', sort: false, stringSearch: false },
         { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false },
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
-        { nombre: 'Monto solicitado', identificador: 'monto_solicitado', sort: false, stringSearch: false },
+        { nombre: 'Monto solicitado', identificador: 'monto_view', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
         { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
         { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
@@ -81,6 +81,10 @@ export default function RequisicionCompras() {
             }
         },
     ]
+
+    const formatNumber = (num) => {
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+    }
 
     let ProccessData = (data) => {
         console.log(data)
@@ -103,6 +107,7 @@ export default function RequisicionCompras() {
                 tipoPago_id: item.pago ? item.pago.id : null,
                 monto_solicitado: item.cantidad,
                 monto: item.monto_pago,
+                monto_view: `$${item.cantidad.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
                 estatus: item.estatus ? item.estatus.estatus : 'Pendiente',
                 aprobacion: createtagaprobaciones(item),
                 auto1: item.auto1,
@@ -260,7 +265,7 @@ export default function RequisicionCompras() {
                         </Modal>
 
                         <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
-                            <Crear />
+                            <Crear handleClose={handleClose('crear')} reload={reloadTable} />
                         </Modal>
 
                         <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>

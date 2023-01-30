@@ -44,7 +44,7 @@ export default function RequisicionContabilidad() {
         },
     })
     const [reloadTable, setReloadTable] = useState()
-        const [opcionesApi, setOpcionesApi] = useState(false)
+    const [opcionesApi, setOpcionesApi] = useState(false)
     const [estatusCompras, setEstatusCompras] = useState(false)
 
     useEffect(() => {
@@ -111,7 +111,7 @@ export default function RequisicionContabilidad() {
                 tipoPago_id: item.pago ? item.pago.id : null,
                 monto_solicitado: item.cantidad,
                 monto: item.monto_pago,
-                monto_view: formatNumber(item.monto_pago),
+                monto_view: `$${item.monto_pago.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
                 estatus: item.estatus ? item.estatus.estatus : 'Pendiente',
                 aprobacion: createtagaprobaciones(item),
                 auto1: item.auto1,
@@ -283,7 +283,7 @@ export default function RequisicionContabilidad() {
                 </Modal>
 
                 <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
-                    <Crear />
+                    <Crear handleClose={handleClose('crear')} reload={reloadTable} />
                 </Modal>
 
                 <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>

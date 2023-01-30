@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Swal from 'sweetalert2'
 
@@ -132,7 +133,7 @@ export default function Convertir(props) {
                             id_pago: form.tipoPago,
                             id_solicitante: data.solicitante_id,
                             monto_pagado: form.monto_pagado,
-                            cantidad: form.monto,
+                            cantidad: parseInt(form.monto),
                             autorizacion_1: form.auto1 && form.auto1.id ? form.auto1.id : form.auto1,
                             autorizacion_2: form.auto2 ? form.auto2.id : null,
                             orden_compra: data.orden_compra,
@@ -199,6 +200,13 @@ export default function Convertir(props) {
         }
     }
 
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: e
+        })
+    }
+
     return (
         <>
             <div className={Style.container}>
@@ -229,13 +237,13 @@ export default function Convertir(props) {
                 </div>
 
                 <div>
-                    <TextField
-                        name='monto'
-                        label="Monto solicitado"
-                        type="number"
-                        defaultValue={form.monto}
-                        onChange={handleChange}
-                        className={classes.textField}
+                    <CurrencyTextField
+                        label="monto"
+                        variant="standard"
+                        value={form.monto}
+                        currencySymbol="$"
+                        outputFormat="string"
+                        onChange={(event, value) => handleMoney(value)}
                     />
                 </div>
 
@@ -371,18 +379,7 @@ export default function Convertir(props) {
 
                 </div>
 
-                <div>
-                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
-                    <Checkbox
-                        checked={form.checked}
-                        onChange={handleAprueba}
-                        name="auto1"
-                        color="primary"
-                        style={{marginLeft: '20%'}}
-                    />
-                </div>
-
-                <div>
+{/*                 <div>
                     {
                         opciones ?
                             <>
@@ -438,7 +435,7 @@ export default function Convertir(props) {
                                 </>
                                 : null
                     }
-                </div>
+                </div> */}
 
                 <div>
                     <TextField
@@ -451,6 +448,17 @@ export default function Convertir(props) {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                    />
+                </div>
+
+                <div>
+                    <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
+                    <Checkbox
+                        checked={form.checked}
+                        onChange={handleAprueba}
+                        name="auto1"
+                        color="primary"
+                        style={{marginLeft: '20%'}}
                     />
                 </div>
 

@@ -50,6 +50,7 @@ export default function Editar(props) {
         estatus_conta: data.estatus_conta,
         compra: data.compra,
         conta: data.conta,
+        empresa: "",
     })
     console.log(data)
 
@@ -96,7 +97,7 @@ export default function Editar(props) {
                     id_subarea: form.tipoSubgasto,
                     id_pago: form.tipoPago,
                     id_solicitante: data.solicitante_id,
-                    monto_pagado: form.monto,
+                    monto_pagado: parseFloat(form.monto),
                     cantidad: form.monto_solicitado,
                     autorizacion_1: form.auto1 ? form.auto1.id: null,
                     autorizacion_2: form.auto2 ? auth.user.id : null,
@@ -182,7 +183,7 @@ export default function Editar(props) {
     const handleMoney = (e) => {
         setForm({
             ...form,
-            monto: parseFloat(e)
+            monto: e
         })
     }
 
@@ -334,23 +335,58 @@ export default function Editar(props) {
                     {
                         opciones ?
                             <>
-                                <InputLabel id="demo-simple-select-label">Cuenta de Salida</InputLabel>
+                                <InputLabel id="demo-simple-select-label">Empresa</InputLabel>
+                                <Select
+                                    name="empresa"
+                                    value={form.empresa}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                >
+                                    {opciones.empresas.map((item, index) => (
+                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    ))}
+                                </Select>
+
+                            </>
+                            : null
+                    }
+                </div>
+
+                <div>
+                    {
+                        opciones && form.empresa !== "" ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Cuenta de salida</InputLabel>
                                 <Select
                                     name="id_cuenta"
                                     value={form.id_cuenta}
                                     onChange={handleChange}
                                     className={classes.textField}
-                                    disabled
                                 >
-                                    {opciones.cuentas.map((item, index) => (
-                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
+                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                     ))}
-
                                 </Select>
                             </>
-                            : null
+                            : opciones ?
+                                <>
+                                    <InputLabel id="demo-simple-select-label">Cuenta de Salida</InputLabel>
+                                    <Select
+                                        name="id_cuenta"
+                                        value={form.id_cuenta}
+                                        onChange={handleChange}
+                                        className={classes.textField}
+                                    >
+                                        {opciones.cuentas.map((item, index) => {
+                                            if (item.value == form.id_cuenta) {
+                                                return <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                            }
+                                        })}
+
+                                    </Select>
+                                </>
+                                : null
                     }
-                    
                 </div>
 
                 <div>

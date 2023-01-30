@@ -80,84 +80,93 @@ export default function NativeSelects(props) {
                     Swal.showLoading()
                 }
             }) 
+            try {
+                let dataForm = new FormData()
 
-            let dataForm = new FormData()
-
-            let newForm = {
-                id_solicitante: state.solicitante,
-                id_departamento: state.departamento,
-                id_gasto: state.tipo_gasto,
-                descripcion:state.descripcion,
-                fecha: state.fecha,
-                solicitud: state.solicitud
-            }
-
-            let aux = Object.keys(newForm)
-
-            aux.forEach((element) => {
-                switch (element) {               
-                    case 'adjuntos':
-                        break;
-                    default:
-                        dataForm.append(element, newForm[element])
-                        break
-                }  
-            })
-
-            dataForm.append(`files_name_requisicion[]`, 'requisicion01')
-            dataForm.append(`files_requisicion[]`, state.solicitud)
-            dataForm.append('adjuntos[]', "requisicion")
-
-            
-            apiPostForm('requisicion', dataForm, user.access_token)
-            .then((data)=>{
-                Swal.close()
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Nueva Requisicion',
-                    text: 'Se ha creado correctamente',
-                    timer: 5000,
-                    timerProgressBar: true,
-                })
-                handleClose()
-                if(reload){
-                    reload.reload()
+                let newForm = {
+                    id_solicitante: state.solicitante,
+                    id_departamento: state.departamento,
+                    id_gasto: state.tipo_gasto,
+                    descripcion: state.descripcion,
+                    fecha: state.fecha,
+                    solicitud: state.solicitud
                 }
-               
-                if (data.isConfirmed) {
-                    
-                    let form = {
-                        solicitante: user.user.id,
-                        fecha: '',
-                        departamento: '',
-                        tipo_gasto: '',
-                        descripcion: '',
-                        solicitud:''
+
+                let aux = Object.keys(newForm)
+
+                aux.forEach((element) => {
+                    switch (element) {
+                        case 'adjuntos':
+                            break;
+                        default:
+                            dataForm.append(element, newForm[element])
+                            break
                     }
-                    
-                    console.log('form')
-                    console.log(form)
+                })
 
-                }
+                dataForm.append(`files_name_requisicion[]`, 'requisicion01')
+                dataForm.append(`files_requisicion[]`, state.solicitud)
+                dataForm.append('adjuntos[]', "requisicion")
 
-                else if (data.isDenied) {
-                    Swal.fire('Faltan campos', '', 'info')
-                }
-            })
-            .catch((error)=>{  
+
+                apiPostForm('requisicion', dataForm, user.access_token)
+                    .then((data) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Nueva Requisicion',
+                            text: 'Se ha creado correctamente',
+                            timer: 5000,
+                            timerProgressBar: true,
+                        })
+                        handleClose()
+                        if (reload) {
+                            reload.reload()
+                        }
+
+                        /* if (data.isConfirmed) {
+
+                            let form = {
+                                solicitante: user.user.id,
+                                fecha: '',
+                                departamento: '',
+                                tipo_gasto: '',
+                                descripcion: '',
+                                solicitud: ''
+                            }
+
+                            console.log('form')
+                            console.log(form)
+
+                        } */
+
+                        /* else if (data.isDenied) {
+                            Swal.fire('Faltan campos', '', 'info')
+                        } */
+                    })
+                    .catch((error) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error',
+                        })
+                        console.log(error)
+                    })
+            } catch (error) { 
                 Swal.close()
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Ha ocurrido un error',
                 })
-            })
-        }// 
-        else{
+                console.log(error)
+            }
+        } else{
             Swal.fire({
-                title: 'Error',
+                title: 'Faltan campos',
                 text: 'Favor de llenar todos los campos',
-                icon: 'error',
+                icon: 'info',
                 showConfirmButton: false,
                 timer: 2000,
             })
