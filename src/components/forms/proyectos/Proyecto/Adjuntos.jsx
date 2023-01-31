@@ -407,6 +407,7 @@ class Adjuntos extends Component {
         const { proyecto } = this.props
         this.getAdjuntos(proyecto)
     }
+    
     getAdjuntos = async (proyecto) => {
         const { at } = this.props
         waitAlert()

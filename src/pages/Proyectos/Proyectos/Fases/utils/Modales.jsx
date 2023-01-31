@@ -9,6 +9,7 @@ import Venta from './Venta'
 import Presupuesto from './Presupuesto'
 import Avances from './Avances'
 import NotasObra from './NotasObra'
+import Adjuntos from './Adjuntos'
 
 export default function Modales({ modal, setModal, proyecto, reload, opciones }) {
     return (
@@ -57,6 +58,7 @@ export default function Modales({ modal, setModal, proyecto, reload, opciones })
             </Modal>
 
             <Modal size="lg" show={modal.uprising_photographs} title='Fotografías de Levantamiento' handleClose={() => setModal({ ...modal, uprising_photographs: false })}>
+                <Adjuntos proyecto={proyecto} />
             </Modal>
 
             <Modal size="lg" show={modal.plan_measurements} title='Planos de Medidas' handleClose={() => setModal({ ...modal, plan_measurements: false })}>
