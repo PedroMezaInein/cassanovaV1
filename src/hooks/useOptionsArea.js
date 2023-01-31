@@ -26,7 +26,6 @@ const useOptionsArea = () => {
 
     const proccessData = () => {
         let e = opciones
-        console.log(e)
         let aux = []
         for(let key in e.area){
             for(let area in e.area[key]){
@@ -34,7 +33,6 @@ const useOptionsArea = () => {
                     for(let idpartida in e.area[key][area]){
                         for(let partida in e.area[key][area][idpartida]){
                             // Imprime el nombre de cada partida
-                            console.log(e.area[key][area][idpartida][partida])
                             let auxSubpartida = []
                             e.area[key][area][idpartida][partida].forEach(elemento =>{
                                 auxSubpartida.push({
@@ -57,7 +55,6 @@ const useOptionsArea = () => {
                 aux.push(areas)
             }
         }
-        console.log(aux)
         dispatch(SaveOptionsAreas(aux))
     }
     

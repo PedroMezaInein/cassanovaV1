@@ -82,8 +82,10 @@ export default function RequisicionCompras() {
         },
     ]
 
+    //funcion para dar formato a los numeros con comas y dos decimales sin redondear
     const formatNumber = (num) => {
-        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+        console.log(`$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g)}`)
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g)}`
     }
 
     let ProccessData = (data) => {
@@ -107,7 +109,7 @@ export default function RequisicionCompras() {
                 tipoPago_id: item.pago ? item.pago.id : null,
                 monto_solicitado: item.cantidad,
                 monto: item.monto_pago,
-                monto_view: `$${item.cantidad.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
+                monto_view: formatNumber(item.cantidad),
                 estatus: item.estatus ? item.estatus.estatus : 'Pendiente',
                 aprobacion: createtagaprobaciones(item),
                 auto1: item.auto1,

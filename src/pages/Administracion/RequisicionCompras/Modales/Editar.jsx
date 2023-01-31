@@ -90,7 +90,7 @@ export default function Editar(props) {
                     id_pago: form.tipoPago,
                     id_solicitante: data.solicitante_id,
                     monto_pagado: form.monto_pagado,
-                    cantidad: parseInt(form.monto),
+                    cantidad: form.monto,
                     autorizacion_1: form.auto1 ? auth.user.id : null,
                     autorizacion_2: form.auto2 ? form.auto2.id : null,
                     orden_compra: data.orden_compra,
@@ -179,6 +179,7 @@ export default function Editar(props) {
     }
 
     const handleMoney = (e) => {
+        console.log(e)
         setForm({
             ...form,
             monto: e
@@ -223,7 +224,7 @@ export default function Editar(props) {
                         variant="standard"
                         value={form.monto}
                         currencySymbol="$"
-                        outputFormat="string"
+                        outputFormat="number"
                         onChange={(event, value) => handleMoney(value)}
                     />
                 </div>

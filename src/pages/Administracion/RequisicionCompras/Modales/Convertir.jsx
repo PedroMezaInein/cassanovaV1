@@ -133,7 +133,7 @@ export default function Convertir(props) {
                             id_pago: form.tipoPago,
                             id_solicitante: data.solicitante_id,
                             monto_pagado: form.monto_pagado,
-                            cantidad: parseInt(form.monto),
+                            cantidad: form.monto,
                             autorizacion_1: form.auto1 && form.auto1.id ? form.auto1.id : form.auto1,
                             autorizacion_2: form.auto2 ? form.auto2.id : null,
                             orden_compra: data.orden_compra,
@@ -242,7 +242,7 @@ export default function Convertir(props) {
                         variant="standard"
                         value={form.monto}
                         currencySymbol="$"
-                        outputFormat="string"
+                        outputFormat="number"
                         onChange={(event, value) => handleMoney(value)}
                     />
                 </div>
