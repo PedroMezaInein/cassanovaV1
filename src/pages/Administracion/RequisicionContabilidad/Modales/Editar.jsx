@@ -97,7 +97,7 @@ export default function Editar(props) {
                     id_subarea: form.tipoSubgasto,
                     id_pago: form.tipoPago,
                     id_solicitante: data.solicitante_id,
-                    monto_pagado: parseFloat(form.monto),
+                    monto_pagado: form.monto,
                     cantidad: form.monto_solicitado,
                     autorizacion_1: form.auto1 ? form.auto1.id: null,
                     autorizacion_2: form.auto2 ? auth.user.id : null,
@@ -239,7 +239,7 @@ export default function Editar(props) {
                         variant="standard"
                         value={form.monto}
                         currencySymbol="$"
-                        outputFormat="string"
+                        outputFormat="number"
                         onChange={(event, value) => handleMoney(value)}
                     />
                     
