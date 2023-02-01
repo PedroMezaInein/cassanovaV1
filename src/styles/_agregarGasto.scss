@@ -3,13 +3,23 @@
 }
 
 .agregar_area{
-    position: absolute;
+    // position: absolute;
+    display: flex;
+    flex-direction: row;
 }
 
-.agregar_partida{
-    position: absolute;
-    top: 0;
-    left: 70%;
+.area{
+    margin-top: 2rem;
+}
+
+.agregar_partidas{
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+}
+
+.partidas{
+    display: flex;
+    flex-direction: row;
 }
 
 .agregar_partida input{

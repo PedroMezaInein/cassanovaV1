@@ -91,7 +91,6 @@ export default function NativeSelects(props) {
                 fecha: state.fecha,
                 solicitud: state.solicitud
             }
-
             let aux = Object.keys(newForm)
 
             aux.forEach((element) => {

@@ -10,9 +10,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 
-import { apiPostForm } from '../../../../../functions/api'
+import { apiPostForm } from '../../../functions/api'
+import { URL_DEV } from '../../../constants'
 
-import '../../../../../styles/_agregarGasto.scss'
+import '../../../styles/_agregarGasto.scss'
 
 export default function ModalAgregar (props) {
     const {handleClose, reload} = props
@@ -23,7 +24,9 @@ export default function ModalAgregar (props) {
         area:'',
         partida: '',
         subPartida: '',
-        arraySubPartidas: []
+        arraySubPartidas: [],
+        i_select: '',
+        i_text:''
     })
 
     const [errores, setErrores] = useState()
@@ -32,9 +35,9 @@ export default function ModalAgregar (props) {
         setForm({
             ...form,
             [event.target.name]: event.target.value,
-            partida: null,
-            subPartida: null,
-            arraySubPartidas: []
+            partida: '',
+            // subPartida: null,
+            // arraySubPartidas: []
         })
     }
 
@@ -73,12 +76,6 @@ export default function ModalAgregar (props) {
                 id_area: form.area,
                 id_partida: form.partida,
                 id_subPartida: form.subPartida,
-                /* [
-                    {id:67, nombre: 'mano de obra'}
-                    {id:43, nombre: 'mantenimiento'}
-                    {id:67, nombre: 'mano de obra'}
-                    {id:67, nombre: 'mano de obra'}
-                ] */
             }
         
             apiPostForm('requisicion', newForm, user.access_token)
@@ -118,11 +115,13 @@ export default function ModalAgregar (props) {
      //de aqui son nuevas funciones handlechange
 
     const handleChangePartida=(e)=>{
-    setForm({
-        ...form,
-        [e.target.name]:e.target.value,
-        subPartida: null,
-        arraySubPartidas: []
+        setForm({
+            ...form,
+            partida:e.target.value,
+            i_text:'',
+            i_select:'',
+            // subPartida: null,
+            // arraySubPartidas: []
         })
         
     }
@@ -155,10 +154,111 @@ export default function ModalAgregar (props) {
         })
     }
 
+    const handleChangePrueba = (e) =>{
+        if(e.key==='Enter' ){
+            setForm({
+                ...form,
+                i_text:'',
+                i_select: '',
+                partida: e.target.value
+            })
+        } else {
+            setForm({
+                ...form,
+                [e.target.name]:e.target.value,
+            })   
+        }
+    }
+
+    const handleDeletePartida = ()=>{
+        setForm({
+            ...form,
+            partida:''
+        })
+    }
+
+    const submit = () =>{
+        if(Object.keys(validateForm()).length ===0){
+        //if(validateForm()){
+
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            }) 
+
+            let newForm = {
+                nombre: departamentos.find(item => item.id_area == form.area).nombreArea,
+                partida: form.partida.nombre,
+                subarea: '',
+                subareasEditable: [],
+                subareas: form.arraySubPartidas.map((item, index) => {
+                    return item.nombre
+                }),
+                tipo: 'egresos'
+            }
+ 
+            axios.post(URL_DEV + 'areas', newForm, { headers: { Authorization: `Bearer ${user.access_token}` } })
+            .then((data)=>{
+                Swal.close()
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Nueva Requisicion',
+                    text: 'Se ha creado correctamente',
+                    timer: 5000,
+                    timerProgressBar: true,
+                })
+                // handleClose()
+                // if(reload){
+                //     reload.reload()
+                // }
+               
+                if (data.isConfirmed) {
+                    
+                    let form = {
+                        solicitante: user.user.id,
+                        fecha: '',
+                        departamento: '',
+                        tipo_gasto: '',
+                        descripcion: '',
+                        solicitud:''
+                    }
+                    
+                    console.log('form')
+                    console.log(form)
+
+                }
+
+                else if (data.isDenied) {
+                    Swal.fire('Faltan campos', '', 'info')
+                }
+            })
+            .catch((error)=>{  
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error',
+                })
+            })
+        }// 
+        else{
+            Swal.fire({
+                title: 'Error',
+                text: 'Favor de llenar todos los campos',
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 2000,
+            })
+        }
+    }
+
     return (
         <div className='agregar'>
 
-            <div classsName='agregar_area'>
+            <div className='agregar_area'>
                 {/* AREA */}
                 <div className=" area">
                     {departamentos.length > 0 ?
@@ -181,21 +281,42 @@ export default function ModalAgregar (props) {
                 {errores && errores.area && form.area === '' &&<span className='error_area'>{errores.area}</span>}
 
                 {/* PARTIDA */}
-                <div className='agregar_partida'>
+                <div className='agregar_partidas'>
                     {departamentos.length > 0 && form.area !== ''?
                         <>
-                            <TextField 
-                                label="Partida"
-                                style={{ margin: 8 }}
-                                placeholder="Nueva partida"
-                                onChange={handleChangePartida}
-                                margin="normal"
-                                name='partida'
-                                defaultValue={form.partida}
-                                InputLabelProps={{
-                                shrink: true,
-                                }}
-                            />
+                            <div>Selecciona o crea una nueva partida </div>
+                            <div className='partidas'>
+                                <div>
+                                    <InputLabel id="demo-simple-select-label">Partida</InputLabel>
+                                    <Select
+                                        value={form.i_select}
+                                        name="partida"
+                                        onChange={handleChangePartida}
+                                    >
+                                        {departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                            <MenuItem key={index} value={item}>{item.nombre}</MenuItem>
+                                        ))}
+
+                                    </Select>
+                                </div>
+
+                                <div>
+                                    <TextField 
+                                        label="Crea una partida"
+                                        style={{ margin: 8 }}
+                                        placeholder="Enter para crear partida"
+                                        onChange={handleChangePrueba}
+                                        onKeyPress={handleChangePrueba}
+                                        margin="normal"
+                                        name='i_text'
+                                        /* defaultValue={form.i_text} */
+                                        value={form.i_text}
+                                        InputLabelProps={{
+                                        shrink: true,
+                                        }}
+                                    /> 
+                                </div>
+                            </div>
 
                             {/* <label>Partida</label>
                             <br></br>
@@ -204,9 +325,22 @@ export default function ModalAgregar (props) {
                         :
                         null
                     }
+
+                    <div>
+                        {
+                            form.partida !== '' && form.partida.nombre ?
+                            <>
+                                <div><span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida.nombre}</div>
+                            </> 
+                            : form.partida !== '' ?
+                                <div><span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida}</div>
+                                : null
+                            
+                        }
+                    </div>
                 </div>
 
-                {errores && errores.partida && form.area !== '' && (form.partida === '' || form.partida === null) && <span className=''>{errores.partida}</span>} 
+                {/* {errores && errores.partida && form.area !== '' && (form.partida === '' || form.partida === null) && <span className=''>{errores.partida}</span>}  */}
             </div>
 
 
@@ -229,7 +363,7 @@ export default function ModalAgregar (props) {
                             }}
                         />  */}
                         <label>Subpartida</label>
-                        <input name='subPartida' type='text' value={form.subPartida} onKeyPress={handleEnterSub}  onChange={handleChange}></input>
+                        <input name='subPartida' type='text' value={form.subPartida ? form.subPartida : ''} onKeyPress={handleEnterSub}  onChange={handleChange}></input>
                     </>
                     : null
                 } 
@@ -251,7 +385,7 @@ export default function ModalAgregar (props) {
 
             {/* ENVIAR */}
             <div className='boton'>
-                <button>
+                <button onClick={submit}>
                     Agregar
                 </button> 
             </div>
